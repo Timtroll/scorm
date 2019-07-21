@@ -4,7 +4,21 @@ use strict;
 use warnings;
 
 use FindBin;
-BEGIN { unshift @INC, "$FindBin::Bin/../lib" }
+
+$| = 1;
+
+BEGIN {
+    # если сайт будет на https
+    IO::Socket::SSL::set_ctx_defaults(
+        'SSL_verify_mode' => 0 #'SSL_VERIFY_NONE'
+    );
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = '0';
+
+    # лимит на объем принимаемых файлов
+    $ENV{MOJO_MAX_MESSAGE_SIZE} = 2 * 1024 * 1024 * 1024; # 2 GB
+
+    unshift @INC, "$FindBin::Bin/../lib";
+}
 use Mojolicious::Commands;
 
 # Start command line interface for application

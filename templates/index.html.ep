@@ -1,0 +1,32 @@
+<!doctype html>
+<head>
+	<title><%= $title %></title>
+	<link href="/css/style.css?<%= time() %>" rel="stylesheet" media="all">
+</head>
+<body>
+<div class="parent">
+	<div class="child">
+
+		<h2>/login</h2>
+		<h4>POST</h4>
+		<li>login - 'chars' string</li>
+		<li>pass - 'symbchars' string</li>
+		<h4>Return</h4>
+		<div>{<br>
+		    'status' : 'ok',<br>
+		    'token'  : '72ade14d2d30c88f082f0410499fed05'<br>
+		}<br>
+		or<br>
+		{<br>
+		    "mess": "Login or password is wrong",<br>
+		    "status": "fail"<br>
+		}</div>
+<hr>
+		<h2>/logout</h2>
+		<h4>POST or GET</h4>
+		<li> поля не передаются (удаляется кука sessions)</li>
+<hr>
+
+	<div>
+</div>
+</body>
