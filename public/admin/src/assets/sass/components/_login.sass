@@ -1,0 +1,93 @@
+@import "../uikit/variables"
+
+.pos-login
+  background-color: rgba($global-border, .1)
+  border-radius: $border-rounded-border-radius * 2
+  border: $global-border-width solid rgba($global-border, .2)
+  padding: $global-margin
+  backface-visibility: hidden
+
+
+  & > *
+    &:last-child
+      margin-bottom: 0
+
+    &:first-child,
+    .uk-margin
+      margin-top: 0
+
+.pos-login-background
+  background: $global-template-background linear-gradient(225deg, $global-template-background 0%, darken($global-template-background, 5%) 100%)
+
+// key animations
+.pos-key
+  width: 70px
+  height: 70px
+
+  .main
+    animation: main 1.5s linear infinite
+
+  .hands
+    animation: main 3s linear infinite reverse
+
+  .main,
+  .hands
+    transform-origin: center center
+    transform: scale(.95)
+    animation-play-state: paused
+
+// On animations
+.motion
+  .pos-key
+    .main,
+    .hands
+      animation-play-state: running
+
+    .pos-key--line,
+    .pos-key--bgr
+      stroke: rgba($global-border, .8)
+
+// direction
+.direction
+  .pos-key
+    .main
+      animation-direction: reverse
+
+    .hands
+      animation-direction: normal
+
+.pos-key--line,
+.pos-key--bgr
+  stroke: rgba($global-border, .6)
+  stroke-linecap: round
+  stroke-linejoin: round
+  stroke-width: 2px
+
+.pos-key--bgr
+  fill: rgba($global-border, .2)
+
+@keyframes main
+  0%
+    transform: rotate(0) scale(.95)
+  100%
+    transform: rotate(360deg) scale(.95)
+
+.pos-login-logo
+  opacity: .5
+
+.pos-login-logo-left
+  color: $global-template-background
+
+.pos-perspective
+  perspective: 550px
+  perspective-origin: center center
+
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .25s ease-in-out 0s
+  opacity: 1
+
+
+.fade-enter, .fade-leave-to
+  opacity: 0
+

@@ -1,0 +1,103 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+/** Radio & Checkbox
+
+.pos-radio, .pos-checkbox
+  cursor: pointer
+  display: inline-block
+  height: 18px
+  width: 18px
+  outline: none
+  overflow: hidden
+  margin-top: -1px
+  vertical-align: middle
+  -webkit-appearance: none
+  -moz-appearance: none
+  background-color: transparent
+  background-repeat: no-repeat
+  background-position: 50% 50%
+  border: none
+  transition: background-image 0.2s ease-in-out
+
+.pos-radio
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNjZmQ3ZGMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCI+PC9jaXJjbGU+PC9zdmc+)
+
+  &:checked
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYTUyNzkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjIgMTEuMDhWMTJhMTAgMTAgMCAxIDEtNS45My05LjE0Ij48L3BhdGg+PHBvbHlsaW5lIHBvaW50cz0iMjIgNCAxMiAxNC4wMSA5IDExLjAxIj48L3BvbHlsaW5lPjwvc3ZnPg==)
+
+.pos-checkbox
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNjZmQ3ZGMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHJ4PSIyIiByeT0iMiI+PC9yZWN0Pjwvc3ZnPg==)
+
+  //&:indeterminate
+
+  &:checked
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlYTUyNzkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI5IDExIDEyIDE0IDIyIDQiPjwvcG9seWxpbmU+PHBhdGggZD0iTTIxIDEydjdhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWNWEyIDIgMCAwIDEgMi0yaDExIj48L3BhdGg+PC9zdmc+)
+
+.pos-radio:checked:focus,
+.pos-checkbox:checked:focus,
+.pos-checkbox:indeterminate:focus
+  background-color: transparent
+  outline: none
+
+
+.pos-radio:disabled,
+.pos-checkbox:disabled
+  cursor: default
+
+// pos-checkbox-switch
+$checkbox-switch-size: 18px
+$checkbox-switch-small-size: 14px
+$checkbox-switch-border-size: 2px
+$checkbox-switch-duration: .3s
+
+.pos-checkbox-switch
+  transition: all $checkbox-switch-duration/2 ease-out $checkbox-switch-duration/2
+  width: $checkbox-switch-size * 2 + $checkbox-switch-border-size * 2
+  display: block
+  height: $checkbox-switch-size + $checkbox-switch-border-size * 2
+  position: relative
+  appearance: none
+  outline: none
+  margin: 0
+  box-sizing: border-box
+  border-radius: 500px
+  //border: $global-border-width solid $global-border
+  background-color: $global-muted-color
+  box-shadow: inset -$checkbox-switch-size 0 0 0 $global-background
+  cursor: pointer
+  border: none
+
+  &.right
+    margin-left: auto
+
+  &::after
+    transition: all $checkbox-switch-duration ease-in
+    border-radius: 500px
+    position: absolute
+    content: ""
+    display: block
+    box-sizing: border-box
+    top: $checkbox-switch-border-size
+    left: 0
+    margin-left: $checkbox-switch-border-size
+    width: $checkbox-switch-size
+    height: $checkbox-switch-size
+    background-color: $global-background
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2)
+    animation: checked $checkbox-switch-duration ease-in-out
+
+  &.small
+    width: $checkbox-switch-small-size * 2 + $checkbox-switch-border-size * 2
+    height: $checkbox-switch-small-size + $checkbox-switch-border-size * 2
+
+    &::after
+      width: $checkbox-switch-small-size
+      height: $checkbox-switch-small-size
+
+
+  &:checked
+    background-color: $global-success-background
+
+    &::after
+      left: calc(50% - 2px)

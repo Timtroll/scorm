@@ -1,0 +1,124 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$min-height: 320px
+
+html,
+body
+  //height: 100vh
+  //width: 100vw
+  min-width: 320px
+  min-height: $min-height
+  max-height: 100vh
+  height: 100%
+
+#app
+  height: 100%
+  width: 100%
+  overflow: hidden
+
+html
+  @media (max-width: $breakpoint-medium)
+    font-size: $global-media-medium-font-size
+  @media (max-width: $breakpoint-small)
+    font-size: $global-media-small-font-size
+
+body
+  background-color: $global-secondary-background
+  overflow: hidden
+
+#app
+  width: 100vw
+  height: 100%
+
+.pos-body
+  width: 100vw
+  height: 100%
+  padding: 15px
+  overflow: hidden
+  box-sizing: border-box
+  display: flex
+  flex-direction: column
+  @media (max-width: $breakpoint-xlarge)
+    padding: 0
+    border-radius: 0
+
+.pos-main
+  min-width: 320px
+  min-height: 300px
+  flex: 1 0 0
+  border-radius: $border-rounded-border-radius * 2
+  overflow: hidden
+  box-shadow: 0 0 10px rgba(0, 0, 0, .07)
+  display: flex
+  flex-direction: row
+  box-sizing: border-box
+  background-color: $global-inverse-color
+
+  @media (max-width: $breakpoint-xlarge)
+    width: 100vw
+    height: 100vh
+    border-radius: 0
+  @media (max-width: $breakpoint-medium)
+    flex-direction: column
+
+.pos-container
+  width: 100%
+  flex: 1 0 1px
+  order: 1
+  display: flex
+  min-width: 320px
+  flex-direction: column
+  box-sizing: border-box
+  overflow: hidden
+  @media (max-width: $breakpoint-medium)
+    order: 0
+
+.pos-content
+  background-color: lighten($global-muted-background, 2%)
+  flex: 1 0 1px
+  min-height: 1px
+  overflow: hidden
+
+.scroll-sticky-el
+  box-sizing: border-box
+  margin: 0
+  padding: $global-margin
+  position: sticky
+  width: 100%
+  top: 0
+  z-index: 2
+  @media (max-width: $breakpoint-small)
+    padding: $global-small-margin
+
+// scroll snap
+.pos-scroll-snap
+  overflow-y: scroll
+  -webkit-overflow-scrolling: touch
+  scrollbar-width: none
+  scroll-snap-type: both
+  position: relative
+
+  & > *
+    scroll-snap-align: start none
+
+
+//borders
+[class*=pos-border]
+  border: 0 solid $global-border
+
+.pos-border-left
+  border-left-width: 1px
+
+.pos-border-right
+  border-right-width: 1px
+
+.pos-border-top
+  border-top-width: 1px
+
+.pos-border-bottom
+  border-bottom-width: 1px
+
+// Text
+.pos-text-hyphens
+  hyphens: auto

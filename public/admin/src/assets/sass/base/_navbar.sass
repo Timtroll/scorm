@@ -1,0 +1,82 @@
+@import "../uikit/variables"
+
+.pos-navbar
+  box-sizing: border-box
+  background-color: $global-background
+  height: $navbar-height
+  border-bottom: 1px solid $global-border
+  display: flex
+  flex-direction: row
+  position: relative
+  z-index: 2
+  order: -1
+  @media (max-width: $breakpoint-xlarge)
+    height: $navbar-small-height
+  @media (max-width: $breakpoint-large)
+    padding: 0
+    height: $navbar-xsmall-height
+
+.pos-navbar-item
+  padding: 0 $global-margin
+  text-align: center
+  display: block
+  box-sizing: border-box
+  min-width: $navbar-height
+  line-height: $navbar-height
+  color: $global-muted-color
+
+  &:hover
+    color: $global-color
+
+  @media (max-width: $breakpoint-xlarge)
+    min-width: $navbar-small-height
+    padding: 0 $global-small-margin
+    line-height: $navbar-small-height
+  @media (max-width: $breakpoint-large)
+    min-width: $navbar-xsmall-height
+    line-height: $navbar-xsmall-height
+    padding: 0 $global-xsmall-margin
+
+// pos-navbar-middle
+.pos-navbar-middle
+  padding: 0 $global-margin
+  flex: 1 0 0
+  min-width: 1px
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+.pos-navbar__title
+  line-height: 1
+  font-size: 1.2rem
+  color: $global-emphasis-color
+  font-weight: bold
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  margin-bottom: $global-xsmall-margin
+
+  @media (max-width: $breakpoint-xlarge)
+    font-size: 1.1rem
+
+  @media (max-width: $breakpoint-large)
+    font-size: 1rem
+    margin-bottom: 0
+
+.pos-navbar__meta
+
+// pos-navbar-left pos-navbar-right
+.pos-navbar-left,
+.pos-navbar-right
+  flex-direction: row
+  box-sizing: border-box
+  //background-color: $global-muted-background
+
+// pos-navbar-left
+.pos-navbar-left
+  border-right: 1px solid $global-border
+
+// pos-navbar-right
+.pos-navbar-right
+  border-left: 1px solid $global-border
+

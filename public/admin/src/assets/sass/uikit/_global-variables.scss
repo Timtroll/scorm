@@ -1,0 +1,117 @@
+/**
+ * global var
+ */
+
+$deprecated: false !default;
+
+// margin
+$global-xsmall-margin: 5px !default;
+$global-small-margin: 10px !default;
+$global-margin: 20px !default;
+$global-medium-margin: 40px !default;
+$global-large-margin: 70px !default;
+$global-xlarge-margin: 140px !default;
+
+// gutters
+$global-xsmall-gutter: 10px !default;
+$global-small-gutter: 15px !default;
+$global-gutter: 30px !default;
+$global-medium-gutter: 40px !default;
+$global-large-gutter: 70px !default;
+
+// breakpoint
+$breakpoint-small: 480px !default;
+$breakpoint-medium: 768px !default;
+$breakpoint-large: 960px !default;
+$breakpoint-xlarge: 1200px !default;
+$breakpoint-xxlarge: 1600px !default;
+$breakpoint-xsmall-max: ($breakpoint-small - 1) !default;
+$breakpoint-small-max: ($breakpoint-medium - 1) !default;
+$breakpoint-medium-max: ($breakpoint-large - 1) !default;
+$breakpoint-large-max: ($breakpoint-xlarge - 1) !default;
+$breakpoint-xlarge-max: ($breakpoint-xxlarge - 1) !default;
+
+// font
+$global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$global-line-height: 1.5 !default;
+$global-font-size: 16px !default;
+$global-media-small-font-size: 12px !default;
+$global-media-medium-font-size: 14px !default;
+$global-small-font-size: 0.875rem !default;
+$global-medium-font-size: 1.25rem !default;
+$global-large-font-size: 1.5rem !default;
+$global-xlarge-font-size: 2rem !default;
+$global-xxlarge-font-size: 2.625rem !default;
+
+// colors
+$global-emphasis-color: #161b25 !default;
+$global-color: #666e78 !default;
+$global-muted-color: #95a1ab !default;
+//$global-secondary-muted-color: #666e78 !default;
+
+$global-inverse-color: #ffffff !default;
+$inverse-global-inverse-color: $global-color !default;
+$inverse-global-muted-color: rgba($global-inverse-color, 0.5) !default;
+$inverse-global-emphasis-color: $global-inverse-color !default;
+$inverse-global-color: rgba($global-inverse-color, 0.7) !default;
+
+// backgrounds
+$global-background: #ffffff !default;
+$global-muted-background: #f2f8fa !default;
+$global-primary-background: #43B7F9 !default;
+$global-success-background: #62BA3D !default;
+$global-warning-background: #FCBF3C !default;
+$global-danger-background: #FF5B7F !default;
+$global-secondary-background: #e1e4e6 !default;
+$global-template-background: #929D51 !default;
+
+$inverse-global-primary-background: $global-inverse-color !default;
+
+$global-link-color: #43B7F9 !default;
+$global-link-hover-color: darken($global-link-color, 10%) !default;
+//$global-link-hover-color: #137dcf !default;
+
+// navbar
+$navbar-height: 80px;
+$navbar-small-height: 60px;
+$navbar-xsmall-height: 50px;
+
+// borders
+$global-border-width: 1px !default;
+$global-border: #dcecf2 !default;
+$border-rounded-border-radius: 5px !default;
+
+// control
+$global-control-small-height: 30px !default;
+$global-control-height: 40px !default;
+$global-control-large-height: 55px !default;
+
+// box-shadow
+$global-xsmall-box-shadow: 0 1px 3px 1px rgba(21, 27, 38, 0.1) !default;
+//$global-xsmall-box-shadow: 0 2 4px rgba(0, 0, 0, 0.08) !default;
+$global-small-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !default;
+$global-medium-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !default;
+$global-large-box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16) !default;
+$global-xlarge-box-shadow: 0 28px 50px rgba(0, 0, 0, 0.16) !default;
+
+// z-index
+$global-z-index: 1000 !default;
+
+// width
+$width-small-width: 150px !default;
+$width-medium-width: 300px !default;
+$width-large-width: 450px !default;
+$width-xlarge-width: 600px !default;
+$width-xxlarge-width: 750px !default;
+
+// height
+$height-small-height: 150px !default;
+$height-medium-height: 300px !default;
+$height-large-height: 450px !default;
+
+// transition
+$transition-duration: 0.3s !default;
+$transition-scale: 1.1 !default;
+$transition-slide-small-translate: 10px !default;
+$transition-slide-medium-translate: 50px !default;
+$transition-slow-duration: 0.7s !default;

@@ -1,0 +1,96 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+.pos-page-content
+  height: 1px
+  flex: 1 0 0
+  overflow: hidden
+  order: 1
+  position: relative
+  padding: 0
+  display: flex
+  flex-direction: column
+
+.pos-page-content-header
+  background-color: lighten($global-muted-background, 4%)
+  border-bottom: $global-border-width solid $global-border
+  flex: none
+  height: $navbar-height
+  box-sizing: border-box
+
+  & > *
+    height: 100%
+
+  @media (max-width: $breakpoint-xlarge)
+    height: $navbar-small-height
+
+  @media (max-width: $breakpoint-large)
+    height: $navbar-xsmall-height
+
+.pos-page-content-header--item
+  padding-left: $global-margin
+  height: 100%
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+  @media (max-width: $breakpoint-medium)
+    padding-left: $global-small-gutter
+
+  @media (max-width: $breakpoint-small)
+    padding-left: $global-small-margin
+
+.pos-page-content-header
+  & > *
+    &:last-child
+      .pos-page-content-header--item
+        padding-right: $global-margin
+        @media (max-width: $breakpoint-medium)
+          padding-right: $global-small-gutter
+
+        @media (max-width: $breakpoint-small)
+          padding-right: $global-small-margin
+
+.pos-page-content-header--title
+  font-size: 1.6rem
+  margin: 0
+  //font-weight: bold
+  color: $global-primary-background
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  max-width: 100%
+
+  @media (max-width: $breakpoint-medium)
+    font-size: 1.4rem
+
+  @media (max-width: $breakpoint-small)
+    font-size: 1.2rem
+
+.pos-page-content-body
+  flex: 1 0 0
+  min-height: 1px
+  overflow: hidden
+  position: relative
+
+  & > .full-height
+    height: 100%
+    overflow: hidden
+
+    & > *
+      height: 100%
+      overflow-x: hidden
+      overflow-y: auto
+
+.pos-page-inner
+  margin: 0
+  padding: $global-margin
+  box-sizing: border-box
+  overflow: auto
+  max-height: 100%
+
+  @media (max-width: $breakpoint-medium)
+    padding: $global-small-gutter
+
+  @media (max-width: $breakpoint-small)
+    padding: $global-small-margin

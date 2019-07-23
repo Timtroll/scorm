@@ -1,0 +1,12 @@
+@import "uikit/variables"
+
+@mixin box-shadow($size)
+  box-shadow: 0 2px $size rgba(0, 0, 0, 0.08)
+
+@mixin transition-all($durations)
+  will-change: transform
+  transition: $durations ease-in-out
+
+@mixin transition-param($parameter)
+  will-change: transform
+  transition: $parameter .3s ease-in-out

@@ -1,0 +1,275 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+.pos-sidebar
+  //height: 100%
+  box-sizing: border-box
+  width: $navbar-height
+  color: $global-inverse-color
+  background: $global-template-background linear-gradient(180deg, $global-template-background 0%, darken($global-template-background, 5%) 100%)
+  display: flex
+  flex-direction: column
+
+  @media (max-width: $breakpoint-medium)
+    overflow-y: visible
+    .pos-sidebar--nav
+      & > li.uk-active
+        & > a
+          &::before
+            background: $global-template-background
+
+  @media (max-width: $breakpoint-xlarge)
+    width: $navbar-small-height
+    min-width: $navbar-small-height
+    border-radius: 0
+
+
+  @media (max-width: $breakpoint-medium)
+    width: 100%
+    flex-direction: row
+    order: 1
+    background: $global-template-background
+
+  a
+    display: inline-block
+
+.pos-sidebar-middle
+  flex: 1 0 0
+  min-height: 1px
+
+  &::-webkit-scrollbar
+    display: none
+
+  @media (max-width: $breakpoint-large)
+    min-width: 1px
+
+.pos-sidebar-top
+  flex: none
+  box-sizing: border-box
+  height: $navbar-height
+  vertical-align: center
+  padding: 0 $global-small-margin*1.5
+  text-align: center
+  position: relative
+  border-bottom: 1px solid rgba($global-inverse-color, .1)
+
+  & > li > a,
+  & > a
+    line-height: $navbar-height
+    text-align: center
+
+  @media (max-width: $breakpoint-xlarge)
+    height: $navbar-small-height
+    width: $navbar-small-height
+    padding: 0 $global-small-margin
+
+    & > li > a,
+    & > a
+      line-height: $navbar-small-height
+
+  @media (max-width: $breakpoint-large)
+    border-right: 1px solid rgba($global-inverse-color, .1)
+    padding: 0 $global-small-margin/2
+    height: $navbar-xsmall-height
+    & > li > a,
+    & > a
+      line-height: $navbar-xsmall-height
+
+  @media (max-width: $breakpoint-small)
+    border-bottom: none
+
+.pos-sidebar-bottom
+  border-top: 1px solid rgba($global-inverse-color, .1)
+  position: relative
+
+  @media (max-width: $breakpoint-medium)
+    background: $global-template-background
+    border-left: 1px solid rgba($global-inverse-color, .1)
+    border-top: none
+
+.pos-sidebar-logo
+  width: $navbar-height * .5
+  max-width: $navbar-height * .5
+  height: auto
+
+  @media (max-width: $breakpoint-xlarge)
+    width: $navbar-small-height * .5
+    max-width: $navbar-small-height * .5
+
+  @media (max-width: $breakpoint-medium)
+    width: $navbar-xsmall-height * .7
+    max-width: $navbar-xsmall-height * .7
+
+// pos-sidebar--nav
+.pos-sidebar--nav
+  margin: 0
+  padding: 0
+  list-style: none
+  display: flex
+  flex-direction: column
+  overflow-y: auto
+
+  @media (max-width: $breakpoint-medium)
+    flex-direction: row
+    overflow-x: auto
+
+  & > li
+    flex: none
+    position: relative
+
+    & > a
+      text-align: center
+
+    &.uk-active
+      & > a
+        color: $global-inverse-color
+
+    & > a
+      display: block
+      height: $navbar-height * .75
+      line-height: $navbar-height * .75
+      color: rgba($global-inverse-color, .8)
+      position: relative
+      box-sizing: border-box
+      //overflow: hidden
+
+      @media (max-width: $breakpoint-xlarge)
+        line-height: $navbar-small-height * .9
+        height: $navbar-small-height * .9
+
+      @media (max-width: $breakpoint-medium)
+        width: $navbar-xsmall-height - 5
+        line-height: $navbar-xsmall-height
+        height: $navbar-xsmall-height
+
+    &:not(.uk-active)
+      &:hover
+        & > a
+          color: $global-inverse-color
+
+          &:before
+            transition: transform .3s ease-in-out 0s
+            transform: translateX(0) translateY(0)
+
+.pos-sidebar-middle,
+.pos-notify-bar-nav
+  .pos-sidebar--nav
+    height: 100%
+    //overflow: auto
+    -webkit-overflow-scrolling: touch
+    scrollbar-width: none
+    scroll-snap-type: both mandatory
+
+    //@media (max-width: $breakpoint-medium)
+    //  overflow-x: scroll
+    //  overflow-y: auto
+
+    &::-webkit-scrollbar
+      display: none
+
+    & > li
+      scroll-snap-align: start none
+      flex: none
+      position: relative
+
+      & > a
+        &::before
+          content: ""
+          position: absolute
+          box-sizing: border-box
+          background-color: rgba(0, 0, 0, .15)
+          transform: translateX(-100%)
+          box-shadow: inset 0 0 20px rgba(0, 0, 0, .08)
+          will-change: transform
+          transition: transform .3s ease-in-out
+          top: 0
+          left: 0
+          right: 0
+          bottom: 0
+
+      &.uk-active
+        & > a
+
+          &:before
+            transform: translateX(0) translateY(0)
+
+        &::after
+          content: ""
+          position: absolute
+          top: 3px
+          right: 3px
+          bottom: 3px
+          width: 3px
+          display: block
+          border-radius: 500px
+          background-color: $global-inverse-color
+
+@media (max-width: $breakpoint-medium)
+  .pos-sidebar-middle
+    //overflow: auto
+
+    .pos-sidebar--nav
+      //scroll-snap-type: x proximity
+      //overflow: visible
+
+      & > li
+
+        & > a
+          //overflow: visible
+
+          & > *
+            transition: transform .3s ease-in-out
+
+          &::before
+            transform: translateX(-50%) translateY(100%) scale(0)
+            box-shadow: none
+            background-color: $global-template-background
+            border-radius: 500px
+            top: auto
+            width: $navbar-height * .75
+            height: $navbar-height * .75
+            left: 50%
+            right: auto
+        //z-index: 1
+
+        &::after
+          transition: transform .3s ease .3s
+          width: 50%
+          height: 3px
+          top: auto
+          left: 50%
+          right: auto
+          bottom: 5px
+          transform: translateX(-50%) scaleX(0)
+
+        &:not(.uk-active)
+
+          &:hover
+            & > a
+              color: $global-inverse-color
+
+              & > *
+                transform: translateY(-3px)
+
+              &:before
+                transform: translateX(-50%) translateY(0) scale(0)
+
+        &.uk-active
+          & > a
+            color: $global-inverse-color
+
+            & > *
+              transform: translateY(-6px)
+
+            &:before
+              transform: translateX(-50%) translateY(0) scale(1)
+
+          &::after
+            width: 50%
+            height: 3px
+            top: auto
+            left: 50%
+            right: auto
+            bottom: 5px
+            transform: translateX(-50%) scaleX(1)
+

@@ -1,0 +1,99 @@
+@import "../uikit/global-variables"
+@import "../uikit/variables"
+
+/** breadcrumb
+.uk-breadcrumb
+  margin-bottom: 0
+
+/** FORMS
+.uk-input,
+.uk-select,
+.uk-textarea,
+.uk-button
+  border-radius: $border-rounded-border-radius
+
+// uk-select
+.uk-select
+  &:not([multiple])
+    &:not([size])
+      background-image: url(data:image/svg+xmlbase64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwb2x5bGluZSBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS4xIiBwb2ludHM9IjEgNCA3IDEwIDEzIDQiPjwvcG9seWxpbmU+Cjwvc3ZnPg==)
+      background-position: 100% center
+      position: relative
+      background-origin: content-box
+      padding: 0 $global-small-gutter
+
+// uk-button-select
+.uk-button-select
+  &.uk-button-select-danger
+    border-color: $global-danger-background
+    color: $global-danger-background
+
+  &.uk-button-select-success
+    border-color: $global-success-background
+    color: $global-success-background
+
+// checkbox
+.uk-checkbox
+  &:checked
+    background-image: url("data:image/svg+xmlcharset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2211%22%20viewBox%3D%220%200%2014%2011%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22#000%22%20points%3D%2212%201%205%207.5%202%205%201%205.5%205%2010%2013%201.5%22%20%2F%3E%0A%3C%2Fsvg%3E%0A")
+
+// Button success
+.uk-button-success
+  background-color: $button-success-background
+  border: $global-border-width solid $button-success-background
+  color: $button-success-color
+  @if (mixin-exists(hook-button-success))
+
+// Hover + Focus
+.uk-button-success:hover,
+.uk-button-success:focus
+  background-color: $button-success-hover-background
+  border-color: $button-success-hover-background
+  color: $button-success-hover-color
+  @if (mixin-exists(hook-button-success-hover))
+
+// OnClick + Active
+.uk-button-success:active,
+.uk-button-success.uk-active
+  background-color: $button-success-active-background
+  border-color: $button-success-active-background
+  color: $button-success-active-color
+  @if (mixin-exists(hook-button-success-active))
+
+.uk-button-success:disabled
+  background-color: $button-disabled-background
+  border-color: $global-border
+  color: $button-disabled-color
+  @if (mixin-exists(hook-button-disabled))
+
+/** Modal
+.uk-modal-dialog
+  border-radius: $border-rounded-border-radius * 2
+  overflow: hidden
+  box-shadow: $global-medium-box-shadow
+
+.uk-modal-page
+  .pos-body
+    filter: blur(10px)
+
+/** Dropdown
+.uk-dropdown
+  border-radius: $border-rounded-border-radius
+  overflow: hidden
+
+.uk-dropdown-small
+  padding: $global-small-gutter
+
+/**  notification
+.uk-notification-message
+  border-radius: $border-rounded-border-radius
+  box-shadow: $global-small-box-shadow
+
+.uk-notification-message-danger
+  background-color: $notification-message-danger-background
+
+.uk-notification-message-warning
+  background-color: $notification-message-warning-background
+
+.uk-notification-message-success
+  background-color: $notification-message-success-background
