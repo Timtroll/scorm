@@ -11,7 +11,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
+    "build & deploy-hosting": "vue-cli-service build && firebase deploy --only hosting"
   },
   "dependencies": {
     "core-js": "^2.6.5",
