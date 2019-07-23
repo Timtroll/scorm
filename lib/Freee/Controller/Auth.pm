@@ -36,8 +36,6 @@ sub login {
     $in{'login'} = $self->validate('chars', 'login');
     $in{'pass'} = $self->validate('symbchars', 'pass');
     # $in{'capcha'} = $self->validate('chars', 'capcha');
-print Dumper($postgres);
-print "=======\n";
 
     if ($in{'login'} && $in{'pass'}) {
         $token = $self->check_login(\%in);

@@ -5,45 +5,30 @@ use strict;
 use warnings;
 
 use Mojo::Base 'Mojolicious';
-use Mojolicious::Plugin::DefaultHelpers;
 use Mojolicious::Plugin::Config;
-use Mojolicious::Plugin::Database;
 use Mojo::Log;
-
-use Freee::Helpers;
-# use Mojo::Pg;
 
 use common;
 use validate;
 use Data::Dumper;
 
-use DBD::Pg;
-use DBI;
-
 $| = 1;
-
-has [qw( messages )];
 
 # This method will run once at server start
 sub startup {
     my $self = shift;
 
-    # register Helpers
-    $self->plugin('Freee::Helpers');
-
-    # load config
+    my ( $host );
+    # load database config
     $config = $self->plugin(Config => { file => rel_file('./freee.conf') });
     $log = Mojo::Log->new(path => $config->{'log'}, level => 'debug');
 
     # Configure the application
     $self->secrets($config->{secrets});
-print "$config->{'host'}\n";
+    $host = $config->{'host'};
 
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
-
-    # postgress connection
-    $self->plugin('database', $config->{'dbs'});
 
     # prepare validate functions
     prepare_validate();
@@ -54,8 +39,6 @@ print "$config->{'host'}\n";
     $r->any('/logout')              ->to('auth#logout');
 
     $r->any('/doc')                 ->to('index#doc');
-
-    $r->any('/fields')              ->to('index#fields');
 
     my $auth = $r->under()          ->to('auth#check_token');
     $auth->any('/settings')         ->to('settings#index');
