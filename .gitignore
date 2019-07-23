@@ -1,5 +1,5 @@
 .DS_Store
-public/admin/node_modules/
+client/admin/node_modules/
 
 # local env files
 .env.local
