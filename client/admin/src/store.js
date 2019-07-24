@@ -22,7 +22,7 @@ let apiProxy
 if (Vue.config.productionTip) {
   apiProxy = 'https://cors-anywhere.herokuapp.com/'
 } else {
-  apiProxy = ''
+  apiProxy = 'https://cors-anywhere.herokuapp.com/' // Удалить, когда будет поднят https
 }
 
 const apiUrl = apiProxy + 'http://freee.su/'
