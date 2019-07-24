@@ -10,7 +10,8 @@
           <img src="../../../../public/img/icons/user_profile.svg"
                uk-svg
                width="16"
-               height="16" class="uk-margin-small-right">
+               height="16"
+               class="uk-margin-small-right">
           Профиль пользователя</a>
       </router-link>
       <li>
@@ -50,17 +51,8 @@
       signOut () {
 
         UIkit.modal.confirm('Выйти из системы!', {
-
           labels: {ok: 'Выйти', cancel: 'Остаться в системе'}
-        }).then(() => {
-
-          this.$store.commit('setAuth', true)
-          sessionStorage.setItem('auth', 'false')
-          this.$router.push({name: 'Login'})
-        }, () => {
-
-          console.log('Rejected.')
-        })
+        }).then(() => {this.$store.dispatch('logout')})
 
       }
     }

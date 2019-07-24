@@ -6,6 +6,13 @@ import './registerServiceWorker'
 import i18n from './i18n'
 import UIkit from 'uikit/dist/js/uikit.min'
 import VueMeta from 'vue-meta'
+import Axios from 'axios'
+
+Vue.prototype.$http = Axios
+const token         = localStorage.getItem('token')
+if (token) {
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
+}
 
 import './assets/sass/styles.sass'
 

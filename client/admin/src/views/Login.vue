@@ -4,7 +4,8 @@
     <div
         class="uk-width-1-1 uk-width-auto@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-right@m uk-background-default uk-visible@m">
       <div class="uk-section">
-        <div class="uk-container uk-text-center pos-login-logo-left">
+        <div class="uk-container uk-text-center pos-login-logo-left"
+             :class="[status === 'loading' ? 'uk-text-primary' : '']">
           <img src="../../public/img/logo__bw.svg"
                width="100"
                class=""
@@ -15,7 +16,8 @@
     </div>
     <!--login / recover form-->
     <div
-        class="uk-width-1-1 uk-width-expand@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle pos-login-background uk-flex-center uk-flex-left@l">
+        class="uk-width-1-1 uk-width-expand@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-left@l"
+        :class="[status !== 'loading' ? background.default : background.loading]">
       <div class="uk-section uk-light">
         <div class="uk-container pos-perspective">
           <div class="uk-margin uk-hidden@m uk-text-center pos-login-logo">
@@ -38,9 +40,10 @@
                 <span class="uk-form-icon uk-form-icon-flip"
                       uk-icon="icon: user"></span>
                   <input class="uk-input"
+                         :disabled="status === 'loading'"
                          type="text"
                          placeholder="Имя пользователя"
-                         v-model="auth.login"
+                         v-model="user.login"
                          v-focus
                          @keyup="keyMove">
                 </div>
@@ -50,7 +53,8 @@
                 <span class="uk-form-icon uk-form-icon-flip"
                       uk-icon="icon: lock"></span>
                   <input class="uk-input"
-                         v-model="auth.password"
+                         :disabled="status === 'loading'"
+                         v-model="user.pass"
                          type="password"
                          placeholder="Пароль"
                          @keyup="keyMove">
@@ -59,8 +63,12 @@
               <div class="uk-margin"
                    v-if="validateUser">
                 <button type="submit"
+                        :disabled="status === 'loading'"
                         class="uk-width-1-1 uk-button uk-button-default"
-                        @click.prevent="authentication">Войти
+                        @click.prevent="login">
+                  <span uk-spinner="ratio: .6"
+                        v-if="status==='loading'"></span>
+                  <span v-else>Войти</span>
                 </button>
               </div>
             </div>
@@ -72,17 +80,6 @@
 </template>
 <script>
   import KeyAnimations from '../components/auth/KeyAnimations'
-
-  import UIkit from 'uikit/dist/js/uikit-core.min'
-
-  let notify = (message, status = 'primary', timeout = '2000', pos = 'top-center') => {
-    UIkit.notification({
-      message: message,
-      status:  status,
-      pos:     pos,
-      timeout: timeout
-    })
-  }
 
   export default {
 
@@ -105,9 +102,14 @@
         direction: false,
         motion:    false,
 
-        auth: {
-          login:    'admin',
-          password: 'admin'
+        user: {
+          login: 'test',
+          pass:  'test'
+        },
+
+        background: {
+          default: 'pos-login-background',
+          loading: 'uk-background-primary'
         }
 
       }
@@ -116,24 +118,30 @@
 
     computed: {
 
+      status () {
+        return this.$store.getters.authStatus
+      },
+
       validateUser () {
-        return this.auth.password === 'admin' && this.auth.login === 'admin'
+        return this.user.pass !== '' && this.user.login !== ''
       }
     },
 
     methods: {
 
       // авторизация
-      authentication () {
+      login () {
         if (this.validateUser) {
-          sessionStorage.setItem('auth', 'true')
-          this.$store.commit('setAuth', true)
-          this.$router.push(this.$route.query.redirect || {name: 'Main'})
-        } else {
-          this.$store.commit('setAuth', true)
-          sessionStorage.setItem('auth', 'false')
-        }
+          let login = this.user.login
+          let pass  = this.user.pass
+          this.$store.dispatch('login', {login, pass})
+              .then(() => this.$router.push({
+                name: 'Main'
+              }))
+              .catch((err) => {
 
+              })
+        }
       },
 
       // анимация при вводе логина или пароля

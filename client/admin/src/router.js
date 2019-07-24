@@ -122,8 +122,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
 
-  //const isAuthorised = store.state.user.isAuthorised
-  const isAuthorised = sessionStorage.getItem('auth')
+  const isAuthorised = store.getters.isLoggedIn
 
   if (to.matched.some(record => record.meta.authRequired)) {
 
