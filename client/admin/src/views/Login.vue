@@ -5,7 +5,7 @@
         class="uk-width-1-1 uk-width-auto@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-right@m uk-background-default uk-visible@m">
       <div class="uk-section">
         <div class="uk-container uk-text-center pos-login-logo-left"
-             :class="[status === 'loading' ? 'uk-text-primary' : '']">
+             :class="[status === 'loading' ? 'uk-text-danger' : '']">
           <img src="../../public/img/logo__bw.svg"
                width="100"
                class=""
@@ -30,11 +30,14 @@
           <!--auth-->
           <form>
             <div class="pos-login">
+              <!--KeyAnimations-->
               <div class="uk-margin">
                 <KeyAnimations :direction="direction"
                                :motion="motion"
                                :class="{'motion': motion, 'direction' : direction}"></KeyAnimations>
               </div>
+
+              <!--login-->
               <div class="uk-margin">
                 <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip"
@@ -48,6 +51,8 @@
                          @keyup="keyMove">
                 </div>
               </div>
+
+              <!--password-->
               <div class="uk-margin">
                 <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip"
@@ -60,6 +65,8 @@
                          @keyup="keyMove">
                 </div>
               </div>
+
+              <!--submit-->
               <div class="uk-margin"
                    v-if="validateUser">
                 <button type="submit"
@@ -109,7 +116,7 @@
 
         background: {
           default: 'pos-login-background',
-          loading: 'uk-background-primary'
+          loading: 'uk-background-danger'
         }
 
       }
