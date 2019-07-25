@@ -18,7 +18,9 @@
                      :to="item.path"
                      append
                      exact>
-          <a :uk-tooltip="'title: '+ item.meta.breadcrumb + '; pos: right'">
+          <a uk-tooltip
+             :pos="tooltipPosition"
+             :title="item.meta.breadcrumb">
             <img :src="item.meta.icon"
                  uk-svg
                  width="24"
@@ -45,11 +47,35 @@
 
     components: {SideBarUserMenu},
 
+    // Отслеживание изменния ширины экрана
     mounted () {
+      window.addEventListener('resize', this.handleResize)
+    },
+
+    beforeDestroy: function () {
+      window.removeEventListener('resize', this.handleResize)
+    },
+
+    data () {
+
+      return {
+        width:    window.innerWidth,
+      }
 
     },
 
     computed: {
+
+      tooltipPosition () {
+
+        let position = 'right'
+        if (this.width < 768) {
+          position = 'top'
+        } else {
+          position = 'right'
+        }
+        return position
+      },
 
       // side menu
       menu () {
@@ -57,6 +83,15 @@
                    .filter(item => item.sideMenuParent)[0]
           .children
           .filter(item => item.showInSideBar)
+      }
+    },
+
+    //
+    methods: {
+
+      handleResize (event) {
+        setTimeout(() => { this.width = window.innerWidth}, 300)
+
       }
     }
   }

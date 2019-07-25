@@ -1229,14 +1229,14 @@ $tile-secondary-color-mode: light !default;
 
 // tooltip
 $tooltip-z-index: $global-z-index + 30 !default;
-$tooltip-max-width: 200px !default;
+$tooltip-max-width: 240px !default;
 $tooltip-padding-vertical: $global-xsmall-margin !default;
 $tooltip-padding-horizontal: $global-small-margin !default;
-$tooltip-background: $global-emphasis-color !default;
-$tooltip-border-radius: $border-rounded-border-radius !default;
+$tooltip-background: $global-template-background !default;
+$tooltip-border-radius: $border-rounded-border-radius / 2 !default;
 $tooltip-color: $global-inverse-color !default;
 $tooltip-font-size: .9rem !default;
-$tooltip-margin: 10px !default;
+$tooltip-margin: 5px !default;
 
 // totop
 $totop-padding: 5px !default;
