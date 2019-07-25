@@ -69,7 +69,7 @@
       tooltipPosition () {
 
         let position = 'right'
-        if (this.width < 768) {
+        if (this.width <= 768) {
           position = 'top'
         } else {
           position = 'right'
