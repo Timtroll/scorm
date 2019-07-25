@@ -58,16 +58,16 @@ $inverse-global-color: rgba($global-inverse-color, 0.7) !default;
 // backgrounds
 $global-background: #ffffff !default;
 $global-muted-background: #f2f8fa !default;
-$global-primary-background: #43B7F9 !default;
-$global-success-background: #62BA3D !default;
-$global-warning-background: #FCBF3C !default;
-$global-danger-background: #FF5B7F !default;
+$global-primary-background: #0CACCC !default;
+$global-success-background: #7BBF2D !default;
+$global-warning-background: #FCA841 !default;
+$global-danger-background: #FF7856 !default;
 $global-secondary-background: #e1e4e6 !default;
-$global-template-background: #929D51 !default;
+$global-template-background: #8ba753 !default;
 
 $inverse-global-primary-background: $global-inverse-color !default;
 
-$global-link-color: #43B7F9 !default;
+$global-link-color: #0CACCC !default;
 $global-link-hover-color: darken($global-link-color, 10%) !default;
 //$global-link-hover-color: #137dcf !default;
 
