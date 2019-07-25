@@ -6,29 +6,27 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build & deploy-hosting": "vue-cli-service build && firebase deploy --only hosting",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
+    "build & deploy-hosting": "vue-cli-service build && firebase deploy --only hosting"
   },
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "2.6.9",
+    "lodash": "^4.17.15",
     "npm-check-updates": "^3.1.20",
     "register-service-worker": "^1.6.2",
     "uikit": "^3.1.6",
+    "v-mask": "^2.0.1",
     "vue": "^2.6.10",
-    "vue-i18n": "^8.12.0",
-    "vue-meta": "^2.0.5",
+    "vue-meta": "^2.1.0",
     "vue-router": "^3.0.7",
     "vuex": "^3.1.1"
   },
   "devDependencies": {
-    "@kazupon/vue-i18n-loader": "^0.4.0",
     "@vue/cli-plugin-babel": "^3.9.2",
     "@vue/cli-plugin-pwa": "^3.9.0",
     "@vue/cli-service": "^3.9.3",
-    "sass": "^1.22.7",
+    "sass": "^1.22.8",
     "sass-loader": "^7.1.0",
-    "vue-cli-plugin-i18n": "^0.6.0",
     "vue-cli-plugin-meta": "^0.1.1",
     "vue-cli-plugin-moment": "^0.1.1",
     "vue-template-compiler": "^2.6.10"
