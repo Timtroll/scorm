@@ -26,19 +26,40 @@ if (process.env.NODE_ENV === 'production') {
       const update = confirm('Доступно обновление. Нажмите "ОК" для перезагрузки')
 
       if (update) {
+
         //localStorage.clear()
         //sessionStorage.clear()
 
+        //caches.keys()
+        //      .then(cacheNames => {
+        //        cacheNames
+        //          .forEach(cacheName => {
+        //            caches.delete(cacheName)
+        //          })
+        //      })
+
         caches.keys()
               .then(cacheNames => {
-                cacheNames
-                  .forEach(cacheName => {
-                    caches.delete(cacheName)
+                return Promise.all(
+                  cacheNames.filter(cacheName => {
+                    // Return true if you want to remove this cache,
+                    // but remember that caches are shared across
+                    // the whole origin
+                  }).map(cacheName => {
+                    return caches.delete(cacheName)
                   })
+                )
               })
 
+        navigator.serviceWorker.getRegistrations()
+                 .then(registrations => {
+                   registrations.forEach(registration => {
+                     registration.unregister()
+                   })
+                 })
+
         setTimeout(() => {
-          location.reload(true)
+          location.reload(!0)
         }, 300)
 
       }
