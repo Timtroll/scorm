@@ -1,19 +1,27 @@
 <!doctype html>
 <head>
 	<title><%= $title %></title>
-	<link href="/css/style.css?<%= time() %>" rel="stylesheet" media="all">
+	<link href="main.css?<%= time() %>" rel="stylesheet" media="all">
+
+	<script src="/js/jquery-3.1.1.min.js"></script>
+	<script>
+		// websocket urls
+		var user_id = $('.user-id').attr('data-id');
+% my $url = $self->url_for('/')->to_abs;
+		var url_post = 'http://<%= $self->req->headers->host %>/test';
+	 	var url_ws = 'ws://<%= $self->req->headers->host %>/channel';
+	</script>
+	<script src="/js/websocket.js" type="text/javascript"></script>
 </head>
 <body>
+<div class="settings"><a href="/viewuser/<%= $self->session('id') %>/" class="settings user-id" data-id="user"><%= $self->session('user') %></a></div>
 
-<form onsubmit="sendChat(this.children[0]); return false"><input></form>
+<div class="settings"><a href='#' class="send" data-id="/createmessage">Написать</a></div>
+<div class="settings"><span class="error" style="color: red;"></span></div>
+
+<form onsubmit="return false"><input id="data_s"></form>
 <div id="log"></div>
-	<script>
-	var ws  = new WebSocket('<%= url_for('channel')->to_abs %>');
-		ws.onmessage = function (e) {
-			document.getElementById('log').innerHTML += '<p>' + e.data + '</p>';
-		};
-	function sendChat(input) { ws.send(input.value); input.value = '' }
-</script>
+
 
 <div>
 	<div class="child">

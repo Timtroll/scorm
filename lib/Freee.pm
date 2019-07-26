@@ -8,11 +8,16 @@ use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Config;
 use Mojo::Log;
 
+use Mojo::EventEmitter;
+use Mojo::RabbitMQ::Client;
+use Mojo::RabbitMQ::Client::Channel;
+
 use common;
 use validate;
 use Data::Dumper;
 
 $| = 1;
+has [qw( websockets )];
 
 # This method will run once at server start
 sub startup {
@@ -39,6 +44,9 @@ sub startup {
     $r->any('/logout')              ->to('auth#logout');
 
     $r->any('/doc')                 ->to('index#doc');
+
+    $r->any('/test')                ->to('websocket#test');
+    $r->websocket('/channel')       ->to('websocket#index');
 
     my $auth = $r->under()          ->to('auth#check_token');
     $auth->any('/settings')         ->to('settings#index');

@@ -7,18 +7,19 @@ use strict;
 use Mojo::Home;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions);
+use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets );
 
 use Data::Dumper;
 
-our $config = {};
-our $tokens = {};
-our $routes = {};
-our $permissions = {};
-our $log = '';
+my $config = {};
+my $tokens = {};
+my $routes = {};
+my $permissions = {};
+my $websockets = {};
+my $log = '';
 
 # for validate input and set errors
-our $clear = {};
+my $clear = {};
 
 BEGIN {
     # set not verify ssl connection
@@ -29,7 +30,7 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions);
+@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;
