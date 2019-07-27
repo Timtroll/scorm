@@ -8,7 +8,7 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 
 let apiProxy
 if (Vue.config.productionTip) {
-  apiProxy = 'https://cors-anywhere.herokuapp.com/' // для Localhost
+  apiProxy = 'https://cors-anywhere.herokuapp.com/' // для Localhost https://cors-anywhere.herokuapp.com/
 } else {
   apiProxy = 'https://cors-anywhere.herokuapp.com/' // Удалить, когда будет поднят https
 }
