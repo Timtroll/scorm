@@ -1,6 +1,7 @@
 .DS_Store
 client/admin/node_modules/
 client/admin/.firebase/
+client/admin/dist
 
 # local env files
 .env.local
