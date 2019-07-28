@@ -67,12 +67,12 @@
                   <a class="uk-form-icon uk-form-icon-flip"
                      @click.prevent="togglePassword = !togglePassword"
                      :class="{'uk-text-danger': !togglePassword, 'uk-text-success': togglePassword }">
-                    <img src="../../../../public/img/icons/user_lock-opened.svg"
+                    <img src="../../../public/img/icons/user_lock-opened.svg"
                          width="16"
                          height="16"
                          uk-svg
                          v-if="togglePassword">
-                    <img src="../../../../public/img/icons/user_lock-closed.svg"
+                    <img src="../../../public/img/icons/user_lock-closed.svg"
                          width="16"
                          height="16"
                          uk-svg

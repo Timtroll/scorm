@@ -31,7 +31,7 @@
     </div>
     <div class="pos-sidebar-bottom">
 
-      <!--user menu-->
+      <!--Settings-->
       <SideBarUserMenu :size="30"
                        :width="1">
       </SideBarUserMenu>
@@ -39,7 +39,7 @@
   </div>
 </template>
 <script>
-  import SideBarUserMenu from '../sidebar/SideBarUserMenu.vue'
+  import SideBarUserMenu from './SideBarSettings.vue'
 
   export default {
 
@@ -91,7 +91,6 @@
 
       handleResize (event) {
         setTimeout(() => { this.width = window.innerWidth}, 300)
-
       }
     }
   }

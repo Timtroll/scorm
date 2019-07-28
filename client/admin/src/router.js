@@ -93,13 +93,24 @@ const router = new Router({
         }, {
           path:          '/profile',
           name:          'Profile',
-          component:     () => import('./components/ui/settings/Account'),
+          component:     () => import('./components/profile/Account'),
           props:         {},
           showInSideBar: false,
           meta:          {
             authRequired: true,
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Профиль пользователя'
+          }
+        }, {
+          path:          '/settings',
+          name:          'Settings',
+          component:     () => import('./components/settings/Settings'),
+          props:         {},
+          showInSideBar: false,
+          meta:          {
+            authRequired: true,
+            icon:         'img/icons/user_profile.svg',
+            breadcrumb:   'Настройки'
           }
         }
       ]
@@ -110,7 +121,7 @@ const router = new Router({
       showInSideBar: false,
       meta:          {
         authRequired: false,
-        breadcrumb: 'Страница не найдена'
+        breadcrumb:   'Страница не найдена'
       }
     }, {
       path:     '/*',

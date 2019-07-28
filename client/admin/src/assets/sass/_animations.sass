@@ -5,3 +5,20 @@
   perspective: 300px
   position: relative
 
+// SLIDE LEFT
+.slide-left-enter-active,
+.slide-left-leave-active
+  transition: all .25s ease-out
+
+.slide-left-enter,
+.slide-left-leave-to
+  transform: translateX(-100%)
+
+// SLIDE RIGHT
+.slide-right-enter-active,
+.slide-right-leave-active
+  transition: all .25s ease-out
+
+.slide-right-enter,
+.slide-right-leave-to
+  transform: translateX(100%)

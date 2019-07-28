@@ -1,7 +1,7 @@
 <template>
   <ul class="pos-sidebar--nav">
     <router-link tag="li"
-                 :to="{name: 'Main'}"
+                 :to="{name: 'Settings'}"
                  active-class="uk-active"
                  exact>
       <a>
@@ -15,7 +15,7 @@
 
   export default {
 
-    name:       'SideBarUserMenu',
+    name:       'SideBarSettings',
     components: {IconSetting},
     props:      {
       size:  {

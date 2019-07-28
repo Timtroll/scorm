@@ -1,0 +1,135 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$card-height-item: 50px
+$card-height-item-small: 40px
+$card-margin: $global-margin
+$card-small-margin: $global-small-margin
+$body-left-width: 300px
+$body-right-width: 300px
+
+.pos-card
+  height: 100%
+  display: flex
+  flex-direction: column
+  overflow: hidden
+
+.pos-card-header
+  border-bottom: $global-border-width solid $global-border
+
+.pos-card-header,
+.pos-card-footer
+  background-color: lighten($global-muted-background, 1%)
+  color: $global-emphasis-color
+  display: flex
+  flex-direction: row
+  height: $card-height-item
+  line-height: $card-height-item - $global-border-width
+  box-sizing: border-box
+  flex: none
+  @media (max-width: $breakpoint-small)
+    height: $card-height-item-small
+    line-height: $card-height-item-small - $global-border-width
+
+  & > *
+    box-sizing: border-box
+
+.pos-card-header--content
+  flex: 1 0 0
+  min-width: 1px
+  font-weight: bold
+  padding: 0 $card-margin
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+
+  &:not(:first-child)
+    border-left: $global-border-width solid $global-border
+
+  &:not(:last-child)
+    border-right: $global-border-width solid $global-border
+
+
+.pos-card-header-item
+  text-align: center
+  padding: 0 $card-small-margin
+  min-width: $card-height-item
+  box-sizing: border-box
+
+  &.link
+    color: $global-muted-color
+    text-decoration: none
+
+    &:hover
+      color: $global-emphasis-color
+      text-decoration: none
+
+.pos-card-footer
+  border-top: $global-border-width solid $global-border
+
+.pos-card-body
+  position: relative
+  flex: 1 0 0
+  min-height: 1px
+  overflow: hidden
+  background-color: $global-background
+  display: flex
+  flex-direction: row
+
+.pos-card-body-left
+  height: 100%
+  order: 0
+  overflow-x: hidden
+  overflow-y: auto
+  flex: none
+  width: $body-left-width
+  background-color: $global-background
+  border-right: $global-border-width solid $global-border
+  @media (max-width: $breakpoint-large)
+    position: absolute
+    box-shadow: $global-medium-box-shadow
+    top: 0
+    left: 0
+    bottom: 0
+    z-index: 2
+  @media (max-width: $breakpoint-small)
+    width: 100%
+
+.pos-card-body-right
+  order: 2
+  height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+  flex: none
+  width: $body-right-width
+  background-color: $global-background
+  border-left: $global-border-width solid $global-border
+  @media (max-width: $breakpoint-xlarge)
+    position: absolute
+    box-shadow: $global-medium-box-shadow
+    top: 0
+    right: 0
+    bottom: 0
+    z-index: 2
+  @media (max-width: $breakpoint-small)
+    width: 100%
+
+.pos-card-body-middle
+  position: relative
+  z-index: 0
+  order: 1
+  flex: 1 0 0
+  height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+
+.pos-card-body-left,
+.pos-card-body-right,
+.pos-card-body-middle
+  box-sizing: border-box
+
+  &.pos-padding
+    padding: $card-margin
+    @media (max-width: $breakpoint-small)
+      padding: $card-small-margin
+
