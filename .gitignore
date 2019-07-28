@@ -1,7 +1,10 @@
 .DS_Store
 client/admin/node_modules/
-client/admin/.firebase/
 client/admin/dist
+
+# firebase
+client/admin/.firebase/
+*.log
 
 # local env files
 .env.local
