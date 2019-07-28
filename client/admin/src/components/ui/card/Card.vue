@@ -177,8 +177,8 @@
     watch: {
       bodyWidth () {
 
-        // Показать левую панель при ширине 1200
-        (this.bodyWidth > 1200) ? this.bodyLeftShow = true : this.bodyLeftShow = false
+        // Показать right панель при ширине 1200
+        //(this.bodyWidth > 1200 && this.bodyLeftShow) ? this.bodyRightShow = true : this.bodyRightShow = false
       }
     },
 
@@ -203,26 +203,33 @@
     methods: {
 
       bodyLeftToggle () {
-        this.bodyLeftShow = !this.bodyLeftShow
+
         this.handleResize()
-        if (this.bodyWidth <= 840 && this.bodyRightShow) {
-          this.bodyRightShow = false
-        }
+        this.bodyLeftShow = !this.bodyLeftShow
+        //this.handleResize()
+        setTimeout(() => {
+          if (this.bodyWidth <= 840 && this.bodyRightShow) {
+            this.bodyRightShow = false
+          }
+        }, 300)
       },
 
       bodyRightToggle () {
-        this.bodyRightShow = !this.bodyRightShow
+
         this.handleResize()
-        if (this.bodyWidth <= 840 && this.bodyLeftShow) {
-          this.bodyLeftShow = false
-        }
+        this.bodyRightShow = !this.bodyRightShow
+        setTimeout(() => {
+          if (this.bodyWidth <= 840 && this.bodyLeftShow) {
+            this.bodyLeftShow = false
+          }
+        }, 300)
       },
 
       handleResize (el) {
 
         setTimeout(() => {
           this.bodyWidth = this.$refs.body.offsetWidth
-        }, 30)
+        }, 300)
 
       }
     }
