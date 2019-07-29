@@ -24,7 +24,7 @@ $body-right-width: 300px
   display: flex
   flex-direction: row
   height: $card-height-item
-  line-height: $card-height-item - $global-border-width
+  line-height: $card-height-item - $global-border-width - 1
   box-sizing: border-box
   flex: none
   @media (max-width: $breakpoint-small)
@@ -45,10 +45,12 @@ $body-right-width: 300px
   overflow: hidden
 
   &:not(:first-child)
-    border-left: $global-border-width solid $global-border
+    padding-left: 0
+    //border-left: $global-border-width solid $global-border
 
   &:not(:last-child)
-    border-right: $global-border-width solid $global-border
+    padding-right: 0
+    //border-right: $global-border-width solid $global-border
 
 .pos-card-header-item
   text-align: center
@@ -102,7 +104,8 @@ $body-right-width: 300px
   overflow-y: auto
   flex: none
   width: $body-right-width
-  background-color: $global-background
+  //background-color: $global-background
+  background-color: lighten($global-muted-background, 1%)
   border-left: $global-border-width solid $global-border
   @media (max-width: $breakpoint-xlarge)
     position: absolute

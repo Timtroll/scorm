@@ -8,16 +8,10 @@
       <a class="pos-card-header-item link"
          :class="{'uk-text-danger' : bodyLeftShow}"
          @click.prevent="bodyLeftToggle()">
-        <img src="/img/icons/icon_arrow_circle__left.svg"
-             v-if="bodyLeftShow"
+        <img src="/img/icons/icon__nav.svg"
              uk-svg
-             width="16"
-             height="16">
-        <img src="/img/icons/icon_arrow_circle__right.svg"
-             v-else
-             uk-svg
-             width="16"
-             height="16">
+             width="20"
+             height="20">
       </a>
       <!--headerLeft-->
       <div class="pos-card-header-item"
@@ -39,16 +33,11 @@
       <a class="pos-card-header-item link"
          :class="{'uk-text-danger' : bodyRightShow}"
          @click.prevent="bodyRightToggle()">
-        <img src="/img/icons/icon_arrow_circle__right.svg"
-             v-if="bodyRightShow"
+        <img src="/img/icons/icon__info.svg"
              uk-svg
-             width="16"
-             height="16">
-        <img src="/img/icons/icon_arrow_circle__left.svg"
-             v-else
-             uk-svg
-             width="16"
-             height="16">
+             width="20"
+             height="20">
+
       </a>
 
     </div>
