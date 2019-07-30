@@ -39,14 +39,11 @@
 | footer | Boolean | false | Показать footer |
 | footerLeft | Boolean | false | Показать footerLeft |
 | footerRight | Boolean | false | Показать footerRight |
-| bodyLeft | Boolean |  | Показать bodyLeft |
+| bodyLeft | Boolean | false | Показать bodyLeft |
 | bodyRight | Boolean | false | Показать bodyRight |
 | bodyPadding | Boolean | true | Есть отступы в Body |
 | bodyLeftPadding | Boolean | true | Есть отступы в bodyLeft |
 | bodyRightPadding | Boolean | true | Есть отступы в bodyRight|
-
-| bodyPadding | Boolean | true | Сделать отступы (padding) в слоте Body |
-| link | String | null | Router link для переходя по клику на Body компонета Card |
 
 ### Слоты: 
 
