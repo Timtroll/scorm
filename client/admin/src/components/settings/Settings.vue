@@ -2,7 +2,7 @@
   <Card :header="true"
         :header-left="false"
         :header-right="false"
-        :footer="false"
+        :footer="true"
         :footer-left="true"
         :footer-right="true"
         :body-left="true"
