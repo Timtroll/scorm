@@ -7,6 +7,10 @@ binmode(STDOUT,':utf8');
 use Mojo::Base 'Mojolicious::Controller';
 use JSON::XS;
 
+use Mojo::EventEmitter;
+use Mojo::RabbitMQ::Client;
+use Mojo::RabbitMQ::Client::Channel;
+
 use Data::Dumper;
 
 use common;
@@ -16,6 +20,17 @@ sub index {
 	$self = shift;
 
 	$self->inactivity_timeout(3600);
+
+	# RabbitMQ
+	# $self->on(
+	# 	message => sub {
+	# 		shift->events->emit( mojochat => ['browser', shift] );
+	# 	}
+	# );
+
+	# # Forward messages to the browser
+	# my $cb = $c->events->on( mojochat => sub { $c->send(join(': ', @{$_[1]})) } );
+	# $c->on( finish => sub { shift->events->unsubscribe(mojochat => $cb) } );
 
 	$self->on(
 		json => sub {
