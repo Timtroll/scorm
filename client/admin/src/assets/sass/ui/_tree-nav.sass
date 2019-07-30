@@ -3,7 +3,7 @@
 
 $tree-item-height: 26px
 $tree-icon-size: 16px
-$tree-border: darken($global-border, 15%)
+$tree-border: darken($global-border, 0%)
 $tree-border-style: solid
 
 .pos-side-nav
@@ -82,7 +82,7 @@ $tree-border-style: solid
       bottom: - 3px
 
 
-  &.active
+  //&.active
 
 .pos-side-nav-item__no-icon
   flex: none
@@ -103,14 +103,14 @@ $tree-border-style: solid
 
 .pos-side-nav-item__icon
   cursor: pointer
-  color: $global-link-color
+  color: $global-muted-color
   flex: none
   margin-right: 5px
   width: $tree-icon-size
   height: $tree-item-height
 
   &:hover
-    color: $global-link-hover-color
+    color: $global-color
 
   & > *
     width: $tree-icon-size
