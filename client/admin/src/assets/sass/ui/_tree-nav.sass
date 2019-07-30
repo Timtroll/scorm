@@ -2,8 +2,8 @@
 @import "../mixins"
 
 $tree-item-height: 26px
-$tree-icon-size: 16px
-$tree-border: darken($global-border, 0%)
+$tree-icon-size: 14px
+$tree-border: darken($global-border, 2%)
 $tree-border-style: solid
 
 .pos-side-nav
@@ -41,6 +41,7 @@ $tree-border-style: solid
       top: 2px
       bottom: 2px
       transform: translateY($tree-icon-size/2 - 1)
+      z-index: 0
 
     & > li
 
@@ -52,8 +53,10 @@ $tree-border-style: solid
         height: $tree-item-height
         border-left: 1px $tree-border-style $tree-border
         border-bottom: 1px $tree-border-style $tree-border
+        border-radius: 3px
         left: - ($tree-icon-size / 2) - 1
         top: - $tree-item-height /2
+        z-index: 0
 
       &:first-child
         &:after
@@ -80,6 +83,7 @@ $tree-border-style: solid
       left: - ($tree-icon-size / 2) - 1
       top: $tree-icon-size - 2
       bottom: - 3px
+      z-index: 0
 
 
   //&.active
@@ -100,6 +104,7 @@ $tree-border-style: solid
     right: 0
     height: 0
     top: 50%
+    z-index: 0
 
 .pos-side-nav-item__icon
   cursor: pointer
@@ -108,6 +113,8 @@ $tree-border-style: solid
   margin-right: 5px
   width: $tree-icon-size
   height: $tree-item-height
+  position: relative
+  z-index: 1
 
   &:hover
     color: $global-color

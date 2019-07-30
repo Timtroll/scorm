@@ -85,6 +85,9 @@ $body-right-width: 300px
   overflow-y: hidden
   flex: none
   width: $body-left-width
+  resize: horizontal
+  min-width: $body-left-width
+  max-width: $breakpoint-small
   //background-color: $global-background
   background-color: lighten($global-muted-background, 1%)
   border-right: $global-border-width solid $global-border
@@ -96,6 +99,9 @@ $body-right-width: 300px
     bottom: 0
     z-index: 1
   @media (max-width: $breakpoint-small)
+    resize: none
+    min-width: 100%
+    max-width: 100%
     width: 100%
 
 .pos-card-body-right

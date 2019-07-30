@@ -18,6 +18,7 @@
            v-else>
       </div>
       <a class="pos-side-nav-item__label"
+         :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label"
          v-text="navItem.label"></a>
     </div>
 

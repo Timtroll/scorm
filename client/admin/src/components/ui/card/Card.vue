@@ -37,9 +37,7 @@
              uk-svg
              width="20"
              height="20">
-
       </a>
-
     </div>
 
     <!--content-->
@@ -55,6 +53,7 @@
       <!--content-left-->
       <transition name="slide-left">
         <div class="pos-card-body-left"
+             ref="bodyLeft"
              v-if="bodyLeft && bodyLeftShow"
              :class="{'pos-padding': bodyLeftPadding}">
           <slot name="bodyLeft"></slot>
@@ -72,8 +71,9 @@
     </div>
 
     <!--footer-->
-    <div class="pos-card-footer" v-if="footer">
-       <!--headerRight-->
+    <div class="pos-card-footer"
+         v-if="footer">
+      <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="footerLeft">
         <slot name="footerLeft"></slot>
@@ -95,6 +95,8 @@
 </template>
 
 <script>
+
+  const bodyMinSize = 840
   export default {
 
     name: 'Card',
@@ -158,16 +160,9 @@
     data () {
       return {
         bodyWidth:     null, // 540
+        bodyLeftWidth: null, // 540
         bodyLeftShow:  true,
         bodyRightShow: true
-      }
-    },
-
-    watch: {
-      bodyWidth () {
-
-        // Показать right панель при ширине 1200
-        //(this.bodyWidth > 1200 && this.bodyLeftShow) ? this.bodyRightShow = true : this.bodyRightShow = false
       }
     },
 
@@ -177,7 +172,7 @@
       if (this.bodyRight || this.bodyLeft) {
         this.bodyWidth = this.$refs.body.offsetWidth
         window.addEventListener('resize', this.handleResize)
-        if (this.bodyWidth <= 840 && this.bodyLeftShow) {
+        if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
           this.bodyRightShow = false
         }
       }
@@ -195,9 +190,9 @@
 
         this.handleResize()
         this.bodyLeftShow = !this.bodyLeftShow
-        //this.handleResize()
+
         setTimeout(() => {
-          if (this.bodyWidth <= 700 && this.bodyRightShow) {
+          if (this.bodyWidth <= bodyMinSize && this.bodyRightShow) {
             this.bodyRightShow = false
           }
         }, 300)
@@ -208,7 +203,7 @@
         this.handleResize()
         this.bodyRightShow = !this.bodyRightShow
         setTimeout(() => {
-          if (this.bodyWidth <= 700 && this.bodyLeftShow) {
+          if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
             this.bodyLeftShow = false
           }
         }, 300)

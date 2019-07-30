@@ -2,9 +2,7 @@
   <div>
     <ul class="pos-side-nav">
       <li v-for="item in nav"
-          :key="item.id"
-          class="">
-
+          :key="item.id">
         <NavTreeItem :nav-item="item"></NavTreeItem>
       </li>
     </ul>
@@ -17,7 +15,6 @@
   export default {
 
     name: 'NavTree',
-
     components: {NavTreeItem},
 
     props: {
@@ -25,6 +22,5 @@
         type: Array
       }
     }
-
   }
 </script>
