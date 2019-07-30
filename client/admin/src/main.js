@@ -7,8 +7,6 @@ import VueMeta from 'vue-meta'
 import UIkit from 'uikit/dist/js/uikit.min'
 import './registerServiceWorker'
 
-
-
 import './assets/sass/styles.sass'
 
 Vue.use(VueMeta, {
@@ -16,6 +14,7 @@ Vue.use(VueMeta, {
 })
 
 Vue.config.productionTip = false
+Vue.config.performance   = true
 
 new Vue({
   router,

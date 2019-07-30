@@ -17,10 +17,6 @@ export default {
     return Api()({
       url:    '/logout',
       method: 'post',
-      withCredentials: true,
-      header: {
-        'Authorization': token,
-      }
     })
   }
 
