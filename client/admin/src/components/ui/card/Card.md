@@ -25,8 +25,6 @@
     <template #body>Body</template>
     <template #bodyLeft>bodyLeft</template>
     <template #bodyRight>bodyRight</template>
-
-
   </Card>
 ```
 ### PROPS

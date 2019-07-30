@@ -1,0 +1,132 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$tree-item-height: 26px
+$tree-icon-size: 16px
+$tree-border: darken($global-border, 15%)
+$tree-border-style: solid
+
+.pos-side-nav
+  display: flex
+  flex-direction: column
+  list-style: none
+  padding: 0
+  margin: 0
+  font-size: .85rem
+  position: relative
+
+
+  & > li
+    list-style: none
+    margin: 0
+    padding: 0
+    display: block
+    position: relative
+
+    &:last-child
+      .pos-side-nav
+        &:before
+          display: none
+
+  .pos-side-nav
+    margin-left: $tree-icon-size
+
+    &:before
+      content: ""
+      position: absolute
+      display: block
+      width: 0
+      border-left: 1px $tree-border-style $tree-border
+      left: - ($tree-icon-size / 2) - 1
+      top: 2px
+      bottom: 2px
+      transform: translateY($tree-icon-size/2 - 1)
+
+    & > li
+
+      &:after
+        content: ""
+        position: absolute
+        display: block
+        width: $tree-item-height / 3
+        height: $tree-item-height
+        border-left: 1px $tree-border-style $tree-border
+        border-bottom: 1px $tree-border-style $tree-border
+        left: - ($tree-icon-size / 2) - 1
+        top: - $tree-item-height /2
+
+      &:first-child
+        &:after
+          height: $tree-item-height / 3 * 2 + 1
+          border-left: 1px $tree-border-style $tree-border
+          top: - 5px
+
+.pos-side-nav-item
+  white-space: nowrap
+  display: flex
+  line-height: $tree-item-height
+  flex-direction: row
+  align-items: center
+  height: $tree-item-height
+  flex-wrap: nowrap
+
+  & + .pos-side-nav
+    &:before
+      content: ""
+      position: absolute
+      display: block
+      width: $tree-item-height / 3
+      border-left: 1px $tree-border-style $tree-border
+      left: - ($tree-icon-size / 2) - 1
+      top: $tree-icon-size - 2
+      bottom: - 3px
+
+
+  &.active
+
+.pos-side-nav-item__no-icon
+  flex: none
+  width: 10px
+  height: 100%
+  margin-right: 5px
+  position: relative
+
+  &:after
+    content: ""
+    position: absolute
+    display: block
+    border-bottom: 1px $tree-border-style $tree-border
+    left: 0
+    right: 0
+    height: 0
+    top: 50%
+
+.pos-side-nav-item__icon
+  cursor: pointer
+  color: $global-link-color
+  flex: none
+  margin-right: 5px
+  width: $tree-icon-size
+  height: $tree-item-height
+
+  &:hover
+    color: $global-link-hover-color
+
+  & > *
+    width: $tree-icon-size
+    height: $tree-icon-size
+    transform: translateY(-1px)
+
+
+.pos-side-nav-item__label
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+  color: $global-color
+  display: block
+  flex-grow: 1
+  min-width: 1px
+
+  &:hover
+    color: $global-emphasis-color
+    text-decoration: none
