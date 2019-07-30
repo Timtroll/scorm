@@ -27,17 +27,6 @@ if (process.env.NODE_ENV === 'production') {
 
       if (update) {
 
-        //localStorage.clear()
-        //sessionStorage.clear()
-
-        //caches.keys()
-        //      .then(cacheNames => {
-        //        cacheNames
-        //          .forEach(cacheName => {
-        //            caches.delete(cacheName)
-        //          })
-        //      })
-
         caches.keys()
               .then(cacheNames => {
                 return Promise.all(
@@ -66,6 +55,7 @@ if (process.env.NODE_ENV === 'production') {
 
     },
     offline () {
+      alert('Нет соединения с интернетом, приложение работает в офлайн режиме')
       console.log('No internet connection found. App is running in offline mode.')
     },
     error (error) {
@@ -81,10 +71,12 @@ if (process.env.NODE_ENV === 'production') {
 
 // Safari
 if (window.navigator.standalone === true) {
+  alert('Application display-mode is standalone')
   console.log('safari display-mode is standalone')
 }
 
 // Other
 if (window.matchMedia('(display-mode: standalone)').matches) {
+  alert('Application display-mode is standalone')
   console.log('display-mode is standalone')
 }
