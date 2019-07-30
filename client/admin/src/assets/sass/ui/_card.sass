@@ -85,7 +85,8 @@ $body-right-width: 300px
   overflow-y: auto
   flex: none
   width: $body-left-width
-  background-color: $global-background
+  //background-color: $global-background
+  background-color: lighten($global-muted-background, 1%)
   border-right: $global-border-width solid $global-border
   @media (max-width: $breakpoint-large)
     position: absolute
@@ -107,7 +108,7 @@ $body-right-width: 300px
   //background-color: $global-background
   background-color: lighten($global-muted-background, 1%)
   border-left: $global-border-width solid $global-border
-  @media (max-width: $breakpoint-xlarge)
+  @media (max-width: $breakpoint-xxlarge)
     position: absolute
     box-shadow: $global-medium-box-shadow
     top: 0
