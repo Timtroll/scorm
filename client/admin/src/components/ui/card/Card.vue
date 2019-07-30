@@ -72,8 +72,8 @@
     </div>
 
     <!--footer-->
-    <div class="pos-card-footer">
-      <!--headerRight-->
+    <div class="pos-card-footer" v-if="footer">
+       <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="footerLeft">
         <slot name="footerLeft"></slot>
@@ -197,7 +197,7 @@
         this.bodyLeftShow = !this.bodyLeftShow
         //this.handleResize()
         setTimeout(() => {
-          if (this.bodyWidth <= 840 && this.bodyRightShow) {
+          if (this.bodyWidth <= 700 && this.bodyRightShow) {
             this.bodyRightShow = false
           }
         }, 300)
@@ -208,7 +208,7 @@
         this.handleResize()
         this.bodyRightShow = !this.bodyRightShow
         setTimeout(() => {
-          if (this.bodyWidth <= 840 && this.bodyLeftShow) {
+          if (this.bodyWidth <= 700 && this.bodyLeftShow) {
             this.bodyLeftShow = false
           }
         }, 300)
