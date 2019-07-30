@@ -36,15 +36,14 @@
 | header | Boolean | false | Показать header |
 | headerLeft | Boolean | false | Показать headerLeft |
 | headerRight | Boolean | false | Показать headerRight |
-| footer | String |  | Содержимое footer |
+| footer | Boolean | false | Показать footer |
 | footerLeft | Boolean | false | Показать footerLeft |
 | footerRight | Boolean | false | Показать footerRight |
-| body | String |  | Основной контент |
 | bodyLeft | Boolean |  | Показать bodyLeft |
-| bodyRight | Boolean |  | Показать bodyRight |
-| bodyPadding | Boolean |  | Есть отступы в Body |
-| bodyLeftPadding | Boolean |  | Есть отступы в bodyLeft |
-| bodyRightPadding | Boolean |  | Есть отступы в bodyRight|
+| bodyRight | Boolean | false | Показать bodyRight |
+| bodyPadding | Boolean | true | Есть отступы в Body |
+| bodyLeftPadding | Boolean | true | Есть отступы в bodyLeft |
+| bodyRightPadding | Boolean | true | Есть отступы в bodyRight|
 
 | bodyPadding | Boolean | true | Сделать отступы (padding) в слоте Body |
 | link | String | null | Router link для переходя по клику на Body компонета Card |
