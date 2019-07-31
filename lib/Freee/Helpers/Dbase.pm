@@ -69,8 +69,7 @@ sub register {
     $app->helper(
         'list_fields' => sub {
             my $self = shift;
-            my $items = $self->pg_main->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
-            return $items;
+            return $self->pg_main->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
         }
     );
 }

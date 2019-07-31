@@ -122,42 +122,44 @@ print "init-\n";
     # управление контентом
     $auth->post('/cms')                 ->to('cms#index');
 
-    $auth->post('/cms/listpages')       ->to('cms#index');
-    $auth->post('/cms/addpage')         ->to('cms#index');
-    $auth->post('/cms/editpage')        ->to('cms#index');
-    $auth->post('/cms/activatepage')    ->to('cms#index');
-    $auth->post('/cms/hidepage')        ->to('cms#index');
-    $auth->post('/cms/deletepage')      ->to('cms#index');
+    $auth->post('/cms/listpages')       ->to('cms#listpages');
+    $auth->post('/cms/addpage')         ->to('cms#addpage');
+    $auth->post('/cms/editpage')        ->to('cms#editpage');
+    $auth->post('/cms/activatepage')    ->to('cms#activatepage');
+    $auth->post('/cms/hidepage')        ->to('cms#hidepage');
+    $auth->post('/cms/deletepage')      ->to('cms#deletepage');
 
-    $auth->post('/cms/addsubject')      ->to('cms#index');
-    $auth->post('/cms/editsubject')     ->to('cms#index');
-    $auth->post('/cms/activatesubject') ->to('cms#index');
-    $auth->post('/cms/hidesubject')     ->to('cms#index');
-    $auth->post('/cms/deletesubject')   ->to('cms#index');
+    $auth->post('/cms/subject')         ->to('cmssubject#index');
+    $auth->post('/cms/addsubject')      ->to('cmssubject#addsubject');
+    $auth->post('/cms/editsubject')     ->to('cmssubject#editsubject');
+    $auth->post('/cms/activatesubject') ->to('cmssubject#activatesubject');
+    $auth->post('/cms/hidesubject')     ->to('cmssubject#hidesubject');
+    $auth->post('/cms/deletesubject')   ->to('cmssubject#deletesubject');
 
-    $auth->post('/cms/listitems')       ->to('cms#index');
-    $auth->post('/cms/additem')         ->to('cms#index');
-    $auth->post('/cms/edititem')        ->to('cms#index');
-    $auth->post('/cms/activateitem')    ->to('cms#index');
-    $auth->post('/cms/hideitem')        ->to('cms#index');
-    $auth->post('/cms/delitem')         ->to('cms#index');
+    $auth->post('/cms/items')           ->to('cmsitems#index');
+    $auth->post('/cms/listitems')       ->to('cmsitems#listitems');
+    $auth->post('/cms/additem')         ->to('cmsitems#additem');
+    $auth->post('/cms/edititem')        ->to('cmsitems#edititem');
+    $auth->post('/cms/activateitem')    ->to('cmsitems#activateitem');
+    $auth->post('/cms/hideitem')        ->to('cmsitems#hideitem');
+    $auth->post('/cms/delitem')         ->to('cmsitems#delitem');
 
     # управление библиотекой
     $auth->post('/library')             ->to('library#index');
-    $auth->post('/library/list')        ->to('library#index');
-    $auth->post('/library/search')      ->to('library#index');
-    $auth->post('/library/add')         ->to('library#index');
-    $auth->post('/library/edit')        ->to('library#index');
-    $auth->post('/library/activate')    ->to('library#index');
-    $auth->post('/library/hide')        ->to('library#index');
-    $auth->post('/library/delete')      ->to('library#index');
+    $auth->post('/library/list')        ->to('library#list');
+    $auth->post('/library/search')      ->to('library#search');
+    $auth->post('/library/add')         ->to('library#add');
+    $auth->post('/library/edit')        ->to('library#edit');
+    $auth->post('/library/activate')    ->to('library#activate');
+    $auth->post('/library/hide')        ->to('library#hideitem');
+    $auth->post('/library/delete')      ->to('library#delete');
 
     # управление календарями/расписанием
     $auth->post('/scheduler')           ->to('scheduler#index');
-    $auth->post('/scheduler/add')       ->to('scheduler#index');
-    $auth->post('/scheduler/edit')      ->to('scheduler#index');
-    $auth->post('/scheduler/move')      ->to('scheduler#index');
-    $auth->post('/scheduler/delete')    ->to('scheduler#index');
+    $auth->post('/scheduler/add')       ->to('scheduler#add');
+    $auth->post('/scheduler/edit')      ->to('scheduler#edit');
+    $auth->post('/scheduler/move')      ->to('scheduler#move');
+    $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
     $auth->post('/agreement')           ->to('agreement#index');
