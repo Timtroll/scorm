@@ -17,13 +17,14 @@ use validate;
 use Data::Dumper;
 
 $| = 1;
-has [qw( websockets amqp )];
+has [qw( websockets amqp )]; # events init_pg list_fields 
 
 # This method will run once at server start
 sub startup {
     my $self = shift;
 
     my ( $host );
+
     # load database config
     $config = $self->plugin(Config => { file => rel_file('./freee.conf') });
     $log = Mojo::Log->new(path => $config->{'log'}, level => 'debug');
@@ -34,6 +35,11 @@ sub startup {
 
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
+
+    $self->plugin('Freee::Helpers::Dbase');
+
+    $self->init_pg();
+print "init-\n";
 
     # prepare validate functions
     prepare_validate();
