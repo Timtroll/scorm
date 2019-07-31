@@ -21,6 +21,7 @@
       nav: {
         type: Array
       }
-    }
+    },
+
   }
 </script>

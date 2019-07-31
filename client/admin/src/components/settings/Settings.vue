@@ -24,16 +24,7 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <div class="uk-flex uk-height-1-1 uk-flex-column">
-        <div class="uk-margin-small-bottom uk-padding-small pos-border-bottom">
-          <input class="uk-input uk-form-small"
-                 placeholder="Поиск">
-        </div>
-        <div class="uk-flex-1 uk-overflow-auto uk-padding-small">
-          <NavTree :nav="nav"
-                   :active-id="navActiveId"></NavTree>
-        </div>
-      </div>
+      <Tree :nav="nav"></Tree>
     </template>
 
     <!--bodyRight-->
@@ -45,19 +36,20 @@
 <script>
   import Card from '../ui/card/Card'
   import NavTree from '../ui/tree/NavTree'
+  import Tree from '../ui/tree/Tree'
 
   export default {
 
     name: 'Settings',
 
-    components: {NavTree, Card},
+    components: {Tree, NavTree, Card},
 
     data () {
       return {
 
         bodyComponent: null,
 
-        nav:         [
+        nav: [
           {
             label:     'Основные',
             id:        1,
@@ -168,9 +160,9 @@
               }
             ]
           }
-        ],
-        navActiveId: 1131
+        ]
       }
     }
+
   }
 </script>
