@@ -25,15 +25,11 @@
       <NavTree :nav="filterSearch"
                v-if="filterSearch.length > 0"
                :active-id="navActiveId"></NavTree>
-      <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-muted uk-text-center"
+      <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
         <div>
-          <div class="uk-spinner">
-            <img src="/img/icons/icon__bug.svg"
-                 width="100"
-                 height="100"
-                 uk-svg>
-          </div>
+          <IconBug :size="100"
+                   :spin="true"></IconBug>
           <p>Это сложно для меня. <br>Говори проще</p>
         </div>
       </div>
@@ -43,9 +39,10 @@
 
 <script>
   import NavTree from './NavTree'
+  import IconBug from '../icons/IconBug'
 
   export default {
-    components: {NavTree},
+    components: {IconBug, NavTree},
     name:       'Tree',
     props:      {
       nav: {

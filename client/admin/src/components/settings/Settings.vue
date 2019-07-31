@@ -20,7 +20,9 @@
     <template #footer>footer</template>
 
     <!-- // Body // -->
-    <template #body></template>
+    <template #body>
+
+    </template>
 
     <!--bodyLeft-->
     <template #bodyLeft>
@@ -37,12 +39,13 @@
   import Card from '../ui/card/Card'
   import NavTree from '../ui/tree/NavTree'
   import Tree from '../ui/tree/Tree'
+  import IconBug from '../ui/icons/IconBug'
 
   export default {
 
     name: 'Settings',
 
-    components: {Tree, NavTree, Card},
+    components: {IconBug, Tree, NavTree, Card},
 
     data () {
       return {
