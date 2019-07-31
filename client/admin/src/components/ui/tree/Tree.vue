@@ -23,7 +23,20 @@
     <!--Nav tree-->
     <div class="uk-flex-1 uk-overflow-auto uk-padding-small">
       <NavTree :nav="filterSearch"
+               v-if="filterSearch.length > 0"
                :active-id="navActiveId"></NavTree>
+      <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-muted uk-text-center"
+           v-else>
+        <div>
+          <div class="uk-spinner">
+            <img src="/img/icons/icon__bug.svg"
+                 width="100"
+                 height="100"
+                 uk-svg>
+          </div>
+          <p>Это сложно для меня. <br>Говори проще</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -33,8 +46,8 @@
 
   export default {
     components: {NavTree},
-    name: 'Tree',
-    props: {
+    name:       'Tree',
+    props:      {
       nav: {
         type: Array
       }
