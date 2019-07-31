@@ -12,7 +12,29 @@
     <!-- // header // -->
     <template #headerLeft>+</template>
     <template #headerRight>+</template>
-    <template #header>header</template>
+    <template #header>
+      <div class="uk-grid-small"
+           uk-grid>
+        <div>
+          <a class="uk-button-default uk-button uk-button-small">
+            <img src="/img/icons/icon__close.svg"
+                 uk-svg
+                 width="12"
+                 height="12">
+            <span class="uk-margin-small-left">отменить</span>
+          </a>
+        </div>
+        <div>
+          <a class="uk-button-success uk-button uk-button-small">
+            <img src="/img/icons/icon__save.svg"
+                 uk-svg
+                 width="16"
+                 height="16">
+            <span class="uk-margin-small-left">сохранить</span>
+          </a>
+        </div>
+      </div>
+    </template>
 
     <!-- // footer // -->
     <template #footerLeft>+</template>
