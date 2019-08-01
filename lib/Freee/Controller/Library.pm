@@ -2,7 +2,7 @@ package Freee::Controller::Library;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use Freee::Helpers::Dbase;
+use Freee::Helpers::PgEAV;
 
 use Data::Dumper;
 
@@ -62,6 +62,30 @@ sub edit {
         'json'    => {
             'controller'    => 'library',
             'route'         => 'edit'
+        }
+    );
+}
+
+sub save {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'library',
+            'route'         => 'save'
+        }
+    );
+}
+
+sub upload {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'library',
+            'route'         => 'upload'
         }
     );
 }

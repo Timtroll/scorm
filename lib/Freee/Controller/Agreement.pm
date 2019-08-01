@@ -1,4 +1,4 @@
-package Freee::Controller::Scheduler;
+package Freee::Controller::Agreement;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,7 +12,7 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
+            'controller'    => 'agreement',
             'route'         => 'index'
         }
     );
@@ -24,7 +24,7 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
+            'controller'    => 'agreement',
             'route'         => 'add'
         }
     );
@@ -36,32 +36,56 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
+            'controller'    => 'agreement',
             'route'         => 'edit'
         }
     );
 }
 
-sub save {
+sub request {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'save'
+            'controller'    => 'agreement',
+            'route'         => 'request'
         }
     );
 }
 
-sub move {
+sub reject {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'move'
+            'controller'    => 'agreement',
+            'route'         => 'reject'
+        }
+    );
+}
+
+sub approve {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'agreement',
+            'route'         => 'approve'
+        }
+    );
+}
+
+sub comment {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'agreement',
+            'route'         => 'comment'
         }
     );
 }
@@ -72,7 +96,7 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
+            'controller'    => 'agreement',
             'route'         => 'delete'
         }
     );

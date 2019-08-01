@@ -1,4 +1,4 @@
-package Freee::Controller::Cms;
+package Freee::Controller::Tasks;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,83 +12,94 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
+            'controller'    => 'tasks',
             'route'         => 'index'
         }
     );
 }
 
-sub listpages {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'listpages'
+            'controller'    => 'tasks',
+            'route'         => 'list'
         }
     );
 }
 
-sub addpage {
+sub add {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'addpage'
+            'controller'    => 'tasks',
+            'route'         => 'add'
         }
     );
 }
 
-sub editpage {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'editpage'
+            'controller'    => 'tasks',
+            'route'         => 'edit'
         }
     );
 }
 
-sub activatepage {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'activatepage'
+            'controller'    => 'tasks',
+            'route'         => 'save'
         }
     );
 }
 
-sub hidepage {
+sub activate {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'hidepage'
+            'controller'    => 'tasks',
+            'route'         => 'activate'
         }
     );
 }
 
-sub deletepage {
+sub hide {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'deletepage'
+            'controller'    => 'tasks',
+            'route'         => 'hide'
         }
     );
 }
 
+sub delete {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'tasks',
+            'route'         => 'delete'
+        }
+    );
+}
 
 1;

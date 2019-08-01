@@ -17,7 +17,7 @@ use validate;
 use Data::Dumper;
 
 $| = 1;
-has [qw( websockets amqp )]; # events init_pg list_fields 
+has [qw( websockets amqp )];
 
 # This method will run once at server start
 sub startup {
@@ -36,10 +36,12 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Freee::Helpers::Dbase');
+    $self->plugin('Freee::Helpers::PgEAV');
+    $self->plugin('Freee::Helpers::Rabbit');
 
-    $self->init_pg();
-print "init-\n";
+    # init Pg connection
+    # $self->pg_dbh();
+    # $self->pg_init();
 
     # prepare validate functions
     prepare_validate();
@@ -150,6 +152,8 @@ print "init-\n";
     $auth->post('/library/search')      ->to('library#search');
     $auth->post('/library/add')         ->to('library#add');
     $auth->post('/library/edit')        ->to('library#edit');
+    $auth->post('/library/save')        ->to('library#save');
+    $auth->post('/library/upload')      ->to('library#upload');
     $auth->post('/library/activate')    ->to('library#activate');
     $auth->post('/library/hide')        ->to('library#hideitem');
     $auth->post('/library/delete')      ->to('library#delete');
@@ -158,92 +162,103 @@ print "init-\n";
     $auth->post('/scheduler')           ->to('scheduler#index');
     $auth->post('/scheduler/add')       ->to('scheduler#add');
     $auth->post('/scheduler/edit')      ->to('scheduler#edit');
+    $auth->post('/scheduler/save')      ->to('scheduler#save');
     $auth->post('/scheduler/move')      ->to('scheduler#move');
     $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
     $auth->post('/agreement')           ->to('agreement#index');
-    $auth->post('/agreement/request')   ->to('agreement#index');
-    $auth->post('/agreement/reject')    ->to('agreement#index');
-    $auth->post('/agreement/approve')   ->to('agreement#index');
-    $auth->post('/agreement/comment')   ->to('agreement#index');
-    $auth->post('/agreement/delete')    ->to('agreement#index'); # возможно не нужно ?????????
+    $auth->post('/agreement/add')       ->to('agreement#add');
+    $auth->post('/agreement/edit')      ->to('agreement#edit');
+    $auth->post('/agreement/request')   ->to('agreement#request');
+    $auth->post('/agreement/reject')    ->to('agreement#reject');
+    $auth->post('/agreement/approve')   ->to('agreement#approve');
+    $auth->post('/agreement/comment')   ->to('agreement#comment');
+    $auth->post('/agreement/delete')    ->to('agreement#delete'); # возможно не нужно ?????????
 
     # управление темами
     $auth->post('/user')                ->to('user#index');
-    $auth->post('/user/list')           ->to('user#index');
-    $auth->post('/user/add')            ->to('user#index');
-    $auth->post('/user/edit')           ->to('user#index');
-    $auth->post('/user/activate')       ->to('user#index');
-    $auth->post('/user/hide')           ->to('user#index');
+    $auth->post('/user/list')           ->to('user#list');
+    $auth->post('/user/add')            ->to('user#add');
+    $auth->post('/user/edit')           ->to('user#edit');
+    $auth->post('/user/save')           ->to('user#save');
+    $auth->post('/user/activate')       ->to('user#activate');
+    $auth->post('/user/hide')           ->to('user#hide');
     $auth->post('/user/delete')         ->to('user#index');
 
     # управление темами
     $auth->post('/subject')             ->to('subject#index');
-    $auth->post('/subject/list')        ->to('subject#index');
-    $auth->post('/subject/add')         ->to('subject#index');
-    $auth->post('/subject/edit')        ->to('subject#index');
-    $auth->post('/subject/activate')    ->to('subject#index');
-    $auth->post('/subject/hide')        ->to('subject#index');
-    $auth->post('/subject/delete')      ->to('subject#index');
+    $auth->post('/subject/list')        ->to('subject#list');
+    $auth->post('/subject/add')         ->to('subject#add');
+    $auth->post('/subject/edit')        ->to('subject#edit');
+    $auth->post('/subject/save')        ->to('subject#save');
+    $auth->post('/subject/activate')    ->to('subject#activate');
+    $auth->post('/subject/hide')        ->to('subject#hide');
+    $auth->post('/subject/delete')      ->to('subject#delete');
 
     # управление темами
     $auth->post('/themes')              ->to('themes#index');
-    $auth->post('/themes/list')         ->to('themes#index');
-    $auth->post('/themes/add')          ->to('themes#index');
-    $auth->post('/themes/edit')         ->to('themes#index');
-    $auth->post('/themes/activate')     ->to('themes#index');
-    $auth->post('/themes/hide')         ->to('themes#index');
-    $auth->post('/themes/delete')       ->to('themes#index');
+    $auth->post('/themes/list')         ->to('themes#list');
+    $auth->post('/themes/add')          ->to('themes#add');
+    $auth->post('/themes/edit')         ->to('themes#edit');
+    $auth->post('/themes/save')         ->to('themes#save');
+    $auth->post('/themes/activate')     ->to('themes#activate');
+    $auth->post('/themes/hide')         ->to('themes#hide');
+    $auth->post('/themes/delete')       ->to('themes#delete');
 
     # управление лекциями
     $auth->post('/lections')            ->to('lections#index');
-    $auth->post('/lections/list')       ->to('lections#index');
-    $auth->post('/lections/add')        ->to('lections#index');
-    $auth->post('/lections/edit')       ->to('lections#index');
-    $auth->post('/lections/activate')   ->to('lections#index');
-    $auth->post('/lections/hide')       ->to('lections#index');
-    $auth->post('/lections/delete')     ->to('lections#index');
+    $auth->post('/lections/list')       ->to('lections#list');
+    $auth->post('/lections/add')        ->to('lections#add');
+    $auth->post('/lections/edit')       ->to('lections#edit');
+    $auth->post('/lections/save')       ->to('lections#save');
+    $auth->post('/lections/activate')   ->to('lections#activate');
+    $auth->post('/lections/hide')       ->to('lections#hide');
+    $auth->post('/lections/delete')     ->to('lections#delete');
 
     # управление заданиями
     $auth->post('/tasks')               ->to('tasks#index');
-    $auth->post('/tasks/list')          ->to('tasks#index');
-    $auth->post('/tasks/add')           ->to('tasks#index');
-    $auth->post('/tasks/edit')          ->to('tasks#index');
-    $auth->post('/tasks/activate')      ->to('tasks#index');
-    $auth->post('/tasks/hide')          ->to('tasks#index');
-    $auth->post('/tasks/delete')        ->to('tasks#index');
+    $auth->post('/tasks/list')          ->to('tasks#list');
+    $auth->post('/tasks/add')           ->to('tasks#add');
+    $auth->post('/tasks/edit')          ->to('tasks#edit');
+    $auth->post('/tasks/save')          ->to('tasks#save');
+    $auth->post('/tasks/activate')      ->to('tasks#activate');
+    $auth->post('/tasks/hide')          ->to('tasks#hide');
+    $auth->post('/tasks/delete')        ->to('tasks#delete');
 
     # проверка заданий
     $auth->post('/mentors')             ->to('mentors#index');
-    $auth->post('/mentors/comment')     ->to('mentors#index');
-    $auth->post('/mentors/mark')        ->to('mentors#index'); # возможно не нужно ?????????
+    $auth->post('/mentors/setmentor')   ->to('mentors#setmentor');
+    $auth->post('/mentors/unsetmentor') ->to('mentors#unsetmentor');
+    $auth->post('/mentors/tasks')       ->to('mentors#tasks');
+    $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
+    $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
+    $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
+    $auth->post('/mentors/setmark')     ->to('mentors#setmark'); # возможно не нужно ?????????
  # возможно еще что-то ?????????
 
     # экзамены
     $auth->post('/exam')                ->to('exam#index');
-    $auth->post('/exam/list')           ->to('exam#index');
-    $auth->post('/exam/add')            ->to('exam#index');
-    $auth->post('/exam/edit')           ->to('exam#index');
-    $auth->post('/exam/activate')       ->to('exam#index');
-    $auth->post('/exam/hide')           ->to('exam#index');
-    $auth->post('/exam/tasks')          ->to('exam#index');
-    $auth->post('/exam/submit')         ->to('exam#index');
+    $auth->post('/exam/list')           ->to('exam#list');
+    $auth->post('/exam/start')          ->to('exam#start');
+    $auth->post('/exam/edit')           ->to('exam#edit');
+    $auth->post('/exam/save')           ->to('exam#save');
+    $auth->post('/exam/finish')         ->to('exam#finish');
  # возможно еще что-то ?????????
 
     # обучение
-    $auth->post('/training')            ->to('training#index');
-    $auth->post('/training/video')      ->to('training#index');
-    $auth->post('/training/text')       ->to('training#index');
-    $auth->post('/training/examples')   ->to('training#index');
-    $auth->post('/training/tasks')      ->to('training#index'); # возможно дублирует /tasks/list ?????????
+    $auth->post('/lesson')            ->to('lesson#index');
+    $auth->post('/lesson/video')      ->to('lesson#video');
+    $auth->post('/lesson/text')       ->to('lesson#text');
+    $auth->post('/lesson/examples')   ->to('lesson#examples');
+    $auth->post('/lesson/tasks')      ->to('lesson#tasks'); # возможно дублирует /tasks/list ?????????
 
     # форум
     $auth->post('/forum')               ->to('forum#index');
-    $auth->post('/forum/listthemes')    ->to('forum#index');
-    $auth->post('/forum/theme')         ->to('forum#index');
-    $auth->post('/forum/addtext')       ->to('forum#index');
-    $auth->post('/forum/deltext')       ->to('forum#index');
+    $auth->post('/forum/listthemes')    ->to('forum#listthemes');
+    $auth->post('/forum/theme')         ->to('forum#theme');
+    $auth->post('/forum/addtext')       ->to('forum#addtext');
+    $auth->post('/forum/deltext')       ->to('forum#deltext');
 
     $r->any('/*')->to('index#index');
 }

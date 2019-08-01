@@ -1,4 +1,4 @@
-package Freee::Controller::Cms;
+package Freee::Controller::Themes;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,83 +12,94 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
+            'controller'    => 'themes',
             'route'         => 'index'
         }
     );
 }
 
-sub listpages {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'listpages'
+            'controller'    => 'themes',
+            'route'         => 'list'
         }
     );
 }
 
-sub addpage {
+sub add {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'addpage'
+            'controller'    => 'themes',
+            'route'         => 'add'
         }
     );
 }
 
-sub editpage {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'editpage'
+            'controller'    => 'themes',
+            'route'         => 'edit'
         }
     );
 }
 
-sub activatepage {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'activatepage'
+            'controller'    => 'themes',
+            'route'         => 'save'
         }
     );
 }
 
-sub hidepage {
+sub activate {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'hidepage'
+            'controller'    => 'themes',
+            'route'         => 'activate'
         }
     );
 }
 
-sub deletepage {
+sub hide {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'deletepage'
+            'controller'    => 'themes',
+            'route'         => 'hide'
         }
     );
 }
 
+sub delete {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'themes',
+            'route'         => 'delete'
+        }
+    );
+}
 
 1;

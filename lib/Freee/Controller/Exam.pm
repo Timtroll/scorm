@@ -1,4 +1,4 @@
-package Freee::Controller::Cmssubject;
+package Freee::Controller::Exam;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,68 +12,68 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
+            'controller'    => 'exam',
             'route'         => 'index'
         }
     );
 }
 
-sub addsubject {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'addsubject'
+            'controller'    => 'exam',
+            'route'         => 'list'
         }
     );
 }
 
-sub editsubject {
+sub start {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'editsubject'
+            'controller'    => 'exam',
+            'route'         => 'start'
         }
     );
 }
 
-sub activatesubject {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'activatesubject'
+            'controller'    => 'exam',
+            'route'         => 'edit'
         }
     );
 }
 
-sub hidesubject {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'hidesubject'
+            'controller'    => 'exam',
+            'route'         => 'save'
         }
     );
 }
 
-sub deletesubject {
+sub finish {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'deletesubject'
+            'controller'    => 'exam',
+            'route'         => 'finish'
         }
     );
 }

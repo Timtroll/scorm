@@ -1,4 +1,4 @@
-package Freee::Controller::Cms;
+package Freee::Controller::Lections;
 
 use Mojo::Base 'Mojolicious::Controller';
 
@@ -12,83 +12,94 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
+            'controller'    => 'lections',
             'route'         => 'index'
         }
     );
 }
 
-sub listpages {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'listpages'
+            'controller'    => 'lections',
+            'route'         => 'list'
         }
     );
 }
 
-sub addpage {
+sub add {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'addpage'
+            'controller'    => 'lections',
+            'route'         => 'add'
         }
     );
 }
 
-sub editpage {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'editpage'
+            'controller'    => 'lections',
+            'route'         => 'edit'
         }
     );
 }
 
-sub activatepage {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'activatepage'
+            'controller'    => 'lections',
+            'route'         => 'save'
         }
     );
 }
 
-sub hidepage {
+sub activate {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'hidepage'
+            'controller'    => 'lections',
+            'route'         => 'activate'
         }
     );
 }
 
-sub deletepage {
+sub hide {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cms',
-            'route'         => 'deletepage'
+            'controller'    => 'lections',
+            'route'         => 'hide'
         }
     );
 }
 
+sub delete {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'lections',
+            'route'         => 'delete'
+        }
+    );
+}
 
 1;

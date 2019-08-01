@@ -2,7 +2,7 @@ package Freee::Controller::Cmsitems;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use Freee::Helpers::Dbase;
+use Freee::Helpers::PgEAV;
 
 use Data::Dumper;
 
