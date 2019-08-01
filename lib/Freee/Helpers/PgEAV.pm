@@ -16,10 +16,6 @@ sub register {
     my ($self, $app) = @_;
 
     #################################
-    # Helper for Websocket
-# ??????? нужно?
-
-    #################################
     # Helper for Postgress
     $app->helper( 'pg_dbh' => sub {
         return DBI->connect(
@@ -93,7 +89,7 @@ sub register {
         return $self->{_item};
     });
 
-    $app->helper( 'pg_get_fields' => sub {
+    $app->helper( 'pg_get_field' => sub {
         my $self = shift;
         my $field = shift;
 
