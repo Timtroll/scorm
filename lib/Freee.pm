@@ -253,6 +253,12 @@ sub startup {
     $auth->post('/lesson/examples')   ->to('lesson#examples');
     $auth->post('/lesson/tasks')      ->to('lesson#tasks'); # возможно дублирует /tasks/list ?????????
 
+    # учет успеваемости
+    $auth->post('/accounting')            ->to('accounting#index');
+    $auth->post('/accounting/search')     ->to('accounting#search');
+    $auth->post('/accounting/add')        ->to('accounting#add');
+    $auth->post('/accounting/stat')       ->to('accounting#stat');
+
     # форум
     $auth->post('/forum')               ->to('forum#index');
     $auth->post('/forum/listthemes')    ->to('forum#listthemes');
