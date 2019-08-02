@@ -11,11 +11,9 @@ if (token) {
   Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 }
 
-let apiProxy
+let apiProxy = ''
 if (Vue.config.productionTip) {
-  apiProxy = 'https://cors-anywhere.herokuapp.com/' // для Localhost https://cors-anywhere.herokuapp.com/
-} else {
-  apiProxy = '' // Удалить, когда будет поднят https
+  apiProxy = 'https://cors-c.herokuapp.com/' // для Localhost  https://cors-c.herokuapp.com
 }
 
 const apiUrl = apiProxy + 'https://freee.su'
