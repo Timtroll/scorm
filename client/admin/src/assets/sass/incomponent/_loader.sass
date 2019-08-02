@@ -1,0 +1,62 @@
+@import "../uikit/variables"
+
+.comp_1
+  animation: 1s comp ease-in-out 0s infinite
+
+.comp_2
+  animation: 1s comp ease-in-out .5s infinite
+
+.comp_3
+  animation: 1s comp ease-in-out 1s infinite
+
+@keyframes comp
+  0%
+    stroke: $global-warning-background
+    transform: translateY(-1px)
+  33%
+    stroke: $global-warning-background
+    transform: translateY(0)
+  34%
+    stroke: $global-danger-background
+    transform: translateY(0)
+  66%
+    stroke: $global-danger-background
+    transform: translateY(-2px)
+  67%
+    stroke: $global-success-background
+    transform: translateY(-2px)
+  100%
+    stroke: $global-success-background
+    transform: translateY(-1px)
+
+.led_1
+  animation: 1s led ease-in-out 0s infinite
+
+.led_2
+  animation: 1.3s led ease-in-out 0s infinite
+
+.led_3
+  animation: .8s led ease-in-out 0s infinite
+
+.led_4
+  animation: led 0s ease-in-out 0s infinite
+
+.led_5
+  animation: .5s led ease-in-out 0s infinite
+
+.led_6
+  animation: 1.4s led ease-in-out 0s infinite
+
+@keyframes led
+  0%
+    fill: $global-primary-background
+  33%
+    fill: $global-primary-background
+  34%
+    fill: $global-danger-background
+  66%
+    fill: $global-danger-background
+  67%
+    fill: $global-success-background
+  100%
+    fill: $global-success-background
