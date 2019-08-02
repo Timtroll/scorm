@@ -14,14 +14,16 @@ $table-min-width: 80px
 
 .pos-table-row
   min-width: $table-min-width
-  max-width: $table-min-width * 3
+  max-width: $table-min-width * 4
 
 .pos-table-checkbox
   box-sizing: border-box
   position: sticky
-  left: 0
+  right: 0
   background-color: inherit
-  border-right: $global-border-width solid $global-border
+  border-left: $global-border-width solid $global-border
+  &>*
+    min-width: 16px
 
 .pos-table-header
   position: sticky
