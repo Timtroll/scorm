@@ -1,0 +1,30 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$table-min-width: 80px
+
+.pos-table
+  a
+    & > svg
+      transform: translateY(-2px)
+
+  tbody tr,
+  thead tr
+    background-color: $global-background
+
+.pos-table-row
+  min-width: $table-min-width
+  max-width: $table-min-width * 3
+
+.pos-table-checkbox
+  box-sizing: border-box
+  position: sticky
+  left: 0
+  background-color: inherit
+  border-right: $global-border-width solid $global-border
+
+.pos-table-header
+  position: sticky
+  top: 0
+  z-index: 2
+  background-color: $global-background
