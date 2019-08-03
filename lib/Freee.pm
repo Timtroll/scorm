@@ -110,16 +110,24 @@ sub startup {
 
     # Router
     my $r = $self->routes;
-    $r->post('/login')              ->to('auth#login');
-    $r->any('/logout')              ->to('auth#logout');
+    $r->post('/api/login')              ->to('auth#login');
+    $r->any('/api/logout')              ->to('auth#logout');
 
-    $r->any('/doc')                 ->to('index#doc');
+    $r->any('/api/doc')                 ->to('index#doc');
 
-    $r->any('/test')                ->to('websocket#test');
-    $r->websocket('/channel')       ->to('websocket#index');
+    $r->any('/api/test')                ->to('websocket#test');
+    $r->websocket('/api/channel')       ->to('websocket#index');
 
-    my $auth = $r->under()          ->to('auth#check_token');
-    $auth->post('/settings')        ->to('settings#index');
+    my $auth = $r->under()              ->to('auth#check_token');
+
+    $auth->post('/cms/set')             ->to('settings#index');
+    $auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');
+    $auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
+    $auth->post('/cms/set_savetab')     ->to('settings#set_savetab');
+    $auth->post('/cms/set_deletetab')   ->to('settings#set_deletetab');
+    $auth->post('/cms/set_add')         ->to('settings#set_add');
+    $auth->post('/cms/set_save')        ->to('settings#set_save');
+    $auth->post('/cms/set_delete')      ->to('settings#set_delete');
 
     # управление контентом
     $auth->post('/cms')                 ->to('cms#index');
@@ -266,7 +274,7 @@ sub startup {
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
-    $r->any('/*')->to('index#index');
+    # $r->any('/*')->to('index#index');
 }
 
 1;

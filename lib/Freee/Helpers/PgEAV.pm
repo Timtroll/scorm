@@ -3,7 +3,7 @@ package Freee::Helpers::PgEAV;
 use strict;
 use warnings;
 
-use Mojo::Pg::Database;
+# use Mojo::Pg::Database;
 use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
@@ -110,7 +110,7 @@ sub register {
 
         my $Params = $_[0];
 
-        my $sth = $self->pg_dbh->prepare( 'SELECT "id", "distance" FROM "publish"."EAV_links" WHERE "parent" = '.$id.( exists( $Params->{Direct} ) ? ' AND "distance" = 0' : '' ) );
+        my $sth = $self->pg_dbh->prepare( 'SELECT "id", "distance" FROM "public"."EAV_links" WHERE "parent" = '.$id.( exists( $Params->{Direct} ) ? ' AND "distance" = 0' : '' ) );
         $sth->execute();
         my $Childs = $sth->fetchall_arrayref({});
         $sth->finish();
@@ -188,16 +188,16 @@ sub register {
         my $Childs = $self->_get_childs();
 
         #move childs to parent of this node inside it's graph.
-        my $sth = $self->pg_dbh->prepare( 'SELECT "parent", "distance" FROM "publish"."EAV_links" WHERE "id" = '.$id );
+        my $sth = $self->pg_dbh->prepare( 'SELECT "parent", "distance" FROM "public"."EAV_links" WHERE "id" = '.$id );
         my $parents = $sth->fetchall_arrayref({});
         $sth->finish();
         foreach my $parent ( @$parents ) {
-            $self->pg_dbh->do( 'DELETE FROM "publish"."EAV_links" WHERE "parent" = '.$parent->{parent}.' AND "id" IN ('.join( ', ', @$Childs ).')' );
+            $self->pg_dbh->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" = '.$parent->{parent}.' AND "id" IN ('.join( ', ', @$Childs ).')' );
         };
 
         foreach my $child ( @$Childs ) {
             $self->pg_dbh->do( 
-                'INSERT INTO "publish"."EAV_links" ( "id", "parent", "distance" ) VALUES ( '.$child.', '.int( $Params->{NewParent} ).', 0 ) '.
+                'INSERT INTO "public"."EAV_links" ( "id", "parent", "distance" ) VALUES ( '.$child.', '.int( $Params->{NewParent} ).', 0 ) '.
                 'ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "distance" = 0' 
             );
         };
@@ -221,12 +221,12 @@ sub register {
         if ( !exists( $Params->{SaveChilds} ) || !$Params->{SaveChilds} ) {
             push @$items, @$Childs;
         } else {
-            my $dParent = $self->pg_dbh->selectrow_array( 'SELECT "parent" FROM "publish"."EAV_links" WHERE "id" = '.$id.' AND distance = 0' );
+            my $dParent = $self->pg_dbh->selectrow_array( 'SELECT "parent" FROM "public"."EAV_links" WHERE "id" = '.$id.' AND distance = 0' );
             $self->_move_childs( $dParent );
         };
-        $self->pg_dbh->do( 'DELETE FROM "publish"."EAV_links" WHERE "id" IN ('.join( ',', @$items ).') ' );
-        $self->pg_dbh->do( 'DELETE FROM "publish"."EAV_links" WHERE "parent" IN ('.join( ',', @$items ).') ' );
-        $self->pg_dbh->do( 'DELETE FROM "publish"."EAV_items" WHERE "id" IN ('.join( ',', @$items ).')' );
+        $self->pg_dbh->do( 'DELETE FROM "public"."EAV_links" WHERE "id" IN ('.join( ',', @$items ).') ' );
+        $self->pg_dbh->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" IN ('.join( ',', @$items ).') ' );
+        $self->pg_dbh->do( 'DELETE FROM "public"."EAV_items" WHERE "id" IN ('.join( ',', @$items ).')' );
         foreach my $tbl ( map { $self->{DataTables}->{ $_ } } keys %{ $self->{DataTables} } ) {
             $self->pg_dbh->do( 'DELETE FROM '.$tbl.' WHERE "id" IN ('.join( ',', @$items ).')' );
         };
@@ -321,9 +321,32 @@ sub register {
         return $sql if exists( $Params->{SQLResult} ) && defined( $Params->{SQLResult} ) && $Params->{SQLResult};
     });
 
+
+    ###################################################################
+    # служебные
     $app->helper( 'list_fields' => sub {
         my $self = shift;
-        return $self->pg_dbh->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
+        # return $self->pg_dbh->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
+        return $self->pg_dbh->selectall_arrayref('SELECT id, title, alias, type FROM "public"."EAV_fields"', {Slice=> {}} );
+    });
+
+    $app->helper( 'create_field' => sub {
+        my $self = shift;
+        my $data = shift;
+        return $self->pg_dbh->do( 'INSERT INTO "public"."EAV_fields" ("id", "title", "alias", "type", "set") VALUES '."( '$$data{id}', '$$data{title}', '$$data{alias}', '$$data{type}', '$$data{set}' ) RETURNING \"id\"" );
+    });
+
+# ??????????? доделать
+    $app->helper( 'update_field' => sub {
+        my $self = shift;
+        my $data = shift;
+        return $self->pg_dbh->do( 'INSERT INTO "public"."EAV_fields" ("id", "title", "alias", "type", "set") VALUES '."( '$$data{id}', '$$data{title}', '$$data{alias}', '$$data{type}', '$$data{set}' ) RETURNING \"id\"" );
+    });
+
+    $app->helper( 'delete_field' => sub {
+        my $self = shift;
+        my $id = shift;
+        return $self->pg_dbh->do( 'DELETE FROM "public"."EAV_fields" WHERE "id"='.$id );
     });
 }
 
