@@ -1,3 +1,6 @@
+/log
+/sql
+
 .DS_Store
 client/admin/node_modules/
 client/admin/dist
