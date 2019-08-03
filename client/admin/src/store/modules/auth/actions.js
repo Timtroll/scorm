@@ -39,7 +39,7 @@ const actions = {
          })
          .catch(err => {
            notify(err, 'danger')
-           commit('auth_request')
+           commit('auth_error')
            reject(err)
          })
 

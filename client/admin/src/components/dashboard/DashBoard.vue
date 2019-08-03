@@ -1,15 +1,22 @@
 <template>
   <div class="uk-height-1-1 uk-flex uk-flex-center uk-flex-middle uk-text-center">
-    <h1 class="uk-heading-xlarge uk-text-muted" v-text="pageTitle"></h1>
+    <div>
+      <h1 class="uk-heading-xlarge uk-text-muted"
+          v-text="pageTitle"></h1>
+      <Loader :width="50"
+              :height="50"></Loader>
+    </div>
   </div>
 </template>
 
 <script>
+  import Loader from '../ui/icons/Loader'
+
   export default {
 
-    name: 'DashBoard',
-
-    metaInfo: {
+    name:       'DashBoard',
+    components: {Loader},
+    metaInfo:   {
       title:         'Рабочий стол',
       titleTemplate: '%s - Scorm',
       htmlAttrs:     {

@@ -31,8 +31,9 @@
         <slot name="headerRight"></slot>
       </div>
       <a class="pos-card-header-item link"
+         v-if="bodyRightToggleShow"
          :class="{'uk-text-danger' : bodyRightShow}"
-         @click.prevent="bodyRightToggle()">
+         @click.prevent="bodyRightToggle">
         <img src="/img/icons/icon__info.svg"
              uk-svg
              width="20"
@@ -47,27 +48,19 @@
       <div class="pos-card-body-middle"
            ref="body"
            :class="{'pos-padding': bodyPadding}">
-        <slot name="body">{{bodyWidth}}</slot>
+        <slot name="body"></slot>
       </div>
 
       <!--content-left-->
       <transition name="slide-left">
         <div class="pos-card-body-left"
              ref="bodyLeft"
-             v-if="bodyLeft && bodyLeftShow"
+             v-show="bodyLeft && bodyLeftShow"
              :class="{'pos-padding': bodyLeftPadding}">
           <slot name="bodyLeft"></slot>
         </div>
       </transition>
 
-      <!--content-right-->
-      <transition name="slide-right">
-        <div class="pos-card-body-right"
-             :class="{'pos-padding': bodyRightPadding}"
-             v-if="bodyRight && bodyRightShow">
-          <slot name="bodyRight"></slot>
-        </div>
-      </transition>
     </div>
 
     <!--footer-->
@@ -91,6 +84,19 @@
       </div>
     </div>
 
+    <!--content-right-->
+    <transition name="slide-right">
+      <div class="pos-card-body-right"
+           v-if="bodyRight && bodyRightShow">
+
+        <div class="pos-card-body pos-padding">
+          <slot name="bodyRight"></slot>
+        </div>
+        <div class="pos-card-footer">
+          <slot name="bodyRightFooter"></slot>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -131,28 +137,36 @@
         type:    Boolean
       },
 
-      // Body
-      body:             {
-        type: String
-      },
-      bodyPadding:      {
+      bodyPadding:         {
         default: true,
         type:    Boolean
       },
-      bodyLeft:         {
+      bodyLeft:            {
         default: false,
         type:    Boolean
       },
-      bodyLeftPadding:  {
+      bodyLeftPadding:     {
         default: true,
         type:    Boolean
       },
-      bodyRight:        {
+      bodyLeftToggleShow:  {
+        default: true,
+        type:    Boolean
+      },
+      bodyRight:           {
         default: false,
         type:    Boolean
       },
-      bodyRightPadding: {
+      bodyRightPadding:    {
         default: true,
+        type:    Boolean
+      },
+      bodyRightToggleShow: {
+        default: false,
+        type:    Boolean
+      },
+      bodyRightShow:       {
+        default: false,
         type:    Boolean
       }
     },
@@ -161,8 +175,8 @@
       return {
         bodyWidth:     null, // 540
         bodyLeftWidth: null, // 540
-        bodyLeftShow:  true,
-        bodyRightShow: true
+        bodyLeftShow:  true
+        //bodyRightShow: true
       }
     },
 
@@ -186,6 +200,7 @@
 
     methods: {
 
+      // показать / скрыть левую панель
       bodyLeftToggle () {
 
         this.handleResize()
@@ -198,10 +213,12 @@
         }, 300)
       },
 
+      // показать / скрыть правую панель
       bodyRightToggle () {
 
         this.handleResize()
         this.bodyRightShow = !this.bodyRightShow
+
         setTimeout(() => {
           if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
             this.bodyLeftShow = false
@@ -209,8 +226,7 @@
         }, 300)
       },
 
-      handleResize (el) {
-
+      handleResize () {
         setTimeout(() => {
           this.bodyWidth = this.$refs.body.offsetWidth
         }, 300)

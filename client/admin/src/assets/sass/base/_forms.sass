@@ -48,13 +48,14 @@
 // pos-checkbox-switch
 $checkbox-switch-size: 18px
 $checkbox-switch-small-size: 14px
+$checkbox-switch-xsmall-size: 12px
 $checkbox-switch-border-size: 2px
-$checkbox-switch-duration: .3s
+$checkbox-switch-duration: 0.1s
 
 .pos-checkbox-switch
-  transition: all $checkbox-switch-duration/2 ease-out $checkbox-switch-duration/2
+  transition: all $checkbox-switch-duration/2 ease-out $checkbox-switch-duration
   width: $checkbox-switch-size * 2 + $checkbox-switch-border-size * 2
-  display: block
+  display: inline-block
   height: $checkbox-switch-size + $checkbox-switch-border-size * 2
   position: relative
   appearance: none
@@ -72,7 +73,7 @@ $checkbox-switch-duration: .3s
     margin-left: auto
 
   &::after
-    transition: all $checkbox-switch-duration ease-in
+    transition: left $checkbox-switch-duration ease-in
     border-radius: 500px
     position: absolute
     content: ""
@@ -94,6 +95,15 @@ $checkbox-switch-duration: .3s
     &::after
       width: $checkbox-switch-small-size
       height: $checkbox-switch-small-size
+
+
+  &.xsmall
+    width: $checkbox-switch-xsmall-size * 2 + $checkbox-switch-border-size * 2
+    height: $checkbox-switch-xsmall-size + $checkbox-switch-border-size * 2
+
+    &::after
+      width: $checkbox-switch-xsmall-size
+      height: $checkbox-switch-xsmall-size
 
 
   &:checked
