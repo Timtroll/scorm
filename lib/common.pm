@@ -7,16 +7,16 @@ use strict;
 use Mojo::Home;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $amqp );
+use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $amqp $dbh );
 
 use Data::Dumper;
 
 my $config = {};
 my $tokens = {};
-my $routes = {};
 my $permissions = {};
 my $websockets = {};
 my $amqp = {};
+my $dbh = {};
 my $log = '';
 
 # for validate input and set errors
@@ -31,7 +31,7 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $amqp );
+@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $amqp $dbh );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;

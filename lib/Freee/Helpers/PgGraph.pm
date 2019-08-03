@@ -17,13 +17,17 @@ sub register {
 
     #################################
     # Helper for Postgress
+
     $app->helper( 'pg_dbh' => sub {
-        return DBI->connect(
-            $config->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'},
-            $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'},
-            $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'},
-            $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}
-        );
+        unless ($dbh) {
+            $dbh = DBI->connect(
+                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'},
+                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'},
+                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'},
+                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}
+            );
+        }
+        return $dbh
     });
 
     $app->helper( 'pg_init' => sub {
@@ -180,7 +184,7 @@ print "id = ", Dumper($id);
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_links" ("parent", "id", "distance") VALUES ('.$$Item{parent}.', '.$id.', 0)' );
         # $self->pg_dbh->do( 'COMMIT' );
-        $data->{parents} = [ {distance => 0, parent => $$Item{parent} }, map { $_->{distance} += 1; $_ } sort { $a->{distance} <=> $b->{distance} } @{ $self->_get( $$Item{parent} )->{parents} } ];
+        $data->{parents} = [ {distance => 0, parent => $$Item{parent} }, map { $_->{distance} += 1; $_ } sort { $a->{distance} <=> $b->{distance} } @{ $self->pg_get( $$Item{parent} )->{parents} } ];
 
         return $data;
     });
