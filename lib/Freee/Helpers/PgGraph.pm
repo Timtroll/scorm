@@ -387,6 +387,16 @@ print "id = ", Dumper($id);
         my $id = shift;
         return $self->pg_dbh->do( 'DELETE FROM "public"."EAV_fields" WHERE "id"='.$id );
     });
+
+    # очистка базы 
+    # $self->tranc_base();
+    $app->helper( 'tranc_base' => sub {
+        my $self = shift;
+        foreach () {
+            $self->pg_dbh->do( 'TRUNCATE "public"'.EAV_items.' RESTART IDENTITY' );
+        }
+        return 1;
+    });
 }
 
 1;

@@ -150,9 +150,20 @@ sub startup {
     $auth->post('/cms/listitems')       ->to('cmsitems#listitems');
     $auth->post('/cms/additem')         ->to('cmsitems#additem');
     $auth->post('/cms/edititem')        ->to('cmsitems#edititem');
+    $auth->post('/cms/saveitem')        ->to('cmsitems#saveitem');
     $auth->post('/cms/activateitem')    ->to('cmsitems#activateitem');
     $auth->post('/cms/hideitem')        ->to('cmsitems#hideitem');
     $auth->post('/cms/delitem')         ->to('cmsitems#delitem');
+
+    # управление почтновыми сообщениями, рассылками
+    $auth->post('/cms/mail')            ->to('cmsmail#index');
+    $auth->post('/cms/listmail')        ->to('cmsmail#listmail');
+    $auth->post('/cms/addmail')         ->to('cmsmail#addmail');
+    $auth->post('/cms/editmail')        ->to('cmsmail#editmail');
+    $auth->post('/cms/savemail')        ->to('cmsmail#savemail');
+    $auth->post('/cms/activatemail')    ->to('cmsmail#activatemail');
+    $auth->post('/cms/hidemail')        ->to('cmsmail#hidemail');
+    $auth->post('/cms/delmail')         ->to('cmsmail#delmail');
 
     # управление библиотекой
     $auth->post('/library')             ->to('library#index');
@@ -163,7 +174,7 @@ sub startup {
     $auth->post('/library/save')        ->to('library#save');
     $auth->post('/library/upload')      ->to('library#upload');
     $auth->post('/library/activate')    ->to('library#activate');
-    $auth->post('/library/hide')        ->to('library#hideitem');
+    $auth->post('/library/hide')        ->to('library#hide');
     $auth->post('/library/delete')      ->to('library#delete');
 
     # управление календарями/расписанием
@@ -255,11 +266,11 @@ sub startup {
  # возможно еще что-то ?????????
 
     # обучение
-    $auth->post('/lesson')            ->to('lesson#index');
-    $auth->post('/lesson/video')      ->to('lesson#video');
-    $auth->post('/lesson/text')       ->to('lesson#text');
-    $auth->post('/lesson/examples')   ->to('lesson#examples');
-    $auth->post('/lesson/tasks')      ->to('lesson#tasks'); # возможно дублирует /tasks/list ?????????
+    $auth->post('/lesson')              ->to('lesson#index');
+    $auth->post('/lesson/video')        ->to('lesson#video');
+    $auth->post('/lesson/text')         ->to('lesson#text');
+    $auth->post('/lesson/examples')     ->to('lesson#examples');
+    $auth->post('/lesson/tasks')        ->to('lesson#tasks'); # возможно дублирует /tasks/list ?????????
 
     # учет успеваемости
     $auth->post('/accounting')            ->to('accounting#index');
