@@ -169,7 +169,7 @@ print "data = ", Dumper($data);
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
 print "err = ", Dumper($data);
         # my $id = $$data{id} = $self->pg_dbh->last_insert_id();
-        my $id = $$data{id} = $self->pg_dbh->last_insert_id(undef, undef, undef, undef);
+        my $id = $$data{id} = $self->pg_dbh->last_insert_id('default', 'public', 'EAV_items', 'id');
 
         foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
             $self->pg_dbh->do( 'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
