@@ -46,7 +46,7 @@
       },
       size:  {
         type:    Number,
-        default: 24
+        default: 26
       },
       width: {
         type:    Number,
@@ -56,8 +56,7 @@
 
   }
 </script>
-<style lang="sass"
-       scoped>
+<style lang="sass">
   .outside
     transform-origin: center center
     animation: outside 2s linear infinite
@@ -74,15 +73,15 @@
       .inside
         animation-play-state: running
 
-    @keyframes outside
-      0%
-        transform: rotate(0)
-      100%
-        transform: rotate(360deg)
+  @keyframes outside
+    0%
+      transform: rotate(0)
+    100%
+      transform: rotate(360deg)
 
-    @keyframes inside
-      0%
-        transform: rotate(0)
-      100%
-        transform: rotate(-360deg)
+  @keyframes inside
+    0%
+      transform: rotate(0)
+    100%
+      transform: rotate(-360deg)
 </style>

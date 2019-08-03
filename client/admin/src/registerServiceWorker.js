@@ -63,20 +63,21 @@ if (process.env.NODE_ENV === 'production') {
       alert(error)
     }
   })
-}
 
-/**
- * Detecting if your app is launched from the home screen
- */
+  /**
+   * Detecting if your app is launched from the home screen
+   */
 
 // Safari
-if (window.navigator.standalone === true) {
-  alert('Application display-mode is standalone')
-  console.log('safari display-mode is standalone')
-}
+  if (window.navigator.standalone === true) {
+    //alert('Application display-mode is standalone')
+    console.log('safari display-mode is standalone')
+  }
 
 // Other
-if (window.matchMedia('(display-mode: standalone)').matches) {
-  alert('Application display-mode is standalone')
-  console.log('display-mode is standalone')
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    //alert('Application display-mode is standalone')
+    console.log('display-mode is standalone')
+  }
+
 }
