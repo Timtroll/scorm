@@ -6,6 +6,7 @@ binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
 use Digest::MD5 qw/md5_hex/;
+
 use Data::Dumper;
 
 use common;

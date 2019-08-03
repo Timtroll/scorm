@@ -36,7 +36,7 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Freee::Helpers::PgEAV');
+    $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Rabbit');
 
     # init Pg connection
