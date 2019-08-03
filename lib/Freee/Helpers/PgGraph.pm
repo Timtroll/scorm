@@ -165,12 +165,13 @@ print "data = ", Dumper($data);
         $$data{import_id} = $self->pg_dbh->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
         $$data{title} = $self->pg_dbh->quote( $$Item{title} );
 print "data = ", Dumper($data);
-        $self->pg_dbh->do( 'BEGIN TRANSACTION' );
+        # $self->pg_dbh->do( 'BEGIN TRANSACTION' );
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
 print "err = ", Dumper($data);
         # my $id = $$data{id} = $self->pg_dbh->last_insert_id();
-        my $id = $$data{id} = $self->pg_dbh->last_insert_id('default', 'public', 'EAV_items', 'id');
+        my $id = $$data{id} = $self->pg_dbh->last_insert_id(undef, 'public', 'EAV_items', undef, { sequence => 'eav_items_id_seq' });
+print "id = ", Dumper($id);
 
         foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
             $self->pg_dbh->do( 'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
@@ -178,7 +179,7 @@ print "err = ", Dumper($data);
         };
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_links" ("parent", "id", "distance") VALUES ('.$$Item{parent}.', '.$id.', 0)' );
-        $self->pg_dbh->do( 'COMMIT' );
+        # $self->pg_dbh->do( 'COMMIT' );
         $data->{parents} = [ {distance => 0, parent => $$Item{parent} }, map { $_->{distance} += 1; $_ } sort { $a->{distance} <=> $b->{distance} } @{ $self->_get( $$Item{parent} )->{parents} } ];
 
         return $data;
