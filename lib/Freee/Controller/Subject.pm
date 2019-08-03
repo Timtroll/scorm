@@ -2,7 +2,7 @@ package Freee::Controller::Subject;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use Freee::Helpers::PgEAV;
+use Freee::Helpers::PgGraph;
 
 use Data::Dumper;
 

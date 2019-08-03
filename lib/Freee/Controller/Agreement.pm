@@ -2,8 +2,6 @@ package Freee::Controller::Agreement;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-use Freee::Helpers::PgEAV;
-
 use Data::Dumper;
 
 sub index {

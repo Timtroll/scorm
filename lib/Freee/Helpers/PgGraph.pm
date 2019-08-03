@@ -1,4 +1,4 @@
-package Freee::Helpers::PgEAV;
+package Freee::Helpers::PgGraph;
 
 use strict;
 use warnings;
@@ -127,9 +127,13 @@ sub register {
         my $self = shift;
         my ( $field, $data ) = @_;
 
+print "-1--\n";
         return undef() unless exists( $self->{_item} );
+print "-2--\n";
         return undef() unless exists( $self->{Fields}->{ $self->{_item}->{type} }->{ $field } );
+print "-3--\n";
         my $val = $self->{Fields}->{ $self->{_item}->{type} }->{ $field };
+print "-4--\n";
         if ( $$val{type} eq 'boolean' ) {
             my $value = 'true';
             $value = 'NULL' if !defined( $data );
@@ -151,16 +155,21 @@ sub register {
     $app->helper( 'pg_create' => sub {
         my $self = shift;
         my $Item = $_[0];
-        die unless exists( $$Item{type} ) && exists( $self->{Fields}->{ $$Item{type} } );
+print "Item = ", Dumper($Item);
+        # die unless exists( $$Item{type} ) && exists( $self->{Fields}->{ $$Item{type} } );
         die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
-
+print "-------------\n";
         my $data = { 'publish' => 'false', 'import_type' => $self->pg_dbh->quote( $$Item{type} ) };
+print "data = ", Dumper($data);
         $$data{publish} = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
         $$data{import_id} = $self->pg_dbh->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
         $$data{title} = $self->pg_dbh->quote( $$Item{title} );
+print "data = ", Dumper($data);
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
-        my $id = $$data{id} = $self->pg_dbh->last_insert_id();
+print "err = ", Dumper($data);
+        # my $id = $$data{id} = $self->pg_dbh->last_insert_id();
+        my $id = $$data{id} = $self->pg_dbh->last_insert_id(undef, undef, undef, undef);
 
         foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
             $self->pg_dbh->do( 'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
@@ -324,25 +333,48 @@ sub register {
 
     ###################################################################
     # служебные
+    ###################################################################
+
+    # список полей
+    # $self->list_fields();
     $app->helper( 'list_fields' => sub {
         my $self = shift;
         # return $self->pg_dbh->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
-        return $self->pg_dbh->selectall_arrayref('SELECT id, title, alias, type FROM "public"."EAV_fields"', {Slice=> {}} );
+        return $self->pg_dbh->selectall_arrayref('SELECT id, title, alias, type FROM "public"."EAV_fields"', { Slice=> {} } );
     });
 
+    # создание полей
+    # $self->create_field(
+    # {
+        #     id      => 1,
+        #     alias   => 'theme',
+        #     title   => 'Тема',
+        #     type    => 'string',
+        #     set     => 'user'
+    # });
     $app->helper( 'create_field' => sub {
         my $self = shift;
         my $data = shift;
         return $self->pg_dbh->do( 'INSERT INTO "public"."EAV_fields" ("id", "title", "alias", "type", "set") VALUES '."( '$$data{id}', '$$data{title}', '$$data{alias}', '$$data{type}', '$$data{set}' ) RETURNING \"id\"" );
     });
 
-# ??????????? доделать
+    # update поля
+    # $self->update_field(
+    # {
+    #     id      => 1,
+    #     alias   => 'theme',
+    #     title   => 'Тема',
+    #     type    => 'string',
+    #     set     => 'lesson'
+    # }));
     $app->helper( 'update_field' => sub {
         my $self = shift;
         my $data = shift;
-        return $self->pg_dbh->do( 'INSERT INTO "public"."EAV_fields" ("id", "title", "alias", "type", "set") VALUES '."( '$$data{id}', '$$data{title}', '$$data{alias}', '$$data{type}', '$$data{set}' ) RETURNING \"id\"" );
+        return $self->pg_dbh->do('UPDATE "public"."EAV_fields" SET '.join( ', ', map { "$_='$$data{$_}'" } keys %$data )." WHERE id=$$data{id} RETURNING id") if $$data{id};
     });
 
+    # удаление поля
+    # $self->delete_field(5);
     $app->helper( 'delete_field' => sub {
         my $self = shift;
         my $id = shift;
