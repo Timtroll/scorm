@@ -17,27 +17,6 @@
     <template #headerLeft>+</template>
     <template #headerRight>+</template>
     <template #header>
-      <div class="uk-grid-small"
-           uk-grid>
-        <div>
-          <button class="uk-button-default uk-button uk-button-small">
-            <img src="/img/icons/icon__close.svg"
-                 uk-svg
-                 width="10"
-                 height="10">
-            <span class="uk-margin-small-left">отменить</span>
-          </button>
-        </div>
-        <div>
-          <button class="uk-button-success uk-button uk-button-small">
-            <img src="/img/icons/icon__save.svg"
-                 uk-svg
-                 width="14"
-                 height="14">
-            <span class="uk-margin-small-left">сохранить</span>
-          </button>
-        </div>
-      </div>
     </template>
 
     <!-- // footer // -->
@@ -47,10 +26,55 @@
 
     <!-- // Body // -->
     <template #body>
-      <Table :header="table.header"
-             :data="table.data"
-             v-on:edit="editEl($event)"
-             :settings="table.settings"></Table>
+
+      <Card
+          :footer="true"
+          :footer-left="true"
+          :footer-right="true">
+        <template #body>
+          <Table :header="table.header"
+                 :data="table.data"
+                 v-on:edit="editEl($event)"
+                 :settings="table.settings"></Table>
+        </template>
+        <template #footerLeft>
+          <button class="uk-button-primary uk-button uk-button-small">
+            <img src="/img/icons/icon__plus.svg"
+                 uk-svg
+                 width="14"
+                 height="14">
+            <span class="uk-margin-small-left">Загрузить еще</span>
+          </button>
+        </template>
+
+        <template #footerRight>
+          <div class="uk-grid-small"
+               uk-grid>
+            <div>
+              <button class="uk-button-default uk-button uk-button-small">
+                <img src="/img/icons/icon__trash.svg"
+                     uk-svg
+                     width="10"
+                     height="10">
+                <span class="uk-margin-small-left">отменить</span>
+              </button>
+            </div>
+            <div>
+              <button class="uk-button-danger uk-button uk-button-small">
+                <img src="/img/icons/icon__trash.svg"
+                     uk-svg
+                     width="10"
+                     height="10">
+                <span class="uk-margin-small-left">удалить</span>
+              </button>
+            </div>
+          </div>
+        </template>
+
+
+      </Card>
+
+
     </template>
 
     <!--bodyLeft-->
@@ -61,14 +85,16 @@
     <!--bodyRight-->
     <template #bodyRight>
       <List :data="card.bodyRightContent"
-            :labels="table.header"></List>
+            :labels="table.header"
+            v-on:close="closeRightPanel"></List>
     </template>
 
     <template #bodyRightFooter>
       <div class="uk-flex uk-flex-between uk-width-1-1">
         <div class="">
           <button class="uk-button-default uk-button uk-button-small"
-                  @click.prevent="card.bodyRightShow = false">
+                  @click.prevent="closeRightPanel"
+          >
             <img src="/img/icons/icon__close.svg"
                  uk-svg
                  width="10"
@@ -98,12 +124,13 @@
   import IconBug from '../ui/icons/IconBug'
   import Table from '../ui/table/Table'
   import List from '../ui/list/List'
+  import InputText from '../ui/inputs/Input'
 
   export default {
 
     name: 'Settings',
 
-    components: {List, Table, IconBug, Tree, NavTree, Card},
+    components: {InputText, List, Table, IconBug, Tree, NavTree, Card},
 
     data () {
       return {
@@ -273,6 +300,10 @@
     },
 
     methods: {
+
+      closeRightPanel () {
+        this.card.bodyRightShow = false
+      },
 
       editEl (event) {
         this.card.bodyRightContent = event

@@ -12,7 +12,15 @@
                height="10"
                uk-svg>
         </a>
-        <input class="uk-input uk-form-small"
+        <div v-else
+             class="uk-form-icon uk-form-icon-flip">
+          <img src="/img/icons/icon__search.svg"
+               width="14"
+               height="14"
+               uk-svg>
+        </div>
+
+        <input class="uk-input"
                v-model="searchInput"
                @change="filterSearch"
                @keyup.esc="clearSearchVal"

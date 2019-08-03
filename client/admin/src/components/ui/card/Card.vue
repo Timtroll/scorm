@@ -86,6 +86,7 @@
 
     <!--content-right-->
     <transition name="slide-right">
+
       <div class="pos-card-body-right"
            v-if="bodyRight && bodyRightShow">
 
@@ -175,8 +176,7 @@
       return {
         bodyWidth:     null, // 540
         bodyLeftWidth: null, // 540
-        bodyLeftShow:  true
-        //bodyRightShow: true
+        bodyLeftShow:  true,
       }
     },
 
@@ -214,17 +214,17 @@
       },
 
       // показать / скрыть правую панель
-      bodyRightToggle () {
-
-        this.handleResize()
-        this.bodyRightShow = !this.bodyRightShow
-
-        setTimeout(() => {
-          if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
-            this.bodyLeftShow = false
-          }
-        }, 300)
-      },
+      //bodyRightToggle () {
+      //
+      //  this.handleResize()
+      //  this.bodyRightShow = !this.bodyRightShow
+      //
+      //  setTimeout(() => {
+      //    if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
+      //      this.bodyLeftShow = false
+      //    }
+      //  }, 300)
+      //},
 
       handleResize () {
         setTimeout(() => {

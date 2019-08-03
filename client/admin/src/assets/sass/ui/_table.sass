@@ -4,6 +4,9 @@
 $table-min-width: 80px
 
 .pos-table
+  border: $global-border-width solid $global-border
+  border-radius: $border-rounded-border-radius
+
   a
     & > svg
       transform: translateY(-2px)
@@ -12,9 +15,17 @@ $table-min-width: 80px
   thead tr
     background-color: $global-background
 
+  .pos-checkbox-switch
+    transform: translateY(2px)
 .pos-table-row
   min-width: $table-min-width
   max-width: $table-min-width * 4
+
+  &::selection
+    color: inherit
+    background-color: inherit
+
+
 
 .pos-table-checkbox
   box-sizing: border-box
@@ -22,7 +33,8 @@ $table-min-width: 80px
   right: 0
   background-color: inherit
   border-left: $global-border-width solid $global-border
-  &>*
+
+  & > *
     min-width: 16px
 
 .pos-table-header

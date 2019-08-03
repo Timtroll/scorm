@@ -110,8 +110,8 @@
         motion:    false,
 
         user: {
-          login: 'test',
-          pass:  'test'
+          login: '',
+          pass:  ''
         },
 
         background: {
