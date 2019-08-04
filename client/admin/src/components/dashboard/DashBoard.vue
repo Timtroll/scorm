@@ -16,11 +16,14 @@
 
     name:       'DashBoard',
     components: {Loader},
-    metaInfo:   {
-      title:         'Рабочий стол',
-      titleTemplate: '%s - Scorm',
-      htmlAttrs:     {
-        lang: 'ru'
+
+    metaInfo () {
+      return {
+        title:         this.$route.meta.breadcrumb,
+        titleTemplate: '%s - Scorm',
+        htmlAttrs:     {
+          lang: this.$t('app.lang')
+        }
       }
     },
 
