@@ -7,7 +7,7 @@ use strict;
 use Mojo::Home;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $amqp $dbh );
+use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $amqp $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 use Data::Dumper;
 
@@ -16,7 +16,14 @@ my $tokens = {};
 my $permissions = {};
 my $websockets = {};
 my $amqp = {};
+
+# vars for Graph database
 my $dbh = {};
+my $FieldsAsArray = {};
+my $Fields = {};
+my $DataTables = {};
+my $FeildsById = {};
+
 my $log = '';
 
 # for validate input and set errors
@@ -31,7 +38,7 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $amqp $dbh );
+@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $amqp $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;

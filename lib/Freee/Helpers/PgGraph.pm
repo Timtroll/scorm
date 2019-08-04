@@ -36,15 +36,15 @@ sub register {
         $sth->execute();
         my $fields = $sth->fetchall_arrayref({});
         $sth->finish();
-print "fields", Dumper($fields);
-        $self->{FieldsAsArray} = $fields;
-        $self->{Fields} = {};
+# print "fields", Dumper($fields);
+        $FieldsAsArray = $fields;
+        $Fields = {};
         foreach my $field ( @$fields ) {
-            $self->{Fields}->{ $field->{set} }->{ $field->{alias} } = $field;
-            $self->{FeildsById}->{ $$field{id} } = $field;
+            $Fields->{ $field->{set} }->{ $field->{alias} } = $field;
+            $FeildsById->{ $$field{id} } = $field;
         };
 
-        $self->{DataTables} = {
+        $DataTables = {
             int => '"public"."EAV_data_int4"',
             string => '"public"."EAV_data_string"',
             boolean => '"public"."EAV_data_boolean"',
@@ -75,16 +75,16 @@ print "fields", Dumper($fields);
 
         $self->{_item}->{Childs} = $self->_get_childs( { Split => 1 } );
         
-        my $types = { map { ( $self->{Fields}->{ $self->{_item}->{type} }->{ $_ }->{type}, 1 ) } keys %{ $self->{Fields}->{ $self->{_item}->{type} } } };
+        my $types = { map { ( $Fields->{ $self->{_item}->{type} }->{ $_ }->{type}, 1 ) } keys %{ $Fields->{ $self->{_item}->{type} } } };
 
-        foreach my $tbl ( map { $self->{DataTables}->{ $_ } } grep { exists( $types->{ $_ } ) } keys %{ $self->{DataTables} } ) {
+        foreach my $tbl ( map { $DataTables->{ $_ } } grep { exists( $types->{ $_ } ) } keys %{ $DataTables } ) {
             my $sth = $self->pg_dbh->prepare( 'SELECT "field_id", "data" FROM '.$tbl.' WHERE "id" = '.int( $self->{_item}->{id} ) );
             $sth->execute();
             my $rows = $sth->fetchall_arrayref({});
             $sth->finish();
 
             foreach my $r ( @$rows ) {
-                my $alias = $self->{FeildsById}->{ $$r{field_id} };
+                my $alias = $FeildsById->{ $$r{field_id} };
                 $self->{_item}->{ $alias } = $r->{data};
             };
         };
@@ -97,10 +97,10 @@ print "fields", Dumper($fields);
         my $field = shift;
 
         return undef() unless exists( $self->{_item} );
-        return undef() unless exists( $self->{Fields}->{ $self->{_item}->{type} }->{ $field } );
+        return undef() unless exists( $Fields->{ $self->{_item}->{type} }->{ $field } );
 
-        my $val = $self->{Fields}->{ $self->{_item}->{type} }->{ $field };
-        my $result = $self->pg_dbh->selectrow_array( 'SELECT "data" FROM '.$self->{DataTables}->{ $$val{type} }.' WHERE "id" = '.$self->{_item}->{id}.' AND "field_id" = '.$$val{id} );
+        my $val = $Fields->{ $self->{_item}->{type} }->{ $field };
+        my $result = $self->pg_dbh->selectrow_array( 'SELECT "data" FROM '.$DataTables->{ $$val{type} }.' WHERE "id" = '.$self->{_item}->{id}.' AND "field_id" = '.$$val{id} );
 
         return $result;
     });
@@ -133,9 +133,9 @@ print "fields", Dumper($fields);
 print "-1--\n";
         return undef() unless exists( $self->{_item} );
 print "-2--\n";
-        return undef() unless exists( $self->{Fields}->{ $self->{_item}->{type} }->{ $field } );
+        return undef() unless exists( $Fields->{ $self->{_item}->{type} }->{ $field } );
 print "-3--\n";
-        my $val = $self->{Fields}->{ $self->{_item}->{type} }->{ $field };
+        my $val = $Fields->{ $self->{_item}->{type} }->{ $field };
 print "-4--\n";
         if ( $$val{type} eq 'boolean' ) {
             my $value = 'true';
@@ -147,7 +147,7 @@ print "-4--\n";
         };
 
         my $result = $self->pg_dbh->do( 
-            'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.'  ( "id", "field_id", "data" ) VALUES ( '.int( $self->{_item}->{id} ).', '.int( $$val{id} ).', '.$data.') '.
+            'INSERT INTO '.$DataTables->{ $$val{type} }.'  ( "id", "field_id", "data" ) VALUES ( '.int( $self->{_item}->{id} ).', '.int( $$val{id} ).', '.$data.') '.
             'ON CONFLICT '.
             'ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "data" = '.$data 
         );
@@ -156,37 +156,40 @@ print "-4--\n";
     });
 
     $app->helper( 'pg_create' => sub {
-        my $self = shift;
-        my $Item = $_[0];
+        my ($self, $Item) = @_;
 print "-------------\n";
-print "FieldsAsArray", Dumper($self);
+# print "FieldsAsArray", Dumper($self);
 # print "Item = ", Dumper($Item);
-        # die unless exists( $$Item{type} ) && exists( $self->{Fields}->{ $$Item{type} } );
+        die unless exists( $$Item{type} ) && exists( $Fields->{ $$Item{type} } );
         die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
 print "-------------\n";
+
+        # записываем заголовок графа в EAV_items
         my $data = { 'publish' => 'false', 'import_type' => $self->pg_dbh->quote( $$Item{type} ) };
-# print "data = ", Dumper($data);
+print "data = ", Dumper($data);
         $$data{publish} = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
         $$data{import_id} = $self->pg_dbh->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
         $$data{title} = $self->pg_dbh->quote( $$Item{title} );
-# print "data = ", Dumper($data);
-        # $self->pg_dbh->do( 'BEGIN TRANSACTION' );
-
+        $self->pg_dbh->do( 'BEGIN TRANSACTION' );
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
-# print "err = ", Dumper($data);
-        # my $id = $$data{id} = $self->pg_dbh->last_insert_id();
         my $id = $$data{id} = $self->pg_dbh->last_insert_id(undef, 'public', 'EAV_items', undef, { sequence => 'eav_items_id_seq' });
 # print "id = ", Dumper($id);
 print "-------------\n";
-print "FieldsAsArray = ", Dumper($self->{FieldsAsArray});
+print "FieldsAsArray = ", Dumper($FieldsAsArray);
+print "Item = ", Dumper($Item);
 
-        foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
-            $self->pg_dbh->do( 'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
+        # записываем данные графа в таблицы EAV_*
+        # foreach my $val ( grep { defined( $_->{default_value} ) } @{ $FieldsAsArray } ) {
+        foreach my $val ( @{ $FieldsAsArray } ) {
+            # $self->pg_dbh->do( 'INSERT INTO '.$DataTables->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
+            my $sql = 'INSERT INTO '.$DataTables->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{id}.', '.$self->pg_dbh->quote( $$Item{$$val{alias}} ).' )';
+print "$sql\n";
+            $self->pg_dbh->do( $sql );
             $data->{ $$Item{type} }->{ $$val{alias} } = $$val{default_value};
         };
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_links" ("parent", "id", "distance") VALUES ('.$$Item{parent}.', '.$id.', 0)' );
-        # $self->pg_dbh->do( 'COMMIT' );
+        $self->pg_dbh->do( 'COMMIT' );
         $data->{parents} = [ {distance => 0, parent => $$Item{parent} }, map { $_->{distance} += 1; $_ } sort { $a->{distance} <=> $b->{distance} } @{ $self->pg_get( $$Item{parent} )->{parents} } ];
 
         return $data;
@@ -246,7 +249,7 @@ print "FieldsAsArray = ", Dumper($self->{FieldsAsArray});
         $self->pg_dbh->do( 'DELETE FROM "public"."EAV_links" WHERE "id" IN ('.join( ',', @$items ).') ' );
         $self->pg_dbh->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" IN ('.join( ',', @$items ).') ' );
         $self->pg_dbh->do( 'DELETE FROM "public"."EAV_items" WHERE "id" IN ('.join( ',', @$items ).')' );
-        foreach my $tbl ( map { $self->{DataTables}->{ $_ } } keys %{ $self->{DataTables} } ) {
+        foreach my $tbl ( map { $DataTables->{ $_ } } keys %{ $DataTables } ) {
             $self->pg_dbh->do( 'DELETE FROM '.$tbl.' WHERE "id" IN ('.join( ',', @$items ).')' );
         };
 
@@ -294,10 +297,10 @@ print "FieldsAsArray = ", Dumper($self->{FieldsAsArray});
             my $i = 0;
             foreach my $f ( @{ $Params->{Fields} } ) {
                 my ( $set, $field ) = ( split /\./, $f );
-                next if !defined( $set ) || !defined( $field ) || !exists( $self->{Fields}->{ $set }->{ $field } );
-                my $Field = $self->{Fields}->{ $set }->{ $field };
+                next if !defined( $set ) || !defined( $field ) || !exists( $Fields->{ $set }->{ $field } );
+                my $Field = $Fields->{ $set }->{ $field };
                 $sql .= ', OutData'.$i.'."data" AS "'.$f.'"';
-                my $tbl = $self->{DataTables}->{ $Field->{type} };
+                my $tbl = $DataTables->{ $Field->{type} };
                 $data_sql .= ' INNER JOIN '.$tbl.' AS OutData'.$i.' ON i."id" = OutData'.$i.'."id" AND OutData'.$i.'."field_id" = '.$Field->{id};
                 if ( exists( $Params->{Filter}->{$f} ) ) {
                     $data_sql .= $self->_make_filter_statement( { value => $Params->{Filter}->{$f}, prefix => 'OutData'.$i.'."data"' } );
@@ -320,10 +323,10 @@ print "FieldsAsArray = ", Dumper($self->{FieldsAsArray});
                 next if exists( $Params->{Fields} ) && ref( $Params->{Fields} ) eq 'ARRAY' && scalar( grep { $_ eq $f } @{ $Params->{Fields} } );
 
                 my ( $set, $field ) = ( split /\./, $f );
-                next if !defined( $set ) || !defined( $field ) || !exists( $self->{Fields}->{ $set }->{ $field } );
-                my $Field = $self->{Fields}->{ $set }->{ $field };
+                next if !defined( $set ) || !defined( $field ) || !exists( $Fields->{ $set }->{ $field } );
+                my $Field = $Fields->{ $set }->{ $field };
 
-                my $tbl = $self->{DataTables}->{ $Field->{type} };
+                my $tbl = $DataTables->{ $Field->{type} };
                 $filter_sql .= ' INNER JOIN '.$tbl.' AS FilterData'.$i.' ON i."id" = FilterData'.$i.'."id" AND FilterData'.$i.'."field_id" = '.$Field->{id};
                 $filter_sql .= $self->_make_filter_statement( { value => $Params->{Filter}->{$f}, prefix => 'FilterData'.$i.'."data"' } );
             };
