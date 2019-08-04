@@ -8,7 +8,7 @@
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
           <div class="uk-form-icon uk-form-icon-flip">
-            1
+           <img src="/img/icons/icon__input.svg" uk-svg width="14" height="14">
           </div>
           <input class="uk-input"
                  :disabled="!editable"

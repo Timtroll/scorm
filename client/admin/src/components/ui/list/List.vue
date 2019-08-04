@@ -3,8 +3,8 @@
     <li v-for="(item, index) in data"
         :key="index">
       <Input :value="item.val"
-                 :editable="item.editable"
-                 :placeholder="labels[index]">
+             :editable="item.editable"
+             :placeholder="labels[index]">
       </Input>
     </li>
   </ul>
