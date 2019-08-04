@@ -1,0 +1,42 @@
+table: {
+         settings: {readOnly: false, totalCount: 34535},
+         header:   ['id', 'alias', 'title', 'type', 'default_value', 'set'],
+         data:     [
+           [
+             {type: 'int', editable: false, validation: null, val: 1},
+             {type: 'string', editable: true, validation: null, val: 'id'},
+             {type: 'string', editable: true, validation: null, val: 'id'},
+             {type: 'select', editable: true, validation: null, val: 'int'},
+             {type: 'string', editable: true, validation: null, val: null},
+             {type: 'string', editable: true, validation: null, val: 'office'}
+           ], [
+             {type: 'int', editable: false, validation: null, val: 2},
+             {type: 'string', editable: true, validation: null, val: 'name'},
+             {type: 'string', editable: true, validation: null, val: 'Название организации'},
+             {type: 'select', editable: true, validation: null, val: 'string'},
+             {type: 'string', editable: true, validation: null, val: null},
+             {type: 'string', editable: true, validation: null, val: 'office'}
+           ], [
+             {type: 'int', editable: false, validation: null, val: 3},
+             {type: 'string', editable: true, validation: null, val: 'system_name'},
+             {type: 'string', editable: true, validation: null, val: 'Системное название'},
+             {type: 'select', editable: true, validation: null, val: 'string'},
+             {type: 'string', editable: true, validation: null, val: null},
+             {type: 'string', editable: true, validation: null, val: 'office'}
+           ], [
+             {type: 'int', editable: false, validation: null, val: 4},
+             {type: 'string', editable: true, validation: null, val: 'parent_id'},
+             {type: 'string', editable: true, validation: null, val: 'Родитель'},
+             {type: 'select', editable: true, validation: null, val: 'int'},
+             {type: 'string', editable: true, validation: null, val: null},
+             {type: 'string', editable: true, validation: null, val: 'office'}
+           ], [
+             {type: 'int', editable: false, validation: null, val: 5},
+             {type: 'string', editable: true, validation: null, val: 'is_active'},
+             {type: 'string', editable: true, validation: null, val: 'Статус'},
+             {type: 'select', editable: true, validation: null, val: 'int'},
+             {type: 'string', editable: true, validation: null, val: null},
+             {type: 'string', editable: true, validation: null, val: 'office'}
+           ]
+         ]
+       },
