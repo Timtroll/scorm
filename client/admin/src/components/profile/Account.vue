@@ -2,19 +2,47 @@
   <div class="pos-page-inner">
 
     <form class="uk-form-horizontal uk-width-large"
+          autocomplete="on"
           @submit.prevent="saveChange">
       <h4 class="uk-heading-line">
-        <span>Авторизация</span>
+        <span v-text="$t('profile.user.title')"></span>
       </h4>
-      <!--Логин-->
+
+      <!--Name-->
       <div class="uk-margin">
-        <label class="uk-form-label">Имя</label>
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.name')"></span>
+          <span class="uk-text-danger"
+                v-if="user.name.required"> *</span>
+        </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
           <span class="uk-form-icon uk-form-icon-flip"
                 uk-icon="icon: user"></span>
             <input class="uk-input"
-                   placeholder="Ваше Имя"
+                   v-model="user.name.val"
+                   autocomplete="name"
+                   :placeholder="$t('profile.user.namePlaceholder')"
+                   type="text">
+          </div>
+        </div>
+      </div>
+
+      <!--Логин-->
+      <div class="uk-margin">
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.userName')"></span>
+          <span class="uk-text-danger"
+                v-if="user.username.required"> *</span>
+        </label>
+        <div class="uk-form-controls">
+          <div class="uk-inline uk-width-1-1">
+          <span class="uk-form-icon uk-form-icon-flip"
+                uk-icon="icon: user"></span>
+            <input class="uk-input"
+                   v-model="user.user"
+                   autocomplete="username"
+                   :placeholder="$t('profile.user.userNamePlaceholder')"
                    type="text">
           </div>
         </div>
@@ -22,23 +50,91 @@
 
       <!--Email-->
       <div class="uk-margin">
-        <label class="uk-form-label">Email</label>
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.email')"></span>
+          <span class="uk-text-danger"
+                v-if="user.email.required"> *</span>
+        </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
           <span class="uk-form-icon uk-form-icon-flip"
                 uk-icon="icon: mail"></span>
             <input class="uk-input"
-                   placeholder="Ваш email"
-                   v-model="user.email"
+                   autocomplete="email"
+                   :placeholder="$t('profile.user.emailPlaceholder')"
+                   v-model="user.email.val"
                    type="email">
           </div>
         </div>
       </div>
+
+      <!--Phone-->
+      <div class="uk-margin">
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.phone')"></span>
+          <span class="uk-text-danger"
+                v-if="user.phone.required"> *</span>
+        </label>
+        <div class="uk-form-controls">
+          <div class="uk-inline uk-width-1-1">
+          <span class="uk-form-icon uk-form-icon-flip"
+                uk-icon="icon: mail"></span>
+            <input class="uk-input"
+                   :placeholder="$t('profile.user.phonePlaceholder')"
+                   autocomplete="tel"
+                   v-model="user.phone.val"
+                   v-mask="'+7 (###) ###-##-##'"
+                   type="text">
+          </div>
+        </div>
+      </div>
+
+      <!--Город-->
+      <div class="uk-margin">
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.city')"></span>
+          <span class="uk-text-danger"
+                v-if="user.city.required"> *</span>
+        </label>
+        <div class="uk-form-controls">
+          <div class="uk-inline uk-width-1-1">
+          <span class="uk-form-icon uk-form-icon-flip"
+                uk-icon="icon: mail"></span>
+            <input class="uk-input"
+                   :placeholder="$t('profile.user.cityPlaceholder')"
+                   autocomplete="address-level1"
+                   v-model="user.city.val"
+                   type="text">
+          </div>
+        </div>
+      </div>
+
+      <!--dateOfBirth-->
+      <div class="uk-margin">
+        <label class="uk-form-label">
+          <span v-text="$t('profile.user.dateOfBirth')"></span>
+          <span class="uk-text-danger"
+                v-if="user.dateOfBirth.required"> *</span>
+        </label>
+        <div class="uk-form-controls">
+          <div class="uk-inline uk-width-1-1">
+          <span class="uk-form-icon uk-form-icon-flip"
+                uk-icon="icon: mail"></span>
+            <input class="uk-input"
+                   autocomplete="bday"
+                   :placeholder="$t('profile.user.dateOfBirthPlaceholder')"
+                   v-model="user.dateOfBirth.val"
+                   type="text">
+          </div>
+        </div>
+      </div>
+
+      <!--Сменить пароль-->
       <div class="uk-grid-small uk-flex-middle"
            uk-grid>
         <div class="uk-width-expand">
           <h4 class="uk-heading-line">
-            <span>Сменить пароль</span>
+            <span v-text="$t('profile.password.title')"></span>
           </h4>
         </div>
         <div class="uk-width-auto">
@@ -80,16 +176,18 @@
 
                   </a>
                   <input class="uk-input"
-                         v-model="user.password"
-                         placeholder="Введите новый пароль"
+                         v-model="user.password.val"
+                         autocomplete="new-password"
+                         :placeholder="$t('profile.password.passwordPlaceholder')"
                          :type="showPassword">
                 </div>
               </div>
               <div class="uk-margin-bottom">
                 <div class="uk-inline uk-width-1-1">
                   <input class="uk-input"
-                         v-model="user.confirmPassword"
-                         placeholder="Повторите новый пароль"
+                         v-model="user.confirmPassword.val"
+                         autocomplete="new-password"
+                         :placeholder="$t('profile.password.repeatPasswordPlaceholder')"
                          :type="showPassword">
                 </div>
               </div>
@@ -101,7 +199,8 @@
       <!--Save-->
       <div class="uk-margin uk-text-right">
         <button type="submit"
-                class="uk-button uk-button-success">Сохранить
+                class="uk-button uk-button-success"
+                v-text="$t('actions.save')">
         </button>
       </div>
     </form>
@@ -124,11 +223,13 @@
 
     name: 'Account',
 
-    metaInfo: {
-      title:         'Аккаунт пользователя',
-      titleTemplate: '%s - Scorm',
-      htmlAttrs:     {
-        lang: 'ru'
+    metaInfo () {
+      return {
+        title:         this.$t('profile.user.title'),
+        titleTemplate: '%s - Scorm',
+        htmlAttrs:     {
+          lang: this.$t('app.lang')
+        }
       }
     },
 
@@ -136,10 +237,38 @@
 
       return {
         user:           {
-          login:           null,
-          email:           null,
-          password:        null,
-          confirmPassword: null
+          username:        {
+            val:      null,
+            required: false
+          },
+          name:            {
+            val:      null,
+            required: true
+          },
+          email:           {
+            val:      null,
+            required: true
+          },
+          phone:           {
+            val:      null,
+            required: true
+          },
+          city:            {
+            val:      null,
+            required: true
+          },
+          dateOfBirth:     {
+            val:      null,
+            required: false
+          },
+          password:        {
+            val:      null,
+            required: true
+          },
+          confirmPassword: {
+            val:      null,
+            required: true
+          }
         },
         changePassword: false,
         togglePassword: false
