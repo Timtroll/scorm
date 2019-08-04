@@ -31,12 +31,15 @@
           :footer="true"
           :footer-left="true"
           :footer-right="true">
+
+        <!--body-->
         <template #body>
           <Table :header="table.header"
                  :data="table.data"
                  v-on:edit="editEl($event)"
                  :settings="table.settings"></Table>
         </template>
+        <!--footerLeft-->
         <template #footerLeft>
           <button class="uk-button-primary uk-button uk-button-small">
             <img src="/img/icons/icon__plus.svg"
@@ -47,6 +50,7 @@
           </button>
         </template>
 
+        <!--footerRight-->
         <template #footerRight>
           <div class="uk-grid-small"
                uk-grid>
@@ -70,11 +74,7 @@
             </div>
           </div>
         </template>
-
-
       </Card>
-
-
     </template>
 
     <!--bodyLeft-->
