@@ -8,14 +8,19 @@ sub doc {
     my ($self);
     $self = shift;
 
-# Работа с полями
+# Postgres Работа с полями
+
+# очистка базы 
+# print Dumper( $self->tranc_bases() );
+
+
 # удаление поля
 # print Dumper( $self->delete_field(5) );
 
 # # создание полей
 # print Dumper( $self->create_field(
 # {
-#     id      => 1,
+#     id      => 3,
 #     alias   => 'theme',
 #     title   => 'Тема',
 #     type    => 'string',
@@ -23,7 +28,7 @@ sub doc {
 # }));
 # print Dumper( $self->create_field(
 # {
-#     id      => 2,
+#     id      => 4,
 #     alias   => 'name',
 #     title   => 'Матем 2',
 #     type    => 'string',
@@ -63,6 +68,7 @@ print Dumper( $self->pg_create(
 #     title => 'Математика',
 # }
 # ));
+print Dumper( $self->ampq());
 
     $self->render(
         'template'    => 'index',

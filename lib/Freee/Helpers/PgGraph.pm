@@ -3,7 +3,6 @@ package Freee::Helpers::PgGraph;
 use strict;
 use warnings;
 
-# use Mojo::Pg::Database;
 use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
@@ -27,7 +26,7 @@ sub register {
                 $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}
             );
         }
-        return $dbh
+        return $dbh;
     });
 
     $app->helper( 'pg_init' => sub {
@@ -37,7 +36,7 @@ sub register {
         $sth->execute();
         my $fields = $sth->fetchall_arrayref({});
         $sth->finish();
-
+print "fields", Dumper($fields);
         $self->{FieldsAsArray} = $fields;
         $self->{Fields} = {};
         foreach my $field ( @$fields ) {
@@ -159,23 +158,27 @@ print "-4--\n";
     $app->helper( 'pg_create' => sub {
         my $self = shift;
         my $Item = $_[0];
-print "Item = ", Dumper($Item);
+print "-------------\n";
+print "FieldsAsArray", Dumper($self);
+# print "Item = ", Dumper($Item);
         # die unless exists( $$Item{type} ) && exists( $self->{Fields}->{ $$Item{type} } );
         die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
 print "-------------\n";
         my $data = { 'publish' => 'false', 'import_type' => $self->pg_dbh->quote( $$Item{type} ) };
-print "data = ", Dumper($data);
+# print "data = ", Dumper($data);
         $$data{publish} = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
         $$data{import_id} = $self->pg_dbh->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
         $$data{title} = $self->pg_dbh->quote( $$Item{title} );
-print "data = ", Dumper($data);
+# print "data = ", Dumper($data);
         # $self->pg_dbh->do( 'BEGIN TRANSACTION' );
 
         $self->pg_dbh->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
-print "err = ", Dumper($data);
+# print "err = ", Dumper($data);
         # my $id = $$data{id} = $self->pg_dbh->last_insert_id();
         my $id = $$data{id} = $self->pg_dbh->last_insert_id(undef, 'public', 'EAV_items', undef, { sequence => 'eav_items_id_seq' });
-print "id = ", Dumper($id);
+# print "id = ", Dumper($id);
+print "-------------\n";
+print "FieldsAsArray = ", Dumper($self->{FieldsAsArray});
 
         foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
             $self->pg_dbh->do( 'INSERT INTO '.$self->{DataTables}->{ $$val{type} }.' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{fieldid}.', '.$self->pg_dbh->quote( $$val{default_value} ).' )'  );
@@ -389,12 +392,20 @@ print "id = ", Dumper($id);
     });
 
     # очистка базы 
-    # $self->tranc_base();
-    $app->helper( 'tranc_base' => sub {
+    # $self->tranc_bases();
+    $app->helper( 'tranc_bases' => sub {
         my $self = shift;
-        foreach () {
-            $self->pg_dbh->do( 'TRUNCATE "public"'.EAV_items.' RESTART IDENTITY' );
-        }
+        
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_data_boolean" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_data_datetime" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_data_int4" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_data_string" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_fields" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_items" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_links" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_sets" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'TRUNCATE "public"."EAV_submodules_subscriptions" RESTART IDENTITY' );
+
         return 1;
     });
 }
