@@ -1,0 +1,53 @@
+{
+  "app":     {
+    "description": "AD'миночка обучающего сервиса \"Scorm\"",
+    "title":       "AD'миночка",
+    "lang":        "ru"
+  },
+  "auth":    {
+    "fields": {
+      "login":    "Имя пользователя",
+      "password": "Пароль",
+      "submit":   "Войти"
+    },
+    "title":  "Авторизация в панели управления",
+    "logOut": "Покинуть матрицу"
+  },
+  "err404":  {
+    "title":   "Ошибка 404",
+    "content": "Такая страница не существует"
+  },
+  "profile": {
+    "user":     {
+      "title":                  "Настройки моего профиля",
+      "name":                   "ФИО",
+      "namePlaceholder":        "Иванов Иван Иванович",
+      "userName":               "Имя пользователя",
+      "userNamePlaceholder":    "MyLogin",
+      "email":                  "Email",
+      "emailPlaceholder":       "name@provider.com",
+      "phone":                  "Телефон",
+      "phonePlaceholder":       "+7 (999) 999-99-99",
+      "city":                   "Город",
+      "cityPlaceholder":        "Владивосток",
+      "dateOfBirth":            "Дата рождения",
+      "dateOfBirthPlaceholder": "01.12.1990"
+    },
+    "password": {
+      "title":                     "Изменить пароль",
+      "passwordPlaceholder":       "Введите новый пароль",
+      "repeatPasswordPlaceholder": "Повторите новый пароль"
+    }
+  },
+  "actions": {
+    "save":     "Сохранить",
+    "edit":     "Редактировать",
+    "cancel":   "Отменить",
+    "open":     "Открыть",
+    "close":    "Закрыть",
+    "loadMore": "Загрузить еще",
+    "remove":   "Удалить",
+    "search":   "Поиск",
+    "add":      "Добавить"
+  }
+}
