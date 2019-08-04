@@ -1,5 +1,6 @@
 <template>
   <div class="uk-height-1-1 uk-width-1-1 uk-grid uk-grid-collapse">
+
     <!--logo - desktop-->
     <div
         class="uk-width-1-1 uk-width-auto@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-right@m uk-background-default uk-visible@m">
@@ -10,10 +11,12 @@
                width="100"
                class=""
                uk-svg>
-          <div class="uk-margin-small-top">AD'миночка</div>
+          <div class="uk-margin-small-top"
+               v-text="$t('app.title')"></div>
         </div>
       </div>
     </div>
+
     <!--login / recover form-->
     <div
         class="uk-width-1-1 uk-width-expand@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-left@l"
@@ -24,12 +27,14 @@
             <img src="../../public/img/logo__bw.svg"
                  class=""
                  width="80"
+                 :alt="$t('app.title')"
                  uk-svg>
           </div>
 
           <!--auth-->
           <form>
             <div class="pos-login">
+
               <!--KeyAnimations-->
               <div class="uk-margin">
                 <KeyAnimations :direction="direction"
@@ -45,7 +50,8 @@
                   <input class="uk-input"
                          :disabled="status === 'loading'"
                          type="text"
-                         placeholder="Имя пользователя"
+                         :placeholder="$t('auth.fields.login')"
+                         autocomplete="username"
                          v-model="user.login"
                          v-focus
                          @keyup="keyMove">
@@ -59,9 +65,10 @@
                       uk-icon="icon: lock"></span>
                   <input class="uk-input"
                          :disabled="status === 'loading'"
+                         autocomplete="current-password"
                          v-model="user.pass"
                          type="password"
-                         placeholder="Пароль"
+                         :placeholder="$t('auth.fields.password')"
                          @keyup="keyMove">
                 </div>
               </div>
@@ -75,7 +82,8 @@
                         @click.prevent="login">
                   <span uk-spinner="ratio: .6"
                         v-if="status==='loading'"></span>
-                  <span v-else>Войти</span>
+                  <span v-else
+                        v-text="$t('auth.fields.submit')"></span>
                 </button>
               </div>
             </div>
@@ -94,11 +102,13 @@
 
     components: {KeyAnimations},
 
-    metaInfo: {
-      title:         'Авторизация',
-      titleTemplate: '%s - Scorm',
-      htmlAttrs:     {
-        lang: 'ru'
+    metaInfo () {
+      return {
+        title:         this.$t('auth.title'),
+        titleTemplate: '%s - Scorm',
+        htmlAttrs:     {
+          lang: this.$t('app.lang')
+        }
       }
     },
 
