@@ -9,6 +9,7 @@
       {
         'type' : 'input',
         'name' : 'fullDebugMode',
+        "readOnly": 0,
         'title' : 'режим обновления',
         'placeholder': '',
         'mask': '[0..9\w ]+',
@@ -27,6 +28,7 @@
           {
             'type' : 'input',
             'name' : 'fullDebugMode',
+            "readOnly": 0,
             'title' : 'режим обновления',
             'placeholder': '',
             'mask': '[0..9\w ]+',
