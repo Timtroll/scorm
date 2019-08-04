@@ -1,13 +1,14 @@
 <template>
   <div class="pos-body">
     <div class="pos-main">
-
       <div class="pos-container">
         <!--main-container-->
         <div class="pos-content uk-flex uk-flex-middle uk-flex-center uk-text-center">
           <div>
-            <p class="uk-heading-2xlarge">404</p>
-            <p class="uk-h4 uk-text-lowercase uk-margin-remove uk-text-muted">Такая страница не существует</p>
+            <p class="uk-heading-2xlarge"
+               v-text="$t('err404.title')"></p>
+            <p class="uk-h4 uk-text-lowercase uk-margin-remove uk-text-muted"
+               v-text="$t('err404.content')"></p>
           </div>
         </div>
 
@@ -27,8 +28,20 @@
   import NavBar from '../components/ui/navbar/NavBar'
 
   export default {
-    name:       'PageNotFound',
+    name: 'PageNotFound',
+
     components: {NavBar, SideBar},
+
+    metaInfo () {
+      return {
+        title:         this.$t('auth.title'),
+        titleTemplate: '%s - Scorm',
+        htmlAttrs:     {
+          lang: this.$t('app.lang')
+        }
+      }
+    },
+
     data () {
       return {}
     }
