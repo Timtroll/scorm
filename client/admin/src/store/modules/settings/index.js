@@ -4,23 +4,34 @@ import getters from './getters'
 
 const state = {
 
-  navTree:   {
+  navTree: {
     state: {
       open:   false,
-      status: 'loading',
-      content:    []
-    }
+      status: 'loading'
+    },
+    items: []
   },
+
+  table: {},
+
+  currentRow:   {},
+
+  selectedRows: [],
+
+  settingPage: {
+    status: 'loading'
+  },
+
   detailBar: {
-    open:   false,
-    status: 'loading',
-    content:    []
+    open:    false,
+    status:  'loading',
+    content: []
   }
 
 }
 
 export default {
-  namespaced: true,
+  namespaced: false,
   state:      state,
   actions:    actions,
   mutations:  mutations,

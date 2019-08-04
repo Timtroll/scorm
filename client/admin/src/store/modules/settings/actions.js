@@ -13,14 +13,17 @@ const notify = (message, status = 'primary', timeout = '2000', pos = 'top-center
   })
 }
 
+// fake data
+import Settings from '../../../assets/json/settings.json'
+
 const actions = {
 
-  getNavTree ({commit}) {
-
+  getNavTree ({commit}, data) {
+    commit('setNavTree', Settings.settings)
   },
 
-  getNavTreeItem ({commit}, id) {
-    commit('auth_request')
+  getNavTreeItem ({commit}, item) {
+    commit('')
   }
 }
 export default actions

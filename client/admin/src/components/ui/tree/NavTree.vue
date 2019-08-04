@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <ul class="pos-side-nav">
       <li v-for="item in nav"
           :key="item.id">

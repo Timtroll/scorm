@@ -1,10 +1,19 @@
 <template>
   <div class="uk-overflow-auto uk-height-1-1 uk-position-relative">
-    <div class="uk-margin-bottom uk-grid-small uk-flex-right@s"
+    <div class="uk-margin-bottom uk-grid-small uk-flex-middle"
          uk-grid>
-
-      <div class="uk-width-small@s uk-width-1-1@s ">
-        <div class="uk-position-relative">
+      <div class="uk-width-auto">
+        <button type="button"
+                class="uk-button uk-button-primary">
+          <img src="/img/icons/icon__plus.svg"
+               width="16"
+               height="16"
+               uk-svg>
+          <span class="uk-margin-small-left uk-visible@m" v-text="$t('actions.add')"></span>
+        </button>
+      </div>
+      <div class="uk-width-expand">
+        <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
           <a @click.prevent="clearSearchVal"
              v-if="searchInput"
              class="uk-form-icon uk-form-icon-flip">

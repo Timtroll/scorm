@@ -27,10 +27,9 @@
     <!-- // Body // -->
     <template #body>
 
-      <Card
-          :footer="true"
-          :footer-left="true"
-          :footer-right="true">
+      <Card :footer="true"
+            :footer-left="true"
+            :footer-right="true">
 
         <!--body-->
         <template #body>
@@ -46,7 +45,8 @@
                  uk-svg
                  width="14"
                  height="14">
-            <span class="uk-margin-small-left">Загрузить еще</span>
+            <span class="uk-margin-small-left uk-visible@s"
+                  v-text="$t('actions.loadMore')"></span>
           </button>
         </template>
 
@@ -56,11 +56,12 @@
                uk-grid>
             <div>
               <button class="uk-button-default uk-button uk-button-small">
-                <img src="/img/icons/icon__trash.svg"
+                <img src="/img/icons/icon__close.svg"
                      uk-svg
                      width="10"
                      height="10">
-                <span class="uk-margin-small-left">отменить</span>
+                <span class="uk-margin-small-left uk-visible@s"
+                      v-text="$t('actions.cancel')"></span>
               </button>
             </div>
             <div>
@@ -69,7 +70,8 @@
                      uk-svg
                      width="10"
                      height="10">
-                <span class="uk-margin-small-left">удалить</span>
+                <span class="uk-margin-small-left uk-visible@s"
+                      v-text="$t('actions.remove')"></span>
               </button>
             </div>
           </div>
@@ -99,7 +101,8 @@
                  uk-svg
                  width="10"
                  height="10">
-            <span class="uk-margin-small-left">отменить</span>
+            <span class="uk-margin-small-left"
+                  v-text="$t('actions.cancel')"></span>
           </button>
         </div>
         <div class="">
@@ -182,120 +185,23 @@
               {type: 'string', editable: true, validation: null, val: 'office'}
             ]
           ]
-        },
+        }
 
-        nav: [
-          {
-            label:     'Основные',
-            id:        1,
-            component: '',
-            opened:    false,
-            children:  [
-              {
-                label:     'Раздел основных настроек номер один',
-                id:        11,
-                component: '',
-                opened:    false,
-                children:  [
-                  {
-                    label:     'Подраздел основных настроек номер один',
-                    id:        111,
-                    component: '',
-                    opened:    false
-                  },
-                  {
-                    label:     'Подраздел основных настроек номер один',
-                    id:        112,
-                    component: '',
-                    opened:    false
-                  },
-                  {
-                    label:     'Подраздел основных настроек номер один',
-                    id:        113,
-                    component: '',
-                    opened:    false,
-                    children:  [
-                      {
-                        label:     'Подраздел основных настроек номер один',
-                        id:        1131,
-                        component: '',
-                        opened:    false
-                      },
-                      {
-                        label:     'Подраздел основных настроек номер один',
-                        id:        1132,
-                        component: '',
-                        opened:    false
-                      },
-                      {
-                        label:     'Подраздел основных настроек номер один',
-                        id:        1133,
-                        component: '',
-                        opened:    false,
-                        children:  [
-                          {
-                            label:     'Подраздел основных настроек номер один',
-                            id:        11331,
-                            component: '',
-                            opened:    false
-                          },
-                          {
-                            label:     'Подраздел основных настроек номер один',
-                            id:        11332,
-                            component: '',
-                            opened:    false
-                          },
-                          {
-                            label:     'Подраздел основных настроек номер один',
-                            id:        11333,
-                            component: '',
-                            opened:    false
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                label:     'Раздел основных настроек номер один',
-                id:        12,
-                component: '',
-                opened:    false,
-                children:  [
-                  {
-                    label:     'Подраздел основных настроек номер один',
-                    id:        121,
-                    component: '',
-                    opened:    false
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            label:     'Дополнительные',
-            id:        2,
-            component: '',
-            opened:    false,
-            children:  [
-              {
-                label:     'Раздел Дополнительных настроек номер один',
-                id:        21,
-                component: '',
-                opened:    false,
-                children:  [
-                  {
-                    label:     'Подраздел Дополнительных настроек номер один',
-                    id:        22,
-                    component: '',
-                    opened:    false
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+      }
+    },
+
+    created () {
+
+      // Get left nav tree
+      this.$store.dispatch('getNavTree')
+    },
+
+    computed: {
+
+      // Left nav tree
+      nav () {
+        return this.$store.getters.navTree
+        //return Settings.settings
       }
     },
 

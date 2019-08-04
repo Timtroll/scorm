@@ -1,8 +1,13 @@
 const mutations = {
 
-  // статус - запрос авторизации
-  auth_request (state) {
-    state.user.status = 'loading'
+  // Формирование Дерева настроек
+  setNavTree (state, data) {
+    state.navTree.items = data
+  },
+
+  // Формирование контента таблицы
+  setTableData (state, data) {
+    state.navTree.items = data
   }
 
 }

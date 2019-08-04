@@ -33,7 +33,9 @@
 <script>
 
   export default {
+
     name:       'NavTreeItem',
+
     components: {
       'Children': () => import('./NavTree')
     },

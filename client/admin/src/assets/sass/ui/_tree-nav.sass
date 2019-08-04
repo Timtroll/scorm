@@ -6,6 +6,20 @@ $tree-icon-size: 14px
 $tree-border: darken($global-border, 2%)
 $tree-border-style: solid
 
+.pos-side-nav-container
+  flex: 1 0 0
+  overflow-x: hidden
+  overflow-y: auto
+  padding: $global-small-gutter
+
+  & > *
+    & > .pos-side-nav
+      & > li
+        & > *
+          & > .pos-side-nav-item
+            & > .pos-side-nav-item__no-icon
+              display: none
+
 .pos-side-nav
   display: flex
   flex-direction: column
@@ -86,7 +100,7 @@ $tree-border-style: solid
       z-index: 0
 
 
-  //&.active
+//&.active
 
 .pos-side-nav-item__no-icon
   flex: none

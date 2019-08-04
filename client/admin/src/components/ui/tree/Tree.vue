@@ -2,14 +2,14 @@
   <div class="uk-flex uk-height-1-1 uk-flex-column">
 
     <!--searchInput -->
-    <div class="uk-margin-small-bottom uk-padding-small pos-border-bottom ">
+    <div class="uk-padding-small pos-border-bottom ">
       <div class="uk-position-relative">
         <a @click.prevent="clearSearchVal"
            v-if="searchInput"
            class="uk-form-icon uk-form-icon-flip">
           <img src="/img/icons/icon__close.svg"
-               width="10"
-               height="10"
+               width="12"
+               height="12"
                uk-svg>
         </a>
         <div v-else
@@ -22,14 +22,13 @@
 
         <input class="uk-input"
                v-model="searchInput"
-               @change="filterSearch"
                @keyup.esc="clearSearchVal"
-               placeholder="Поиск">
+               :placeholder="$t('actions.search')">
       </div>
     </div>
 
     <!--Nav tree-->
-    <div class="uk-flex-1 uk-overflow-auto uk-padding-small">
+    <div class="pos-side-nav-container">
       <NavTree :nav="filterSearch"
                v-if="filterSearch.length > 0"
                :active-id="navActiveId"></NavTree>
@@ -80,6 +79,7 @@
               let newItem = {
                 label:     item.label,
                 id:        item.id,
+                keywords:  item.keywords,
                 component: item.component,
                 opened:    item.opened
               }
@@ -100,14 +100,15 @@
 
       },
 
-      // Поиск по полю label
+      // Поиск по полю label && keywords
       filterSearch () {
+
         return this.flattenNav.filter(item => {
-          return !this.searchInput ||
-            item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+          return !this.searchInput
+            || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+            || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
         })
       }
-
     },
 
     methods: {

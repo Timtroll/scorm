@@ -44,7 +44,7 @@ $global-xlarge-font-size: 2rem !default;
 $global-xxlarge-font-size: 2.625rem !default;
 
 // colors
-$global-emphasis-color: #161b25 !default;
+$global-emphasis-color: #212631 !default;
 $global-color: #666e78 !default;
 $global-muted-color: #95a1ab !default;
 //$global-secondary-muted-color: #666e78 !default;
@@ -58,16 +58,16 @@ $inverse-global-color: rgba($global-inverse-color, 0.7) !default;
 // backgrounds
 $global-background: #ffffff !default;
 $global-muted-background: #f2f8fa !default;
-$global-primary-background: #0CACCC !default;
-$global-success-background: #8ba753 !default;
-$global-warning-background: #FCA841 !default;
-$global-danger-background: #FF7856 !default;
+$global-primary-background: #1781f2 !default;
+$global-success-background: #53b35f !default;
+$global-warning-background: #FFA23F !default;
+$global-danger-background: #e24f45 !default;
 $global-secondary-background: #e1e4e6 !default;
 $global-template-background: #8ba753 !default;
 
 $inverse-global-primary-background: $global-inverse-color !default;
 
-$global-link-color: #0CACCC !default;
+$global-link-color: #1781f2 !default;
 $global-link-hover-color: darken($global-link-color, 10%) !default;
 //$global-link-hover-color: #137dcf !default;
 

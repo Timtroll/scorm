@@ -1,8 +1,9 @@
 const getters = {
 
-  isLoggedIn: state => !!state.user.token,
+  //isLoggedIn: state => !!state.user.token,
+  //
+  navTree: state => state.navTree.items,
 
-  authStatus: state => state.user.status
 
 }
 
