@@ -122,6 +122,7 @@
                 uk-icon="icon: mail"></span>
             <input class="uk-input"
                    autocomplete="bday"
+                   v-mask="'##.##.####'"
                    :placeholder="$t('profile.user.dateOfBirthPlaceholder')"
                    v-model="user.dateOfBirth.val"
                    type="text">
