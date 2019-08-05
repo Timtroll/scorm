@@ -303,14 +303,6 @@
                 "mask": "[0..9\w ]+",
                 "value": "",
             },
-            { ????????????????????
-                "type" : "input",
-                "name" : "linkConsultant",
-                "label" : "ссылка на 'онлайн-консультанта'",
-                "placeholder": "",
-                "mask": "[\:\/\.0..9\w]+",
-                "value": "",
-            },
             {
                 "type" : "input",
                 "name" : "linkPhone",
@@ -376,15 +368,6 @@
                 "placeholder": "Доставка по Москве и Московской области: 8 (919) 726-36-86",
                 "mask": "[0..9\w ]+",
                 "value": "",
-            },
-            { ????????????????????
-                "type" : "doublelist",
-                "name" : "catalogNavRoots",
-                "label" : "навигационные точки входа в каталог",
-                "placeholder": "PAGEID:9|2",
-                "mask": "",
-                "value": "",
-                "values": ["PAGEID","9","2"],
             },
             {
                 "type" : "textarea",
@@ -510,15 +493,6 @@
                 "mask": "",
                 "value": "2",
                 "values": ["2897", "9920", "9921"],
-            },
-            { ????????????????????
-                "type" : "list",
-                "name" : "autoReplace",
-                "label" : "список автозамен",
-                "placeholder": "",
-                "mask": "",
-                "value": "",
-                "value": [],
             },
             {
                 "type" : "input",

@@ -55,10 +55,14 @@ print Dumper( $self->pg_create(
     parent      => 0,
     publish     => \1,
     import_id   => 1,
-
     title       => 'Математика',
-    theme   => 'Дискретная Математика',
-    name    => 'Костенко'
+
+    data => {
+            lesson => {
+                    theme => 'Дискретная математика',   
+                    name => 'Костенко'
+            }        
+    }
 }
 ));
 
