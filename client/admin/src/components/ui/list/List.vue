@@ -2,20 +2,24 @@
   <ul class="uk-list uk-width-1-1">
     <li v-for="(item, index) in data"
         :key="index">
-      <Input :value="item.val"
-             :editable="item.editable"
-             :placeholder="labels[index]">
-      </Input>
+      <component v-bind:is="item.component"
+                 :value="item.value"
+                 :values="item.values"
+                 :editable="item.editable"
+                 :placeholder="labels[index]">
+      </component>
     </li>
   </ul>
 </template>
 <script>
 
-  import Input from '../inputs/Input'
+  const InputText   = () => import('../inputs/InputText')
+  const InputSelect = () => import('../inputs/InputSelect')
+  const InputNumber = () => import('../inputs/InputNumber')
 
   export default {
     name:       'List',
-    components: {Input},
+    components: {InputText, InputSelect, InputNumber},
 
     // Закрыть панель при нажатии "ESC"
     created () {

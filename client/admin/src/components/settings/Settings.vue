@@ -12,13 +12,13 @@
         :body-right-toggle-show="false"
         :body-right-show="card.bodyRightShow"
         :body-padding="false"
+        :body-left-action-event="card.bodyLeftShow"
         :loader="loader">
 
     <!-- // header // -->
-    <template #headerLeft>+</template>
-    <template #headerRight>+</template>
-    <template #header>
-    </template>
+    <template #headerLeft></template>
+    <template #headerRight></template>
+    <template #header></template>
 
     <!-- // footer // -->
     <template #footerLeft>+</template>
@@ -35,11 +35,12 @@
             :header-bgr-default="true"
             :header-left="true"
             :footer-right="true"
+            :body-padding="false"
             :loader="false">
 
         <template #headerLeft>
           <button type="button"
-                  class="uk-button uk-button-primary">
+                  class="uk-button uk-button-success">
             <img src="/img/icons/icon__plus.svg"
                  width="16"
                  height="16"
@@ -50,6 +51,8 @@
         </template>
 
         <template #header>
+
+          <!--table searchInput-->
           <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
             <a @click.prevent="clearSearchVal"
                v-if="table.searchInpu"
@@ -76,6 +79,8 @@
 
         <!--body-->
         <template #body>
+
+          <!--table-->
           <Table :header="table.header"
                  :data="table.data"
                  v-on:edit="editEl($event)"
@@ -126,7 +131,8 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <Tree :nav="nav"></Tree>
+      <Tree :nav="nav"
+            @click="bodyLeftActionEvent"></Tree>
     </template>
 
     <!--bodyRight-->
@@ -173,7 +179,7 @@
   import IconBug from '../ui/icons/IconBug'
   import Table from '../ui/table/Table'
   import List from '../ui/list/List'
-  import InputText from '../ui/inputs/Input'
+  import InputText from '../ui/inputs/InputText'
 
   export default {
 
@@ -186,52 +192,70 @@
 
         bodyComponent: null,
         card:          {
+          bodyLeftShow:     true,
           bodyRightShow:    false,
           bodyRightContent: []
         },
 
         table: {
-          settings: {readOnly: false},
-          header:   ['id', 'alias', 'title', 'type', 'default_value', 'set'],
-          data:     [
+          settings:    {readOnly: false},
+          header:      ['id', 'alias', 'title', 'type', 'default_value', 'set'],
+          data:        [
             [
-              {type: 'int', editable: false, validation: null, val: 1},
-              {type: 'string', editable: true, validation: null, val: 'id'},
-              {type: 'string', editable: true, validation: null, val: 'id'},
-              {type: 'select', editable: true, validation: null, val: 'int'},
-              {type: 'string', editable: true, validation: null, val: null},
-              {type: 'string', editable: true, validation: null, val: 'office'}
+              {
+                type: 'int', component: 'InputNumber', editable: true, validation: null, value: 1
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'id'},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'id'},
+              {
+                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
+                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
-              {type: 'int', editable: false, validation: null, val: 2},
-              {type: 'string', editable: true, validation: null, val: 'name'},
-              {type: 'string', editable: true, validation: null, val: 'Название организации'},
-              {type: 'select', editable: true, validation: null, val: 'string'},
-              {type: 'string', editable: true, validation: null, val: null},
-              {type: 'string', editable: true, validation: null, val: 'office'}
+              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 2},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'name'},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Название организации'},
+              {
+                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
+                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
-              {type: 'int', editable: false, validation: null, val: 3},
-              {type: 'string', editable: true, validation: null, val: 'system_name'},
-              {type: 'string', editable: true, validation: null, val: 'Системное название'},
-              {type: 'select', editable: true, validation: null, val: 'string'},
-              {type: 'string', editable: true, validation: null, val: null},
-              {type: 'string', editable: true, validation: null, val: 'office'}
+              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 3},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'system_name'},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Системное название'},
+              {
+                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
+                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
-              {type: 'int', editable: false, validation: null, val: 4},
-              {type: 'string', editable: true, validation: null, val: 'parent_id'},
-              {type: 'string', editable: true, validation: null, val: 'Родитель'},
-              {type: 'select', editable: true, validation: null, val: 'int'},
-              {type: 'string', editable: true, validation: null, val: null},
-              {type: 'string', editable: true, validation: null, val: 'office'}
+              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 4},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'parent_id'},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Родитель'},
+              {
+                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
+                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
-              {type: 'int', editable: false, validation: null, val: 5},
-              {type: 'string', editable: true, validation: null, val: 'is_active'},
-              {type: 'string', editable: true, validation: null, val: 'Статус'},
-              {type: 'select', editable: true, validation: null, val: 'int'},
-              {type: 'string', editable: true, validation: null, val: null},
-              {type: 'string', editable: true, validation: null, val: 'office'}
+              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 5},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'is_active'},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Статус'},
+              {
+                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
+                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+              },
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ]
           ],
-          searchInput: null,
+          searchInput: null
         }
 
       }
@@ -259,6 +283,10 @@
 
     methods: {
 
+      bodyLeftActionEvent () {
+        this.card.bodyLeftShow = !this.card.bodyLeftShow
+      },
+
       closeRightPanel () {
         this.card.bodyRightShow = false
       },
@@ -273,7 +301,7 @@
       // Очистка поля поиска
       clearSearchVal () {
         this.table.searchInput = null
-      },
+      }
     }
 
   }

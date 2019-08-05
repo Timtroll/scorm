@@ -5,7 +5,7 @@
     <td v-for="item in rowData"
         class="pos-table-row uk-text-nowrap cursor-pointer"
         @dblclick="edit(rowData)"
-        v-text="item.val"></td>
+        v-text="item.value"></td>
 
     <!--check current-->
     <td class="pos-table-checkbox uk-text-right uk-text-nowrap">

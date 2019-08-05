@@ -31,6 +31,7 @@
     <div class="pos-side-nav-container">
       <NavTree :nav="filterSearch"
                v-if="filterSearch.length > 0"
+               @click="click($event)"
                :active-id="navActiveId"></NavTree>
       <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
@@ -112,6 +113,10 @@
     },
 
     methods: {
+
+      click (item) {
+        this.$emit('click', item)
+      },
 
       // Очистка поля поиска
       clearSearchVal () {

@@ -18,14 +18,15 @@
            v-else>
       </div>
       <a class="pos-side-nav-item__label"
+         @click.prevent="click(navItem.id)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label"
          v-text="navItem.label"></a>
     </div>
 
     <!--children nav items-->
-    <Children v-if="navItem.children && navItem.children.length > 0 && opened"
-              :nav="navItem.children">
-    </Children>
+    <NavTree v-if="navItem.children && navItem.children.length > 0 && opened"
+             :nav="navItem.children">
+    </NavTree>
 
   </div>
 </template>
@@ -34,10 +35,10 @@
 
   export default {
 
-    name:       'NavTreeItem',
+    name: 'NavTreeItem',
 
     components: {
-      'Children': () => import('./NavTree')
+      'NavTree': () => import('./NavTree')
     },
     props:      {
 
@@ -56,6 +57,10 @@
 
       toggleChildren () {
         this.opened = !this.opened
+      },
+
+      click (item) {
+        this.$emit('click', item)
       }
     }
   }

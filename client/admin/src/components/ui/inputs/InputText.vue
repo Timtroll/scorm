@@ -8,29 +8,29 @@
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
           <div class="uk-form-icon uk-form-icon-flip">
-           <img src="/img/icons/icon__input.svg" uk-svg width="14" height="14">
+            <img src="/img/icons/icon__input_text.svg"
+                 uk-svg
+                 width="14"
+                 height="14">
           </div>
           <input class="uk-input"
                  :disabled="!editable"
                  :class="statusClass"
-                 v-model="value"
+                 v-model="valueInput"
                  type="text"
                  @blur="update"
                  :placeholder="placeholder">
         </div>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script>
   export default {
-    name: 'Input',
+    name: 'InputText',
 
     props: {
-
       value:       {
         default: null
       },
@@ -49,7 +49,9 @@
     },
 
     data () {
-      return {}
+      return {
+        valueInput: this.value
+      }
     },
 
     methods: {

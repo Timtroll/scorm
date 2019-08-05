@@ -3,7 +3,8 @@
     <ul class="pos-side-nav">
       <li v-for="item in nav"
           :key="item.id">
-        <NavTreeItem :nav-item="item"></NavTreeItem>
+        <NavTreeItem :nav-item="item"
+                     @click="click($event)"></NavTreeItem>
       </li>
     </ul>
   </div>
@@ -14,7 +15,7 @@
 
   export default {
 
-    name: 'NavTree',
+    name:       'NavTree',
     components: {NavTreeItem},
 
     props: {
@@ -22,6 +23,13 @@
         type: Array
       }
     },
+
+    methods: {
+
+      click (item) {
+        this.$emit('click', item)
+      }
+    }
 
   }
 </script>

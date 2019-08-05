@@ -8,6 +8,7 @@
          'pos-header-large' : headerLarge}"
          v-if="header">
 
+      <!-- toggle left body panel-->
       <a class="pos-card-header-item link"
          v-if="bodyLeftToggleShow"
          :class="{'uk-text-danger' : bodyLeftShow}"
@@ -17,6 +18,7 @@
              width="20"
              height="20">
       </a>
+
       <!--headerLeft-->
       <div class="pos-card-header-item"
            v-if="headerLeft">
@@ -34,6 +36,8 @@
 
         <slot name="headerRight"></slot>
       </div>
+
+      <!-- toggle right body panel-->
       <a class="pos-card-header-item link"
          v-if="bodyRightToggleShow"
          :class="{'uk-text-danger' : bodyRightShow}"
@@ -118,10 +122,10 @@
 </template>
 
 <script>
-
   import Loader from '../icons/Loader'
 
   const bodyMinSize = 840
+
   export default {
 
     name:       'Card',
@@ -164,10 +168,13 @@
         type:    Boolean
       },
 
-      bodyPadding:         {
+      //body
+      bodyPadding: {
         default: true,
         type:    Boolean
       },
+
+      // bodyLeft
       bodyLeft:            {
         default: false,
         type:    Boolean
@@ -180,6 +187,12 @@
         default: false,
         type:    Boolean
       },
+      bodyLeftActionEvent: {
+        default: false,
+        type:    Boolean
+      },
+
+      // bodyRight
       bodyRight:           {
         default: false,
         type:    Boolean
@@ -197,6 +210,7 @@
         type:    Boolean
       },
 
+      // loader
       loader: {
         default: true,
         type:    Boolean
@@ -223,6 +237,22 @@
       }
     },
 
+    watch: {
+
+      //
+      bodyLeftActionEvent () {
+
+        console.log(this.bodyWidth)
+        //this.bodyLeftShow = false
+
+        if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
+          this.bodyLeftShow = false
+        }
+      }
+    },
+
+    computed: {},
+
     beforeDestroy: function () {
       if (this.bodyRight || this.bodyLeft) {
         window.removeEventListener('resize', this.handleResize)
@@ -245,6 +275,7 @@
       },
 
       handleResize () {
+
         setTimeout(() => {
           this.bodyWidth = this.$refs.body.offsetWidth
         }, 300)
