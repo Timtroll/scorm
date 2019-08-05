@@ -3,9 +3,13 @@
 
     <!--header-->
     <div class="pos-card-header"
+         :class="{
+         'pos-bgr-default' : headerBgrDefault,
+         'pos-header-large' : headerLarge}"
          v-if="header">
 
       <a class="pos-card-header-item link"
+         v-if="bodyLeftToggleShow"
          :class="{'uk-text-danger' : bodyLeftShow}"
          @click.prevent="bodyLeftToggle()">
         <img src="/img/icons/icon__nav.svg"
@@ -98,28 +102,50 @@
         </div>
       </div>
     </transition>
+
+    <transition name="fade">
+      <div class="pos-card-loader"
+           v-if="loader">
+        <div>
+          <Loader :width="40"
+                  :height="40"></Loader>
+          <div class="uk-margin-small-top"
+               v-text="$t('actions.loading')"></div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 
+  import Loader from '../icons/Loader'
+
   const bodyMinSize = 840
   export default {
 
-    name: 'Card',
-
-    props: {
+    name:       'Card',
+    components: {Loader},
+    props:      {
 
       // header
-      header:      {
+      header:           {
         default: false,
         type:    Boolean
       },
-      headerLeft:  {
+      headerLarge:      {
         default: false,
         type:    Boolean
       },
-      headerRight: {
+      headerBgrDefault: {
+        default: false,
+        type:    Boolean
+      },
+      headerLeft:       {
+        default: false,
+        type:    Boolean
+      },
+      headerRight:      {
         default: false,
         type:    Boolean
       },
@@ -151,7 +177,7 @@
         type:    Boolean
       },
       bodyLeftToggleShow:  {
-        default: true,
+        default: false,
         type:    Boolean
       },
       bodyRight:           {
@@ -169,6 +195,11 @@
       bodyRightShow:       {
         default: false,
         type:    Boolean
+      },
+
+      loader: {
+        default: true,
+        type:    Boolean
       }
     },
 
@@ -176,7 +207,7 @@
       return {
         bodyWidth:     null, // 540
         bodyLeftWidth: null, // 540
-        bodyLeftShow:  true,
+        bodyLeftShow:  true
       }
     },
 
@@ -212,19 +243,6 @@
           }
         }, 300)
       },
-
-      // показать / скрыть правую панель
-      //bodyRightToggle () {
-      //
-      //  this.handleResize()
-      //  this.bodyRightShow = !this.bodyRightShow
-      //
-      //  setTimeout(() => {
-      //    if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
-      //      this.bodyLeftShow = false
-      //    }
-      //  }, 300)
-      //},
 
       handleResize () {
         setTimeout(() => {

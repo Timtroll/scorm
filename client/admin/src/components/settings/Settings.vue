@@ -11,7 +11,8 @@
         :body-right="true"
         :body-right-toggle-show="false"
         :body-right-show="card.bodyRightShow"
-        :body-padding="false">
+        :body-padding="false"
+        :loader="loader">
 
     <!-- // header // -->
     <template #headerLeft>+</template>
@@ -29,7 +30,49 @@
 
       <Card :footer="true"
             :footer-left="true"
-            :footer-right="true">
+            :header="true"
+            :header-large="true"
+            :header-bgr-default="true"
+            :header-left="true"
+            :footer-right="true"
+            :loader="false">
+
+        <template #headerLeft>
+          <button type="button"
+                  class="uk-button uk-button-primary">
+            <img src="/img/icons/icon__plus.svg"
+                 width="16"
+                 height="16"
+                 uk-svg>
+            <span class="uk-margin-small-left uk-visible@m"
+                  v-text="$t('actions.add')"></span>
+          </button>
+        </template>
+
+        <template #header>
+          <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
+            <a @click.prevent="clearSearchVal"
+               v-if="table.searchInpu"
+               class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__close.svg"
+                   width="10"
+                   height="10"
+                   uk-svg>
+            </a>
+            <div v-else
+                 class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__search.svg"
+                   width="14"
+                   height="14"
+                   uk-svg>
+            </div>
+            <input type="text"
+                   v-model="table.searchInput"
+                   @keyup.esc="clearSearchVal"
+                   placeholder="Поиск"
+                   class="uk-input">
+          </div>
+        </template>
 
         <!--body-->
         <template #body>
@@ -38,6 +81,7 @@
                  v-on:edit="editEl($event)"
                  :settings="table.settings"></Table>
         </template>
+
         <!--footerLeft-->
         <template #footerLeft>
           <button class="uk-button-primary uk-button uk-button-small">
@@ -77,6 +121,7 @@
           </div>
         </template>
       </Card>
+
     </template>
 
     <!--bodyLeft-->
@@ -91,6 +136,7 @@
             v-on:close="closeRightPanel"></List>
     </template>
 
+    <!--bodyRightFooter-->
     <template #bodyRightFooter>
       <div class="uk-flex uk-flex-between uk-width-1-1">
         <div class="">
@@ -184,7 +230,8 @@
               {type: 'string', editable: true, validation: null, val: null},
               {type: 'string', editable: true, validation: null, val: 'office'}
             ]
-          ]
+          ],
+          searchInput: null,
         }
 
       }
@@ -198,10 +245,15 @@
 
     computed: {
 
+      loader () {
+        if (this.nav) {
+          return false
+        }
+      },
+
       // Left nav tree
       nav () {
         return this.$store.getters.navTree
-        //return Settings.settings
       }
     },
 
@@ -216,7 +268,12 @@
         this.card.bodyRightShow    = !this.card.bodyRightShow
       },
 
-      removeEl () {}
+      removeEl () {},
+
+      // Очистка поля поиска
+      clearSearchVal () {
+        this.table.searchInput = null
+      },
     }
 
   }

@@ -24,6 +24,13 @@ const actions = {
 
   getNavTreeItem ({commit}, item) {
     commit('')
+  },
+
+  removeTableRow ({commit}, row) {
+
+  },
+  editTableRow ({commit}, row) {
+
   }
 }
 export default actions

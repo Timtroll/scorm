@@ -2,6 +2,7 @@
 @import "../mixins"
 
 $card-height-item: 50px
+$card-height-item-large: 70px
 $card-height-item-small: 40px
 $card-margin: $global-small-gutter
 $card-small-margin: $global-small-margin
@@ -14,6 +15,21 @@ $body-right-width: 700px
   flex-direction: column
   overflow: hidden
   position: relative
+
+.pos-card-loader
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  padding: $global-margin
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  text-align: center
+  background-color: $global-background
+  z-index: 10
 
 .pos-card-header
   border-bottom: $global-border-width solid $global-border
@@ -30,6 +46,14 @@ $body-right-width: 700px
   @media (max-width: $breakpoint-small)
     height: $card-height-item-small
     line-height: $card-height-item-small - $global-border-width
+
+  &.pos-header-large
+    height: $card-height-item-large
+    line-height: $card-height-item-large + $global-border-width
+    box-sizing: content-box
+    @media (max-width: $breakpoint-small)
+      height: $card-height-item-large
+      line-height: $card-height-item-large + $global-border-width
 
   & > *
     box-sizing: border-box
@@ -151,3 +175,5 @@ $body-right-width: 700px
   @media (max-width: $breakpoint-small)
     padding: $card-small-margin
 
+.pos-bgr-default
+  background-color: $global-background

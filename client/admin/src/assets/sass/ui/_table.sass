@@ -17,6 +17,7 @@ $table-min-width: 80px
 
   .pos-checkbox-switch
     transform: translateY(2px)
+
 .pos-table-row
   min-width: $table-min-width
   max-width: $table-min-width * 4
@@ -24,7 +25,6 @@ $table-min-width: 80px
   &::selection
     color: inherit
     background-color: inherit
-
 
 
 .pos-table-checkbox
@@ -42,3 +42,8 @@ $table-min-width: 80px
   top: 0
   z-index: 2
   background-color: $global-background
+
+  tr
+    th
+      color: $global-emphasis-color
+      vertical-align: middle
