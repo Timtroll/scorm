@@ -1,42 +1,45 @@
-table: {
-         settings: {readOnly: false, totalCount: 34535},
-         header:   ['id', 'alias', 'title', 'type', 'default_value', 'set'],
-         data:     [
-           [
-             {type: 'int', editable: false, validation: null, val: 1},
-             {type: 'string', editable: true, validation: null, val: 'id'},
-             {type: 'string', editable: true, validation: null, val: 'id'},
-             {type: 'select', editable: true, validation: null, val: 'int'},
-             {type: 'string', editable: true, validation: null, val: null},
-             {type: 'string', editable: true, validation: null, val: 'office'}
-           ], [
-             {type: 'int', editable: false, validation: null, val: 2},
-             {type: 'string', editable: true, validation: null, val: 'name'},
-             {type: 'string', editable: true, validation: null, val: 'Название организации'},
-             {type: 'select', editable: true, validation: null, val: 'string'},
-             {type: 'string', editable: true, validation: null, val: null},
-             {type: 'string', editable: true, validation: null, val: 'office'}
-           ], [
-             {type: 'int', editable: false, validation: null, val: 3},
-             {type: 'string', editable: true, validation: null, val: 'system_name'},
-             {type: 'string', editable: true, validation: null, val: 'Системное название'},
-             {type: 'select', editable: true, validation: null, val: 'string'},
-             {type: 'string', editable: true, validation: null, val: null},
-             {type: 'string', editable: true, validation: null, val: 'office'}
-           ], [
-             {type: 'int', editable: false, validation: null, val: 4},
-             {type: 'string', editable: true, validation: null, val: 'parent_id'},
-             {type: 'string', editable: true, validation: null, val: 'Родитель'},
-             {type: 'select', editable: true, validation: null, val: 'int'},
-             {type: 'string', editable: true, validation: null, val: null},
-             {type: 'string', editable: true, validation: null, val: 'office'}
-           ], [
-             {type: 'int', editable: false, validation: null, val: 5},
-             {type: 'string', editable: true, validation: null, val: 'is_active'},
-             {type: 'string', editable: true, validation: null, val: 'Статус'},
-             {type: 'select', editable: true, validation: null, val: 'int'},
-             {type: 'string', editable: true, validation: null, val: null},
-             {type: 'string', editable: true, validation: null, val: 'office'}
-           ]
-         ]
-       },
+{"table": {
+    "settings": {
+      "readOnly": false, // Наверно не нужно, будет управляться последними 3-мя параметрами
+      "totalCount": 34535,
+      "editable": 1, // глобально разрешить редактирование строк в таблицы
+      "removable": 1, // глобально разрешить удаление строк в таблице
+      "massEdit": 0 // показать чекбоксы для массового удаления / редатирования
+    },
+    "header": ["id", "alias", "title", "type", "default_value", "set"],
+    "body":[
+        [{
+            "type" : "input",
+            "name" : "fullDebugMode",
+            "label" : "режим обновления",
+            "placeholder": "",
+            "mask": "[0..9\w ]+",
+            "value": "",
+        },{
+            "type" : "doublelist",
+            "name" : "RUDAYS",
+            "label" : "дни недели, русские, именительный падеж",
+            "placeholder": "",
+            "mask": "",
+            "value": "3",
+            "values": [["1","Пн"],["2","Вт"],["3","Ср"],["4","Чт"],["5","Пт"],["6","Сб"],["0","Вс"]],
+        }],
+        [{
+            "type" : "input",
+            "name" : "fullDebugMode",
+            "label" : "режим обновления",
+            "placeholder": "",
+            "mask": "[0..9\w ]+",
+            "value": "",
+        },{
+            "type" : "doublelist",
+            "name" : "RUDAYS",
+            "label" : "дни недели, русские, именительный падеж",
+            "placeholder": "",
+            "mask": "",
+            "value": "3",
+            "values": [["1","Пн"],["2","Вт"],["3","Ср"],["4","Чт"],["5","Пт"],["6","Сб"],["0","Вс"]],
+        }]
+    ]
+  },
+}
