@@ -1,5 +1,5 @@
 <template>
-  <ul class="uk-list uk-width-1-1">
+  <ul class="pos-list">
     <li v-for="(item, index) in data"
         :key="index">
       <component v-bind:is="item.component"
@@ -13,13 +13,15 @@
 </template>
 <script>
 
-  const InputText   = () => import('../inputs/InputText')
-  const InputSelect = () => import('../inputs/InputSelect')
-  const InputNumber = () => import('../inputs/InputNumber')
+  const InputText     = () => import('../inputs/InputText')
+  const InputTextarea = () => import('../inputs/InputTextarea')
+  const InputSelect   = () => import('../inputs/InputSelect')
+  const InputNumber   = () => import('../inputs/InputNumber')
+  const InputCheckbox = () => import('../inputs/InputCheckbox')
 
   export default {
     name:       'List',
-    components: {InputText, InputSelect, InputNumber},
+    components: {InputTextarea, InputText, InputSelect, InputNumber, InputCheckbox},
 
     // Закрыть панель при нажатии "ESC"
     created () {

@@ -1,26 +1,18 @@
 <template>
-  <div class="uk-form-horizontal not-stacked">
+  <div class="uk-form-horizontal">
     <div>
       <label v-text="placeholder"
              class="uk-form-label uk-text-truncate"
              v-if="placeholder"></label>
 
       <div class="uk-form-controls">
-        <div class="uk-inline uk-width-1-1">
-          <div class="uk-form-icon uk-form-icon-flip">
-            <img src="/img/icons/icon__input_number.svg"
-                 uk-svg
-                 width="18"
-                 height="18">
-          </div>
-          <input class="uk-input"
-                 :disabled="!editable"
-                 :class="statusClass"
-                 v-model.number="valueInput"
-                 type="text"
-                 @blur="update"
-                 :placeholder="placeholder">
-        </div>
+        <textarea class="uk-textarea pos-textarea"
+                  rows="2"
+                  :disabled="!editable"
+                  :class="statusClass"
+                  v-model="valueInput"
+                  @blur="update"
+                  :placeholder="placeholder"></textarea>
       </div>
     </div>
   </div>
@@ -28,10 +20,9 @@
 
 <script>
   export default {
-    name: 'InputNumber',
+    name: 'InputTextarea',
 
     props: {
-
       value:       {
         default: null
       },

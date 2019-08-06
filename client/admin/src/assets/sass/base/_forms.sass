@@ -111,3 +111,30 @@ $checkbox-switch-duration: 0.1s
 
     &::after
       left: calc(50% - 2px)
+
+// pos-textarea
+.pos-textarea
+  min-width: 100%
+  min-height: 58px
+  max-height: 370px
+
+//
+.uk-form-horizontal
+  &.not-stacked
+    .uk-form-label
+      @media (max-width: $breakpoint-medium)
+        width: 160px
+        margin-top: 7px
+        float: left
+      @media (max-width: $breakpoint-small)
+        width: 140px
+
+    .uk-form-controls
+      @media (max-width: $breakpoint-medium)
+        margin-left: 170px
+      @media (max-width: $breakpoint-small)
+        margin-left: 150px
+
+    .uk-form-controls-text
+      @media (max-width: $breakpoint-medium)
+        padding-top: 4px

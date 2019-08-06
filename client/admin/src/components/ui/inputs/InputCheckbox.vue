@@ -5,22 +5,14 @@
              class="uk-form-label uk-text-truncate"
              v-if="placeholder"></label>
 
-      <div class="uk-form-controls">
-        <div class="uk-inline uk-width-1-1">
-          <div class="uk-form-icon uk-form-icon-flip">
-            <img src="/img/icons/icon__input_number.svg"
-                 uk-svg
-                 width="18"
-                 height="18">
-          </div>
-          <input class="uk-input"
-                 :disabled="!editable"
-                 :class="statusClass"
-                 v-model.number="valueInput"
-                 type="text"
-                 @blur="update"
-                 :placeholder="placeholder">
-        </div>
+      <div class="uk-form-controls uk-form-controls-text uk-text-right">
+        <input class="pos-checkbox-switch"
+               :disabled="!editable"
+               :class="statusClass"
+               v-model="valueInput"
+               type="checkbox"
+               @blur="update"
+               :placeholder="placeholder">
       </div>
     </div>
   </div>
@@ -28,10 +20,9 @@
 
 <script>
   export default {
-    name: 'InputNumber',
+    name: 'InputCheckbox',
 
     props: {
-
       value:       {
         default: null
       },

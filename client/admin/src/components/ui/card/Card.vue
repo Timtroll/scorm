@@ -98,7 +98,7 @@
       <div class="pos-card-body-right"
            v-if="bodyRight && bodyRightShow">
 
-        <div class="pos-card-body pos-padding">
+        <div class="pos-card-body">
           <slot name="bodyRight"></slot>
         </div>
         <div class="pos-card-footer">

@@ -1,0 +1,16 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+.pos-list
+  width: 100%
+  padding: 0
+  list-style: none
+
+  & > li
+    padding: $global-small-margin $global-small-gutter 0 $global-small-gutter
+    @media(max-width: $breakpoint-small)
+      padding: $global-small-margin $global-small-margin 0 $global-small-margin
+
+  & > li:nth-child(n+2)
+    margin-top: $global-small-margin
+    border-top: $global-border-width solid $global-border

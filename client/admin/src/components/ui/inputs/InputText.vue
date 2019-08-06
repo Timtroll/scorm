@@ -10,8 +10,8 @@
           <div class="uk-form-icon uk-form-icon-flip">
             <img src="/img/icons/icon__input_text.svg"
                  uk-svg
-                 width="14"
-                 height="14">
+                 width="18"
+                 height="18">
           </div>
           <input class="uk-input"
                  :disabled="!editable"
