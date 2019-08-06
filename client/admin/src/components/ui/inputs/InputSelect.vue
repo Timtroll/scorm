@@ -109,6 +109,7 @@
                            uk-svg>
                     </a>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -121,6 +122,9 @@
 </template>
 
 <script>
+
+  import UIkit from 'uikit/dist/js/uikit.min'
+
   export default {
     name: 'InputSelect',
 
@@ -178,7 +182,16 @@
       },
 
       removeItem (index) {
-        this.valuesInput.splice(index, 1)
+
+        UIkit.modal.confirm(this.$t('dialog.remove'), {
+          labels: {
+            ok:     this.$t('actions.ok'),
+            cancel: this.$t('actions.cancel')
+          }
+        }).then(() => {
+          this.valuesInput.splice(index, 1)
+        })
+
       },
 
       addItem () {
