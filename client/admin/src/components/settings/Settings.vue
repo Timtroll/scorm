@@ -180,13 +180,12 @@
   import IconBug from '../ui/icons/IconBug'
   import Table from '../ui/table/Table'
   import List from '../ui/list/List'
-  import InputText from '../ui/inputs/InputText'
 
   export default {
 
     name: 'Settings',
 
-    components: {InputText, List, Table, IconBug, Tree, NavTree, Card},
+    components: {List, Table, IconBug, Tree, NavTree, Card},
 
     data () {
       return {
@@ -200,60 +199,72 @@
 
         table: {
           settings:    {readOnly: false},
-          header:      ['id', 'alias', 'title', 'type', 'default_value', 'set'],
+          header:      ['InputNumber', 'InputText', 'InputTextarea', 'InputBoolean', 'InputSelect', 'InputList', 'InputDoubleList'],
           data:        [
-            [
-              {
-                type: 'int', component: 'InputNumber', editable: true, validation: null, value: 1
-              },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'id'},
-              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'id'},
-              {
-                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-              },
-              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
-            ], [
-              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 2},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'name'},
-              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Название организации'},
-              {
-                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
-                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-              },
-              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
-            ], [
-              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 3},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'system_name'},
-              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Системное название'},
-              {
-                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
-                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-              },
-              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
-            ], [
-              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 4},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'parent_id'},
-              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Родитель'},
-              {
-                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-              },
-              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
-            ], [
-              {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 5},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'is_active'},
-              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Статус'},
-              {
-                type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-              },
-              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
+            [{
+              component:   'InputNumber',
+              name:        'fullDebugMode',
+              label:       'Режим обновления',
+              placeholder: '',
+              editable:    true,
+              mask:        '[0..9\\w ]+',
+              value:       5,
+              values:      null
+            }, {
+              component:   'InputText',
+              name:        'site_url',
+              label:       'URL сайта включая http(s)://',
+              placeholder: '',
+              editable:    true,
+              mask:        '[:\\/-_\\.\\w]+',
+              value:       'http://freee.su',
+              values:      null
+            }, {
+              component:   'InputTextarea',
+              name:        'site_url',
+              label:       'URL сайта включая http(s)://',
+              placeholder: '',
+              editable:    true,
+              mask:        '[:\\/-_\\.\\w]+',
+              value:       'http://freee.su',
+              values:      null
+            }, {
+              component:   'InputBoolean',
+              name:        'true_false',
+              label:       'Да или нет, вот в чем вопрос',
+              placeholder: '',
+              editable:    true,
+              mask:        '',
+              value:       1,
+              values:      null
+            }, {
+              component:   'InputSelect',
+              name:        'multilang',
+              label:       'Основной язык',
+              placeholder: '',
+              editable:    true,
+              mask:        '',
+              value:       'rus',
+              values:      ['rus', 'en', 'esp', 'ch']
+            }, {
+              component:   'InputList',
+              name:        'CatalogNumPPVariants',
+              label:       'Количественные варианты деления на страницы',
+              placeholder: '',
+              editable:    true,
+              mask:        '',
+              value:       null,
+              values:      ['10', '20', '30', '40', '50']
+            }, {
+              component:   'InputDoubleList',
+              name:        'libid',
+              label:       'Модуль владелец',
+              placeholder: '',
+              editable:    true,
+              mask:        '',
+              value:       null,
+              values:      [['1', 'Шаблоны'], ['2', 'Календарь'], ['3', 'заявки'], ['4', 'Редактор форм'], ['5', 'Страницы сайта'], ['6', 'Пользователи сайта'], ['7', 'Медиа'], ['8', 'Новости'], ['9', 'Облако тэгов'], ['10', 'Отзывы'], ['11', 'Каталог'], ['12', 'Формы'], ['13', 'Настройки'], ['14', 'Форум'], ['15', 'Поиск'], ['16', 'банеры'], ['17', 'Вакансии'], ['18', 'Визуальный редактор'], ['19', 'Администраторы'], ['20', 'Файловый менеджер'], ['21', 'Управление MySQL'], ['22', 'LiveSupport'], ['23', 'Учёт'], ['24', 'Вопросы к курсам'], ['25', 'Тесты']]
+            }
             ]
           ],
           searchInput: null

@@ -20,7 +20,7 @@
 
 <script>
   export default {
-    name: 'InputCheckbox',
+    name: 'InputBoolean',
 
     props: {
       value:       {

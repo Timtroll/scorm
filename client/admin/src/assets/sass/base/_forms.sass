@@ -145,3 +145,21 @@ $checkbox-switch-duration: 0.1s
   margin-top: $global-small-margin
   background-color: $global-muted-background
   border-radius: $border-rounded-border-radius
+
+.pos-form-split
+  & > *
+    input
+      border-right: none
+      border-radius: 0
+
+    &:first-child
+      input
+        border-right: none
+        border-radius: $border-rounded-border-radius 0 0 $border-rounded-border-radius
+
+
+    &:last-child
+      input
+        border-radius: 0 $border-rounded-border-radius $border-rounded-border-radius 0
+
+

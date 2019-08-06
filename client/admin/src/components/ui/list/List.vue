@@ -13,15 +13,17 @@
 </template>
 <script>
 
-  const InputText     = () => import('../inputs/InputText')
-  const InputTextarea = () => import('../inputs/InputTextarea')
-  const InputSelect   = () => import('../inputs/InputSelect')
-  const InputNumber   = () => import('../inputs/InputNumber')
-  const InputCheckbox = () => import('../inputs/InputCheckbox')
+  const InputText       = () => import('../inputs/InputText')
+  const InputTextarea   = () => import('../inputs/InputTextarea')
+  const InputSelect     = () => import('../inputs/InputSelect')
+  const InputNumber     = () => import('../inputs/InputNumber')
+  const InputBoolean    = () => import('../inputs/InputBoolean')
+  const InputList       = () => import('../inputs/InputList')
+  const InputDoubleList = () => import('../inputs/InputDoubleList')
 
   export default {
     name:       'List',
-    components: {InputTextarea, InputText, InputSelect, InputNumber, InputCheckbox},
+    components: {InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputList, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {
