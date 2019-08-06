@@ -199,7 +199,7 @@
 
         table: {
           settings:    {readOnly: false},
-          header:      ['InputNumber', 'InputText', 'InputTextarea', 'InputBoolean', 'InputSelect', 'InputList', 'InputDoubleList'],
+          header:      ['InputNumber', 'InputText', 'InputTextarea', 'InputBoolean','InputRadio', 'InputSelect', 'InputList', 'InputDoubleList'],
           data:        [
             [{
               component:   'InputNumber',
@@ -237,6 +237,15 @@
               mask:        '',
               value:       1,
               values:      null
+            },  {
+              component:   'InputRadio',
+              name:        'radio buttons',
+              label:       'Да или нет, а может и что-то другое, вот в чем вопрос',
+              placeholder: '',
+              editable:    true,
+              mask:        '',
+              value:       'rus',
+              values:      ['rus', 'en', 'esp', 'ch']
             }, {
               component:   'InputSelect',
               name:        'multilang',

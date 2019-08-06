@@ -34,9 +34,10 @@
 
       <TableRow :row-data="row"
                 :checked-all="checked"
-                v-for="row in data"
+                v-for="(row, index) in data"
                 v-on:check="checkedAll"
                 v-on:edit="edit(row)"
+                :key="index"
                 v-on:remove="remove(row)">
       </TableRow>
 

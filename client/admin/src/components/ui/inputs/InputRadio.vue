@@ -6,10 +6,11 @@
              v-if="placeholder"></label>
 
       <div class="uk-form-controls uk-form-controls-text uk-text-right">
-        <input class="pos-checkbox-switch"
+        <input v-for="(radio, index) in values" class="pos-checkbox-switch"
                :disabled="!editable"
+               :value="valuesInput[index]"
                v-model="valueInput"
-               type="checkbox">
+               type="radio">
       </div>
     </div>
   </div>
@@ -17,10 +18,13 @@
 
 <script>
   export default {
-    name: 'InputBoolean',
+    name: 'InputRadio',
 
     props: {
       value:       {
+        default: null
+      },
+      values:       {
         default: null
       },
       status:      { // 'loading' / 'success' / 'error'

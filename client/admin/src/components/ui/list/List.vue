@@ -18,12 +18,13 @@
   const InputSelect     = () => import('../inputs/InputSelect')
   const InputNumber     = () => import('../inputs/InputNumber')
   const InputBoolean    = () => import('../inputs/InputBoolean')
+  const InputRadio      = () => import('../inputs/InputRadio')
   const InputList       = () => import('../inputs/InputList')
   const InputDoubleList = () => import('../inputs/InputDoubleList')
 
   export default {
     name:       'List',
-    components: {InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputList, InputDoubleList},
+    components: {InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {

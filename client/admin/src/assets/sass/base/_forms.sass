@@ -149,8 +149,9 @@ $checkbox-switch-duration: 0.1s
 .pos-form-split
   & > *
     input
-      border-right: none
       border-radius: 0
+      &:not(:last-child)
+        border-right: none
 
     &:first-child
       input
