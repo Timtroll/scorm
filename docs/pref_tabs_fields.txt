@@ -78,13 +78,13 @@
                 "values": ["0","gallery","crop","179","281"],
             },
             {
-                "type" : "list",
+                "type" : "Select",
                 "name" : "multilang",
                 "label" : "включение многоязычной поддержки.",
                 "placeholder": "",
                 "mask": "",
-                "value": "1",
-                "values": ["Русский","rus","default English","eng Espanol","esp"],
+                "value": "rus",
+                "values": ["rus","en","esp","ch"],
             },
             {
                 "type" : "doublelist",

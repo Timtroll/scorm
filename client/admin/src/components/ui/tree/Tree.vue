@@ -1,30 +1,47 @@
 <template>
   <div class="uk-flex uk-height-1-1 uk-flex-column">
 
-    <!--searchInput -->
-    <div class="uk-padding-small pos-border-bottom ">
-      <div class="uk-position-relative">
-        <a @click.prevent="clearSearchVal"
-           v-if="searchInput"
-           class="uk-form-icon uk-form-icon-flip">
-          <img src="/img/icons/icon__close.svg"
-               width="12"
-               height="12"
-               uk-svg>
-        </a>
-        <div v-else
-             class="uk-form-icon uk-form-icon-flip">
-          <img src="/img/icons/icon__search.svg"
-               width="14"
-               height="14"
-               uk-svg>
-        </div>
+    <!--Nav tree header-->
+    <div class="uk-padding-small pos-border-bottom">
+      <div class="uk-grid-small"
+           uk-grid>
+        <!--searchInput -->
+        <div class="uk-width-expand">
+          <div class="uk-position-relative">
+            <a @click.prevent="clearSearchVal"
+               v-if="searchInput"
+               class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__close.svg"
+                   width="12"
+                   height="12"
+                   uk-svg>
+            </a>
+            <div v-else
+                 class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__search.svg"
+                   width="14"
+                   height="14"
+                   uk-svg>
+            </div>
 
-        <input class="uk-input"
-               v-model="searchInput"
-               @keyup.esc="clearSearchVal"
-               :placeholder="$t('actions.search')">
+            <input class="uk-input"
+                   v-model="searchInput"
+                   @keyup.esc="clearSearchVal"
+                   :placeholder="$t('actions.search')">
+          </div>
+        </div>
+        <!--Add Tree root el -->
+        <div class="uk-width-auto">
+          <button type="button"
+                  class="uk-button uk-button-default">
+            <img src="/img/icons/icon__plus.svg"
+                 width="16"
+                 height="16"
+                 uk-svg>
+          </button>
+        </div>
       </div>
+
     </div>
 
     <!--Nav tree-->

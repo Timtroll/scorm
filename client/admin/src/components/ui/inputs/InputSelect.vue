@@ -37,7 +37,13 @@
               <img src="/img/icons/icon__edit.svg"
                    width="16"
                    height="16"
-                   uk-svg>
+                   uk-svg
+                   v-if="!editValues">
+              <img src="/img/icons/icon__close.svg"
+                   width="16"
+                   height="16"
+                   uk-svg
+                   v-else>
             </button>
           </div>
         </div>
@@ -83,8 +89,8 @@
                     <div class="uk-form-icon uk-form-icon-flip">
                       <img src="/img/icons/icon__input_text.svg"
                            uk-svg
-                           width="18"
-                           height="18">
+                           width="14"
+                           height="14">
                     </div>
                     <input class="uk-input uk-form-small"
                            v-model="valuesInput[index]"
@@ -94,7 +100,8 @@
 
                   <!--remove value-->
                   <div class="uk-width-auto">
-                    <a class="uk-button uk-button-small uk-button-danger"
+                    <a class="uk-button uk-button-link pos-link-danger"
+                       style="transform: translateY(-3px)"
                        @click.prevent="removeItem(index)">
                       <img src="/img/icons/icon__trash.svg"
                            width="14"
@@ -109,7 +116,6 @@
         </transition>
       </div>
     </div>
-
 
   </div>
 </template>
