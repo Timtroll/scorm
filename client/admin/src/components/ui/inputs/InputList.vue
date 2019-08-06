@@ -79,7 +79,7 @@
 
     props: {
 
-      values:      {
+      value:      {
         type: Array
       },
       status:      { // 'loading' / 'success' / 'error'
@@ -99,7 +99,7 @@
     data () {
 
       return {
-        valuesInput: this.values
+        valuesInput: this.value
       }
     },
 

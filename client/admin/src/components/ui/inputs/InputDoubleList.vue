@@ -43,9 +43,7 @@
                                :key="indx"
                                type="text">
                       </div>
-
                     </div>
-
                   </div>
 
                   <!--remove value-->
@@ -59,10 +57,8 @@
                            uk-svg>
                     </a>
                   </div>
-
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -94,7 +90,7 @@
 
     props: {
 
-      values:      {
+      value:      {
         type: Array
       },
       status:      { // 'loading' / 'success' / 'error'
@@ -114,7 +110,7 @@
     data () {
 
       return {
-        valuesInput: this.values,
+        valuesInput: this.value,
         editValues:  false
       }
     },
