@@ -24,7 +24,7 @@ $table-min-width: 100px
   max-width: $table-min-width * 4
 
   &:not(.ellipsis)
-    &>*
+    & > *
       overflow-wrap: break-word
       word-wrap: break-word
       overflow-x: hidden
@@ -32,7 +32,7 @@ $table-min-width: 100px
       max-height: $table-min-width
 
   &.ellipsis
-    &>*
+    & > *
       overflow: hidden
       text-overflow: ellipsis
       white-space: nowrap
