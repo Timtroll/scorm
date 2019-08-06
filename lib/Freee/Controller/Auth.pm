@@ -80,6 +80,9 @@ sub check_token {
     my ($self, %data);
     $self = shift;
 
+# для отладки
+return 1;
+
 # ????????? удаляем?
     # delete old tokens
     map {

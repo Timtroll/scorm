@@ -40,7 +40,7 @@ sub startup {
 
     # init Beanstalk connection
     $self->beans_init();
-
+print $self->beans_init(), "\n";
     # prepare validate functions
     prepare_validate();
 

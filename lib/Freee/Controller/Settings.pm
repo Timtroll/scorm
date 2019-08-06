@@ -1,6 +1,17 @@
 package Freee::Controller::Settings;
 
+use utf8;
+use Encode;
+
+# use open qw(:utf8);
+# binmode(STDIN,':utf8');
+# binmode(STDOUT,':utf8');
+# binmode(STDIN, ':encoding(UTF-8)');
+# binmode(STDOUT, ':encoding(UTF-8)');
+
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::File;
+
 
 use Data::Dumper;
 
@@ -8,40 +19,13 @@ sub index {
     my ($self);
     $self = shift;
 
+    my $path = Mojo::File->new('/home/troll/workspace/scorm/docs/pref_tabs_fields.txt');
+    my $settings = $path->slurp;
+    utf8::decode($settings);
+
     # показываем все настройки
     $self->render(
-        json    => {
-            'core'  => {
-                'usr'   => 'http://freee.su'
-            },
-            'pages'  => {
-                'type'          => 'chapter',           # chater/text/good/
-                'title'         => 'Заголовок',
-                'meta'          => 'meta теги',
-                'description'   => 'краткое содержание',
-                'text'          => 'текст',
-                'media'         => [1, 2, 3],           # id медиа-файлов
-                'owner'         => 'id родителя',
-                'distance'      => 1,                   # уровень вложенности
-                'status'        => 1,                   # вкл/выкл
-            },
-            'catalog'  => {
-            },
-            'users'  => {
-                'name'          => 'Вася',              # имя пользователя
-                'phone'         => '+7 981 888-8888',   # телефон
-                'email'         => 'troll@spam.net.ua', # имя пользователя
-                'status'        => 1,                   # вкл/выкл
-            },
-            'media'  => {
-            },
-            'news'  => {
-            },
-            'mention'  => {
-            },
-            'scorm'  => {
-            },
-        }
+        json    => $settings
     );
 }
 
