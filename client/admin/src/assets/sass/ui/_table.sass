@@ -1,7 +1,7 @@
 @import "../uikit/variables"
 @import "../mixins"
 
-$table-min-width: 80px
+$table-min-width: 100px
 
 .pos-table
   &:not(.no-border)
@@ -22,6 +22,21 @@ $table-min-width: 80px
 .pos-table-row
   min-width: $table-min-width
   max-width: $table-min-width * 4
+
+  &:not(.ellipsis)
+    &>*
+      overflow-wrap: break-word
+      word-wrap: break-word
+      overflow-x: hidden
+      overflow-y: auto
+      max-height: $table-min-width
+
+  &.ellipsis
+    &>*
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+
 
   &::selection
     color: inherit

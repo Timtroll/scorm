@@ -3,9 +3,12 @@
   <tr>
     <!--data-->
     <td v-for="item in rowData"
-        class="pos-table-row uk-text-nowrap cursor-pointer"
-        @dblclick="edit(rowData)"
-        v-text="item.value"></td>
+        class="pos-table-row cursor-pointer"
+        :class="{'ellipsis' : ellipsis}"
+        @click="toggleEllipsis"
+        @dblclick="edit(rowData)">
+      <div v-text="item.value"></div>
+    </td>
 
     <!--check current-->
     <td class="pos-table-checkbox uk-text-right uk-text-nowrap">
@@ -64,11 +67,16 @@
 
     data () {
       return {
+        ellipsis:   true,
         checkedRow: false
       }
     },
 
     methods: {
+
+      toggleEllipsis () {
+        this.ellipsis = !this.ellipsis
+      },
 
       notCheckedAll () {
         if (this.checkedAll) {
