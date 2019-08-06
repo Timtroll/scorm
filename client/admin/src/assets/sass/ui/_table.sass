@@ -4,8 +4,9 @@
 $table-min-width: 80px
 
 .pos-table
-  border: $global-border-width solid $global-border
-  border-radius: $border-rounded-border-radius
+  &:not(.no-border)
+    border: $global-border-width solid $global-border
+    border-radius: $border-rounded-border-radius
 
   a
     & > svg

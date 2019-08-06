@@ -82,6 +82,7 @@
 
           <!--table-->
           <Table :header="table.header"
+                 :borders="false"
                  :data="table.data"
                  v-on:edit="editEl($event)"
                  :settings="table.settings"></Table>
@@ -206,52 +207,52 @@
                 type: 'int', component: 'InputNumber', editable: true, validation: null, value: 1
               },
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'id'},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'id'},
+              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'id'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
                 values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
               },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
               {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 2},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'name'},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Название организации'},
+              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Название организации'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
                 values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
               },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
               {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 3},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'system_name'},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Системное название'},
+              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Системное название'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
                 values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
               },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
               {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 4},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'parent_id'},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Родитель'},
+              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Родитель'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
                 values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
               },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ], [
               {type: 'int', component: 'InputNumber', editable: false, validation: null, value: 5},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'is_active'},
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: 'Статус'},
+              {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Статус'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
                 values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
               },
-              {type: 'string', component: 'InputText', editable: true, validation: null, value: null},
+              {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
             ]
           ],

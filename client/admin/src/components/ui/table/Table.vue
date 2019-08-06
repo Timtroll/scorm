@@ -1,6 +1,7 @@
 <template>
   <div class="uk-overflow-auto uk-height-1-1 uk-position-relative">
-    <table class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small  uk-table-middle">
+    <table class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small  uk-table-middle"
+           :class="{'no-border': !borders}">
       <thead class="pos-table-header">
       <tr>
 
@@ -54,6 +55,11 @@
 
       settings: {
         type: Object
+      },
+
+      borders: {
+        type:    Boolean,
+        default: true
       },
 
       header: {
