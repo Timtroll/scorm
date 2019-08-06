@@ -14,7 +14,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "input",
@@ -170,7 +170,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "input",
@@ -278,7 +278,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "textarea",
@@ -347,7 +347,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "input",
@@ -392,7 +392,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "input",
@@ -508,7 +508,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "doublelist",
@@ -537,7 +537,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "input",
@@ -573,7 +573,7 @@
               "removable": 1, // глобально разрешить удаление строк в таблице
               "massEdit": 0 // показать чекбоксы для массового удаления / редактирования
             },
-            "header": ["name", "label", "value", "values", "type"],
+            "header": ["name", "label", "value", "type"],
             "body":[
                 {
                     "type" : "doublelist",
