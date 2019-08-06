@@ -210,7 +210,7 @@
               {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'id'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
               },
               {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
@@ -220,7 +220,7 @@
               {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Название организации'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
-                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
               },
               {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
@@ -230,7 +230,7 @@
               {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Системное название'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'string',
-                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
               },
               {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 0},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
@@ -240,7 +240,7 @@
               {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Родитель'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
               },
               {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
@@ -250,7 +250,7 @@
               {type: 'string', component: 'InputTextarea', editable: true, validation: null, value: 'Статус'},
               {
                 type:   'select', component: 'InputSelect', editable: true, validation: null, value: 'int',
-                values: [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']]
+                values: [ 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
               },
               {type: 'string', component: 'InputCheckbox', editable: true, validation: null, value: 1},
               {type: 'string', component: 'InputText', editable: true, validation: null, value: 'office'}
