@@ -14,6 +14,7 @@
                  height="18">
           </div>
           <input class="uk-input"
+                 pattern="[0-9]*"
                  :disabled="!editable"
                  :class="statusClass"
                  v-model.number="valueInput"
