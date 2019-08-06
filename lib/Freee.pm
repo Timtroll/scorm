@@ -13,7 +13,7 @@ use validate;
 use Data::Dumper;
 
 $| = 1;
-has [qw( websockets amqp )];
+# has [qw( websockets amqp )];
 
 # This method will run once at server start
 sub startup {
@@ -33,10 +33,13 @@ sub startup {
     $self->sessions->default_expiration($config->{'expires'});
 
     $self->plugin('Freee::Helpers::PgGraph');
-    $self->plugin('Freee::Helpers::Rabbit');
+    $self->plugin('Freee::Helpers::Beanstalk');
 
     # init Pg connection
     $self->pg_init();
+
+    # init Beanstalk connection
+    $self->beans_init();
 
     # prepare validate functions
     prepare_validate();

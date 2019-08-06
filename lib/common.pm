@@ -7,7 +7,7 @@ use strict;
 use Mojo::Home;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $amqp $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routes $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 use Data::Dumper;
 
@@ -15,7 +15,7 @@ my $config = {};
 my $tokens = {};
 my $permissions = {};
 my $websockets = {};
-my $amqp = {};
+my $beans = {};
 
 # vars for Graph database
 my $dbh = {};
@@ -38,7 +38,7 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $amqp $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routes $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;

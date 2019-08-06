@@ -405,6 +405,7 @@ print "$sql\n";
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_data_string" RESTART IDENTITY' );
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_fields" RESTART IDENTITY' );
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_items" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'ALTER SEQUENCE eav_items_id_seq RESTART' );
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_links" RESTART IDENTITY' );
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_sets" RESTART IDENTITY' );
         $self->pg_dbh->do( 'TRUNCATE "public"."EAV_submodules_subscriptions" RESTART IDENTITY' );
