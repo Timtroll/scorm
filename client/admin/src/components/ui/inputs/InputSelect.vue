@@ -10,7 +10,7 @@
              uk-grid>
           <div class="uk-width-expand"
                uk-form-custom="target: > * > span:first-child">
-            <select v-model.number="valueInput"
+            <select v-model="valueInput"
                     :disabled="!editable || editValues"
                     @change="update">
               <option value="item"

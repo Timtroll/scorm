@@ -16,6 +16,15 @@ $table-min-width: 100px
   thead tr
     background-color: $global-background
 
+  tbody td,
+  thead th
+    &:not(:first-child)
+      border-left: $global-border-width solid $global-border
+
+    &:last-child
+      padding: 0 $global-small-margin
+
+
   .pos-checkbox-switch
     transform: translateY(2px)
 
@@ -38,7 +47,8 @@ $table-min-width: 100px
       white-space: nowrap
 
 
-  &::selection
+  &::selection,
+  & > *::selection
     color: inherit
     background-color: inherit
 
@@ -63,3 +73,10 @@ $table-min-width: 100px
     th
       color: $global-emphasis-color
       vertical-align: middle
+
+.pos-table-expand
+  text-align: center
+  position: sticky
+  left: 0
+  background-color: inherit
+

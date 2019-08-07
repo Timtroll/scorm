@@ -1,10 +1,11 @@
 <template>
 
   <tr>
-    <td class="uk-text-nowrap">
+    <td class="pos-table-expand">
 
       <!--remove Row-->
-      <a class="uk-icon-link uk-link-muted uk-margin-small-right uk-display-inline-block"
+      <a class="uk-icon-link uk-link-muted uk-display-inline-block"
+         style="width: 16px"
          @click.prevent="toggleEllipsis">
         <img height="16"
              v-if="ellipsis"

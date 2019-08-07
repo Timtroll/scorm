@@ -2,17 +2,21 @@
   <div class="uk-overflow-auto uk-height-1-1 uk-position-relative">
     <table class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small  uk-table-middle"
            :class="{'no-border': !borders}">
+
+      <!--header-->
       <thead class="pos-table-header">
       <tr>
-        <th class="">
-          <!--edit Row-->
-          <span class="uk-margin-small-right uk-display-inline-block">
+        <!--expand Row-->
+        <th class="pos-table-expand">
+          <div style="width: 16px">
             <img src="/img/icons/icon__expand.svg"
-                 width="16"
-                 height="16"
-                 uk-svg></span>
+                 width="14"
+                 height="14"
+                 uk-svg>
+          </div>
         </th>
-        <!--header-->
+
+        <!--header rows data-->
         <th v-for="item in header"
             v-text="item"></th>
         <th class="uk-text-right pos-table-checkbox">
