@@ -30,6 +30,7 @@
                          uk-grid>
 
                       <div class="uk-inline uk-width-1-2"
+                           :class="{'uk-width-1-3' : indx === 0, 'uk-width-expand' : indx > 0}"
                            v-for="(input, indx) in valuesInput[index]">
 
                         <div class="uk-form-icon uk-form-icon-flip">
@@ -90,7 +91,7 @@
 
     props: {
 
-      value:      {
+      value:       {
         type: Array
       },
       status:      { // 'loading' / 'success' / 'error'
