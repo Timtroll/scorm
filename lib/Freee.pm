@@ -56,12 +56,12 @@ print $self->beans_init(), "\n";
 
     my $auth = $r->under()              ->to('auth#check_token');
 
-    $auth->post('/cms/set')             ->to('settings#index');
-    $auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');
+    $auth->post('/cms/set')             ->to('settings#index'); # табы
+    $auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list'); # раздел
     $auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
-    $auth->post('/cms/set_savetab')     ->to('settings#set_savetab');
+    $auth->post('/cms/set_savetab')     ->to('settings#set_savetab'); # подраздел
     $auth->post('/cms/set_deletetab')   ->to('settings#set_deletetab');
-    $auth->post('/cms/set_add')         ->to('settings#set_add');
+    $auth->post('/cms/set_add')         ->to('settings#set_add'); # строка таблицы
     $auth->post('/cms/set_save')        ->to('settings#set_save');
     $auth->post('/cms/set_delete')      ->to('settings#set_delete');
 
