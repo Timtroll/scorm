@@ -1,11 +1,26 @@
 <template>
 
   <tr>
+    <td class="uk-text-nowrap">
+
+      <!--remove Row-->
+      <a class="uk-icon-link uk-link-muted uk-margin-small-right uk-display-inline-block"
+         @click.prevent="toggleEllipsis">
+        <img height="16"
+             v-if="ellipsis"
+             src="/img/icons/icon_arrow__down.svg"
+             uk-svg
+             width="16">
+        <img height="16"
+             v-else
+             src="/img/icons/icon_arrow__up.svg"
+             uk-svg
+             width="16"></a>
+    </td>
     <!--data-->
     <td v-for="item in rowData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @click="toggleEllipsis"
         @dblclick="edit(rowData)">
       <div v-text="item.value"></div>
     </td>

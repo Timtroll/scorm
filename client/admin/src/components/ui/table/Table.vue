@@ -4,7 +4,14 @@
            :class="{'no-border': !borders}">
       <thead class="pos-table-header">
       <tr>
-
+        <th class="">
+          <!--edit Row-->
+          <span class="uk-margin-small-right uk-display-inline-block">
+            <img src="/img/icons/icon__expand.svg"
+                 width="16"
+                 height="16"
+                 uk-svg></span>
+        </th>
         <!--header-->
         <th v-for="item in header"
             v-text="item"></th>
