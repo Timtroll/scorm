@@ -18,11 +18,26 @@ $table-min-width: 100px
 
   tbody td,
   thead th
+    box-sizing: border-box
     &:not(:first-child)
       border-left: $global-border-width solid $global-border
 
     &:last-child
       padding: 0 $global-small-margin
+
+
+  thead th
+    text-transform: none
+    font-size: .8rem
+    color: $global-color
+    vertical-align: middle
+
+    & > *
+      display: inline-block
+      min-height: 24px
+      line-height: 24px
+      svg
+        transform: translateY(-2px)
 
 
   .pos-checkbox-switch
@@ -68,11 +83,6 @@ $table-min-width: 100px
   top: 0
   z-index: 2
   background-color: $global-background
-
-  tr
-    th
-      color: $global-emphasis-color
-      vertical-align: middle
 
 .pos-table-expand
   text-align: center

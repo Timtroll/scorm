@@ -1,7 +1,5 @@
 <template>
-  <Card :header="true"
-        :header-left="false"
-        :header-right="false"
+  <Card :header="false"
         :footer="false"
         :footer-left="true"
         :footer-right="true"
@@ -28,34 +26,69 @@
     <!-- // Body // -->
     <template #body>
 
-      <Card :footer="true"
-            :footer-left="true"
+      <Card :footer="false"
+            :footer-left="false"
             :header="true"
-            :header-large="true"
+            :header-large="false"
             :header-bgr-default="true"
             :header-left="true"
-            :footer-right="true"
-            :body-padding="false"
+            :footer-right="false"
+            :body-padding="true"
             :loader="false">
 
         <template #headerLeft>
-          <button type="button"
-                  class="uk-button uk-button-success">
-            <img src="/img/icons/icon__plus.svg"
-                 width="16"
-                 height="16"
-                 uk-svg>
-            <span class="uk-margin-small-left uk-visible@m"
-                  v-text="$t('actions.add')"></span>
-          </button>
+          <div class="uk-grid-small"
+               uk-grid>
+
+            <!--Add Row-->
+            <div>
+              <button type="button"
+                      class="uk-button uk-button-success uk-button-small">
+                <img src="/img/icons/icon__plus.svg"
+                     width="16"
+                     height="16"
+                     uk-svg>
+                <span class="uk-margin-small-left uk-visible@m"
+                      v-text="$t('actions.add')"></span>
+              </button>
+            </div>
+
+            <!--Remove Row-->
+            <div>
+              <button class="uk-button-danger uk-button uk-button-small"
+                      disabled>
+                <img src="/img/icons/icon__trash.svg"
+                     uk-svg
+                     width="10"
+                     height="10">
+                <span class="uk-margin-small-left uk-visible@s"
+                      v-text="$t('actions.remove')"></span>
+              </button>
+            </div>
+          </div>
+
         </template>
 
         <template #header>
 
+          <ul class="uk-pagination uk-margin-remove"
+              uk-margin>
+            <li><a href="#">
+              <span uk-pagination-previous></span>
+            </a></li>
+            <li><a href="#">1</a></li>
+            <li class="uk-active">
+              <span>4</span>
+            </li>
+            <li><a href="#">8</a></li>
+            <li><a href="#">
+              <span uk-pagination-next></span>
+            </a></li>
+          </ul>
           <!--table searchInput-->
           <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
             <a @click.prevent="clearSearchVal"
-               v-if="table.searchInpu"
+               v-if="table.searchInput"
                class="uk-form-icon uk-form-icon-flip">
               <img src="/img/icons/icon__close.svg"
                    width="10"
@@ -73,7 +106,7 @@
                    v-model="table.searchInput"
                    @keyup.esc="clearSearchVal"
                    placeholder="Поиск"
-                   class="uk-input">
+                   class="uk-input uk-form-small">
           </div>
         </template>
 
@@ -82,50 +115,12 @@
 
           <!--table-->
           <Table :header="table.header"
-                 :borders="false"
+                 :borders="true"
                  :data="table.data"
                  v-on:edit="editEl($event)"
                  :settings="table.settings"></Table>
         </template>
 
-        <!--footerLeft-->
-        <template #footerLeft>
-          <button class="uk-button-primary uk-button uk-button-small">
-            <img src="/img/icons/icon__plus.svg"
-                 uk-svg
-                 width="14"
-                 height="14">
-            <span class="uk-margin-small-left uk-visible@s"
-                  v-text="$t('actions.loadMore')"></span>
-          </button>
-        </template>
-
-        <!--footerRight-->
-        <template #footerRight>
-          <div class="uk-grid-small"
-               uk-grid>
-            <div>
-              <button class="uk-button-default uk-button uk-button-small">
-                <img src="/img/icons/icon__close.svg"
-                     uk-svg
-                     width="10"
-                     height="10">
-                <span class="uk-margin-small-left uk-visible@s"
-                      v-text="$t('actions.cancel')"></span>
-              </button>
-            </div>
-            <div>
-              <button class="uk-button-danger uk-button uk-button-small">
-                <img src="/img/icons/icon__trash.svg"
-                     uk-svg
-                     width="10"
-                     height="10">
-                <span class="uk-margin-small-left uk-visible@s"
-                      v-text="$t('actions.remove')"></span>
-              </button>
-            </div>
-          </div>
-        </template>
       </Card>
 
     </template>
@@ -148,8 +143,7 @@
       <div class="uk-flex uk-flex-between uk-width-1-1">
         <div class="">
           <button class="uk-button-default uk-button uk-button-small"
-                  @click.prevent="closeRightPanel"
-          >
+                  @click.prevent="closeRightPanel">
             <img src="/img/icons/icon__close.svg"
                  uk-svg
                  width="10"
@@ -192,14 +186,14 @@
 
         bodyComponent: null,
         card:          {
-          bodyLeftShow:     true,
+          //bodyLeftShow:     true,
           bodyRightShow:    false,
           bodyRightContent: []
         },
 
         table: {
           settings:    {readOnly: false},
-          header:      ['InputNumber', 'InputText', 'InputTextarea', 'InputBoolean','InputRadio', 'InputSelect', 'InputList', 'InputDoubleList'],
+          header:      ['InputNumber', 'InputText', 'InputTextarea', 'InputBoolean', 'InputRadio', 'InputSelect', 'InputList', 'InputDoubleList'],
           data:        [
             [{
               component:   'InputNumber',
@@ -237,7 +231,7 @@
               mask:        '',
               value:       1,
               values:      null
-            },  {
+            }, {
               component:   'InputRadio',
               name:        'radio buttons',
               label:       'Да или нет, а может и что-то другое, вот в чем вопрос',
@@ -262,7 +256,7 @@
               placeholder: '',
               editable:    true,
               mask:        '',
-              value:      ['10', '20', '30', '40', '50']
+              value:       ['10', '20', '30', '40', '50']
             }, {
               component:   'InputDoubleList',
               name:        'libid',
@@ -270,7 +264,7 @@
               placeholder: '',
               editable:    true,
               mask:        '',
-              value:      [['1', 'Шаблоны'], ['2', 'Календарь'], ['3', 'заявки'], ['4', 'Редактор форм'], ['5', 'Страницы сайта'], ['6', 'Пользователи сайта'], ['7', 'Медиа'], ['8', 'Новости'], ['9', 'Облако тэгов'], ['10', 'Отзывы'], ['11', 'Каталог'], ['12', 'Формы'], ['13', 'Настройки'], ['14', 'Форум'], ['15', 'Поиск'], ['16', 'банеры'], ['17', 'Вакансии'], ['18', 'Визуальный редактор'], ['19', 'Администраторы'], ['20', 'Файловый менеджер'], ['21', 'Управление MySQL'], ['22', 'LiveSupport'], ['23', 'Учёт'], ['24', 'Вопросы к курсам'], ['25', 'Тесты']]
+              value:       [['1', 'Шаблоны'], ['2', 'Календарь'], ['3', 'заявки'], ['4', 'Редактор форм'], ['5', 'Страницы сайта'], ['6', 'Пользователи сайта'], ['7', 'Медиа'], ['8', 'Новости'], ['9', 'Облако тэгов'], ['10', 'Отзывы'], ['11', 'Каталог'], ['12', 'Формы'], ['13', 'Настройки'], ['14', 'Форум'], ['15', 'Поиск'], ['16', 'банеры'], ['17', 'Вакансии'], ['18', 'Визуальный редактор'], ['19', 'Администраторы'], ['20', 'Файловый менеджер'], ['21', 'Управление MySQL'], ['22', 'LiveSupport'], ['23', 'Учёт'], ['24', 'Вопросы к курсам'], ['25', 'Тесты']]
             }
             ]
           ],
@@ -288,6 +282,10 @@
 
     computed: {
 
+      bodyLeftShow () {
+        return this.$store.getters.navbarLeftActionState
+      },
+
       loader () {
         if (this.nav) {
           return false
@@ -303,7 +301,8 @@
     methods: {
 
       bodyLeftActionEvent () {
-        this.card.bodyLeftShow = !this.card.bodyLeftShow
+        this.$store.commit('setNavbarLeftActionState', !this.bodyLeftShow)
+        //this.card.bodyLeftShow = !this.card.bodyLeftShow
       },
 
       closeRightPanel () {

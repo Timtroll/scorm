@@ -8,12 +8,12 @@
       <tr>
         <!--expand Row-->
         <th class="pos-table-expand">
-          <div style="width: 16px">
+          <span style="width: 16px">
             <img src="/img/icons/icon__expand.svg"
-                 width="14"
-                 height="14"
+                 width="16"
+                 height="16"
                  uk-svg>
-          </div>
+          </span>
         </th>
 
         <!--header rows data-->
@@ -34,10 +34,12 @@
                  uk-svg
                  width="16"></span>
 
-          <input type="checkbox"
-                 v-model="checked"
-                 @click="checkedAll"
-                 class="pos-checkbox-switch xsmall">
+          <span>
+            <input type="checkbox"
+                   v-model="checked"
+                   @click="checkedAll"
+                   class="pos-checkbox-switch xsmall">
+            </span>
         </th>
       </tr>
       </thead>

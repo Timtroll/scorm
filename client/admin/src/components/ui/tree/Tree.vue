@@ -24,7 +24,7 @@
                    uk-svg>
             </div>
 
-            <input class="uk-input"
+            <input class="uk-input uk-form-small"
                    v-model="searchInput"
                    @keyup.esc="clearSearchVal"
                    :placeholder="$t('actions.search')">
@@ -33,7 +33,7 @@
         <!--Add Tree root el -->
         <div class="uk-width-auto">
           <button type="button"
-                  class="uk-button uk-button-default">
+                  class="uk-button uk-button-default uk-button-small">
             <img src="/img/icons/icon__plus.svg"
                  width="16"
                  height="16"

@@ -8,17 +8,6 @@
          'pos-header-large' : headerLarge}"
          v-if="header">
 
-      <!-- toggle left body panel-->
-      <a class="pos-card-header-item link"
-         v-if="bodyLeftToggleShow"
-         :class="{'uk-text-danger' : bodyLeftShow}"
-         @click.prevent="bodyLeftToggle()">
-        <img src="/img/icons/icon__nav.svg"
-             uk-svg
-             width="20"
-             height="20">
-      </a>
-
       <!--headerLeft-->
       <div class="pos-card-header-item"
            v-if="headerLeft">
@@ -63,7 +52,7 @@
       <transition name="slide-left">
         <div class="pos-card-body-left"
              ref="bodyLeft"
-             v-show="bodyLeft && bodyLeftShow"
+             v-show="bodyLeft && leftToggleState"
              :class="{'pos-padding': bodyLeftPadding}">
           <slot name="bodyLeft"></slot>
         </div>
@@ -183,10 +172,7 @@
         default: true,
         type:    Boolean
       },
-      bodyLeftToggleShow:  {
-        default: false,
-        type:    Boolean
-      },
+
       bodyLeftActionEvent: {
         default: false,
         type:    Boolean
@@ -221,7 +207,7 @@
       return {
         bodyWidth:     null, // 540
         bodyLeftWidth: null, // 540
-        bodyLeftShow:  true
+        //bodyLeftShow:  true
       }
     },
 
@@ -231,7 +217,7 @@
       if (this.bodyRight || this.bodyLeft) {
         this.bodyWidth = this.$refs.body.offsetWidth
         window.addEventListener('resize', this.handleResize)
-        if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
+        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
           this.bodyRightShow = false
         }
       }
@@ -242,16 +228,18 @@
       //
       bodyLeftActionEvent () {
 
-        console.log(this.bodyWidth)
-        //this.bodyLeftShow = false
-
-        if (this.bodyWidth <= bodyMinSize && this.bodyLeftShow) {
-          this.bodyLeftShow = false
+        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
+          this.$store.commit('setNavbarLeftActionState', false)
         }
       }
     },
 
-    computed: {},
+    computed: {
+
+      leftToggleState () {
+        return this.$store.getters.navbarLeftActionState
+      },
+    },
 
     beforeDestroy: function () {
       if (this.bodyRight || this.bodyLeft) {
@@ -261,17 +249,8 @@
 
     methods: {
 
-      // показать / скрыть левую панель
-      bodyLeftToggle () {
-
-        this.handleResize()
-        this.bodyLeftShow = !this.bodyLeftShow
-
-        setTimeout(() => {
-          if (this.bodyWidth <= bodyMinSize && this.bodyRightShow) {
-            this.bodyRightShow = false
-          }
-        }, 300)
+      leftToggleAction () {
+        this.$store.commit('setNavbarLeftActionState', !this.leftToggleState)
       },
 
       handleResize () {
