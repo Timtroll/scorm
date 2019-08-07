@@ -10,7 +10,36 @@ const state = {
     icon:       'icon__nav.svg'
   },
 
-  pageLoader: true
+  cms: {
+    status:  '',
+    current: null
+  },
+
+  pageLoader: true,
+
+  navTree: {
+    state: {
+      open:   false,
+      status: 'loading'
+    },
+    items: []
+  },
+
+  table: {},
+
+  currentRow: {},
+
+  selectedRows: [],
+
+  settingPage: {
+    status: 'loading'
+  },
+
+  detailBar: {
+    open:    false,
+    status:  'loading',
+    content: []
+  }
 
 }
 

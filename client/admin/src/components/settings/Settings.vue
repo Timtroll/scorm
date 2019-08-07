@@ -278,6 +278,9 @@
 
       // Get left nav tree
       this.$store.dispatch('getNavTree')
+
+      // cms
+      this.$store.dispatch('getTree')
     },
 
     computed: {
