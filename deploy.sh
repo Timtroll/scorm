@@ -26,7 +26,7 @@ yarn run build
 
 echo "-------"
 echo "delete content of public"
-rm -rf /home/troll/workspace/scorm/public/*
+rm -rf /home/troll/scorm/public/*
 
 echo "-------"
 echo "yarn run build"
