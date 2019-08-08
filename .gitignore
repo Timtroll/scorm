@@ -1,5 +1,6 @@
 /log
 /sql
+/public
 
 .DS_Store
 client/admin/node_modules/

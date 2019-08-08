@@ -3,25 +3,15 @@ package Freee::Controller::Settings;
 use utf8;
 use Encode;
 
-# use open qw(:utf8);
-# binmode(STDIN,':utf8');
-# binmode(STDOUT,':utf8');
-# binmode(STDIN, ':encoding(UTF-8)');
-# binmode(STDOUT, ':encoding(UTF-8)');
-
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::File;
 
-
+use Freee::Mock::S
 use Data::Dumper;
 
 sub index {
     my ($self);
     $self = shift;
-
-    my $path = Mojo::File->new('/home/troll/workspace/scorm/docs/pref_tabs_fields.txt');
-    my $settings = $path->slurp;
-    utf8::decode($settings);
 
     # показываем все настройки
     $self->render(
