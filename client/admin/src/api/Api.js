@@ -13,10 +13,10 @@ if (token) {
 
 let apiProxy = ''
 if (Vue.config.productionTip) {
-  apiProxy = 'https://cors-c.herokuapp.com/' // для Localhost  https://cors-c.herokuapp.com
+  apiProxy = 'https://cors-c.herokuapp.com/https://freee.su/' // для Localhost  https://cors-c.herokuapp.com
 }
 
-const apiUrl = apiProxy + 'https://freee.su'
+const apiUrl = apiProxy + '/'
 
 export default () => {
   return axios.create({
