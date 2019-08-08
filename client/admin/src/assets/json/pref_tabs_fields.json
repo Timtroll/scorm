@@ -18,7 +18,8 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "input",
+            "editable":    true,
+            "type":        "InputNumber",
             "name":        "fullDebugMode",
             "label":       "режим обновления",
             "placeholder": "",
@@ -26,16 +27,16 @@
             "value":       ""
           },
           {
-            "type":        "select",
+            "type":        "InputSelect",
             "name":        "editorsList",
             "label":       "список доступных редакторов редактор по умолчанию не имеет 'названия'",
             "placeholder": "",
             "mask":        "",
             "value":       "CKEditor",
-            "valuec":      ["CKEditor"]
+            "values":      ["CKEditor"]
           },
           {
-            "type":        "list",
+            "type":        "InputList",
             "name":        "mediaImagesConf",
             "label":       "поддержка более 2-х авто-превью",
             "placeholder": "",
@@ -44,7 +45,7 @@
             "values":      ["0", "gallery", "crop", "179", "281"]
           },
           {
-            "type":        "select",
+            "type":        "InputSelect",
             "name":        "multilang",
             "label":       "включение многоязычной поддержки.",
             "placeholder": "",
@@ -53,16 +54,16 @@
             "values":      ["rus", "en", "esp", "ch"]
           },
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "RUDAYS",
             "label":       "дни недели, русские, именительный падеж",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]]
+            "value":       [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
+            "values":      ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "admin_email",
             "label":       "емайл администратора",
             "placeholder": "admin@admin.com",
@@ -70,7 +71,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "pages_pp",
             "label":       "число страниц в постраничной навигации",
             "placeholder": "30",
@@ -78,7 +79,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "num_pp",
             "label":       "количество выводимых на страницу элементов при постраничной разбивке во всех модулях",
             "placeholder": "15",
@@ -86,31 +87,28 @@
             "value":       ""
           },
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "RUMONTHPSMALL",
             "label":       "русские названия месяцев, родительный падеж, с маленькой буквы",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      [
+            "value":       [
               ["0", "января"], ["1", "февраля"], ["2", "марта"], ["3", "апреля"], ["4", "мая"], ["5", "июня"], ["6", "июля"], ["7", "августа"],
               ["8", "сентября"], ["9", "октября"], ["10", "ноября"], ["11", "декабря"]
-            ]
+            ],
+            "values":      ""
           },
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "RUMONTHP",
             "label":       "русские названия месяцев, родительный падеж",
             "placeholder": "",
             "mask":        "",
             "value":       "",
-            "values":      [
-              ["0", "Января"], ["1", "Февраля"], ["2", "Марта"], ["3", "Апреля"], ["4", "Мая"], ["5", "Июня"], ["6", "Июля"], ["7", "Августа"],
-              ["8", "Сентября"], ["9", "Октября"], ["10", "Ноября"], ["11", "Декабря"]
-            ]
+            "values":      ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "RUMONTHSMALL",
             "label":       "русские названя месяцев, именительный падеж, с маленькой буквы",
             "placeholder": "",
@@ -122,7 +120,7 @@
             ]
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "RUMONTH",
             "label":       "русские названия месяцев, именительный падеж",
             "placeholder": "",
@@ -134,7 +132,7 @@
             ]
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "users_parent_category",
             "label":       "ID категории владельца объектов профилей пользователей.",
             "placeholder": "1",
@@ -142,7 +140,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "site_domain",
             "label":       "домен сайта - адрес без http://",
             "placeholder": "freee.su",
@@ -150,7 +148,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "site_url",
             "label":       "URL сайта включая http://",
             "placeholder": "http://freee.su",
@@ -158,7 +156,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "site_label",
             "label":       "имя сайта",
             "placeholder": "Образовательная система",
@@ -186,7 +184,7 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "import_step_index",
             "label":       "индекс внутри шага обновления",
             "placeholder": "",
@@ -194,7 +192,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "import_step",
             "label":       "шаг обновления",
             "placeholder": "",
@@ -202,7 +200,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "XMLUpdateProcessing",
             "label":       "служебная переменная",
             "placeholder": "",
@@ -210,7 +208,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "JSSC_rebuild",
             "label":       "служебная переменная, приказ о пересоздании JS кеша поисковой системы",
             "placeholder": "",
@@ -218,7 +216,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "lastXMLMTime",
             "label":       "служебная переменная, дата последней модификации файла обновления",
             "placeholder": "1322600996",
@@ -226,7 +224,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "lastXMLSize",
             "label":       "служебная переменная, последний зафиксированный размер файла обновления",
             "placeholder": "3145752",
@@ -234,7 +232,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "salesEmail",
             "label":       "адрес получателя писем с заказами",
             "placeholder": "mail@4clients.ru",
@@ -242,7 +240,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "mailAddress",
             "label":       "поле From(От:) для всех исходящих писем",
             "placeholder": "mail@4clients.ru",
@@ -250,7 +248,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "mailLogin",
             "label":       "логин для авторизации на SMTP сервере",
             "placeholder": "mail@4clients.ru",
@@ -258,7 +256,7 @@
             "value":       ""
           },
           {
-            "type":        "password",
+            "type":        "InputText",
             "name":        "mailPass",
             "label":       "пароль автризации на SMTP сервере",
             "placeholder": "",
@@ -266,7 +264,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "mailSMTP",
             "label":       "SMTP сервер",
             "placeholder": "mail.4clients.ru",
@@ -294,7 +292,7 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "textarea",
+            "type":        "InputTextarea",
             "name":        "pageBlocksOptions",
             "label":       "Блоки на странице",
             "placeholder": "",
@@ -302,16 +300,16 @@
             "value":       ""
           },
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "pageMenuLocationlabels",
             "label":       "анонсировать страницу на главной",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]]
+            "value":       [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
+            "values":      ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "contacts_phone",
             "label":       "телефон",
             "placeholder": "8 800 2 505 505",
@@ -319,7 +317,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "contacts_bottom_address",
             "label":       "блок контактов внизу",
             "placeholder": "Доставка по Москве и Московской области: 8 (919) 726-36-86",
@@ -327,7 +325,7 @@
             "value":       ""
           },
           {
-            "type":        "textarea",
+            "type":        "InputTextarea",
             "name":        "countersTopCode",
             "label":       "верхний код счётчиков",
             "placeholder": "",
@@ -335,7 +333,7 @@
             "value":       ""
           },
           {
-            "type":        "textarea",
+            "type":        "InputTextarea",
             "name":        "countersBottomCode",
             "label":       "нижний код счётчиков",
             "placeholder": "",
@@ -363,7 +361,7 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "AllowAdminFilter",
             "label":       "AllowAdminFilter",
             "placeholder": "1",
@@ -371,16 +369,16 @@
             "value":       ""
           },
           {
-            "type":        "select",
+            "type":        "InputSelect",
             "name":        "CatalogNumPPVariants",
             "label":       "количественные варианты деления на страницы",
             "placeholder": "",
             "mask":        "",
-            "value":       "30",
-            "values":      ["12", "30", "50"]
+            "value":       30,
+            "values":      [12, 30, 50]
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "AllObjCatID",
             "label":       "ID корневой категории каталога продукции",
             "placeholder": "2",
@@ -408,7 +406,7 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "minWidth",
             "label":       "ММИ: минимальная ширина",
             "placeholder": "120",
@@ -416,7 +414,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "minHeight",
             "label":       "ММИ: минимальная высота",
             "placeholder": "90",
@@ -424,7 +422,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "maxBorderHeight",
             "label":       "ММИ: максимальная высота границы",
             "placeholder": "600",
@@ -432,7 +430,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "maxBorderWidth",
             "label":       "ММИ: максимальная высота",
             "placeholder": "800",
@@ -440,7 +438,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "minBorderHeight",
             "label":       "ММИ: минимальная высота границы",
             "placeholder": "90",
@@ -448,7 +446,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "minBorderWidth",
             "label":       "ММИ: минимальная ширина границы",
             "placeholder": "120",
@@ -456,7 +454,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "max_attachments_size",
             "label":       "максимальный размер всех прикрепленных файлов",
             "placeholder": "50000000",
@@ -464,7 +462,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "default_max_attachments_size",
             "label":       "Максимальный размер всех прикрепленных файлов",
             "placeholder": "10000000",
@@ -472,7 +470,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "middle_preview_height",
             "label":       "размер по вертикали для средней первьюшки",
             "placeholder": "220",
@@ -480,7 +478,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "middle_preview_width",
             "label":       "размер по горизонтали для средней первьюшки",
             "placeholder": "220",
@@ -488,7 +486,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "small_preview_height",
             "label":       "размер по вертикали для маленькой первьюшки",
             "placeholder": "220",
@@ -496,7 +494,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "small_preview_width",
             "label":       "размер по горизонтали для маленькой первьюшки",
             "placeholder": "220",
@@ -524,13 +522,13 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "newsPageID",
             "label":       "Точки привязки категорий новостей",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]]
+            "value":       [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
+            "values":      ""
           }
         ]
       }
@@ -553,7 +551,7 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "UserTestsQuestionsContainerID",
             "label":       "UserTestsQuestionsContainerID",
             "placeholder": "34747",
@@ -561,7 +559,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputNumber",
             "name":        "UserTestsContainerID",
             "label":       "UserTestsContainerID",
             "placeholder": "34746",
@@ -589,31 +587,31 @@
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "type":        "doublelist",
+            "type":        "InputDoubleList",
             "name":        "libid",
             "label":       "Модуль владелец",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      [
+            "value":       [
               ["1", "Шаблоны"], ["2", "Календарь"], ["3", "заявки"], ["4", "Редактор форм"], ["5", "Страницы сайта"], ["6", "Пользователи сайта"],
               ["7", "Медиа"], ["8", "Новости"], ["9", "Облако тэгов"], ["10", "Отзывы"], ["11", "Каталог"], ["12", "Формы"], ["13", "Настройки"],
               ["14", "Форум"], ["15", "Поиск"], ["16", "банеры"], ["17", "Вакансии"], ["18", "Визуальный редактор"], ["19", "Администраторы"],
               ["20", "Файловый менеджер"], ["21", "Управление MySQL"], ["22", "LiveSupport"], ["23", "Учёт"], ["24", "Вопросы к курсам"],
               ["25", "Тесты"]
-            ]
+            ],
+            "values":      ""
           },
           {
-            "type":        "list",
+            "type":        "InputList",
             "name":        "type",
             "label":       "Тип параметра",
             "placeholder": "",
             "mask":        "",
-            "value":       "",
-            "values":      ["число", "строка", "текстовая область", "Селект", "список", "вложенный список"]
+            "value":       ["число", "строка", "текстовая область", "Селект", "список", "вложенный список"],
+            "values":      ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "pname",
             "label":       "Название переменной",
             "placeholder": "",
@@ -621,7 +619,7 @@
             "value":       ""
           },
           {
-            "type":        "input",
+            "type":        "InputText",
             "name":        "pdescr",
             "label":       "Описание переменной",
             "placeholder": "",
