@@ -32,7 +32,7 @@ echo "-------"
 echo "yarn run build"
 cp -a /home/troll/scorm/client/admin/dist/. /home/troll/scorm/public
 
-
+echo "Finish"
 # if [ "$?" != "0" ] ; then
 #     echo
 #     echo "ERROR: Execution failed."
