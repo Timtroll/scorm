@@ -2,30 +2,17 @@ package Freee::Controller::Deploy;
 
 use Mojo::Base 'Mojolicious::Controller';
 
+use Cwd qw(getcwd);
 use Data::Dumper;
 
 sub index {
     my ($self);
     $self = shift;
 
-    my @command = (
-        'pwd',
-        'git checkout master',
-        'git status',
-        'git pull',
-
-        'cd ./client/admin',
-        'pwd',
-    );
-
-    my @responce;
-    foreach (@command) {
-        my $res = `$_`;
-        push @responce, $res;
-    }
+    my $responce = `/usr/bin/flock -w 180 /var/tmp/deploy.lock /home/troll/workspace/scorm/deploy.sh &`;
 
     $self->render(
-        'json'    => \@responce
+        'json'    => 'ok'
     );
 }
 
