@@ -98,7 +98,7 @@
 
     <transition name="fade">
       <div class="pos-card-loader"
-           v-if="loader">
+           v-if="loader === 'loading'">
         <div>
           <Loader :width="40"
                   :height="40"></Loader>
@@ -164,11 +164,11 @@
       },
 
       // bodyLeft
-      bodyLeft:            {
+      bodyLeft:        {
         default: false,
         type:    Boolean
       },
-      bodyLeftPadding:     {
+      bodyLeftPadding: {
         default: true,
         type:    Boolean
       },
@@ -198,15 +198,15 @@
 
       // loader
       loader: {
-        default: true,
-        type:    Boolean
+        default: '',
+        type:    String
       }
     },
 
     data () {
       return {
         bodyWidth:     null, // 540
-        bodyLeftWidth: null, // 540
+        bodyLeftWidth: null // 540
         //bodyLeftShow:  true
       }
     },
@@ -238,7 +238,7 @@
 
       leftToggleState () {
         return this.$store.getters.navbarLeftActionState
-      },
+      }
     },
 
     beforeDestroy: function () {

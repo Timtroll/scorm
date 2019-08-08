@@ -18,7 +18,7 @@
            v-else>
       </div>
       <a class="pos-side-nav-item__label"
-         @click.prevent="click(navItem.id)"
+         @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label"
          v-text="navItem.label"></a>
     </div>
@@ -60,7 +60,8 @@
       },
 
       click (item) {
-        this.$emit('click', item)
+        this.$store.commit('setTableData', item)
+        this.$emit('click')
       }
     }
   }

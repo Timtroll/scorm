@@ -6,6 +6,8 @@ const getters = {
 
   navTree: state => state.navTree.items,
 
+  queryStatus: state => state.cms.status,
+
 }
 
 export default getters

@@ -7,8 +7,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
-    auth:     auth,
-    cms: cms,
+    auth: auth,
+    cms:  cms
   },
   strict:  process.env.NODE_ENV !== 'production'
 })

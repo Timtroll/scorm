@@ -25,14 +25,11 @@ const actions = {
   getTree ({commit}) {
 
     return new Promise((resolve, reject) => {
-
       commit('cms_request')
 
       Api.tree()
          .then(response => {
            const resp = response.data
-
-           console.log(JSON.parse(resp))
            commit('cms_success', resp)
            resolve(response)
            //if (resp.status === 'ok') {}
@@ -42,7 +39,6 @@ const actions = {
            notify(err, 'danger')
            reject(err)
          })
-
       resolve()
     })
   },

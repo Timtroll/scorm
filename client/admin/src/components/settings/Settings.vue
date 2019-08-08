@@ -33,8 +33,7 @@
             :header-bgr-default="true"
             :header-left="true"
             :footer-right="false"
-            :body-padding="true"
-            :loader="false">
+            :body-padding="true">
 
         <template #headerLeft>
           <div class="uk-grid-small"
@@ -290,9 +289,7 @@
       },
 
       loader () {
-        if (this.nav) {
-          return false
-        }
+        return this.$store.getters.queryStatus
       },
 
       // Left nav tree
