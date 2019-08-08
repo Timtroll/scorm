@@ -15,7 +15,7 @@ export default {
   tree () {
 
     return Api()({
-      url:    '/cms/set',
+      url:    'cms/set',
       method: 'post',
     })
   }
