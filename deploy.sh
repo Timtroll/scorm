@@ -17,8 +17,8 @@ echo "cd ./client/admin"
 cd ./client/admin
 
 echo "-------"
-echo "delete folder /home/troll/workspace/scorm/client/admin/dist"
-rm -rf /home/troll/workspace/scorm/client/admin/dist
+echo "delete folder /home/troll/scorm/client/admin/dist"
+rm -rf /home/troll/scorm/client/admin/dist
 
 echo "-------"
 echo "yarn run build"
@@ -30,7 +30,7 @@ rm -rf /home/troll/workspace/scorm/public/*
 
 echo "-------"
 echo "yarn run build"
-cp -a /home/troll/workspace/scorm/client/admin/dist/. /home/troll/workspace/scorm/public
+cp -a /home/troll/scorm/client/admin/dist/. /home/troll/scorm/public
 
 # if [ "$?" != "0" ] ; then
 #     echo
