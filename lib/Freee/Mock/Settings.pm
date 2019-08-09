@@ -211,7 +211,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputNumber",
@@ -319,7 +335,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputTextarea",
@@ -388,7 +420,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputNumber",
@@ -433,7 +481,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputNumber",
@@ -549,7 +613,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputDoubleList",
@@ -578,7 +658,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputNumber",
@@ -614,7 +710,23 @@ $settings = {
           "removable"=>  1,
           "massEdit"=>   0
         },
-        "header"=>   ["name", "label", "value", "type"],
+        "header"=>   [
+          {
+            # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
+            "key" => "name",
+            # Значение этого поля будет выведено в шапке таблицы
+            "label" => "Системное название"
+          },{
+            "key" => "label",
+            "label" => "Рашифровка"
+          },{
+            "key" => "value",
+            "label" => "Значение"
+          },{
+            "key" => "type",
+            "label" => "Тип"
+          }
+        ],
         "body"=>     [
           {
             "type"=>        "InputDoubleList",
