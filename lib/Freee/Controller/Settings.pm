@@ -6,7 +6,7 @@ use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::File;
 
-use Freee::Mock::S
+use Freee::Mock::Settings;
 use Data::Dumper;
 
 sub index {
