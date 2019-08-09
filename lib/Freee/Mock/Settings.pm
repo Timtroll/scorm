@@ -181,7 +181,7 @@ $settings = {
     },
     {
       "label"=>     "Настройки",
-      "id"=>        1,
+      "id"=>        2,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -289,7 +289,7 @@ $settings = {
     },
     {
       "label"=>     "Страницы сайта",
-      "id"=>        1,
+      "id"=>        3,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -358,7 +358,7 @@ $settings = {
     },
     {
       "label"=>     "Каталог",
-      "id"=>        1,
+      "id"=>        4,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -403,7 +403,7 @@ $settings = {
     },
     {
       "label"=>     "Медиа",
-      "id"=>        1,
+      "id"=>        5,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -519,7 +519,7 @@ $settings = {
     },
     {
       "label"=>     "Новости",
-      "id"=>        1,
+      "id"=>        6,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -548,7 +548,7 @@ $settings = {
     },
     {
       "label"=>     "Тесты",
-      "id"=>        1,
+      "id"=>        7,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
@@ -583,8 +583,8 @@ $settings = {
       }
     },
     {
-      "label"=>     "добавить параметр",
-      "id"=>        1,
+      "label"=>     "Добавить параметр",
+      "id"=>        8,
       "component"=> "",
       "opened"=>    0,
       "keywords"=>  "",
