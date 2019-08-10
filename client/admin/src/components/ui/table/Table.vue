@@ -207,6 +207,19 @@
 
           })
 
+
+          //table.forEach((item) => {
+          //  const keys    = Object.keys(item)
+          //  const newItem = []
+          //  keys.forEach((key, i) => {
+          //    if (flatHeader.includes(key)) {
+          //      newItem.push({val: item[key], key: key})
+          //    }
+          //  })
+          //  displayTable.push(newItem)
+          //
+          //})
+
           //const sortedData = displayTable.sort((a, b) => flatHeader.indexOf(a.key) - flatHeader.indexOf(b.key))
           //
 
@@ -214,6 +227,7 @@
 
         }
       }
+
     },
 
     data () {
