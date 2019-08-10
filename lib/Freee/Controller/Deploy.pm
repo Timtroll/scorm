@@ -8,7 +8,7 @@ sub index {
     my ($self);
     $self = shift;
 
-    my $responce = `/usr/bin/flock -w 180 /var/tmp/deploy.lock /home/troll/scorm/deploy.sh &`;
+    my $responce = `/usr/bin/flock -w 180 /var/tmp/deploy.lock /home/troll/scorm/deploy.sh > /home/troll/scorm/deploy.log &`;
 
     $self->render(
         'json'    => 'ok'
