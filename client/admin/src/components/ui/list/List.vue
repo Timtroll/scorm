@@ -18,6 +18,7 @@
     </li>
     <li>
       <InputSelect :value="data.type"
+                   :values-editable="false"
                    v-on:update="changeType($event)"
                    :placeholder="'Тип'"
                    :values="inputComponents"></InputSelect>
