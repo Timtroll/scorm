@@ -23,10 +23,14 @@
                    :values="inputComponents"></InputSelect>
     </li>
     <li>
-      <component v-bind:is="component"
-                 :value="data.value"
-                 :placeholder="'Значение'">
-      </component>
+      <transition name="slide-right"
+                  mode="out-in"
+                  appear>
+        <component v-bind:is="component"
+                   :value="data.value"
+                   :placeholder="'Значение'">
+        </component>
+      </transition>
     </li>
 
   </ul>
