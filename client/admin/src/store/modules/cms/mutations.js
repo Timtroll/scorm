@@ -8,8 +8,8 @@ const mutations = {
 
   // статус - успешно
   cms_success (state, data) {
-    state.cms.status  = 'success'
-    state.cms.current = data
+    state.cms.status = 'success'
+    state.cms.data   = data
   },
 
   // статус - ошибка
@@ -17,19 +17,27 @@ const mutations = {
     state.cms.status = 'error'
   },
 
-  // Формирование Дерева настроек
-  setNavTree (state, data) {
-    state.navTree.items = data
+  cms_table (state, data) {
+    state.cms.table = data
+  },
+
+  cms_table_row (state, data) {
+    state.cms.row.open = true
+    state.cms.row.data = data
+  },
+
+  tree_active (state, id) {
+    state.cms.activeId = id
   },
 
   // Формирование контента таблицы
-  setTableData (state, data) {
-    state.navTree.items = data
+  set_table_data (state, data) {
+    state.cms.table = data
   },
 
   // акшин для левой кнопки в navbar
-  setNavbarLeftActionState (state, data) {
-    state.navbarLeftAction.state = data
+  card_left_state (state, data) {
+    state.main.leftShow = data
   }
 
 }

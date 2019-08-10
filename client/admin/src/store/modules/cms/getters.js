@@ -1,12 +1,16 @@
 const getters = {
 
-  // navbarLeftAction
-  navbarLeftAction:      state => state.navbarLeftAction,
-  navbarLeftActionState: state => state.navbarLeftAction.state,
+  cardLeftState: state => state.main.leftShow,
 
-  navTree: state => state.navTree.items,
+  cardLeftAction: state => state.main.navBarLeftAction,
 
-  queryStatus: state => state.cms.status,
+  pageTable: state => state.cms.table,
+
+  Settings: state => state.cms.data,
+
+  inputComponents: state => state.inputComponents,
+
+  queryStatus: state => state.cms.status
 
 }
 

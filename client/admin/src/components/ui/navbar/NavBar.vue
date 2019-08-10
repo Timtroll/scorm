@@ -4,7 +4,7 @@
          v-if="leftToggle.visibility">
       <div class="pos-navbar-item">
         <a class="pos-card-header-item link"
-           :class="{'uk-text-danger' : leftToggle.state}"
+           :class="{'uk-text-danger' : leftToggleState}"
            @click.prevent="leftToggleAction">
           <img :src="'/img/icons/' + leftToggle.icon"
                uk-svg
@@ -26,7 +26,7 @@
     <div class="pos-navbar-right">
 
       <a class="pos-navbar-item">
-        <img src="../../../../public/img/icons/user_profile.svg"
+        <img src="/img/icons/user_profile.svg"
              uk-svg
              width="24"
              height="24">
@@ -47,21 +47,20 @@
     components: {NavBarUserMenu},
 
     data () {
-      return {
-        userMenu: false
-      }
+      return {}
     },
 
     computed: {
 
       leftToggle () {
-        return this.$store.getters.navbarLeftAction
+        return this.$store.getters.cardLeftAction
       },
 
       leftToggleState () {
-        return this.$store.getters.navbarLeftActionState
+        return this.$store.getters.cardLeftState
       },
 
+      // заголовок страницы
       pageTitle () {
         return this.$route.meta.breadcrumb
       }
@@ -70,7 +69,7 @@
 
     methods: {
       leftToggleAction () {
-        this.$store.commit('setNavbarLeftActionState', !this.leftToggleState)
+        this.$store.commit('card_left_state', !this.leftToggleState)
       }
     }
   }

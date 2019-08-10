@@ -19,11 +19,11 @@
              width="16"></a>
     </td>
     <!--data-->
-    <td v-for="(item, index) in rowData"
+    <td v-for="item in rowData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
         @dblclick="edit(rowData)">
-      <div v-text="item.val"></div>
+      <div v-text="item.value"></div>
     </td>
 
     <!--check current-->
@@ -50,6 +50,7 @@
              @change="notCheckedAll"
              v-model="checkedRow"
              class="pos-checkbox-switch xsmall">
+
     </td>
   </tr>
 
@@ -86,7 +87,6 @@
         checkedRow: false
       }
     },
-
 
     methods: {
 

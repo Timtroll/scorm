@@ -2,11 +2,16 @@
 @import "../mixins"
 
 $table-min-width: 100px
+.pos-table-container
+  border: $global-border-width solid $global-border
+  border-radius: $border-rounded-border-radius
+  overflow: auto
+  position: relative
+  height: 100%
+  width: 100%
+  box-sizing: border-box
 
 .pos-table
-  &:not(.no-border)
-    border: $global-border-width solid $global-border
-    border-radius: $border-rounded-border-radius
 
   a
     & > svg
@@ -19,6 +24,7 @@ $table-min-width: 100px
   tbody td,
   thead th
     box-sizing: border-box
+
     &:not(:first-child)
       border-left: $global-border-width solid $global-border
 
@@ -31,11 +37,13 @@ $table-min-width: 100px
     font-size: .8rem
     color: $global-color
     vertical-align: middle
+    line-height: 1.1
 
     & > *
       display: inline-block
       min-height: 24px
       line-height: 24px
+
       svg
         transform: translateY(-2px)
 

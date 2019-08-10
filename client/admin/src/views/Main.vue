@@ -1,9 +1,9 @@
 <template>
   <div class="pos-body">
     <div class="pos-main">
-
       <div class="pos-container">
-        <!--main-container-->
+
+        <!--main container-->
         <div class="pos-content">
           <transition name="slide-right"
                       mode="out-in"

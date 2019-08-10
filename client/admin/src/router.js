@@ -111,7 +111,20 @@ const router = new Router({
             authRequired: true,
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Настройки'
-          }
+          },
+          children:      [
+            {
+              path:          '/settings/:id',
+              name:          'SettingItem',
+              component:     () => import('./components/ui/table/Table'),
+              props:         {},
+              showInSideBar: false,
+              meta:          {
+                authRequired: true,
+                breadcrumb:   'Профиль пользователя'
+              }
+            }
+          ]
         }
       ]
     }, {

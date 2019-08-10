@@ -22,7 +22,6 @@
       <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="headerRight">
-
         <slot name="headerRight"></slot>
       </div>
 
@@ -207,7 +206,6 @@
       return {
         bodyWidth:     null, // 540
         bodyLeftWidth: null // 540
-        //bodyLeftShow:  true
       }
     },
 
@@ -229,7 +227,7 @@
       bodyLeftActionEvent () {
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('setNavbarLeftActionState', false)
+          this.$store.commit('card_left_state', false)
         }
       }
     },
@@ -237,7 +235,7 @@
     computed: {
 
       leftToggleState () {
-        return this.$store.getters.navbarLeftActionState
+        return this.$store.getters.cardLeftState
       }
     },
 

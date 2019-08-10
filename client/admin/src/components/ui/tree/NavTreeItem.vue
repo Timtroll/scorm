@@ -18,6 +18,7 @@
            v-else>
       </div>
       <a class="pos-side-nav-item__label"
+         :class="{'uk-active': navActiveId === navItem.id}"
          @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label"
          v-text="navItem.label"></a>
@@ -53,6 +54,13 @@
       }
     },
 
+    computed: {
+
+      navActiveId () {
+        return this.$store.state.cms.cms.activeId
+      }
+    },
+
     methods: {
 
       toggleChildren () {
@@ -60,8 +68,19 @@
       },
 
       click (item) {
-        this.$store.commit('setTableData', item)
-        this.$emit('click')
+        if(this.navActiveId !== this.navItem.id){
+          this.$store.commit('tree_active', item.id)
+          this.$store.commit('cms_table', item.table)
+          this.$emit('close')
+          this.$router.push({
+            name:   'SettingItem',
+            params: {
+              id:   item.id,
+              item: item
+            }
+          })
+        }
+
       }
     }
   }

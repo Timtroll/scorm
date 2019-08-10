@@ -14,13 +14,13 @@ const notify = (message, status = 'primary', timeout = '4000', pos = 'top-center
 }
 
 // fake data
-import Settings from '../../../assets/json/settings.json'
+//import Settings from '../../../assets/json/settings.json'
 
 const actions = {
 
-  getNavTree ({commit}, data) {
-    commit('setNavTree', Settings.settings)
-  },
+  //getNavTree ({commit}, data) {
+  //  commit('setNavTree', Settings.settings)
+  //},
 
   getTree ({commit}) {
 
@@ -29,10 +29,13 @@ const actions = {
 
       Api.tree()
          .then(response => {
-           const resp = response.data
-           commit('cms_success', resp)
-           resolve(response)
-           //if (resp.status === 'ok') {}
+           if (response.status === 200) {
+             const resp = response.data
+             if (typeof resp['settings'] !== 'undefined') {
+               commit('cms_success', resp.settings)
+             }
+             resolve(response)
+           }
          })
          .catch(err => {
            commit('cms_error')

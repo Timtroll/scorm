@@ -1,8 +1,6 @@
 <template>
   <Card :header="false"
         :footer="false"
-        :footer-left="true"
-        :footer-right="true"
         :body-left="true"
         :body-left-padding="false"
         :body-left-toggle-show="true"
@@ -13,121 +11,21 @@
         :body-left-action-event="card.bodyLeftShow"
         :loader="loader">
 
-    <!-- // header // -->
-    <template #headerLeft></template>
-    <template #headerRight></template>
-    <template #header></template>
-
-    <!-- // footer // -->
-    <template #footerLeft>+</template>
-    <template #footerRight>+</template>
-    <template #footer>footer</template>
-
     <!-- // Body // -->
     <template #body>
 
-      <Card :footer="false"
-            :footer-left="false"
-            :header="true"
-            :header-large="false"
-            :header-bgr-default="true"
-            :header-left="true"
-            :footer-right="false"
-            :body-padding="true">
-
-        <template #headerLeft>
-          <div class="uk-grid-small"
-               uk-grid>
-
-            <!--Add Row-->
-            <div>
-              <button type="button"
-                      class="uk-button uk-button-success uk-button-small">
-                <img src="/img/icons/icon__plus.svg"
-                     width="16"
-                     height="16"
-                     uk-svg>
-                <span class="uk-margin-small-left uk-visible@m"
-                      v-text="$t('actions.add')"></span>
-              </button>
-            </div>
-
-            <!--Remove Row-->
-            <div>
-              <button class="uk-button-danger uk-button uk-button-small"
-                      disabled>
-                <img src="/img/icons/icon__trash.svg"
-                     uk-svg
-                     width="10"
-                     height="10">
-                <span class="uk-margin-small-left uk-visible@s"
-                      v-text="$t('actions.remove')"></span>
-              </button>
-            </div>
-          </div>
-
-        </template>
-
-        <template #header>
-
-          <ul class="uk-pagination uk-margin-remove"
-              uk-margin>
-            <li><a href="#">
-              <span uk-pagination-previous></span>
-            </a></li>
-            <li><a href="#">1</a></li>
-            <li class="uk-active">
-              <span>4</span>
-            </li>
-            <li><a href="#">8</a></li>
-            <li><a href="#">
-              <span uk-pagination-next></span>
-            </a></li>
-          </ul>
-          <!--table searchInput-->
-          <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
-            <a @click.prevent="clearSearchVal"
-               v-if="table.searchInput"
-               class="uk-form-icon uk-form-icon-flip">
-              <img src="/img/icons/icon__close.svg"
-                   width="10"
-                   height="10"
-                   uk-svg>
-            </a>
-            <div v-else
-                 class="uk-form-icon uk-form-icon-flip">
-              <img src="/img/icons/icon__search.svg"
-                   width="14"
-                   height="14"
-                   uk-svg>
-            </div>
-            <input type="text"
-                   v-model="table.searchInput"
-                   @keyup.esc="clearSearchVal"
-                   placeholder="Поиск"
-                   class="uk-input uk-form-small">
-          </div>
-        </template>
-
-        <!--body-->
-        <template #body>
-
-          <!--table-->
-          <Table :header="table.header"
-                 :borders="true"
-                 :data="table.data"
-                 v-on:edit="editEl($event)"
-                 :settings="table.settings"></Table>
-        </template>
-
-      </Card>
+      <transition name="slide-right"
+                  mode="out-in"
+                  appear>
+        <router-view/>
+      </transition>
 
     </template>
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <Tree :nav="nav"
-            @click="bodyLeftActionEvent"></Tree>
+      <Tree v-if="nav"
+            :nav="nav"></Tree>
     </template>
 
     <!--bodyRight-->
@@ -276,7 +174,7 @@
     created () {
 
       // Get left nav tree
-      this.$store.dispatch('getNavTree')
+      //this.$store.dispatch('getNavTree')
 
       // cms
       this.$store.dispatch('getTree')
@@ -284,8 +182,12 @@
 
     computed: {
 
+      pageTable () {
+        return this.$store.state.cms.navTree.items
+      },
+
       bodyLeftShow () {
-        return this.$store.getters.navbarLeftActionState
+        return this.$store.getters.cardLeftState
       },
 
       loader () {
@@ -294,16 +196,16 @@
 
       // Left nav tree
       nav () {
-        return this.$store.getters.navTree
+        return this.$store.getters.Settings
       }
     },
 
     methods: {
 
-      bodyLeftActionEvent () {
-        this.$store.commit('setNavbarLeftActionState', !this.bodyLeftShow)
-        //this.card.bodyLeftShow = !this.card.bodyLeftShow
-      },
+      //bodyLeftActionEvent () {
+      //  this.$store.commit('setNavbarLeftActionState', !this.bodyLeftShow)
+      //  //this.card.bodyLeftShow = !this.card.bodyLeftShow
+      //},
 
       closeRightPanel () {
         this.card.bodyRightShow = false

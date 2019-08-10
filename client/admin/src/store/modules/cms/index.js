@@ -4,15 +4,27 @@ import getters from './getters'
 
 const state = {
 
-  navbarLeftAction: {
-    visibility: true,
-    state:      true,
-    icon:       'icon__nav.svg'
+  cms: {
+    data:     null,
+    status:   '',
+    current:  null,
+    table:    null,
+    activeId: null,
+    row:      {
+      open:   false,
+      status: 'loading',
+      data:   []
+
+    }
   },
 
-  cms: {
-    status:  '',
-    current: null
+  main: {
+    navBarLeftAction: {
+      visibility: true,
+      icon:       'icon__nav.svg'
+    },
+    leftShow:         true,
+    rightShow:        true
   },
 
   pageLoader: true,
@@ -22,24 +34,20 @@ const state = {
       open:   false,
       status: 'loading'
     },
-    items: []
+    items: null
   },
 
-  table: {},
-
-  currentRow: {},
-
-  selectedRows: [],
-
-  settingPage: {
-    status: 'loading'
-  },
-
-  detailBar: {
-    open:    false,
-    status:  'loading',
-    content: []
-  }
+  inputComponents: [
+    {label: 'Текст', value: 'InputText'},
+    {label: 'Текстовая область', value: 'InputTextarea'},
+    {label: 'Редактор текста', value: 'InputEditorText'},
+    {label: 'Число', value: 'InputNumber'},
+    {label: 'Да/Нет', value: 'InputBoolean'},
+    {label: 'Радио', value: 'InputRadio'},
+    {label: 'Выбор значения', value: 'InputSelect'},
+    {label: 'Массив значений', value: 'InputList'},
+    {label: 'Массив ключ - значение', value: 'InputDoubleList'}
+  ]
 
 }
 
