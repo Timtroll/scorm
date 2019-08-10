@@ -208,7 +208,6 @@
           })
 
           //const sortedData = displayTable.sort((a, b) => flatHeader.indexOf(a.key) - flatHeader.indexOf(b.key))
-          //const sortedData = displayTable.sort((a, b) => flatHeader.indexOf(a.key) - flatHeader.indexOf(b.key))
           //
 
           return displayTable
