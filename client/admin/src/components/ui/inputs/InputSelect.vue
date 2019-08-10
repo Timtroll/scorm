@@ -28,7 +28,7 @@
                    height="14">
             </button>
           </div>
-          <div class="uk-width-auto">
+          <div class="uk-width-auto" v-if="valuesEditable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-danger' : editValues}"
@@ -50,7 +50,7 @@
         <!--editValues-->
         <transition name="slide-bottom">
           <div class="pos-placeholder"
-               v-if="editValues">
+               v-if="editValues && valuesEditable">
             <div class="uk-grid-small uk-flex-middle"
                  uk-grid>
 
@@ -129,21 +129,25 @@
 
     props: {
 
-      value:       {
+      value:          {
         default: null
       },
-      values:      {
+      values:         {
         type: Array
       },
-      status:      { // 'loading' / 'success' / 'error'
+      status:         { // 'loading' / 'success' / 'error'
         default: null,
         type:    String
       },
-      placeholder: {
+      placeholder:    {
         default: null,
         type:    String
       },
-      editable:    {
+      valuesEditable: {
+        default: true,
+        type:    Boolean
+      },
+      editable:       {
         default: true,
         type:    Boolean
       }
@@ -152,7 +156,6 @@
     data () {
 
       return {
-
         valueInput:  this.value,
         valuesInput: this.values,
         editValues:  false
