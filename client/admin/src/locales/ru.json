@@ -55,5 +55,13 @@
   },
   "dialog":  {
     "remove": "Удалить элемент?"
+  },
+  "list":    {
+    "name":        "Системное название",
+    "placeholder": "Placeholder",
+    "label":       "Рашифровка",
+    "mask":        "Маска",
+    "type":        "Тип",
+    "value":        "Значение"
   }
 }

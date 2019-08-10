@@ -2,25 +2,25 @@
   <ul class="pos-list">
     <li>
       <InputText :value="data.name"
-                 :placeholder="'Системное название'"></InputText>
+                 :placeholder="$t('list.name')"></InputText>
     </li>
     <li>
       <InputText :value="data.label"
-                 :placeholder="'Рашифровка'"></InputText>
+                 :placeholder="$t('list.label')"></InputText>
     </li>
     <li>
       <InputText :value="data.placeholder"
-                 :placeholder="'Placeholder'"></InputText>
+                 :placeholder="$t('list.placeholder')"></InputText>
     </li>
     <li>
       <InputText :value="data.mask"
-                 :placeholder="'Маска'"></InputText>
+                 :placeholder="$t('list.mask')"></InputText>
     </li>
     <li>
       <InputSelect :value="data.type"
                    :values-editable="false"
                    v-on:update="changeType($event)"
-                   :placeholder="'Тип'"
+                   :placeholder="$t('list.type')"
                    :values="inputComponents"></InputSelect>
     </li>
     <li>
@@ -29,7 +29,7 @@
                   appear>
         <component v-bind:is="component"
                    :value="data.value"
-                   :placeholder="'Значение'">
+                   :placeholder="$t('list.value')">
         </component>
       </transition>
     </li>
