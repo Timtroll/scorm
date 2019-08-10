@@ -82,7 +82,6 @@
 
     <!--content-right-->
     <transition name="slide-right">
-
       <div class="pos-card-body-right"
            v-if="bodyRightShow">
 
@@ -95,6 +94,7 @@
       </div>
     </transition>
 
+    <!--loading-->
     <transition name="fade">
       <div class="pos-card-loader"
            v-if="loader === 'loading'">
@@ -112,7 +112,7 @@
 <script>
   import Loader from '../icons/Loader'
 
-  const bodyMinSize = 840
+  const bodyMinSize = 960
 
   export default {
 
@@ -213,10 +213,11 @@
     mounted () {
 
       if (this.bodyRight || this.bodyLeft) {
-        this.bodyWidth = this.$refs.body.offsetWidth
+        this.bodyWidth     = this.$refs.body.offsetWidth
+        this.bodyLeftWidth = this.$refs.bodyLeft.offsetWidth
         window.addEventListener('resize', this.handleResize)
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.bodyRightShow = false
+          this.$store.commit('cms_table_row_show', false)
         }
       }
     },
@@ -224,7 +225,7 @@
     watch: {
 
       //
-      bodyLeftActionEvent () {
+      RightToggleState () {
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
           this.$store.commit('card_left_state', false)
@@ -234,7 +235,13 @@
 
     computed: {
 
+      RightToggleState () {
+        setTimeout(() => {this.handleResize()}, 300)
+        return this.$store.getters.pageTableRowShow
+      },
+
       leftToggleState () {
+        setTimeout(() => {this.handleResize()}, 300)
         return this.$store.getters.cardLeftState
       }
     },
@@ -253,9 +260,7 @@
 
       handleResize () {
 
-        setTimeout(() => {
-          this.bodyWidth = this.$refs.body.offsetWidth
-        }, 300)
+        setTimeout(() => {this.bodyWidth = this.$refs.body.offsetWidth}, 300)
 
       }
     }

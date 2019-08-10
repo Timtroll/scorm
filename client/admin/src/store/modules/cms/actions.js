@@ -31,8 +31,26 @@ const actions = {
          .then(response => {
            if (response.status === 200) {
              const resp = response.data
+
+             commit('cms_success', resp.settings)
+
              if (typeof resp['settings'] !== 'undefined') {
-               commit('cms_success', resp.settings)
+
+               if (resp.settings.length > 0) {
+
+                 commit('cms_table', resp.settings[0].table)
+                 const firstNavItemId = resp.settings[0].id
+
+                 router.push({
+                   name:   'SettingItem',
+                   params: {
+                     id: firstNavItemId
+                   }
+                 })
+                 commit('tree_active', firstNavItemId)
+
+               }
+
              }
              resolve(response)
            }

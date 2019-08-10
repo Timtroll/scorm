@@ -69,6 +69,7 @@
 
       click (item) {
         if(this.navActiveId !== this.navItem.id){
+          this.$store.commit('cms_table_row_show', false)
           this.$store.commit('tree_active', item.id)
           this.$store.commit('cms_table', item.table)
           this.$emit('close')

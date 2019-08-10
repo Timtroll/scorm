@@ -6,7 +6,6 @@
         :body-left-toggle-show="true"
         :body-right="true"
         :body-padding="false"
-        :body-left-action-event="card.bodyLeftShow"
         :loader="loader">
 
     <!-- // Body // -->
@@ -23,7 +22,8 @@
     <!--bodyLeft-->
     <template #bodyLeft>
       <Tree v-if="nav"
-            :nav="nav"></Tree>
+            :nav="nav"
+            @close=""></Tree>
     </template>
 
   </Card>
@@ -34,33 +34,18 @@
   import NavTree from '../ui/tree/NavTree'
   import Tree from '../ui/tree/Tree'
   import IconBug from '../ui/icons/IconBug'
-  import Table from '../ui/table/Table'
 
   export default {
 
     name: 'Settings',
 
-    components: {Table, IconBug, Tree, NavTree, Card},
+    components: {IconBug, Tree, NavTree, Card},
 
     data () {
-      return {
-
-        bodyComponent: null,
-        card:          {
-          //bodyLeftShow:     true,
-          bodyRightShow:    false,
-          bodyRightContent: []
-        }
-
-      }
+      return {}
     },
 
     created () {
-
-      // Get left nav tree
-      //this.$store.dispatch('getNavTree')
-
-      // cms
       this.$store.dispatch('getTree')
     },
 
@@ -95,6 +80,10 @@
         this.card.bodyRightContent = event
         this.card.bodyRightShow    = !this.card.bodyRightShow
       },
+
+      //getNav () {
+      //  this.$store.dispatch('getTree')
+      //},
 
       removeEl () {},
 

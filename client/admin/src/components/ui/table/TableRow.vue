@@ -22,7 +22,7 @@
     <td v-for="(item, index) in rowData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @dblclick="edit(fullData)">
+        @click="edit(fullData)">
       <div v-text="item.val"></div>
     </td>
 
