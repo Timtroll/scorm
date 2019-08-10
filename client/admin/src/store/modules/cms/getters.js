@@ -6,6 +6,9 @@ const getters = {
 
   pageTable: state => state.cms.table,
 
+  pageTableRow:     state => state.cms.row,
+  pageTableRowShow: state => state.cms.row.open,
+
   Settings: state => state.cms.data,
 
   inputComponents: state => state.inputComponents,

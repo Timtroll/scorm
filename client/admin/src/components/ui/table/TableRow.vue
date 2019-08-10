@@ -22,7 +22,7 @@
     <td v-for="(item, index) in rowData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @dblclick="edit(rowData)">
+        @dblclick="edit(fullData)">
       <div v-text="item.val"></div>
     </td>
 
@@ -31,7 +31,7 @@
 
       <!--edit Row-->
       <a class="uk-icon-link uk-margin-small-right uk-display-inline-block"
-         @click.prevent="edit(rowData)">
+         @click.prevent="edit(fullData)">
         <img src="/img/icons/icon__edit.svg"
              width="16"
              height="16"
@@ -66,6 +66,10 @@
         default: false
       },
 
+      fullData: {
+        required: true
+      },
+
       rowData: {
         type:     Array,
         required: true
@@ -80,13 +84,18 @@
       }
     },
 
+    computed: {
+      pageTableRowShow () {
+        return this.$store.getters.pageTableRowShow
+      }
+    },
+
     data () {
       return {
         ellipsis:   true,
         checkedRow: false
       }
     },
-
 
     methods: {
 
@@ -103,11 +112,13 @@
       },
 
       edit (event) {
-        this.$emit('edit', event)
+        this.$store.commit('cms_table_row', null)
+        this.$store.commit('cms_table_row', event)
+        this.$store.commit('cms_table_row_show', !this.pageTableRowShow)
       },
 
       remove (event) {
-        this.$emit('remove', event)
+        //this.$emit('remove', event)
       }
 
     }

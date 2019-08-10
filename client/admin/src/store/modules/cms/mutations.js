@@ -22,17 +22,15 @@ const mutations = {
   },
 
   cms_table_row (state, data) {
-    state.cms.row.open = true
     state.cms.row.data = data
+  },
+
+  cms_table_row_show (state, data) {
+    state.cms.row.open = data
   },
 
   tree_active (state, id) {
     state.cms.activeId = id
-  },
-
-  // Формирование контента таблицы
-  set_table_data (state, data) {
-    state.cms.table = data
   },
 
   // акшин для левой кнопки в navbar

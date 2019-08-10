@@ -1,14 +1,34 @@
 <template>
   <ul class="pos-list">
-    <li v-for="(item, index) in data"
-        :key="index">
-      <component v-bind:is="item.component"
-                 :value="item.value"
-                 :values="item.values"
-                 :editable="item.editable"
-                 :placeholder="labels[index]">
+    <li>
+      <InputText :value="data.name"
+                 :placeholder="'Системное название'"></InputText>
+    </li>
+    <li>
+      <InputText :value="data.label"
+                 :placeholder="'Рашифровка'"></InputText>
+    </li>
+    <li>
+      <InputText :value="data.placeholder"
+                 :placeholder="'Placeholder'"></InputText>
+    </li>
+    <li>
+      <InputText :value="data.mask"
+                 :placeholder="'Маска'"></InputText>
+    </li>
+    <li>
+      <InputSelect :value="data.type"
+                   v-on:update="changeType($event)"
+                   :placeholder="'Тип'"
+                   :values="inputComponents"></InputSelect>
+    </li>
+    <li>
+      <component v-bind:is="component"
+                 :value="data.value"
+                 :placeholder="'Значение'">
       </component>
     </li>
+
   </ul>
 </template>
 <script>
@@ -42,7 +62,29 @@
     },
 
     data () {
-      return {}
+      return {
+        component: this.data.type
+      }
+    },
+
+    computed: {
+
+      inputComponent () {
+        return this.data.type
+      },
+
+      inputComponents () {
+        return this.$store.getters.inputComponents
+      }
+    },
+
+    methods: {
+
+      changeType (event) {
+        this.component = event
+        console.log(event)
+      }
+
     }
   }
 </script>

@@ -13,8 +13,7 @@
             <select v-model="valueInput"
                     :disabled="!editable || editValues"
                     @change="update">
-              <option value="item"
-                      v-for="item in valuesInput">{{item}}
+              <option v-for="item in valuesInput">{{item}}
               </option>
 
             </select>
@@ -145,7 +144,7 @@
         type:    String
       },
       editable:    {
-        default: false,
+        default: true,
         type:    Boolean
       }
     },
@@ -178,7 +177,7 @@
       },
 
       update () {
-        this.$emit('update', this.value)
+        this.$emit('update', this.valueInput)
       },
 
       removeItem (index) {

@@ -84,7 +84,7 @@
     <transition name="slide-right">
 
       <div class="pos-card-body-right"
-           v-if="bodyRight && bodyRightShow">
+           v-if="bodyRightShow">
 
         <div class="pos-card-body">
           <slot name="bodyRight"></slot>

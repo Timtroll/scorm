@@ -35,7 +35,7 @@
         type:    String
       },
       editable:    {
-        default: false,
+        default: true,
         type:    Boolean
       }
     },
