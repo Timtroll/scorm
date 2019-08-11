@@ -74,7 +74,8 @@ sub set_add {
     $self->render(
         'json'    => {
             'controller'    => 'Settings',
-            'route'         => 'set_add'
+            'route'         => 'set_add',
+            'status'        => 'ok'
         }
     );
 }
@@ -86,7 +87,8 @@ sub set_save {
     $self->render(
         'json'    => {
             'controller'    => 'Settings',
-            'route'         => 'set_save'
+            'route'         => 'set_save',
+            'status'        => 'ok'
         }
     );
 }
