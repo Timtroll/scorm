@@ -29,31 +29,31 @@ sub register {
             { "key" => "selected",      "label" => "Расшифровка" },
             { "key" => "editable",      "label" => "Расшифровка" }
         ];
-        # $table->{'body'} = [
-        #     {
-        #         "name"          => "fullDebugMode",
-        #         "label"         => "режим обновления",
-        #         "value"         => "",
-        #         "type"          => "InputNumber",
-        #         "placeholder"   => "",
-        #         "mask"          => "",
-        #         "selected"      => "",
-        #         "editable"      => 1
-        #     }
-        # ];
-        # $table->{'settings'} = {
-        #     "readOnly"    => 0,
-        #     "totalCount"  => scalar(@{$table->{'body'}}),
-        #     "editable"    => 1,
-        #     "removable"   => 1,
-        #     "massEdit"    => 0
-        # };
+        $table->{'body'} = [
+            {
+                "name"          => "fullDebugMode",
+                "label"         => "режим обновления",
+                "value"         => "",
+                "type"          => "InputNumber",
+                "placeholder"   => "",
+                "mask"          => "",
+                "selected"      => "",
+                "editable"      => 1
+            }
+        ];
+        $table->{'settings'} = {
+            "readOnly"    => 0,
+            "totalCount"  => scalar(@{$table->{'body'}}),
+            "editable"    => 1,
+            "removable"   => 1,
+            "massEdit"    => 0
+        };
  
         # foreach my $row (@{$table->{'body'}}) {
 
         # }
 
-        return $table->{'header'};
+        return $table;
         # return $table->{'body'}[0];
     });
 }

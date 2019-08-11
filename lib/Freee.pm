@@ -34,6 +34,7 @@ sub startup {
 
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
+    $self->plugin('Freee::Helpers::TableObj');
 
     # init Pg connection
     $self->pg_init();
@@ -68,14 +69,13 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/set_delete')      ->to('settings#set_delete');
 
     # управление контентом
-    $auth->post('/cms')                 ->to('cms#index');
-
-    $auth->post('/cms/listpages')       ->to('cms#listpages');
-    $auth->post('/cms/addpage')         ->to('cms#addpage');
-    $auth->post('/cms/editpage')        ->to('cms#editpage');
-    $auth->post('/cms/activatepage')    ->to('cms#activatepage');
-    $auth->post('/cms/hidepage')        ->to('cms#hidepage');
-    $auth->post('/cms/deletepage')      ->to('cms#deletepage');
+    $auth->post('/cms/article_list')    ->to('article#index');
+    $auth->post('/cms/article_add')     ->to('article#add');
+    $auth->post('/cms/article_edit')    ->to('article#edit');
+    $auth->post('/cms/article_save')    ->to('article#save');
+    $auth->post('/cms/article_activate')->to('article#activate');
+    $auth->post('/cms/article_hide')    ->to('article#hide');
+    $auth->post('/cms/article_delete')  ->to('article#delete');
 
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/addsubject')      ->to('cmssubject#addsubject');

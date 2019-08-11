@@ -16,7 +16,7 @@ print "2\n";
     my $test = $self->table_obj({
         "settings"  => {
             "readOnly"    => 0,
-            "totalCount"  => scalar(@{$table->{'body'}}),
+            # "totalCount"  => scalar(@{$table->{'body'}}),
             "editable"    => 1,
             "removable"   => 1,
             "massEdit"    => 0
@@ -38,12 +38,12 @@ print "2\n";
         'json'    => {
             'controller'    => 'article',
             'route'         => 'index',
-            # 'test'          => $test
+            'test'          => $test
         }
     );
 }
 
-ssub list {
+sub list {
     my ($self);
     $self = shift;
 
