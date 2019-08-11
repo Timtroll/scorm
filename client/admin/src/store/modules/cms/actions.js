@@ -41,16 +41,14 @@ const actions = {
                  commit('cms_table', resp.settings[0].table)
                  const firstNavItemId = resp.settings[0].id
 
-                 router.push({
+                 router.replace({
                    name:   'SettingItem',
                    params: {
                      id: firstNavItemId
                    }
                  })
                  commit('tree_active', firstNavItemId)
-
                }
-
              }
              resolve(response)
            }

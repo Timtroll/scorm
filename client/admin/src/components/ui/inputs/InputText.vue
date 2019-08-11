@@ -15,10 +15,10 @@
           </div>
           <input class="uk-input"
                  :disabled="!editable"
-                 :class="statusClass"
+                 :class="validate"
                  v-model="valueInput"
                  type="text"
-                 @blur="update"
+                 @input="update"
                  :placeholder="placeholder">
         </div>
       </div>
@@ -34,10 +34,6 @@
       value:       {
         default: null
       },
-      status:      { // 'loading' / 'success' / 'error'
-        default: null,
-        type:    String
-      },
       placeholder: {
         default: null,
         type:    String
@@ -45,34 +41,49 @@
       editable:    {
         default: true,
         type:    Boolean
+      },
+      required:    {
+        default: false,
+        type:    Boolean
       }
     },
 
     data () {
       return {
-        valueInput: this.value
+        valueInput: this.value,
+        valid:      true
+      }
+    },
+
+    computed: {
+
+      isChanged () {
+        return this.valueInput !== this.value
+      },
+
+      validate () {
+
+        let validClass = null
+        if (this.required) {
+          if (!this.valueInput || this.valueInput.length < 3) {
+            validClass = 'uk-form-danger'
+            this.valid = false
+            this.$emit('valid', this.valid)
+          } else {
+            validClass = 'uk-form-success'
+            this.valid = true
+            this.$emit('valid', this.valid)
+          }
+        }
+        return validClass
       }
     },
 
     methods: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
-      },
-
       update () {
-        this.$emit('update', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('update', this.valueInput)
       }
     }
   }

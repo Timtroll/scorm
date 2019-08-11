@@ -1,5 +1,4 @@
 <template>
-
   <tr>
     <td class="pos-table-expand">
 
@@ -38,7 +37,7 @@
              uk-svg></a>
 
       <!--remove Row-->
-      <a class="uk-icon-link uk-link-muted uk-margin-small-right uk-display-inline-block"
+      <a class="uk-icon-link uk-link-muted uk-display-inline-block"
          @click.prevent="remove(rowData)">
         <img height="16"
              src="/img/icons/icon__trash.svg"
@@ -47,9 +46,10 @@
 
       <!--select Row-->
       <input type="checkbox"
+             v-if="massEdit"
              @change="notCheckedAll"
              v-model="checkedRow"
-             class="pos-checkbox-switch xsmall">
+             class="pos-checkbox-switch xsmall uk-margin-small-left">
     </td>
   </tr>
 
@@ -68,6 +68,11 @@
 
       fullData: {
         required: true
+      },
+
+      massEdit: {
+        type:    Number,
+        default: false
       },
 
       rowData: {

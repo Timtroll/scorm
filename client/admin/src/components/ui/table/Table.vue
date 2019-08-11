@@ -4,7 +4,6 @@
         :header-bgr-default="true"
         :header-left="true"
         :body-padding="true"
-
         :body-right-show="tableRowDetail.open">
 
     <template #headerLeft>
@@ -25,7 +24,7 @@
         </div>
 
         <!--Remove Row-->
-        <div>
+        <div v-if="massEdit">
           <button class="uk-button-danger uk-button uk-button-small"
                   disabled>
             <img src="/img/icons/icon__trash.svg"
@@ -90,27 +89,28 @@
             <!--header rows data-->
             <th v-for="item in table.header"
                 v-text="item.label"></th>
-            <th class="uk-text-right pos-table-checkbox">
+            <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
               <!--edit Row-->
-              <span class="uk-margin-small-right uk-display-inline-block">
-            <img src="/img/icons/icon__edit.svg"
-                 width="16"
-                 height="16"
-                 uk-svg></span>
+              <div class="uk-margin-small-right uk-display-inline-block">
+                <img src="/img/icons/icon__edit.svg"
+                     width="16"
+                     height="16"
+                     uk-svg></div>
 
               <!--remove Row-->
-              <span class="uk-margin-small-right uk-display-inline-block">
-            <img height="16"
-                 src="/img/icons/icon__trash.svg"
-                 uk-svg
-                 width="16"></span>
+              <div class="uk-display-inline-block">
+                <img height="16"
+                     src="/img/icons/icon__trash.svg"
+                     uk-svg
+                     width="16"></div>
+              <div v-if="massEdit"
+                   class="uk-margin-small-left">
 
-              <span>
-            <input type="checkbox"
-                   v-model="checked"
-                   @click="checkedAll"
-                   class="pos-checkbox-switch xsmall">
-            </span>
+                <input type="checkbox"
+                       v-model="checked"
+                       @click="checkedAll"
+                       class="pos-checkbox-switch xsmall uk-display-inline-block">
+              </div>
             </th>
           </tr>
           </thead>
@@ -118,6 +118,7 @@
 
           <TableRow
               :row-data="row"
+              :mass-edit="massEdit"
               :full-data="table.body[index]"
               :checked-all="checked"
               v-for="(row, index) in tableRows"
@@ -135,6 +136,8 @@
     <!--bodyRight-->
     <template #bodyRight>
       <List :data="tableRowDetail.data"
+            :required="editRequired"
+            v-on:changed="listUpdated = $event"
             v-on:close="toggleRightPanel"></List>
     </template>
 
@@ -153,7 +156,8 @@
           </button>
         </div>
         <div class="">
-          <button class="uk-button-success uk-button uk-button-small">
+          <button class="uk-button-success uk-button uk-button-small"
+                  v-if="listUpdated">
             <img src="/img/icons/icon__save.svg"
                  uk-svg
                  width="14"
@@ -178,11 +182,41 @@
     components: {TableRow, Card, List},
     props:      {},
 
+    data () {
+      return {
+        searchInput:  null,
+        checked:      false,
+        card:         {
+          bodyRightShow: false
+        },
+        editRequired: {
+          name:        true,
+          placeholder: true,
+          label:       true,
+          type:        true
+        },
+
+        listUpdated: false
+      }
+    },
+
     computed: {
 
       table () {
         return this.$store.getters.pageTable
       },
+
+      massEdit () {
+        if (this.table && this.table.settings && this.table.settings.massEdit) {
+          return this.table.settings.massEdit
+        } else {
+          return 0
+        }
+      },
+
+      //tableRowDetailUpdate () {
+      //  return this.$store.getters.pageTableUpdateRow
+      //},
 
       tableRowDetail () {
         return this.$store.getters.pageTableRow
@@ -207,7 +241,6 @@
 
           })
 
-
           //table.forEach((item) => {
           //  const keys    = Object.keys(item)
           //  const newItem = []
@@ -228,16 +261,6 @@
         }
       }
 
-    },
-
-    data () {
-      return {
-        searchInput: null,
-        checked:     false,
-        card:        {
-          bodyRightShow: false
-        }
-      }
     },
 
     methods: {

@@ -1,40 +1,76 @@
 <template>
-  <ul class="pos-list">
-    <li>
-      <InputText :value="data.name"
-                 :placeholder="$t('list.name')"></InputText>
-    </li>
-    <li>
-      <InputText :value="data.label"
-                 :placeholder="$t('list.label')"></InputText>
-    </li>
-    <li>
-      <InputText :value="data.placeholder"
-                 :placeholder="$t('list.placeholder')"></InputText>
-    </li>
-    <li>
-      <InputText :value="data.mask"
-                 :placeholder="$t('list.mask')"></InputText>
-    </li>
-    <li>
-      <InputSelect :value="data.type"
-                   :values-editable="false"
-                   v-on:update="changeType($event)"
-                   :placeholder="$t('list.type')"
-                   :values="inputComponents"></InputSelect>
-    </li>
-    <li>
-      <transition name="slide-right"
-                  mode="out-in"
-                  appear>
-        <component v-bind:is="component"
-                   :value="data.value"
-                   :placeholder="$t('list.value')">
-        </component>
-      </transition>
-    </li>
+  <form class="uk-display-block uk-width-1-1">
 
-  </ul>
+    <ul class="pos-list">
+      <li v-if="editedData.label">
+        <p class="uk-heading-line uk-text-primary uk-h4">
+          <span v-text="editedData.label"></span>
+        </p>
+      </li>
+      <!--editable-->
+      <li>
+        <InputBoolean
+            :value="data.editable"
+            @change="dataIsChange.editable = $event"
+            @update="editedData.editable = $event"
+            :placeholder="$t('list.editable')"></InputBoolean>
+      </li>
+      <!--name-->
+      <li>
+        <InputText :value="data.name"
+                   :required="true"
+                   @change="dataIsChange.name = $event"
+                   @update="editedData.name = $event"
+                   :placeholder="$t('list.name')"></InputText>
+      </li>
+      <!--label-->
+      <li>
+        <InputText :value="data.label"
+                   :required="true"
+                   @change="dataIsChange.label = $event"
+                   @update="editedData.label = $event"
+                   :placeholder="$t('list.label')"></InputText>
+      </li>
+      <!--placeholder-->
+      <li>
+        <InputText :value="data.placeholder"
+                   @change="dataIsChange.placeholder = $event"
+                   @update="editedData.placeholder = $event"
+                   :placeholder="$t('list.placeholder')"></InputText>
+      </li>
+      <!--mask-->
+      <li>
+        <InputText :value="data.mask"
+                   @change="dataIsChange.mask = $event"
+                   @update="editedData.mask = $event"
+                   :placeholder="$t('list.mask')"></InputText>
+      </li>
+      <!--type-->
+      <li>
+        <InputSelect :value="data.type"
+                     :required="true"
+                     :values-editable="false"
+                     @change="dataIsChange.type = $event"
+                     v-on:update="changeType($event)"
+                     :placeholder="$t('list.type')"
+                     :values="inputComponents"></InputSelect>
+      </li>
+      <!--value-->
+      <li>
+        <transition name="slide-right"
+                    mode="out-in"
+                    appear>
+          <component v-bind:is="component"
+                     :value="data.value"
+                     :values="data.selected"
+                     :placeholder="$t('list.value')">
+          </component>
+        </transition>
+      </li>
+
+    </ul>
+    {{dataIsChanged}}
+  </form>
 </template>
 <script>
 
@@ -64,18 +100,46 @@
     props: {
       data:   {},
       labels: {}
+
+    },
+
+    mounted () {
+      //this.$store.commit('cms_table_update_row', this.editedData)
     },
 
     data () {
       return {
-        component: this.data.type
+        component: this.data.type,
+
+        editedData:   {
+          editable:    this.data.editable,
+          name:        this.data.name,
+          label:       this.data.label,
+          placeholder: this.data.placeholder,
+          mask:        this.data.mask,
+          type:        this.data.type,
+          value:       this.data.value,
+          selected:    this.data.selected
+        },
+        dataIsChange: {
+          editable:    false,
+          name:        false,
+          label:       false,
+          placeholder: false,
+          mask:        false,
+          type:        false,
+          value:       false,
+          selected:    false
+        }
       }
     },
 
     computed: {
 
-      inputComponent () {
-        return this.data.type
+      dataIsChanged () {
+        const dataIsChanged = !Object.values(this.dataIsChange).every(item => !item)
+        this.$emit('changed', dataIsChanged)
+        return dataIsChanged
       },
 
       inputComponents () {
@@ -85,9 +149,12 @@
 
     methods: {
 
+      editData () {
+        this.$store.commit('cms_table_update_row', this.editedData)
+      },
+
       changeType (event) {
         this.component = event
-        console.log(event)
       }
 
     }

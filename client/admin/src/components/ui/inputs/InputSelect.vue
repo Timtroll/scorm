@@ -18,7 +18,7 @@
 
             </select>
             <button class="uk-button uk-height-1-1 uk-button-default uk-width-1-1 uk-flex uk-flex-between uk-flex-middle"
-                    :class="statusClass"
+                    :class="validate"
                     type="button"
                     tabindex="-1">
               <span></span>
@@ -28,7 +28,8 @@
                    height="14">
             </button>
           </div>
-          <div class="uk-width-auto" v-if="valuesEditable">
+          <div class="uk-width-auto"
+               v-if="valuesEditable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-danger' : editValues}"
@@ -132,9 +133,7 @@
       value:          {
         default: null
       },
-      values:         {
-        type: Array
-      },
+      values:         {},
       status:         { // 'loading' / 'success' / 'error'
         default: null,
         type:    String
@@ -150,6 +149,10 @@
       editable:       {
         default: true,
         type:    Boolean
+      },
+      required:       {
+        default: false,
+        type:    Boolean
       }
     },
 
@@ -157,30 +160,32 @@
 
       return {
         valueInput:  this.value,
-        valuesInput: this.values,
+        valuesInput: this.values || [''],
         editValues:  false
       }
     },
 
     methods: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
-      },
-
       update () {
         this.$emit('update', this.valueInput)
+      },
+
+      validate () {
+
+        let validClass = null
+        if (this.required) {
+          if (!this.valueInput || this.valueInput.length < 3) {
+            validClass = 'uk-form-danger'
+            this.valid = false
+            this.$emit('valid', this.valid)
+          } else {
+            validClass = 'uk-form-success'
+            this.valid = true
+            this.$emit('valid', this.valid)
+          }
+        }
+        return validClass
       },
 
       removeItem (index) {

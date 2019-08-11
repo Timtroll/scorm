@@ -25,6 +25,10 @@ const mutations = {
     state.cms.row.data = data
   },
 
+  cms_table_update_row (state, data) {
+    state.cms.updateRow= data
+  },
+
   cms_table_row_show (state, data) {
     state.cms.row.open = data
   },
