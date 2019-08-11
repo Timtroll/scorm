@@ -55,7 +55,6 @@ $settings = {
         "placeholder"   => "",
         "mask"          => "[0..9\\w ]+",
         "value"         => "",
-        "values"        => [""],
         "selected"      => ""
       },
       {
@@ -66,7 +65,6 @@ $settings = {
         "placeholder"   => "",
         "mask"          => "[0..9\\w ]+",
         "value"         => "",
-        "values"        => [""],
         "selected"      => ""
       },
 
@@ -77,8 +75,7 @@ $settings = {
         "placeholder"   => "",
         "mask"          => "",
         "value"         => "CKEditor",
-        "values"        => ["CKEditor", "EditorJs"],
-        "selected"      => "CKEditor"
+        "selected"      => ["CKEditor", "EditorJs"]
       },
       {
         "type"          => "InputList",
@@ -87,7 +84,6 @@ $settings = {
         "placeholder"   => "",
         "mask"          => "",
         "value"         => ["0", "gallery", "crop", "179", "281"],
-        "values"        => [""],
         "selected"      => ""
       },
       {
@@ -97,8 +93,7 @@ $settings = {
         "placeholder"   => "",
         "mask"          => "",
         "value"         => "rus",
-        "values"        => ["rus", "en", "esp", "ch"],
-        "selected"      => "rus"
+        "selected"      => ["rus", "en", "esp", "ch"]
       },
       {
         "type"=>        "InputDoubleList",
@@ -107,7 +102,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -117,7 +112,6 @@ $settings = {
         "placeholder"=> "admin@admin.com",
         "mask"=>        "[\\@_-\\.0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    "",
       },
       {
@@ -127,7 +121,7 @@ $settings = {
         "placeholder"=> "30",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -137,7 +131,7 @@ $settings = {
         "placeholder"=> "15",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -150,7 +144,7 @@ $settings = {
         ["0", "января"], ["1", "февраля"], ["2", "марта"], ["3", "апреля"], ["4", "мая"], ["5", "июня"], ["6", "июля"], ["7", "августа"],
         ["8", "сентября"], ["9", "октября"], ["10", "ноября"], ["11", "декабря"]
         ],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -160,7 +154,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -173,7 +167,7 @@ $settings = {
         ["0", "январь"], ["1", "февраль"], ["2", "март"], ["3", "апрель"], ["4", "май"], ["5", "июнь"], ["6", "июль"], ["7", "август"],
         ["8", "сентябрь"], ["9", "октябрь"], ["10", "ноябрь"], ["11", "декабрь"]
         ],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -206,7 +200,7 @@ $settings = {
         "placeholder"=> "freee.su",
         "mask"=>        "[0..9\:\/-_\\.\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -216,7 +210,7 @@ $settings = {
         "placeholder"=> "http://freee.su",
         "mask"=>        "[0..9\:\/-_\\.\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -226,7 +220,7 @@ $settings = {
         "placeholder"=> "Образовательная система",
         "mask"=>        "[- \\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -272,7 +266,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -282,7 +276,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -292,7 +286,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -302,7 +296,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -312,7 +306,7 @@ $settings = {
         "placeholder"=> "1322600996",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -322,7 +316,7 @@ $settings = {
         "placeholder"=> "3145752",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -332,7 +326,7 @@ $settings = {
         "placeholder"=> "mail@4clients.ru",
         "mask"=>        "[\\@_-\\.0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -342,7 +336,7 @@ $settings = {
         "placeholder"=> "mail@4clients.ru",
         "mask"=>        "[\\@_-\\.0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -352,7 +346,7 @@ $settings = {
         "placeholder"=> "mail@4clients.ru",
         "mask"=>        "[\\@_-\\.0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -362,7 +356,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[_-\\.0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -372,7 +366,7 @@ $settings = {
         "placeholder"=> "mail.4clients.ru",
         "mask"=>        "[\\@_-0..9\\w]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -418,7 +412,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -428,7 +422,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -438,7 +432,7 @@ $settings = {
         "placeholder"=> "8 800 2 505 505",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -448,7 +442,7 @@ $settings = {
         "placeholder"=> "Доставка по Москве и Московской области: 8 (919) 726-36-86",
         "mask"=>        "[0..9\\w ]+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -458,7 +452,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -468,7 +462,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -514,7 +508,6 @@ $settings = {
         "placeholder"=> "1",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -524,8 +517,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       12,
-        "values"        => [12, 30, 50],
-        "selected"=>    "30"
+        "selected"  => [12, 30, 50],
       },
       {
         "type"=>        "InputNumber",
@@ -534,7 +526,6 @@ $settings = {
         "placeholder"=> "2",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       }
       ]
@@ -580,7 +571,6 @@ $settings = {
         "placeholder"=> "120",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -590,7 +580,6 @@ $settings = {
         "placeholder"=> "90",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -600,7 +589,6 @@ $settings = {
         "placeholder"=> "600",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -610,7 +598,6 @@ $settings = {
         "placeholder"=> "800",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -620,7 +607,6 @@ $settings = {
         "placeholder"=> "90",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -630,7 +616,6 @@ $settings = {
         "placeholder"=> "120",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -640,7 +625,6 @@ $settings = {
         "placeholder"=> "50000000",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -650,7 +634,6 @@ $settings = {
         "placeholder"=> "10000000",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -660,7 +643,6 @@ $settings = {
         "placeholder"=> "220",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
         "selected"=>    ""
       },
       {
@@ -670,7 +652,7 @@ $settings = {
         "placeholder"=> "220",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -680,7 +662,7 @@ $settings = {
         "placeholder"=> "220",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -690,7 +672,7 @@ $settings = {
         "placeholder"=> "220",
         "mask"=>        "\\d+",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -736,7 +718,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -782,7 +764,7 @@ $settings = {
         "placeholder"=> "34747",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -792,7 +774,7 @@ $settings = {
         "placeholder"=> "34746",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
@@ -844,7 +826,7 @@ $settings = {
         ["20", "Файловый менеджер"], ["21", "Управление MySQL"], ["22", "LiveSupport"], ["23", "Учёт"], ["24", "Вопросы к курсам"],
         ["25", "Тесты"]
         ],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -854,7 +836,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       ["число", "строка", "текстовая область", "Селект", "список", "вложенный список"],
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -864,7 +846,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       },
       {
@@ -874,7 +856,7 @@ $settings = {
         "placeholder"=> "",
         "mask"=>        "",
         "value"=>       "",
-        "values"        => [""],
+
         "selected"=>    ""
       }
       ]
