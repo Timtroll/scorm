@@ -85,7 +85,7 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/subject_hide')     ->to('cmssubject#hide');
     $auth->post('/cms/subject_delete')   ->to('cmssubject#delete');
 
-    $auth->post('/cms/item_list')        ->to('cmsitems#index');
+    $auth->post('/cms/item')             ->to('cmsitems#index');
     $auth->post('/cms/item_add')         ->to('cmsitems#add');
     $auth->post('/cms/item_edit')        ->to('cmsitems#edit');
     $auth->post('/cms/item_save')        ->to('cmsitems#saveitem');
@@ -195,6 +195,7 @@ print $self->beans_init(), "\n";
     $auth->post('/tasks/activate')      ->to('tasks#activate');
     $auth->post('/tasks/hide')          ->to('tasks#hide');
     $auth->post('/tasks/delete')        ->to('tasks#delete');
+    $auth->post('/tasks/finished')      ->to('tasks#finished');
 
     # экзамены
     $auth->post('/exam')                ->to('exam#index');
@@ -210,6 +211,7 @@ print $self->beans_init(), "\n";
     $auth->post('/lesson/text')         ->to('lesson#text');
     $auth->post('/lesson/examples')     ->to('lesson#examples');
     $auth->post('/lesson/tasks')        ->to('lesson#tasks'); # возможно дублирует /tasks/list ?????????
+    $auth->post('/lesson/finished')     ->to('lesson#finished');
 
     # учет успеваемости
     $auth->post('/accounting')            ->to('accounting#index');

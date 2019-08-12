@@ -1,5 +1,7 @@
 package Freee::Controller::Forum;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
@@ -11,7 +13,9 @@ sub index {
     $self->render(
         'json'    => {
             'controller'    => 'forum',
-            'route'         => 'index'
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -23,7 +27,9 @@ sub listthemes {
     $self->render(
         'json'    => {
             'controller'    => 'forum',
-            'route'         => 'listthemes'
+            'route'         => 'listthemes',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -35,7 +41,9 @@ sub theme {
     $self->render(
         'json'    => {
             'controller'    => 'forum',
-            'route'         => 'theme'
+            'route'         => 'theme',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -47,7 +55,9 @@ sub addtext {
     $self->render(
         'json'    => {
             'controller'    => 'forum',
-            'route'         => 'addtext'
+            'route'         => 'addtext',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -59,7 +69,9 @@ sub deltext {
     $self->render(
         'json'    => {
             'controller'    => 'forum',
-            'route'         => 'deltext'
+            'route'         => 'deltext',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

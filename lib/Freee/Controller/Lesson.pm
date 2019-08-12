@@ -1,5 +1,7 @@
 package Freee::Controller::Lesson;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
@@ -11,7 +13,9 @@ sub index {
     $self->render(
         'json'    => {
             'controller'    => 'lesson',
-            'route'         => 'index'
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -23,7 +27,9 @@ sub video {
     $self->render(
         'json'    => {
             'controller'    => 'lesson',
-            'route'         => 'video'
+            'route'         => 'video',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -35,7 +41,9 @@ sub text {
     $self->render(
         'json'    => {
             'controller'    => 'lesson',
-            'route'         => 'text'
+            'route'         => 'text',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -47,7 +55,9 @@ sub examples {
     $self->render(
         'json'    => {
             'controller'    => 'lesson',
-            'route'         => 'examples'
+            'route'         => 'examples',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -59,7 +69,23 @@ sub tasks {
     $self->render(
         'json'    => {
             'controller'    => 'lesson',
-            'route'         => 'tasks'
+            'route'         => 'tasks',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub finished {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'lesson',
+            'route'         => 'finished',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

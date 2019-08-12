@@ -120,4 +120,18 @@ sub delete {
     );
 }
 
+sub finished {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Tasks',
+            'route'         => 'finished',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
 1;

@@ -1,5 +1,7 @@
 package Freee::Controller::Accounting;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
@@ -11,7 +13,9 @@ sub index {
     $self->render(
         'json'    => {
             'controller'    => 'accounting',
-            'route'         => 'index'
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -23,7 +27,9 @@ sub search {
     $self->render(
         'json'    => {
             'controller'    => 'accounting',
-            'route'         => 'search'
+            'route'         => 'search',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -35,7 +41,9 @@ sub add {
     $self->render(
         'json'    => {
             'controller'    => 'accounting',
-            'route'         => 'add'
+            'route'         => 'add',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -47,7 +55,9 @@ sub stat {
     $self->render(
         'json'    => {
             'controller'    => 'accounting',
-            'route'         => 'stat'
+            'route'         => 'stat',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
