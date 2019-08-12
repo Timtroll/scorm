@@ -157,6 +157,7 @@
         </div>
         <div class="">
           <button class="uk-button-success uk-button uk-button-small"
+                  @click.prevent="set_save"
                   v-if="listUpdated">
             <img src="/img/icons/icon__save.svg"
                  uk-svg
@@ -214,9 +215,9 @@
         }
       },
 
-      //tableRowDetailUpdate () {
-      //  return this.$store.getters.pageTableUpdateRow
-      //},
+      tableRowDetailUpdate () {
+        return this.$store.getters.pageTableUpdateRow
+      },
 
       tableRowDetail () {
         return this.$store.getters.pageTableRow
@@ -267,6 +268,10 @@
 
       edit (event) {
         this.$emit('edit', event)
+      },
+
+      set_save () {
+        this.$store.dispatch('editTableRow', this.tableRowDetailUpdate)
       },
 
       remove (event) {

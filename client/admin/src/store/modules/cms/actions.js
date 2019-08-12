@@ -62,14 +62,39 @@ const actions = {
     })
   },
 
-  getNavTreeItem ({commit}, item) {
-    commit('')
+  editTableRow ({commit, dispatch}, row) {
+    return new Promise((resolve, reject) => {
+
+      commit('cms_row_request')
+      Api.set_save(row)
+         .then(response => {
+           if (response.status === 200) {
+             const resp = response.data
+             if (resp.status === 'ok') {
+
+               commit('cms_row_success')
+               commit('cms_table_row_show', false)
+               dispatch('getTree')
+
+               resolve(response)
+             } else {
+               notify(resp.mess, 'danger')
+               commit('cms_row_error')
+             }
+             //commit('cms_', resp.settings)
+
+           }
+         })
+         .catch(err => {
+           commit('cms_row_error')
+           notify(err, 'danger')
+           reject(err)
+         })
+      resolve()
+    })
   },
 
   removeTableRow ({commit}, row) {
-
-  },
-  editTableRow ({commit}, row) {
 
   }
 }

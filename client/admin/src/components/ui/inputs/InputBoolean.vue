@@ -6,10 +6,13 @@
              v-if="placeholder"></label>
 
       <div class="uk-form-controls uk-form-controls-text uk-text-right">
-        <input class="pos-checkbox-switch"
-               :disabled="!editable"
-               v-model="valueInput"
-               type="checkbox">
+        <label class="uk-display-block">
+          <input class="pos-checkbox-switch"
+                 :disabled="!editable"
+                 v-model="valueInputBoolean"
+                 @input="update"
+                 type="checkbox">
+        </label>
       </div>
     </div>
   </div>
@@ -20,13 +23,10 @@
     name: 'InputBoolean',
 
     props: {
-      value:       {
+      value: {
         default: null
       },
-      status:      { // 'loading' / 'success' / 'error'
-        default: null,
-        type:    String
-      },
+
       placeholder: {
         default: null,
         type:    String
@@ -39,29 +39,27 @@
 
     data () {
       return {
-        valueInput: this.value
+        valueInputBoolean: this.value,
+        valid:      true
+      }
+    },
+
+    computed: {
+
+      valueInput () {
+        return Number(this.valueInputBoolean)
+      },
+
+      isChanged () {
+        return this.valueInput !== this.value
       }
     },
 
     methods: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
-      },
-
       update () {
-        this.$emit('update', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('update', this.valueInput)
       }
     }
   }

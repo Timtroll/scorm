@@ -34,12 +34,13 @@
   import NavTree from '../ui/tree/NavTree'
   import Tree from '../ui/tree/Tree'
   import IconBug from '../ui/icons/IconBug'
+  import Loader from '../ui/icons/Loader'
 
   export default {
 
     name: 'Settings',
 
-    components: {IconBug, Tree, NavTree, Card},
+    components: {IconBug, Tree, NavTree, Card, Loader},
 
     data () {
       return {}

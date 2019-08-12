@@ -120,6 +120,7 @@
         this.$store.commit('cms_table_row', null)
         this.$store.commit('cms_table_row', event)
         this.$store.commit('cms_table_row_show', !this.pageTableRowShow)
+        this.$store.commit('cms_row_success')
       },
 
       remove (event) {

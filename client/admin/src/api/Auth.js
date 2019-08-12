@@ -13,11 +13,9 @@ export default {
   },
 
   logout () {
-
     return Api()({
       url:    'api/logout',
       method: 'post',
     })
   }
-
 }

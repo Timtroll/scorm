@@ -14,7 +14,8 @@ const getters = {
 
   inputComponents: state => state.inputComponents,
 
-  queryStatus: state => state.cms.status
+  queryStatus: state => state.cms.status,
+  queryRowStatus: state => state.cms.row.status
 
 }
 

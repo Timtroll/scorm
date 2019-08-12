@@ -1,5 +1,6 @@
 <template>
-  <form class="uk-display-block uk-width-1-1">
+  <form @change.prevent="editData"
+        class="uk-display-block uk-position-relative uk-width-1-1">
 
     <ul class="pos-list">
       <li v-if="editedData.label">
@@ -69,11 +70,24 @@
       </li>
 
     </ul>
-    {{dataIsChanged}}
+
+    <!--loading-->
+    <transition name="fade">
+      <div class="pos-card-loader"
+           v-if="loader === 'loading'">
+        <div>
+          <loader :width="40"
+                  :height="40"></Loader>
+          <div class="uk-margin-small-top"
+               v-text="$t('actions.loading')"></div>
+        </div>
+      </div>
+    </transition>
   </form>
 </template>
 <script>
 
+  const Loader          = () => import('../icons/Loader')
   const InputText       = () => import('../inputs/InputText')
   const InputTextarea   = () => import('../inputs/InputTextarea')
   const InputSelect     = () => import('../inputs/InputSelect')
@@ -85,7 +99,7 @@
 
   export default {
     name:       'List',
-    components: {InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
+    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -111,7 +125,7 @@
       return {
         component: this.data.type,
 
-        editedData:   {
+        editedData: {
           editable:    this.data.editable,
           name:        this.data.name,
           label:       this.data.label,
@@ -121,6 +135,7 @@
           value:       this.data.value,
           selected:    this.data.selected
         },
+
         dataIsChange: {
           editable:    false,
           name:        false,
@@ -135,6 +150,10 @@
     },
 
     computed: {
+
+      loader () {
+        return this.$store.getters.queryRowStatus
+      },
 
       dataIsChanged () {
         const dataIsChanged = !Object.values(this.dataIsChange).every(item => !item)
