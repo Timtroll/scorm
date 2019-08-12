@@ -77,21 +77,21 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/article_hide')    ->to('article#hide');
     $auth->post('/cms/article_delete')  ->to('article#delete');
 
-    $auth->post('/cms/subject')         ->to('cmssubject#index');
-    $auth->post('/cms/addsubject')      ->to('cmssubject#addsubject');
-    $auth->post('/cms/editsubject')     ->to('cmssubject#editsubject');
-    $auth->post('/cms/activatesubject') ->to('cmssubject#activatesubject');
-    $auth->post('/cms/hidesubject')     ->to('cmssubject#hidesubject');
-    $auth->post('/cms/deletesubject')   ->to('cmssubject#deletesubject');
+    $auth->post('/cms/subject_list')     ->to('cmssubject#index');
+    $auth->post('/cms/subject_add')      ->to('cmssubject#add');
+    $auth->post('/cms/subject_edit')     ->to('cmssubject#edit');
+    $auth->post('/cms/subject_save')     ->to('cmssubject#save');
+    $auth->post('/cms/subject_activate') ->to('cmssubject#activate');
+    $auth->post('/cms/subject_hide')     ->to('cmssubject#hide');
+    $auth->post('/cms/subject_delete')   ->to('cmssubject#delete');
 
-    $auth->post('/cms/items')           ->to('cmsitems#index');
-    $auth->post('/cms/listitems')       ->to('cmsitems#listitems');
-    $auth->post('/cms/additem')         ->to('cmsitems#additem');
-    $auth->post('/cms/edititem')        ->to('cmsitems#edititem');
-    $auth->post('/cms/saveitem')        ->to('cmsitems#saveitem');
-    $auth->post('/cms/activateitem')    ->to('cmsitems#activateitem');
-    $auth->post('/cms/hideitem')        ->to('cmsitems#hideitem');
-    $auth->post('/cms/delitem')         ->to('cmsitems#delitem');
+    $auth->post('/cms/item_list')        ->to('cmsitems#index');
+    $auth->post('/cms/item_add')         ->to('cmsitems#add');
+    $auth->post('/cms/item_edit')        ->to('cmsitems#edit');
+    $auth->post('/cms/item_save')        ->to('cmsitems#saveitem');
+    $auth->post('/cms/item_activate')    ->to('cmsitems#activate');
+    $auth->post('/cms/item_hide')        ->to('cmsitems#hide');
+    $auth->post('/cms/item_delete')      ->to('cmsitems#delete');
 
     # управление почтновыми сообщениями, рассылками
     $auth->post('/cms/mail')            ->to('cmsmail#index');

@@ -1,8 +1,10 @@
 package Freee::Controller::Subject;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
-use Freee::Helpers::PgGraph;
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -12,8 +14,10 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'index'
+            'controller'    => 'Subject',
+            'route'         => 'index',
+            'params'        => $self->req->params->to_hash,
+            'test'          => $test
         }
     );
 }
@@ -24,8 +28,9 @@ sub list {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'list'
+            'controller'    => 'Subject',
+            'route'         => 'list',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -36,8 +41,9 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'add'
+            'controller'    => 'Subject',
+            'route'         => 'add',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -48,8 +54,9 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'edit'
+            'controller'    => 'Subject',
+            'route'         => 'edit',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -60,8 +67,9 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'save'
+            'controller'    => 'Subject',
+            'route'         => 'save',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -72,8 +80,9 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'activate'
+            'controller'    => 'Subject',
+            'route'         => 'activate',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -84,8 +93,9 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'hide'
+            'controller'    => 'Subject',
+            'route'         => 'hide',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -96,8 +106,9 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'subject',
-            'route'         => 'delete'
+            'controller'    => 'Subject',
+            'route'         => 'delete',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

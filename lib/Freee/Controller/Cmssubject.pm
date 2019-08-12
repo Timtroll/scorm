@@ -1,6 +1,10 @@
 package Freee::Controller::Cmssubject;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,68 +14,101 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'index'
+            'controller'    => 'Cmssubject',
+            'route'         => 'index',
+            'params'        => $self->req->params->to_hash,
+            'test'          => $test
         }
     );
 }
 
-sub addsubject {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'addsubject'
+            'controller'    => 'Cmssubject',
+            'route'         => 'list',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub editsubject {
+sub add {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'editsubject'
+            'controller'    => 'Cmssubject',
+            'route'         => 'add',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub activatesubject {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'activatesubject'
+            'controller'    => 'Cmssubject',
+            'route'         => 'edit',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub hidesubject {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'hidesubject'
+            'controller'    => 'Cmssubject',
+            'route'         => 'save',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub deletesubject {
+sub activate {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmssubject',
-            'route'         => 'deletesubject'
+            'controller'    => 'Cmssubject',
+            'route'         => 'activate',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub hide {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Cmssubject',
+            'route'         => 'hide',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub delete {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Cmssubject',
+            'route'         => 'delete',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

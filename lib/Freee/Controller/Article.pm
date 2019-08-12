@@ -38,6 +38,7 @@ print "2\n";
         'json'    => {
             'controller'    => 'article',
             'route'         => 'index',
+            'params'        => $self->req->params->to_hash,
             'test'          => $test
         }
     );
@@ -50,7 +51,8 @@ sub list {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'list'
+            'route'         => 'list',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -62,7 +64,8 @@ sub add {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'add'
+            'route'         => 'add',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -74,7 +77,8 @@ sub edit {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'edit'
+            'route'         => 'edit',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -86,7 +90,8 @@ sub save {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'save'
+            'route'         => 'save',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -98,7 +103,8 @@ sub activate {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'activate'
+            'route'         => 'activate',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -110,7 +116,8 @@ sub hide {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'hide'
+            'route'         => 'hide',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -122,7 +129,8 @@ sub delete {
     $self->render(
         'json'    => {
             'controller'    => 'article',
-            'route'         => 'delete'
+            'route'         => 'delete',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

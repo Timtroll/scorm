@@ -1,6 +1,10 @@
 package Freee::Controller::Item;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,80 +14,101 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'index'
+            'controller'    => 'Item',
+            'route'         => 'index',
+            'params'        => $self->req->params->to_hash,
+            'test'          => $test
         }
     );
 }
 
-sub listitems {
+sub list {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'listitems'
+            'controller'    => 'Item',
+            'route'         => 'list',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub additem {
+sub add {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'additem'
+            'controller'    => 'Item',
+            'route'         => 'add',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub edititem {
+sub edit {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'edititem'
+            'controller'    => 'Item',
+            'route'         => 'edit',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub activateitem {
+sub save {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'activateitem'
+            'controller'    => 'Item',
+            'route'         => 'save',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub hideitem {
+sub activate {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'hideitem'
+            'controller'    => 'Item',
+            'route'         => 'activate',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
 
-sub delitem {
+sub hide {
     my ($self);
     $self = shift;
 
     $self->render(
         'json'    => {
-            'controller'    => 'cmsitems',
-            'route'         => 'delitem'
+            'controller'    => 'Item',
+            'route'         => 'hide',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub delete {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Item',
+            'route'         => 'delete',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
