@@ -1,5 +1,7 @@
 package Freee::Controller::Index;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
