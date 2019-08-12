@@ -1,4 +1,4 @@
-package Freee::Controller::Article;
+package Freee::Controller::Cmsarticle;
 
 use utf8;
 
@@ -36,23 +36,11 @@ print "2\n";
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsarticle',
             'route'         => 'index',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash,
             'test'          => $test
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'article',
-            'route'         => 'list',
-            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -63,8 +51,9 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'add',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -76,8 +65,9 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'edit',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -89,8 +79,9 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'save',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -102,8 +93,9 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'activate',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -115,8 +107,9 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'hide',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -128,8 +121,9 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'article',
+            'controller'    => 'Cmsitems',
             'route'         => 'delete',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

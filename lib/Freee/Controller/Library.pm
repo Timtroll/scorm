@@ -1,6 +1,10 @@
 package Freee::Controller::Library;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,32 +14,11 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'index'
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'library',
-            'route'         => 'list'
-        }
-    );
-}
-
-sub search {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'library',
-            'route'         => 'search'
+            'controller'    => 'Library',
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash,
+            'test'          => $test
         }
     );
 }
@@ -46,8 +29,10 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'add'
+            'controller'    => 'Library',
+            'route'         => 'add',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -58,8 +43,10 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'edit'
+            'controller'    => 'Library',
+            'route'         => 'edit',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -70,20 +57,10 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'save'
-        }
-    );
-}
-
-sub upload {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'library',
-            'route'         => 'upload'
+            'controller'    => 'Library',
+            'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -94,8 +71,10 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'activate'
+            'controller'    => 'Library',
+            'route'         => 'activate',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -106,8 +85,10 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'hide'
+            'controller'    => 'Library',
+            'route'         => 'hide',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -118,8 +99,10 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'library',
-            'route'         => 'delete'
+            'controller'    => 'Library',
+            'route'         => 'delete',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

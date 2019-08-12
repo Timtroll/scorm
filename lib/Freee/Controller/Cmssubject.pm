@@ -16,21 +16,9 @@ sub index {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'index',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash,
             'test'          => $test
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'Cmssubject',
-            'route'         => 'list',
-            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -43,6 +31,7 @@ sub add {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'add',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,6 +45,7 @@ sub edit {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'edit',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -69,6 +59,7 @@ sub save {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'save',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -82,6 +73,7 @@ sub activate {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'activate',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -95,6 +87,7 @@ sub hide {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'hide',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -108,6 +101,7 @@ sub delete {
         'json'    => {
             'controller'    => 'Cmssubject',
             'route'         => 'delete',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

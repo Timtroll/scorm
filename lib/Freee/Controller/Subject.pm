@@ -16,20 +16,7 @@ sub index {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'index',
-            'params'        => $self->req->params->to_hash,
-            'test'          => $test
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'Subject',
-            'route'         => 'list',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -43,6 +30,7 @@ sub add {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'add',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,6 +44,7 @@ sub edit {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'edit',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -69,6 +58,21 @@ sub save {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub move {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Subject',
+            'route'         => 'move',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -82,6 +86,7 @@ sub activate {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'activate',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -95,6 +100,7 @@ sub hide {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'hide',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -108,6 +114,7 @@ sub delete {
         'json'    => {
             'controller'    => 'Subject',
             'route'         => 'delete',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

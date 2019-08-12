@@ -1,6 +1,10 @@
 package Freee::Controller::Themes;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,20 +14,10 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'index'
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'list'
+            'controller'    => 'Themes',
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -34,8 +28,10 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'add'
+            'controller'    => 'Themes',
+            'route'         => 'add',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -46,8 +42,10 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'edit'
+            'controller'    => 'Themes',
+            'route'         => 'edit',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -58,8 +56,24 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'save'
+            'controller'    => 'Themes',
+            'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub move {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Themes',
+            'route'         => 'move',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -70,8 +84,10 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'activate'
+            'controller'    => 'Themes',
+            'route'         => 'activate',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -82,8 +98,10 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'hide'
+            'controller'    => 'Themes',
+            'route'         => 'hide',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -94,8 +112,10 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'themes',
-            'route'         => 'delete'
+            'controller'    => 'Themes',
+            'route'         => 'delete',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

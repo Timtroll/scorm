@@ -1,5 +1,7 @@
 package Freee::Controller::Exam;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
@@ -11,19 +13,9 @@ sub index {
     $self->render(
         'json'    => {
             'controller'    => 'exam',
-            'route'         => 'index'
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'exam',
-            'route'         => 'list'
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -35,7 +27,9 @@ sub start {
     $self->render(
         'json'    => {
             'controller'    => 'exam',
-            'route'         => 'start'
+            'route'         => 'start',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -47,7 +41,9 @@ sub edit {
     $self->render(
         'json'    => {
             'controller'    => 'exam',
-            'route'         => 'edit'
+            'route'         => 'edit',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -59,7 +55,9 @@ sub save {
     $self->render(
         'json'    => {
             'controller'    => 'exam',
-            'route'         => 'save'
+            'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -71,7 +69,9 @@ sub finish {
     $self->render(
         'json'    => {
             'controller'    => 'exam',
-            'route'         => 'finish'
+            'route'         => 'finish',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

@@ -1,6 +1,10 @@
 package Freee::Controller::Tasks;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,20 +14,10 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'index'
-        }
-    );
-}
-
-sub list {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'list'
+            'controller'    => 'Tasks',
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -34,8 +28,10 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'add'
+            'controller'    => 'Tasks',
+            'route'         => 'add',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -46,8 +42,10 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'edit'
+            'controller'    => 'Tasks',
+            'route'         => 'edit',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -58,8 +56,24 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'save'
+            'controller'    => 'Tasks',
+            'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub move {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Tasks',
+            'route'         => 'move',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -70,8 +84,10 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'activate'
+            'controller'    => 'Tasks',
+            'route'         => 'activate',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -82,8 +98,10 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'hide'
+            'controller'    => 'Tasks',
+            'route'         => 'hide',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -94,8 +112,10 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'tasks',
-            'route'         => 'delete'
+            'controller'    => 'Tasks',
+            'route'         => 'delete',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

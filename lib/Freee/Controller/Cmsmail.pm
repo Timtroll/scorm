@@ -1,4 +1,4 @@
-package Freee::Controller::Cmsitems;
+package Freee::Controller::Cmsmail;
 
 use utf8;
 
@@ -14,7 +14,7 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'index',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash,
@@ -29,7 +29,7 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'add',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -43,7 +43,7 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'edit',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -57,7 +57,7 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'save',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -71,7 +71,7 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'activate',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -85,7 +85,7 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'hide',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -99,7 +99,7 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Cmsitems',
+            'controller'    => 'Cmsmail',
             'route'         => 'delete',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash

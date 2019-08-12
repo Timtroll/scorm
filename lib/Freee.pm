@@ -69,15 +69,15 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/set_delete')      ->to('settings#set_delete');
 
     # управление контентом
-    $auth->post('/cms/article_list')    ->to('article#index');
-    $auth->post('/cms/article_add')     ->to('article#add');
-    $auth->post('/cms/article_edit')    ->to('article#edit');
-    $auth->post('/cms/article_save')    ->to('article#save');
-    $auth->post('/cms/article_activate')->to('article#activate');
-    $auth->post('/cms/article_hide')    ->to('article#hide');
-    $auth->post('/cms/article_delete')  ->to('article#delete');
+    $auth->post('/cms/article')         ->to('cmsarticle#index');
+    $auth->post('/cms/article_add')     ->to('cmsarticle#add');
+    $auth->post('/cms/article_edit')    ->to('cmsarticle#edit');
+    $auth->post('/cms/article_save')    ->to('cmsarticle#save');
+    $auth->post('/cms/article_activate')->to('cmsarticle#activate');
+    $auth->post('/cms/article_hide')    ->to('cmsarticle#hide');
+    $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
 
-    $auth->post('/cms/subject_list')     ->to('cmssubject#index');
+    $auth->post('/cms/subject')          ->to('cmssubject#index');
     $auth->post('/cms/subject_add')      ->to('cmssubject#add');
     $auth->post('/cms/subject_edit')     ->to('cmssubject#edit');
     $auth->post('/cms/subject_save')     ->to('cmssubject#save');
@@ -94,14 +94,13 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/item_delete')      ->to('cmsitems#delete');
 
     # управление почтновыми сообщениями, рассылками
-    $auth->post('/cms/mail')            ->to('cmsmail#index');
-    $auth->post('/cms/listmail')        ->to('cmsmail#listmail');
-    $auth->post('/cms/addmail')         ->to('cmsmail#addmail');
-    $auth->post('/cms/editmail')        ->to('cmsmail#editmail');
-    $auth->post('/cms/savemail')        ->to('cmsmail#savemail');
-    $auth->post('/cms/activatemail')    ->to('cmsmail#activatemail');
-    $auth->post('/cms/hidemail')        ->to('cmsmail#hidemail');
-    $auth->post('/cms/delmail')         ->to('cmsmail#delmail');
+    $auth->post('/cms/mail')             ->to('cmsmail#index');
+    $auth->post('/cms/mail_add')         ->to('cmsmail#add');
+    $auth->post('/cms/mail_edit')        ->to('cmsmail#edit');
+    $auth->post('/cms/mail_save')        ->to('cmsmail#save');
+    $auth->post('/cms/mail_activate')    ->to('cmsmail#activate');
+    $auth->post('/cms/mail_hide')        ->to('cmsmail#hide');
+    $auth->post('/cms/mail_delete')      ->to('cmsmail#delete');
 
     # управление библиотекой
     $auth->post('/library')             ->to('library#index');
@@ -115,18 +114,32 @@ print $self->beans_init(), "\n";
     $auth->post('/library/hide')        ->to('library#hide');
     $auth->post('/library/delete')      ->to('library#delete');
 
+    # проверка заданий
+    $auth->post('/mentors')             ->to('mentors#index');
+    $auth->post('/mentors/setmentor')   ->to('mentors#setmentor');
+    $auth->post('/mentors/unsetmentor') ->to('mentors#unsetmentor');
+    $auth->post('/mentors/tasks')       ->to('mentors#tasks');
+    $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
+    $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
+    $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
+    $auth->post('/mentors/setmark')     ->to('mentors#setmark'); # возможно не нужно ?????????
+ # возможно еще что-то ?????????
+
     # управление календарями/расписанием
     $auth->post('/scheduler')           ->to('scheduler#index');
     $auth->post('/scheduler/add')       ->to('scheduler#add');
     $auth->post('/scheduler/edit')      ->to('scheduler#edit');
     $auth->post('/scheduler/save')      ->to('scheduler#save');
     $auth->post('/scheduler/move')      ->to('scheduler#move');
+    $auth->post('/scheduler/activate')  ->to('scheduler#activate');
+    $auth->post('/scheduler/hide')      ->to('scheduler#hide');
     $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
     $auth->post('/agreement')           ->to('agreement#index');
     $auth->post('/agreement/add')       ->to('agreement#add');
     $auth->post('/agreement/edit')      ->to('agreement#edit');
+    $auth->post('/agreement/save')      ->to('agreement#save');
     $auth->post('/agreement/request')   ->to('agreement#request');
     $auth->post('/agreement/reject')    ->to('agreement#reject');
     $auth->post('/agreement/approve')   ->to('agreement#approve');
@@ -183,20 +196,8 @@ print $self->beans_init(), "\n";
     $auth->post('/tasks/hide')          ->to('tasks#hide');
     $auth->post('/tasks/delete')        ->to('tasks#delete');
 
-    # проверка заданий
-    $auth->post('/mentors')             ->to('mentors#index');
-    $auth->post('/mentors/setmentor')   ->to('mentors#setmentor');
-    $auth->post('/mentors/unsetmentor') ->to('mentors#unsetmentor');
-    $auth->post('/mentors/tasks')       ->to('mentors#tasks');
-    $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
-    $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
-    $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
-    $auth->post('/mentors/setmark')     ->to('mentors#setmark'); # возможно не нужно ?????????
- # возможно еще что-то ?????????
-
     # экзамены
     $auth->post('/exam')                ->to('exam#index');
-    $auth->post('/exam/list')           ->to('exam#list');
     $auth->post('/exam/start')          ->to('exam#start');
     $auth->post('/exam/edit')           ->to('exam#edit');
     $auth->post('/exam/save')           ->to('exam#save');

@@ -1,6 +1,10 @@
 package Freee::Controller::Scheduler;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,8 +14,10 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'index'
+            'controller'    => 'Scheduler',
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -22,8 +28,10 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'add'
+            'controller'    => 'Scheduler',
+            'route'         => 'add',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -34,8 +42,10 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'edit'
+            'controller'    => 'Scheduler',
+            'route'         => 'edit',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -46,8 +56,10 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'save'
+            'controller'    => 'Scheduler',
+            'route'         => 'save',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -58,8 +70,38 @@ sub move {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'move'
+            'controller'    => 'Scheduler',
+            'route'         => 'move',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub activate {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Scheduler',
+            'route'         => 'activate',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub hide {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'Scheduler',
+            'route'         => 'hide',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -70,8 +112,10 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'scheduler',
-            'route'         => 'delete'
+            'controller'    => 'Scheduler',
+            'route'         => 'delete',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }

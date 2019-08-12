@@ -1,6 +1,10 @@
 package Freee::Controller::Mentors;
 
+use utf8;
+
 use Mojo::Base 'Mojolicious::Controller';
+
+# use Freee::Helpers::TableObj;
 
 use Data::Dumper;
 
@@ -10,8 +14,10 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'index'
+            'controller'    => 'Mentors',
+            'route'         => 'index',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -22,8 +28,10 @@ sub setmentor {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'setmentor'
+            'controller'    => 'Mentors',
+            'route'         => 'setmentor',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -34,8 +42,10 @@ sub unsetmentor {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'unsetmentor'
+            'controller'    => 'Mentors',
+            'route'         => 'unsetmentor',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -46,8 +56,10 @@ sub tasks {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'tasks'
+            'controller'    => 'Mentors',
+            'route'         => 'tasks',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -58,8 +70,10 @@ sub viewtask {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'viewtask'
+            'controller'    => 'Mentors',
+            'route'         => 'viewtask',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -70,8 +84,10 @@ sub addcomment {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'addcomment'
+            'controller'    => 'Mentors',
+            'route'         => 'addcomment',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -82,8 +98,10 @@ sub savecomment {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'savecomment'
+            'controller'    => 'Mentors',
+            'route'         => 'savecomment',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
@@ -94,8 +112,10 @@ sub setmark {
 
     $self->render(
         'json'    => {
-            'controller'    => 'mentors',
-            'route'         => 'setmark'
+            'controller'    => 'Mentors',
+            'route'         => 'setmark',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
         }
     );
 }
