@@ -3,10 +3,13 @@ package Freee::Helpers::PgGraph;
 use strict;
 use warnings;
 
+use utf8;
+
 use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
+use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
@@ -26,6 +29,9 @@ sub register {
                 $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}
             );
         }
+        $dbh->{errstr} = sub {
+            print "Error received: $DBI::errstr\n";
+        };
         return $dbh;
     });
 
@@ -343,6 +349,87 @@ print "$sql\n";
         return $sql if exists( $Params->{SQLResult} ) && defined( $Params->{SQLResult} ) && $Params->{SQLResult};
     });
 
+    ###################################################################
+    # таблица настроек
+    ###################################################################
+
+    # для создания настройки
+    # my $id = $self->insert_setting({
+    #     "lib_id",   - обязательно
+    #     "label",    - обязательно
+    #     "name",     - обязательно
+    #     "value",
+    #     "type",
+    #     "placeholder",
+    #     "editable",
+    #     "mask"
+    #     "selected",
+    # });
+    # для создания группы настроек
+    # my $id = $self->insert_setting({
+    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "label",    - обязательно
+    #     "readOnly",       - не обязательно, по умолчанию 0
+    #     "editable" int,   - не обязательно, по умолчанию 1
+    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "massEdit" int    - не обязательно, по умолчанию 0
+    # });
+    $app->helper( 'insert_setting' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        $self->pg_dbh->do('INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
+        my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
+
+        return $id;
+    });
+
+    # для сохранения настройки
+    # my $id = $self->insert_setting({
+    #     "id",       - обязательно (должно быть больше 0)
+    #     "lib_id",   - обязательно (должно быть больше 0)
+    #     "label",    - обязательно
+    #     "name",     - обязательно
+    #     "value",
+    #     "type",
+    #     "placeholder",
+    #     "editable",
+    #     "mask"
+    #     "selected",
+    # });
+    # для создания группы настроек
+    # my $id = $self->insert_setting({
+    #     "id",       - обязательно (должно быть больше 0),
+    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "label",    - обязательно
+    #     "name",     - обязательно
+    #     "readOnly",       - не обязательно, по умолчанию 0
+    #     "editable" int,   - не обязательно, по умолчанию 1
+    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "massEdit" int    - не обязательно, по умолчанию 0
+    # });
+    $app->helper( 'save_setting' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+
+        return $rv;
+    });
+
+    # для удаления настройки
+    # my $id = $self->delete_setting( 99 );
+    $app->helper( 'delete_setting' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $rv = $self->pg_dbh->do('DELETE FROM "public"."settings" WHERE "id"='.$id);
+
+        return $rv;
+    });
 
     ###################################################################
     # служебные
@@ -352,7 +439,6 @@ print "$sql\n";
     # $self->list_fields();
     $app->helper( 'list_fields' => sub {
         my $self = shift;
-        # return $self->pg_dbh->selectrow_hashref('SELECT id, title, alias, type FROM "public"."EAV_fields" WHERE 1 = 1'); #, {Slice=>{}}, undef);
         return $self->pg_dbh->selectall_arrayref('SELECT id, title, alias, type FROM "public"."EAV_fields"', { Slice=> {} } );
     });
 
