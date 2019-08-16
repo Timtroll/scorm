@@ -4,7 +4,10 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::File;
+# use Mojo::JSON qw(decode_json);
+use JSON::XS;
+# use Mojo::File;
+use Encode;
 
 use Freee::Mock::Settings;
 use Data::Dumper;
@@ -18,12 +21,22 @@ sub index {
 
     my $settings = {};
     foreach my $id (sort {$a <=> $b} keys %$list) {
+        # конвертируем свернутый json, если есть
+# # print Dumper $$list{$id}{'table'};
+#         foreach (@{$$list{$id}{'table'}}) {
+#             if ($$_{'value'}) {
+#                 print $$_{'value'}, "\n"; 
+#                 print JSON::XS->new->allow_nonref->decode( $$_{'value'} ); 
+#                 # print "$$_{'selected'}\n"; 
+#             }
+#         }
+
         # формируем данные для таблицы
         $$list{$id}{'table'} = $self->table_obj({
             'settings'  => {},
             'header'    => [
-                { "key" => "name", "label" => "Название" },
-                { "key" => "type", "label" => "Тип" },
+                # { "key" => "name", "label" => "Название" },
+                # { "key" => "type", "label" => "Тип" },
             ],
             'body'      => $$list{$id}{'table'}
         });
