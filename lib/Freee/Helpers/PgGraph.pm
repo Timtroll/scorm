@@ -353,6 +353,67 @@ print "$sql\n";
     # таблица настроек
     ###################################################################
 
+    # получение списка настроек
+    # my $true = $self->all_settings();
+    $app->helper( 'all_settings' => sub {
+        my ($self) = shift;
+
+        my $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."settings"', 'id');
+
+        my $out = {};
+
+        # запоминаем корневые элементы
+        foreach my $parent (keys %$list) {
+            if ($$list{$parent}{'lib_id'} == 0) {
+                # запоминаем корневые элементы и удаляем их
+                $$out{$parent} = {
+                    "label"     => $$list{$parent}{'label'},
+                    "id"        => $$list{$parent}{'id'},
+                    "component" => '',
+                    "opened"    => 0,
+                    "keywords"  => '',
+                    "children"  => [],
+                    "table"     => []
+                };
+
+                delete $$list{$parent};
+            }
+        }
+
+        foreach my $id (keys %$list) {
+            next if $id == $$list{$id}{'lib_id'};
+
+            my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
+
+            if ( $$out{ $$list{$id}{'lib_id'} } ) {
+                $$out{ $$list{$id}{'lib_id'} }{'table'} = $lst;
+
+                my %keys = map {$_, 1} split(' ', $keys);
+                $$out{ $$list{$id}{'lib_id'} }{'keywords'} = join(' ', keys %keys);
+            }
+        }
+
+        return $out;
+    });
+
+    sub children {
+        my ($parent, $hash) = @_;
+
+        my @out = ();
+        my $keys = '';
+        foreach my $id (keys %$hash) {
+            if ($$hash{$id}{'lib_id'} == $parent) {
+                my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
+                $$hash{$id}{'keywords'} = join(' ', keys %keys);
+                $keys .= "$$hash{$id}{'keywords'} ";
+                push @out, $$hash{$id};
+            }
+        }
+        $keys =~ s/\s+/ /g;
+
+        return \@out, $keys;
+    }
+
     # для создания настройки
     # my $id = $self->insert_setting({
     #     "lib_id",   - обязательно
@@ -420,7 +481,7 @@ print "$sql\n";
     });
 
     # для удаления настройки
-    # my $id = $self->delete_setting( 99 );
+    # my $true = $self->delete_setting( 99 );
     $app->helper( 'delete_setting' => sub {
         my ($self, $id) = @_;
 

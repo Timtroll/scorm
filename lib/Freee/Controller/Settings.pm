@@ -12,10 +12,22 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
+    # читаем настройки из базы
+    my $list = $self->all_settings();
+
+    my $settings = {};
+    foreach my $id (keys %$list) {
+        # формируем данные для таблицы
+        $$list{$id}{'table'} = $self->table_obj({
+            'settings'  => {},
+            'header'    => {},
+            'body'      => $$list{$id}{'table'}
+        });
+        push @{$$settings{'settings'}}, $$list{$id};
+    }
+
     # показываем все настройки
-    $self->render(
-        json    => $settings
-    );
+    $self->render( json => $settings );
 }
 
 sub set_tab_list {
@@ -203,7 +215,7 @@ sub set_save {
 }
 
 # для удаления настройки
-# my $id = $self->delete_setting({
+# my $true = $self->delete_setting( 99 );
 sub set_delete {
     my $self = shift;
 
@@ -215,7 +227,7 @@ sub set_delete {
     $id = 0 unless $id =~ /\d+/;
     push @mess, "Could not id for deleting" unless $id;
 
-    my $id = $self->delete_setting( $id );
+    $id = $self->delete_setting( $id );
     push @mess, "Could not deleted '$id'" unless $id;
 
     my $resp;
