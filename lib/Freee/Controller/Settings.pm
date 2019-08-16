@@ -14,7 +14,7 @@ sub index {
 
     # читаем настройки из базы
     my $list = $self->all_settings();
-
+print Dumper($list);
     my $settings = {};
     foreach my $id (keys %$list) {
         # формируем данные для таблицы
@@ -131,6 +131,9 @@ sub set_add {
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
 sub set_load_default {
     my ($self) = shift;
+
+    # очистка таблицы и сброс счетчика
+    $self->reset_setting();
 
     my @mess;
     foreach my $folder ( @{$settings->{'settings'}} ) {

@@ -353,10 +353,20 @@ print "$sql\n";
     # таблица настроек
     ###################################################################
 
+    # очистка дефолтных настроек
+    # my $true = $self->reset_setting();
+    $app->helper( 'reset_setting' => sub {
+        my $self = shift;
+
+        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+
+        return 1;
+    });
+
     # получение списка настроек
     # my $true = $self->all_settings();
     $app->helper( 'all_settings' => sub {
-        my ($self) = shift;
+        my $self = shift;
 
         my $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."settings"', 'id');
 
