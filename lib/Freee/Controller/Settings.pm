@@ -17,7 +17,7 @@ sub index {
     my $list = $self->all_settings();
 
     my $settings = {};
-    foreach my $id (keys %$list) {
+    foreach my $id (sort {$a <=> $b} keys %$list) {
         # формируем данные для таблицы
         $$list{$id}{'table'} = $self->table_obj({
             'settings'  => {},
