@@ -21,7 +21,10 @@ sub index {
         # формируем данные для таблицы
         $$list{$id}{'table'} = $self->table_obj({
             'settings'  => {},
-            'header'    => {},
+            'header'    => [
+                { "key" => "name", "label" => "Название" },
+                { "key" => "type", "label" => "Тип" },
+            ],
             'body'      => $$list{$id}{'table'}
         });
         push @{$$settings{'settings'}}, $$list{$id};

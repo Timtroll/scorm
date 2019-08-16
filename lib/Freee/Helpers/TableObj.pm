@@ -13,12 +13,12 @@ sub register {
     my ($self, $app) = @_;
 
     #################################
-    # Helper for Postgress
+    # Helper for Creating table structures
 
     $app->helper( 'table_obj' => sub {
         my ( $self, $params ) = @_ ;
 
-        return {} unless $$params{'body'} || ref $$params{'body'} eq 'ARRAY';
+        return {} unless ($$params{'body'} || ref $$params{'body'} ne 'ARRAY');
 
         # дефолтные установки, если не заданы в $params
         my $table;
@@ -29,16 +29,25 @@ sub register {
         $$table{'settings'}{'totalCount'} = scalar( @{$$params{'body'}} );
 
         # выводим все колонки, если не заданы в $params
-        unless ( keys %{$$params{'header'}} || !$$params{'header'} ) {
-
+        unless ( @{$$params{'header'}} || !$$params{'header'} ) {
             foreach my $head (keys %{$$params{'body'}[0]}) {
                 push @{$$table{'header'}}, {
                     'key'   => $head,
                     'label' => $head,
                 };
             }
+            $$table{'body'} = $$params{'body'};
         }
-        $$table{'body'} = $$params{'body'};
+        else {
+            $$table{'header'} = $$params{'header'};
+            foreach my $tab (@{$$params{'body'}}) {
+                my %tab = ();
+                foreach my $header (@{$$params{'header'}}) {
+                    $tab{$$header{'key'}} = $$tab{$$header{'key'}};
+                }
+                push @{$$table{'body'}}, \%tab;
+            }
+        }
 
         return $table;
     });
