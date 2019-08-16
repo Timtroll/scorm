@@ -29,49 +29,16 @@ sub register {
         $$table{'settings'}{'totalCount'} = scalar( @{$$params{'body'}} );
 
         # выводим все колонки, если не заданы в $params
-        unless ($$params{'header'}) {
-            foreach my $head (@{$$table{'body'}[0]}) {
+        unless ( keys %{$$params{'header'}} || !$$params{'header'} ) {
+
+            foreach my $head (keys %{$$params{'body'}[0]}) {
                 push @{$$table{'header'}}, {
-                    'key'   => $$head{'name'},
-                    'label' => $$head{'label'},
+                    'key'   => $head,
+                    'label' => $head,
                 };
             }
         }
-        $$table{'table'} = $$params{'body'};
-
-        # my $table->{'header'} = [
-        #     { "key" => "name",          "label" => "Расшифровка" },
-        #     { "key" => "label",         "label" => "Расшифровка" },
-        #     { "key" => "value",         "label" => "Расшифровка" },
-        #     { "key" => "type",          "label" => "Расшифровка" },
-        #     { "key" => "placeholder",   "label" => "Расшифровка" },
-        #     { "key" => "mask",          "label" => "Расшифровка" },
-        #     { "key" => "selected",      "label" => "Расшифровка" },
-        #     { "key" => "editable",      "label" => "Расшифровка" }
-        # ];
-        # $table->{'body'} = [
-        #     {
-        #         "name"          => "fullDebugMode",
-        #         "label"         => "режим обновления",
-        #         "value"         => "",
-        #         "type"          => "InputNumber",
-        #         "placeholder"   => "",
-        #         "mask"          => "",
-        #         "selected"      => "",
-        #         "editable"      => 1
-        #     }
-        # ];
-        # $table->{'settings'} = {
-        #     "readOnly"    => 0,
-        #     "totalCount"  => scalar(@{$table->{'body'}}),
-        #     "editable"    => 1,
-        #     "removable"   => 1,
-        #     "massEdit"    => 0
-        # };
- 
-        # foreach my $row (@{$table->{'body'}}) {
-
-        # }
+        $$table{'body'} = $$params{'body'};
 
         return $table;
     });

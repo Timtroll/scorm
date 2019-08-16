@@ -9,12 +9,13 @@ use Mojo::File;
 use Freee::Mock::Settings;
 use Data::Dumper;
 
+# Список настроек из базы в виде объекта как в Mock/Settings.pm
 sub index {
     my $self = shift;
 
     # читаем настройки из базы
     my $list = $self->all_settings();
-print Dumper($list);
+
     my $settings = {};
     foreach my $id (keys %$list) {
         # формируем данные для таблицы
@@ -147,8 +148,8 @@ sub set_load_default {
 
         foreach ( @{$$folder{'table'}->{'body'}} ) {
             $_->{'lib_id'} = $id;
-            $id = $self->insert_setting($_, ['lib_id']);
-            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $id;
+            my $newid = $self->insert_setting($_, ['lib_id']);
+            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
         }
     }
 

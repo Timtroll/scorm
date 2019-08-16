@@ -363,16 +363,15 @@ print "$sql\n";
         return 1;
     });
 
-    # получение списка настроек
-    # my $true = $self->all_settings();
+    # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
+    # my $settings = $self->all_settings();
     $app->helper( 'all_settings' => sub {
         my $self = shift;
 
         my $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."settings"', 'id');
 
-        my $out = {};
-
         # запоминаем корневые элементы
+        my $out = {};
         foreach my $parent (keys %$list) {
             if ($$list{$parent}{'lib_id'} == 0) {
                 # запоминаем корневые элементы и удаляем их
@@ -393,6 +392,7 @@ print "$sql\n";
         foreach my $id (keys %$list) {
             next if $id == $$list{$id}{'lib_id'};
 
+            # my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
             my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
 
             if ( $$out{ $$list{$id}{'lib_id'} } ) {
