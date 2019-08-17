@@ -35,6 +35,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::TableObj');
+    $self->plugin('Freee::Helpers::PgSettings');
 
     # init Pg connection
     $self->pg_init();
@@ -59,8 +60,10 @@ print $self->beans_init(), "\n";
 
     my $auth = $r->under()              ->to('auth#check_token');
 
-    $auth->post('/cms/set')             ->to('settings#index');         # объект с настройками
+    $auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки
     $auth->post('/cms/set_load_default')->to('settings#set_load_default');  # загрузка дефолтных настроек
+
+    $auth->post('/cms/set')             ->to('settings#index');         # объект с настройками
     $auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');  # раздел
     $auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
     $auth->post('/cms/set_savetab')     ->to('settings#set_savetab');   # подраздел

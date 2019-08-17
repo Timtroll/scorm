@@ -4,9 +4,6 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-# use Mojo::JSON qw(decode_json);
-use JSON::XS;
-# use Mojo::File;
 use Encode;
 
 use Freee::Mock::Settings;
@@ -21,16 +18,6 @@ sub index {
 
     my $settings = {};
     foreach my $id (sort {$a <=> $b} keys %$list) {
-        # конвертируем свернутый json, если есть
-# # print Dumper $$list{$id}{'table'};
-#         foreach (@{$$list{$id}{'table'}}) {
-#             if ($$_{'value'}) {
-#                 print $$_{'value'}, "\n"; 
-#                 print JSON::XS->new->allow_nonref->decode( $$_{'value'} ); 
-#                 # print "$$_{'selected'}\n"; 
-#             }
-#         }
-
         # формируем данные для таблицы
         $$list{$id}{'table'} = $self->table_obj({
             'settings'  => {},
@@ -91,6 +78,21 @@ sub set_deletetab {
     );
 }
 
+sub set_get_one {
+    my $self = shift;
+
+    my $id = $self->param('id');
+
+    my $row = $self->get_row( $id );
+
+    $self->render(
+        'json'    => {
+            'status'  => 'ok',
+            'data'    => $row
+        }
+    );
+}
+
 # для создания настройки
 # my $id = $self->insert_setting({
 #     "lib_id",   - обязательно (добно быть больше 0)
@@ -102,6 +104,7 @@ sub set_deletetab {
 #     "editable",
 #     "mask"
 #     "selected",
+#     "required",
 # });
 # для создания группы настроек
 # my $id = $self->insert_setting({
@@ -163,7 +166,13 @@ sub set_load_default {
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         foreach ( @{$$folder{'table'}->{'body'}} ) {
+            # указываем родительский id
             $_->{'lib_id'} = $id;
+
+            # сериализуем поля vaue и selected
+            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'});
+            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'});
+
             my $newid = $self->insert_setting($_, ['lib_id']);
             push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
         }
