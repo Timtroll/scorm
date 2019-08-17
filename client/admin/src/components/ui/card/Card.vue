@@ -83,7 +83,43 @@
     <!--content-right-->
     <transition name="slide-right">
       <div class="pos-card-body-right"
-           v-if="bodyRightShow">
+           v-if="bodyRightShow"
+           :class="{'large' : rightPanelSize}">
+
+        <!--pos-card right header-->
+        <div class="pos-card-header">
+
+          <!--headerLeft-->
+
+          <a class="pos-card-header-item link"
+             :class="{'uk-text-danger' : rightPanelSize}"
+             @click.prevent="rightPanelSize = !rightPanelSize">
+            <img src="/img/icons/icon__expand.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-if="!rightPanelSize">
+            <img src="/img/icons/icon__collapse.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-else>
+          </a>
+
+          <!--header content-->
+          <div class="pos-card-header--content"
+               v-text="bodyRightHeaderTitle"></div>
+
+          <!--headerRight-->
+          <a class="pos-card-header-item uk-text-danger link"
+             @click.prevent="close">
+            <img src="/img/icons/icon__close.svg"
+                 uk-svg
+                 width="16"
+                 height="16">
+          </a>
+
+        </div>
 
         <div class="pos-card-body">
           <slot name="bodyRight"></slot>
@@ -178,10 +214,16 @@
       },
 
       // bodyRight
-      bodyRight:           {
+      bodyRight: {
         default: false,
         type:    Boolean
       },
+
+      bodyRightHeaderTitle: {
+        default: null,
+        type:    String
+      },
+
       bodyRightPadding:    {
         default: true,
         type:    Boolean
@@ -204,8 +246,9 @@
 
     data () {
       return {
-        bodyWidth:     null, // 540
-        bodyLeftWidth: null // 540
+        bodyWidth:      null, // 540
+        bodyLeftWidth:  null, // 540
+        rightPanelSize: false
       }
     },
 
@@ -253,6 +296,10 @@
     },
 
     methods: {
+
+      close () {
+        this.$store.commit('cms_table_row_show', false)
+      },
 
       leftToggleAction () {
         this.$store.commit('setNavbarLeftActionState', !this.leftToggleState)

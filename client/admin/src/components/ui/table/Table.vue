@@ -4,6 +4,7 @@
         :header-bgr-default="true"
         :header-left="true"
         :body-padding="true"
+        :body-right-header-title="card.bodyRightTitle"
         :body-right-show="tableRowDetail.open">
 
     <template #headerLeft>
@@ -25,8 +26,7 @@
 
         <!--Remove Row-->
         <div v-if="massEdit">
-          <button class="uk-button-danger uk-button uk-button-small"
-                  disabled>
+          <button class="uk-button-danger uk-button uk-button-small">
             <img src="/img/icons/icon__trash.svg"
                  uk-svg
                  width="10"
@@ -138,6 +138,7 @@
       <List :data="tableRowDetail.data"
             :required="editRequired"
             v-on:changed="listUpdated = $event"
+            v-on:title="card.bodyRightTitle = $event"
             v-on:close="toggleRightPanel"></List>
     </template>
 
@@ -145,20 +146,11 @@
     <template #bodyRightFooter>
       <div class="uk-flex uk-flex-between uk-width-1-1">
         <div class="">
-          <button class="uk-button-default uk-button uk-button-small"
-                  @click.prevent="toggleRightPanel">
-            <img src="/img/icons/icon__close.svg"
-                 uk-svg
-                 width="10"
-                 height="10">
-            <span class="uk-margin-small-left"
-                  v-text="$t('actions.cancel')"></span>
-          </button>
+
         </div>
         <div class="">
           <button class="uk-button-success uk-button uk-button-small"
-                  @click.prevent="set_save"
-                  v-if="listUpdated">
+                  @click.prevent="set_save">
             <img src="/img/icons/icon__save.svg"
                  uk-svg
                  width="14"
@@ -188,7 +180,8 @@
         searchInput:  null,
         checked:      false,
         card:         {
-          bodyRightShow: false
+          bodyRightShow:  false,
+          bodyRightTitle: null
         },
         editRequired: {
           name:        true,

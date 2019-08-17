@@ -118,7 +118,7 @@
     },
 
     mounted () {
-      //this.$store.commit('cms_table_update_row', this.editedData)
+      this.$emit('title', this.editedData.label)
     },
 
     data () {

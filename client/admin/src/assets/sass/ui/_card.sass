@@ -62,7 +62,7 @@ $body-right-width: 700px
   flex: 1 0 0
   min-width: 1px
   //font-weight: bold
-  font-size: .85rem
+  //font-size: .85rem
   padding: 0 $card-margin
   white-space: nowrap
   text-overflow: ellipsis
@@ -147,6 +147,9 @@ $body-right-width: 700px
   z-index: 2
   border-radius: $border-rounded-border-radius * 2 0 0 $border-rounded-border-radius * 2
   overflow: hidden
+  transition: all .3s ease-in-out
+  &.large
+    width: 96%
 
   & > .pos-card-footer
     padding: 0 $card-margin
@@ -156,6 +159,8 @@ $body-right-width: 700px
   @media (max-width: $breakpoint-medium)
     width: 100%
     border-radius: 0
+    &.large
+      width: 100%
 
 .pos-card-body-middle
   position: relative
