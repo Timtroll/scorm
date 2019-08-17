@@ -140,13 +140,18 @@ $tree-border-style: solid
 
 
 .pos-side-nav-item__label
-  white-space: nowrap
-  text-overflow: ellipsis
-  overflow: hidden
   color: $global-color
-  display: block
+  display: flex
   flex-grow: 1
   min-width: 1px
+  align-items: center
+
+  .pos-side-nav-item__label-badge
+    height: 20px
+    min-width: 20px
+    font-size: .75rem
+    margin-left: $global-small-margin
+    background-color: $global-success-background
 
   &:hover
     color: $global-emphasis-color
@@ -154,3 +159,10 @@ $tree-border-style: solid
 
   &.uk-active
     color: $global-primary-background
+
+.pos-side-nav-item__label-text
+  flex: 1
+  min-width: 1px
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden

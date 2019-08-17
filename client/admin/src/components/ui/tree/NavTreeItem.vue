@@ -20,8 +20,15 @@
       <a class="pos-side-nav-item__label"
          :class="{'uk-active': navActiveId === navItem.id}"
          @click.prevent="click(navItem)"
-         :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label"
-         v-text="navItem.label"></a>
+         :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label">
+        <span class="pos-side-nav-item__label-text"
+              v-text="navItem.label"></span>
+
+        <!--количество элементов в таблице-->
+        <span class="uk-badge pos-side-nav-item__label-badge"
+              v-if="navItem.table && navItem.table.settings && navItem.table.settings.totalCount"
+              v-text="navItem.table.settings.totalCount"></span>
+      </a>
     </div>
 
     <!--children nav items-->
@@ -68,7 +75,7 @@
       },
 
       click (item) {
-        if(this.navActiveId !== this.navItem.id){
+        if (this.navActiveId !== this.navItem.id) {
           this.$store.commit('cms_table_row_show', false)
           this.$store.commit('tree_active', item.id)
           this.$store.commit('cms_table', item.table)

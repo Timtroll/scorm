@@ -223,6 +223,8 @@
                 header       = this.table.header,
                 flatHeader   = header.map(item => item.key)
 
+          console.log(flatHeader)
+
           table.forEach((item) => {
             const keys    = Object.keys(item)
             const newItem = []

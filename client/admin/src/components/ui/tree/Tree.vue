@@ -30,6 +30,7 @@
                    :placeholder="$t('actions.search')">
           </div>
         </div>
+
         <!--Add Tree root el -->
         <div class="uk-width-auto">
           <button type="button"
