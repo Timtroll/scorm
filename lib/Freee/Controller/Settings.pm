@@ -30,6 +30,8 @@ sub index {
         push @{$$settings{'settings'}}, $$list{$id};
     }
 
+    $$settings{'status'} = 'ok';
+
     # показываем все настройки
     $self->render( json => $settings );
 }
@@ -39,6 +41,7 @@ sub set_tab_list {
 
     $self->render(
         'json'    => {
+            'status'        => 'ok',
             'controller'    => 'Settings',
             'route'         => 'set_tab_list'
         }
@@ -50,6 +53,7 @@ sub set_addtab {
 
     $self->render(
         'json'    => {
+            'status'        => 'ok',
             'controller'    => 'Settings',
             'route'         => 'set_addtab'
         }
@@ -61,6 +65,7 @@ sub set_savetab {
 
     $self->render(
         'json'    => {
+            'status'        => 'ok',
             'controller'    => 'Settings',
             'route'         => 'set_savetab'
         }
@@ -72,12 +77,15 @@ sub set_deletetab {
 
     $self->render(
         'json'    => {
+            'status'        => 'ok',
             'controller'    => 'Settings',
             'route'         => 'set_deletetab'
         }
     );
 }
 
+# получение настройки по id
+# my $row = $self->set_get_one(2)
 sub set_get_one {
     my $self = shift;
 
@@ -85,12 +93,11 @@ sub set_get_one {
 
     my $row = $self->get_row( $id );
 
-    $self->render(
-        'json'    => {
-            'status'  => 'ok',
-            'data'    => $row
-        }
-    );
+    my $resp;
+    $resp->{'status'} = $row ? 'ok' : 'fail';
+    $resp->{'data'} = $row if $row;
+
+    $self->render( 'json' => $resp );
 }
 
 # для создания настройки
