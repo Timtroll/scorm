@@ -223,34 +223,31 @@
                 header       = this.table.header,
                 flatHeader   = header.map(item => item.key)
 
-          console.log(flatHeader)
-
           table.forEach((item) => {
-            const keys    = Object.keys(item)
+            //const keys    = Object.keys(item)
             const newItem = []
-            keys.forEach((key, i) => {
-              if (flatHeader.includes(key)) {
-                newItem.push({val: item[key], key: key})
+
+            flatHeader.forEach((headItem, i) => {
+              if (item.hasOwnProperty(headItem)) {
+                newItem.push({val: item[headItem], key: headItem})
               }
             })
-            displayTable.push(newItem)
 
+            displayTable.push(newItem)
           })
 
           //table.forEach((item) => {
           //  const keys    = Object.keys(item)
           //  const newItem = []
+          //
           //  keys.forEach((key, i) => {
           //    if (flatHeader.includes(key)) {
           //      newItem.push({val: item[key], key: key})
           //    }
           //  })
+          //
           //  displayTable.push(newItem)
-          //
           //})
-
-          //const sortedData = displayTable.sort((a, b) => flatHeader.indexOf(a.key) - flatHeader.indexOf(b.key))
-          //
 
           return displayTable
 
