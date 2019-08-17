@@ -87,8 +87,8 @@ sub register {
                 $keys .= "$$hash{$id}{'keywords'} ";
 
                 # десериализуем поля vaue и selected
-                $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'});
-                $$hash{$id}{'selected'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'selected'});
+                $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'}) if $$hash{$id}{'value'};
+                $$hash{$id}{'selected'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'selected'}) if $$hash{$id}{'value'};
 
                 push @out, $$hash{$id};
             }
