@@ -3,11 +3,7 @@
         class="uk-display-block uk-position-relative uk-width-1-1">
 
     <ul class="pos-list">
-      <li v-if="editedData.label">
-        <p class="uk-heading-line uk-text-primary uk-h4">
-          <span v-text="editedData.label"></span>
-        </p>
-      </li>
+
       <!--editable-->
       <li>
         <InputBoolean
