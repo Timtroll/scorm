@@ -75,6 +75,7 @@ sub register {
         return $out;
     });
 
+    # слежубная, для поиска наследников
     sub children {
         my ($parent, $hash) = @_;
 
@@ -158,6 +159,7 @@ sub register {
     #     "removable" int,  - не обязательно, по умолчанию 1
     #     "massEdit" int    - не обязательно, по умолчанию 0
     # });
+    # возвращается id записи
     $app->helper( 'save_setting' => sub {
         my ($self, $data) = @_;
 
@@ -174,6 +176,7 @@ sub register {
 
     # для удаления настройки
     # my $true = $self->delete_setting( 99 );
+    # возвращается true/false
     $app->helper( 'delete_setting' => sub {
         my ($self, $id) = @_;
 
@@ -185,7 +188,8 @@ sub register {
     });
 
     # читаем одну настройку
-    # my $true = $self->get_row( 99 );
+    # my $row = $self->get_row( 99 );
+    # возвращается строка в виде объекта
     $app->helper( 'get_row' => sub {
         my ($self, $id) = @_;
 
