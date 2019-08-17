@@ -180,7 +180,7 @@
         searchInput:  null,
         checked:      false,
         card:         {
-          bodyRightShow:  false,
+          bodyRightShow:  true,
           bodyRightTitle: null
         },
         editRequired: {

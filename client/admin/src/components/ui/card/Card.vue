@@ -248,7 +248,7 @@
       return {
         bodyWidth:      null, // 540
         bodyLeftWidth:  null, // 540
-        rightPanelSize: false
+        rightPanelSize: true
       }
     },
 
