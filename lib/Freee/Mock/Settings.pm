@@ -49,6 +49,7 @@ $settings = {
       "body"  =>[
       {
         "editable"      => 1,
+        "required"      => 1,
         "type"          => "InputNumber",
         "name"          => "fullDebugMode",
         "label"         => "режим обновления",
@@ -59,6 +60,7 @@ $settings = {
       },
       {
         "editable"      => 1,
+        "required"      => 1,
         "type"          => "InputNumber",
         "name"          => "fullDebugMode",
         "label"         => "режим обновления",
@@ -69,6 +71,8 @@ $settings = {
       },
 
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"          => "InputSelect",
         "name"          => "editorsList",
         "label"         => "список доступных редакторов редактор по умолчанию не имеет 'названия'",
@@ -78,6 +82,8 @@ $settings = {
         "selected"      => ["CKEditor", "EditorJs"]
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"          => "InputList",
         "name"          => "mediaImagesConf",
         "label"         => "поддержка более 2-х авто-превью",
@@ -87,6 +93,8 @@ $settings = {
         "selected"      => ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"          => "InputSelect",
         "name"          => "multilang",
         "label"         => "включение многоязычной поддержки.",
@@ -96,6 +104,8 @@ $settings = {
         "selected"      => ["rus", "en", "esp", "ch"]
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputDoubleList",
         "name"=>        "RUDAYS",
         "label"=>       "дни недели, русские, именительный падеж",
@@ -106,6 +116,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "admin_email",
         "label"=>       "емайл администратора",
@@ -115,6 +127,8 @@ $settings = {
         "selected"=>    "",
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "pages_pp",
         "label"=>       "число страниц в постраничной навигации",
@@ -125,6 +139,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "num_pp",
         "label"=>       "количество выводимых на страницу элементов при постраничной разбивке во всех модулях",
@@ -135,6 +151,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputDoubleList",
         "name"=>        "RUMONTHPSMALL",
         "label"=>       "русские названия месяцев, родительный падеж, с маленькой буквы",
@@ -148,6 +166,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputDoubleList",
         "name"=>        "RUMONTHP",
         "label"=>       "русские названия месяцев, родительный падеж",
@@ -158,6 +178,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "RUMONTHSMALL",
         "label"=>       "русские названя месяцев, именительный падеж, с маленькой буквы",
@@ -171,6 +193,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "RUMONTH",
         "label"=>       "русские названия месяцев, именительный падеж",
@@ -183,6 +207,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "users_parent_category",
         "label"=>       "ID категории владельца объектов профилей пользователей.",
@@ -192,6 +218,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "site_domain",
         "label"=>       "домен сайта - адрес без http://",
@@ -202,6 +230,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "site_url",
         "label"=>       "URL сайта включая http://",
@@ -212,6 +242,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "site_label",
         "label"=>       "имя сайта",
@@ -258,6 +290,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "import_step_index",
         "label"=>       "индекс внутри шага обновления",
@@ -268,6 +302,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "import_step",
         "label"=>       "шаг обновления",
@@ -278,6 +314,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "XMLUpdateProcessing",
         "label"=>       "служебная переменная",
@@ -288,6 +326,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "JSSC_rebuild",
         "label"=>       "служебная переменная, приказ о пересоздании JS кеша поисковой системы",
@@ -298,6 +338,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "lastXMLMTime",
         "label"=>       "служебная переменная, дата последней модификации файла обновления",
@@ -308,6 +350,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "lastXMLSize",
         "label"=>       "служебная переменная, последний зафиксированный размер файла обновления",
@@ -318,6 +362,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "salesEmail",
         "label"=>       "адрес получателя писем с заказами",
@@ -328,6 +374,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "mailAddress",
         "label"=>       "поле From(От:) для всех исходящих писем",
@@ -338,6 +386,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "mailLogin",
         "label"=>       "логин для авторизации на SMTP сервере",
@@ -348,23 +398,25 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "mailPass",
         "label"=>       "пароль автризации на SMTP сервере",
         "placeholder"=> "",
         "mask"=>        "[_-\\.0..9\\w]+",
         "value"=>       "",
-
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "mailSMTP",
         "label"=>       "SMTP сервер",
         "placeholder"=> "mail.4clients.ru",
         "mask"=>        "[\\@_-0..9\\w]+",
         "value"=>       "",
-
         "selected"=>    ""
       }
       ]
@@ -404,6 +456,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputTextarea",
         "name"=>        "pageBlocksOptions",
         "label"=>       "Блоки на странице",
@@ -414,6 +468,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputDoubleList",
         "name"=>        "pageMenuLocationlabels",
         "label"=>       "анонсировать страницу на главной",
@@ -424,6 +480,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "contacts_phone",
         "label"=>       "телефон",
@@ -434,6 +492,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "contacts_bottom_address",
         "label"=>       "блок контактов внизу",
@@ -444,6 +504,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputTextarea",
         "name"=>        "countersTopCode",
         "label"=>       "верхний код счётчиков",
@@ -454,6 +516,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputTextarea",
         "name"=>        "countersBottomCode",
         "label"=>       "нижний код счётчиков",
@@ -500,6 +564,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "AllowAdminFilter",
         "label"=>       "AllowAdminFilter",
@@ -509,6 +575,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputSelect",
         "name"=>        "CatalogNumPPVariants",
         "label"=>       "количественные варианты деления на страницы",
@@ -563,6 +631,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "minWidth",
         "label"=>       "ММИ: минимальная ширина",
@@ -572,6 +642,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "minHeight",
         "label"=>       "ММИ: минимальная высота",
@@ -581,6 +653,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "maxBorderHeight",
         "label"=>       "ММИ: максимальная высота границы",
@@ -590,6 +664,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "maxBorderWidth",
         "label"=>       "ММИ: максимальная высота",
@@ -599,6 +675,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "minBorderHeight",
         "label"=>       "ММИ: минимальная высота границы",
@@ -608,6 +686,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "minBorderWidth",
         "label"=>       "ММИ: минимальная ширина границы",
@@ -617,6 +697,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "max_attachments_size",
         "label"=>       "максимальный размер всех прикрепленных файлов",
@@ -626,6 +708,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "default_max_attachments_size",
         "label"=>       "Максимальный размер всех прикрепленных файлов",
@@ -635,6 +719,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "middle_preview_height",
         "label"=>       "размер по вертикали для средней первьюшки",
@@ -644,6 +730,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "middle_preview_width",
         "label"=>       "размер по горизонтали для средней первьюшки",
@@ -654,6 +742,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "small_preview_height",
         "label"=>       "размер по вертикали для маленькой первьюшки",
@@ -664,6 +754,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "small_preview_width",
         "label"=>       "размер по горизонтали для маленькой первьюшки",
@@ -756,6 +848,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "UserTestsQuestionsContainerID",
         "label"=>       "UserTestsQuestionsContainerID",
@@ -766,6 +860,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputNumber",
         "name"=>        "UserTestsContainerID",
         "label"=>       "UserTestsContainerID",
@@ -812,6 +908,8 @@ $settings = {
       ],
       "body"=>     [
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputDoubleList",
         "name"=>        "libid",
         "label"=>       "Модуль владелец",
@@ -828,6 +926,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputList",
         "name"=>        "type",
         "label"=>       "Тип параметра",
@@ -838,6 +938,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "pname",
         "label"=>       "Название переменной",
@@ -848,6 +950,8 @@ $settings = {
         "selected"=>    ""
       },
       {
+        "editable"      => 1,
+        "required"      => 1,
         "type"=>        "InputText",
         "name"=>        "pdescr",
         "label"=>       "Описание переменной",
