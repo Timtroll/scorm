@@ -32,6 +32,12 @@ echo "-------"
 echo "yarn run build"
 cp -a /home/troll/scorm/client/admin/dist/. /home/troll/scorm/public
 
+echo "-------"
+echo "stop and start mojo daemon"
+cd /home/troll/scorm
+starting.sh stop
+starting.sh start
+
 echo "Finish"
 # if [ "$?" != "0" ] ; then
 #     echo
