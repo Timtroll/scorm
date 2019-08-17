@@ -2,12 +2,13 @@
   <div class="uk-flex uk-height-1-1 uk-flex-column">
 
     <!--Nav tree header-->
-    <div class="uk-padding-small pos-border-bottom">
-      <div class="uk-grid-small"
+    <div class="pos-border-bottom">
+      <div class="uk-grid-collapse"
            uk-grid>
         <!--searchInput -->
         <div class="uk-width-expand">
           <div class="uk-position-relative">
+
             <a @click.prevent="clearSearchVal"
                v-if="searchInput"
                class="uk-form-icon uk-form-icon-flip">
@@ -16,15 +17,15 @@
                    height="12"
                    uk-svg>
             </a>
-            <div v-else
-                 class="uk-form-icon uk-form-icon-flip">
+
+            <div class="uk-form-icon">
               <img src="/img/icons/icon__search.svg"
                    width="14"
                    height="14"
                    uk-svg>
             </div>
 
-            <input class="uk-input uk-form-small"
+            <input class="uk-input pos-border-radius-none pos-border-none"
                    v-model="searchInput"
                    @keyup.esc="clearSearchVal"
                    :placeholder="$t('actions.search')">
@@ -34,10 +35,10 @@
         <!--Add Tree root el -->
         <div class="uk-width-auto">
           <button type="button"
-                  class="uk-button uk-button-default uk-button-small">
+                  class="uk-button uk-button-default pos-border-radius-none pos-border-none">
             <img src="/img/icons/icon__plus.svg"
-                 width="16"
-                 height="16"
+                 width="20"
+                 height="20"
                  uk-svg>
           </button>
         </div>
@@ -76,7 +77,7 @@
 
     data () {
       return {
-        searchInput: null,
+        searchInput: null
       }
     },
 
@@ -128,8 +129,6 @@
     },
 
     methods: {
-
-
 
       // Очистка поля поиска
       clearSearchVal () {

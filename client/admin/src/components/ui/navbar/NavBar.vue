@@ -16,13 +16,16 @@
     <div class="pos-navbar-middle">
       <div class="pos-navbar__title"
            v-text="pageTitle"></div>
-      <div class="pos-navbar__meta">
-        <ul class="uk-breadcrumb">
-          <li><a href="#">Item</a></li>
-          <li><a href="#">Item</a></li>
-        </ul>
-      </div>
+
+      <!--<div class="pos-navbar__meta">-->
+      <!--  <ul class="uk-breadcrumb">-->
+      <!--    <li><a href="#">Item</a></li>-->
+      <!--    <li><a href="#">Item</a></li>-->
+      <!--  </ul>-->
+      <!--</div>-->
     </div>
+
+    <!--navbar right-->
     <div class="pos-navbar-right">
 
       <a class="pos-navbar-item">
@@ -31,8 +34,10 @@
              width="24"
              height="24">
       </a>
+
       <NavBarUserMenu></NavBarUserMenu>
     </div>
+
   </div>
 </template>
 

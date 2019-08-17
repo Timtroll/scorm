@@ -30,6 +30,7 @@
          v-if="bodyRightToggleShow"
          :class="{'uk-text-danger' : bodyRightShow}"
          @click.prevent="bodyRightToggle">
+
         <img src="/img/icons/icon__info.svg"
              uk-svg
              width="20"
@@ -44,6 +45,7 @@
       <div class="pos-card-body-middle"
            ref="body"
            :class="{'pos-padding': bodyPadding}">
+
         <slot name="body"></slot>
       </div>
 
@@ -53,6 +55,7 @@
              ref="bodyLeft"
              v-show="bodyLeft && leftToggleState"
              :class="{'pos-padding': bodyLeftPadding}">
+
           <slot name="bodyLeft"></slot>
         </div>
       </transition>
@@ -62,9 +65,11 @@
     <!--footer-->
     <div class="pos-card-footer"
          v-if="footer">
+
       <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="footerLeft">
+
         <slot name="footerLeft"></slot>
       </div>
 
@@ -76,6 +81,7 @@
       <!--headerLeft-->
       <div class="pos-card-header-item"
            v-if="footerRight">
+
         <slot name="footerRight"></slot>
       </div>
     </div>
@@ -94,11 +100,13 @@
           <a class="pos-card-header-item link"
              :class="{'uk-text-danger' : rightPanelSize}"
              @click.prevent="rightPanelSize = !rightPanelSize">
+
             <img src="/img/icons/icon__expand.svg"
                  uk-svg
                  width="20"
                  height="20"
                  v-if="!rightPanelSize">
+
             <img src="/img/icons/icon__collapse.svg"
                  uk-svg
                  width="20"
@@ -121,12 +129,16 @@
 
         </div>
 
+        <!--body Right-->
         <div class="pos-card-body">
           <slot name="bodyRight"></slot>
         </div>
+
+        <!--body Right Footer-->
         <div class="pos-card-footer">
           <slot name="bodyRightFooter"></slot>
         </div>
+
       </div>
     </transition>
 
@@ -135,8 +147,10 @@
       <div class="pos-card-loader"
            v-if="loader === 'loading'">
         <div>
+
           <Loader :width="40"
                   :height="40"></Loader>
+
           <div class="uk-margin-small-top"
                v-text="$t('actions.loading')"></div>
         </div>
