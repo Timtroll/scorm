@@ -3,7 +3,7 @@
         :header-large="false"
         :header-bgr-default="true"
         :header-left="true"
-        :body-padding="true"
+        :body-padding="false"
         :body-right-header-title="card.bodyRightTitle"
         :body-right-show="tableRowDetail.open">
 
@@ -71,7 +71,7 @@
 
       <div class="pos-table-container">
         <table v-if="table"
-               class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small  uk-table-middle">
+               class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
           <thead class="pos-table-header">

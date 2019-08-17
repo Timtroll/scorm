@@ -3,13 +3,17 @@
 
 $table-min-width: 100px
 .pos-table-container
-  border: $global-border-width solid $global-border
-  border-radius: $border-rounded-border-radius
+
   overflow: auto
   position: relative
   height: 100%
   width: 100%
   box-sizing: border-box
+
+.pos-padding
+  & > .pos-table-container
+    border: $global-border-width solid $global-border
+    border-radius: $border-rounded-border-radius
 
 .pos-table
   margin: 0
