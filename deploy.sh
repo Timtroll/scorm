@@ -39,7 +39,7 @@ echo "-------"
 echo "stop and start mojo daemon"
 cd $SOURCE
 $SOURCE/starting.sh stop
-$SOURCE/starting.sh start
+./starting.sh start
 
 echo "Finish"
 # if [ "$?" != "0" ] ; then
