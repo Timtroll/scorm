@@ -1,7 +1,8 @@
 #!/bin/bash
 
 DOMAIN="*:4444"
-DIR="/home/troll/freee"
+DIR=`pwd`
+
 APPNAME="freee"
 SCRIPT="script/freee"
 
