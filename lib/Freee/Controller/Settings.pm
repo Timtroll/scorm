@@ -16,7 +16,7 @@ sub index {
     # читаем настройки из базы
     my $list = $self->all_settings();
 
-# print Dumper($list);
+print Dumper($list);
     my $settings = {};
     foreach my $id (sort {$a <=> $b} keys %$list) {
         # формируем данные для таблицы

@@ -87,27 +87,15 @@ sub register {
                 $keys .= "$$hash{$id}{'keywords'} ";
 
                 # десериализуем поля vaue и selected
-
-# if ($$hash{$id}{'value'} eq 'null') {
-# # print Dumper($id);
-# # print Dumper($$hash{$id}{'lib_id'});
-# # # $$hash{$id}{'value'} =~  s/(\r|\n|\s)//g;
-# # print Dumper($$hash{$id}{'value'});
-#                 $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'});
-#                 $$hash{$id}{'selected'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'selected'});
-#         # $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'});
-#         # $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});
-# # print Dumper('===');
-# }
-                if ($$hash{$id}{'value'} =~ s/^\"//) {
-                    $$hash{$id}{'value'} =~ s/\\\"/\"/g;
-                    $$hash{$id}{'value'} =~ s/\"$//;
+                foreach my $val ('value', 'selected') {
+                    if ($$hash{$id}{$val} =~ s/^\"//) {
+                        $$hash{$id}{$val} =~ s/\\\"/\"/g;
+                        $$hash{$id}{$val} =~ s/\"$//;
+                    }
+                    if ($$hash{$id}{$val} =~ /^\[/) {
+                        $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
+                    }
                 }
-                if ($$hash{$id}{'value'} =~ /^\[/) {
-            print $$hash{$id}{'value'}, "\n";
-                    $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'});
-                }
-# print Dumper($$hash{$id}{'value'});
                 push @out, $$hash{$id};
             }
         }
