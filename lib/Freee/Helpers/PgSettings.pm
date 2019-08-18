@@ -61,7 +61,6 @@ sub register {
         foreach my $id (keys %$list) {
             next if $id == $$list{$id}{'lib_id'};
 
-            # my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
             my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
 
             if ( $$out{ $$list{$id}{'lib_id'} } ) {
@@ -81,16 +80,25 @@ sub register {
 
         my @out = ();
         my $keys = '';
-        foreach my $id (keys %$hash) {
+        foreach my $id ( keys %$hash ) {
             if ($$hash{$id}{'lib_id'} == $parent) {
                 my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
                 $$hash{$id}{'keywords'} = join(' ', keys %keys);
                 $keys .= "$$hash{$id}{'keywords'} ";
 
                 # десериализуем поля vaue и selected
-                $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'}) if (ref($$hash{$id}{'value'}) eq 'ARRAY');
-                $$hash{$id}{'selected'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'selected'}) if (ref($$hash{$id}{'value'}) eq 'ARRAY');
 
+if ($$hash{$id}{'value'} eq 'null') {
+# print Dumper($id);
+# print Dumper($$hash{$id}{'lib_id'});
+# # $$hash{$id}{'value'} =~  s/(\r|\n|\s)//g;
+# print Dumper($$hash{$id}{'value'});
+                $$hash{$id}{'value'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'value'});
+                $$hash{$id}{'selected'} = JSON::XS->new->allow_nonref->decode($$hash{$id}{'selected'});
+        # $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'});
+        # $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});
+# print Dumper('===');
+}
                 push @out, $$hash{$id};
             }
         }
@@ -198,9 +206,11 @@ sub register {
         my $row = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."settings" WHERE "id"='.$id);
 
         # десериализуем поля vaue и selected
+# print Dumper($row);
+if ($$row{'value'} eq 'null') {
         $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'});
         $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});
-
+}
         return $row;
     });
 
