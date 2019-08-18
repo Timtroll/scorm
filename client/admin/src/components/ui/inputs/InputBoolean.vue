@@ -9,8 +9,9 @@
         <label class="uk-display-block">
           <input class="pos-checkbox-switch"
                  :disabled="!editable"
-                 v-model="valueInputBoolean"
-                 @input="update"
+                 value="1"
+                 :checked="valueInputBoolean"
+                 @change="update"
                  type="checkbox">
         </label>
       </div>
@@ -39,25 +40,26 @@
 
     data () {
       return {
-        valueInputBoolean: this.value,
-        valid:      true
+        valueInputBoolean: +this.value,
+        valid:             true
       }
     },
 
     computed: {
 
       valueInput () {
-        return Number(this.valueInputBoolean)
+        return +this.valueInputBoolean
       },
 
       isChanged () {
-        return this.valueInput !== this.value
+        return +this.valueInput !== +this.value
       }
     },
 
     methods: {
 
       update () {
+        this.valueInputBoolean = !+this.valueInputBoolean
         this.$emit('change', this.isChanged)
         this.$emit('update', this.valueInput)
       }

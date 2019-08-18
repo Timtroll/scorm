@@ -1,87 +1,163 @@
 <template>
-  <form @change.prevent="editData"
-        class="uk-display-block uk-position-relative uk-width-1-1">
+  <div class="pos-card">
 
-    <ul class="pos-list">
+    <!--header-->
+    <div class="pos-card-header">
 
-      <!--editable-->
-      <li>
-        <InputBoolean
-            :value="data.editable"
-            @change="dataIsChange.editable = $event"
-            @update="editedData.editable = $event"
-            :placeholder="$t('list.editable')"></InputBoolean>
-      </li>
-      <!--name-->
-      <li>
-        <InputText :value="data.name"
-                   :required="true"
-                   @change="dataIsChange.name = $event"
-                   @update="editedData.name = $event"
-                   :placeholder="$t('list.name')"></InputText>
-      </li>
-      <!--label-->
-      <li>
-        <InputText :value="data.label"
-                   :required="true"
-                   @change="dataIsChange.label = $event"
-                   @update="editedData.label = $event"
-                   :placeholder="$t('list.label')"></InputText>
-      </li>
-      <!--placeholder-->
-      <li>
-        <InputText :value="data.placeholder"
-                   @change="dataIsChange.placeholder = $event"
-                   @update="editedData.placeholder = $event"
-                   :placeholder="$t('list.placeholder')"></InputText>
-      </li>
-      <!--mask-->
-      <li>
-        <InputText :value="data.mask"
-                   @change="dataIsChange.mask = $event"
-                   @update="editedData.mask = $event"
-                   :placeholder="$t('list.mask')"></InputText>
-      </li>
-      <!--type-->
-      <li>
-        <InputSelect :value="data.type"
-                     :required="true"
-                     :values-editable="false"
-                     @change="dataIsChange.type = $event"
-                     v-on:update="changeType($event)"
-                     :placeholder="$t('list.type')"
-                     :values="inputComponents"></InputSelect>
-      </li>
-      <!--value-->
-      <li>
-        <transition name="slide-right"
-                    mode="out-in"
-                    appear>
-          <component v-bind:is="component"
-                     :value="data.value"
-                     :values="data.selected"
-                     :placeholder="$t('list.value')">
-          </component>
-        </transition>
-      </li>
+      <!--headerLeft-->
+      <a class="pos-card-header-item link"
+         :class="{'uk-text-danger' : rightPanelSize}"
+         @click.prevent="toggleSize">
 
-    </ul>
+        <img src="/img/icons/icon__expand.svg"
+             uk-svg
+             width="20"
+             height="20"
+             v-if="!rightPanelSize">
 
-    <!--loading-->
-    <transition name="fade">
-      <div class="pos-card-loader"
-           v-if="loader === 'loading'">
-        <div>
-          <loader :width="40"
-                  :height="40"></Loader>
-          <div class="uk-margin-small-top"
-               v-text="$t('actions.loading')"></div>
-        </div>
+        <img src="/img/icons/icon__collapse.svg"
+             uk-svg
+             width="20"
+             height="20"
+             v-else>
+      </a>
+
+      <!--header content-->
+      <div class="pos-card-header--content"
+           v-text="this.editedData.label"></div>
+
+      <!--headerRight-->
+      <div class="pos-card-header-item">
+        <a class="pos-card-header-item uk-text-danger link"
+           @click.prevent="close">
+          <img src="/img/icons/icon__close.svg"
+               uk-svg
+               width="16"
+               height="16">
+        </a>
       </div>
-    </transition>
-  </form>
+    </div>
+
+    <!--content-->
+    <div class="pos-card-body">
+      <form @change.prevent="editData"
+            class="pos-card-body-middle uk-position-relative uk-width-1-1">
+
+        <ul class="pos-list">
+
+          <!--editable-->
+          <li>
+            <InputBoolean
+                :value="data.editable"
+                @change="dataIsChange.editable = $event"
+                @update="editedData.editable = $event"
+                :placeholder="$t('list.editable')"></InputBoolean>
+          </li>
+
+          <!--name-->
+          <li>
+            <InputText :value="data.name"
+                       :required="true"
+                       @change="dataIsChange.name = $event"
+                       @update="editedData.name = $event"
+                       :placeholder="$t('list.name')"></InputText>
+          </li>
+
+          <!--label-->
+          <li>
+            <InputText :value="data.label"
+                       :required="true"
+                       @change="dataIsChange.label = $event"
+                       @update="editedData.label = $event"
+                       :placeholder="$t('list.label')"></InputText>
+          </li>
+
+          <!--placeholder-->
+          <li>
+            <InputText :value="data.placeholder"
+                       @change="dataIsChange.placeholder = $event"
+                       @update="editedData.placeholder = $event"
+                       :placeholder="$t('list.placeholder')"></InputText>
+          </li>
+
+          <!--mask-->
+          <li>
+            <InputText :value="data.mask"
+                       @change="dataIsChange.mask = $event"
+                       @update="editedData.mask = $event"
+                       :placeholder="$t('list.mask')"></InputText>
+          </li>
+
+          <!--type-->
+          <li>
+            <InputSelect :value="data.type"
+                         :required="true"
+                         :values-editable="false"
+                         @change="dataIsChange.type = $event"
+                         v-on:update="changeType($event)"
+                         :placeholder="$t('list.type')"
+                         :values="inputComponents"></InputSelect>
+          </li>
+
+          <!--value-->
+          <li>
+            <transition name="slide-right"
+                        mode="out-in"
+                        appear>
+              <component v-bind:is="component"
+                         :value="data.value"
+                         :values="data.selected"
+                         @change="dataIsChange.value = $event"
+                         @update="editedData.value = $event"
+                         :placeholder="$t('list.value')">
+              </component>
+            </transition>
+          </li>
+
+        </ul>
+
+        <!--loading-->
+        <transition name="fade">
+          <div class="pos-card-loader"
+               v-if="loader === 'loading'">
+            <div>
+              <loader :width="40"
+                      :height="40"></Loader>
+              <div class="uk-margin-small-top"
+                   v-text="$t('actions.loading')"></div>
+            </div>
+          </div>
+        </transition>
+      </form>
+    </div>
+
+    <!--footer-->
+    <div class="pos-card-footer">
+
+      <!--header content-->
+      <div class="pos-card-header--content">
+      </div>
+      <div class="pos-card-header-item">
+        <button class="uk-button-success uk-button uk-button-small"
+                @click.prevent="set_save"
+                :disabled="!dataIsChanged">
+          <img src="/img/icons/icon__save.svg"
+               uk-svg
+               width="14"
+               height="14">
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.save')"></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </template>
+
 <script>
+
+  import Card from '../card/Card'
 
   const Loader          = () => import('../icons/Loader')
   const InputText       = () => import('../inputs/InputText')
@@ -95,7 +171,7 @@
 
   export default {
     name:       'List',
-    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
+    components: {Card, Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -110,27 +186,21 @@
     props: {
       data:   {},
       labels: {}
-
     },
 
     mounted () {
       this.$emit('title', this.editedData.label)
     },
 
+    beforeDestroy () {
+      this.$store.commit('cms_table_row_data', null)
+    },
+
     data () {
       return {
-        component: this.data.type,
 
-        editedData: {
-          editable:    this.data.editable,
-          name:        this.data.name,
-          label:       this.data.label,
-          placeholder: this.data.placeholder,
-          mask:        this.data.mask,
-          type:        this.data.type,
-          value:       this.data.value,
-          selected:    this.data.selected
-        },
+        component:  this.data.type,
+        editedData: this.data,
 
         dataIsChange: {
           editable:    false,
@@ -147,14 +217,39 @@
 
     computed: {
 
+      rightPanelSize () {
+        return this.$store.getters.rightPanelSize
+      },
+
+      //dataForSave () {
+      //
+      //  const newData    = this.editedData
+      //  newData.selected = JSON.stringify(newData.selected)
+      //  newData.value    = JSON.stringify(newData.value)
+      //  return newData
+      //
+      //},
+
+      //dataForSave: {
+      //
+      //  get: () => {
+      //    const newData    = this.editedData
+      //    newData.selected = JSON.stringify(newData.selected)
+      //    newData.value    = JSON.stringify(newData.value)
+      //    return newData
+      //  },
+      //  set: (newData) => {
+      //    this.$store.dispatch('editTableRow', newData)
+      //  }
+      //
+      //},
+
       loader () {
         return this.$store.getters.queryRowStatus
       },
 
       dataIsChanged () {
-        const dataIsChanged = !Object.values(this.dataIsChange).every(item => !item)
-        this.$emit('changed', dataIsChanged)
-        return dataIsChanged
+        return !Object.values(this.dataIsChange).every(item => !item)
       },
 
       inputComponents () {
@@ -164,8 +259,25 @@
 
     methods: {
 
+      toggleSize () {
+        this.$store.commit('right_panel_size', !this.rightPanelSize)
+      },
+
+      close () {
+        this.$store.commit('cms_table_row_show', false)
+      },
+
+      set_save () {
+        const data    = this.editedData
+        data.value    = JSON.stringify(data.value)
+        data.selected = JSON.stringify(data.selected)
+
+        console.log(data)
+        this.$store.dispatch('editTableRow', data)
+      },
+
       editData () {
-        this.$store.commit('cms_table_update_row', this.editedData)
+        //this.$store.commit('cms_table_update_row', this.editedData)
       },
 
       changeType (event) {

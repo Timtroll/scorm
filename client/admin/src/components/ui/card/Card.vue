@@ -66,7 +66,7 @@
     <div class="pos-card-footer"
          v-if="footer">
 
-      <!--headerRight-->
+      <!--footer Left-->
       <div class="pos-card-header-item"
            v-if="footerLeft">
 
@@ -78,7 +78,7 @@
         <slot name="footer"></slot>
       </div>
 
-      <!--headerLeft-->
+      <!--footer Right-->
       <div class="pos-card-header-item"
            v-if="footerRight">
 
@@ -92,52 +92,7 @@
            v-if="bodyRightShow"
            :class="{'large' : rightPanelSize}">
 
-        <!--pos-card right header-->
-        <div class="pos-card-header">
-
-          <!--headerLeft-->
-
-          <a class="pos-card-header-item link"
-             :class="{'uk-text-danger' : rightPanelSize}"
-             @click.prevent="rightPanelSize = !rightPanelSize">
-
-            <img src="/img/icons/icon__expand.svg"
-                 uk-svg
-                 width="20"
-                 height="20"
-                 v-if="!rightPanelSize">
-
-            <img src="/img/icons/icon__collapse.svg"
-                 uk-svg
-                 width="20"
-                 height="20"
-                 v-else>
-          </a>
-
-          <!--header content-->
-          <div class="pos-card-header--content"
-               v-text="bodyRightHeaderTitle"></div>
-
-          <!--headerRight-->
-          <a class="pos-card-header-item uk-text-danger link"
-             @click.prevent="close">
-            <img src="/img/icons/icon__close.svg"
-                 uk-svg
-                 width="16"
-                 height="16">
-          </a>
-
-        </div>
-
-        <!--body Right-->
-        <div class="pos-card-body">
-          <slot name="bodyRight"></slot>
-        </div>
-
-        <!--body Right Footer-->
-        <div class="pos-card-footer">
-          <slot name="bodyRightFooter"></slot>
-        </div>
+        <slot name="bodyRight"></slot>
 
       </div>
     </transition>
@@ -233,11 +188,6 @@
         type:    Boolean
       },
 
-      bodyRightHeaderTitle: {
-        default: null,
-        type:    String
-      },
-
       bodyRightPadding:    {
         default: true,
         type:    Boolean
@@ -260,9 +210,8 @@
 
     data () {
       return {
-        bodyWidth:      null, // 540
-        bodyLeftWidth:  null, // 540
-        rightPanelSize: true
+        bodyWidth:     null, // 540
+        bodyLeftWidth: null // 540
       }
     },
 
@@ -297,6 +246,10 @@
         return this.$store.getters.pageTableRowShow
       },
 
+      rightPanelSize () {
+        return this.$store.getters.rightPanelSize
+      },
+
       leftToggleState () {
         setTimeout(() => {this.handleResize()}, 300)
         return this.$store.getters.cardLeftState
@@ -310,10 +263,6 @@
     },
 
     methods: {
-
-      close () {
-        this.$store.commit('cms_table_row_show', false)
-      },
 
       leftToggleAction () {
         this.$store.commit('setNavbarLeftActionState', !this.leftToggleState)

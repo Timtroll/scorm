@@ -35,10 +35,10 @@
         <!--Add Tree root el -->
         <div class="uk-width-auto">
           <button type="button"
-                  class="uk-button uk-button-default pos-border-radius-none pos-border-none">
+                  class="uk-button  pos-border-radius-none pos-border-none">
             <img src="/img/icons/icon__plus.svg"
-                 width="20"
-                 height="20"
+                 width="18"
+                 height="18"
                  uk-svg>
           </button>
         </div>

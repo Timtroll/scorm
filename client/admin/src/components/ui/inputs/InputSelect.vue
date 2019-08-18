@@ -159,15 +159,24 @@
     data () {
 
       return {
-        valueInput:  this.value,
+        valueInput:  this.value + '',
         valuesInput: this.values || [''],
         editValues:  false
       }
     },
 
+    computed: {
+
+      isChanged () {
+        return this.valuesInput !== this.value || this.valuesInput !== this.values
+      }
+
+    },
+
     methods: {
 
       update () {
+        this.$emit('change', this.isChanged)
         this.$emit('update', this.valueInput)
       },
 

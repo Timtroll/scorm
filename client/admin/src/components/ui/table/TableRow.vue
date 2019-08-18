@@ -90,6 +90,7 @@
     },
 
     computed: {
+
       pageTableRowShow () {
         return this.$store.getters.pageTableRowShow
       }
@@ -117,10 +118,15 @@
       },
 
       edit (event) {
-        this.$store.commit('cms_table_row', null)
-        this.$store.commit('cms_table_row', event)
+        if (!this.pageTableRowShow) {
+          //this.$store.commit('cms_table_row', null)
+          //this.$store.commit('cms_table_row', event)
+          this.$emit('edit-row', this.fullData)
+          //this.$store.commit('cms_row_success')
+        }
+
         this.$store.commit('cms_table_row_show', !this.pageTableRowShow)
-        this.$store.commit('cms_row_success')
+
       },
 
       remove (event) {

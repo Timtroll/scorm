@@ -10,6 +10,7 @@
              uk-grid>
           <div class="uk-width-expand">
             <div class="uk-grid-small"
+                 v-if="valuesInput"
                  uk-grid>
 
               <!--Values-->
@@ -26,12 +27,12 @@
 
                   <!--value-->
                   <div class="uk-width-expand">
-                    <div class="uk-grid-collapse pos-form-split"
+                    <div class="uk-grid-small pos-form-split"
                          uk-grid>
 
-                      <div class="uk-inline uk-width-1-2"
-                           :class="{'uk-width-1-3' : indx === 0, 'uk-width-expand' : indx > 0}"
-                           v-for="(input, indx) in valuesInput[index]">
+                      <div class="uk-inline"
+                           :class="{'uk-width-1-3' : idx === 0 && doubleCell, 'uk-width-expand' : idx > 0, 'uk-width-1-1' : !doubleCell}"
+                           v-for="(input, idx) in valuesInput[index]">
 
                         <div class="uk-form-icon uk-form-icon-flip">
                           <img src="/img/icons/icon__input_text.svg"
@@ -40,11 +41,30 @@
                                height="14">
                         </div>
                         <input class="uk-input uk-form-small"
-                               v-model="item[indx]"
-                               :key="indx"
+                               v-model="item[idx]"
+                               @input="update"
+                               :key="idx"
                                type="text">
                       </div>
                     </div>
+                  </div>
+
+                  <!--Toggle cell-->
+                  <div class="uk-width-auto">
+                    <a class="uk-button uk-button-link"
+                       style="transform: translateY(-3px)"
+                       @click.prevent="toggleCell">
+                      <img src="/img/icons/icon__minus.svg"
+                           v-if="doubleCell"
+                           width="14"
+                           height="14"
+                           uk-svg>
+                      <img src="/img/icons/icon__plus.svg"
+                           v-else
+                           width="14"
+                           height="14"
+                           uk-svg>
+                    </a>
                   </div>
 
                   <!--remove value-->
@@ -58,6 +78,7 @@
                            uk-svg>
                     </a>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -74,6 +95,7 @@
                    uk-svg>
             </button>
           </div>
+
         </div>
 
       </div>
@@ -111,30 +133,44 @@
     data () {
 
       return {
-        valuesInput: this.value,
-        editValues:  false
+        valuesInput: JSON.parse(JSON.stringify(this.value)),
+        editValues:  false,
+        doubleCell:  false
       }
+    },
+
+    mounted () {
+
+      if (this.value[0]) {
+        this.arrayLength(this.value[0])
+      }
+    },
+
+    watch: {
+      isChanged () {
+        this.update()
+      }
+    },
+
+    computed: {
+
+      isChanged () {
+        return JSON.stringify(this.valuesInput) !== JSON.stringify(this.value)
+      }
+
     },
 
     methods: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
+      arrayLength (arr) {
+        if (Array.isArray(arr) && arr.length === 2) {
+          this.doubleCell = true
         }
       },
 
       update () {
-        this.$emit('update', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('update', this.valuesInput)
       },
 
       removeItem (index) {
@@ -151,8 +187,46 @@
       },
 
       addItem () {
-        this.valuesInput.push(['', ''])
+        const newRow = ['', '']
+        if (!this.doubleCell) {
+          newRow.splice(1, 1)
+        }
+        this.valuesInput.push(newRow)
+      },
+
+      toggleCell () {
+
+        const cells = this.valuesInput
+
+        if (this.doubleCell) {
+
+          UIkit.modal.confirm(this.$t('dialog.removeLast'), {
+            labels: {
+              ok:     this.$t('actions.ok'),
+              cancel: this.$t('actions.cancel')
+            }
+          }).then(() => {
+
+            // delete last input
+            cells.forEach((cell) => {
+              cell.splice(1, 1)
+            })
+            this.doubleCell = false
+          })
+
+        } else {
+
+          // add last input
+          cells.forEach((cell) => {
+            cell.push('')
+          })
+
+          this.doubleCell = true
+
+        }
+        this.valuesInput = cells
       }
+
     }
   }
 </script>

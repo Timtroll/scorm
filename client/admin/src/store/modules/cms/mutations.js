@@ -29,12 +29,17 @@ const mutations = {
     state.cms.activeId = id
   },
 
+  // right Panel Size
+  right_panel_size (state, data) {
+    state.main.rightPanelLarge = data
+  },
+
   /**
    * cms_row
    * @param state
    */
   cms_row_request (state) {
-    state.cms.row.status  = 'loading'
+    state.cms.row.status = 'loading'
   },
 
   // статус - успешно
@@ -47,16 +52,12 @@ const mutations = {
     state.cms.row.status = 'error'
   },
 
-  cms_table_row (state, data) {
-    state.cms.row.data = data
-  },
-
-  cms_table_update_row (state, data) {
-    state.cms.updateRow = data
-  },
-
   cms_table_row_show (state, data) {
     state.cms.row.open = data
+  },
+
+  cms_table_row_data (state, data) {
+    state.cms.row.data = data
   },
 
   // акшин для левой кнопки в navbar

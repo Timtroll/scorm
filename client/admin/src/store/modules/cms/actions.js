@@ -1,4 +1,3 @@
-import axios from 'axios'
 import router from '../../../router'
 import UIkit from 'uikit/dist/js/uikit.min'
 import Api from './../../../api/Cms'
@@ -41,7 +40,7 @@ const actions = {
                  commit('cms_table', resp.settings[0].table)
                  const firstNavItemId = resp.settings[0].id
 
-                 router.replace({
+                 router.push({
                    name:   'SettingItem',
                    params: {
                      id: firstNavItemId
@@ -68,6 +67,9 @@ const actions = {
       commit('cms_row_request')
       Api.set_save(row)
          .then(response => {
+
+           console.log(response)
+
            if (response.status === 200) {
              const resp = response.data
              if (resp.status === 'ok') {
@@ -75,7 +77,7 @@ const actions = {
                commit('cms_row_success')
                commit('cms_table_row_show', false)
                dispatch('getTree')
-
+               notify(resp.status, 'success')
                resolve(response)
              } else {
                notify(resp.mess, 'danger')

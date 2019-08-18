@@ -1,6 +1,6 @@
 import Api from './Api.js'
 
-const token = localStorage.getItem('token')
+//const token = localStorage.getItem('token')
 
 export default {
 
@@ -36,11 +36,11 @@ export default {
   },
 
   // удаление
-  set_delete (params) {
+  set_delete (id) {
     return Api()({
       url:    'cms/set_delete',
       method: 'post',
-      params: params
+      params: id
     })
   }
 

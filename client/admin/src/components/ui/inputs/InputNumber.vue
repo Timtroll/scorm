@@ -17,10 +17,10 @@
                  pattern="[0-9]*"
                  inputmode="numeric"
                  :disabled="!editable"
-                 :class="statusClass"
+                 :class="validate"
                  v-model.number="valueInput"
                  type="text"
-                 @blur="update"
+                 @input="update"
                  :placeholder="placeholder">
         </div>
       </div>
@@ -57,25 +57,35 @@
       }
     },
 
-    methods: {
+    computed: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
+      isChanged () {
+        return this.valueInput !== this.value
       },
 
+      validate () {
+
+        let validClass = null
+        if (this.required) {
+          if (!this.valueInput && this.valueInput.length < 1) {
+            validClass = 'uk-form-danger'
+            this.valid = false
+            this.$emit('valid', this.valid)
+          } else {
+            validClass = 'uk-form-success'
+            this.valid = true
+            this.$emit('valid', this.valid)
+          }
+        }
+        return validClass
+      }
+    },
+
+    methods: {
+
       update () {
-        this.$emit('update', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('update', this.valueInput)
       }
     }
   }

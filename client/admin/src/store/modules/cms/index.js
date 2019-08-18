@@ -13,7 +13,7 @@ const state = {
     row:       {
       open:   false,
       status: 'loading',
-      data:   []
+      data:   null,
     },
     updateRow: null
   },
@@ -24,7 +24,8 @@ const state = {
       icon:       'icon__nav.svg'
     },
     leftShow:         true,
-    rightShow:        true
+    rightShow:        true,
+    rightPanelLarge: true
   },
 
   pageLoader: true,

@@ -65,7 +65,7 @@
 
         let validClass = null
         if (this.required) {
-          if (!this.valueInput || this.valueInput.length < 3) {
+          if (!this.valueInput && this.valueInput.length < 1) {
             validClass = 'uk-form-danger'
             this.valid = false
             this.$emit('valid', this.valid)

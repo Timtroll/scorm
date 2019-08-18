@@ -29,6 +29,16 @@
               v-if="navItem.table && navItem.table.settings && navItem.table.settings.totalCount"
               v-text="navItem.table.settings.totalCount"></span>
       </a>
+      <div class="pos-side-nav-item__actions">
+
+        <!--Добавить дочерний раздел-->
+        <a @click.prevent="addChildren(navItem.id)">
+          <img src="/img/icons/icon__plus-circle.svg"
+               uk-svg
+               width="18"
+               height="18">
+        </a>
+      </div>
     </div>
 
     <!--children nav items-->
@@ -73,6 +83,8 @@
       toggleChildren () {
         this.opened = !this.opened
       },
+
+      addChildren (id) {},
 
       click (item) {
         if (this.navActiveId !== this.navItem.id) {

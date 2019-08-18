@@ -123,7 +123,7 @@
               :checked-all="checked"
               v-for="(row, index) in tableRows"
               v-on:check="checkedAll"
-              v-on:edit="edit(row)"
+              v-on:edit-row="edit(table.body[index])"
               :key="index"
               v-on:remove="remove(row)">
           </TableRow>
@@ -135,30 +135,10 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-      <List :data="tableRowDetail.data"
+      <List :data="JSON.parse(JSON.stringify(card.bodyRightItem))"
             :required="editRequired"
-            v-on:changed="listUpdated = $event"
             v-on:title="card.bodyRightTitle = $event"
             v-on:close="toggleRightPanel"></List>
-    </template>
-
-    <!--bodyRightFooter-->
-    <template #bodyRightFooter>
-      <div class="uk-flex uk-flex-between uk-width-1-1">
-        <div class="">
-
-        </div>
-        <div class="">
-          <button class="uk-button-success uk-button uk-button-small"
-                  @click.prevent="set_save">
-            <img src="/img/icons/icon__save.svg"
-                 uk-svg
-                 width="14"
-                 height="14">
-            <span class="uk-margin-small-left">сохранить</span>
-          </button>
-        </div>
-      </div>
     </template>
 
   </Card>
@@ -177,20 +157,23 @@
 
     data () {
       return {
-        searchInput:  null,
-        checked:      false,
-        card:         {
+
+        searchInput: null,
+        checked:     false,
+
+        card: {
           bodyRightShow:  true,
-          bodyRightTitle: null
+          bodyRightTitle: null,
+          bodyRightItem:  null
         },
+
         editRequired: {
           name:        true,
           placeholder: true,
           label:       true,
           type:        true
-        },
+        }
 
-        listUpdated: false
       }
     },
 
@@ -206,10 +189,6 @@
         } else {
           return 0
         }
-      },
-
-      tableRowDetailUpdate () {
-        return this.$store.getters.pageTableUpdateRow
       },
 
       tableRowDetail () {
@@ -259,11 +238,8 @@
     methods: {
 
       edit (event) {
-        this.$emit('edit', event)
-      },
-
-      set_save () {
-        this.$store.dispatch('editTableRow', this.tableRowDetailUpdate)
+        this.card.bodyRightItem = event
+        this.$store.commit('cms_row_success')
       },
 
       remove (event) {
