@@ -131,6 +131,7 @@
 
       remove (event) {
         //this.$emit('remove', event)
+        this.$store.dispatch('removeTableRow', this.fullData.id)
       }
 
     }

@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store/store'
 import VueMeta from 'vue-meta'
-//import Axios from 'axios'
 import UIkit from 'uikit/dist/js/uikit.min'
 import './registerServiceWorker'
 

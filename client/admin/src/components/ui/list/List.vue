@@ -24,7 +24,7 @@
 
       <!--header content-->
       <div class="pos-card-header--content"
-           v-text="this.editedData.label"></div>
+           v-text="editedData.label || labels"></div>
 
       <!--headerRight-->
       <div class="pos-card-header-item">
@@ -139,14 +139,19 @@
       </div>
       <div class="pos-card-header-item">
         <button class="uk-button-success uk-button uk-button-small"
-                @click.prevent="set_save"
-                :disabled="!dataIsChanged">
+                @click.prevent="action"
+                :disabled="!isValid">
           <img src="/img/icons/icon__save.svg"
                uk-svg
                width="14"
                height="14">
+
           <span class="uk-margin-small-left"
-                v-text="$t('actions.save')"></span>
+                v-text="$t('actions.add')"
+                v-if="add"></span>
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.save')"
+                v-else></span>
         </button>
       </div>
 
@@ -196,9 +201,9 @@
       labels: {}
     },
 
-    mounted () {
-      this.$emit('title', this.editedData.label)
-    },
+    //mounted () {
+    //  this.$emit('title', this.editedData.label)
+    //},
 
     beforeDestroy () {
       this.$store.commit('cms_table_row_data', null)
@@ -224,6 +229,10 @@
     },
 
     computed: {
+
+      isValid () {
+        return (this.editedData.lib_id !== '' && this.editedData.label !== '' && this.editedData.name !== '' && this.dataIsChanged)
+      },
 
       rightPanelSize () {
         return this.$store.getters.rightPanelSize
@@ -302,8 +311,8 @@
           selected:    JSON.stringify(data.selected)
         }
 
-        //console.log(typeof newData.value, newData.value)
-        this.$store.dispatch('editTableRow', newData)
+        this.$store.dispatch('addTableRow', newData)
+
       },
 
       /**
@@ -342,7 +351,6 @@
           selected:    JSON.stringify(data.selected)
         }
 
-        //console.log(typeof newData.value, newData.value)
         this.$store.dispatch('editTableRow', newData)
       },
 

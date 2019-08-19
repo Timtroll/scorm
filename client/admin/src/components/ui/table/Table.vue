@@ -139,6 +139,8 @@
       <List :data="JSON.parse(JSON.stringify(card.bodyRightItem))"
             :required="editRequired"
             :parent="libId"
+            :add="card.add"
+            :labels="card.bodyRightTitle"
             v-on:title="card.bodyRightTitle = $event"
             v-on:close="toggleRightPanel"></List>
     </template>
@@ -166,7 +168,8 @@
         card: {
           bodyRightShow:  true,
           bodyRightTitle: null,
-          bodyRightItem:  null
+          bodyRightItem:  null,
+          add:            false
         },
 
         editRequired: {
@@ -249,13 +252,16 @@
 
       add_row () {
         this.card.bodyRightItem  = this.addTpl
+        this.card.add            = true
         this.card.bodyRightTitle = this.$t('actions.addRow')
         this.toggleRightPanel()
         this.$store.commit('cms_row_success')
       },
 
       edit (event) {
-        this.card.bodyRightItem = event
+        this.card.bodyRightTitle = null
+        this.card.add            = false
+        this.card.bodyRightItem  = event
         this.$store.commit('cms_row_success')
       },
 

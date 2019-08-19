@@ -12,9 +12,6 @@ const notify = (message, status = 'primary', timeout = '4000', pos = 'top-center
   })
 }
 
-// fake data
-//import Settings from '../../../assets/json/settings.json'
-
 const actions = {
 
   //getNavTree ({commit}, data) {
@@ -69,6 +66,7 @@ const actions = {
 
       Api.set_save(row)
          .then(response => {
+           resp(response, commit, dispatch, reject)
 
            if (response.status === 200) {
              const resp = response.data
@@ -96,7 +94,76 @@ const actions = {
     })
   },
 
-  removeTableRow ({commit}, row) {
+  addTableRow ({commit, dispatch}, row) {
+    return new Promise((resolve, reject) => {
+
+      commit('cms_row_request')
+      //console.log(typeof row.value, row.value)
+
+      Api.set_add(row)
+         .then(response => {
+           if (response.status === 200) {
+             const resp = response.data
+             if (resp.status === 'ok') {
+               commit('cms_row_success')
+               commit('cms_table_row_show', false)
+               dispatch('getTree')
+               notify(resp.status, 'success')
+               resolve(response)
+             } else {
+               notify(resp.message, 'danger')
+               commit('cms_row_error')
+             }
+
+           }
+         })
+         .catch(err => {
+           commit('cms_row_error')
+           notify(err, 'danger')
+           reject(err)
+         })
+      resolve()
+    })
+  },
+
+  removeTableRow ({commit, dispatch}, id) {
+
+    UIkit.modal.confirm('Удалить', {
+      labels: {
+        ok:     'Да',
+        cancel: 'Отмена'
+      }
+    }).then(() => {
+      return new Promise((resolve, reject) => {
+
+        commit('cms_row_request')
+        //console.log(typeof row.value, row.value)
+
+        Api.set_delete({id: id})
+           .then(response => {
+             if (response.status === 200) {
+               const resp = response.data
+               if (resp.status === 'ok') {
+                 commit('cms_row_success')
+                 commit('cms_table_row_show', false)
+                 dispatch('getTree')
+                 notify(resp.status, 'success')
+                 resolve(response)
+               } else {
+                 notify(resp.message, 'danger')
+                 commit('cms_row_error')
+               }
+
+             }
+           })
+           .catch(err => {
+             commit('cms_row_error')
+             notify(err, 'danger')
+             reject(err)
+           })
+        resolve()
+      })
+    })
 
   }
 }
