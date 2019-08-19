@@ -8,10 +8,11 @@ use FindBin;
 sub index {
     my ($self);
     $self = shift;
-print "--\n";
+
     my ($status, $responce, $mess, $root);
     $root = "$FindBin::Bin/../log/flock";
 print "$root/log/flock\n========\n";
+
     if (-e "$root/log/flock") {
         $status = 'fail';
         $mess = 'Deploy working now';
