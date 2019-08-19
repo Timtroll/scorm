@@ -23,7 +23,9 @@ print Dumper($list);
         $$list{$id}{'table'} = $self->table_obj({
             'settings'  => {},
             'header'    => [
-                # { "key" => "name", "label" => "Название" },
+                { "key" => "id", "label" => "id" },
+                { "key" => "label", "label" => "Название" },
+                { "key" => "value", "label" => "Значение" },
                 # { "key" => "type", "label" => "Тип" },
             ],
             'body'      => $$list{$id}{'table'}

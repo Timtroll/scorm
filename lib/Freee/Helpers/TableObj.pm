@@ -40,13 +40,14 @@ sub register {
         }
         else {
             $$table{'header'} = $$params{'header'};
-            foreach my $tab (sort {$a <=> $b} @{$$params{'body'}}) {
-                my %tab = ();
-                foreach my $header (sort {$a <=> $b} @{$$params{'header'}}) {
-                    $tab{$$header{'key'}} = $$tab{$$header{'key'}};
-                }
-                push @{$$table{'body'}}, \%tab;
-            }
+            $$table{'body'} = $$params{'body'};
+            # foreach my $tab (sort {$a <=> $b} @{$$params{'body'}}) {
+            #     my %tab = ();
+            #     foreach my $header (sort {$a cmp $b} @{$$params{'header'}}) {
+            #         $tab{$$header{'key'}} = $$tab{$$header{'key'}};
+            #     }
+            #     push @{$$table{'body'}}, \%tab;
+            # }
         }
 
         return $table;
