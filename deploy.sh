@@ -41,8 +41,9 @@ cd $SOURCE
 $SOURCE/starting.sh stop
 ./starting.sh start
 
-# rm $SOURCE/log/deploy.flock
-/usr/bin/flock -o $SOURCE/log/deploy.lock
+echo "-------"
+echo "remove $SOURCE/log/deploy.lock"
+rm $SOURCE/log/deploy.lock
 
 echo "Finish"
 # if [ "$?" != "0" ] ; then
