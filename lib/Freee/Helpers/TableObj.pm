@@ -13,7 +13,7 @@ sub register {
     my ($self, $app) = @_;
 
     #################################
-    # Helper for Creating table structures
+    # Helper for Creating table structures for vue
 
     $app->helper( 'table_obj' => sub {
         my ( $self, $params ) = @_ ;

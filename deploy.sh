@@ -41,6 +41,10 @@ cd $SOURCE
 $SOURCE/starting.sh stop
 ./starting.sh start
 
+echo "-------"
+echo "remove $SOURCE/log/deploy.lock"
+rm $SOURCE/log/deploy.lock
+
 echo "Finish"
 # if [ "$?" != "0" ] ; then
 #     echo

@@ -8,25 +8,23 @@ use FindBin;
 sub index {
     my ($self);
     $self = shift;
-print "--\n";
-    my ($status, $responce, $mess);
-print "$FindBin::Bin/../log/flock\n========\n";
-    if (-e "$FindBin::Bin/../log/flock") {
-        $status = 'fail';
-        $mess = 'Deploy working now';
+
+    my ($token, $status, $responce, $mess);
+    $token = $self->req->param('token');
+
+    if (!(-e "$FindBin::Bin/../log/deploy.lock") && ($self->config->{secrets}[0] eq $token)) {
+        $responce = `/usr/bin/flock -x -w 120 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log &`;
+        $status = 'ok';
     }
     else {
-        $responce = `/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &`;
-print "/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &\n";
-        $status = 'ok';
+        $status = 'fail';
+        $mess = 'Deploy working now or token if fail';
     }
 
     $self->render(
         'json' => {
-            status      => $status,
-            responce    => $responce,
-            mess        => $status,
-            dir         => $FindBin::Bin
+            status    => $status,
+            message   => $mess
         }
     );
 }
