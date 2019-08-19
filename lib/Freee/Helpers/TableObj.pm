@@ -30,7 +30,7 @@ sub register {
 
         # выводим все колонки, если не заданы в $params
         unless ( @{$$params{'header'}} || !$$params{'header'} ) {
-            foreach my $head (keys %{$$params{'body'}[0]}) {
+            foreach my $head (ksort {$a <=> $b} keys %{$$params{'body'}[0]}) {
                 push @{$$table{'header'}}, {
                     'key'   => $head,
                     'label' => $head,
@@ -40,9 +40,9 @@ sub register {
         }
         else {
             $$table{'header'} = $$params{'header'};
-            foreach my $tab (@{$$params{'body'}}) {
+            foreach my $tab (sort {$a <=> $b} @{$$params{'body'}}) {
                 my %tab = ();
-                foreach my $header (@{$$params{'header'}}) {
+                foreach my $header (sort {$a <=> $b} @{$$params{'header'}}) {
                     $tab{$$header{'key'}} = $$tab{$$header{'key'}};
                 }
                 push @{$$table{'body'}}, \%tab;

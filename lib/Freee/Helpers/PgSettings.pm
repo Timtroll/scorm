@@ -58,7 +58,7 @@ sub register {
             }
         }
 
-        foreach my $id (sort {} keys %$list) {
+        foreach my $id (keys %$list) {
             next if $id == $$list{$id}{'lib_id'};
 
             my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
@@ -80,7 +80,7 @@ sub register {
 
         my @out = ();
         my $keys = '';
-        foreach my $id ( keys %$hash ) {
+        foreach my $id (keys %$hash ) {
             if ($$hash{$id}{'lib_id'} == $parent) {
                 my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
                 $$hash{$id}{'keywords'} = join(' ', keys %keys);
