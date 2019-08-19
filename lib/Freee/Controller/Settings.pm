@@ -107,7 +107,7 @@ sub set_get_one {
 #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 1,
+#     "editable"    => 1,           - не обязательно, по умолчанию 1
 #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
@@ -152,7 +152,6 @@ sub set_add {
     $data{'editable'} = $self->param('editable') || 1;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 1;
-    $data{'massEdit'} = $self->param('massEdit') || 0;
 
     # готовим запись настроек, если это не folder
     unless ($self->param('folder')) {
@@ -211,27 +210,30 @@ sub set_load_default {
 }
 
 # для сохранения настройки
-# my $ = $self->insert_setting({
-#     "id",       - обязательно (должно быть больше 0)
-#     "lib_id",   - обязательно (должно быть больше 0)
-#     "label",    - обязательно
-#     "name",     - обязательно
-#     "value",
-#     "type",
-#     "placeholder",
-#     "editable",
-#     "mask"
-#     "selected",
-# });
-# для создания группы настроек
 # my $id = $self->insert_setting({
-#     "id",       - обязательно (должно быть больше 0),
-#     "lib_id",   - обязательно (если корень - 0, или owner id),
-#     "label",    - обязательно
-#     "name",     - обязательно
-#     "readOnly",       - не обязательно, по умолчанию 0
-#     "editable" int,   - не обязательно, по умолчанию 1
-#     "removable" int,  - не обязательно, по умолчанию 1
+#     "folder"      => 0,           - это запись настроек
+#     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "editable"    => 1,           - не обязательно, по умолчанию 1
+#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "removable"   => 1,           - не обязательно, по умолчанию 1
+#     "value"       => "",            - строка или json
+#     "type"        => "InputNumber", - тип поля из конфига
+#     "placeholder" => 'это название',- название для отображения в форме
+#     "mask"        => '\d+',         - регулярное выражение
+#     "selected"    => "CKEditor",    - значение по-умолчанию для select
+#     "required"    => 1              - обязательное поле
+# });
+# для сохранения группы настроек
+# my $id = $self->insert_setting({
+#     "folder"      => 1,           - это группа настроек
+#     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "editable"    => 1,           - не обязательно, по умолчанию 1
+#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub set_save {
     my ($self) = shift;
@@ -254,6 +256,19 @@ sub set_save {
         (($data{'lib_id'} > 0) && $data{'id'} && $data{'label'} && $data{'name'})
     ) {
         push @mess, 'Not exists required fields';
+    }
+
+    # поля для группы настроек
+    $data{'editable'} = $self->param('editable') || 1;
+    $data{'readOnly'} = $self->param('readOnly') || 0;
+    $data{'removable'} = $self->param('removable') || 1;
+
+    # готовим запись настроек, если это не folder
+    unless ($self->param('folder')) {
+        my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
+        foreach (@fields) {
+            $data{$_} = $self->param($_);
+        }
     }
 
     my $id = $self->save_setting( \%data, [] );
