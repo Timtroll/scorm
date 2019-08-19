@@ -84,12 +84,12 @@ $settings = {
       {
         "editable"      => 1,
         "required"      => 1,
-        "type"          => "InputList",
+        "type"          => "InputDoubleList",
         "name"          => "mediaImagesConf",
         "label"         => "поддержка более 2-х авто-превью",
         "placeholder"   => "",
         "mask"          => "",
-        "value"         => ["0", "gallery", "crop", "179", "281"],
+        "value"         => [["0"], ["gallery"], ["crop"], ["179"], ["281"]],
         "selected"      => ""
       },
       {
@@ -928,12 +928,12 @@ $settings = {
       {
         "editable"      => 1,
         "required"      => 1,
-        "type"=>        "InputList",
+        "type"=>        "InputDoubleList",
         "name"=>        "type",
         "label"=>       "Тип параметра",
         "placeholder"=> "",
         "mask"=>        "",
-        "value"=>       ["число", "строка", "текстовая область", "Селект", "список", "вложенный список"],
+        "value"=>       [["число"], ["строка"], ["текстовая область"], ["Селект"], ["список"], ["вложенный список"]],
 
         "selected"=>    ""
       },
