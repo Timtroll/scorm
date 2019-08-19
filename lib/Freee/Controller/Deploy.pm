@@ -10,15 +10,15 @@ sub index {
     $self = shift;
 
     my ($status, $responce, $mess);
-print "$FindBin::Bin/../log/flock\n========\n";
+print "$FindBin::Bin/../log/deploy.flock\n========\n";
 
-    if (-e "$FindBin::Bin/../log/flock") {
+    if (-e "$FindBin::Bin/../log/deploy.flock") {
         $status = 'fail';
         $mess = 'Deploy working now';
     }
     else {
-        $responce = `/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../deploy.log &`;
-print "/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../deploy.log \&\n";
+        $responce = `/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log &`;
+print "/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log \&\n";
         $status = 'ok';
     }
 
