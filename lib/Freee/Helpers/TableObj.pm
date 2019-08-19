@@ -38,16 +38,10 @@ sub register {
             }
             $$table{'body'} = $$params{'body'};
         }
+        # выводим указанные колонки, а вот данные выводим все
         else {
             $$table{'header'} = $$params{'header'};
             $$table{'body'} = $$params{'body'};
-            # foreach my $tab (sort {$a <=> $b} @{$$params{'body'}}) {
-            #     my %tab = ();
-            #     foreach my $header (sort {$a cmp $b} @{$$params{'header'}}) {
-            #         $tab{$$header{'key'}} = $$tab{$$header{'key'}};
-            #     }
-            #     push @{$$table{'body'}}, \%tab;
-            # }
         }
 
         return $table;

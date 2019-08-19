@@ -26,7 +26,6 @@ print Dumper($list);
                 { "key" => "id", "label" => "id" },
                 { "key" => "label", "label" => "Название" },
                 { "key" => "value", "label" => "Значение" },
-                # { "key" => "type", "label" => "Тип" },
             ],
             'body'      => $$list{$id}{'table'}
         });
