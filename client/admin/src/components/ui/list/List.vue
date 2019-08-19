@@ -40,8 +40,7 @@
 
     <!--content-->
     <div class="pos-card-body">
-      <form @change.prevent="editData"
-            class="pos-card-body-middle uk-position-relative uk-width-1-1">
+      <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
 
         <ul class="pos-list">
 
@@ -94,7 +93,7 @@
                          :required="true"
                          :values-editable="false"
                          @change="dataIsChange.type = $event"
-                         v-on:update="changeType($event)"
+                         v-on:value="changeType($event)"
                          :placeholder="$t('list.type')"
                          :values="inputComponents"></InputSelect>
           </li>
@@ -108,7 +107,8 @@
                          :value="data.value"
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
-                         @update="editedData.value = $event"
+                         @value="editedData.value = $event"
+                         @values="editedData.values = $event"
                          :placeholder="$t('list.value')">
               </component>
             </transition>
@@ -272,16 +272,40 @@
         data.value    = JSON.stringify(data.value)
         data.selected = JSON.stringify(data.selected)
 
-        console.log(typeof data.selected)
-        this.$store.dispatch('editTableRow', data)
-      },
+        /*
+        # для сохранения настройки
+        #     "id",       - обязательно (должно быть больше 0)
+        #     "lib_id",   - обязательно (должно быть больше 0)
+        #     "label",    - обязательно
+        #     "name",     - обязательно
+        #     "value",
+        #     "type",
+        #     "placeholder",
+        #     "editable",
+        #     "mask"
+        #     "selected",
+        # });
+         */
+        const newData = {
+          id:          data.id,
+          lib_id:      data.lib_id,
+          label:       data.label,
+          name:        data.name,
+          type:        data.type,
+          placeholder: data.placeholder,
+          editable:    data.editable,
+          mask:        data.mask,
+          value:       JSON.stringify(data.value),
+          selected:    JSON.stringify(data.selected)
+        }
 
-      editData () {
-        //this.$store.commit('cms_table_update_row', this.editedData)
+        //console.log(typeof newData.value, newData.value)
+        this.$store.dispatch('editTableRow', newData)
       },
 
       changeType (event) {
-        this.component = event
+        this.component       = event
+        this.editedData.type = event
       }
 
     }

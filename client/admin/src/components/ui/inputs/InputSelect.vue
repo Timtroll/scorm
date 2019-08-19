@@ -133,7 +133,10 @@
       value:          {
         default: null
       },
-      values:         {},
+      values:         {
+        type:    Array,
+        default: ['']
+      },
       status:         { // 'loading' / 'success' / 'error'
         default: null,
         type:    String
@@ -177,7 +180,8 @@
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('update', this.valueInput)
+        this.$emit('value', this.valueInput)
+        this.$emit('values', this.valuesInput)
       },
 
       validate () {

@@ -133,7 +133,8 @@
     data () {
 
       return {
-        valuesInput: JSON.parse(JSON.stringify(this.value)),
+        valuesInput: this.value,
+        //valuesInput: JSON.parse(JSON.stringify(this.value)),
         editValues:  false,
         doubleCell:  false
       }
@@ -170,7 +171,8 @@
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('update', this.valuesInput)
+        this.$emit('value', this.valuesInput)
+        this.$emit('values', this.valuesInput)
       },
 
       removeItem (index) {

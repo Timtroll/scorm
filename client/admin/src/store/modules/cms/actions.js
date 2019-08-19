@@ -65,10 +65,10 @@ const actions = {
     return new Promise((resolve, reject) => {
 
       commit('cms_row_request')
+      //console.log(typeof row.value, row.value)
+
       Api.set_save(row)
          .then(response => {
-
-           console.log(response)
 
            if (response.status === 200) {
              const resp = response.data
