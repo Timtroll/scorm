@@ -11,15 +11,15 @@ sub index {
 
     my ($status, $responce, $mess);
 
-    if (-e "$FindBin::Bin/../log/deploy.flock") {
-        $status = 'fail';
-        $mess = 'Deploy working now';
-    }
-    else {
+    # if (-e "$FindBin::Bin/../log/deploy.flock") {
+    #     $status = 'fail';
+    #     $mess = 'Deploy working now';
+    # }
+    # else {
         $responce = `/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log &`;
 print "/usr/bin/flock -x -w 180 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log \&\n";
         $status = 'ok';
-    }
+    # }
 
     $self->render(
         'json' => {
