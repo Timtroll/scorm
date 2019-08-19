@@ -25,7 +25,8 @@ print "/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../d
         'json' => {
             status      => $status,
             responce    => $responce,
-            mess        => $status,
+            mess        => $mess,
+            lock        => "$FindBin::Bin/../log/flock",
             dir         => $FindBin::Bin
         }
     );
