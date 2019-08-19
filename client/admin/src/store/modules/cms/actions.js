@@ -66,7 +66,6 @@ const actions = {
 
       Api.set_save(row)
          .then(response => {
-           resp(response, commit, dispatch, reject)
 
            if (response.status === 200) {
              const resp = response.data
@@ -78,7 +77,7 @@ const actions = {
                notify(resp.status, 'success')
                resolve(response)
              } else {
-               notify(resp.mess, 'danger')
+               notify(resp.message, 'danger')
                commit('cms_row_error')
              }
              //commit('cms_', resp.settings)
