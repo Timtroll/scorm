@@ -3,26 +3,30 @@ package Freee::Controller::Deploy;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
+use FindBin;
 
 sub index {
     my ($self);
     $self = shift;
-
+print "--\n";
     my ($status, $responce, $mess);
-    if (-e '/usr/bin/flock') {
+print "$FindBin::Bin/../log/flock\n========\n";
+    if (-e "$FindBin::Bin/../log/flock") {
         $status = 'fail';
         $mess = 'Deploy working now';
     }
     else {
-        $responce = `/usr/bin/flock -w 180 /home/troll/scorm/log/deploy.lock /home/troll/scorm/deploy.sh > /home/troll/scorm/log/deploy.log &`;
+        $responce = `/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &`;
+print "/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &\n";
         $status = 'ok';
     }
 
     $self->render(
         'json' => {
-            status  => $status,
+            status      => $status,
             responce    => $responce,
-            mess        => $status
+            mess        => $status,
+            dir         => $FindBin::Bin
         }
     );
 }
