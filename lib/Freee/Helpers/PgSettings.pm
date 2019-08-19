@@ -41,7 +41,7 @@ sub register {
 
         # запоминаем корневые элементы
         my $out = {};
-        foreach my $parent (keys %$list) {
+        foreach my $parent (sort {$a <=> $b} keys %$list) {
             if ($$list{$parent}{'lib_id'} == 0) {
                 # запоминаем корневые элементы и удаляем их
                 $$out{$parent} = {
@@ -58,7 +58,7 @@ sub register {
             }
         }
 
-        foreach my $id (keys %$list) {
+        foreach my $id (sort {$a <=> $b} keys %$list) {
             next if $id == $$list{$id}{'lib_id'};
 
             my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
@@ -161,7 +161,6 @@ sub register {
     #     "readOnly",       - не обязательно, по умолчанию 0
     #     "editable" int,   - не обязательно, по умолчанию 1
     #     "removable" int,  - не обязательно, по умолчанию 1
-    #     "massEdit" int    - не обязательно, по умолчанию 0
     # });
     # возвращается id записи
     $app->helper( 'save_setting' => sub {
