@@ -50,6 +50,11 @@
       this.$store.dispatch('getTree')
     },
 
+    beforeDestroy () {
+      this.$store.commit('cms_table_row_show', false)
+      //this.$store.commit('cms_table_row_data', null)
+    },
+
     computed: {
 
       pageTable () {
