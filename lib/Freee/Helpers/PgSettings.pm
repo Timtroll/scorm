@@ -80,7 +80,7 @@ sub register {
 
         my @out = ();
         my $keys = '';
-        foreach my $id (keys %$hash ) {
+        foreach my $id (sort {$a <=> $b} keys %$hash ) {
             if ($$hash{$id}{'lib_id'} == $parent) {
                 my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
                 $$hash{$id}{'keywords'} = join(' ', keys %keys);
