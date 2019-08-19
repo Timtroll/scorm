@@ -10,7 +10,6 @@ sub index {
     $self = shift;
 
     my ($status, $responce, $mess);
-print "$FindBin::Bin/../log/deploy.flock\n========\n";
 
     if (-e "$FindBin::Bin/../log/deploy.flock") {
         $status = 'fail';
