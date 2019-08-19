@@ -13,7 +13,7 @@ const state = {
     row:       {
       open:   false,
       status: 'loading',
-      data:   null,
+      data:   null
     },
     updateRow: null
   },
@@ -25,7 +25,7 @@ const state = {
     },
     leftShow:         true,
     rightShow:        true,
-    rightPanelLarge: true
+    rightPanelLarge:  true
   },
 
   pageLoader: true,
@@ -39,13 +39,28 @@ const state = {
   },
 
   inputComponents: [
-    'InputText',
-    'InputTextarea',
-    'InputNumber',
-    'InputBoolean',
-    'InputRadio',
-    'InputSelect',
-    'InputDoubleList'
+    {
+      value: 'InputText',
+      label: 'Текстовое поле'
+    }, {
+      value: 'InputNumber',
+      label: 'Число'
+    }, {
+      value: 'InputTextarea',
+      label: 'Текстовая область'
+    }, {
+      value: 'InputBoolean',
+      label: 'Чекбокс'
+    }, {
+      value: 'InputRadio',
+      label: 'Радио кнопки'
+    }, {
+      value: 'InputSelect',
+      label: 'Выпадающий список'
+    }, {
+      value: 'InputDoubleList',
+      label: 'Массив значений'
+    }
   ]
 
 }

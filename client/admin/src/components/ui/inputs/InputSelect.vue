@@ -10,13 +10,22 @@
              uk-grid>
           <div class="uk-width-expand"
                uk-form-custom="target: > * > span:first-child">
+
             <select v-model="valueInput"
+                    v-if="isObject"
                     :disabled="!editable || editValues"
                     @change="update">
-              <option v-for="item in valuesInput">{{item}}
+              <option v-for="item in valuesInput"
+                      :value="item.value">{{item.label}}
               </option>
-
             </select>
+            <select v-model="valueInput"
+                    v-else
+                    :disabled="!editable || editValues"
+                    @change="update">
+              <option v-for="item in valuesInput">{{item}}</option>
+            </select>
+
             <button class="uk-button uk-height-1-1 uk-button-default uk-width-1-1 uk-flex uk-flex-between uk-flex-middle"
                     :class="validate"
                     type="button"
@@ -169,6 +178,10 @@
     },
 
     computed: {
+
+      isObject () {
+        return (typeof this.valuesInput[0] === 'object' && !Array.isArray(this.valuesInput[0]) && this.valuesInput[0] !== null)
+      },
 
       isChanged () {
         return this.valuesInput !== this.value || this.valuesInput !== this.values
