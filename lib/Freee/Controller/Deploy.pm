@@ -9,15 +9,16 @@ sub index {
     my ($self);
     $self = shift;
 print "--\n";
-    my ($status, $responce, $mess);
-print "$FindBin::Bin/../log/flock\n========\n";
-    if (-e "$FindBin::Bin/../log/flock") {
+    my ($status, $responce, $mess, $root);
+    $root = "$FindBin::Bin/../log/flock";
+print "$root/log/flock\n========\n";
+    if (-e "$root/log/flock") {
         $status = 'fail';
         $mess = 'Deploy working now';
     }
     else {
-        $responce = `/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &`;
-print "/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../deploy.sh > $FindBin::Bin/../deploy.log &\n";
+        $responce = `/usr/bin/flock -x -w 180 $root/log/deploy.lock -c "$root/deploy.sh" > $root/deploy.log &`;
+print "/usr/bin/flock -x -w 180 $root/log/deploy.lock -c "$root/deploy.sh" > $root/deploy.log \&\n";
         $status = 'ok';
     }
 
@@ -26,7 +27,7 @@ print "/usr/bin/flock -w 180 $FindBin::Bin/../log/deploy.lock $FindBin::Bin/../d
             status      => $status,
             responce    => $responce,
             mess        => $mess,
-            lock        => "$FindBin::Bin/../log/flock",
+            lock        => "$root/log/flock",
             dir         => $FindBin::Bin
         }
     );
