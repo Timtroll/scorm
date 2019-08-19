@@ -15,6 +15,19 @@ $tree-border-style: solid
   & > *
     & > .pos-side-nav
       & > li
+        &:hover
+          z-index: 1
+          &:before
+            z-index: 0
+            content: ""
+            display: block
+            background-color: lighten($global-template-background, 42%)
+            position: absolute
+            top: 0
+            left: -$global-small-gutter
+            right: -$global-small-gutter
+            height: $tree-item-height
+
         & > *
           & > .pos-side-nav-item
             & > .pos-side-nav-item__no-icon
@@ -86,7 +99,6 @@ $tree-border-style: solid
   align-items: center
   height: $tree-item-height
   flex-wrap: nowrap
-  align-items: center
 
   & + .pos-side-nav
     &:before
@@ -99,6 +111,33 @@ $tree-border-style: solid
       top: $tree-icon-size - 2
       bottom: - 3px
       z-index: 0
+
+
+  &:hover
+    .pos-side-nav-item__label
+      color: $global-emphasis-color
+      text-decoration: none
+
+  &.uk-active
+    .pos-side-nav-item__label
+      color: $global-primary-background
+
+  &.uk-active,
+  &:hover
+    .pos-side-nav-item__label
+      color: $global-primary-background
+
+      &:hover
+        color: darken($global-primary-background, 10%)
+
+    .pos-side-nav-item-actions__add
+      color: $global-success-background
+
+    .pos-side-nav-item-actions__edit
+      color: $global-primary-background
+
+    .pos-side-nav-item-actions__remove
+      color: $global-danger-background
 
 
 //&.active
@@ -141,6 +180,7 @@ $tree-border-style: solid
 
 
 .pos-side-nav-item__label
+  position: relative
   color: $global-color
   display: flex
   flex-grow: 1
@@ -152,15 +192,16 @@ $tree-border-style: solid
     min-width: 18px
     font-size: .65rem
     margin-left: $global-xsmall-margin
-    background-color: darken($global-muted-background, 5%)
+    background-color: $global-muted-background
+    //background-color: darken($global-muted-background, 5%)
     color: $global-color
 
-  &:hover
-    color: $global-emphasis-color
-    text-decoration: none
-
-  &.uk-active
-    color: $global-primary-background
+//&:hover
+//  color: $global-emphasis-color
+//  text-decoration: none
+//
+//&.uk-active
+//  color: $global-primary-background
 
 .pos-side-nav-item__label-text
   flex: 1
@@ -175,9 +216,13 @@ $tree-border-style: solid
   margin-left: $global-xsmall-margin
 
   & > *
+    @include transition-param(transform)
     display: flex
     align-items: center
     color: $global-muted-color
+
+    &:hover
+      transform: scale(1.2)
 
     &:not(:last-child)
       margin-right: $global-xsmall-margin

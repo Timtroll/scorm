@@ -47,7 +47,7 @@
           <!--editable-->
           <li>
             <InputBoolean
-                :value="data.editable"
+                :value="data.editable || true"
                 @change="dataIsChange.editable = $event"
                 @update="editedData.editable = $event"
                 :placeholder="$t('list.editable')"></InputBoolean>
@@ -55,7 +55,7 @@
 
           <!--name-->
           <li>
-            <InputText :value="data.name"
+            <InputText :value="data.name || ''"
                        :required="true"
                        @change="dataIsChange.name = $event"
                        @update="editedData.name = $event"
@@ -64,7 +64,7 @@
 
           <!--label-->
           <li>
-            <InputText :value="data.label"
+            <InputText :value="data.label || ''"
                        :required="true"
                        @change="dataIsChange.label = $event"
                        @update="editedData.label = $event"
@@ -73,7 +73,7 @@
 
           <!--placeholder-->
           <li>
-            <InputText :value="data.placeholder"
+            <InputText :value="data.placeholder || ''"
                        @change="dataIsChange.placeholder = $event"
                        @update="editedData.placeholder = $event"
                        :placeholder="$t('list.placeholder')"></InputText>
@@ -81,7 +81,7 @@
 
           <!--mask-->
           <li>
-            <InputText :value="data.mask"
+            <InputText :value="data.mask || ''"
                        @change="dataIsChange.mask = $event"
                        @update="editedData.mask = $event"
                        :placeholder="$t('list.mask')"></InputText>
@@ -89,7 +89,7 @@
 
           <!--type-->
           <li>
-            <InputSelect :value="data.type"
+            <InputSelect :value="data.type || 'InputText'"
                          :required="true"
                          :values-editable="false"
                          @change="dataIsChange.type = $event"
@@ -103,7 +103,7 @@
             <transition name="slide-right"
                         mode="out-in"
                         appear>
-              <component v-bind:is="component"
+              <component v-bind:is="component || 'InputText'"
                          :value="data.value"
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
@@ -185,6 +185,14 @@
 
     props: {
       data:   {},
+      add:    {
+        type:    Boolean,
+        default: false
+      },
+      parent: {
+        type:    Number,
+        default: null
+      },
       labels: {}
     },
 
@@ -221,29 +229,6 @@
         return this.$store.getters.rightPanelSize
       },
 
-      //dataForSave () {
-      //
-      //  const newData    = this.editedData
-      //  newData.selected = JSON.stringify(newData.selected)
-      //  newData.value    = JSON.stringify(newData.value)
-      //  return newData
-      //
-      //},
-
-      //dataForSave: {
-      //
-      //  get: () => {
-      //    const newData    = this.editedData
-      //    newData.selected = JSON.stringify(newData.selected)
-      //    newData.value    = JSON.stringify(newData.value)
-      //    return newData
-      //  },
-      //  set: (newData) => {
-      //    this.$store.dispatch('editTableRow', newData)
-      //  }
-      //
-      //},
-
       loader () {
         return this.$store.getters.queryRowStatus
       },
@@ -267,6 +252,63 @@
         this.$store.commit('cms_table_row_show', false)
       },
 
+      // Action on Submit
+      action () {
+        if (this.add) {
+          this.set_add() // if add
+        } else {
+          this.set_save() // if update
+        }
+      },
+
+      /**
+       * создание настройки
+       */
+      set_add () {
+        const data    = this.editedData
+        data.value    = JSON.stringify(data.value)
+        data.selected = JSON.stringify(data.selected)
+
+        /*
+        # для создания настройки
+        # my $id = $self->insert_setting({
+        #     "folder"      => 0,           - это запись настроек
+        #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+        #     "label"       => 'название',  - обязательно (название для отображения)
+        #     "name",       => 'name'       - обязательно (системное название, латиница)
+        #     "editable"    => 1,           - не обязательно, по умолчанию 1
+        #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        #     "removable"   => 1,           - не обязательно, по умолчанию 1
+        #     "value"       => "",            - строка или json
+        #     "type"        => "InputNumber", - тип поля из конфига
+        #     "placeholder" => 'это название',- название для отображения в форме
+        #     "mask"        => '\d+',         - регулярное выражение
+        #     "selected"    => "CKEditor",    - значение по-умолчанию для select
+        #     "required"    => 1              - обязательное поле
+        # });
+       */
+        const newData = {
+          folder:      0,
+          lib_id:      this.parent,
+          label:       data.label,
+          name:        data.name,
+          type:        data.type,
+          placeholder: data.placeholder,
+          editable:    data.editable,
+          mask:        data.mask,
+          readOnly:    0,
+          required:    1,
+          value:       JSON.stringify(data.value),
+          selected:    JSON.stringify(data.selected)
+        }
+
+        //console.log(typeof newData.value, newData.value)
+        this.$store.dispatch('editTableRow', newData)
+      },
+
+      /**
+       * сохранение настройки
+       */
       set_save () {
         const data    = this.editedData
         data.value    = JSON.stringify(data.value)
@@ -286,6 +328,7 @@
         #     "selected",
         # });
          */
+
         const newData = {
           id:          data.id,
           lib_id:      data.lib_id,

@@ -2,7 +2,8 @@
   <div>
 
     <!--current nav item-->
-    <div class="pos-side-nav-item">
+    <div class="pos-side-nav-item"
+         :class="{'uk-active': navActiveId === navItem.id}">
 
       <div class="pos-side-nav-item__icon"
            @click="toggleChildren"
@@ -18,7 +19,7 @@
            v-else>
       </div>
       <a class="pos-side-nav-item__label"
-         :class="{'uk-active': navActiveId === navItem.id}"
+
          @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label">
         <span class="pos-side-nav-item__label-text"
@@ -32,11 +33,36 @@
       <div class="pos-side-nav-item__actions">
 
         <!--Добавить дочерний раздел-->
-        <a @click.prevent="addChildren(navItem.id)">
-          <img src="/img/icons/icon__plus-circle.svg"
+        <a @click.prevent="addChildren(navItem.id)"
+           :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
+           class="pos-side-nav-item-actions__add">
+          <img src="/img/icons/icon__plus-doc.svg"
                uk-svg
-               width="18"
-               height="18">
+               width="14"
+               height="14"
+               alt="">
+        </a>
+
+        <!--Редактировать раздел-->
+        <a @click.prevent="addChildren(navItem.id)"
+           :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
+           class="pos-side-nav-item-actions__edit">
+          <img src="/img/icons/icon__edit.svg"
+               uk-svg
+               width="14"
+               height="14"
+               alt="">
+        </a>
+
+        <!--Удалить раздел-->
+        <a @click.prevent="addChildren(navItem.id)"
+           :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
+           class="pos-side-nav-item-actions__remove">
+          <img src="/img/icons/icon__trash.svg"
+               uk-svg
+               width="14"
+               height="14"
+               alt="">
         </a>
       </div>
     </div>

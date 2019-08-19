@@ -45,7 +45,6 @@ const state = {
     'InputBoolean',
     'InputRadio',
     'InputSelect',
-    'InputList',
     'InputDoubleList'
   ]
 

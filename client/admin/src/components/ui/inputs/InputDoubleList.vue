@@ -113,9 +113,7 @@
 
     props: {
 
-      value:       {
-        type: Array
-      },
+      value:       {},
       status:      { // 'loading' / 'success' / 'error'
         default: null,
         type:    String

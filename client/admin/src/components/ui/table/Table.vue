@@ -14,7 +14,8 @@
         <!--Add Row-->
         <div>
           <button type="button"
-                  class="uk-button uk-button-success uk-button-small">
+                  class="uk-button uk-button-success uk-button-small"
+                  @click.prevent="add_row">
             <img src="/img/icons/icon__plus.svg"
                  width="16"
                  height="16"
@@ -137,6 +138,7 @@
     <template #bodyRight>
       <List :data="JSON.parse(JSON.stringify(card.bodyRightItem))"
             :required="editRequired"
+            :parent="libId"
             v-on:title="card.bodyRightTitle = $event"
             v-on:close="toggleRightPanel"></List>
     </template>
@@ -172,12 +174,33 @@
           placeholder: true,
           label:       true,
           type:        true
+        },
+
+        addTpl: {
+          folder:      0,
+          lib_id:      this.libId,
+          label:       '',
+          name:        '',
+          type:        '',
+          placeholder: '',
+          editable:    1,
+          mask:        '',
+          readOnly:    0,
+          required:    1,
+          value:       '',
+          selected:    []
         }
 
       }
     },
 
     computed: {
+
+      libId () {
+        if (this.table && this.table.body[0] && this.table.body[0].lib_id) {
+          return this.table.body[0].lib_id
+        }
+      },
 
       table () {
         return this.$store.getters.pageTable
@@ -215,19 +238,6 @@
             displayTable.push(newItem)
           })
 
-          //table.forEach((item) => {
-          //  const keys    = Object.keys(item)
-          //  const newItem = []
-          //
-          //  keys.forEach((key, i) => {
-          //    if (flatHeader.includes(key)) {
-          //      newItem.push({val: item[key], key: key})
-          //    }
-          //  })
-          //
-          //  displayTable.push(newItem)
-          //})
-
           return displayTable
 
         }
@@ -236,6 +246,13 @@
     },
 
     methods: {
+
+      add_row () {
+        this.card.bodyRightItem  = this.addTpl
+        this.card.bodyRightTitle = this.$t('actions.addRow')
+        this.toggleRightPanel()
+        this.$store.commit('cms_row_success')
+      },
 
       edit (event) {
         this.card.bodyRightItem = event
