@@ -159,8 +159,8 @@
     data () {
 
       return {
-        valueInput:  this.value + '',
-        valuesInput: this.values || [''],
+        valueInput:  JSON.parse(JSON.stringify(this.value)),
+        valuesInput: JSON.parse(JSON.stringify(this.values)) || [''],
         editValues:  false
       }
     },

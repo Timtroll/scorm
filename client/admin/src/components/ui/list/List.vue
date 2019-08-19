@@ -272,7 +272,7 @@
         data.value    = JSON.stringify(data.value)
         data.selected = JSON.stringify(data.selected)
 
-        console.log(data)
+        console.log(typeof data.selected)
         this.$store.dispatch('editTableRow', data)
       },
 
