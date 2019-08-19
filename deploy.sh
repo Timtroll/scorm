@@ -41,6 +41,8 @@ cd $SOURCE
 $SOURCE/starting.sh stop
 ./starting.sh start
 
+rm $SOURCE/log/flock
+
 echo "Finish"
 # if [ "$?" != "0" ] ; then
 #     echo
