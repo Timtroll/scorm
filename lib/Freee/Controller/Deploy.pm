@@ -18,7 +18,7 @@ print "$root/log/flock\n========\n";
     }
     else {
         $responce = `/usr/bin/flock -x -w 180 $root/log/deploy.lock -c "$root/deploy.sh" > $root/deploy.log &`;
-print "/usr/bin/flock -x -w 180 $root/log/deploy.lock -c "$root/deploy.sh" > $root/deploy.log \&\n";
+print "/usr/bin/flock -x -w 180 $root/log/deploy.lock -c \"$root/deploy.sh\" > $root/deploy.log \&\n";
         $status = 'ok';
     }
 
