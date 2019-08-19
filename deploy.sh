@@ -42,6 +42,7 @@ $SOURCE/starting.sh stop
 ./starting.sh start
 
 # rm $SOURCE/log/deploy.flock
+/usr/bin/flock -o $SOURCE/log/deploy.lock
 
 echo "Finish"
 # if [ "$?" != "0" ] ; then
