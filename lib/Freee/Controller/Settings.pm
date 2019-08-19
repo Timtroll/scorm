@@ -270,7 +270,7 @@ sub set_save {
             $data{$_} = $self->param($_);
         }
     }
-
+print Dumper(\%data);
     my $id = $self->save_setting( \%data, [] );
     push @mess, "Could not update setting item '$data{'label'}'" unless $id;
 
