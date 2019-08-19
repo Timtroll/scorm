@@ -14,7 +14,7 @@ sub index {
         $mess = 'Deploy working now';
     }
     else {
-        $responce = `/usr/bin/flock -w 180 /var/tmp/deploy.lock /home/troll/scorm/deploy.sh > /home/troll/scorm/deploy.log &`;
+        $responce = `/usr/bin/flock -w 180 /home/troll/scorm/log/deploy.lock /home/troll/scorm/deploy.sh > /home/troll/scorm/log/deploy.log &`;
         $status = 'ok';
     }
 
