@@ -17,16 +17,21 @@ $tree-border-style: solid
       & > li
         &:hover
           z-index: 1
+
           &:before
             z-index: 0
             content: ""
             display: block
-            background-color: lighten($global-template-background, 42%)
+            //background-color: lighten($global-template-background, 42%)
+            background-color: $global-background
             position: absolute
             top: 0
             left: -$global-small-gutter
             right: -$global-small-gutter
             height: $tree-item-height
+            box-sizing: border-box
+            border-top: $global-border-width solid $global-border
+            border-bottom: $global-border-width solid $global-border
 
         & > *
           & > .pos-side-nav-item
