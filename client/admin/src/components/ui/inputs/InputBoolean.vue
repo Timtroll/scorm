@@ -9,7 +9,6 @@
         <label class="uk-display-block">
           <input class="pos-checkbox-switch"
                  :disabled="!editable"
-                 value="1"
                  :checked="valueInputBoolean"
                  @change="update"
                  type="checkbox">

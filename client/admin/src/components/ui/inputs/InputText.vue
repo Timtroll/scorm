@@ -16,7 +16,8 @@
           <input class="uk-input"
                  :disabled="!editable"
                  :class="validate"
-                 v-model="valueInput"
+                 :pattern="mask"
+                 v-model.trim="valueInput"
                  type="text"
                  @input="update"
                  :placeholder="placeholder">
@@ -41,6 +42,9 @@
       editable:    {
         default: true,
         type:    Boolean
+      },
+      mask:        {
+        type: String
       },
       required:    {
         default: false,
