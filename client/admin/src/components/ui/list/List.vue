@@ -321,8 +321,6 @@
           mask:        data.mask,
           readOnly:    0,
           required:    1,
-          //value:       JSON.stringify(data.value),
-          //selected:    JSON.stringify(data.selected)
           value:       data.value,
           selected:    data.selected
         }
@@ -363,8 +361,6 @@
           placeholder: data.placeholder,
           editable:    data.editable,
           mask:        data.mask,
-          //value:       JSON.stringify(data.value),
-          //selected:    JSON.stringify(data.selected)
           value:       data.value,
           selected:    data.selected
         }
