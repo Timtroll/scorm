@@ -161,7 +161,7 @@
     computed: {
 
       isChanged () {
-        return this.valueInput !== this.value
+        return this.valueInput !== this.value || this.valuesInput !== this.values
       },
 
       validate () {
