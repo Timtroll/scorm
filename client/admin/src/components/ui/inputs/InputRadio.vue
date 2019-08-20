@@ -5,8 +5,9 @@
              class="uk-form-label uk-text-truncate"
              v-if="placeholder"></label>
 
-      <div class="uk-form-controls ">
+      <div class="uk-form-controls">
 
+        <!--Value-->
         <div class="uk-grid-small"
              uk-grid>
 
@@ -19,6 +20,8 @@
                   :disabled="!editable || editValues"
                   :value="valuesInput[index]"
                   v-model="valueInput"
+                  :checked="valueInput"
+                  @change="update"
                   type="radio">
               <div class="uk-width-expand">
               <span class="uk-text-truncate uk-margin-small-left"
@@ -27,6 +30,8 @@
             </label>
 
           </div>
+
+          <!--toggle edit Values-->
           <div class="uk-width-auto">
             <button type="button"
                     class="uk-button"
@@ -153,25 +158,36 @@
       }
     },
 
-    methods: {
+    computed: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
+      isChanged () {
+        return this.valueInput !== this.value
       },
 
+      validate () {
+
+        let validClass = null
+        if (this.required) {
+          if (!this.valueInput && this.valueInput.length < 1) {
+            validClass = 'uk-form-danger'
+            this.valid = false
+            this.$emit('valid', this.valid)
+          } else {
+            validClass = 'uk-form-success'
+            this.valid = true
+            this.$emit('valid', this.valid)
+          }
+        }
+        return validClass
+      }
+    },
+
+    methods: {
+
       update () {
-        this.$emit('value', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('value', this.valueInput)
+        this.$emit('values', this.valuesInput)
       },
 
       removeItem (index) {
