@@ -4,7 +4,7 @@ import axios from 'axios'
 Vue.prototype.$http = axios
 
 const token = localStorage.getItem('token')
-console.log('token - ', token)
+//console.log('token - ', token)
 
 if (token) {
   Vue.prototype.$http.defaults.headers.common['Authorization']               = token
@@ -26,7 +26,7 @@ export default () => {
     headers:         {
       'Accept':       'application/json',
       'Content-type': 'application/x-www-form-urlencoded',
-      'Content-Type':  'application/json'
+      'Content-Type': 'application/json'
     }
   })
 }

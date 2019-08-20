@@ -97,7 +97,7 @@
       }
     },
 
-    beforeDestroy(){
+    beforeDestroy () {
       this.$store.commit('cms_page_title', '')
     },
 
@@ -122,17 +122,16 @@
           this.$store.commit('cms_table_row_show', false)
           this.$store.commit('tree_active', item.id)
           this.$store.commit('cms_table', item.table)
-          this.$emit('close')
+
           this.$router.push({
             name:   'SettingItem',
             params: {
-              id:   item.id,
-              item: item
+              id:    item.id,
+              title: item.label,
+              item:  item
             }
           })
 
-          // send Page title
-          this.$store.commit('cms_page_title', this.navItem.label)
 
         }
 
@@ -140,7 +139,9 @@
 
       // remove
       remove (id) {
-        this.$store.dispatch('removeTableRow', id)
+        if (id) {
+          this.$store.dispatch('removeTableRow', id)
+        }
       }
     }
   }

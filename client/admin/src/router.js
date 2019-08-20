@@ -121,7 +121,7 @@ const router = new Router({
               showInSideBar: false,
               meta:          {
                 authRequired: true,
-                breadcrumb:   'Настройки '
+                breadcrumb:   'Настройки'
               }
             }
           ]

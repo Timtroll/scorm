@@ -15,7 +15,7 @@
     </div>
     <div class="pos-navbar-middle">
       <div class="pos-navbar__title"
-           v-text="pageTitle"></div>
+           v-html="pageTitle"></div>
 
       <!--<div class="pos-navbar__meta">-->
       <!--  <ul class="uk-breadcrumb">-->
@@ -67,19 +67,14 @@
 
       // заголовок страницы
       pageTitle () {
-        return this.$route.meta.breadcrumb + this.subPageTitle
-      },
-
-      subPageTitle () {
-
-        const title = this.$store.getters.pageTitle
-        if (title) {
-          return ': ' + this.$store.getters.pageTitle
+        if (this.$route.params.title) {
+          return '<span class="uk-text-muted">' + this.$route.meta.breadcrumb + ':</span> ' + this.$route.params.title
         } else {
-          return ''
+          return this.$route.meta.breadcrumb
         }
 
       }
+
     },
 
     methods: {

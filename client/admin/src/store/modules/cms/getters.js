@@ -5,7 +5,6 @@ const getters = {
   cardLeftAction: state => state.main.navBarLeftAction,
 
   pageTable: state => state.cms.table,
-  pageTitle: state => state.cms.pageTitle,
 
   pageTableRow:       state => state.cms.row,
   pageTableUpdateRow: state => state.cms.updateRow,

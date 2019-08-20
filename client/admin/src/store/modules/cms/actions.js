@@ -64,7 +64,7 @@ const actions = {
          .catch(err => {
            commit('cms_error')
            notify(err, 'danger')
-           reject(err)
+           //reject(err)
          })
       resolve()
     })
