@@ -45,7 +45,7 @@
         <ul class="pos-list">
 
           <!--editable-->
-          <li>
+          <li v-if="!add">
             <InputBoolean
                 :value="data.editable || true"
                 @change="dataIsChange.editable = $event"
