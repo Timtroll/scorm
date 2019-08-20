@@ -2,6 +2,7 @@
 @import "../mixins"
 
 $table-min-width: 100px
+$table-max-width: $table-min-width * 8
 .pos-table-container
 
   overflow: auto
@@ -58,7 +59,7 @@ $table-min-width: 100px
 
 .pos-table-row
   min-width: $table-min-width
-  max-width: $table-min-width * 4
+  max-width: $table-max-width
 
   &:not(.ellipsis)
     & > *

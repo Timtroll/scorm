@@ -78,7 +78,7 @@
           <thead class="pos-table-header">
           <tr>
             <!--expand Row-->
-            <th class="pos-table-expand">
+            <th class="pos-table-expand uk-table-shrink uk-text-center">
               <div style="width: 16px">
                 <img src="/img/icons/icon__expand.svg"
                      width="16"
