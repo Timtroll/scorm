@@ -125,15 +125,14 @@ $tree-border-style: solid
 
   &.uk-active
     .pos-side-nav-item__label
-      color: $global-primary-background
+      color: $global-danger-background
+
+    &:hover
+      .pos-side-nav-item__label
+        color: $global-danger-background
 
   &.uk-active,
   &:hover
-    .pos-side-nav-item__label
-      color: $global-primary-background
-
-      &:hover
-        color: darken($global-primary-background, 10%)
 
     .pos-side-nav-item-actions__add
       color: $global-success-background
