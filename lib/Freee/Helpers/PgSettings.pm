@@ -88,12 +88,16 @@ sub register {
 
                 # десериализуем поля vaue и selected
                 foreach my $val ('value', 'selected') {
-                    if ($$hash{$id}{$val} =~ s/^\"//) {
-                        $$hash{$id}{$val} =~ s/\\\"/\"/g;
-                        $$hash{$id}{$val} =~ s/\"$//;
-                    }
+                    # if ($$hash{$id}{$val} =~ s/^\"//) {
+# warn($$hash{$id}{$val});
+                    #     $$hash{$id}{$val} =~ s/\\\"/\"/g;
+                    #     $$hash{$id}{$val} =~ s/\"$//;
+                    # }
                     if ($$hash{$id}{$val} =~ /^\[/) {
-                        $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
+                        # $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
+                        $$hash{$id}{$val} = JSON::XS->new->decode($$hash{$id}{$val});
+warn(Dumper($$hash{$id}{$val}));
+warn('--');
                     }
                 }
                 push @out, $$hash{$id};
