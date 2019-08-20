@@ -55,7 +55,7 @@
         </a>
 
         <!--Удалить раздел-->
-        <a @click.prevent="addChildren(navItem.id)"
+        <a @click.prevent="remove(navItem.id)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
            class="pos-side-nav-item-actions__remove">
           <img src="/img/icons/icon__trash.svg"
@@ -113,6 +113,7 @@
       addChildren (id) {},
 
       click (item) {
+
         if (this.navActiveId !== this.navItem.id) {
           this.$store.commit('cms_table_row_show', false)
           this.$store.commit('tree_active', item.id)
@@ -127,6 +128,12 @@
           })
         }
 
+      },
+
+      // remove
+      remove (id) {
+
+        this.$store.dispatch('removeTableRow', id)
       }
     }
   }
