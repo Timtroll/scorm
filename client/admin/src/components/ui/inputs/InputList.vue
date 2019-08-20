@@ -119,7 +119,7 @@
       },
 
       update () {
-        this.$emit('update', this.value)
+        this.$emit('value', this.value)
       },
 
       removeItem (index) {

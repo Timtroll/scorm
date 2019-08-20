@@ -49,7 +49,7 @@
             <InputBoolean
                 :value="data.editable || true"
                 @change="dataIsChange.editable = $event"
-                @update="editedData.editable = $event"
+                @value="editedData.editable = $event"
                 :placeholder="$t('list.editable')"></InputBoolean>
           </li>
 
@@ -58,7 +58,7 @@
             <InputText :value="data.name || ''"
                        :required="true"
                        @change="dataIsChange.name = $event"
-                       @update="editedData.name = $event"
+                       @value="editedData.name = $event"
                        :placeholder="$t('list.name')"></InputText>
           </li>
 
@@ -67,7 +67,7 @@
             <InputText :value="data.label || ''"
                        :required="true"
                        @change="dataIsChange.label = $event"
-                       @update="editedData.label = $event"
+                       @value="editedData.label = $event"
                        :placeholder="$t('list.label')"></InputText>
           </li>
 
@@ -75,7 +75,7 @@
           <li>
             <InputText :value="data.placeholder || ''"
                        @change="dataIsChange.placeholder = $event"
-                       @update="editedData.placeholder = $event"
+                       @value="editedData.placeholder = $event"
                        :placeholder="$t('list.placeholder')"></InputText>
           </li>
 
@@ -83,7 +83,7 @@
           <li>
             <InputText :value="data.mask || ''"
                        @change="dataIsChange.mask = $event"
-                       @update="editedData.mask = $event"
+                       @value="editedData.mask = $event"
                        :placeholder="$t('list.mask')"></InputText>
           </li>
 
@@ -93,12 +93,12 @@
                          :required="true"
                          :values-editable="false"
                          @change="dataIsChange.type = $event"
-                         v-on:value="changeType($event)"
+                         @value="changeType($event)"
                          :placeholder="$t('list.type')"
                          :values="inputComponents"></InputSelect>
           </li>
 
-          <!--value-->
+          <!-- value && values -->
           <li>
             <transition name="slide-right"
                         mode="out-in"
@@ -171,12 +171,11 @@
   const InputNumber     = () => import('../inputs/InputNumber')
   const InputBoolean    = () => import('../inputs/InputBoolean')
   const InputRadio      = () => import('../inputs/InputRadio')
-  const InputList       = () => import('../inputs/InputList')
   const InputDoubleList = () => import('../inputs/InputDoubleList')
 
   export default {
     name:       'List',
-    components: {Card, Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
+    components: {Card, Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -213,7 +212,22 @@
       return {
 
         component:  this.data.type,
-        editedData: this.data,
+        editedData: {
+          id:          this.data.id,
+          folder:      this.data.folder,
+          lib_id:      this.data.lib_id || this.parent,
+          label:       this.data.label,
+          name:        this.data.name,
+          type:        this.data.type,
+          placeholder: this.data.placeholder,
+          editable:    this.data.editable,
+          mask:        this.data.mask,
+          readOnly:    this.data.readOnly,
+          required:    this.data.required,
+          removable:   this.data.removable,
+          value:       this.data.value,
+          selected:    this.data.selected
+        },
 
         dataIsChange: {
           editable:    false,
@@ -231,7 +245,7 @@
     computed: {
 
       isValid () {
-        return (this.editedData.lib_id !== '' && this.editedData.label !== '' && this.editedData.name !== '' && this.dataIsChanged)
+        return (this.editedData.lib_id && this.editedData.label && this.editedData.name && this.dataIsChanged)
       },
 
       rightPanelSize () {
@@ -309,8 +323,8 @@
           required:    1,
           //value:       JSON.stringify(data.value),
           //selected:    JSON.stringify(data.selected)
-          value:    data.value,
-          selected: data.selected
+          value:       data.value,
+          selected:    data.selected
         }
 
         this.$store.dispatch('addTableRow', newData)

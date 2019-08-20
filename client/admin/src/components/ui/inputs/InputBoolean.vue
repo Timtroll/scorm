@@ -61,7 +61,7 @@
       update () {
         this.valueInputBoolean = !+this.valueInputBoolean
         this.$emit('change', this.isChanged)
-        this.$emit('update', this.valueInput)
+        this.$emit('value', this.valueInput)
       }
     }
   }
