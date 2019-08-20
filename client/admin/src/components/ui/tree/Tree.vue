@@ -98,7 +98,8 @@
                 id:        item.id,
                 keywords:  item.keywords,
                 component: item.component,
-                opened:    item.opened
+                opened:    item.opened,
+                table:     item.table
               }
 
               flattenNav.push(newItem)
