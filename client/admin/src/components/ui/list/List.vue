@@ -200,8 +200,7 @@
         default: false
       },
       parent: {
-        type:    Number,
-        default: null
+        type: Number
       },
       labels: {}
     },
@@ -221,7 +220,7 @@
         editedData: {
           id:          this.data.id,
           folder:      this.data.folder,
-          lib_id:      this.data.lib_id || +this.parent,
+          lib_id:      +this.data.lib_id || +this.parent,
           label:       this.data.label || '',
           name:        this.data.name || '',
           type:        this.data.type,
@@ -251,7 +250,7 @@
     computed: {
 
       isValid () {
-        return (this.editedData.lib_id || this.editedData.lib_id === 0 && this.editedData.label && this.editedData.name && this.dataIsChanged)
+        return (!!this.editedData.lib_id && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
       },
 
       rightPanelSize () {

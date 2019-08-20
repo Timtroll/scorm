@@ -183,7 +183,7 @@
 
         addTpl: {
           folder:      0,
-          lib_id:      this.libId,
+          lib_id:      +this.libId,
           label:       '',
           name:        '',
           type:        '',
@@ -203,9 +203,9 @@
 
       libId () {
         if (this.table && this.table.body[0] && this.table.body[0].lib_id) {
-          return this.table.body[0].lib_id
+          return +this.table.body[0].lib_id
         } else {
-          return this.$store.getters.pageTableCurrentId
+          return +this.$store.getters.pageTableCurrentId
         }
       },
 
