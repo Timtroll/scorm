@@ -7,9 +7,9 @@
 
       <div class="uk-form-controls">
         <textarea class="uk-textarea pos-textarea"
-                  rows="2"
+                  rows="3"
                   :disabled="!editable"
-                  :class="statusClass"
+                  :class="validate"
                   v-model="valueInput"
                   @blur="update"
                   :placeholder="placeholder"></textarea>
@@ -46,25 +46,35 @@
       }
     },
 
-    methods: {
+    computed: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
+      isChanged () {
+        return this.valueInput !== this.value
       },
 
+      validate () {
+
+        let validClass = null
+        if (this.required) {
+          if (!this.valueInput && this.valueInput.length < 1) {
+            validClass = 'uk-form-danger'
+            this.valid = false
+            this.$emit('valid', this.valid)
+          } else {
+            validClass = 'uk-form-success'
+            this.valid = true
+            this.$emit('valid', this.valid)
+          }
+        }
+        return validClass
+      }
+    },
+
+    methods: {
+
       update () {
-        this.$emit('value', this.value)
+        this.$emit('change', this.isChanged)
+        this.$emit('value', this.valueInput)
       }
     }
   }
