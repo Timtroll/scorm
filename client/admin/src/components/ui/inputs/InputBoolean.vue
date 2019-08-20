@@ -40,7 +40,7 @@
 
     data () {
       return {
-        valueInputBoolean: +this.value,
+        valueInputBoolean: +this.value || 0,
         valid:             true
       }
     },
