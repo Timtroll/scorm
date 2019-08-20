@@ -104,6 +104,8 @@
                     <input class="uk-input uk-form-small"
                            v-model="valuesInput[index]"
                            :key="index"
+                           v-focus
+                           @keyup.enter="addItem"
                            type="text">
                   </div>
 
@@ -140,7 +142,7 @@
     props: {
 
       value:          {
-        default: null
+        default: ''
       },
       values:         {
         type:    Array,
