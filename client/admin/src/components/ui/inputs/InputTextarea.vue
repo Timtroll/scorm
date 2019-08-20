@@ -11,7 +11,7 @@
                   :disabled="!editable"
                   :class="validate"
                   v-model="valueInput"
-                  @blur="update"
+                  @change="update"
                   :placeholder="placeholder"></textarea>
       </div>
     </div>
