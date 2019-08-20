@@ -131,7 +131,7 @@
     data () {
 
       return {
-        valuesInput: this.value || [['']],
+        valuesInput: JSON.parse(JSON.stringify(this.value)) || [['']],
         editValues:  false,
         doubleCell:  false
       }
@@ -153,7 +153,7 @@
     computed: {
 
       isChanged () {
-        return this.valuesInput !== this.value
+        return JSON.stringify(this.valuesInput) !== JSON.stringify(this.value)
       }
 
     },
