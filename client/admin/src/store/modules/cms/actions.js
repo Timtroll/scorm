@@ -176,6 +176,77 @@ const actions = {
       })
     })
 
+  },
+
+  /////// Group
+
+  /**
+   *  ADD GROUP
+   * @param commit
+   * @param dispatch
+   * @param row
+   * @returns {Promise<unknown>}
+   */
+  addGroup ({commit, dispatch}, row) {
+    return new Promise((resolve, reject) => {
+
+      commit('cms_row_request')
+
+      Api.set_add(row)
+         .then(response => {
+           if (response.status === 200) {
+             const resp = response.data
+             if (resp.status === 'ok') {
+               commit('cms_row_success')
+               commit('cms_show_add_group', false)
+               dispatch('getTree')
+               notify(resp.status, 'success')
+               resolve(response)
+             } else {
+               notify(resp.message, 'danger')
+               commit('cms_row_error')
+             }
+
+           }
+         })
+         .catch(err => {
+           commit('cms_row_error')
+           notify(err, 'danger')
+           reject(err)
+         })
+      resolve()
+    })
+  },
+
+  editGroup ({commit, dispatch}, row) {
+    return new Promise((resolve, reject) => {
+
+      commit('cms_row_request')
+
+      Api.set_save(row)
+         .then(response => {
+           if (response.status === 200) {
+             const resp = response.data
+             if (resp.status === 'ok') {
+               commit('cms_row_success')
+               commit('cms_show_add_group', false)
+               dispatch('getTree')
+               notify(resp.status, 'success')
+               resolve(response)
+             } else {
+               notify(resp.message, 'danger')
+               commit('cms_row_error')
+             }
+
+           }
+         })
+         .catch(err => {
+           commit('cms_row_error')
+           notify(err, 'danger')
+           reject(err)
+         })
+      resolve()
+    })
   }
 }
 export default actions

@@ -72,7 +72,7 @@
           </li>
 
           <!--placeholder-->
-          <li>
+          <li v-if="!group">
             <InputText :value="data.placeholder || ''"
                        @change="dataIsChange.placeholder = $event"
                        @value="editedData.placeholder = $event"
@@ -80,7 +80,7 @@
           </li>
 
           <!--mask-->
-          <li>
+          <li v-if="!group">
             <InputText :value="data.mask || ''"
                        @change="dataIsChange.mask = $event"
                        @value="editedData.mask = $event"
@@ -88,7 +88,7 @@
           </li>
 
           <!--type-->
-          <li>
+          <li v-if="!group">
             <InputSelect :value="data.type || 'InputText'"
                          :required="true"
                          :values-editable="false"
@@ -99,12 +99,13 @@
           </li>
 
           <!-- value && values -->
-          <li>
+          <li v-if="!group">
             <transition name="slide-right"
                         mode="out-in"
                         appear>
               <component v-bind:is="component || 'InputText'"
                          :value="data.value"
+
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"
@@ -193,6 +194,10 @@
         type:    Boolean,
         default: false
       },
+      group:  {
+        type:    Boolean,
+        default: false
+      },
       parent: {
         type:    Number,
         default: null
@@ -216,8 +221,8 @@
           id:          this.data.id,
           folder:      this.data.folder,
           lib_id:      this.data.lib_id || this.parent,
-          label:       this.data.label,
-          name:        this.data.name,
+          label:       this.data.label || '',
+          name:        this.data.name || '',
           type:        this.data.type,
           placeholder: this.data.placeholder,
           editable:    this.data.editable,
@@ -245,7 +250,8 @@
     computed: {
 
       isValid () {
-        return (this.editedData.lib_id && this.editedData.label && this.editedData.name && this.dataIsChanged)
+        console.log(this.editedData.lib_id, this.editedData.label, this.editedData.name)
+        return (this.editedData.lib_id || this.editedData.lib_id === 0 && this.editedData.label && this.editedData.name && this.dataIsChanged)
       },
 
       rightPanelSize () {
@@ -272,15 +278,24 @@
       },
 
       close () {
+        this.$emit('close')
         this.$store.commit('cms_table_row_show', false)
       },
 
       // Action on Submit
       action () {
-        if (this.add) {
+        if (this.add && !this.group) {
+          // добавить настройку
           this.set_add() // if add
-        } else {
+        } else if (!this.add && !this.group) {
+          // Сохранить настроку
           this.set_save() // if update
+        } else if (this.add && this.group) {
+          // Добавить группу настроек
+          this.set_add_group()
+        } else if (!this.add && this.group) {
+          // Добавить группу настроек
+          this.set_save_group()
         }
       },
 
@@ -366,6 +381,64 @@
         }
 
         this.$store.dispatch('editTableRow', newData)
+      },
+
+      /**
+       * создание Группы настроек
+       */
+      set_add_group () {
+        const data = this.editedData
+
+        /* создания настройки
+        "folder"      => 1,           - это группа настроек
+        "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+        "label"       => 'название',  - обязательно (название для отображения)
+        "name",       => 'name'       - обязательно (системное название, латиница)
+        "editable"    => 1,           - не обязательно, по умолчанию 1
+        "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        "removable"   => 1,           - не обязательно, по умолчанию 1
+       */
+        const newData = {
+          folder:    1,
+          lib_id:    data.lib_id,
+          label:     data.label,
+          name:      data.name,
+          readOnly:  0,
+          removable: 1,
+          required:  1
+        }
+
+        this.$store.dispatch('addGroup', newData)
+
+      },
+      /**
+       * создание Группы настроек
+       */
+      set_save_group () {
+        const data = this.editedData
+
+        /* редактирования настройки
+        "folder"      => 1,           - это группа настроек
+        "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+        "label"       => 'название',  - обязательно (название для отображения)
+        "name",       => 'name'       - обязательно (системное название, латиница)
+        "editable"    => 1,           - не обязательно, по умолчанию 1
+        "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        "removable"   => 1,           - не обязательно, по умолчанию 1
+       */
+        const newData = {
+          folder:    1,
+          id:        data.id,
+          lib_id:    data.lib_id,
+          label:     data.label,
+          name:      data.name,
+          readOnly:  0,
+          removable: 1,
+          required:  1
+        }
+
+        this.$store.dispatch('addGroup', newData)
+
       },
 
       changeType (event) {

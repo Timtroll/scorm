@@ -29,10 +29,7 @@
 
   export default {
     name:       'Main',
-    components: {NavBar, SideBar},
-    data () {
-      return {}
-    }
+    components: {NavBar, SideBar}
   }
 </script>
 

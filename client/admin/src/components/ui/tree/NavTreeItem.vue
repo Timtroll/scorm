@@ -44,7 +44,7 @@
         </a>
 
         <!--Редактировать раздел-->
-        <a @click.prevent="addChildren(navItem.id)"
+        <a @click.prevent="editGroup(navItem)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
            class="pos-side-nav-item-actions__edit">
           <img src="/img/icons/icon__edit.svg"
@@ -114,12 +114,11 @@
         this.opened = !this.opened
       },
 
-      addChildren (id) {},
-
       click (item) {
 
         if (this.navActiveId !== this.navItem.id) {
           this.$store.commit('cms_table_row_show', false)
+          this.$store.commit('cms_show_add_group', false)
           this.$store.commit('tree_active', item.id)
           this.$store.commit('cms_table', item.table)
 
@@ -132,17 +131,52 @@
             }
           })
 
-
         }
 
       },
 
-      // remove
+      // add children group
+      addChildren (id) {
+        const group = {
+          folder:    1,
+          lib_id:    id,
+          label:     '',
+          name:      '',
+          editable:  1,
+          readOnly:  0,
+          removable: 1
+        }
+
+        this.$store.commit('cms_add_group', group)
+        this.$store.commit('cms_show_add_group', true)
+        this.$store.commit('cms_show_add_edit_toggle', true)
+        this.$store.commit('cms_row_success')
+      },
+
+      editGroup (item) {
+        const group = {
+          folder:    1,
+          lib_id:    item.id,
+          label:     item.label,
+          name:      item.name,
+          editable:  item.editable,
+          readOnly:  0,
+          removable: 1
+        }
+
+        this.$store.commit('cms_add_group', group)
+        this.$store.commit('cms_show_add_group', true)
+        this.$store.commit('cms_show_add_edit_toggle', false)
+        this.$store.commit('cms_row_success')
+      },
+
+      // remove group
       remove (id) {
         if (id) {
           this.$store.dispatch('removeTableRow', id)
         }
       }
+
     }
   }
 </script>

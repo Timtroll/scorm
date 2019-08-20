@@ -64,6 +64,18 @@ const mutations = {
     state.cms.row.data = data
   },
 
+  cms_add_group (state, data) {
+    state.cms.addGroup.data = data
+  },
+
+  cms_show_add_group (state, data) {
+    state.cms.addGroup.show = data
+  },
+
+  cms_show_add_edit_toggle (state, data) {
+    state.cms.addGroup.add = data
+  },
+
   // акшин для левой кнопки в navbar
   card_left_state (state, data) {
     state.main.leftShow = data

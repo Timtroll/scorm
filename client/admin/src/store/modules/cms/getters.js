@@ -6,10 +6,13 @@ const getters = {
 
   pageTable: state => state.cms.table,
 
-  pageTableRow:       state => state.cms.row,
-  pageTableUpdateRow: state => state.cms.updateRow,
-  pageTableRowShow:   state => state.cms.row.open,
-  rightPanelSize:     state => state.main.rightPanelLarge,
+  pageTableAddGroupData: state => state.cms.addGroup.data,
+  pageTableAddGroupShow: state => state.cms.addGroup.show,
+  pageTableAddEditGroup: state => state.cms.addGroup.add,
+
+  pageTableRow:     state => state.cms.row,
+  pageTableRowShow: state => state.cms.row.open,
+  rightPanelSize:   state => state.main.rightPanelLarge,
 
   Settings: state => state.cms.data,
 

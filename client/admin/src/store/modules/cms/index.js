@@ -15,6 +15,11 @@ const state = {
       status: 'loading',
       data:   null
     },
+    addGroup:  {
+      show: false,
+      add:  true,
+      data: {}
+    },
     updateRow: null
   },
 

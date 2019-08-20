@@ -35,7 +35,8 @@
         <!--Add Tree root el -->
         <div class="uk-width-auto">
           <button type="button"
-                  class="uk-button  pos-border-radius-none pos-border-none">
+                  class="uk-button pos-border-radius-none pos-border-none"
+                  @click.prevent="addRoot">
             <img src="/img/icons/icon__plus.svg"
                  width="18"
                  height="18"
@@ -130,6 +131,24 @@
     },
 
     methods: {
+
+      addRoot () {
+
+        const group = {
+          folder:    1,
+          lib_id:    0,
+          label:     '',
+          name:      '',
+          editable:  1,
+          readOnly:  0,
+          removable: 1
+        }
+
+        this.$store.commit('cms_add_group', group)
+        this.$store.commit('cms_show_add_group', true)
+        this.$store.commit('cms_show_add_edit_toggle', true)
+        this.$store.commit('cms_row_success')
+      },
 
       // Очистка поля поиска
       clearSearchVal () {
