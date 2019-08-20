@@ -52,17 +52,12 @@
 
     beforeDestroy () {
       this.$store.commit('cms_table_row_show', false)
-      //this.$store.commit('cms_table_row_data', null)
     },
 
     computed: {
 
       pageTable () {
         return this.$store.state.cms.navTree.items
-      },
-
-      bodyLeftShow () {
-        return this.$store.getters.cardLeftState
       },
 
       loader () {
@@ -76,22 +71,6 @@
     },
 
     methods: {
-
-      //bodyLeftActionEvent () {
-      //  this.$store.commit('setNavbarLeftActionState', !this.bodyLeftShow)
-      //  //this.card.bodyLeftShow = !this.card.bodyLeftShow
-      //},
-
-      editEl (event) {
-        this.card.bodyRightContent = event
-        this.card.bodyRightShow    = !this.card.bodyRightShow
-      },
-
-      //getNav () {
-      //  this.$store.dispatch('getTree')
-      //},
-
-      removeEl () {},
 
       // Очистка поля поиска
       clearSearchVal () {

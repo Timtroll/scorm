@@ -242,7 +242,6 @@
           })
 
           return displayTable
-
         }
       }
 

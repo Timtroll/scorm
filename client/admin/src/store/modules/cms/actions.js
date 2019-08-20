@@ -18,7 +18,7 @@ const actions = {
   //  commit('setNavTree', Settings.settings)
   //},
 
-  getTree ({commit}) {
+  getTree ({commit, state}) {
 
     return new Promise((resolve, reject) => {
       commit('cms_request')
@@ -32,17 +32,32 @@ const actions = {
 
              if (typeof resp['settings'] !== 'undefined') {
 
-               if (resp.settings.length > 0) {
+               const settings        = resp.settings
+               const currentActiveId = state.cms.activeId
 
-                 commit('cms_table', resp.settings[0].table)
-                 const firstNavItemId = resp.settings[0].id
+               if (settings.length > 0) {
 
-                 router.push({
+                 commit('cms_table', settings[0].table)
+
+                 const isActiveId   = settings.find(item => item.id === currentActiveId)
+                 let firstNavItemId = settings[0].id
+
+                 if (currentActiveId && isActiveId && isActiveId.id === currentActiveId) {
+                   console.log('firstNavItemId', firstNavItemId, 'isActiveId', isActiveId.id, 'currentActiveId', currentActiveId)
+                   firstNavItemId = currentActiveId
+                   commit('cms_table', isActiveId.table)
+                 } else {
+                   commit('cms_table', settings[0].table)
+                 }
+
+                 console.log('firstNavItemId', firstNavItemId)
+
+                 router.replace({
                    name:   'SettingItem',
                    params: {
                      id: firstNavItemId
                    }
-                 })
+                 }).catch(err => {})
                  commit('tree_active', firstNavItemId)
                }
              }
