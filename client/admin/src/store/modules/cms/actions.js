@@ -37,20 +37,17 @@ const actions = {
 
                if (settings.length > 0) {
 
-                 commit('cms_table', settings[0].table)
-
                  const isActiveId   = settings.find(item => item.id === currentActiveId)
                  let firstNavItemId = settings[0].id
 
                  if (currentActiveId && isActiveId && isActiveId.id === currentActiveId) {
-                   console.log('firstNavItemId', firstNavItemId, 'isActiveId', isActiveId.id, 'currentActiveId', currentActiveId)
                    firstNavItemId = currentActiveId
                    commit('cms_table', isActiveId.table)
                  } else {
                    commit('cms_table', settings[0].table)
                  }
 
-                 console.log('firstNavItemId', firstNavItemId)
+                 commit('tree_active', firstNavItemId)
 
                  router.replace({
                    name:   'SettingItem',
@@ -58,7 +55,7 @@ const actions = {
                      id: firstNavItemId
                    }
                  }).catch(err => {})
-                 commit('tree_active', firstNavItemId)
+
                }
              }
              resolve(response)
