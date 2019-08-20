@@ -1,5 +1,9 @@
 const mutations = {
 
+  cms_page_title (state, data) {
+    state.cms.pageTitle = data
+  },
+
   /**
    * tree
    * @param state

@@ -67,9 +67,19 @@
 
       // заголовок страницы
       pageTitle () {
-        return this.$route.meta.breadcrumb
-      }
+        return this.$route.meta.breadcrumb + this.subPageTitle
+      },
 
+      subPageTitle () {
+
+        const title = this.$store.getters.pageTitle
+        if (title) {
+          return ': ' + this.$store.getters.pageTitle
+        } else {
+          return ''
+        }
+
+      }
     },
 
     methods: {

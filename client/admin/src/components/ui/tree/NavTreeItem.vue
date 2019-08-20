@@ -97,6 +97,10 @@
       }
     },
 
+    beforeDestroy(){
+      this.$store.commit('cms_page_title', '')
+    },
+
     computed: {
 
       navActiveId () {
@@ -126,13 +130,16 @@
               item: item
             }
           })
+
+          // send Page title
+          this.$store.commit('cms_page_title', this.navItem.label)
+
         }
 
       },
 
       // remove
       remove (id) {
-
         this.$store.dispatch('removeTableRow', id)
       }
     }

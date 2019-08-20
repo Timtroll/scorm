@@ -8,6 +8,7 @@ const state = {
     data:      null,
     status:    '',
     current:   null,
+    pageTitle: null,
     table:     null,
     activeId:  null,
     row:       {

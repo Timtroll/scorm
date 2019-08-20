@@ -139,6 +139,7 @@
       <List :data="JSON.parse(JSON.stringify(card.bodyRightItem))"
             :required="editRequired"
             :parent="libId"
+            :folder="0"
             :add="card.add"
             :labels="card.bodyRightTitle"
             v-on:title="card.bodyRightTitle = $event"
@@ -169,7 +170,8 @@
           bodyRightShow:  true,
           bodyRightTitle: null,
           bodyRightItem:  null,
-          add:            false
+          add:            false,
+          folder:         0
         },
 
         editRequired: {
