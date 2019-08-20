@@ -25,7 +25,7 @@ const state = {
     },
     leftShow:         true,
     rightShow:        true,
-    rightPanelLarge:  true
+    rightPanelLarge:  false
   },
 
   pageLoader: true,
