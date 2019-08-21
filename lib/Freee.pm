@@ -58,6 +58,7 @@ print $self->beans_init(), "\n";
     $r->post('/api/deploy')              ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')       ->to('websocket#index');
 
+
     my $auth = $r->under()              ->to('auth#check_token');
 
     $auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки
@@ -224,7 +225,7 @@ print $self->beans_init(), "\n";
     $auth->post('/accounting/stat')       ->to('accounting#stat');
 
     # форум
-    $auth->post('/forum')               ->to('forum#index');
+    $auth->any('/forum/')               ->to('forum#index');
     $auth->post('/forum/listthemes')    ->to('forum#listthemes');
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/addtext')       ->to('forum#addtext');

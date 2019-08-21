@@ -1,0 +1,95 @@
+<!doctype html>
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+body {
+    background: #f3f2f3;
+    color: #000000;
+    font-family: Trebuchet MS, Arial, Times New Roman;
+    font-size: 12px;
+}
+ 
+#container {
+	position: absolute;
+	left: 0;
+	top: 0;
+    background:#99CC99;
+    width: 100%;
+    height: 100%;
+    align-content: top;
+}
+
+ 
+#navigation {
+    background: #FF9999;
+    width: 100%;
+    height: 40px;
+}
+ 
+#menu {
+    background: #99CC99;
+    float: left;
+    width: 200px;
+    height: 400px;
+}
+ 
+#content {
+    background: #d2d0d2;
+    float: right;
+ 
+    width: 700px;
+    height: 400px;
+}
+ 
+#clear {
+    clear:both;
+}
+ 
+#footer {
+    background: #0066FF;
+    height: 80px;
+    width: 100%;
+}
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="navigation">
+        <h2>Блок навигации</h2>
+    </div>
+         
+    <div id="menu">
+    	<h2>Меню</h2>
+    </div>
+         
+    <div id="content">
+		<h3><a class="title" href="https://m.ren.tv/novosti/2019-08-20/ekspertiza-irkutskaya-chinovnica-nazvala-zhertv-pavodka-bydlom-i-bichami" rel="nofollow" target="_blank">Иркутская чиновница назвала жертв паводка быдлом и бичами</a></h3>
+		<div class="entry">
+		    <h3><a class="title" href="https://m.ren.tv/novosti/2019-08-20/ekspertiza-irkutskaya-chinovnica-nazvala-zhertv-pavodka-bydlom-i-bichami" rel="nofollow" target="_blank">Иркутская чиновница назвала жертв паводка быдлом и бичами</a></h3>
+		    <div class="spam_warning" id="entry_554115_notice">
+		    </div>
+		    <div class="info">
+		        <i>m.ren.tv</i> — Экспертиза доказала принадлежность голоса главе пресс-службы губернатора Иркутской области Сергея Левченко Ирине Алашкевич.
+		        Само высказывание: <a href=" https://vott.ru/entry/554106" target="_blank" rel="nofollow"> https://vott.ru/entry/554106</a>
+		        <a href="/entries/search?query=%23%D0%92%D1%8B%D1%80%D0%B2%D0%B0%D0%BD%D0%BE_%D0%B8%D0%B7_%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0">#Вырвано_из_контекста</a> <a href="/entries/search?query=%23%D0%9C%D0%B5%D0%BD%D1%8F_%D0%BD%D0%B5_%D1%82%D0%B0%D0%BA_%D0%BF%D0%BE%D0%BD%D1%8F%D0%BB%D0%B8">#Меня_не_так_поняли</a>
+		    </div>
+		    <div class="info2">
+		        <span class="comments_link"><a href="/entry/554115">12 комментариев</a></span> |
+		        <span>Новости, Политика</span> | <span><a class="" href="/user/ShuGro" target="_self">ShuGro</a></span> <span> 2 ч 56 мин назад</span>
+		        <span></span>
+		    </div>
+		</div>
+    </div>
+         
+    <div id="clear">
+         
+    </div>
+               
+    <div id="footer">
+        <h2>Подвал сайта</h2>
+    </div>
+</div>
+
+</body>
+</html>

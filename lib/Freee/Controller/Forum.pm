@@ -11,12 +11,8 @@ sub index {
     $self = shift;
 
     $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'index',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
+        'template'    => 'forum',
+        'title'       => 'Форум'
     );
 }
 
