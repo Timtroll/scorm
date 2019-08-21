@@ -246,7 +246,7 @@
     computed: {
 
       isValid () {
-        return (!!this.editedData.lib_id && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
+        return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
       },
 
       rightPanelSize () {
@@ -263,6 +263,10 @@
 
       inputComponents () {
         return this.$store.getters.inputComponents
+      },
+      parentId () {
+
+        return +this.data.lib_id || +this.parent || 0
       }
     },
 
@@ -405,7 +409,7 @@
        */
         const newData = {
           folder:    1,
-          lib_id:    data.lib_id,
+          lib_id:    this.parentId,
           label:     data.label,
           name:      data.name,
           readOnly:  0,
@@ -416,6 +420,7 @@
         this.$store.dispatch('addGroup', newData)
 
       },
+
       /**
        * создание Группы настроек
        */
@@ -434,7 +439,7 @@
         const newData = {
           folder:    1,
           id:        data.id,
-          lib_id:    data.lib_id,
+          lib_id:    this.parentId,
           label:     data.label,
           name:      data.name,
           readOnly:  0,
