@@ -34,6 +34,7 @@ $body-right-width: 700px
 .pos-card-header
   border-bottom: $global-border-width solid $global-border
 
+
 .pos-card-header,
 .pos-card-footer
   background-color: lighten($global-muted-background, 1%)
@@ -57,6 +58,23 @@ $body-right-width: 700px
 
   & > *
     box-sizing: border-box
+
+.pos-card-header
+  &.pos-header-small
+    height: $card-height-item-small
+    line-height: $card-height-item-small + $global-border-width*2
+    box-sizing: content-box
+    @media (max-width: $breakpoint-small)
+      height: $card-height-item-small + $global-border-width*2
+      line-height: $card-height-item-small
+
+  &.pos-header-padding-none
+    .pos-card-header--content,
+    .pos-card-header-item
+      padding: 0
+
+
+
 
 .pos-card-header--content
   flex: 1 0 0
@@ -92,6 +110,7 @@ $body-right-width: 700px
       color: $global-emphasis-color
       text-decoration: none
 
+
 .pos-card-footer
   border-top: $global-border-width solid $global-border
 
@@ -103,6 +122,7 @@ $body-right-width: 700px
   background-color: $global-background
   display: flex
   flex-direction: row
+
 
 .pos-card-body-left
   height: 100%
@@ -148,6 +168,7 @@ $body-right-width: 700px
   border-radius: $border-rounded-border-radius * 2 0 0 $border-rounded-border-radius * 2
   overflow: hidden
   transition: all .3s ease-in-out
+
   &.large
     width: 96%
 

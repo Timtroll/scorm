@@ -5,7 +5,9 @@
     <div class="pos-card-header"
          :class="{
          'pos-bgr-default' : headerBgrDefault,
-         'pos-header-large' : headerLarge}"
+         'pos-header-large' : headerLarge,
+         'pos-header-small' : headerSmall,
+         'pos-header-padding-none' : headerPaddingNone}"
          v-if="header">
 
       <!--headerLeft-->
@@ -126,14 +128,23 @@
     props:      {
 
       // header
-      header:           {
+      header:          {
         default: false,
         type:    Boolean
       },
-      headerLarge:      {
+      headerLarge:     {
         default: false,
         type:    Boolean
       },
+      headerSmall: {
+        default: false,
+        type:    Boolean
+      },
+      headerPaddingNone: {
+        default: false,
+        type:    Boolean
+      },
+
       headerBgrDefault: {
         default: false,
         type:    Boolean

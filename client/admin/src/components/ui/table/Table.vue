@@ -4,38 +4,39 @@
         :header-bgr-default="true"
         :header-left="true"
         :body-padding="false"
+        :header-small="true"
+        :header-padding-none="true"
         :body-right-header-title="card.bodyRightTitle"
         :body-right-show="tableRowDetail.open">
 
     <template #headerLeft>
-      <div class="uk-grid-small"
-           uk-grid>
+      <div class="uk-flex uk-flex-top">
 
         <!--Add Row-->
-        <div>
-          <button type="button"
-                  class="uk-button uk-button-success uk-button-small"
-                  @click.prevent="add_row">
-            <img src="/img/icons/icon__plus.svg"
-                 width="16"
-                 height="16"
-                 uk-svg>
-            <span class="uk-margin-small-left uk-visible@m"
-                  v-text="$t('actions.add')"></span>
-          </button>
-        </div>
+
+        <button type="button"
+                class="uk-button uk-button-success pos-border-radius-none pos-border-none"
+                @click.prevent="add_row">
+          <img src="/img/icons/icon__plus.svg"
+               width="16"
+               height="16"
+               uk-svg>
+          <span class="uk-margin-small-left uk-visible@m"
+                v-text="$t('actions.add')"></span>
+        </button>
 
         <!--Remove Row-->
-        <div v-if="massEdit">
-          <button class="uk-button-danger uk-button uk-button-small">
-            <img src="/img/icons/icon__trash.svg"
-                 uk-svg
-                 width="10"
-                 height="10">
-            <span class="uk-margin-small-left uk-visible@s"
-                  v-text="$t('actions.remove')"></span>
-          </button>
-        </div>
+
+        <button class="uk-button-danger pos-border-radius-none pos-border-none"
+                v-if="massEdit">
+          <img src="/img/icons/icon__trash.svg"
+               uk-svg
+               width="10"
+               height="10">
+          <span class="uk-margin-small-left uk-visible@s"
+                v-text="$t('actions.remove')"></span>
+        </button>
+
       </div>
 
     </template>
@@ -63,7 +64,7 @@
                v-model="searchInput"
                @keyup.esc="clearSearchVal"
                placeholder="Поиск"
-               class="uk-input uk-form-small">
+               class="uk-input pos-border-radius-none pos-border-none">
       </div>
     </template>
 

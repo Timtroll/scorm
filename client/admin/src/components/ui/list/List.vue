@@ -166,8 +166,6 @@
 
 <script>
 
-  import Card from '../card/Card'
-
   const Loader          = () => import('../icons/Loader')
   const InputText       = () => import('../inputs/InputText')
   const InputTextarea   = () => import('../inputs/InputTextarea')
@@ -179,7 +177,7 @@
 
   export default {
     name:       'List',
-    components: {Card, Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList},
+    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -218,7 +216,7 @@
         editedData: {
           id:          this.data.id,
           folder:      this.data.folder,
-          lib_id:      +this.data.lib_id || +this.parent,
+          lib_id:      +this.data.lib_id || +this.parent || 0,
           label:       this.data.label || '',
           name:        this.data.name || '',
           type:        this.data.type,
@@ -353,7 +351,7 @@
        * сохранение настройки
        */
       set_save () {
-        const data    = this.editedData
+        const data = this.editedData
         if (data.type === 'InputDoubleList') {
           data.value = JSON.stringify(data.value)
         }
