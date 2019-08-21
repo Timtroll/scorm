@@ -148,7 +148,7 @@
         type:    Array,
         default: ['']
       },
-      label: {
+      label:          {
         default: null,
         type:    String
       },
@@ -178,8 +178,14 @@
 
       return {
         valueInput:  this.value,
-        valuesInput: this.values || [''],
+        valuesInput: JSON.parse(JSON.stringify(this.values)) || [''],
         editValues:  false
+      }
+    },
+
+    watch: {
+      valuesInput () {
+        this.update()
       }
     },
 
@@ -190,7 +196,7 @@
       },
 
       isChanged () {
-        return this.valuesInput !== this.value || this.valuesInput !== this.values
+        return this.valueInput !== this.value || JSON.stringify(this.valuesInput) !== JSON.stringify(this.values)
       }
 
     },
