@@ -189,8 +189,8 @@
 
       valuesInput () {
         this.update()
-        const options = JSON.parse(JSON.stringify(this.valuesInput))
-        console.log('options', options.filter(Boolean))
+        //const options = JSON.parse(JSON.stringify(this.valuesInput))
+        //console.log('options', options.filter(Boolean))
       }
     },
 
