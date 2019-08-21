@@ -127,6 +127,3 @@
     }
   }
 </script>
-<style src="../../../assets/sass/components/_vueDatePick.scss" lang="scss">
-
-</style>
