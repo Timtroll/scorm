@@ -57,8 +57,10 @@
           <li>
             <InputText :value="data.name || ''"
                        :required="true"
+                       v-focus
                        :label="$t('list.name')"
                        @change="dataIsChange.name = $event"
+                       @key="validateName"
                        @value="editedData.name = $event"
                        :placeholder="$t('list.namePlaceholder')"></InputText>
           </li>
@@ -205,10 +207,6 @@
       labels: {}
     },
 
-    //mounted () {
-    //  this.$emit('title', this.editedData.label)
-    //},
-
     beforeDestroy () {
       this.$store.commit('cms_table_row_data', null)
     },
@@ -272,6 +270,11 @@
 
     methods: {
 
+      validateName () {
+        console.log('key')
+        this.editedData.name = this.editedData.name.replace(/[A-Z]/g, '')
+      },
+
       toggleSize () {
         this.$store.commit('right_panel_size', !this.rightPanelSize)
       },
@@ -302,8 +305,11 @@
        * создание настройки
        */
       set_add () {
-        const data    = this.editedData
-        data.value    = JSON.stringify(data.value)
+        const data = this.editedData
+
+        if (data.type === 'InputDoubleList') {
+          data.value = JSON.stringify(data.value)
+        }
         data.selected = JSON.stringify(data.selected)
 
         /*
@@ -348,7 +354,9 @@
        */
       set_save () {
         const data    = this.editedData
-        data.value    = JSON.stringify(data.value)
+        if (data.type === 'InputDoubleList') {
+          data.value = JSON.stringify(data.value)
+        }
         data.selected = JSON.stringify(data.selected)
 
         /*
