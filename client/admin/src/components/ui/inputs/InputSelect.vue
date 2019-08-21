@@ -41,14 +41,14 @@
                v-if="valuesEditable">
             <button type="button"
                     class="uk-button"
-                    :class="{'uk-button-primary' : !editValues, 'uk-button-danger' : editValues}"
+                    :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
                     @click.prevent="editValues = !editValues">
               <img src="/img/icons/icon__edit.svg"
                    width="16"
                    height="16"
                    uk-svg
                    v-if="!editValues">
-              <img src="/img/icons/icon__close.svg"
+              <img src="/img/icons/icon__save.svg"
                    width="16"
                    height="16"
                    uk-svg
@@ -72,10 +72,10 @@
               <div class="uk-width-auto">
                 <button type="button"
                         @click="addItem"
-                        class="uk-button uk-button-small uk-button-primary">
-                  <img src="/img/icons/icon__plus.svg"
-                       width="14"
-                       height="14"
+                        class="uk-button uk-button-link">
+                  <img src="/img/icons/icon__plus-circle.svg"
+                       width="22"
+                       height="22"
                        uk-svg>
                 </button>
               </div>
@@ -184,6 +184,7 @@
     },
 
     watch: {
+
       valuesInput () {
         this.update()
       }
@@ -240,7 +241,9 @@
       },
 
       addItem () {
-        this.valuesInput.push('')
+        if (this.valuesInput.indexOf('') === -1) {
+          this.valuesInput.push('')
+        }
       }
     }
   }
