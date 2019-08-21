@@ -32,6 +32,7 @@ sub index {
     }
 
     $$settings{'status'} = 'ok';
+#print Dumper($settings);
 
     # показываем все настройки
     $self->render( json => $settings );
@@ -205,7 +206,7 @@ sub set_load_default {
     my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-
+print Dumper($resp);
     $self->render( 'json' => $resp );
 }
 
