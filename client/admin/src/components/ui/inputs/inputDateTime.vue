@@ -22,7 +22,7 @@
                     :prevMonthCaption="$t('calendar.prevMonthCaption')"
                     :nextMonthCaption="$t('calendar.nextMonthCaption')"
                     @input="update">
-                    <!--:parseDate="parseDate"-->
+            <!--:parseDate="parseDate"-->
             <!--:formatDate="formatDate">-->
           </DatePick>
           <div class="uk-form-icon uk-form-icon-flip">
@@ -83,16 +83,7 @@
     data () {
       return {
         valueInput: this.value,
-        valid:      true,
-
-        calendar: {
-          weekdays:         ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-          months:           ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-          nextMonthCaption: 'След. месяц',
-          prevMonthCaption: 'Пред. месяц',
-          setTimeCaption:   'Установить время:'
-        }
-
+        valid:      true
       }
     },
 
