@@ -26,7 +26,9 @@ $settings = {
         "totalCount"  => 3,
         "editable"    => 1,
         "removable"   => 1,
-        "massEdit"    => 0
+        "massEdit"    => 0,
+        "sortBy"      => "id",
+        "sortOrder"   => "asc"
       },
       # В таблице выведутся поля, с ключами указаннымы в  "header"
       "header" => [
