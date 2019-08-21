@@ -128,6 +128,6 @@
     }
   }
 </script>
-<style src="vue-date-pick/dist/vueDatePick.css">
+<style src="../../../assets/sass/components/_vueDatePick.scss" lang="scss">
 
 </style>
