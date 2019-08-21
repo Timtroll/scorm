@@ -35,14 +35,14 @@
           <div class="uk-width-auto">
             <button type="button"
                     class="uk-button"
-                    :class="{'uk-button-primary' : !editValues, 'uk-button-danger' : editValues}"
+                    :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
                     @click.prevent="editValues = !editValues">
               <img src="/img/icons/icon__edit.svg"
                    width="16"
                    height="16"
                    uk-svg
                    v-if="!editValues">
-              <img src="/img/icons/icon__close.svg"
+              <img src="/img/icons/icon__save.svg"
                    width="16"
                    height="16"
                    uk-svg
@@ -66,10 +66,10 @@
               <div class="uk-width-auto">
                 <button type="button"
                         @click="addItem"
-                        class="uk-button uk-button-small uk-button-primary">
-                  <img src="/img/icons/icon__plus.svg"
-                       width="14"
-                       height="14"
+                        class="uk-button uk-button-link">
+                  <img src="/img/icons/icon__plus-circle.svg"
+                       width="22"
+                       height="22"
                        uk-svg>
                 </button>
               </div>
@@ -98,6 +98,8 @@
                     <input class="uk-input uk-form-small"
                            v-model="valuesInput[index]"
                            :key="index"
+                           v-focus
+                           @keyup.enter="addItem"
                            type="text">
                   </div>
 
@@ -130,25 +132,30 @@
     name: 'InputRadio',
 
     props: {
-      value:       {
-        default: null
+      value:          {
+        default: ''
       },
-      label: {
+      label:          {
         default: null,
         type:    String
       },
-      values:      {
-        default: null
+      values:         {
+        type:    Array,
+        default: ['']
       },
-      status:      { // 'loading' / 'success' / 'error'
+      status:         { // 'loading' / 'success' / 'error'
         default: null,
         type:    String
       },
-      placeholder: {
+      valuesEditable: {
+        default: true,
+        type:    Boolean
+      },
+      placeholder:    {
         default: null,
         type:    String
       },
-      editable:    {
+      editable:       {
         default: true,
         type:    Boolean
       }
@@ -157,15 +164,54 @@
     data () {
       return {
         valueInput:  this.value,
-        valuesInput: this.values,
+        valuesInput: JSON.parse(JSON.stringify(this.values)) || [''],
         editValues:  false
+      }
+    },
+
+    watch: {
+
+      valuesInput () {
+
+        // Проверка на наличие Value in Values
+        const value         = this.valueInput,
+              values        = this.valuesInput,
+              valueInValues = values.includes(value)
+
+        if (!valueInValues) {
+          this.valueInput = ''
+        }
+        this.update()
       }
     },
 
     computed: {
 
       isChanged () {
-        return this.valueInput !== this.value || this.valuesInput !== this.values
+        return this.valueInput !== this.value || JSON.stringify(this.valuesInput) !== JSON.stringify(this.values)
+      },
+
+      notEmptyEditValues () {
+        const des       = this.valuesInput || []
+        const defFilter = [...new Set(des)]
+        return defFilter.filter(Boolean).sort()
+      }
+
+    },
+
+    methods: {
+
+      toggleEditOptions () {
+        this.editValues = !this.editValues
+        if (!this.editValues) {
+          this.valuesInput = this.notEmptyEditValues
+        }
+      },
+
+      update () {
+        this.$emit('change', this.isChanged)
+        this.$emit('value', this.valueInput)
+        this.$emit('values', this.notEmptyEditValues)
       },
 
       validate () {
@@ -183,15 +229,6 @@
           }
         }
         return validClass
-      }
-    },
-
-    methods: {
-
-      update () {
-        this.$emit('change', this.isChanged)
-        this.$emit('value', this.valueInput)
-        this.$emit('values', this.valuesInput)
       },
 
       removeItem (index) {
@@ -208,7 +245,9 @@
       },
 
       addItem () {
-        this.valuesInput.push('')
+        if (this.valuesInput.indexOf('') === -1) {
+          this.valuesInput.push('')
+        }
       }
     }
   }
