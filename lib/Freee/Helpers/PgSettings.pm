@@ -212,8 +212,8 @@ sub register {
 # print Dumper($row);
         $$row{'value'} = '' if ($$row{'value'} eq 'null');
         $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-        $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-        $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
+        $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
         return $row;
     });
 
