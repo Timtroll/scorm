@@ -32,7 +32,7 @@ sub index {
     }
 
     $$settings{'status'} = 'ok';
-#print Dumper($settings);
+print Dumper($settings);
 
     # показываем все настройки
     $self->render( json => $settings );
