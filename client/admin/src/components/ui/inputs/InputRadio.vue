@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal uk-overflow-hidden">
     <div>
-      <label v-text="placeholder"
+      <label v-text="label || placeholder"
              class="uk-form-label uk-text-truncate"
-             v-if="placeholder"></label>
+             v-if="label || placeholder"></label>
 
       <div class="uk-form-controls">
 
@@ -132,6 +132,10 @@
     props: {
       value:       {
         default: null
+      },
+      label: {
+        default: null,
+        type:    String
       },
       values:      {
         default: null

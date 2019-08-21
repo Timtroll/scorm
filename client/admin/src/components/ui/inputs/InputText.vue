@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal">
     <div>
-      <label v-text="placeholder"
+      <label v-text="label || placeholder"
              class="uk-form-label uk-text-truncate"
-             v-if="placeholder"></label>
+             v-if="label || placeholder"></label>
 
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
@@ -34,6 +34,10 @@
     props: {
       value:       {
         default: null
+      },
+      label: {
+        default: null,
+        type:    String
       },
       placeholder: {
         default: null,

@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal uk-overflow-hidden">
     <div>
-      <label v-text="placeholder"
+      <label v-text="label || placeholder"
              class="uk-form-label uk-text-truncate"
-             v-if="placeholder"></label>
+             v-if="label || placeholder"></label>
 
       <div class="uk-form-controls">
         <div class="uk-grid-small"
@@ -88,6 +88,10 @@
         default: null,
         type:    String
       },
+      label: {
+        default: null,
+        type:    String
+      },
       editable:    {
         default: true,
         type:    Boolean
@@ -103,20 +107,6 @@
 
     methods: {
 
-      statusClass () {
-        switch (this.stats) {
-          case 'loading':
-            'loading'
-            break
-          case 'success':
-            'success'
-            break
-          case 'error':
-            'error'
-            break
-
-        }
-      },
 
       update () {
         this.$emit('value', this.value)

@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal uk-overflow-hidden">
     <div>
-      <label v-text="placeholder"
+      <label v-text="label || placeholder"
              class="uk-form-label uk-text-truncate"
-             v-if="placeholder"></label>
+             v-if="label || placeholder"></label>
 
       <div class="uk-form-controls">
         <div class="uk-grid-small"
@@ -147,6 +147,10 @@
       values:         {
         type:    Array,
         default: ['']
+      },
+      label: {
+        default: null,
+        type:    String
       },
       status:         { // 'loading' / 'success' / 'error'
         default: null,

@@ -57,10 +57,10 @@
           <li>
             <InputText :value="data.name || ''"
                        :required="true"
-                       :mask="'[A-Za-z]'"
+                       :label="$t('list.name')"
                        @change="dataIsChange.name = $event"
                        @value="editedData.name = $event"
-                       :placeholder="$t('list.name')"></InputText>
+                       :placeholder="$t('list.namePlaceholder')"></InputText>
           </li>
 
           <!--label-->
