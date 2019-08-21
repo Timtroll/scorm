@@ -15,7 +15,7 @@
                     v-if="isObject"
                     :disabled="!editable || editValues"
                     @change="update">
-              <option v-for="item in valuesInput"
+              <option v-for="item in notEmptyEditValues"
                       :value="item.value">{{item.label}}
               </option>
             </select>
@@ -37,12 +37,14 @@
                    height="14">
             </button>
           </div>
+
+          <!--edit Options toggle-->
           <div class="uk-width-auto"
                v-if="valuesEditable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
-                    @click.prevent="editValues = !editValues">
+                    @click.prevent="toggleEditOptions">
               <img src="/img/icons/icon__edit.svg"
                    width="16"
                    height="16"
@@ -187,6 +189,8 @@
 
       valuesInput () {
         this.update()
+        const options = JSON.parse(JSON.stringify(this.valuesInput))
+        console.log('options', options.filter(Boolean))
       }
     },
 
@@ -198,16 +202,27 @@
 
       isChanged () {
         return this.valueInput !== this.value || JSON.stringify(this.valuesInput) !== JSON.stringify(this.values)
+      },
+
+      notEmptyEditValues () {
+        return this.valuesInput.filter(Boolean)
       }
 
     },
 
     methods: {
 
+      toggleEditOptions () {
+        this.editValues = !this.editValues
+        if (!this.editValues) {
+          this.valuesInput = this.notEmptyEditValues
+        }
+      },
+
       update () {
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
-        this.$emit('values', this.valuesInput)
+        this.$emit('values', this.notEmptyEditValues)
       },
 
       validate () {
