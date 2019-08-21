@@ -112,7 +112,7 @@
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"
-                         @values="editedData.values = $event"
+                         @values="editedData.selected = $event"
                          :placeholder="$t('list.value')">
               </component>
             </transition>
@@ -332,7 +332,7 @@
        */
         const newData = {
           folder:      0,
-          lib_id:      this.parent,
+          lib_id:      this.parent || data.lib_id,
           label:       data.label,
           name:        data.name,
           type:        data.type,

@@ -205,7 +205,10 @@
       },
 
       notEmptyEditValues () {
-        return this.valuesInput.filter(Boolean)
+
+        const des       = this.valuesInput || []
+        const defFilter = [...new Set(des)]
+        return defFilter.filter(Boolean).sort()
       }
 
     },
