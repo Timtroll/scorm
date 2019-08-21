@@ -50,6 +50,9 @@ const state = {
     }, {
       value: 'InputNumber',
       label: 'Число'
+    },{
+      value: 'inputDateTime',
+      label: 'Дата и время'
     }, {
       value: 'InputTextarea',
       label: 'Текстовая область'

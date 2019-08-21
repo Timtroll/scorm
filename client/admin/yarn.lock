@@ -8329,6 +8329,13 @@ vue-cli-plugin-moment@^0.1.1:
   resolved "https://registry.yarnpkg.com/vue-cli-plugin-moment/-/vue-cli-plugin-moment-0.1.1.tgz#457a0cafc9cd5aa0b8d9017cbd43dd9ddf1452ae"
   integrity sha512-4IaEjKKSMP2AbizTO735vaZ2H3nTgdcOoFAHpKnW1VHjGu+n1iAI4WwZsKmQCbemMpmG0ehEqEdciYAtezZ0NA==
 
+vue-date-pick@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/vue-date-pick/-/vue-date-pick-1.2.1.tgz#8c0e7aa72482248ce59c14de30e0c5b8e31d650b"
+  integrity sha512-5kHAS08nGvNCAekb5XDOaQR+7TrECxy0DmQ7N9TiMljXsjmo4xmxvHyOuGhFDB0OaVWs4boXlzQIkDsGiji6Gw==
+  dependencies:
+    vue "^2.5.17"
+
 vue-hot-reload-api@^2.3.0:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
@@ -8400,7 +8407,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.5.16, vue@^2.6.10:
+vue@^2.5.16, vue@^2.5.17, vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==

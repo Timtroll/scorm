@@ -108,7 +108,6 @@
                         appear>
               <component v-bind:is="component || 'InputText'"
                          :value="data.value"
-
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"
@@ -174,10 +173,11 @@
   const InputBoolean    = () => import('../inputs/InputBoolean')
   const InputRadio      = () => import('../inputs/InputRadio')
   const InputDoubleList = () => import('../inputs/InputDoubleList')
+  const inputDateTime   = () => import('../inputs/inputDateTime')
 
   export default {
     name:       'List',
-    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList},
+    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -212,7 +212,8 @@
     data () {
       return {
 
-        component:  this.data.type,
+        component: this.data.type,
+
         editedData: {
           id:          this.data.id,
           folder:      this.data.folder,
@@ -245,35 +246,40 @@
 
     computed: {
 
+      // форма заполнена корректно
       isValid () {
         return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
       },
 
+      // широкая / узкая панель редактирования
       rightPanelSize () {
         return this.$store.getters.rightPanelSize
       },
 
+      // лоадер
       loader () {
         return this.$store.getters.queryRowStatus
       },
 
+      // если данные в форме изменились
       dataIsChanged () {
         return !Object.values(this.dataIsChange).every(item => !item)
       },
 
+      // список компонентов для ввода
       inputComponents () {
         return this.$store.getters.inputComponents
       },
-      parentId () {
 
-        return +this.data.lib_id || +this.parent || 0
+      //
+      parentId () {
+        return this.data.lib_id || this.parent || 0
       }
     },
 
     methods: {
 
       validateName () {
-        console.log('key')
         this.editedData.name = this.editedData.name.replace(/[A-Z]/g, '')
       },
 

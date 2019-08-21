@@ -1,0 +1,45 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+.uk-form-controls
+  .vdpComponent
+    width: 100%
+    max-width: 100%
+    position: relative
+    z-index: 0
+
+    .vdpClearInput
+      right: $global-control-height
+
+    //&:before
+    //  width: 1em
+    //  height: 1em
+    //  margin: 0
+    //  font-size: 1.5rem
+    //  line-height: 1em
+    //  transform: translate(-50%, -50%)
+
+    &.vdpWithInput
+      & > input
+        font-size: $global-font-size
+        padding-right: $global-control-height
+
+  // colors
+  .vdpArrowPrev:after
+    border-right-color: $global-template-background
+
+  .vdpArrowNext:after
+    border-left-color: $global-template-background
+
+  .vdpCell.selectable:hover .vdpCellContent,
+  .vdpCell.selected .vdpCellContent
+    background: $global-template-background
+
+
+  .vdpCell.today
+    color: $global-template-background
+
+
+  .vdpTimeUnit > input:hover,
+  .vdpTimeUnit > input:focus
+    border-bottom-color: $global-template-background
