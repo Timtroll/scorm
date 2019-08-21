@@ -24,6 +24,7 @@ sub index {
             'header'    => [
                 { "key" => "id", "label" => "id" },
                 { "key" => "label", "label" => "Название" },
+                # { "key" => "type", "label" => "Тип поля" },
                 { "key" => "value", "label" => "Значение" },
             ],
             'body'      => $$list{$id}{'table'}

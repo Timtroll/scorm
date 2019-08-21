@@ -108,7 +108,7 @@ print $self->beans_init(), "\n";
     $auth->post('/cms/mail_delete')      ->to('cmsmail#delete');
 
     # управление библиотекой
-    $auth->post('/library')             ->to('library#index');
+    $auth->post('/library/')            ->to('library#index');
     $auth->post('/library/list')        ->to('library#list');
     $auth->post('/library/search')      ->to('library#search');
     $auth->post('/library/add')         ->to('library#add');
@@ -120,7 +120,7 @@ print $self->beans_init(), "\n";
     $auth->post('/library/delete')      ->to('library#delete');
 
     # проверка заданий
-    $auth->post('/mentors')             ->to('mentors#index');
+    $auth->post('/mentors/')            ->to('mentors#index');
     $auth->post('/mentors/setmentor')   ->to('mentors#setmentor');
     $auth->post('/mentors/unsetmentor') ->to('mentors#unsetmentor');
     $auth->post('/mentors/tasks')       ->to('mentors#tasks');
@@ -131,7 +131,7 @@ print $self->beans_init(), "\n";
  # возможно еще что-то ?????????
 
     # управление календарями/расписанием
-    $auth->post('/scheduler')           ->to('scheduler#index');
+    $auth->post('/scheduler/')          ->to('scheduler#index');
     $auth->post('/scheduler/add')       ->to('scheduler#add');
     $auth->post('/scheduler/edit')      ->to('scheduler#edit');
     $auth->post('/scheduler/save')      ->to('scheduler#save');
@@ -141,7 +141,7 @@ print $self->beans_init(), "\n";
     $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
-    $auth->post('/agreement')           ->to('agreement#index');
+    $auth->post('/agreement/')          ->to('agreement#index');
     $auth->post('/agreement/add')       ->to('agreement#add');
     $auth->post('/agreement/edit')      ->to('agreement#edit');
     $auth->post('/agreement/save')      ->to('agreement#save');
@@ -152,7 +152,7 @@ print $self->beans_init(), "\n";
     $auth->post('/agreement/delete')    ->to('agreement#delete'); # возможно не нужно ?????????
 
     # управление темами
-    $auth->post('/user')                ->to('user#index');
+    $auth->post('/user/')               ->to('user#index');
     $auth->post('/user/list')           ->to('user#list');
     $auth->post('/user/add')            ->to('user#add');
     $auth->post('/user/edit')           ->to('user#edit');
@@ -162,7 +162,7 @@ print $self->beans_init(), "\n";
     $auth->post('/user/delete')         ->to('user#index');
 
     # управление темами
-    $auth->post('/subject')             ->to('subject#index');
+    $auth->post('/subject/')            ->to('subject#index');
     $auth->post('/subject/list')        ->to('subject#list');
     $auth->post('/subject/add')         ->to('subject#add');
     $auth->post('/subject/edit')        ->to('subject#edit');
@@ -172,7 +172,7 @@ print $self->beans_init(), "\n";
     $auth->post('/subject/delete')      ->to('subject#delete');
 
     # управление темами
-    $auth->post('/themes')              ->to('themes#index');
+    $auth->post('/themes/')             ->to('themes#index');
     $auth->post('/themes/list')         ->to('themes#list');
     $auth->post('/themes/add')          ->to('themes#add');
     $auth->post('/themes/edit')         ->to('themes#edit');
@@ -182,7 +182,7 @@ print $self->beans_init(), "\n";
     $auth->post('/themes/delete')       ->to('themes#delete');
 
     # управление лекциями
-    $auth->post('/lections')            ->to('lections#index');
+    $auth->post('/lections/')           ->to('lections#index');
     $auth->post('/lections/list')       ->to('lections#list');
     $auth->post('/lections/add')        ->to('lections#add');
     $auth->post('/lections/edit')       ->to('lections#edit');
@@ -192,7 +192,7 @@ print $self->beans_init(), "\n";
     $auth->post('/lections/delete')     ->to('lections#delete');
 
     # управление заданиями
-    $auth->post('/tasks')               ->to('tasks#index');
+    $auth->post('/tasks/')              ->to('tasks#index');
     $auth->post('/tasks/list')          ->to('tasks#list');
     $auth->post('/tasks/add')           ->to('tasks#add');
     $auth->post('/tasks/edit')          ->to('tasks#edit');
@@ -203,7 +203,7 @@ print $self->beans_init(), "\n";
     $auth->post('/tasks/finished')      ->to('tasks#finished');
 
     # экзамены
-    $auth->post('/exam')                ->to('exam#index');
+    $auth->post('/exam/')               ->to('exam#index');
     $auth->post('/exam/start')          ->to('exam#start');
     $auth->post('/exam/edit')           ->to('exam#edit');
     $auth->post('/exam/save')           ->to('exam#save');
@@ -211,7 +211,7 @@ print $self->beans_init(), "\n";
  # возможно еще что-то ?????????
 
     # обучение
-    $auth->post('/lesson')              ->to('lesson#index');
+    $auth->post('/lesson/')             ->to('lesson#index');
     $auth->post('/lesson/video')        ->to('lesson#video');
     $auth->post('/lesson/text')         ->to('lesson#text');
     $auth->post('/lesson/examples')     ->to('lesson#examples');
@@ -219,10 +219,10 @@ print $self->beans_init(), "\n";
     $auth->post('/lesson/finished')     ->to('lesson#finished');
 
     # учет успеваемости
-    $auth->post('/accounting')            ->to('accounting#index');
-    $auth->post('/accounting/search')     ->to('accounting#search');
-    $auth->post('/accounting/add')        ->to('accounting#add');
-    $auth->post('/accounting/stat')       ->to('accounting#stat');
+    $auth->post('/accounting/')         ->to('accounting#index');
+    $auth->post('/accounting/search')   ->to('accounting#search');
+    $auth->post('/accounting/add')      ->to('accounting#add');
+    $auth->post('/accounting/stat')     ->to('accounting#stat');
 
     # форум
     $auth->any('/forum/')               ->to('forum#index');
