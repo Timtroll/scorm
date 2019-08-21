@@ -188,9 +188,16 @@
     watch: {
 
       valuesInput () {
+
+        // Проверка на наличие Value in Values
+        const value         = this.valueInput,
+              values        = this.valuesInput,
+              valueInValues = values.includes(value)
+
+        if (!valueInValues) {
+          this.valueInput = ''
+        }
         this.update()
-        //const options = JSON.parse(JSON.stringify(this.valuesInput))
-        //console.log('options', options.filter(Boolean))
       }
     },
 
@@ -205,7 +212,6 @@
       },
 
       notEmptyEditValues () {
-
         const des       = this.valuesInput || []
         const defFilter = [...new Set(des)]
         return defFilter.filter(Boolean).sort()
