@@ -10,7 +10,7 @@
         :body-right-show="tableRowDetail.open">
 
     <template #headerLeft>
-      <div class="uk-flex uk-flex-top">
+      <div class="uk-flex">
 
         <!--Add Row-->
 
@@ -121,11 +121,11 @@
           <TableRow
               :row-data="row"
               :mass-edit="massEdit"
-              :full-data="table.body[index]"
+              :full-data="filterSearch[index]"
               :checked-all="checked"
               v-for="(row, index) in tableRows"
               v-on:check="checkedAll"
-              v-on:edit-row="edit(table.body[index])"
+              v-on:edit-row="edit(filterSearch[index])"
               :key="index"
               v-on:remove="remove(row)">
           </TableRow>
@@ -227,8 +227,8 @@
       },
 
       tableRows () {
-        if (this.table) {
-          const table        = this.table.body,
+        if (this.filterSearch) {
+          const table        = this.filterSearch,
                 displayTable = [],
                 header       = this.table.header,
                 flatHeader   = header.map(item => item.key)
@@ -248,6 +248,42 @@
 
           return displayTable
         }
+      },
+
+      //tableRows () {
+      //  if (this.table) {
+      //    const table        = this.table.body,
+      //          displayTable = [],
+      //          header       = this.table.header,
+      //          flatHeader   = header.map(item => item.key)
+      //
+      //    table.forEach((item) => {
+      //      //const keys    = Object.keys(item)
+      //      const newItem = []
+      //
+      //      flatHeader.forEach((headItem, i) => {
+      //        if (item.hasOwnProperty(headItem)) {
+      //          newItem.push({val: item[headItem], key: headItem})
+      //        }
+      //      })
+      //
+      //      displayTable.push(newItem)
+      //    })
+      //
+      //    return displayTable
+      //  }
+      //},
+
+      // Поиск по полю label && keywords
+      filterSearch () {
+
+        const tableBody = this.table.body
+
+        return tableBody.filter(item => {
+          return !this.searchInput
+            || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+            || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+        })
       }
 
     },
@@ -283,7 +319,7 @@
 
       // Очистка поля поиска
       clearSearchVal () {
-        this.table.searchInput = null
+        this.searchInput = null
       },
 
       toggleRightPanel () {
