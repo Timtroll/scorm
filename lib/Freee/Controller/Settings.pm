@@ -32,6 +32,7 @@ sub index {
     }
 
     $$settings{'status'} = 'ok';
+print Dumper($settings);
 
     # показываем все настройки
     $self->render( json => $settings );
@@ -194,8 +195,8 @@ sub set_load_default {
             $_->{'lib_id'} = $id;
 
             # сериализуем поля vaue и selected
-            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'});
-            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'});
+            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
+            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
 
             my $newid = $self->insert_setting($_, ['lib_id']);
             push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;

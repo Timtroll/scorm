@@ -33,7 +33,6 @@ sub register {
     });
 
     # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
-    # my $settings = $self->all_settings();
     $app->helper( 'all_settings' => sub {
         my $self = shift;
 
@@ -93,11 +92,12 @@ sub register {
                     #     $$hash{$id}{$val} =~ s/\\\"/\"/g;
                     #     $$hash{$id}{$val} =~ s/\"$//;
                     # }
+
                     if ($$hash{$id}{$val} =~ /^\[/) {
-                        # $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
-                        $$hash{$id}{$val} = JSON::XS->new->decode($$hash{$id}{$val});
-warn(Dumper($$hash{$id}{$val}));
-warn('--');
+                        $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
+                        # $$hash{$id}{$val} = JSON::XS->new->decode($$hash{$id}{$val});
+# warn(Dumper($$hash{$id}{$val}));
+# warn('--');
                     }
                 }
                 push @out, $$hash{$id};
@@ -134,6 +134,8 @@ warn('--');
         return unless $data;
 
         # сериализуем поля vaue и selected
+        $$data{'value'} = '' if ($$data{'value'} eq 'null');
+        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
@@ -173,6 +175,8 @@ warn('--');
         return unless $data;
 
         # сериализуем поля vaue и selected
+        $$data{'value'} = '' if ($$data{'value'} eq 'null');
+        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
@@ -206,10 +210,10 @@ warn('--');
 
         # десериализуем поля vaue и selected
 # print Dumper($row);
-if ($$row{'value'} eq 'null') {
-        $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'});
-        $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});
-}
+        $$row{'value'} = '' if ($$row{'value'} eq 'null');
+        $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
+        $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
+        $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
         return $row;
     });
 
