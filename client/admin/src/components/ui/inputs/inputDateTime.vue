@@ -42,7 +42,7 @@
 <script>
 
   import DatePick from 'vue-date-pick'
-  import 'vue-date-pick/dist/vueDatePick.css'
+  //import 'vue-date-pick/dist/vueDatePick.css'
 
   export default {
     components: {DatePick},
@@ -128,3 +128,6 @@
     }
   }
 </script>
+<style src="vue-date-pick/dist/vueDatePick.css">
+
+</style>
