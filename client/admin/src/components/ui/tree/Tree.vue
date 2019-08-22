@@ -5,6 +5,19 @@
     <div class="pos-border-bottom">
       <div class="uk-grid-collapse"
            uk-grid>
+
+        <!--Add Tree root el -->
+        <div class="uk-width-auto">
+          <button type="button"
+                  class="uk-button uk-button-success pos-border-radius-none pos-border-none"
+                  @click.prevent="addRoot">
+            <img src="/img/icons/icon__plus.svg"
+                 width="18"
+                 height="18"
+                 uk-svg>
+          </button>
+        </div>
+
         <!--searchInput -->
         <div class="uk-width-expand">
           <div class="uk-position-relative">
@@ -32,17 +45,6 @@
           </div>
         </div>
 
-        <!--Add Tree root el -->
-        <div class="uk-width-auto">
-          <button type="button"
-                  class="uk-button pos-border-radius-none pos-border-none"
-                  @click.prevent="addRoot">
-            <img src="/img/icons/icon__plus.svg"
-                 width="18"
-                 height="18"
-                 uk-svg>
-          </button>
-        </div>
       </div>
 
     </div>

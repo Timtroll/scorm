@@ -53,8 +53,7 @@
                height="10"
                uk-svg>
         </a>
-        <div v-else
-             class="uk-form-icon uk-form-icon-flip">
+        <div class="uk-form-icon">
           <img src="/img/icons/icon__search.svg"
                width="14"
                height="14"
