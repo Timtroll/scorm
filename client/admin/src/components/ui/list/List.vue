@@ -63,6 +63,13 @@
                        @key="validateName"
                        @value="editedData.name = $event"
                        :placeholder="$t('list.namePlaceholder')"></InputText>
+            <transition name="slide-right"
+                        mode="out-in"
+                        appear>
+              <div class="uk-alert uk-alert-danger uk-margin-small uk-text-small uk-padding-xsmall"
+                   v-if="tableNames"
+                   v-text="$t('messages.sysNameNotUnique')"></div>
+            </transition>
           </li>
 
           <!--label-->
@@ -246,6 +253,13 @@
 
     computed: {
 
+      tableNames () {
+        const named = this.$store.getters.pageTableNames
+        if (this.editedData.name && this.add) {
+          return named.includes(this.editedData.name)
+        }
+      },
+
       // форма заполнена корректно
       isValid () {
         return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
@@ -280,7 +294,11 @@
     methods: {
 
       validateName () {
+
+        if (this.tableNames !== 'undefined') {
+        }
         this.editedData.name = this.editedData.name.replace(/[A-Z]/g, '')
+
       },
 
       toggleSize () {

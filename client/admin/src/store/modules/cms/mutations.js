@@ -29,6 +29,10 @@ const mutations = {
     state.cms.table = data
   },
 
+  cms_table_names (state, data) {
+    state.cms.tableNames = data
+  },
+
   tree_active (state, id) {
     state.cms.activeId = id
   },

@@ -4,18 +4,18 @@ const getters = {
 
   cardLeftAction: state => state.main.navBarLeftAction,
 
-  pageTable: state => state.cms.table,
+  pageTable:      state => state.cms.table,
+  pageTableNames: state => state.cms.tableNames,
 
   pageTableAddGroupData: state => state.cms.addGroup.data,
   pageTableAddGroupShow: state => state.cms.addGroup.show,
   pageTableAddEditGroup: state => state.cms.addGroup.add,
 
-  pageTableCurrentId:     state => state.cms.activeId,
+  pageTableCurrentId: state => state.cms.activeId,
 
   pageTableRow:     state => state.cms.row,
   pageTableRowShow: state => state.cms.row.open,
   rightPanelSize:   state => state.main.rightPanelLarge,
-
 
   Settings: state => state.cms.data,
 

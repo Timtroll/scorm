@@ -5,22 +5,23 @@ import getters from './getters'
 const state = {
 
   cms: {
-    data:      null,
-    status:    '',
-    current:   null,
-    table:     null,
-    activeId:  null,
-    row:       {
+    data:       null,
+    status:     '',
+    current:    null,
+    table:      null,
+    tableNames: null,
+    activeId:   null,
+    row:        {
       open:   false,
       status: 'loading',
       data:   null
     },
-    addGroup:  {
+    addGroup:   {
       show: false,
       add:  true,
       data: {}
     },
-    updateRow: null
+    updateRow:  null
   },
 
   main: {
@@ -50,7 +51,7 @@ const state = {
     }, {
       value: 'InputNumber',
       label: 'Число'
-    },{
+    }, {
       value: 'inputDateTime',
       label: 'Дата и время'
     }, {

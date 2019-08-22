@@ -19,7 +19,6 @@ const actions = {
   //},
 
   getTree ({commit, state}) {
-
     return new Promise((resolve, reject) => {
       commit('cms_request')
 
@@ -37,7 +36,19 @@ const actions = {
 
                if (settings.length > 0) {
 
-                 const isActiveId   = settings.find(item => item.id === currentActiveId)
+                 // Получение активной таблицы
+                 const isActiveId = settings.find(item => item.id === currentActiveId)
+
+                 // Получение значений поля NAME в таблицах
+                 const tableName = (settings
+                   .map(item => item.table.body))
+                   .reduce((flat, current) => {
+                     return flat.concat(current)
+                   }, [])
+                   .map(item => item.name)
+
+                 commit('cms_table_names', tableName)
+
                  let firstNavItemId = settings[0].id
 
                  if (currentActiveId && isActiveId && isActiveId.id === currentActiveId) {
