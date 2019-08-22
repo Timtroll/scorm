@@ -7,7 +7,8 @@
 
       <div class="uk-form-controls">
         <div :class="{'uk-position-cover': fullSize}"
-             class="uk-background-default uk-flex uk-position-z-index uk-flex-column">
+             class="uk-background-default uk-flex uk-flex-column"
+             style="z-index: 10">
           <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom">
             <a class="pos-card-header-item link"
                :class="{'uk-text-danger' : fullSize}"
@@ -46,23 +47,23 @@
   import editor from 'vue2-ace-editor'
   import 'brace/ext/language_tools'
 
-  import  'brace/ext/beautify'
-  import  'brace/ext/emmet'
-  import  'brace/ext/error_marker'
-  import  'brace/ext/searchbox'
-  import  'brace/ext/settings_menu'
-  import  'brace/ext/whitespace'
-  import  'brace/ext/statusbar'
+  import 'brace/ext/beautify'
+  import 'brace/ext/emmet'
+  import 'brace/ext/error_marker'
+  import 'brace/ext/searchbox'
+  import 'brace/ext/settings_menu'
+  import 'brace/ext/whitespace'
+  import 'brace/ext/statusbar'
 
-  import  'brace/mode/html'
-  import  'brace/mode/javascript'  //language
-  import  'brace/mode/sass'
-  import  'brace/mode/scss'
-  import  'brace/mode/css'
-  import  'brace/mode/perl'
+  import 'brace/mode/html'
+  import 'brace/mode/javascript'  //language
+  import 'brace/mode/sass'
+  import 'brace/mode/scss'
+  import 'brace/mode/css'
+  import 'brace/mode/perl'
 
-  import  'brace/theme/chrome'
-  import  'brace/snippets/javascript' //sni
+  import 'brace/theme/chrome'
+  import 'brace/snippets/javascript' //sni
 
   export default {
     name: 'InputCode',
