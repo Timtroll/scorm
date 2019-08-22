@@ -23,23 +23,22 @@
           class="vdpOuterWrap"
           ref="outerWrap"
           v-on:click="closeViaOverlay"
-          v-bind:class="[positionClass, {vdpFloating: hasInputElement}]"
-      >
+          v-bind:class="[positionClass, {vdpFloating: hasInputElement}]">
         <div class="vdpInnerWrap">
           <header class="vdpHeader">
             <button
                 class="vdpArrow vdpArrowPrev"
                 v-bind:title="prevMonthCaption"
                 type="button"
-                v-on:click="incrementMonth(-1)"
-            >{{ prevMonthCaption }}
+                v-on:click="incrementMonth(-1)">
+              {{ prevMonthCaption }}
             </button>
             <button
                 class="vdpArrow vdpArrowNext"
                 type="button"
                 v-bind:title="nextMonthCaption"
-                v-on:click="incrementMonth(1)"
-            >{{ nextMonthCaption }}
+                v-on:click="incrementMonth(1)">
+              {{ nextMonthCaption }}
             </button>
             <div class="vdpPeriodControls">
               <div class="vdpPeriodControl">
@@ -228,7 +227,6 @@
           ? this.parseDateString(value, format)
           : undefined
 
-
       },
 
       isReadOnly () {
@@ -364,7 +362,6 @@
           ? (currentDate > oldDate ? 'Next' : 'Prev')
           : undefined
 
-
       }
 
     },
@@ -402,7 +399,6 @@
             ? this.parseDate(dateString, dateFormat)
             : this.parseSimpleDateString(dateString, dateFormat)
 
-
       },
 
       formatDateToString (date, dateFormat) {
@@ -412,7 +408,6 @@
           : this.formatDate
             ? this.formatDate(date, dateFormat)
             : this.formatSimpleDateToString(date, dateFormat)
-
 
       },
 
@@ -441,7 +436,6 @@
           }
 
         }
-
 
         const resolvedDate = new Date(
           [paddNum(year, 4), paddNum(month, 2), paddNum(day, 2)].join('-')
@@ -476,7 +470,6 @@
           .replace(hoursRE, match => paddNum(date.getHours(), match.length))
           .replace(minutesRE, match => paddNum(date.getMinutes(), match.length))
           .replace(secondsRE, match => paddNum(date.getSeconds(), match.length))
-
 
       },
 
@@ -698,7 +691,6 @@
         : new Array(padsize - num.toString().length + 1).join('0') + num
       : undefined
 
-
   }
 
   function chunkArray (inputArray, chunkSize) {
@@ -718,7 +710,6 @@
     return (date1.getDate() === date2.getDate()) &&
       (date1.getMonth() === date2.getMonth()) &&
       (date1.getFullYear() === date2.getFullYear())
-
 
   }
 

@@ -17,9 +17,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: user"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_text.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    v-model="user.name.val"
                    autocomplete="name"
                    :placeholder="$t('profile.user.namePlaceholder')"
@@ -37,9 +41,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: user"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_user.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    v-model="user.user"
                    autocomplete="username"
                    :placeholder="$t('profile.user.userNamePlaceholder')"
@@ -57,9 +65,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: mail"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_email.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    autocomplete="email"
                    :placeholder="$t('profile.user.emailPlaceholder')"
                    v-model="user.email.val"
@@ -77,9 +89,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: mail"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_phone.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    :placeholder="$t('profile.user.phonePlaceholder')"
                    autocomplete="tel"
                    v-model="user.phone.val"
@@ -98,9 +114,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: mail"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_location.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    :placeholder="$t('profile.user.cityPlaceholder')"
                    autocomplete="address-level1"
                    v-model="user.city.val"
@@ -118,9 +138,13 @@
         </label>
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
-          <span class="uk-form-icon uk-form-icon-flip"
-                uk-icon="icon: mail"></span>
-            <input class="uk-input"
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_calendar.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+            </div>
+            <input class="uk-input pos-input"
                    autocomplete="bday"
                    v-mask="'##.##.####'"
                    :placeholder="$t('profile.user.dateOfBirthPlaceholder')"
@@ -176,7 +200,7 @@
                          v-else>
 
                   </a>
-                  <input class="uk-input"
+                  <input class="uk-input pos-input"
                          v-model="user.password.val"
                          autocomplete="new-password"
                          :placeholder="$t('profile.password.passwordPlaceholder')"
@@ -185,7 +209,7 @@
               </div>
               <div class="uk-margin-bottom">
                 <div class="uk-inline uk-width-1-1">
-                  <input class="uk-input"
+                  <input class="uk-input pos-input"
                          v-model="user.confirmPassword.val"
                          autocomplete="new-password"
                          :placeholder="$t('profile.password.repeatPasswordPlaceholder')"

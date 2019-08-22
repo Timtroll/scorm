@@ -7,7 +7,6 @@
 
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
-
           <DatePick v-model="valueInput"
                     :format="'YYYY-MM-DD HH:mm'"
                     :displayFormat="'DD.MM.YYYY HH:mm'"
