@@ -45,8 +45,9 @@
 <script>
 
   import editor from 'vue2-ace-editor'
-  import 'brace/ext/language_tools'
 
+  // ext
+  import 'brace/ext/language_tools'
   import 'brace/ext/beautify'
   import 'brace/ext/emmet'
   import 'brace/ext/error_marker'
@@ -55,15 +56,19 @@
   import 'brace/ext/whitespace'
   import 'brace/ext/statusbar'
 
+  //language
   import 'brace/mode/html'
-  import 'brace/mode/javascript'  //language
+  import 'brace/mode/javascript'
   import 'brace/mode/sass'
   import 'brace/mode/scss'
   import 'brace/mode/css'
   import 'brace/mode/perl'
 
+  // theme
   import 'brace/theme/chrome'
-  import 'brace/snippets/javascript' //sni
+
+  // snippets
+  import 'brace/snippets/javascript'
 
   export default {
     name: 'InputCode',
@@ -104,12 +109,13 @@
     },
 
     watch: {
+
       valueInput () {
         this.update()
-      },
-      fullSize () {
-        this.editorInit()
       }
+      //fullSize () {
+      //  this.editorInit()
+      //}
     },
 
     computed: {
