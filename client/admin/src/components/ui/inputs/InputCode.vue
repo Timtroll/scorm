@@ -6,12 +6,35 @@
              v-if="label || placeholder"></label>
 
       <div class="uk-form-controls">
-        <editor v-model="valueInput"
-                @init="editorInit"
-                lang="html"
-                theme="chrome"
-                width="100%"
-                height="400"></editor>
+        <div :class="{'uk-position-cover': fullSize}"
+             class="uk-background-default uk-flex uk-position-z-index uk-flex-column">
+          <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom">
+            <a class="pos-card-header-item link"
+               :class="{'uk-text-danger' : fullSize}"
+               @click.prevent="fullSize = !fullSize">
+
+              <img src="/img/icons/icon__expand.svg"
+                   uk-svg
+                   width="20"
+                   height="20"
+                   v-if="!fullSize">
+
+              <img src="/img/icons/icon__collapse.svg"
+                   uk-svg
+                   width="20"
+                   height="20"
+                   v-else>
+            </a>
+          </div>
+          <div class="uk-flex-1">
+            <editor v-model="valueInput"
+                    @init="editorInit"
+                    lang="html"
+                    theme="chrome"
+                    width="100%"
+                    :height="editorHeight"></editor>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -51,7 +74,8 @@
 
     data () {
       return {
-        valueInput: this.value
+        valueInput: this.value,
+        fullSize:   false
 
       }
     },
@@ -59,10 +83,17 @@
     watch: {
       valueInput () {
         this.update()
+      },
+      fullSize () {
+        this.editorInit()
       }
     },
 
     computed: {
+
+      editorHeight () {
+        return (this.fullSize) ? '100%' : '300'
+      },
 
       isChanged () {
         return this.valueInput !== this.value
@@ -88,7 +119,7 @@
 
     methods: {
 
-      editorInit: function () {
+      editorInit: () => {
         require('brace/ext/language_tools') //language extension prerequsite...
         require('brace/ext/beautify')
         require('brace/ext/emmet')
