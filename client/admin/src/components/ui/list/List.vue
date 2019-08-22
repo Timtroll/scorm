@@ -181,10 +181,11 @@
   const InputRadio      = () => import('../inputs/InputRadio')
   const InputDoubleList = () => import('../inputs/InputDoubleList')
   const inputDateTime   = () => import('../inputs/inputDateTime')
+  const InputCode       = () => import('../inputs/InputCode')
 
   export default {
     name:       'List',
-    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime},
+    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime, InputCode},
 
     // Закрыть панель при нажатии "ESC"
     created () {
@@ -262,7 +263,7 @@
 
       // Проверка на уникальность поля 'name' в таблице
       tableNames () {
-        
+
         if (!this.add) {
           const index = this.usedNames.indexOf(this.currentName)
           if (index !== -1) this.usedNames.splice(index, 1)

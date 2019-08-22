@@ -69,6 +69,9 @@ const state = {
     }, {
       value: 'InputDoubleList',
       label: 'Массив значений'
+    }, {
+      value: 'InputCode',
+      label: 'Редактор кода'
     }
   ]
 
