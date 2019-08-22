@@ -262,9 +262,7 @@
 
       // Проверка на уникальность поля 'name' в таблице
       tableNames () {
-
-        //const name = [...this.$store.getters.pageTableNames]
-
+        
         if (!this.add) {
           const index = this.usedNames.indexOf(this.currentName)
           if (index !== -1) this.usedNames.splice(index, 1)
