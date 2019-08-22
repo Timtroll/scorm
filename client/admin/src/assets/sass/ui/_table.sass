@@ -53,13 +53,18 @@ $table-max-width: $table-min-width * 8
       svg
         transform: translateY(-2px)
 
-
   .pos-checkbox-switch
     transform: translateY(2px)
 
 .pos-table-row
   min-width: $table-min-width
   max-width: $table-max-width
+  @media (max-width: $breakpoint-medium)
+    min-width: $table-min-width / 2
+    max-width: $table-max-width / 2
+  @media (max-width: $breakpoint-small)
+    min-width: $table-min-width / 3
+    max-width: $table-max-width / 3
 
   &:not(.ellipsis)
     & > *
