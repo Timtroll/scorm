@@ -194,6 +194,9 @@
           this.$emit('close')
         }
       }
+      if (!this.add) {
+        this.currentName = this.data.name
+      }
     },
 
     props: {
@@ -220,6 +223,10 @@
       return {
 
         component: this.data.type,
+
+        currentName: null,
+
+        usedNames: [...this.$store.getters.pageTableNames],
 
         editedData: {
           id:          this.data.id,
@@ -253,16 +260,22 @@
 
     computed: {
 
+      // Проверка на уникальность поля 'name' в таблице
       tableNames () {
-        const named = this.$store.getters.pageTableNames
-        if (this.editedData.name && this.add) {
-          return named.includes(this.editedData.name)
+
+        //const name = [...this.$store.getters.pageTableNames]
+
+        if (!this.add) {
+          const index = this.usedNames.indexOf(this.currentName)
+          if (index !== -1) this.usedNames.splice(index, 1)
         }
+
+        return this.usedNames.includes(this.editedData.name)
       },
 
       // форма заполнена корректно
       isValid () {
-        return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged)
+        return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged && !this.tableNames)
       },
 
       // широкая / узкая панель редактирования

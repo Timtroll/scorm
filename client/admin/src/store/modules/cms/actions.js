@@ -46,6 +46,7 @@ const actions = {
                      return flat.concat(current)
                    }, [])
                    .map(item => item.name)
+                   .sort()
 
                  commit('cms_table_names', tableName)
 
