@@ -151,10 +151,9 @@ sub set_add {
     }
 
     # поля для группы настроек
-    $data{'editable'} = $self->param('editable') || 0;
+    $data{'editable'} = $self->param('editable') || 1;
     $data{'readOnly'} = $self->param('readOnly') || 0;
-    $data{'removable'} = $self->param('removable') || 0;
-    $data{'required'} = $self->param('required') || 0;
+    $data{'removable'} = $self->param('removable') || 1;
 
     # готовим запись настроек, если это не folder
     unless ($self->param('folder')) {
@@ -265,7 +264,6 @@ sub set_save {
     $data{'editable'} = $self->param('editable') || 0;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
-    $data{'required'} = $self->param('required') || 0;
 
     # готовим запись настроек, если это не folder
     unless ($self->param('folder')) {
