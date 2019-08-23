@@ -59,9 +59,9 @@
                        :editable="data.editable"
                        :required="true"
                        v-focus
+                       :mask="nameRegExp"
                        :label="$t('list.name')"
                        @change="dataIsChange.name = $event"
-                       @key="validateName"
                        @value="editedData.name = $event"
                        :placeholder="$t('list.namePlaceholder')"></InputText>
             <transition name="slide-right"
@@ -229,6 +229,8 @@
     data () {
       return {
 
+        nameRegExp: /[^a-zA-Z-]/g,
+
         component: this.data.type,
 
         currentName: null,
@@ -310,14 +312,6 @@
     },
 
     methods: {
-
-      validateName () {
-
-        if (this.tableNames !== 'undefined') {
-        }
-        this.editedData.name = this.editedData.name.replace(/[A-Z]/g, '')
-
-      },
 
       toggleSize () {
         this.$store.commit('right_panel_size', !this.rightPanelSize)

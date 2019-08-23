@@ -43,7 +43,7 @@
       },
       editable:    {default: 1},
       mask:        {
-        type: String
+        type: RegExp
       },
       required:    {}
     },
@@ -52,6 +52,16 @@
       return {
         valueInput: this.value,
         valid:      true
+      }
+    },
+
+    watch: {
+
+      valueInput () {
+        if (this.mask) {
+          console.log('333')
+          this.valueInput = this.valueInput.replace(this.mask, '')
+        }
       }
     },
 
