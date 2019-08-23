@@ -78,12 +78,12 @@
         valueInput:    this.value,
         fullSize:      false,
         editorOptions: {
-          highlightActiveLine: true,
-          readOnly:            false,
-          showInvisibles: false,
-          tabSize: 4,
+          highlightActiveLine:       true,
+          readOnly:                  false,
+          showInvisibles:            false,
+          tabSize:                   4,
           enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true
+          enableLiveAutocompletion:  true
         }
 
       }
@@ -101,13 +101,6 @@
         this.update()
       }
 
-    },
-
-    mounted () {
-      if (this.editable === 0) {
-        console.log('editor.setReadonly(true)')
-        //editor.setReadonly(true)
-      }
     },
 
     computed: {
