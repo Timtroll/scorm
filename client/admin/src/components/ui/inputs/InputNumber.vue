@@ -18,8 +18,8 @@
                  inputmode="numeric"
                  :disabled="!editable"
                  :class="validate"
-                 v-model.number="valueInput"
-                 type="text"
+                 v-model.number.trim="valueInput"
+                 type="number"
                  @input="update"
                  :placeholder="placeholder">
         </div>
