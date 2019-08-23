@@ -19,20 +19,20 @@ echo "-------"
 echo "cd $SOURCE/client/admin"
 cd $SOURCE/client/admin
 
-echo "-------"
-echo "delete folder $SOURCE/client/admin/dist"
-rm -rf $SOURCE/client/admin/dist
+# echo "-------"
+# echo "delete folder $SOURCE/client/admin/dist"
+# rm -rf $SOURCE/client/admin/dist
 
-echo "-------"
-echo "yarn run build"
-yarn run build
+# echo "-------"
+# echo "yarn run build"
+# yarn run build
 
 echo "-------"
 echo "delete content of public"
 rm -rf $SOURCE/public/*
 
 echo "-------"
-echo "yarn run build"
+echo "copy dist to public"
 cp -a $SOURCE/client/admin/dist/. $SOURCE/public
 
 echo "-------"
