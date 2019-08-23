@@ -42,6 +42,7 @@
                         </div>
                         <input class="uk-input uk-form-small"
                                v-model="item[idx]"
+                               :disabled="!editable"
                                @input="update"
                                :key="idx"
                                type="text">
@@ -50,7 +51,8 @@
                   </div>
 
                   <!--Toggle cell-->
-                  <div class="uk-width-auto">
+                  <div class="uk-width-auto"
+                       v-if="editable">
                     <a class="uk-button uk-button-link"
                        style="transform: translateY(-3px)"
                        @click.prevent="toggleCell">
@@ -68,7 +70,8 @@
                   </div>
 
                   <!--remove value-->
-                  <div class="uk-width-auto">
+                  <div class="uk-width-auto"
+                       v-if="editable">
                     <a class="uk-button uk-button-link pos-link-danger"
                        style="transform: translateY(-3px)"
                        @click.prevent="removeItem(index)">
@@ -85,7 +88,8 @@
           </div>
 
           <!--Add row-->
-          <div class="uk-width-auto">
+          <div class="uk-width-auto"
+               v-if="editable">
             <button type="button"
                     class="uk-button uk-button-primary"
                     @click.prevent="addItem">

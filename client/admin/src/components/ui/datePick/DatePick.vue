@@ -4,15 +4,15 @@
     <input
         v-if="hasInputElement"
         type="text"
+        v-bind:disabled="disabled"
         v-bind="inputAttributes"
         v-bind:readonly="isReadOnly"
         v-bind:value="inputValue"
         v-on:input="editable && processUserInput($event.target.value)"
         v-on:focus="editable && open()"
-        v-on:click="editable && open()"
-    >
+        v-on:click="editable && open()">
     <button
-        v-if="editable && hasInputElement && inputValue"
+        v-if="editable && hasInputElement && inputValue && !disabled"
         class="vdpClearInput"
         type="button"
         v-on:click="clear"
@@ -175,6 +175,7 @@
       value:                 {type: String, default: ''},
       format:                {type: String, default: 'YYYY-MM-DD'},
       displayFormat:         {type: String},
+      disabled:              {type: Boolean, default: false},
       editable:              {type: Boolean, default: true},
       hasInputElement:       {type: Boolean, default: true},
       inputAttributes:       {type: Object},

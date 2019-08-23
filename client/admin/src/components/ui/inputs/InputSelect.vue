@@ -40,7 +40,7 @@
 
           <!--edit Options toggle-->
           <div class="uk-width-auto"
-               v-if="valuesEditable">
+               v-if="valuesEditable && editable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"

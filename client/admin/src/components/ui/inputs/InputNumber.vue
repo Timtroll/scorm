@@ -35,13 +35,16 @@
     props: {
 
       value:       {},
-      label: {
+      label:       {
         default: '',
         type:    String
       },
       status:      { // 'loading' / 'success' / 'error'
         default: '',
         type:    String
+      },
+      mask:        {
+        type: RegExp
       },
       placeholder: {
         default: '',
@@ -53,6 +56,16 @@
     data () {
       return {
         valueInput: this.value
+      }
+    },
+
+    watch: {
+
+      valueInput () {
+        if (this.mask) {
+          console.log('333')
+          this.valueInput = this.valueInput.replace(this.mask, '')
+        }
       }
     },
 

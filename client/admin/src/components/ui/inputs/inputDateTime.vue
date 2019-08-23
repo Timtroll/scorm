@@ -14,6 +14,7 @@
                     :mobileBreakpointWidth="480"
                     :inputAttributes="{class: 'uk-input uk-width-1-1', readonly: true}"
                     :pickTime="true"
+                    :disabled="!editable"
                     :pickMinutes="true"
                     :months="$t('calendar.months')"
                     :weekdays="$t('calendar.weekdays')"
@@ -113,7 +114,6 @@
       },
 
       update () {
-        this.$emit('key')
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
       }

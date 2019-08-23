@@ -32,7 +32,7 @@
           </div>
 
           <!--toggle edit Values-->
-          <div class="uk-width-auto">
+          <div class="uk-width-auto" v-if="editable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"

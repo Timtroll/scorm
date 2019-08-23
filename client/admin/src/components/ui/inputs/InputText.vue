@@ -16,7 +16,6 @@
           <input class="uk-input"
                  :disabled="!editable"
                  :class="validate"
-                 :pattern="mask"
                  v-model.trim="valueInput"
                  type="text"
                  @input="update"
@@ -92,7 +91,6 @@
     methods: {
 
       update () {
-        this.$emit('key')
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
       }
