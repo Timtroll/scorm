@@ -32,28 +32,20 @@
     name: 'InputText',
 
     props: {
-      value:       {
-        default: null
-      },
-      label: {
-        default: null,
+      value:       {},
+      label:       {
+        default: '',
         type:    String
       },
       placeholder: {
-        default: null,
+        default: '',
         type:    String
       },
-      editable:    {
-        default: true,
-        type:    Boolean
-      },
+      editable:    {default: 1},
       mask:        {
         type: String
       },
-      required:    {
-        default: false,
-        type:    Boolean
-      }
+      required:    {}
     },
 
     data () {

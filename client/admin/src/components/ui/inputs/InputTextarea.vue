@@ -24,24 +24,21 @@
 
     props: {
       value:       {
-        default: null
+        default: ''
       },
       label: {
-        default: null,
+        default: '',
         type:    String
       },
       status:      { // 'loading' / 'success' / 'error'
-        default: null,
+        default: '',
         type:    String
       },
       placeholder: {
-        default: null,
+        default: '',
         type:    String
       },
-      editable:    {
-        default: true,
-        type:    Boolean
-      }
+      editable:    {default: 1}
     },
 
     data () {

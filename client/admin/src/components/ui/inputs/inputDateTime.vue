@@ -50,32 +50,26 @@
     props: {
 
       value: {
-        default: null
+        default: ''
       },
 
       label: {
-        default: null,
+        default: '',
         type:    String
       },
 
       placeholder: {
-        default: null,
+        default: '',
         type:    String
       },
 
-      editable: {
-        default: true,
-        type:    Boolean
-      },
+      editable: {default: 1},
 
       mask: {
         type: String
       },
 
-      required: {
-        default: false,
-        type:    Boolean
-      }
+      required: {}
     },
 
     data () {

@@ -47,7 +47,7 @@
           <!--editable-->
           <li v-if="!add">
             <InputBoolean
-                :value="data.editable || true"
+                :value="data.editable"
                 @change="dataIsChange.editable = $event"
                 @value="editedData.editable = $event"
                 :placeholder="$t('list.editable')"></InputBoolean>
@@ -56,6 +56,7 @@
           <!--name-->
           <li>
             <InputText :value="data.name || ''"
+                       :editable="data.editable"
                        :required="true"
                        v-focus
                        :label="$t('list.name')"
@@ -75,6 +76,7 @@
           <!--label-->
           <li>
             <InputText :value="data.label || ''"
+                       :editable="data.editable"
                        :required="true"
                        @change="dataIsChange.label = $event"
                        @value="editedData.label = $event"
@@ -84,6 +86,7 @@
           <!--placeholder-->
           <li v-if="!group">
             <InputText :value="data.placeholder || ''"
+                       :editable="data.editable"
                        @change="dataIsChange.placeholder = $event"
                        @value="editedData.placeholder = $event"
                        :placeholder="$t('list.placeholder')"></InputText>
@@ -92,6 +95,7 @@
           <!--mask-->
           <li v-if="!group">
             <InputText :value="data.mask || ''"
+                       :editable="data.editable"
                        @change="dataIsChange.mask = $event"
                        @value="editedData.mask = $event"
                        :placeholder="$t('list.mask')"></InputText>
@@ -100,6 +104,7 @@
           <!--type-->
           <li v-if="!group">
             <InputSelect :value="data.type || 'InputText'"
+                         :editable="data.editable"
                          :required="true"
                          :values-editable="false"
                          @change="dataIsChange.type = $event"
@@ -115,6 +120,7 @@
                         appear>
               <component v-bind:is="component || 'InputText'"
                          :value="data.value"
+                         :editable="data.editable"
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"

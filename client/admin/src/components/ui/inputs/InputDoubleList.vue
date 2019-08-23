@@ -115,21 +115,18 @@
 
       value:       {},
       status:      { // 'loading' / 'success' / 'error'
-        default: null,
+        default: '',
         type:    String
       },
-      label: {
-        default: null,
+      label:       {
+        default: '',
         type:    String
       },
       placeholder: {
-        default: null,
+        default: '',
         type:    String
       },
-      editable:    {
-        default: true,
-        type:    Boolean
-      }
+      editable:    {default: 1}
     },
 
     data () {

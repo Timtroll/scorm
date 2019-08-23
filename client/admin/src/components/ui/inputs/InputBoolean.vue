@@ -9,7 +9,9 @@
         <label class="uk-display-block">
           <input class="pos-checkbox-switch"
                  :disabled="!editable"
-                 :checked="valueInputBoolean"
+                 v-model.number="valueInputBoolean"
+                 :true-value="1"
+                 :false-value="0"
                  @change="update"
                  type="checkbox">
         </label>
@@ -23,26 +25,22 @@
     name: 'InputBoolean',
 
     props: {
-      value: {
-        default: null
-      },
-      label: {
-        default: null,
+      value:       {default: 1},
+      label:       {
+        default: '',
         type:    String
       },
       placeholder: {
-        default: null,
+        default: '',
         type:    String
       },
-      editable:    {
-        default: true,
-        type:    Boolean
-      }
+      editable:    {default: 1}
     },
 
     data () {
       return {
-        valueInputBoolean: +this.value || 0,
+        valueInputBoolean: this.value,
+        //valueInputBoolean: Number(this.value),
         valid:             true
       }
     },
@@ -50,18 +48,18 @@
     computed: {
 
       valueInput () {
-        return +this.valueInputBoolean
+        return Number(this.valueInputBoolean)
       },
 
       isChanged () {
-        return +this.valueInput !== +this.value
+        return this.valueInputBoolean !== this.value
       }
     },
 
     methods: {
 
       update () {
-        this.valueInputBoolean = !+this.valueInputBoolean
+        //this.valueInputBoolean = !this.valueInputBoolean
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
       }

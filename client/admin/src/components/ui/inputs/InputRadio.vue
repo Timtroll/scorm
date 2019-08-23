@@ -132,11 +132,9 @@
     name: 'InputRadio',
 
     props: {
-      value:          {
-        default: ''
-      },
+      value:          {},
       label:          {
-        default: null,
+        default: '',
         type:    String
       },
       values:         {
@@ -144,21 +142,18 @@
         default: ['']
       },
       status:         { // 'loading' / 'success' / 'error'
-        default: null,
+        default: '',
         type:    String
       },
       valuesEditable: {
-        default: true,
+        default: '',
         type:    Boolean
       },
       placeholder:    {
-        default: null,
+        default: '',
         type:    String
       },
-      editable:       {
-        default: true,
-        type:    Boolean
-      }
+      editable:       {default: 1}
     },
 
     data () {
