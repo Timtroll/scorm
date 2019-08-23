@@ -479,7 +479,7 @@ $form-background: $global-background !default;
 $form-color: $global-color !default;
 $form-focus-background: lighten($global-primary-background, 42%) !default;
 $form-focus-color: $global-primary-background !default;
-$form-disabled-background: lighten($global-muted-background, 1%) !default;
+$form-disabled-background: transparent !default;
 $form-disabled-color: $global-muted-color !default;
 $form-placeholder-color: $global-muted-color !default;
 $form-small-height: $global-control-small-height !default;
