@@ -31,12 +31,12 @@
             <editor v-model="valueInput"
                     @init="editorInit"
                     lang="html"
-                    theme="chrome"
+                    :options="editorOptions"
+                    theme="dracula"
                     width="100%"
                     :height="editorHeight"></editor>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -44,13 +44,14 @@
 
 <script>
 
-  //import editor from 'vue2-ace-editor'
-  
+  import editor from 'vue2-ace-editor'
+
   export default {
     name: 'InputCode',
 
     components: {
-      editor: require('vue2-ace-editor')
+      editor
+      //editor: require('vue2-ace-editor')
     },
 
     props: {
@@ -74,9 +75,23 @@
 
     data () {
       return {
-        valueInput: this.value,
-        fullSize:   false
+        valueInput:    this.value,
+        fullSize:      false,
+        editorOptions: {
+          highlightActiveLine: true,
+          readOnly:            false,
+          showInvisibles: false,
+          tabSize: 4,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true
+        }
 
+      }
+    },
+
+    created () {
+      if (this.editable === 0) {
+        this.editorOptions.readOnly = true
       }
     },
 
@@ -85,9 +100,14 @@
       valueInput () {
         this.update()
       }
-      //fullSize () {
-      //  this.editorInit()
-      //}
+
+    },
+
+    mounted () {
+      if (this.editable === 0) {
+        console.log('editor.setReadonly(true)')
+        //editor.setReadonly(true)
+      }
     },
 
     computed: {
@@ -126,7 +146,6 @@
         require('brace/ext/emmet')
         require('brace/ext/error_marker')
         require('brace/ext/searchbox')
-        require('brace/ext/settings_menu')
         require('brace/ext/whitespace')
         require('brace/ext/statusbar')
 
@@ -137,8 +156,12 @@
         require('brace/mode/css')
         require('brace/mode/perl')
 
-        require('brace/theme/chrome')
+        require('brace/theme/dracula')
+
         require('brace/snippets/javascript') //snippet
+        require(['emmet/emmet'], (data) => {
+          window.emmet = data.emmet
+        })
       },
 
       update () {
