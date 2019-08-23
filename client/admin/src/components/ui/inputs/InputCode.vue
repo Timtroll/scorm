@@ -44,38 +44,13 @@
 
 <script>
 
-  import editor from 'vue2-ace-editor'
-
-  // ext
-  import 'brace/ext/language_tools'
-  import 'brace/ext/beautify'
-  import 'brace/ext/emmet'
-  import 'brace/ext/error_marker'
-  import 'brace/ext/searchbox'
-  import 'brace/ext/settings_menu'
-  import 'brace/ext/whitespace'
-  import 'brace/ext/statusbar'
-
-  //language
-  import 'brace/mode/html'
-  import 'brace/mode/javascript'
-  import 'brace/mode/sass'
-  import 'brace/mode/scss'
-  import 'brace/mode/css'
-  import 'brace/mode/perl'
-
-  // theme
-  import 'brace/theme/chrome'
-
-  // snippets
-  import 'brace/snippets/javascript'
-
+  //import editor from 'vue2-ace-editor'
+  
   export default {
     name: 'InputCode',
 
     components: {
-      editor
-      //editor: require('vue2-ace-editor')
+      editor: require('vue2-ace-editor')
     },
 
     props: {
@@ -146,24 +121,24 @@
     methods: {
 
       editorInit: () => {
-        //require('brace/ext/language_tools') //language extension prerequsite...
-        //require('brace/ext/beautify')
-        //require('brace/ext/emmet')
-        //require('brace/ext/error_marker')
-        //require('brace/ext/searchbox')
-        //require('brace/ext/settings_menu')
-        //require('brace/ext/whitespace')
-        //require('brace/ext/statusbar')
-        //
-        //require('brace/mode/html')
-        //require('brace/mode/javascript')    //language
-        //require('brace/mode/sass')
-        //require('brace/mode/scss')
-        //require('brace/mode/css')
-        //require('brace/mode/perl')
-        //
-        //require('brace/theme/chrome')
-        //require('brace/snippets/javascript') //snippet
+        require('brace/ext/language_tools') //language extension prerequsite...
+        require('brace/ext/beautify')
+        require('brace/ext/emmet')
+        require('brace/ext/error_marker')
+        require('brace/ext/searchbox')
+        require('brace/ext/settings_menu')
+        require('brace/ext/whitespace')
+        require('brace/ext/statusbar')
+
+        require('brace/mode/html')
+        require('brace/mode/javascript')    //language
+        require('brace/mode/sass')
+        require('brace/mode/scss')
+        require('brace/mode/css')
+        require('brace/mode/perl')
+
+        require('brace/theme/chrome')
+        require('brace/snippets/javascript') //snippet
       },
 
       update () {
