@@ -24,7 +24,8 @@
     <template #bodyLeft>
       <Tree v-if="nav"
             :nav="nav"
-            @close=""></Tree>
+            @click="clickLeftNav">
+      </Tree>
     </template>
 
     <!--bodyRight-->
@@ -51,10 +52,19 @@
 
     name: 'Settings',
 
-    components: {IconBug, Tree, NavTree, Card, Loader, List},
+    components: {
+      IconBug,
+      Tree,
+      NavTree,
+      Card,
+      Loader,
+      List
+    },
 
     data () {
-      return {}
+      return {
+        leftNavToggleMobile: false
+      }
     },
 
     created () {
@@ -90,10 +100,24 @@
       // Left nav tree
       nav () {
         return this.$store.getters.Settings
+      },
+
+      cardLeftClickAction () {
+        return this.$store.getters.cardLeftClickAction
       }
+
     },
 
     methods: {
+
+      leftToggleAction () {
+
+      },
+
+      clickLeftNav () {
+        //this.$store.commit('card_left_nav_click', !this.leftToggleState)
+        //this.leftNavToggleMobile = !this.leftNavToggleMobile
+      },
 
       // Очистка поля поиска
       clearSearchVal () {

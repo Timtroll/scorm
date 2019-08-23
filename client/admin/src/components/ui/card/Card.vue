@@ -57,7 +57,6 @@
              ref="bodyLeft"
              v-show="bodyLeft && leftToggleState"
              :class="{'pos-padding': bodyLeftPadding}">
-
           <slot name="bodyLeft"></slot>
         </div>
       </transition>
@@ -128,15 +127,15 @@
     props:      {
 
       // header
-      header:          {
+      header:            {
         default: false,
         type:    Boolean
       },
-      headerLarge:     {
+      headerLarge:       {
         default: false,
         type:    Boolean
       },
-      headerSmall: {
+      headerSmall:       {
         default: false,
         type:    Boolean
       },
@@ -247,6 +246,12 @@
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
           this.$store.commit('card_left_state', false)
         }
+      },
+
+      cardLeftClickAction () {
+        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
+          this.$store.commit('card_left_state', false)
+        }
       }
     },
 
@@ -264,7 +269,12 @@
       leftToggleState () {
         setTimeout(() => {this.handleResize()}, 300)
         return this.$store.getters.cardLeftState
+      },
+
+      cardLeftClickAction () {
+        return this.$store.getters.cardLeftClickAction
       }
+
     },
 
     beforeDestroy: function () {
@@ -274,10 +284,6 @@
     },
 
     methods: {
-
-      leftToggleAction () {
-        this.$store.commit('setNavbarLeftActionState', !this.leftToggleState)
-      },
 
       handleResize () {
 

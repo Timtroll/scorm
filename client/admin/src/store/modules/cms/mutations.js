@@ -83,7 +83,11 @@ const mutations = {
   // акшин для левой кнопки в navbar
   card_left_state (state, data) {
     state.main.leftShow = data
+  },
+  card_left_nav_click (state, data) {
+    state.main.leftNavClick = data
   }
+
 
 }
 export default mutations

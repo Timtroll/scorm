@@ -105,6 +105,10 @@
 
       navActiveId () {
         return this.$store.state.cms.cms.activeId
+      },
+
+      cardLeftClickAction () {
+        return this.$store.getters.cardLeftClickAction
       }
     },
 
@@ -132,6 +136,8 @@
           })
 
         }
+
+        this.$store.commit('card_left_nav_click', !this.cardLeftClickAction)
 
       },
 

@@ -30,6 +30,7 @@ const state = {
       icon:       'icon__nav.svg'
     },
     leftShow:         true,
+    leftNavClick:     true,
     rightShow:        true,
     rightPanelLarge:  false
   },

@@ -2,7 +2,8 @@ const getters = {
 
   cardLeftState: state => state.main.leftShow,
 
-  cardLeftAction: state => state.main.navBarLeftAction,
+  cardLeftAction:      state => state.main.navBarLeftAction,
+  cardLeftClickAction: state => state.main.leftNavClick,
 
   pageTable:      state => state.cms.table,
   pageTableNames: state => state.cms.tableNames,
