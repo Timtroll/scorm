@@ -181,6 +181,7 @@
   const Loader          = () => import('../icons/Loader')
   const InputText       = () => import('../inputs/InputText')
   const InputTextarea   = () => import('../inputs/InputTextarea')
+  const InputCKEditor   = () => import('../inputs/InputCKEditor')
   const InputSelect     = () => import('../inputs/InputSelect')
   const InputNumber     = () => import('../inputs/InputNumber')
   const InputBoolean    = () => import('../inputs/InputBoolean')
@@ -191,7 +192,10 @@
 
   export default {
     name:       'List',
-    components: {Loader, InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime, InputCode},
+    components: {
+      Loader, InputTextarea, InputText, InputCKEditor, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime,
+      InputCode
+    },
 
     // Закрыть панель при нажатии "ESC"
     created () {

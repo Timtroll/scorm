@@ -59,6 +59,9 @@ const state = {
       value: 'InputTextarea',
       label: 'Текстовая область'
     }, {
+      value: 'InputCKEditor',
+      label: 'Текстовый редактор - CKEditor'
+    }, {
       value: 'InputBoolean',
       label: 'Чекбокс'
     }, {
