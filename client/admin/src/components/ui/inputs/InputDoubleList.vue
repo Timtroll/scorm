@@ -90,14 +90,12 @@
           <!--Add row-->
           <div class="uk-width-auto"
                v-if="editable">
-            <button type="button"
-                    class="uk-button uk-button-primary"
-                    @click.prevent="addItem">
-              <img src="/img/icons/icon__plus.svg"
-                   width="16"
-                   height="16"
+            <a @click.prevent="addItem">
+              <img src="/img/icons/icon__plus-circle.svg"
+                   width="22"
+                   height="22"
                    uk-svg>
-            </button>
+            </a>
           </div>
 
         </div>
