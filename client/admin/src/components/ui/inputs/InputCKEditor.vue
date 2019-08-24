@@ -20,6 +20,7 @@
                       :editors="editors"></vue-ckeditor>
 
       </div>
+      <div class="uk-margin-top" v-html="valueInput"></div>
     </div>
   </div>
 </template>
@@ -40,14 +41,8 @@
     name: 'InputCKEditor',
 
     props: {
-      value:       {
-        default: ''
-      },
+      value:       {},
       label:       {
-        default: '',
-        type:    String
-      },
-      status:      { // 'loading' / 'success' / 'error'
         default: '',
         type:    String
       },
@@ -55,7 +50,8 @@
         default: '',
         type:    String
       },
-      editable:    {default: 1}
+      editable:    {default: 1},
+      required:    {}
     },
 
     components: {
@@ -99,10 +95,17 @@
       }
     },
 
+    watch: {
+
+      valueInput () {
+        this.$emit('value', this.valueInput)
+      }
+    },
+
     computed: {
 
       isChanged () {
-        return this.valueInput !== this.value
+        return JSON.stringify(this.valueInput) !== JSON.stringify(this.value)
       },
 
       validate () {
@@ -127,7 +130,7 @@
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('value', this.valueInput)
+        this.$emit('value', JSON.stringify(this.valueInput))
       }
     }
   }
