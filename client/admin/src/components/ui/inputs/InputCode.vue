@@ -29,6 +29,7 @@
           </div>
           <div class="uk-flex-1">
             <editor v-model="valueInput"
+                    ref='codeEditor'
                     @init="editorInit"
                     lang="html"
                     :options="editorOptions"
@@ -84,7 +85,7 @@
           tabSize:                   4,
           enableBasicAutocompletion: true,
           enableLiveAutocompletion:  true,
-          showPrintMargin: false
+          showPrintMargin:           false
         }
 
       }
@@ -104,7 +105,9 @@
 
       editable () {
         this.editorOptions.readOnly = this.editable === 0
-        console.log('editor')
+        if (this.$refs.codeEditor.editor) {
+          this.$refs.codeEditor.editor.$readOnly = (Boolean(!this.editable))
+        }
       }
 
     },
