@@ -56,7 +56,7 @@
           <!--name-->
           <li>
             <InputText :value="data.name || ''"
-                       :editable="data.editable"
+                       :editable="editedData.editable"
                        :required="true"
                        v-focus
                        :mask="nameRegExp"
@@ -76,7 +76,7 @@
           <!--label-->
           <li>
             <InputText :value="data.label || ''"
-                       :editable="data.editable"
+                       :editable="editedData.editable"
                        :required="true"
                        @change="dataIsChange.label = $event"
                        @value="editedData.label = $event"
@@ -86,7 +86,7 @@
           <!--placeholder-->
           <li v-if="!group">
             <InputText :value="data.placeholder || ''"
-                       :editable="data.editable"
+                       :editable="editedData.editable"
                        @change="dataIsChange.placeholder = $event"
                        @value="editedData.placeholder = $event"
                        :placeholder="$t('list.placeholder')"></InputText>
@@ -95,7 +95,7 @@
           <!--mask-->
           <li v-if="!group">
             <InputText :value="data.mask || ''"
-                       :editable="data.editable"
+                       :editable="editedData.editable"
                        @change="dataIsChange.mask = $event"
                        @value="editedData.mask = $event"
                        :placeholder="$t('list.mask')"></InputText>
@@ -104,7 +104,7 @@
           <!--type-->
           <li v-if="!group">
             <InputSelect :value="data.type || 'InputText'"
-                         :editable="data.editable"
+                         :editable="editedData.editable"
                          :required="true"
                          :values-editable="false"
                          @change="dataIsChange.type = $event"
@@ -120,7 +120,7 @@
                         appear>
               <component v-bind:is="component || 'InputText'"
                          :value="data.value"
-                         :editable="data.editable"
+                         :editable="editedData.editable"
                          :values="data.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"

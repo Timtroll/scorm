@@ -83,7 +83,8 @@
           showInvisibles:            false,
           tabSize:                   4,
           enableBasicAutocompletion: true,
-          enableLiveAutocompletion:  true
+          enableLiveAutocompletion:  true,
+          showPrintMargin: false
         }
 
       }
@@ -99,6 +100,11 @@
 
       valueInput () {
         this.update()
+      },
+
+      editable () {
+        this.editorOptions.readOnly = this.editable === 0
+        console.log('editor')
       }
 
     },
@@ -134,7 +140,9 @@
     methods: {
 
       editorInit: () => {
-        require('brace/ext/language_tools') //language extension prerequsite...
+
+        //language extension prerequsite...
+        require('brace/ext/language_tools')
         require('brace/ext/beautify')
         require('brace/ext/emmet')
         require('brace/ext/error_marker')
@@ -142,16 +150,19 @@
         require('brace/ext/whitespace')
         require('brace/ext/statusbar')
 
+        //language
         require('brace/mode/html')
-        require('brace/mode/javascript')    //language
+        require('brace/mode/javascript')
         require('brace/mode/sass')
         require('brace/mode/scss')
         require('brace/mode/css')
         require('brace/mode/perl')
 
+        // theme
         require('brace/theme/dracula')
 
-        require('brace/snippets/javascript') //snippet
+        // snippet
+        require('brace/snippets/javascript')
         require(['emmet/emmet'], (data) => {
           window.emmet = data.emmet
         })
