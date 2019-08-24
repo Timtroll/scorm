@@ -14,7 +14,7 @@
           <div class="uk-width-expand">
             <label class="uk-width-1-1 uk-form-controls-text uk-flex uk-flex-middle uk-grid-collapse"
                    uk-grid=""
-                   v-for="(radio, index) in values">
+                   v-for="(radio, index) in valuesInput">
               <input
                   class="pos-checkbox-switch"
                   :disabled="!editable || editValues"
@@ -23,8 +23,8 @@
                   :checked="valueInput"
                   @change="update"
                   type="radio">
-              <div class="uk-width-expand">
-              <span class="uk-text-truncate uk-margin-small-left"
+              <div class="uk-width-expand uk-margin-small-left">
+              <span class="uk-text-truncate"
                     v-text="radio"></span>
               </div>
             </label>
@@ -32,7 +32,8 @@
           </div>
 
           <!--toggle edit Values-->
-          <div class="uk-width-auto" v-if="editable">
+          <div class="uk-width-auto"
+               v-if="editable">
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
@@ -55,7 +56,7 @@
         <transition name="slide-bottom">
           <div class="pos-placeholder"
                v-if="editValues">
-            <div class="uk-grid-small uk-flex-middle"
+            <div class="uk-grid-collapse uk-flex-middle"
                  uk-grid>
 
               <!--Title-->
@@ -64,57 +65,57 @@
 
               <!--Add value-->
               <div class="uk-width-auto">
-                <button type="button"
-                        @click="addItem"
-                        class="uk-button uk-button-link">
+                <a @click.prevent="addItem">
                   <img src="/img/icons/icon__plus-circle.svg"
                        width="22"
                        height="22"
                        uk-svg>
-                </button>
+                </a>
               </div>
 
               <!--Values-->
-              <div class="uk-width-1-1"
-                   v-for="(item, index) in valuesInput"
-                   :key="index">
+              <div class="uk-width-1-1 uk-margin-top">
+                <div class=""
+                     v-for="(item, index) in valuesInput"
+                     :key="index">
 
-                <div class="uk-grid-small uk-flex-middle"
-                     uk-grid>
+                  <div class="uk-grid-small uk-flex-middle"
+                       uk-grid>
 
-                  <!--index-->
-                  <div class="uk-width-auto"
-                       style="width: 30px"
-                       v-text="index"></div>
+                    <!--index-->
+                    <div class="uk-width-auto"
+                         style="width: 30px"
+                         v-text="index"></div>
 
-                  <!--value-->
-                  <div class="uk-inline uk-width-expand">
-                    <div class="uk-form-icon uk-form-icon-flip">
-                      <img src="/img/icons/icon__input_text.svg"
-                           uk-svg
-                           width="14"
-                           height="14">
+                    <!--value-->
+                    <div class="uk-inline uk-width-expand">
+                      <div class="uk-form-icon uk-form-icon-flip">
+                        <img src="/img/icons/icon__input_text.svg"
+                             uk-svg
+                             width="14"
+                             height="14">
+                      </div>
+                      <input class="uk-input uk-form-small"
+                             v-model="valuesInput[index]"
+                             :key="index"
+                             v-focus
+                             @keyup.enter="addItem"
+                             type="text">
                     </div>
-                    <input class="uk-input uk-form-small"
-                           v-model="valuesInput[index]"
-                           :key="index"
-                           v-focus
-                           @keyup.enter="addItem"
-                           type="text">
-                  </div>
 
-                  <!--remove value-->
-                  <div class="uk-width-auto">
-                    <a class="uk-button uk-button-link pos-link-danger"
-                       style="transform: translateY(-3px)"
-                       @click.prevent="removeItem(index)">
-                      <img src="/img/icons/icon__trash.svg"
-                           width="14"
-                           height="14"
-                           uk-svg>
-                    </a>
-                  </div>
+                    <!--remove value-->
+                    <div class="uk-width-auto">
+                      <a class="pos-link-danger"
+                         style="transform: translateY(-3px)"
+                         @click.prevent="removeItem(index)">
+                        <img src="/img/icons/icon__trash.svg"
+                             width="14"
+                             height="14"
+                             uk-svg>
+                      </a>
+                    </div>
 
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,7 +147,7 @@
         type:    String
       },
       valuesEditable: {
-        default: '',
+        default: true,
         type:    Boolean
       },
       placeholder:    {

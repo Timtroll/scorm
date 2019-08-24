@@ -9,7 +9,7 @@
         <div class="uk-grid-small"
              uk-grid>
           <div class="uk-width-expand">
-            <div class="uk-grid-small"
+            <div class="uk-grid-collapse"
                  v-if="valuesInput"
                  uk-grid>
 
@@ -51,9 +51,9 @@
                   </div>
 
                   <!--Toggle cell-->
-                  <div class="uk-width-auto"
+                  <div class="uk-width-auto uk-flex uk-flex-middle"
                        v-if="editable">
-                    <a class="uk-button uk-button-link"
+                    <a class=""
                        style="transform: translateY(-3px)"
                        @click.prevent="toggleCell">
                       <img src="/img/icons/icon__minus.svg"
@@ -63,21 +63,21 @@
                            uk-svg>
                       <img src="/img/icons/icon__plus.svg"
                            v-else
-                           width="14"
-                           height="14"
+                           width="12"
+                           height="12"
                            uk-svg>
                     </a>
                   </div>
 
                   <!--remove value-->
-                  <div class="uk-width-auto"
+                  <div class="uk-width-auto uk-flex uk-flex-middle"
                        v-if="editable">
-                    <a class="uk-button uk-button-link pos-link-danger"
+                    <a class="pos-link-danger"
                        style="transform: translateY(-3px)"
                        @click.prevent="removeItem(index)">
                       <img src="/img/icons/icon__trash.svg"
-                           width="14"
-                           height="14"
+                           width="12"
+                           height="12"
                            uk-svg>
                     </a>
                   </div>

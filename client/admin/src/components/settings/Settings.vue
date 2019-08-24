@@ -23,8 +23,7 @@
     <!--bodyLeft-->
     <template #bodyLeft>
       <Tree v-if="nav"
-            :nav="nav"
-            @click="clickLeftNav">
+            :nav="nav">
       </Tree>
     </template>
 
@@ -109,15 +108,6 @@
     },
 
     methods: {
-
-      leftToggleAction () {
-
-      },
-
-      clickLeftNav () {
-        //this.$store.commit('card_left_nav_click', !this.leftToggleState)
-        //this.leftNavToggleMobile = !this.leftNavToggleMobile
-      },
 
       // Очистка поля поиска
       clearSearchVal () {
