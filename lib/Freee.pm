@@ -55,7 +55,7 @@ print $self->beans_init(), "\n";
     $r->any('/api/doc')                 ->to('index#doc');
 
     $r->any('/api/test')                ->to('websocket#test');
-    $r->post('/api/deploy')              ->to('deploy#index');           # deploy после push
+    $r->post('/api/deploy')             ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')       ->to('websocket#index');
 
 
