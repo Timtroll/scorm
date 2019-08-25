@@ -185,3 +185,17 @@ $checkbox-switch-duration: 0.1s
 
 .uk-form-icon
   z-index: 2
+
+// uk-form-custom
+.uk-form-custom
+  .pos-button-select
+    width: 100%
+    background-color: transparent
+    border-radius: 0
+    border: $global-border-width solid $global-border
+    border-width: 0 0 $global-border-width 0
+    justify-content: space-between
+    align-items: center
+    display: flex
+    &:disabled
+      color: $global-muted-color

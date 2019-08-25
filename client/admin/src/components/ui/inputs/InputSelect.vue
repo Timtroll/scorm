@@ -26,8 +26,9 @@
               <option v-for="item in valuesInput">{{item}}</option>
             </select>
 
-            <button class="uk-button uk-height-1-1 uk-button-default uk-width-1-1 uk-flex uk-flex-between uk-flex-middle"
+            <button class="uk-button pos-button-select"
                     :class="validate"
+                    :disabled="!editable || editValues"
                     type="button"
                     tabindex="-1">
               <span></span>
