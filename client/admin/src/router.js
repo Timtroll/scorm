@@ -105,7 +105,6 @@ const router = new Router({
           path:          '/settings',
           name:          'Settings',
           component:     () => import('./components/settings/Settings'),
-          props:         {},
           showInSideBar: false,
           meta:          {
             authRequired: true,
