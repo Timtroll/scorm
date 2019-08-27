@@ -25,10 +25,9 @@ const router = new Router({
         authRequired: true
       }, children:    [
         {
-          path:          '/dashboard',
-          name:          'Dashboard',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/dashboard',
+          name:      'Dashboard',
+          component: () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -36,10 +35,10 @@ const router = new Router({
             breadcrumb:   'Рабочий стол'
           }
         }, {
-          path:          '/pages',
-          name:          'Pages',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/pages',
+          name:      'Pages',
+          component: () => import('./components/dashboard/DashBoard'),
+
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -47,10 +46,9 @@ const router = new Router({
             breadcrumb:   'Контент'
           }
         }, {
-          path:          '/courses',
-          name:          'Courses',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/courses',
+          name:      'Courses',
+          component: () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -58,10 +56,9 @@ const router = new Router({
             breadcrumb:   'Курсы'
           }
         }, {
-          path:          '/review',
-          name:          'Review',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/review',
+          name:      'Review',
+          component: () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -69,10 +66,9 @@ const router = new Router({
             breadcrumb:   'Отзывы'
           }
         }, {
-          path:          '/users',
-          name:          'Users',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/users',
+          name:      'Users',
+          component: () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -80,10 +76,9 @@ const router = new Router({
             breadcrumb:   'Пользователи'
           }
         }, {
-          path:          '/media',
-          name:          'Media',
-          component:     () => import('./components/dashboard/DashBoard'),
-          props:         {},
+          path:      '/media',
+          name:      'Media',
+          component: () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -91,10 +86,9 @@ const router = new Router({
             breadcrumb:   'Медиа хранилище'
           }
         }, {
-          path:          '/profile',
-          name:          'Profile',
-          component:     () => import('./components/profile/Account'),
-          props:         {},
+          path:      '/profile',
+          name:      'Profile',
+          component: () => import('./components/profile/Account'),
           showInSideBar: false,
           meta:          {
             authRequired: true,
@@ -113,10 +107,9 @@ const router = new Router({
           },
           children:      [
             {
-              path:          '/settings/:id',
-              name:          'SettingItem',
-              component:     () => import('./components/ui/table/Table'),
-              props:         {},
+              path:      '/settings/:id',
+              name:      'SettingItem',
+              component: () => import('./components/ui/table/Table'),
               showInSideBar: false,
               meta:          {
                 authRequired: true,
