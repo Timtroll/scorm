@@ -13,29 +13,30 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    # читаем настройки из базы
-    my $list = $self->all_settings();
+#    # читаем настройки из базы
+#    my $list = $self->all_settings();
 
-    my $settings = {};
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        # формируем данные для таблицы
-        $$list{$id}{'table'} = $self->table_obj({
-            'settings'  => {},
-            'header'    => [
-                { "key" => "id", "label" => "id" },
-                { "key" => "label", "label" => "Название" },
-                # { "key" => "type", "label" => "Тип поля" },
-                { "key" => "value", "label" => "Значение" },
-            ],
-            'body'      => $$list{$id}{'table'}
-        });
-        push @{$$settings{'settings'}}, $$list{$id};
-    }
+#     my $settings = {};
+#     foreach my $id (sort {$a <=> $b} keys %$list) {
+#         # формируем данные для таблицы
+#         $$list{$id}{'table'} = $self->table_obj({
+#             'settings'  => {},
+#             'header'    => [
+#                 { "key" => "id", "label" => "id" },
+#                 { "key" => "label", "label" => "Название" },
+#                 # { "key" => "type", "label" => "Тип поля" },
+#                 { "key" => "value", "label" => "Значение" },
+#             ],
+#             'body'      => $$list{$id}{'table'}
+#         });
+#         push @{$$settings{'settings'}}, $$list{$id};
+#     }
 
-    $$settings{'status'} = 'ok';
-print Dumper($settings);
+#     $$settings{'status'} = 'ok';
+# print Dumper($settings);
 
-    # показываем все настройки
+#     # показываем все настройки
+#     $self->render( json => $settings );
     $self->render( json => $settings );
 }
 
