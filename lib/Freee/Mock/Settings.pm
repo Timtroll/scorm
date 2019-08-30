@@ -238,7 +238,7 @@ $settings = {
       "children"    => [
         {
           "label"       => "Ядро",
-          "id"          => 1,
+          "id"          => 11,
           "component"   => "",
           "opened"      => 0,
           "folder"      => 1,
@@ -475,7 +475,7 @@ $settings = {
         },
         {
           "label"     => "Настройки",
-          "id"        => 2,
+          "id"        => 12,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
@@ -632,7 +632,7 @@ $settings = {
         },
         {
           "label"     => "Страницы сайта",
-          "id"        => 3,
+          "id"        => 13,
           "component" => "",
           "opened"    => 0,
           "keywords"  =>  "",
@@ -734,7 +734,7 @@ $settings = {
         },
         {
           "label"     => "Каталог",
-          "id"        => 4,
+          "id"        => 14,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
@@ -801,7 +801,7 @@ $settings = {
         },
         {
           "label"     => "Медиа",
-          "id"        => 5,
+          "id"        => 15,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
@@ -969,7 +969,7 @@ $settings = {
         },
         {
           "label"     => "Новости",
-          "id"        => 6,
+          "id"        => 16,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
@@ -1014,7 +1014,7 @@ $settings = {
         },
         {
           "label"     => "Тесты",
-          "id"        => 7,
+          "id"        => 17,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
@@ -1072,7 +1072,7 @@ $settings = {
         },
         {
           "label"     => "Добавить параметр",
-          "id"        => 8,
+          "id"        => 18,
           "component" => "",
           "opened"    => 0,
           "keywords"  => "",
