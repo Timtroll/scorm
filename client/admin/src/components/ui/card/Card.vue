@@ -112,18 +112,32 @@
         </div>
       </div>
     </transition>
+
+    <!--error-->
+    <transition name="fade">
+      <div class="pos-card-loader"
+           v-if="loader === 'error'">
+
+        <div>
+          <IconBug :size="70"
+                   :spin="true"></IconBug>
+          <p v-html="$t('actions.requestError')"></p>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
   import Loader from '../icons/Loader'
+  import IconBug from '../icons/IconBug'
 
   const bodyMinSize = 960
 
   export default {
 
     name:       'Card',
-    components: {Loader},
+    components: {Loader, IconBug},
     props:      {
 
       // header

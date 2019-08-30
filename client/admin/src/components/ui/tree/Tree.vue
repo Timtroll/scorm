@@ -58,7 +58,7 @@
         <div>
           <IconBug :size="100"
                    :spin="true"></IconBug>
-          <p>Это сложно для меня. <br>Говори проще</p>
+          <p v-html="$t('actions.searchError')"></p>
         </div>
       </div>
     </div>
@@ -87,6 +87,7 @@
     computed: {
 
       // преобразование дерева навигации в один уровень
+      // для вывода результатов поиска
       flattenNav () {
         if (this.searchInput) {
 
