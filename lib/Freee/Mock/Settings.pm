@@ -1161,7 +1161,7 @@ $settings = {
     },
     {
       "label"       => "Scorm",
-      "id"          => 1,
+      "id"          => 100,
       "component"   => "Settings",
       "opened"      => 0,
       "folder"      => 1,
@@ -1169,7 +1169,7 @@ $settings = {
       "children"    => [
         {
           "label"       => "Лекции",
-          "id"          => 1,
+          "id"          => 101,
           "component"   => "",
           "opened"      => 0,
           "folder"      => 0,
