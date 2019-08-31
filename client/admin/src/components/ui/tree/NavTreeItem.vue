@@ -3,7 +3,7 @@
 
     <!--current nav item-->
     <div class="pos-side-nav-item"
-         :class="{'uk-active': navActiveId === navItem.id}">
+         :class="{'uk-active': Number(navActiveId) === navItem.id}">
 
       <div class="pos-side-nav-item__icon"
            @click="toggleChildren"
