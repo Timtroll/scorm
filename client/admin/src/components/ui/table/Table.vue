@@ -15,7 +15,6 @@
       <div class="uk-flex">
 
         <!--Add Row-->
-
         <button type="button"
                 class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                 @click.prevent="add_row">
@@ -28,7 +27,6 @@
         </button>
 
         <!--Remove Row-->
-
         <button class="uk-button-danger pos-border-radius-none pos-border-none"
                 v-if="massEdit">
           <img src="/img/icons/icon__trash.svg"
