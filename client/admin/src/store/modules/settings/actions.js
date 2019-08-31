@@ -1,6 +1,6 @@
 import router from '../../../router'
 import UIkit from 'uikit/dist/js/uikit.min'
-import Api from './../../../api/Cms'
+import Api from '../../../api/Settings'
 
 // Notify
 const notify = (message, status = 'primary', timeout = '4000', pos = 'top-center') => {
@@ -25,48 +25,107 @@ const actions = {
       Api.tree()
          .then(response => {
            if (response.status === 200) {
-             const resp = response.data
 
+             const resp = response.data
              commit('cms_success', resp.settings)
 
              if (typeof resp['settings'] !== 'undefined') {
 
-               const settings        = resp.settings
-               const currentActiveId = state.cms.activeId
+               const settings = resp.settings
+               const routeId  = router.currentRoute.params.id
 
                if (settings.length > 0) {
 
-                 // Получение активной таблицы
-                 const isActiveId = settings.find(item => item.id === currentActiveId)
+                 // массив всех таблиц
+                 const tableData = []
 
-                 // Получение значений поля NAME в таблицах
-                 const tableName = (settings
-                   .map(item => item.table.body))
-                   .reduce((flat, current) => {
-                     return flat.concat(current)
-                   }, [])
-                   .map(item => item.name)
-                   .sort()
+                 const flat = (arr) => {
+                   arr.forEach((item) => {
 
-                 commit('cms_table_names', tableName)
+                     let newItem = {
+                       label:     item.label,
+                       id:        item.id,
+                       folder:    item.folder,
+                       keywords:  item.keywords,
+                       component: item.component,
+                       table:     item.table
+                     }
 
-                 let firstNavItemId = settings[0].id
+                     tableData.push(newItem)
 
-                 if (currentActiveId && isActiveId && isActiveId.id === currentActiveId) {
-                   firstNavItemId = currentActiveId
-                   commit('cms_table', isActiveId.table)
-                 } else {
-                   commit('cms_table', settings[0].table)
+                     if (item.children && item.children.length > 0) {
+                       flat(item.children)
+                     }
+                   })
                  }
 
-                 commit('tree_active', firstNavItemId)
+                 flat([...settings])
 
-                 router.replace({
-                   name:   'SettingItem',
-                   params: {
-                     id: firstNavItemId
+                 commit('cms_table_flat', tableData)
+
+                 // set active table == router.params.id
+                 if (router.currentRoute.params.id) {
+
+                   const currentPageTable = [...tableData].find(i => i.id === Number(routeId))
+
+                   commit('cms_table_row_show', false)
+                   commit('cms_show_add_group', false)
+                   commit('tree_active', routeId)
+                   if (currentPageTable.table) {
+                     commit('cms_table', currentPageTable.table)
                    }
-                 }).catch(err => {})
+
+                   commit('cms_table_names', currentPageTable.label)
+
+                 }
+
+                 //const currentActiveId = state.cms.activeId
+                 //
+                 //// Проверка на начиличие потомков
+                 //if (settings[0].children) {
+                 //
+                 //  const firstItem = settings[0].children
+                 //
+                 //  // Получение активной таблицы
+                 //  const isActiveId = firstItem.find(item => item.id === routeId)
+                 //
+                 //  //
+                 //  let tableName, firstNavItemId
+                 //
+                 //  if (Object.keys(firstItem.table).length !== 0) {
+                 //
+                 //    // Получение значений поля NAME в таблицах
+                 //    tableName = (firstItem
+                 //      .map(item => item.table.body))
+                 //      .reduce((flat, current) => {
+                 //        return flat.concat(current)
+                 //      }, [])
+                 //      .map(item => item.name)
+                 //      .sort()
+                 //
+                 //  }
+                 //
+                 //  commit('cms_table_names', tableName)
+                 //
+                 //  firstNavItemId = settings[0].id
+                 //  if (currentActiveId && isActiveId && isActiveId.id === currentActiveId) {
+                 //    firstNavItemId = currentActiveId
+                 //    commit('cms_table', isActiveId.table)
+                 //  } else {
+                 //    commit('cms_table', settings[0].table)
+                 //  }
+                 //
+                 //  commit('tree_active', firstNavItemId)
+                 //
+                 //  router.replace({
+                 //    name:   'SettingItem',
+                 //    params: {
+                 //      id: firstNavItemId
+                 //    }
+                 //  })
+                 //  //.catch(err => {})
+                 //
+                 //}
 
                }
              }
@@ -75,7 +134,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_error')
-           notify(err, 'danger')
+           notify('ERROR: ' + err, 'danger')
            //reject(err)
          })
       resolve()

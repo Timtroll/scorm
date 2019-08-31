@@ -49,6 +49,18 @@
            :class="{'pos-padding': bodyPadding}">
 
         <slot name="body"></slot>
+
+        <!--error-->
+        <!--<transition name="fade">-->
+        <!--  <div class="pos-card-loader"-->
+        <!--       v-if="loader === 'error'">-->
+        <!--    <div>-->
+        <!--      <IconBug :size="70"-->
+        <!--               :spin="true"></IconBug>-->
+        <!--      <p v-html="$t('actions.requestError')"></p>-->
+        <!--    </div>-->
+        <!--  </div>-->
+        <!--</transition>-->
       </div>
 
       <!--content-left-->
@@ -103,28 +115,15 @@
       <div class="pos-card-loader"
            v-if="loader === 'loading'">
         <div>
-
           <Loader :width="40"
                   :height="40"></Loader>
-
           <div class="uk-margin-small-top"
                v-text="$t('actions.loading')"></div>
         </div>
       </div>
     </transition>
 
-    <!--error-->
-    <transition name="fade">
-      <div class="pos-card-loader"
-           v-if="loader === 'error'">
 
-        <div>
-          <IconBug :size="70"
-                   :spin="true"></IconBug>
-          <p v-html="$t('actions.requestError')"></p>
-        </div>
-      </div>
-    </transition>
   </div>
 </template>
 

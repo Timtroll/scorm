@@ -5,8 +5,11 @@ const getters = {
   cardLeftAction:      state => state.main.navBarLeftAction,
   cardLeftClickAction: state => state.main.leftNavClick,
 
-  pageTable:      state => state.cms.table,
+  pageTable:      state => state.cms.table, // for nav tree
+  pageTableFlat:  state => state.cms.tableFlat, // for table
   pageTableNames: state => state.cms.tableNames,
+
+  navActiveId: state => state.cms.activeId,
 
   pageTableAddGroupData: state => state.cms.addGroup.data,
   pageTableAddGroupShow: state => state.cms.addGroup.show,

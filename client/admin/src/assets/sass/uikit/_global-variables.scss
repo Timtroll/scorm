@@ -1,5 +1,5 @@
 /**
- * cms var
+ * settings var
  */
 
 $deprecated: false !default;
@@ -47,7 +47,7 @@ $global-xxlarge-font-size: 2.625rem !default;
 $global-emphasis-color: #212631 !default;
 $global-color: #555d67 !default;
 $global-muted-color: #7f8b95 !default;
-//$cms-secondary-muted-color: #666e78 !default;
+//$settings-secondary-muted-color: #666e78 !default;
 
 $global-inverse-color: #ffffff !default;
 $inverse-global-inverse-color: $global-color !default;
@@ -69,7 +69,7 @@ $inverse-global-primary-background: $global-inverse-color !default;
 
 $global-link-color: #3a8fd0 !default;
 $global-link-hover-color: darken($global-link-color, 10%) !default;
-//$cms-link-hover-color: #137dcf !default;
+//$settings-link-hover-color: #137dcf !default;
 
 // navbar
 $navbar-height: 80px;
@@ -88,7 +88,7 @@ $global-control-large-height: 55px !default;
 
 // box-shadow
 $global-xsmall-box-shadow: 0 1px 3px 1px rgba(21, 27, 38, 0.1) !default;
-//$cms-xsmall-box-shadow: 0 2 4px rgba(0, 0, 0, 0.08) !default;
+//$settings-xsmall-box-shadow: 0 2 4px rgba(0, 0, 0, 0.08) !default;
 $global-small-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !default;
 $global-medium-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !default;
 $global-large-box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16) !default;

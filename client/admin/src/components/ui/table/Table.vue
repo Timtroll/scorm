@@ -5,9 +5,11 @@
         :header-left="true"
         :body-padding="false"
         :header-small="true"
+
         :header-padding-none="true"
         :body-right-header-title="card.bodyRightTitle"
         :body-right-show="tableRowDetail.open">
+    <!--:loader="notEmptyTable"-->
 
     <template #headerLeft>
       <div class="uk-flex">
@@ -201,6 +203,10 @@
 
     computed: {
 
+      notEmptyTable () {
+        return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'
+      },
+
       libId () {
         if (this.table && this.table.body[0] && this.table.body[0].lib_id) {
           return +this.table.body[0].lib_id
@@ -276,13 +282,16 @@
       // Поиск по полю label && keywords
       filterSearch () {
 
-        const tableBody = this.table.body
+        if (this.table.body) {
 
-        return tableBody.filter(item => {
-          return !this.searchInput
-            || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
-            || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
-        })
+          const tableBody = this.table.body
+
+          return tableBody.filter(item => {
+            return !this.searchInput
+              || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+              || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
+          })
+        }
       }
 
     },

@@ -2,14 +2,10 @@ import Vue from 'vue'
 import axios from 'axios'
 
 Vue.prototype.$http = axios
+const token         = localStorage.getItem('token')
 
-const token = localStorage.getItem('token')
-//console.log('token - ', token)
-
-if (token) {
-  Vue.prototype.$http.defaults.headers.common['Authorization']               = token
-  Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-}
+if (token) { Vue.prototype.$http.defaults.headers.common['Authorization'] = token}
+Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 
 let apiProxy = ''
 if (Vue.config.productionTip) {

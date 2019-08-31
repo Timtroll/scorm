@@ -29,6 +29,10 @@ const mutations = {
     state.cms.table = data
   },
 
+  cms_table_flat (state, data) {
+    state.cms.tableFlat = data
+  },
+
   cms_table_names (state, data) {
     state.cms.tableNames = data
   },

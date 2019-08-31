@@ -68,6 +68,16 @@
 
     created () {
       this.$store.dispatch('getTree')
+      //const navActive = this.$store.getters.navActiveId
+      //
+      //console.log('navActive', navActive)
+      //if (navActive === null || navActive === undefined) {
+      //  console.log('$route.params.id', this.$route.params.id)
+      //  if (this.$route.params.id) {
+      //    this.$store.commit('tree_active', this.$route.params.id)
+      //  }
+      //
+      //}
     },
 
     beforeDestroy () {

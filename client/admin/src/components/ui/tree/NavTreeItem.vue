@@ -18,8 +18,8 @@
       <div class="pos-side-nav-item__no-icon"
            v-else>
       </div>
-      <a class="pos-side-nav-item__label"
 
+      <a class="pos-side-nav-item__label"
          @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label">
         <span class="pos-side-nav-item__label-text"
@@ -29,7 +29,13 @@
         <span class="uk-badge pos-side-nav-item__label-badge"
               v-if="navItem.table && navItem.table.settings && navItem.table.settings.totalCount"
               v-text="navItem.table.settings.totalCount"></span>
+
+        <span class="uk-badge pos-side-nav-item__label-badge"
+              v-if="navItem.children && navItem.children.length > 0"
+              v-text="navItem.children.length"></span>
       </a>
+
+      <!--actions-->
       <div class="pos-side-nav-item__actions">
 
         <!--Добавить дочерний раздел-->
@@ -91,6 +97,18 @@
       }
     },
 
+    mounted () {
+
+      // open tree if children is active
+      if (this.navItem && this.navItem.children) {
+        const children = [...this.navItem.children]
+
+        if (children && children.length > 0) {
+          this.opened = !!children.find(i => i.id === Number(this.$store.getters.navActiveId));
+        }
+      }
+    },
+
     data () {
       return {
         opened: false
@@ -104,7 +122,7 @@
     computed: {
 
       navActiveId () {
-        return this.$store.state.cms.cms.activeId
+        return this.$store.getters.navActiveId
       },
 
       cardLeftClickAction () {
@@ -159,6 +177,7 @@
         this.$store.commit('cms_row_success')
       },
 
+      // edit children group
       editGroup (item) {
         const group = {
           folder:    1,

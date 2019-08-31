@@ -103,7 +103,8 @@
                 keywords:  item.keywords,
                 component: item.component,
                 opened:    item.opened,
-                table:     item.table
+                table:     item.table,
+                children:  item.children
               }
 
               flattenNav.push(newItem)

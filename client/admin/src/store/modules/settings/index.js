@@ -9,6 +9,7 @@ const state = {
     status:     '',
     current:    null,
     table:      null,
+    tableFlat:  null,
     tableNames: null,
     activeId:   null,
     row:        {
