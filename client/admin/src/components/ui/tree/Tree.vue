@@ -107,7 +107,9 @@
                 children:  item.children
               }
 
-              flattenNav.push(newItem)
+              if (item.folder !== 1) {
+                flattenNav.push(newItem)
+              }
 
               if (item.children && item.children.length > 0) {
                 flat(item.children)
