@@ -18,7 +18,7 @@
     "lodash": "^4.17.15",
     "npm-check-updates": "^3.1.21",
     "register-service-worker": "^1.6.2",
-    "uikit": "^3.1.8",
+    "uikit": "^3.1.9",
     "v-mask": "^2.0.2",
     "vue": "^2.6.10",
     "vue-ckeditor5": "^0.4.1",
