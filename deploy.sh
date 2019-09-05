@@ -24,8 +24,8 @@ cd $SOURCE/client/admin
 # rm -rf $SOURCE/client/admin/dist
 
 # echo "-------"
-echo "yarn run build"
-yarn run build
+# echo "yarn run build"
+# yarn run build
 
 echo "-------"
 echo "delete content of public"
