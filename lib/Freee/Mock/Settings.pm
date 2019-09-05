@@ -238,7 +238,7 @@ $settings = {
       "children"    => [
         {
           "label"       => "Ядро",
-          "id"          => 11,
+          "id"          => 101,
           "component"   => "",
           "opened"      => 0,
           "folder"      => 0,
@@ -282,7 +282,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1011
               },
               {
                 "editable"      => 1,
@@ -293,7 +295,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1012
               },
 
               {
@@ -305,7 +309,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => ["CKEditor"],
-                "selected"      => ["CKEditor", "EditorJs"]
+                "selected"      => ["CKEditor", "EditorJs"],
+                "lib_id"        => 101,
+                "id"            => 1013
               },
               {
                 "editable"      => 1,
@@ -316,7 +322,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => [["0"], ["gallery"], ["crop"], ["179"], ["281"]],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1014
               },
               {
                 "editable"      => 1,
@@ -327,7 +335,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "rus",
-                "selected"      => ["rus", "en", "esp", "ch"]
+                "selected"      => ["rus", "en", "esp", "ch"],
+                "lib_id"        => 101,
+                "id"            => 1015
               },
               {
                 "editable"      => 1,
@@ -338,7 +348,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1016
               },
               {
                 "editable"      => 1,
@@ -349,7 +361,9 @@ $settings = {
                 "placeholder"   => "admin@admin.com",
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1017
               },
               {
                 "editable"      => 1,
@@ -360,7 +374,9 @@ $settings = {
                 "placeholder"   => "30",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 1018
               },
               {
                 "editable"      => 1,
@@ -371,7 +387,9 @@ $settings = {
                 "placeholder"   => "15",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"=>    []
+                "selected"=>    [],
+                "lib_id"        => 101,
+                "id"            => 1019
               },
               {
                 "editable"      => 1,
@@ -385,7 +403,9 @@ $settings = {
                   ["0", "января"], ["1", "февраля"], ["2", "марта"], ["3", "апреля"], ["4", "мая"], ["5", "июня"], ["6", "июля"], ["7", "августа"],
                   ["8", "сентября"], ["9", "октября"], ["10", "ноября"], ["11", "декабря"]
                 ],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10110
               },
               {
                 "editable"      => 1,
@@ -396,7 +416,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10111
               },
               {
                 "editable"      => 1,
@@ -410,7 +432,9 @@ $settings = {
                   ["0", "январь"], ["1", "февраль"], ["2", "март"], ["3", "апрель"], ["4", "май"], ["5", "июнь"], ["6", "июль"], ["7", "август"],
                   ["8", "сентябрь"], ["9", "октябрь"], ["10", "ноябрь"], ["11", "декабрь"]
                 ],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10112
               },
               {
                 "editable"      => 1,
@@ -424,7 +448,9 @@ $settings = {
                   ["0", "Январь"], ["1", "Февраль"], ["2", "Март"], ["3", "Апрель"], ["4", "Май"], ["5", "Июнь"], ["6", "Июль"], ["7", "Август"],
                   ["8", "Сентябрь"], ["9", "Октябрь"], ["10", "Ноябрь"], ["11", "Декабрь"]
                 ],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10113
               },
               {
                 "editable"      => 1,
@@ -435,7 +461,9 @@ $settings = {
                 "placeholder"   => "1",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10114
               },
               {
                 "editable"      => 1,
@@ -446,7 +474,9 @@ $settings = {
                 "placeholder"   => "freee.su",
                 "mask"          => "[0..9\:\/-_\\.\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10115
               },
               {
                 "editable"      => 1,
@@ -457,7 +487,9 @@ $settings = {
                 "placeholder"   => "http://freee.su",
                 "mask"          => "[0..9\:\/-_\\.\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10116
               },
               {
                 "editable"      => 1,
@@ -468,14 +500,16 @@ $settings = {
                 "placeholder"   => "Образовательная система",
                 "mask"          => "[- \\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 101,
+                "id"            => 10117
               }
             ]
           }
         },
         {
           "label"     => "Настройки",
-          "id"        => 12,
+          "id"        => 102,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -516,7 +550,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1021
               },
               {
                 "editable"      => 1,
@@ -527,7 +563,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1022
               },
               {
                 "editable"      => 1,
@@ -538,7 +576,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1023
               },
               {
                 "editable"      => 1,
@@ -549,7 +589,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1024
               },
               {
                 "editable"      => 1,
@@ -560,7 +602,9 @@ $settings = {
                 "placeholder"   => "1322600996",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1025
               },
               {
                 "editable"      => 1,
@@ -571,7 +615,9 @@ $settings = {
                 "placeholder"   => "3145752",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1026
               },
               {
                 "editable"      => 1,
@@ -582,7 +628,9 @@ $settings = {
                 "placeholder"   => "mail@4clients.ru",
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1027
               },
               {
                 "editable"      => 1,
@@ -593,7 +641,9 @@ $settings = {
                 "placeholder"   => "mail@4clients.ru",
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1028
               },
               {
                 "editable"      => 1,
@@ -604,7 +654,9 @@ $settings = {
                 "placeholder"   => "mail@4clients.ru",
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 1029
               },
               {
                 "editable"      => 1,
@@ -615,7 +667,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[_-\\.0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 10210
               },
               {
                 "editable"      => 1,
@@ -626,14 +680,16 @@ $settings = {
                 "placeholder"   => "mail.4clients.ru",
                 "mask"          => "[\\@_-0..9\\w]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 102,
+                "id"            => 10211
               }
             ]
           }
         },
         {
           "label"     => "Страницы сайта",
-          "id"        => 13,
+          "id"        => 103,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -674,7 +730,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1031
               },
               {
                 "editable"      => 1,
@@ -685,7 +743,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1032
               },
               {
                 "editable"      => 1,
@@ -696,7 +756,9 @@ $settings = {
                 "placeholder"   => "8 800 2 505 505",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1033
               },
               {
                 "editable"      => 1,
@@ -707,7 +769,9 @@ $settings = {
                 "placeholder"   => "Доставка по Москве и Московской области: 8 (919) 726-36-86",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1034
               },
               {
                 "editable"      => 1,
@@ -718,7 +782,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1035
               },
               {
                 "editable"      => 1,
@@ -729,14 +795,16 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 103,
+                "id"            => 1036
               }
             ]
           }
         },
         {
           "label"     => "Каталог",
-          "id"        => 14,
+          "id"        => 104,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -777,7 +845,9 @@ $settings = {
                 "placeholder"   => "1",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 104,
+                "id"            => 1041
               },
               {
                 "editable"      => 1,
@@ -789,6 +859,8 @@ $settings = {
                 "mask"          => "",
                 "value"         => 12,
                 "selected"      => [12, 30, 50],
+                "lib_id"        => 104,
+                "id"            => 1042
               },
               {
                 "type"          => "InputNumber",
@@ -797,14 +869,16 @@ $settings = {
                 "placeholder"   => "2",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 104,
+                "id"            => 1043
               }
             ]
           }
         },
         {
           "label"     => "Медиа",
-          "id"        => 15,
+          "id"        => 105,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -845,7 +919,9 @@ $settings = {
                 "placeholder"   => "120",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1051
               },
               {
                 "editable"      => 1,
@@ -856,7 +932,9 @@ $settings = {
                 "placeholder"   => "90",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1052
               },
               {
                 "editable"      => 1,
@@ -867,7 +945,9 @@ $settings = {
                 "placeholder"   => "600",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1053
               },
               {
                 "editable"      => 1,
@@ -878,7 +958,9 @@ $settings = {
                 "placeholder"   => "800",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1054
               },
               {
                 "editable"      => 1,
@@ -889,7 +971,9 @@ $settings = {
                 "placeholder"   => "90",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1055
               },
               {
                 "editable"      => 1,
@@ -900,7 +984,9 @@ $settings = {
                 "placeholder"   => "120",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1056
               },
               {
                 "editable"      => 1,
@@ -911,7 +997,9 @@ $settings = {
                 "placeholder"   => "50000000",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1057
               },
               {
                 "editable"      => 1,
@@ -922,7 +1010,9 @@ $settings = {
                 "placeholder"   => "10000000",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1058
               },
               {
                 "editable"      => 1,
@@ -933,7 +1023,9 @@ $settings = {
                 "placeholder"   => "220",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 1059
               },
               {
                 "editable"      => 1,
@@ -944,7 +1036,9 @@ $settings = {
                 "placeholder"   => "220",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 10510
               },
               {
                 "editable"      => 1,
@@ -955,7 +1049,9 @@ $settings = {
                 "placeholder"   => "220",
                 "mask"          => "\\d+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 10511
               },
               {
                 "editable"      => 1,
@@ -966,14 +1062,16 @@ $settings = {
                 "placeholder"   => "220",
                 "mask"          => "\\d+",
                 "value"         => "220",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 105,
+                "id"            => 10512
               }
             ]
           }
         },
         {
           "label"     => "Новости",
-          "id"        => 16,
+          "id"        => 106,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -1012,14 +1110,16 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 106,
+                "id"            => 1061
               }
             ]
           }
         },
         {
           "label"     => "Тесты",
-          "id"        => 17,
+          "id"        => 107,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -1060,7 +1160,9 @@ $settings = {
               "placeholder"   => "34747",
               "mask"          => "",
               "value"         => "",
-              "selected"      => []
+              "selected"      => [],
+              "lib_id"        => 107,
+              "id"            => 1071
             },
             {
               "editable"      => 1,
@@ -1071,14 +1173,16 @@ $settings = {
               "placeholder"   => "34746",
               "mask"          => "",
               "value"         => "",
-              "selected"      => []
+              "selected"      => [],
+              "lib_id"        => 107,
+              "id"            => 1072
             }
             ]
           }
         },
         {
           "label"     => "Добавить параметр",
-          "id"        => 18,
+          "id"        => 108,
           "component" => "",
           "opened"    => 0,
           "folder"      => 0,
@@ -1125,7 +1229,9 @@ $settings = {
                   ["20", "Файловый менеджер"], ["21", "Управление MySQL"], ["22", "LiveSupport"], ["23", "Учёт"], ["24", "Вопросы к курсам"],
                   ["25", "Тесты"]
                 ],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 108,
+                "id"            => 1081
               },
               {
                 "editable"      => 1,
@@ -1136,7 +1242,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => [["число"], ["строка"], ["текстовая область"], ["Селект"], ["список"], ["вложенный список"]],
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 108,
+                "id"            => 1082
               },
               {
                 "editable"      => 1,
@@ -1147,7 +1255,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 108,
+                "id"            => 1083
               },
               {
                 "editable"      => 1,
@@ -1158,7 +1268,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 108,
+                "id"            => 1084
               }
             ]
           }
@@ -1168,7 +1280,7 @@ $settings = {
     },
     {
       "label"       => "Scorm",
-      "id"          => 100,
+      "id"          => 2,
       "component"   => "Settings",
       "opened"      => 0,
       "folder"      => 1,
@@ -1176,7 +1288,7 @@ $settings = {
       "children"    => [
         {
           "label"       => "Лекции",
-          "id"          => 101,
+          "id"          => 201,
           "component"   => "",
           "opened"      => 0,
           "folder"      => 0,
@@ -1220,7 +1332,9 @@ $settings = {
                 "placeholder"   => "",
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
-                "selected"      => []
+                "selected"      => [],
+                "lib_id"        => 201,
+                "id"            => 2011
               }
             ]
           }
