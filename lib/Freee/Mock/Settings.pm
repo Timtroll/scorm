@@ -284,7 +284,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1011
+                "id"            => 1011,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -297,7 +299,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1012
+                "id"            => 1012,
+                "removable"     => 1,
+                "folder"        => 0
               },
 
               {
@@ -311,7 +315,9 @@ $settings = {
                 "value"         => ["CKEditor"],
                 "selected"      => ["CKEditor", "EditorJs"],
                 "lib_id"        => 101,
-                "id"            => 1013
+                "id"            => 1013,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -324,7 +330,9 @@ $settings = {
                 "value"         => [["0"], ["gallery"], ["crop"], ["179"], ["281"]],
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1014
+                "id"            => 1014,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -337,7 +345,9 @@ $settings = {
                 "value"         => "rus",
                 "selected"      => ["rus", "en", "esp", "ch"],
                 "lib_id"        => 101,
-                "id"            => 1015
+                "id"            => 1015,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -350,7 +360,9 @@ $settings = {
                 "value"         => [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1016
+                "id"            => 1016,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -363,7 +375,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1017
+                "id"            => 1017,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -376,7 +390,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 1018
+                "id"            => 1018,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -389,7 +405,9 @@ $settings = {
                 "value"         => "",
                 "selected"=>    [],
                 "lib_id"        => 101,
-                "id"            => 1019
+                "id"            => 1019,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -405,7 +423,9 @@ $settings = {
                 ],
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10110
+                "id"            => 10110,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -418,7 +438,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10111
+                "id"            => 10111,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -434,7 +456,9 @@ $settings = {
                 ],
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10112
+                "id"            => 10112,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -450,7 +474,9 @@ $settings = {
                 ],
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10113
+                "id"            => 10113,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -463,7 +489,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10114
+                "id"            => 10114,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -476,7 +504,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10115
+                "id"            => 10115,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -489,7 +519,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10116
+                "id"            => 10116,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -502,7 +534,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 101,
-                "id"            => 10117
+                "id"            => 10117,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -552,7 +586,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1021
+                "id"            => 1021,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -565,7 +601,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1022
+                "id"            => 1022,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -578,7 +616,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1023
+                "id"            => 1023,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -591,7 +631,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1024
+                "id"            => 1024,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -604,7 +646,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1025
+                "id"            => 1025,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -617,7 +661,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1026
+                "id"            => 1026,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -630,7 +676,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1027
+                "id"            => 1027,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -643,7 +691,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1028
+                "id"            => 1028,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -656,7 +706,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 1029
+                "id"            => 1029,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -669,7 +721,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 10210
+                "id"            => 10210,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -682,7 +736,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 102,
-                "id"            => 10211
+                "id"            => 10211,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -732,7 +788,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1031
+                "id"            => 1031,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -745,7 +803,9 @@ $settings = {
                 "value"         => [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1032
+                "id"            => 1032,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -758,7 +818,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1033
+                "id"            => 1033,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -771,7 +833,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1034
+                "id"            => 1034,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -784,7 +848,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1035
+                "id"            => 1035,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -797,7 +863,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 103,
-                "id"            => 1036
+                "id"            => 1036,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -847,7 +915,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 104,
-                "id"            => 1041
+                "id"            => 1041,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -860,7 +930,9 @@ $settings = {
                 "value"         => 12,
                 "selected"      => [12, 30, 50],
                 "lib_id"        => 104,
-                "id"            => 1042
+                "id"            => 1042,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "type"          => "InputNumber",
@@ -871,7 +943,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 104,
-                "id"            => 1043
+                "id"            => 1043,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -921,7 +995,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1051
+                "id"            => 1051,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -934,7 +1010,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1052
+                "id"            => 1052,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -947,7 +1025,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1053
+                "id"            => 1053,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -960,7 +1040,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1054
+                "id"            => 1054,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -973,7 +1055,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1055
+                "id"            => 1055,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -986,7 +1070,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1056
+                "id"            => 1056,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -999,7 +1085,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1057
+                "id"            => 1057,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -1012,7 +1100,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1058
+                "id"            => 1058,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -1025,7 +1115,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 1059
+                "id"            => 1059,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -1038,7 +1130,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 10510
+                "id"            => 10510,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -1051,7 +1145,9 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 10511
+                "id"            => 10511,
+                "removable"     => 1,
+                "folder"        => 0
               },
               {
                 "editable"      => 1,
@@ -1064,7 +1160,9 @@ $settings = {
                 "value"         => "220",
                 "selected"      => [],
                 "lib_id"        => 105,
-                "id"            => 10512
+                "id"            => 10512,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -1112,7 +1210,9 @@ $settings = {
                 "value"         => [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
                 "selected"      => [],
                 "lib_id"        => 106,
-                "id"            => 1061
+                "id"            => 1061,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
@@ -1162,7 +1262,9 @@ $settings = {
               "value"         => "",
               "selected"      => [],
               "lib_id"        => 107,
-              "id"            => 1071
+              "id"            => 1071,
+              "removable"     => 1,
+              "folder"        => 0
             },
             {
               "editable"      => 1,
@@ -1175,7 +1277,9 @@ $settings = {
               "value"         => "",
               "selected"      => [],
               "lib_id"        => 107,
-              "id"            => 1072
+              "id"            => 1072,
+              "removable"     => 1,
+              "folder"        => 0
             }
             ]
           }
@@ -1334,7 +1438,10 @@ $settings = {
                 "value"         => "",
                 "selected"      => [],
                 "lib_id"        => 201,
-                "id"            => 2011
+                "id"            => 2011,
+                "readOnly"      => 1,
+                "removable"     => 1,
+                "folder"        => 0
               }
             ]
           }
