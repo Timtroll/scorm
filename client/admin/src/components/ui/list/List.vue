@@ -191,7 +191,9 @@
   const InputCode       = () => import('../inputs/InputCode')
 
   export default {
-    name:       'List',
+
+    name: 'List',
+
     components: {
       Loader, InputTextarea, InputText, InputCKEditor, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime,
       InputCode
@@ -210,8 +212,15 @@
       }
     },
 
+    mounted () {
+      console.log(this.data)
+    },
+
     props: {
-      data:   {},
+      data:   {
+        type:     Object,
+        required: true
+      },
       add:    {
         type:    Boolean,
         default: false
@@ -244,18 +253,18 @@
         editedData: {
           id:          this.data.id,
           folder:      this.data.folder,
-          lib_id:      +this.data.lib_id || +this.parent || 0,
-          label:       this.data.label || '',
-          name:        this.data.name || '',
-          type:        this.data.type,
-          placeholder: this.data.placeholder,
+          lib_id:      this.data.lib_id,
           editable:    this.data.editable,
-          mask:        this.data.mask,
           readOnly:    this.data.readOnly,
           required:    this.data.required,
           removable:   this.data.removable,
+          mask:        this.data.mask,
+          label:       this.data.label,
+          name:        this.data.name,
+          type:        this.data.type,
+          placeholder: this.data.placeholder,
           value:       this.data.value,
-          selected:    this.data.selected
+          selected:    this.data.selected || []
         },
 
         dataIsChange: {
