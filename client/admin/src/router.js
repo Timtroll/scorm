@@ -72,7 +72,7 @@ const router = new Router({
           showInSideBar: true,
           meta:          {
             authRequired: true,
-            icon:         'img/icons/sidebar_users.svg',
+            icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Пользователи'
           }
         }, {
@@ -84,6 +84,16 @@ const router = new Router({
             authRequired: true,
             icon:         'img/icons/sidebar_media.svg',
             breadcrumb:   'Медиа хранилище'
+          }
+        },  {
+          path:      '/groups',
+          name:      'Groups',
+          component: () => import('./components/groups/Groups'),
+          showInSideBar: true,
+          meta:          {
+            authRequired: true,
+            icon:         'img/icons/sidebar_users.svg',
+            breadcrumb:   'Управление группами пользователей'
           }
         }, {
           path:      '/profile',

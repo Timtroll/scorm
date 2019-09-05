@@ -42,7 +42,8 @@
     <div class="pos-card-body">
       <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
 
-        <ul class="pos-list">
+        <ul class="pos-list"
+            v-if="Object.keys(editedData).length !== 0">
 
           <!--editable-->
           <li v-if="!add">
@@ -212,10 +213,6 @@
       }
     },
 
-    mounted () {
-      console.log(this.data)
-    },
-
     props: {
       data:   {
         type:     Object,
@@ -250,14 +247,16 @@
 
         usedNames: [...this.$store.getters.pageTableNames],
 
+        //editedData: {...this.data},
+
         editedData: {
-          id:          this.data.id,
-          folder:      this.data.folder,
-          lib_id:      this.data.lib_id,
-          editable:    this.data.editable,
-          readOnly:    this.data.readOnly,
-          required:    this.data.required,
-          removable:   this.data.removable,
+          id:          Number(this.data.id),
+          folder:      Number(this.data.folder),
+          lib_id:      Number(this.data.lib_id),
+          editable:    Number(this.data.editable),
+          readOnly:    Number(this.data.readOnly),
+          required:    Number(this.data.required),
+          removable:   Number(this.data.removable),
           mask:        this.data.mask,
           label:       this.data.label,
           name:        this.data.name,
@@ -507,4 +506,5 @@
 
     }
   }
+
 </script>

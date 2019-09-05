@@ -1,0 +1,88 @@
+[
+  {
+    "editable": 1, "id": "2", "keywords": "обновления режим", "label": "режим обновления", "lib_id": 1, "mask": "[0..9\\w ]+",
+    "name":     "fullDebugMode", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": ["1", "2", "222"],
+    "type":     "InputNumber", "value": "5"
+  }, {
+  "editable":    0, "id": "4", "keywords": "'названия' список имеет умолчанию редактор по доступных не редакторов",
+  "label":       "список доступных редакторов редактор по умолчанию не имеет 'названия'", "lib_id": 1, "mask": "", "name": "editorsList",
+  "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": ["CKEditor", "EditorJs"], "type": "InputSelect", "value": "CKEditor"
+}, {
+  "editable": 1, "id": "5", "keywords": "авто-превью более поддержка 2-х", "label": "поддержка более 2-х авто-превью", "lib_id": 1, "mask": "",
+  "name":     "mediaImagesConf", "placeholder": "", "readOnly": 0, "removable": 1, "required": null, "selected": [], "type": "InputText",
+  "value":    null
+}, {
+  "editable": 1, "id": "6", "keywords": "включение поддержки. многоязычной", "label": "включение многоязычной поддержки.", "lib_id": 1, "mask": "",
+  "name":     "multilang", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": ["en", "es", "ru"], "type": "InputSelect",
+  "value":    "ru"
+}, {
+  "editable": 1, "id": "7", "keywords": "именительный падеж дни русские, недели,", "label": "дни недели, русские, именительный падеж", "lib_id": 1,
+  "mask":     "", "name": "RUDAYS", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputDoubleList",
+  "value":    [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]]
+}, {
+  "editable": 1, "id": "8", "keywords": "емайл администратора", "label": "емайл администратора", "lib_id": 1, "mask": "[\\-\\.0..9\\w]+",
+  "name":     "admin_email", "placeholder": "name@admin.com", "readOnly": 0, "removable": 0, "required": null, "selected": ["Q"], "type": "InputText",
+  "value":    "name@admin.com"
+}, {
+  "editable": 0, "id": "9", "keywords": "страниц постраничной навигации число в", "label": "число страниц в постраничной навигации", "lib_id": 1,
+  "mask":     "\\d+", "name": "pages_pp", "placeholder": "30", "readOnly": 0, "removable": 0, "required": null,
+  "selected": ["10", "20", "30", "40", "50", "60", "70", "80", "90"], "type": "InputSelect", "value": "50"
+}, {
+  "editable": 1, "id": "10", "keywords": "при постраничной во разбивке количество на модулях выводимых страницу всех элементов",
+  "label":    "количество выводимых на страницу элементов при постраничной разбивке во всех модулях", "lib_id": 1, "mask": "\\d+",
+  "name":     "dateTime3", "placeholder": "15", "readOnly": 0, "removable": 0, "required": null,
+  "selected": ["10", "100", "20", "200", "30", "40", "50"], "type": "InputSelect", "value": "200"
+}, {
+  "editable": 1, "id": "11", "keywords": "русские родительный месяцев, названия маленькой буквы с падеж,",
+  "label":    "русские названия месяцев, родительный падеж, с маленькой буквы", "lib_id": 1, "mask": "", "name": "RUMONTHPSMALL", "placeholder": "",
+  "readOnly": 0, "removable": 1, "required": null, "selected": [], "type": "InputText", "value": ""
+}, {
+  "editable": 0, "id": "12", "keywords": "русские падеж родительный месяцев, названия", "label": "русские названия месяцев, родительный падеж",
+  "lib_id":   1, "mask": "", "name": "RUMONTHP", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": [],
+  "type":     "InputText", "value": null
+}, {
+  "editable": 1, "id": "13", "keywords": "месяцев, названия именительный русские падеж, маленькой буквы с",
+  "label":    "русские названия месяцев, именительный падеж, с маленькой буквы", "lib_id": 1, "mask": "", "name": "RUMONTHSMALL", "placeholder": "",
+  "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputDoubleList", "value": [["1", "2"], ["2", "3"]]
+}, {
+  "editable": 1, "id": "14", "keywords": "русские падеж названия именительный месяцев,", "label": "русские названия месяцев, именительный падеж",
+  "lib_id":   1, "mask": "", "name": "RUMONTH", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": [],
+  "type":     "InputDoubleList", "value": [
+    ["0", "Январь"], ["1", "Февраль"], ["2", "Март"], ["3", "Апрель"], ["4", "Май"], ["5", "Июнь"], ["6", "Июль"], ["7", "Август"], ["8", "Сентябрь"],
+    ["9", "Октябрь"], ["10", "Ноябрь"], ["11", "Декабрь"], ["13", "Брандябрь"]
+  ]
+}, {
+  "editable":    1, "id": "15", "keywords": "владельца пользователей. категории объектов профилей ID",
+  "label":       "ID категории владельца объектов профилей пользователей.", "lib_id": 1, "mask": "\\d+", "name": "users_parent_category",
+  "placeholder": "1", "readOnly": 0, "removable": 1, "required": null, "selected": [], "type": "InputNumber", "value": null
+}, {
+  "editable": 1, "id": "16", "keywords": "без адрес - домен http:// сайта", "label": "домен сайта - адрес без http://", "lib_id": 1,
+  "mask":     "[0..9:/-_\\.\\w]+", "name": "site_domain", "placeholder": "freee.su", "readOnly": 0, "removable": 0, "required": null, "selected": [],
+  "type":     "InputText", "value": "freee.su"
+}, {
+  "editable": 1, "id": "17", "keywords": "сайта URL http:// включая", "label": "URL сайта включая http://", "lib_id": 1, "mask": "[0..9:/-_\\.\\w]+",
+  "name":     "site_url", "placeholder": "http://freee.su", "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputText",
+  "value":    "https://freee.su/"
+}, {
+  "editable":    1, "id": "18", "keywords": "сайта имя", "label": "имя сайта", "lib_id": 1, "mask": "[-\\w]+", "name": "site_label",
+  "placeholder": "Образовательная система", "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputText",
+  "value":       "Scorm - система дистанционного обучения"
+}, {
+  "editable": 1, "id": "72", "keywords": "Дата и время", "label": "Дата и время", "lib_id": 1, "mask": "", "name": "dateTime", "placeholder": "",
+  "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "inputDateTime", "value": "2019-09-04 12:12"
+}, {
+  "editable": 1, "id": "78", "keywords": "Редактор кода", "label": "Редактор кода", "lib_id": 1, "mask": "", "name": "script", "placeholder": "",
+  "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputCode",
+  "value":    "<script>\nconst isActiveId = settings.find(item => item.id === currentActiveId)\n\nconst tableName = (settings.map(item => item.table.body)); \n\nsettings\n.reduce((flat, current) => {\n    return flat.concat(current)\n}, [])\n.map(item => item.name)\n.sort()\n\n</script>\n\n<style>\n.class {background: rgba(0,0,0, .2);}\n</style>"
+}, {
+  "editable": 1, "id": "79", "keywords": "Шаблон сообщения email", "label": "Шаблон email сообщения", "lib_id": 1, "mask": "",
+  "name":     "emailTemplate", "placeholder": "", "readOnly": 0, "removable": 0, "required": null,
+  "selected": [],
+  "type":     "InputCode",
+  "value":    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<body>\n<table class=\"body-wrap\">\n  <tr>\n    <td class=\"container\"><!-- Message start -->\n      <table>\n        <tr>\n          <td align=\"center\" class=\"masthead\">\n            <img width=\"300\" height=\"81\" title=\"\" alt=\"\">\n          </td>\n        </tr>\n        <tr>\n          <td align=\"center\" class=\"masthead\">\n            <h4 style=\"margin-top:15px\">Регистрация на курс на сайте</h4>\n          </td>\n        </tr>\n        <tr>\n          <td class=\"content\">\n            <table>\n              <!--main-->\n              {if $name}\n              <tr>\n                <td width=\"180\" style=\"font-weight: bold; color:#666666\">Имя:</td>\n                <td align=\"left\">{$name}</td>\n              </tr>\n              {/if} {if $phone}\n              <tr>\n                <td width=\"180\" style=\"font-weight: bold; color:#666666\">Телефон:</td>\n                <td align=\"left\"><a href=\"tel:{$phone}\">{$phone}</a></td>\n              </tr>\n              {/if} {if $email}\n              <tr>\n                <td width=\"180\" style=\"font-weight: bold; color:#666666\">Email:</td>\n                <td align=\"left\"><a href=\"mailto:{$email}\">{$email}</a></td>\n              </tr>\n              {/if} {if $comment}\n              <tr>\n                <td width=\"120\" style=\"font-weight: bold; color:#666666\" colspan=\"2\">Комментарий:</td>\n              </tr>\n              <tr>\n                <td align=\"left\" colspan=\"2\">{$comment}</td>\n              </tr>\n              {/if}\n              \n            </table>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"container\">\n      <table>\n        <tr>\n          <td class=\"content footer\" align=\"center\"><p> это сообщение отправлено автоматически и не требует ответа</p>\n            <p><a href=\"[[++site_url]]\">[[++site_name]]</a></p></td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n</table>\n</body>\n</html>"
+}, {
+  "editable": 1, "id": "88", "keywords": "Текстовый 5 редактор Ckeditor -", "label": "Текстовый редактор - Ckeditor 5", "lib_id": 1, "mask": "",
+  "name":     "Ckeditor5", "placeholder": "", "readOnly": 0, "removable": 0, "required": null, "selected": [], "type": "InputCKEditor",
+  "value":    "<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.&nbsp;</h2><p>Fusce porta, ex eget congue tincidunt, turpis leo pellentesque risus, ac faucibus leo metus at diam. Vivamus interdum risus posuere, eleifend ante ut, tincidunt nunc. Quisque nunc erat, tincidunt vel imperdiet porta, interdum at elit. Ut <a href=\"https://ayndex.ru\">tristique</a> efficitur leo, eget maximus libero tempus eget. Phasellus dictum scelerisque nibh, non faucibus justo dapibus non.&nbsp;</p><p>Duis sagittis fermentum consectetur. Nullam ultrices ut arcu id convallis. Etiam accumsan libero nec lacus sagittis, vel euismod turpis interdum.</p><ul><li>Praesent sit amet arcu augue. Vivamus tortor nibh, condimentum non elit eu, suscipit blandit tellus.</li><li>Vestibulum vehicula, sapien quis laoreet tempus, leo orci congue odio, sed fringilla nunc magna eu turpis. Aliquam erat volutpat. Sed velit lorem, tempor at quam vitae, sagittis volutpat quam.</li><li>Aenean nibh velit, elementum ut aliquam a, porttitor sit amet orci. Praesent id vestibulum elit.</li></ul><h3>Donec aliquet elit lorem, eget auctor purus ultricies non.&nbsp;</h3><p>Cras est eros, vestibulum quis varius vitae, dapibus et justo. Donec non condimentum nisi. Proin commodo a lacus in aliquet. Vestibulum eu pulvinar risus. Mauris at porta orci. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse potenti. Aliquam erat volutpat. Phasellus at auctor dui, sed venenatis odio. Mauris at rhoncus purus.</p><h4>Nunc interdum non neque sed ullamcorper.&nbsp;</h4><p>Vivamus quam nunc, mollis quis vehicula eget, porttitor quis massa. Praesent consectetur, odio in consequat porttitor, neque tortor dictum arcu, vel iaculis leo enim et orci. Etiam bibendum velit tellus, ac iaculis enim posuere eget. Morbi rhoncus lectus vel massa consectetur volutpat. Vestibulum vitae pretium neque, non condimentum neque.&nbsp;</p><blockquote><p>Duis gravida pretium magna. Quisque metus lorem, feugiat sed scelerisque vel, bibendum a nunc. Suspendisse malesuada nulla lacus, non feugiat lectus porttitor vitae.&nbsp;</p></blockquote><p>Sed ac justo nisl. Nam sapien est, finibus et eros at, faucibus sagittis ante. Nam egestas, purus eu lobortis ullamcorper, nibh tortor lacinia turpis, eleifend viverra lacus lorem ac massa. Suspendisse tempor felis nec nisl placerat efficitur a eget augue. Duis erat sem, aliquam quis hendrerit ac, placerat id lorem. Donec tristique nisl in lectus rutrum, a imperdiet odio laoreet.</p>"
+}
+]
