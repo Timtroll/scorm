@@ -1384,7 +1384,7 @@ $settings = {
     },
     {
       "label"       => "Scorm",
-      "id"          => 2,
+      "id"          => 3,
       "component"   => "Settings",
       "opened"      => 0,
       "folder"      => 1,
@@ -1392,7 +1392,7 @@ $settings = {
       "children"    => [
         {
           "label"       => "Лекции",
-          "id"          => 201,
+          "id"          => 301,
           "component"   => "",
           "opened"      => 0,
           "folder"      => 0,
@@ -1437,8 +1437,8 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 201,
-                "id"            => 2011,
+                "lib_id"        => 301,
+                "id"            => 3011,
                 "readOnly"      => 1,
                 "removable"     => 1,
                 "folder"        => 0
