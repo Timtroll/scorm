@@ -147,7 +147,8 @@
         //language extension prerequsite...
         require('brace/ext/language_tools')
         require('brace/ext/beautify')
-        require('brace/ext/emmet')
+        //require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
+
         require('brace/ext/error_marker')
         require('brace/ext/searchbox')
         require('brace/ext/whitespace')
@@ -166,9 +167,9 @@
 
         // snippet
         require('brace/snippets/javascript')
-        require(['emmet/emmet'], (data) => {
-          window.emmet = data.emmet
-        })
+        //require(['emmet/emmet'], (data) => {
+        //  window.emmet = data.emmet
+        //})
       },
 
       update () {
