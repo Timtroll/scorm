@@ -1,0 +1,18 @@
+Drop table groups;
+Drop SEQUENCE groups_id_seq;
+CREATE SEQUENCE groups_id_seq;
+CREATE TABLE "public"."groups" (
+"id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
+"lib_id" int4,
+"label" varchar(255) COLLATE "default" NOT NULL,
+"name" varchar(255) COLLATE "default" NOT NULL,
+"value" text COLLATE "default",
+"required" int4 DEFAULT 1,
+"readOnly" int4 DEFAULT 0,
+"editable" int4 DEFAULT 1,
+"removable" int4 DEFAULT 1
+)
+WITH (OIDS=FALSE)
+;
+
+ALTER TABLE "public"."groups" OWNER TO "postgres";
