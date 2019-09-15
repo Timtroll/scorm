@@ -1,213 +1,115 @@
 {
-  "settings": {
-    "editable":  1,
-    "lib_id":    101,
-    "massEdit":  1,
-    "sort":      {
-      "name":  "id",
-      "order": "asc"
-    },
-    "page":      {
-      "current_page": 2,
-      "per_page":     15,
-      "from":         16,
-      "to":           30,
-      "total":        50,
-      "last_page":    4
-    }
+"settings": {
+  "editable":     1,
+  "lib_id":       101,
+  "variableType": 0,
+  "massEdit":     1,
+  "sort":         {
+    "name":  "id",
+    "order": "asc"
   },
-  "header":   [
-    {
-      "key":         "number",
-      "label":       "Число",
-      "placeholder": "Number",
-      "type":        "InputNumber",
-      "mask":        "[0..9\\w ]+",
-      "variable":    0,
-      "editable":    0,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "text",
-      "label":       "Текстовое поле",
-      "placeholder": "Text",
-      "type":        "InputText",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "textarea",
-      "label":       "Текстовая область",
-      "placeholder": "Textarea",
-      "type":        "InputTextarea",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "editor",
-      "label":       "Текстовый редактор - CKEditor",
-      "placeholder": "Textarea",
-      "type":        "InputCKEditor",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "codeEditor",
-      "label":       "Редактор кода",
-      "placeholder": "Code",
-      "type":        "InputCode",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "boolean",
-      "label":       "Чекбокс",
-      "placeholder": "Boolean",
-      "type":        "InputBoolean",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "radio",
-      "label":       "'Радио кнопки",
-      "placeholder": "Radio",
-      "type":        "InputRadio",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    },
-    {
-      "key":         "select",
-      "label":       "Выпадающий список",
-      "placeholder": "Select",
-      "type":        "InputSelect",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    [
-        "CKEditor",
-        "EditorJs"
-      ]
-    },
-    {
-      "key":         "list",
-      "label":       "Массив значений",
-      "placeholder": "InputList",
-      "type":        "InputList",
-      "mask":        "",
-      "variable":    0,
-      "editable":    1,
-      "required":    1,
-      "show":        1,
-      "inline":      0,
-      "selected":    []
-    }
-  ],
-  "body":     [
-    {
-      "id":   1011,
-      "data": [
-        {
-          "name":     "fullDebugMode",
-          "value":    "",
-          "selected": []
-        }
-      ]
-    },
-    {
-      "id":          10110,
-      "lib_id":      101,
-      "label":       "русские названия месяцев, родительный падеж, с маленькой буквы",
-      "name":        "RUMONTHPSMALL",
-      "placeholder": "",
-      "mask":        "",
-      "selected":    [],
-      "type":        "InputDoubleList",
-      "value":       [
-        [
-          "0",
-          "января"
-        ],
-        [
-          "1",
-          "февраля"
-        ],
-        [
-          "2",
-          "марта"
-        ],
-        [
-          "3",
-          "апреля"
-        ],
-        [
-          "4",
-          "мая"
-        ],
-        [
-          "5",
-          "июня"
-        ],
-        [
-          "6",
-          "июля"
-        ],
-        [
-          "7",
-          "августа"
-        ],
-        [
-          "8",
-          "сентября"
-        ],
-        [
-          "9",
-          "октября"
-        ],
-        [
-          "10",
-          "ноября"
-        ],
-        [
-          "11",
-          "декабря"
-        ]
-      ]
-    }
-  ]
+  "page":         {
+    "current_page": 2,
+    "per_page":     15,
+    "total":        50
+  }
+},
+"header":   [
+  {
+    "key":         "number",
+    "label":       "Число",
+    "editable":    0,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "text",
+    "label":       "Текстовое поле",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "textarea",
+    "label":       "Текстовая область",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "editor",
+    "label":       "Текстовый редактор - CKEditor",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "codeEditor",
+    "label":       "Редактор кода",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "boolean",
+    "label":       "Чекбокс",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":         "radio",
+    "label":       "'Радио кнопки",
+    "editable":    1,
+    "required":    1,
+    "show":        1,
+    "inline":      0
+  },
+  {
+    "key":      "select",
+    "label":    "Выпадающий список",
+    "editable": 1,
+    "required": 1,
+    "show":     1,
+    "inline":   0
+  },
+  {
+    "key":      "list",
+    "label":    "Массив значений",
+    "editable": 1,
+    "required": 1,
+    "show":     1,
+    "inline":   0
+  }
+],
+"body":     [
+  {
+    "id":   1011,
+    "data": [
+      {
+        "name":        "fullDebugMode",
+        "label":       "Число",
+        "placeholder": "Number",
+        "mask":        "[0..9\\w ]+",
+        "type":        "InputNumber",
+        "value":       "",
+        "selected":    []
+      },{
+        "name":        "fullDebugMode",
+        "label":       "Число",
+        "placeholder": "Number",
+        "mask":        "[0..9\\w ]+",
+        "type":        "InputNumber",
+        "value":       "",
+        "selected":    []
+      }
+    ]
+  }
+]
 }
