@@ -24,7 +24,7 @@
 
       <!--header content-->
       <div class="pos-card-header--content"
-           v-text="editedData.label || labels"></div>
+           v-text="editedData.label"></div>
 
       <!--headerRight-->
       <div class="pos-card-header-item">
@@ -48,7 +48,7 @@
           <!--editable-->
           <li v-if="!add">
             <InputBoolean
-                :value="data.editable"
+                :value="rowData.editable"
                 @change="dataIsChange.editable = $event"
                 @value="editedData.editable = $event"
                 :placeholder="$t('list.editable')"></InputBoolean>
@@ -56,7 +56,7 @@
 
           <!--name-->
           <li>
-            <InputText :value="data.name || ''"
+            <InputText :value="rowData.name || ''"
                        :editable="editedData.editable"
                        :required="true"
                        v-focus
@@ -76,7 +76,7 @@
 
           <!--label-->
           <li>
-            <InputText :value="data.label || ''"
+            <InputText :value="rowData.label"
                        :editable="editedData.editable"
                        :required="true"
                        @change="dataIsChange.label = $event"
@@ -86,7 +86,7 @@
 
           <!--placeholder-->
           <li v-if="!group">
-            <InputText :value="data.placeholder || ''"
+            <InputText :value="rowData.placeholder"
                        :editable="editedData.editable"
                        @change="dataIsChange.placeholder = $event"
                        @value="editedData.placeholder = $event"
@@ -95,7 +95,7 @@
 
           <!--mask-->
           <li v-if="!group">
-            <InputText :value="data.mask || ''"
+            <InputText :value="rowData.mask"
                        :editable="editedData.editable"
                        @change="dataIsChange.mask = $event"
                        @value="editedData.mask = $event"
@@ -104,7 +104,7 @@
 
           <!--type-->
           <li v-if="!group">
-            <InputSelect :value="data.type || 'InputText'"
+            <InputSelect :value="rowData.type || 'InputText'"
                          :editable="editedData.editable"
                          :required="true"
                          :values-editable="false"
@@ -120,9 +120,9 @@
                         mode="out-in"
                         appear>
               <component v-bind:is="component || 'InputText'"
-                         :value="data.value"
+                         :value="rowData.value"
                          :editable="editedData.editable"
-                         :values="data.selected"
+                         :values="rowData.selected"
                          @change="dataIsChange.value = $event"
                          @value="editedData.value = $event"
                          @values="editedData.selected = $event"
@@ -179,25 +179,22 @@
 
 <script>
 
-  const Loader          = () => import('../icons/Loader')
-  const InputText       = () => import('../inputs/InputText')
-  const InputTextarea   = () => import('../inputs/InputTextarea')
-  const InputCKEditor   = () => import('../inputs/InputCKEditor')
-  const InputSelect     = () => import('../inputs/InputSelect')
-  const InputNumber     = () => import('../inputs/InputNumber')
-  const InputBoolean    = () => import('../inputs/InputBoolean')
-  const InputRadio      = () => import('../inputs/InputRadio')
-  const InputDoubleList = () => import('../inputs/InputDoubleList')
-  const inputDateTime   = () => import('../inputs/inputDateTime')
-  const InputCode       = () => import('../inputs/InputCode')
-
   export default {
 
     name: 'List',
 
     components: {
-      Loader, InputTextarea, InputText, InputCKEditor, InputSelect, InputNumber, InputBoolean, InputRadio, InputDoubleList, inputDateTime,
-      InputCode
+      Loader:          () => import('../icons/Loader'),
+      InputTextarea:   () => import('../inputs/InputTextarea'),
+      InputText:       () => import('../inputs/InputText'),
+      InputCKEditor:   () => import('../inputs/InputCKEditor'),
+      InputSelect:     () => import('../inputs/InputSelect'),
+      InputNumber:     () => import('../inputs/InputNumber'),
+      InputBoolean:    () => import('../inputs/InputBoolean'),
+      InputRadio:      () => import('../inputs/InputRadio'),
+      InputDoubleList: () => import('../inputs/InputDoubleList'),
+      inputDateTime:   () => import('../inputs/inputDateTime'),
+      InputCode:       () => import('../inputs/InputCode')
     },
 
     // Закрыть панель при нажатии "ESC"
@@ -208,28 +205,32 @@
           this.$emit('close')
         }
       }
+
+    },
+
+    mounted () {
       if (!this.add) {
-        this.currentName = this.data.name
+        this.currentName = this.rowData.name
       }
     },
 
     props: {
-      data:   {
-        type:     Object,
-        required: true
+      rowData: {
+        //type:     Object,
+        //required: true
       },
-      add:    {
+      add:     {
         type:    Boolean,
         default: false
       },
-      group:  {
+      group:   {
         type:    Boolean,
         default: false
       },
-      parent: {
+      parent:  {
         type: Number
       },
-      labels: {}
+      labels:  {}
     },
 
     beforeDestroy () {
@@ -241,29 +242,30 @@
 
         nameRegExp: /[^a-zA-Z-]/g,
 
-        component: this.data.type,
+        component: this.rowData.type,
 
         currentName: null,
 
         usedNames: [...this.$store.getters.pageTableNames],
 
-        //editedData: {...this.data},
+        //editedData: {...this.$store.getters.pageTableRowData},
+        //editedData: {},
 
         editedData: {
-          id:          Number(this.data.id),
-          folder:      Number(this.data.folder),
-          lib_id:      Number(this.data.lib_id),
-          editable:    Number(this.data.editable),
-          readOnly:    Number(this.data.readOnly),
-          required:    Number(this.data.required),
-          removable:   Number(this.data.removable),
-          mask:        this.data.mask,
-          label:       this.data.label,
-          name:        this.data.name,
-          type:        this.data.type,
-          placeholder: this.data.placeholder,
-          value:       this.data.value,
-          selected:    this.data.selected || []
+          id:          Number(this.rowData.id),
+          folder:      Number(this.rowData.folder),
+          lib_id:      Number(this.rowData.lib_id),
+          editable:    Number(this.rowData.editable),
+          readOnly:    Number(this.rowData.readOnly),
+          required:    Number(this.rowData.required),
+          removable:   Number(this.rowData.removable),
+          mask:        this.rowData.mask,
+          label:       this.rowData.label,
+          name:        this.rowData.name,
+          type:        this.rowData.type,
+          placeholder: this.rowData.placeholder,
+          value:       this.rowData.value,
+          selected:    this.rowData.selected || []
         },
 
         dataIsChange: {
@@ -281,6 +283,10 @@
 
     computed: {
 
+      pageTableRowData () {
+        return this.$store.getters.pageTableRowData
+      },
+
       // Проверка на уникальность поля 'name' в таблице
       tableNames () {
 
@@ -294,7 +300,9 @@
 
       // форма заполнена корректно
       isValid () {
-        return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged && !this.tableNames)
+        if (this.editedData) {
+          return (this.parentId !== '' && !!this.editedData.label && !!this.editedData.name && this.dataIsChanged && !this.tableNames)
+        }
       },
 
       // широкая / узкая панель редактирования
@@ -309,7 +317,9 @@
 
       // если данные в форме изменились
       dataIsChanged () {
-        return !Object.values(this.dataIsChange).every(item => !item)
+        if (this.dataIsChange) {
+          return !Object.values(this.dataIsChange).every(item => !item)
+        }
       },
 
       // список компонентов для ввода
@@ -319,7 +329,7 @@
 
       //
       parentId () {
-        return this.data.lib_id || this.parent || 0
+        return this.rowData.lib_id || this.parent || 0
       }
     },
 

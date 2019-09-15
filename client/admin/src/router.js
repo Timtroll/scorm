@@ -88,7 +88,8 @@ const router = new Router({
         },  {
           path:      '/groups',
           name:      'Groups',
-          component: () => import('./components/groups/Groups'),
+          component: () => import('./components/dashboard/DashBoard'),
+          //component: () => import('./components/groups/Groups'),
           showInSideBar: true,
           meta:          {
             authRequired: true,

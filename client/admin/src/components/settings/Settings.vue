@@ -29,7 +29,7 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-      <List :data="pageTableAddGroupData"
+      <List :row-data="pageTableAddGroupData"
             :labels="'Добавить группу настроек'"
             :add="pageTableAddEditGroup"
             :group="true"

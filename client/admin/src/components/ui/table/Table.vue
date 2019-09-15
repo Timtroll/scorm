@@ -133,10 +133,11 @@
         </table>
       </div>
     </template>
-
+s
     <!--bodyRight-->
     <template #bodyRight>
-      <List :data="JSON.parse(JSON.stringify(card.bodyRightItem))"
+      <!--:row-data="JSON.parse(JSON.stringify(card.bodyRightItem))"-->
+      <List :row-data="card.bodyRightItem"
             :required="editRequired"
             :parent="libId"
             :folder="0"
@@ -282,7 +283,7 @@
 
         if (this.table.body) {
 
-          const tableBody = this.table.body
+          const tableBody = [...this.table.body]
 
           return tableBody.filter(item => {
             return !this.searchInput

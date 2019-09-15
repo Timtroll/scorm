@@ -30,9 +30,7 @@ new Vue({
 
 // directive 'v-focus' - autofocus on input
 Vue.directive('focus', {
-
   inserted: function (el) {
     el.focus()
   }
-
 })

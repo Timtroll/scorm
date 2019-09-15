@@ -60,7 +60,7 @@
 </template>
 
 <script>
-  import TableRow from './TableRow'
+  import TableRow from './TableMultyRow'
 
   export default {
     name:       'Table',
