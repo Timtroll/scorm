@@ -101,9 +101,87 @@
 
 # ЗАПРОСЫ
 
-1. `*/*_set` - Получить таблицу
-2. `*/*_set_proto` - Получить прототип строки
+1. `*/*_get` - Получить таблицу
+запрос 
+```{ id: 99, owner: 22 }```
+
+ответ (описание выше)
+
+2. `*/*_get_proto` - Получить прототип строки
+```{ owner: 22 }```
+
+ответ
+```
+{
+  "name":        "fullDebugMode",
+  "label":       "Число",
+  "placeholder": "Number",
+  "mask":        "[0..9\\w ]+",
+  "type":        "InputNumber",
+  "value":       "",
+  "selected":    []
+}
+```
+
 3. `*/*_add` - Добавить строку таблицы
+запрос:
+```{
+  "owner":       22,
+  "name":        "fullDebugMode",
+  "label":       "Число",
+  "placeholder": "Number",
+  "mask":        "[0..9\\w ]+",
+  "type":        "InputNumber",
+  "value":       "",
+  "selected":    []
+}
+```
+ответ 
+```{status: ok/fail, message:"причина ошибки"}```
+
 4. `*/*_save` - Сохранить строку таблицы
+запрос:
+```{
+  "id":          999,
+  "owner":       22,
+  "name":        "fullDebugMode",
+  "label":       "Число",
+  "placeholder": "Number",
+  "mask":        "[0..9\\w ]+",
+  "type":        "InputNumber",
+  "value":       "",
+  "selected":    []
+}
+```
+ответ 
+```{status: ok/fail, message:"причина ошибки"}```
+
+
 5. `*/*_save_mass` - Сохранить значение поля у нескольких строк таблицы 
+запрос:
+```
+[
+  {
+    "id":          999,
+    "owner":       22,
+    "name":        "fullDebugMode" - поле, которое изменено (может быть несколько полей)
+  },
+  {
+    "id":          999,
+    "owner":       22,
+    "name":        "fullDebugMode" - поле, которое изменено (может быть несколько полей)
+  }
+]
+```
+ответ 
+```{status: ok/fail, message:"причина ошибки"}```
+
 6. `*/*_delete` - Удалить строку таблицы
+запрос:
+```{
+  "id":          999,
+  "owner":       22
+}
+```
+ответ 
+```{status: ok/fail, message:"причина ошибки"}```
