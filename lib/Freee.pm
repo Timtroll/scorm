@@ -61,17 +61,26 @@ print $self->beans_init(), "\n";
 
     my $auth = $r->under()              ->to('auth#check_token');
 
-    $auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки
-    $auth->post('/cms/set_load_default')->to('settings#set_load_default');  # загрузка дефолтных настроек
+    $auth->post('/settings/get_one')     ->to('settings#get_one');      # загрузка одной настройки
+    $auth->post('/settings/load_default')->to('settings#load_default'); # загрузка дефолтных настроек
 
-    $auth->post('/cms/set')             ->to('settings#index');         # объект с настройками
-    $auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');  # раздел
-    $auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
-    $auth->post('/cms/set_savetab')     ->to('settings#set_savetab');   # подраздел
-    $auth->post('/cms/set_deletetab')   ->to('settings#set_deletetab');
-    $auth->post('/cms/set_add')         ->to('settings#set_add');       # строка таблицы
-    $auth->post('/cms/set_save')        ->to('settings#set_save');
-    $auth->post('/cms/set_delete')      ->to('settings#set_delete');
+    # левая менюха (дерево)
+    $auth->post('/settings/proto_folder')->to('settings#proto_folder'); # прототип для добавлениястроки (все поля)
+    $auth->post('/settings/edittab')     ->to('settings#edittab');      # список полей для фолдера
+    $auth->post('/settings/get_list')    ->to('settings#get_list');     # список фолдеров/настроек по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+# ???????????? сделать полное дерево с текущим уровнем
+    $auth->post('/settings/get_tree')    ->to('settings#get_tree');     # дерево по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+    $auth->post('/settings/savetab')     ->to('settings#savetab');      # добавление/сохранение фолдера
+    $auth->post('/settings/deletetab')   ->to('settings#deletetab');    # удаление фолдера
+
+    # строки настроек
+    $auth->post('/settings/proto_row')   ->to('settings#proto_row');    # прототип для добавления строки (все поля)
+    $auth->post('/settings/edit')        ->to('settings#edit');         # добавление настройки
+    $auth->post('/settings/activate')    ->to('settings#activate');     # включение настройки
+    $auth->post('/settings/hide')        ->to('settings#hide');         # писок полей для редактирования настройки
+    $auth->post('/settings/save')        ->to('settings#save');         # добавление/сохранение настройки
+    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
+    $auth->post('/settings/delete')      ->to('settings#delete');       # удаление настройки
 
     # управление контентом
     $auth->post('/cms/article')         ->to('cmsarticle#index');
