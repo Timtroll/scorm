@@ -13,18 +13,27 @@
 </template>
 <script>
 
-  const InputText       = () => import('../inputs/InputText')
-  const InputTextarea   = () => import('../inputs/InputTextarea')
-  const InputSelect     = () => import('../inputs/InputSelect')
-  const InputNumber     = () => import('../inputs/InputNumber')
-  const InputBoolean    = () => import('../inputs/InputBoolean')
-  const InputRadio      = () => import('../inputs/InputRadio')
-  const InputList       = () => import('../inputs/InputList')
-  const InputDoubleList = () => import('../inputs/InputDoubleList')
+  //const InputText       = () => import('../inputs/InputText')
+  //const InputTextarea   = () => import('../inputs/InputTextarea')
+  //const InputSelect     = () => import('../inputs/InputSelect')
+  //const InputNumber     = () => import('../inputs/InputNumber')
+  //const InputBoolean    = () => import('../inputs/InputBoolean')
+  //const InputRadio      = () => import('../inputs/InputRadio')
+  //const InputList       = () => import('../inputs/InputList')
+  //const InputDoubleList = () => import('../inputs/InputDoubleList')
 
   export default {
     name:       'List',
-    components: {InputTextarea, InputText, InputSelect, InputNumber, InputBoolean, InputRadio, InputList, InputDoubleList},
+    components: {
+      InputTextarea:   () => import('../inputs/InputTextarea'),
+      InputText:       () => import('../inputs/InputText'),
+      InputSelect:     () => import('../inputs/InputSelect'),
+      InputNumber:     () => import('../inputs/InputNumber'),
+      InputBoolean:    () => import('../inputs/InputBoolean'),
+      InputRadio:      () => import('../inputs/InputRadio'),
+      InputList:       () => import('../inputs/InputList'),
+      InputDoubleList: () => import('../inputs/InputDoubleList')
+    },
 
     // Закрыть панель при нажатии "ESC"
     created () {

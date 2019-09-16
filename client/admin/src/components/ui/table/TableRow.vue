@@ -122,6 +122,7 @@
           this.$emit('edit-row', this.fullData)
         }
 
+        this.$store.commit('cms_table_row_data', event)
         this.$store.commit('cms_table_row_show', !this.pageTableRowShow)
 
       },

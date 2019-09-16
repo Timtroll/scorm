@@ -44,7 +44,9 @@
   import DatePick from './../datePick/DatePick'
 
   export default {
-    components: {DatePick},
+    components: {
+      DatePick
+    },
 
     name: 'inputDateTime',
 

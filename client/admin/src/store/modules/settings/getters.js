@@ -19,6 +19,7 @@ const getters = {
 
   pageTableRow:     state => state.cms.row,
   pageTableRowShow: state => state.cms.row.open,
+  pageTableRowData: state => state.cms.row.data,
   rightPanelSize:   state => state.main.rightPanelLarge,
 
   Settings: state => state.cms.data,
@@ -31,3 +32,4 @@ const getters = {
 }
 
 export default getters
+
