@@ -170,6 +170,19 @@ print $self->beans_init(), "\n";
     $auth->post('/user/hide')           ->to('user#hide');
     $auth->post('/user/delete')         ->to('user#index');
 
+    # управление группами пользователей
+    #$auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки
+    #$auth->post('/cms/set_load_default')->to('settings#set_load_default');  # загрузка дефолтных настроек
+    #$auth->post('/cms/set')             ->to('settings#index');         # объект с настройками
+    #$auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');  # раздел
+    #$auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
+    #$auth->post('/cms/set_savetab')     ->to('settings#set_savetab');   # подраздел
+    #$auth->post('/cms/set_deletetab')   ->to('settings#set_deletetab');
+    $auth->post('/groups/add')         ->to('groups#add');       # строка таблицы
+    $auth->post('/groups/update')      ->to('groups#update');
+    $auth->post('/groups/delete')      ->to('groups#delete');    #удаление из таблицы групп
+    $auth->post('/groups/status')      ->to('groups#status');
+
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');
     $auth->post('/subject/list')        ->to('subject#list');
@@ -239,6 +252,8 @@ print $self->beans_init(), "\n";
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
+
+
 
     # $r->any('/*')->to('index#index');
 }

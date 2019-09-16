@@ -214,8 +214,130 @@ sub register {
         $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
         $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
         $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
+        
         return $row;
     });
+
+
+
+
+
+
+
+    ###################################################################
+    # таблица групп пользователей
+    ###################################################################
+
+
+    # для создания возможностей пользователя
+    # my $id = $self->insert_group({
+    #     "folder"      => 0,           - это возможности пользователя
+    #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+    #     "label"       => 'название',  - обязательно (название для отображения)
+    #     "name",       => 'name'       - обязательно (системное название, латиница)
+    #     "editable"    => 1,           - не обязательно, по умолчанию 1
+    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+    #     "removable"   => 1,           - не обязательно, по умолчанию 1
+    #     "value"       => "",            - строка или json
+    #     "required"    => 1              - обязательное поле
+    # });
+    # для создания группы пользователей
+    # my $id = $self->insert_group({
+    #     "folder"      => 1,           - это пользователь
+    #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+    #     "label"       => 'название',  - обязательно (название для отображения)
+    #     "name",       => 'name'       - обязательно (системное название, латиница)
+    #     "editable"    => 1,           - не обязательно, по умолчанию 1
+    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+    #     "removable"   => 1,           - не обязательно, по умолчанию 1
+    # });    
+    $app->helper( 'insert_group' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        # сериализуем поле value 
+        if(  defined $self->param('value') ) { 
+            $$data{'value'} = '' if ($$data{'value'} eq 'null');
+            $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        }
+
+        $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
+        my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' });
+
+        return $id;
+    });
+
+
+    # для редактирования группы
+    # возвращается id записи
+    $app->helper( 'update_group' => sub {
+        my ($self, $data) = @_;
+        my $id = $self->param('id');
+
+        my $rv = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+
+        return unless $data && $rv;;
+
+       
+
+        $rv = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+
+        return $rv;
+    });
+
+
+
+    # для удаления группы пользователей
+    # my $true = $self->delete_group( 99 );
+    # возвращается true/false
+    $app->helper( 'delete_group' => sub {
+        my ($self, $id) = @_;
+
+        # проверка на наличие удаляемой строки в groups
+        my $rv = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+
+        return unless $rv;
+
+        $rv = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id);
+        $rv = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id);
+
+        return $rv;
+    });
+
+    # для изменения параметра status
+    # возвращается true/false
+    $app->helper( 'status_group' => sub {
+        my ($self, $id, $status) = @_;
+
+        # проверка на наличие удаляемой строки в groups
+        my $rv = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+
+        return unless $rv;
+
+        #$rv = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id);
+        #$rv = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        #$rv = $self->pg_dbh->do('UPDATE "public"."groups" SET "status" = '.$status' WHERE "id"='.$id);
+        $rv = $self->pg_dbh->do( qq(UPDATE "public"."groups" set STATUS = 1 where ID=1;) );
+
+
+        return $rv;
+    });
+
+    # для проверки корректности наследования
+    # возвращается true/false
+    $app->helper( 'lib_id_check' => sub {
+        my ($self, $lib_id) = @_;
+        my $rv;
+
+        # проверка является ли родитель фолдером
+        if ( $lib_id ){
+            $rv = $self->pg_dbh->selectrow_array('SELECT lib_id FROM "public"."groups" WHERE "id"='.$lib_id);
+        }
+
+        return ($lib_id && $rv);
+    });
+
 
 }
 
