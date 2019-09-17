@@ -1,8 +1,16 @@
-import router from './../../../router'
-import methods from './../../methods'
+import router from '../../../router'
 import UIkit from 'uikit/dist/js/uikit.min'
-import Api from './../../../api/Settings'
+import Api from '../../../api/_Settings'
 
+// Notify
+const notify = (message, status = 'primary', timeout = '4000', pos = 'top-center') => {
+  UIkit.notification({
+    message: message,
+    status:  status,
+    pos:     pos,
+    timeout: timeout
+  })
+}
 
 const actions = {
 
@@ -14,7 +22,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('cms_request')
 
-      Api.get_tree()
+      Api.tree()
          .then(response => {
            if (response.status === 200) {
 
@@ -29,7 +37,29 @@ const actions = {
                if (settings.length > 0) {
 
                  // массив всех таблиц
-                 const tableData = methods.flat([...settings])
+                 const tableData = []
+
+                 const flat = (arr) => {
+                   arr.forEach((item) => {
+
+                     let newItem = {
+                       label:     item.label,
+                       id:        item.id,
+                       folder:    item.folder,
+                       keywords:  item.keywords,
+                       component: item.component,
+                       table:     item.table
+                     }
+
+                     tableData.push(newItem)
+
+                     if (item.children && item.children.length > 0) {
+                       flat(item.children)
+                     }
+                   })
+                 }
+
+                 flat([...settings])
 
                  commit('cms_table_flat', tableData)
 
@@ -56,7 +86,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_error')
-           methods.notify('ERROR: ' + err, 'danger')
+           notify('ERROR: ' + err, 'danger')
            //reject(err)
          })
       resolve()
@@ -79,10 +109,10 @@ const actions = {
                commit('cms_row_success')
                commit('cms_table_row_show', false)
                dispatch('getTree')
-               methods.notify(resp.status, 'success')
+               notify(resp.status, 'success')
                resolve(response)
              } else {
-               methods.notify(resp.message, 'danger')
+               notify(resp.message, 'danger')
                commit('cms_row_error')
              }
              //commit('cms_', resp.settings)
@@ -91,7 +121,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_row_error')
-           methods.notify(err, 'danger')
+           notify(err, 'danger')
            reject(err)
          })
       resolve()
@@ -112,10 +142,10 @@ const actions = {
                commit('cms_row_success')
                commit('cms_table_row_show', false)
                dispatch('getTree')
-               methods.notify(resp.status, 'success')
+               notify(resp.status, 'success')
                resolve(response)
              } else {
-               methods.notify(resp.message, 'danger')
+               notify(resp.message, 'danger')
                commit('cms_row_error')
              }
 
@@ -123,7 +153,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_row_error')
-           methods.notify(err, 'danger')
+           notify(err, 'danger')
            reject(err)
          })
       resolve()
@@ -151,10 +181,10 @@ const actions = {
                  commit('cms_row_success')
                  commit('cms_table_row_show', false)
                  dispatch('getTree')
-                 methods.notify(resp.status, 'success')
+                 notify(resp.status, 'success')
                  resolve(response)
                } else {
-                 methods.notify(resp.message, 'danger')
+                 notify(resp.message, 'danger')
                  commit('cms_row_error')
                }
 
@@ -162,7 +192,7 @@ const actions = {
            })
            .catch(err => {
              commit('cms_row_error')
-             methods.notify(err, 'danger')
+             notify(err, 'danger')
              reject(err)
            })
         resolve()
@@ -193,10 +223,10 @@ const actions = {
                commit('cms_row_success')
                commit('cms_show_add_group', false)
                dispatch('getTree')
-               methods.notify(resp.status, 'success')
+               notify(resp.status, 'success')
                resolve(response)
              } else {
-               methods.notify(resp.message, 'danger')
+               notify(resp.message, 'danger')
                commit('cms_row_error')
              }
 
@@ -204,7 +234,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_row_error')
-           methods.notify(err, 'danger')
+           notify(err, 'danger')
            reject(err)
          })
       resolve()
@@ -224,10 +254,10 @@ const actions = {
                commit('cms_row_success')
                commit('cms_show_add_group', false)
                dispatch('getTree')
-               methods.notify(resp.status, 'success')
+               notify(resp.status, 'success')
                resolve(response)
              } else {
-               methods.notify(resp.message, 'danger')
+               notify(resp.message, 'danger')
                commit('cms_row_error')
              }
 
@@ -235,7 +265,7 @@ const actions = {
          })
          .catch(err => {
            commit('cms_row_error')
-           methods.notify(err, 'danger')
+           notify(err, 'danger')
            reject(err)
          })
       resolve()

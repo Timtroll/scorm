@@ -9,11 +9,11 @@ const getters = {
   pageTableFlat:  state => state.cms.tableFlat, // for table
   pageTableNames: state => state.cms.tableNames,
 
-  navActiveId: state => state.tree.activeId,
+  navActiveId: state => state.cms.activeId,
 
-  editPanelItem:         state => state.editPanel.item,
-  pageTableAddGroupShow: state => state.editPanel.show,
-  pageTableAddEditGroup: state => state.editPanel.add,
+  pageTableAddGroupData: state => state.cms.addGroup.data,
+  pageTableAddGroupShow: state => state.cms.addGroup.show,
+  pageTableAddEditGroup: state => state.cms.addGroup.add,
 
   pageTableCurrentId: state => state.cms.activeId,
 
@@ -22,7 +22,7 @@ const getters = {
   pageTableRowData: state => state.cms.row.data,
   rightPanelSize:   state => state.main.rightPanelLarge,
 
-  tree: state => state.tree.items,
+  Settings: state => state.cms.data,
 
   inputComponents: state => state.inputComponents,
 
