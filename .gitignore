@@ -4,7 +4,7 @@ public
 
 .DS_Store
 client/admin/node_modules/
-# client/admin/dist
+client/admin/dist
 
 # firebase
 client/admin/.firebase/
