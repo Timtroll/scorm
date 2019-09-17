@@ -182,6 +182,7 @@ print $self->beans_init(), "\n";
     $auth->post('/groups/update')      ->to('groups#update');
     $auth->post('/groups/delete')      ->to('groups#delete');    #удаление из таблицы групп
     $auth->post('/groups/status')      ->to('groups#status');
+    
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');

@@ -278,6 +278,9 @@ print Dumper(\%data);
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fa
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 
