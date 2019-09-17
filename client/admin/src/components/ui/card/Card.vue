@@ -7,7 +7,8 @@
          'pos-bgr-default' : headerBgrDefault,
          'pos-header-large' : headerLarge,
          'pos-header-small' : headerSmall,
-         'pos-header-padding-none' : headerPaddingNone}"
+         'pos-header-padding-none' : headerPaddingNone
+         }"
          v-if="header">
 
       <!--headerLeft-->
@@ -16,7 +17,7 @@
         <slot name="headerLeft"></slot>
       </div>
 
-      <!--header content-->
+      <!--header settings-->
       <div class="pos-card-header--content">
         <slot name="header"></slot>
       </div>
@@ -40,30 +41,19 @@
       </a>
     </div>
 
-    <!--content-->
+    <!--Body-->
     <div class="pos-card-body">
 
-      <!--content-middle-->
+      <!--body-middle-->
       <div class="pos-card-body-middle"
            ref="body"
            :class="{'pos-padding': bodyPadding}">
 
         <slot name="body"></slot>
 
-        <!--error-->
-        <!--<transition name="fade">-->
-        <!--  <div class="pos-card-loader"-->
-        <!--       v-if="loader === 'error'">-->
-        <!--    <div>-->
-        <!--      <IconBug :size="70"-->
-        <!--               :spin="true"></IconBug>-->
-        <!--      <p v-html="$t('actions.requestError')"></p>-->
-        <!--    </div>-->
-        <!--  </div>-->
-        <!--</transition>-->
       </div>
 
-      <!--content-left-->
+      <!--body-left-->
       <transition name="slide-left">
         <div class="pos-card-body-left"
              ref="bodyLeft"
@@ -86,7 +76,7 @@
         <slot name="footerLeft"></slot>
       </div>
 
-      <!--header content-->
+      <!--header settings-->
       <div class="pos-card-header--content">
         <slot name="footer"></slot>
       </div>
@@ -99,7 +89,7 @@
       </div>
     </div>
 
-    <!--content-right-->
+    <!--settings-right-->
     <transition name="slide-right">
       <div class="pos-card-body-right"
            v-if="bodyRightShow"
@@ -123,20 +113,21 @@
       </div>
     </transition>
 
-
   </div>
 </template>
 
 <script>
-  import Loader from '../icons/Loader'
-  import IconBug from '../icons/IconBug'
-
   const bodyMinSize = 960
 
   export default {
 
     name:       'Card',
-    components: {Loader, IconBug},
+
+    components: {
+      Loader:  () => import('../icons/Loader'),
+      IconBug: () => import('../icons/IconBug')
+    },
+
     props:      {
 
       // header
@@ -257,13 +248,13 @@
       RightToggleState () {
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('card_left_state', false)
+          this.$store.commit('cardRightState', false)
         }
       },
 
       cardLeftClickAction () {
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('card_left_state', false)
+          this.$store.commit('cardLeftState', false)
         }
       }
     },
@@ -276,7 +267,7 @@
       },
 
       rightPanelSize () {
-        return this.$store.getters.rightPanelSize
+        return this.$store.getters.cardRightPanelLarge
       },
 
       leftToggleState () {
@@ -299,9 +290,7 @@
     methods: {
 
       handleResize () {
-
         setTimeout(() => {this.bodyWidth = this.$refs.body.offsetWidth}, 300)
-
       }
     }
   }

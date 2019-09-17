@@ -6,7 +6,8 @@
         :body-left-toggle-show="true"
         :body-right="true"
         :body-right-show="pageTableAddGroupShow"
-        :body-padding="false">
+        :body-padding="false"
+        :loader="loader">
 
     <!-- // Body // -->
     <template #body>
@@ -14,21 +15,25 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <!--<router-view/>-->
+        <router-view/>
       </transition>
 
     </template>
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <!--<Tree v-if="nav"-->
-      <!--      :nav="nav">-->
-      <!--</Tree>-->
+      <Tree v-if="nav"
+            :nav="nav">
+      </Tree>
     </template>
 
     <!--bodyRight-->
     <template #bodyRight>
-
+      <List :row-data="pageTableAddGroupData"
+            :labels="'Добавить группу настроек'"
+            :add="pageTableAddEditGroup"
+            :group="true"
+            v-on:close="closeAddGroup"></List>
     </template>
 
   </Card>
@@ -37,11 +42,11 @@
 <script>
 
   // Mock
-  const TreeData = import('./../../assets/mock/navTree')
+  const MockTree = () => require('./../../assets/mock/navTree')
 
   export default {
 
-    name: 'Settings',
+    name: 'Cms',
 
     components: {
       IconBug: () => import('../ui/icons/IconBug'),
@@ -59,9 +64,7 @@
     },
 
     created () {
-      this.$store.commit('set_tree', TreeData)
-      this.$store.commit('tree_status_success')
-      //this.$store.dispatch('getTree')
+      this.$store.dispatch('getTree')
     },
 
     beforeDestroy () {
@@ -70,17 +73,29 @@
 
     computed: {
 
-      loader () {
-        return this.$store.getters.queryStatus
-      },
-
       pageTableAddGroupShow () {
         return this.$store.getters.pageTableAddGroupShow
       },
 
+      pageTableAddGroupData () {
+        return this.$store.getters.pageTableAddGroupData
+      },
+
+      pageTableAddEditGroup () {
+        return this.$store.getters.pageTableAddEditGroup
+      },
+
+      pageTable () {
+        return this.$store.state.cms.navTree.items
+      },
+
+      loader () {
+        return this.$store.getters.queryStatus
+      },
+
       // Left nav tree
       nav () {
-        return this.$store.getters.Tree
+        return this.$store.getters.Settings
       },
 
       cardLeftClickAction () {
