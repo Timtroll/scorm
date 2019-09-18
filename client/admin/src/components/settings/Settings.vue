@@ -28,7 +28,9 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-
+      <List :labels="'Добавить группу настроек'"
+            :group="true"
+            v-on:close="closeAddGroup"></List>
     </template>
 
   </Card>
@@ -37,7 +39,7 @@
 <script>
 
   // Mock
-  const TreeData = import('./../../assets/mock/navTree')
+  const TreeData = require('./../../assets/mock/navTree')
 
   export default {
 
@@ -55,13 +57,15 @@
     data () {
       return {
         leftNavToggleMobile: false
+
       }
     },
 
     created () {
-      this.$store.commit('set_tree', TreeData)
-      this.$store.commit('tree_status_success')
+      this.$store.commit('tree/set_tree', TreeData)
+      this.$store.commit('tree/tree_status_success')
       //this.$store.dispatch('getTree')
+      console.log(this.dataNav)
     },
 
     beforeDestroy () {
@@ -69,6 +73,9 @@
     },
 
     computed: {
+      dataNav () {
+        return TreeData
+      },
 
       loader () {
         return this.$store.getters.queryStatus

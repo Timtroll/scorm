@@ -154,7 +154,7 @@ s
 <script>
   import TableRow from './TableRow'
   import Card from '../../ui/card/Card'
-  import List from '../../ui/list/List'
+  import List from '../cmsList/List'
 
   export default {
     name:       'Table',
