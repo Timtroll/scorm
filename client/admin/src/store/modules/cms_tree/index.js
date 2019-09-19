@@ -3,14 +3,18 @@ import mutations from './mutations'
 import getters from './getters'
 
 const state = {
-  status:   'loading',
-  open:     false,
-  activeId: null,
-  items:    []
+
+  tree: {
+    status:   'loading',
+    open:     false,
+    activeId: null,
+    items:    []
+  }
+
 }
 
 export default {
-  namespaced: true,
+  namespaced: false,
   state:      state,
   actions:    actions,
   mutations:  mutations,

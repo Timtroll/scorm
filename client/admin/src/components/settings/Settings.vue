@@ -21,9 +21,9 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <!--<Tree v-if="nav"-->
-      <!--      :nav="nav">-->
-      <!--</Tree>-->
+      <Tree v-if="nav"
+            :nav="nav">
+      </Tree>
     </template>
 
     <!--bodyRight-->
@@ -62,23 +62,19 @@
     },
 
     created () {
-      this.$store.commit('tree/set_tree', TreeData)
-      this.$store.commit('tree/tree_status_success')
+      this.$store.commit('set_tree', TreeData)
+      this.$store.commit('tree_status_success')
       //this.$store.dispatch('getTree')
-      console.log(this.dataNav)
     },
 
     beforeDestroy () {
-      this.$store.commit('cms_table_row_show', false)
+      this.$store.commit('editPanel_show', false)
     },
 
     computed: {
-      dataNav () {
-        return TreeData
-      },
 
       loader () {
-        return this.$store.getters.queryStatus
+        return this.$store.getters.tree_status
       },
 
       pageTableAddGroupShow () {
@@ -87,7 +83,7 @@
 
       // Left nav tree
       nav () {
-        return this.$store.getters.Tree
+        return this.$store.getters.tree
       },
 
       cardLeftClickAction () {
@@ -104,7 +100,7 @@
       },
 
       closeAddGroup () {
-        this.$store.commit('cms_show_add_group', false)
+        this.$store.commit('editPanel/editPanel_group', false)
       }
     }
 

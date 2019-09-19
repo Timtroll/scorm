@@ -66,13 +66,18 @@
 </template>
 
 <script>
-  import NavTree from './NavTree'
   import IconBug from '../icons/IconBug'
 
   export default {
-    components: {IconBug, NavTree},
-    name:       'Tree',
-    props:      {
+
+    components: {
+      IconBug,
+      NavTree: () => import('./NavTree')
+    },
+
+    name: 'Tree',
+
+    props: {
       nav: {
         type: Array
       }
@@ -91,7 +96,7 @@
       flattenNav () {
         if (this.searchInput) {
 
-          const nav        = this.nav
+          const nav        = [...this.nav]
           const flattenNav = []
 
           const flat = (arr) => {
@@ -101,9 +106,9 @@
                 label:     item.label,
                 id:        item.id,
                 keywords:  item.keywords,
+                folder:    item.folder,
                 component: item.component,
                 opened:    item.opened,
-                table:     item.table,
                 children:  item.children
               }
 
@@ -116,7 +121,9 @@
               }
             })
           }
+
           flat(nav)
+
           return flattenNav
 
         } else {
@@ -128,11 +135,17 @@
       // Поиск по полю label && keywords
       filterSearch () {
 
-        return this.flattenNav.filter(item => {
-          return !this.searchInput
-            || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
-            || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
-        })
+        return this.flattenNav
+                   .filter(item => {
+                     return !this.searchInput
+                       || item.label
+                              .toLowerCase()
+                              .indexOf(this.searchInput.toLowerCase()) > -1
+                       || item.keywords
+                              .toLowerCase()
+                              .indexOf(this.searchInput.toLowerCase()) > -1
+                   })
+
       }
     },
 

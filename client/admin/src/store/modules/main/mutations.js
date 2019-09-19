@@ -6,7 +6,7 @@ const mutations = {
   card_left_show (state, data) {
     state.card.leftShow = data
   },
-  
+
   card_right_show (state, data) {
     state.card.rightShow = data
   },
