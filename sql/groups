@@ -16,4 +16,4 @@ CREATE TABLE "public"."groups" (
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."groups" OWNER TO "otrs";
+

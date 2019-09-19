@@ -12,23 +12,37 @@ my $t = Test::Mojo->new('Freee');
 
 # положительные тесты
 
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '3', lib_id => '0', name => 'test', label => 'test'} )->status_is(200)->json_is( { status =>'ok' } );
+# изменение на фолдер
+my $data = { id => '3', lib_id => '0', name => 'test', label => 'test'};
+my $result = { status => 'ok'};
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '3', lib_id => '7', name => 'test', label => 'test'} )->status_is(200)->json_is( { status =>'ok' } );
+# изменение на наследование
+$data = { id => '3', lib_id => '1', name => 'test', label => 'test'};
+$result = { status => 'ok'};
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
 
 # отрицательные тесты
 
-my $result1 = { message => "Can't find row for updating", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '404', lib_id => '0', name => 'test', label => 'test'} )->status_is(200)->json_is( $result1 );
+# указан не сущуствующий id
+$data = { id => '404', lib_id => '0', name => 'test', label => 'test'};
+$result = { message => "Can't find row for updating", status => "fail" };
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
-my $result2 = { message => "Required fields do not exist", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '3', lib_id => '0', name => 'test' } )->status_is(200)->json_is( $result2 );
+# не указан label
+$data = { id => '3', lib_id => '0', name => 'test' };
+$result = { message => "Required fields do not exist", status => "fail" };
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
-my $result3 = { message => "Wrong lib_id", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '3', lib_id => '9', name => 'test', label => 'test' } )->status_is(200)->json_is( $result3 );
+# указан lib_id не на фолдер
+$data = { id => '3', lib_id => '4', name => 'test', label => 'test' };
+$result = { message => "Wrong lib_id", status => "fail" };
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
-my $result4 = { message => "Wrong lib_id", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/update' => form => { id => '3', lib_id => '404', name => 'test', label => 'test' } )->status_is(200)->json_is( $result4 );
+# указан не сущуствующий lib_id
+$data = { id => '3', lib_id => '404', name => 'test', label => 'test' };
+$result = { message => "Wrong lib_id", status => "fail" };
+$t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )->status_is(200)->json_is( $result );
 
 done_testing();

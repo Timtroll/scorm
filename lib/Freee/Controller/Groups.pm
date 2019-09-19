@@ -10,22 +10,22 @@ use Freee::Mock::Settings;
 use Data::Dumper;
 
 
-# для создания возможностей пользователя
+# для создания возможностей групп пользователей
 # my $id = $self->insert_group({
 #     "folder"      => 0,           - это возможности пользователя
-#     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+#     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "editable"    => 0,           - не обязательно, по умолчанию 0
 #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 0,           - не обязательно, по умолчанию 0
 #     "value"       => "",            - строка или json
-#     "required"    => 0              - обязательное поле
+#     "required"    => 0            - не обязательно, по умолчанию 0
 # });
 # для создания группы пользователей
 # my $id = $self->insert_group({
-#     "folder"      => 1,           - это пользователь
-#     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
+#     "folder"      => 1,           - это группа пользователей
+#     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -54,26 +54,24 @@ sub add {
         }
     }
 
-    # сериализуем поле value 
-    if ( defined $self->param('value') ) { 
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-    }
-
-    # проверка обязательных полей
     my ($id, $lib_id, @mess);
-    unless ( ( $data{'lib_id'} ) && ( ( ! ( $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$data{'lib_id'} ) ) || ( $self->pg_dbh->selectrow_array('SELECT lib_id FROM "public"."groups" WHERE "id"='.$data{'lib_id'} ) ) ) ) ){ 
+
+    #проверка lib_id
+    if ( $self->lib_id_check( $data{'lib_id'} ) ){ 
+
+        #проверка остальных полей
         if (  $data{'label'} && $data{'name'} ) {
 
             #добавление
-            $id = $self->insert_group( \%data, [] );
+            $id = $self->insert_group( \%data );
             push @mess, "Could not new group item '$data{'label'}'" unless $id;
+        }
 
-        } 
         else {
             push @mess, "Required fields do not exist";
         }
-    } 
+    }
+
     else {
         push @mess, "Wrong lib_id";
     }
@@ -87,6 +85,31 @@ sub add {
   
 }
 
+
+# для обновления возможностей групп пользователей
+# my $id = $self->insert_group({
+#       "id"        => 1            - id обновляемого элемента ( >0 )
+#     "folder"      => 0,           - это возможности пользователя
+#     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "editable"    => 0,           - не обязательно, по умолчанию 0
+#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "removable"   => 0,           - не обязательно, по умолчанию 0
+#     "value"       => "",            - строка или json
+#     "required"    => 0            - не обязательно, по умолчанию 0
+# });
+# для создания группы пользователей
+# my $id = $self->insert_group({
+#       "id"        => 1            - id обновляемого элемента ( >0 )
+#     "folder"      => 1,           - это группа пользователей
+#     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "editable"    => 0,           - не обязательно, по умолчанию 0
+#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "removable"   => 0,           - не обязательно, по умолчанию 0
+# });
 # обновление групп
 sub update {
     my ($self) = shift;
@@ -102,8 +125,6 @@ sub update {
     $data{'status'} = $self->param('status') || 0;
     $data{'lib_id'} = 0 unless $data{'lib_id'} =~ /\d+/;
 
-
-
     # запись дополнительных значений, если это не folder
     if ( $self->param('lib_id') ) {
         my @fields = ("value", "required");
@@ -112,25 +133,18 @@ sub update {
         }
     }
 
-    #сериализуем поле value 
-     if(  defined $self->param('value') ) { 
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-     }
-
-
     # проверка поля lib_id
-    unless ( ( $data{'lib_id'} ) && ( ( ! ( $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$data{'lib_id'} ) ) || ( $self->pg_dbh->selectrow_array('SELECT lib_id FROM "public"."groups" WHERE "id"='.$data{'lib_id'} ) ) ) ) ){ 
+    if ( $self->lib_id_check( $data{'lib_id'} ) ) {
 
         # проверка остальных обязательных полей
         if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
 
             # проверка существования обновляемой строки
-            if ( $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$data{'id'} ) ) {
+            if ( $self->id_check( $data{'id'} ) ) {
 
                 #обновление
                 print Dumper(\%data);
-                $id = $self->update_group( \%data, [] );
+                $id = $self->update_group( \%data );
                 push @mess, "Could not update setting item '$data{'label'}'" unless $id;
 
             }
@@ -157,20 +171,19 @@ sub update {
 
 
 # для удаления из групп пользователей
+#  "id" => 1 - id удаляемого элемента ( >0 )
 sub delete {
     my $self = shift;
 
     # read params
     my $id = $self->param('id');
-
-    # проверка обязательных полей
     my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Could not id for deleting" unless $id;
-
+   
+    # проверка обязательных полей
     if ( $id ) {
+
         # проверка на существование удаляемой строки в groups
-        if ( $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id ) ) {
+        if ( $self->id_check( $id ) ) {
 
             # процесс удаления
             $id = $self->delete_group( $id );
@@ -181,6 +194,10 @@ sub delete {
             $id = 0;
             push @mess, "Can't find row for deleting";
         }
+
+    } 
+    else {
+        push @mess, "Could not id for deleting" unless $id;
     }
 
     #вывод результата
@@ -192,7 +209,10 @@ sub delete {
     $self->render( 'json' => $resp );
 }
 
+
 # для смены статуса
+#  "id"     => 1 - id изменяемого элемента ( > 0 )
+#  "status" => 0 или 1 - новый статус элемента
 sub status {
     my $self = shift;
 
@@ -201,30 +221,36 @@ sub status {
     $data{'id'} = $self->param('id');
     $data{'status'} = $self->param('status');
 
-    # проверка обязательных полей
     my @mess;
-    $data{'id'} = 0 unless $data{'id'} =~ /\d+/;
-    push @mess, "Need id for changing" unless  $data{'id'};
 
-    $data{'id'} = 0 unless ( ( $data{'status'} == 0 ) || ( $data{'status'} == 1 ) );
-    push @mess, "New status is wrong" unless  $data{'id'};
-
-    
+     # проверка id
     if ( $data{'id'} ) {
-        # проверка на существование строки 
-        if ( $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$data{'id'} ) ) {
 
-            #процесс смены статуса
-            $id = $self->status_group( \%data, [] );
-            push @mess, "Can't change status" unless $id;
+        # проверка статуса
+        if ( ( $data{'status'} == 0 ) || ( $data{'status'} == 1 ) ) {
+
+            # проверка на существование строки 
+            if ( $self->id_check( $data{'id'} ) ) {
+
+                #процесс смены статуса
+                $id = $self->status_group( \%data, [] );
+                push @mess, "Can't change status" unless $id;
+
+            }
+            else {
+                push @mess, "Can't find row for updating";
+            }
 
         }
         else {
-            $id = 0;
-            push @mess, "Can't find row for updating";
+            push @mess, "New status is wrong";
         }
-    }
 
+    } 
+    else {
+        push @mess, "Need id for changing";
+    }
+    
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
@@ -232,7 +258,7 @@ sub status {
 
     $self->render( 'json' => $resp );
 
-    }
+}
 
 
 1;
