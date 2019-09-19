@@ -104,7 +104,7 @@
         const children = [...this.navItem.children]
 
         if (children && children.length > 0) {
-          this.opened = !!children.find(i => i.id === Number(this.$store.getters.navActiveId));
+          this.opened = !!children.find(i => i.id === Number(this.$store.getters.navActiveId))
         }
       }
     },
@@ -122,7 +122,7 @@
     computed: {
 
       navActiveId () {
-        return this.$store.getters.navActiveId
+        return this.$store.getters.activeId
       },
 
       cardLeftClickAction () {
@@ -138,23 +138,28 @@
 
       click (item) {
 
-        if (this.navActiveId !== this.navItem.id) {
-          this.$store.commit('cms_table_row_show', false)
-          this.$store.commit('tree_active', item.id)
-          this.$store.commit('cms_table', item.table)
+        if (this.navItem.folder === 1) {
+          this.toggleChildren()
+        } else {
+          if (this.navActiveId !== this.navItem.id) {
+            this.$store.commit('editPanel_show', false)
+            this.$store.commit('tree_active', item.id)
+            this.$store.commit('set_table', item)
 
-          this.$router.push({
-            name:   'SettingItem',
-            params: {
-              id:    item.id,
-              title: item.label,
-              item:  item
-            }
-          })
+            this.$router.push({
+              name:   'SettingItem',
+              params: {
+                id:    item.id,
+                title: item.label,
+                item:  item
+              }
+            })
+
+          }
+
+          this.$store.commit('card_left_nav_click', !this.cardLeftClickAction)
 
         }
-
-        this.$store.commit('card_left_nav_click', !this.cardLeftClickAction)
 
       },
 
@@ -171,7 +176,7 @@
         }
 
         this.$store.commit('cms_add_group', group)
-        this.$store.commit('cms_show_add_group', true)
+        this.$store.commit('editPanel_group', true)
         this.$store.commit('cms_show_add_edit_toggle', true)
         this.$store.commit('editPanel_status_success')
       },
@@ -189,7 +194,7 @@
         }
 
         this.$store.commit('cms_add_group', group)
-        this.$store.commit('cms_show_add_group', true)
+        this.$store.commit('editPanel_group', true)
         this.$store.commit('cms_show_add_edit_toggle', false)
         this.$store.commit('editPanel_status_success')
       },
