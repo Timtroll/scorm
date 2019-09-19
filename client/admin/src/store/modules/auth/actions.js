@@ -1,17 +1,7 @@
 import axios from 'axios'
 import router from '../../../router'
-import UIkit from 'uikit/dist/js/uikit.min'
+import methods from './../../methods'
 import Api from './../../../api/Auth'
-
-// Notify
-const notify = (message, status = 'primary', timeout = '2000', pos = 'top-center') => {
-  UIkit.notification({
-    message: message,
-    status:  status,
-    pos:     pos,
-    timeout: timeout
-  })
-}
 
 const actions = {
 
@@ -32,13 +22,13 @@ const actions = {
              commit('auth_success', token, user)
              resolve(response)
            } else {
-             notify(resp.mess, 'danger')
+             methods.notify(resp.mess, 'danger')
              commit('auth_error')
              localStorage.removeItem('token')
            }
          })
          .catch(err => {
-           notify(err, 'danger')
+           methods.notify(err, 'danger')
            commit('auth_error')
            reject(err)
          })
@@ -57,13 +47,13 @@ const actions = {
              commit('logout')
              localStorage.removeItem('token')
              delete axios.defaults.headers.common['Authorization']
-             notify('До встречи!', 'success')
+             methods.notify('До встречи!', 'success')
              router.push({name: 'Login'})
              resolve(response)
            }
          })
          .catch(err => {
-           notify(err, 'danger')
+           methods.notify(err, 'danger')
            reject(err)
          })
 

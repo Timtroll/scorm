@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.e9af20131fc5f8cbf507ec613e0ae0ff.js"
+  "/precache-manifest.48c0069f727c3f4f7682552483139dfa.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "scorm_admin"});

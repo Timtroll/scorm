@@ -11,11 +11,11 @@ if (process.env.NODE_ENV === 'production') {
 
     cached () {console.log('Content has been cached for offline use.')},
 
-    updatefound () {console.log('New content is downloading.')},
-    
+    updatefound () {console.log('New settings is downloading.')},
+
     updated () {
 
-      console.log('New content is available; please refresh.')
+      console.log('New settings is available; please refresh.')
 
       const update = confirm('Доступно обновление. Нажмите "ОК" для перезагрузки')
 

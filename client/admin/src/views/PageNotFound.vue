@@ -8,7 +8,7 @@
             <p class="uk-heading-2xlarge"
                v-text="$t('err404.title')"></p>
             <p class="uk-h4 uk-text-lowercase uk-margin-remove uk-text-muted"
-               v-text="$t('err404.content')"></p>
+               v-text="$t('err404.settings')"></p>
           </div>
         </div>
 

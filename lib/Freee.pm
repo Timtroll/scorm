@@ -49,126 +49,126 @@ print $self->beans_init(), "\n";
 
     # Router
     my $r = $self->routes;
-    $r->post('/api/login')              ->to('auth#login');
-    $r->any('/api/logout')              ->to('auth#logout');
+    $r->post('/api/login')                ->to('auth#login');
+    $r->any('/api/logout')                ->to('auth#logout');
 
-    $r->any('/api/doc')                 ->to('index#doc');
+    $r->any('/api/doc')                   ->to('index#doc');
 
-    $r->any('/api/test')                ->to('websocket#test');
-    $r->post('/api/deploy')             ->to('deploy#index');           # deploy после push
-    $r->websocket('/api/channel')       ->to('websocket#index');
+    $r->any('/api/test')                  ->to('websocket#test');
+    $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
+    $r->websocket('/api/channel')         ->to('websocket#index');
 
 
-    my $auth = $r->under()              ->to('auth#check_token');
+    my $auth = $r->under()                ->to('auth#check_token');
 
-    $auth->post('/settings/get_one')     ->to('settings#get_one');      # загрузка одной настройки
-    $auth->post('/settings/load_default')->to('settings#load_default'); # загрузка дефолтных настроек
+    $auth->post('/settings/get_one')      ->to('settings#get_one');       # загрузка одной настройки
+    $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
 
     # левая менюха (дерево)
-    $auth->post('/settings/proto_folder')->to('settings#proto_folder'); # прототип для добавлениястроки (все поля)
-    $auth->post('/settings/edittab')     ->to('settings#edittab');      # список полей для фолдера
-    $auth->post('/settings/get_list')    ->to('settings#get_list');     # список фолдеров/настроек по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+    $auth->post('/settings/proto_folder') ->to('settings#proto_folder');  # прототип для добавлениястроки (все поля)
+    $auth->post('/settings/edit_tab')     ->to('settings#edit_tab');      # список полей для фолдера
+    $auth->post('/settings/get_list')     ->to('settings#get_list');      # список фолдеров/настроек по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
 # ???????????? сделать полное дерево с текущим уровнем
-    $auth->post('/settings/get_tree')    ->to('settings#get_tree');     # дерево по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
-    $auth->post('/settings/savetab')     ->to('settings#savetab');      # добавление/сохранение фолдера
-    $auth->post('/settings/deletetab')   ->to('settings#deletetab');    # удаление фолдера
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');      # дерево по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+    $auth->post('/settings/save_tab')     ->to('settings#save_tab');      # добавление/сохранение фолдера
+    $auth->post('/settings/delete_tab')   ->to('settings#delete_tab');    # удаление фолдера
 
     # строки настроек
-    $auth->post('/settings/proto_row')   ->to('settings#proto_row');    # прототип для добавления строки (все поля)
-    $auth->post('/settings/edit')        ->to('settings#edit');         # добавление настройки
-    $auth->post('/settings/activate')    ->to('settings#activate');     # включение настройки
-    $auth->post('/settings/hide')        ->to('settings#hide');         # писок полей для редактирования настройки
-    $auth->post('/settings/save')        ->to('settings#save');         # добавление/сохранение настройки
+    $auth->post('/settings/proto_row')    ->to('settings#proto_row');     # прототип для добавления строки (все поля)
+    $auth->post('/settings/edit')         ->to('settings#edit');          # добавление настройки
+    $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
+    $auth->post('/settings/hide')         ->to('settings#hide');          # Список полей для редактирования настройки
+    $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
     # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
-    $auth->post('/settings/delete')      ->to('settings#delete');       # удаление настройки
+    $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
 
     # управление контентом
-    $auth->post('/cms/article')         ->to('cmsarticle#index');
-    $auth->post('/cms/article_add')     ->to('cmsarticle#add');
-    $auth->post('/cms/article_edit')    ->to('cmsarticle#edit');
-    $auth->post('/cms/article_save')    ->to('cmsarticle#save');
-    $auth->post('/cms/article_activate')->to('cmsarticle#activate');
-    $auth->post('/cms/article_hide')    ->to('cmsarticle#hide');
-    $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
+    $auth->post('/cms/article')           ->to('cmsarticle#index');
+    $auth->post('/cms/article_add')       ->to('cmsarticle#add');
+    $auth->post('/cms/article_edit')      ->to('cmsarticle#edit');
+    $auth->post('/cms/article_save')      ->to('cmsarticle#save');
+    $auth->post('/cms/article_activate')  ->to('cmsarticle#activate');
+    $auth->post('/cms/article_hide')      ->to('cmsarticle#hide');
+    $auth->post('/cms/article_delete')    ->to('cmsarticle#delete');
 
-    $auth->post('/cms/subject')          ->to('cmssubject#index');
-    $auth->post('/cms/subject_add')      ->to('cmssubject#add');
-    $auth->post('/cms/subject_edit')     ->to('cmssubject#edit');
-    $auth->post('/cms/subject_save')     ->to('cmssubject#save');
-    $auth->post('/cms/subject_activate') ->to('cmssubject#activate');
-    $auth->post('/cms/subject_hide')     ->to('cmssubject#hide');
-    $auth->post('/cms/subject_delete')   ->to('cmssubject#delete');
+    $auth->post('/cms/subject')           ->to('cmssubject#index');
+    $auth->post('/cms/subject_add')       ->to('cmssubject#add');
+    $auth->post('/cms/subject_edit')      ->to('cmssubject#edit');
+    $auth->post('/cms/subject_save')      ->to('cmssubject#save');
+    $auth->post('/cms/subject_activate')  ->to('cmssubject#activate');
+    $auth->post('/cms/subject_hide')      ->to('cmssubject#hide');
+    $auth->post('/cms/subject_delete')    ->to('cmssubject#delete');
 
-    $auth->post('/cms/item')             ->to('cmsitems#index');
-    $auth->post('/cms/item_add')         ->to('cmsitems#add');
-    $auth->post('/cms/item_edit')        ->to('cmsitems#edit');
-    $auth->post('/cms/item_save')        ->to('cmsitems#saveitem');
-    $auth->post('/cms/item_activate')    ->to('cmsitems#activate');
-    $auth->post('/cms/item_hide')        ->to('cmsitems#hide');
-    $auth->post('/cms/item_delete')      ->to('cmsitems#delete');
+    $auth->post('/cms/item')              ->to('cmsitems#index');
+    $auth->post('/cms/item_add')          ->to('cmsitems#add');
+    $auth->post('/cms/item_edit')         ->to('cmsitems#edit');
+    $auth->post('/cms/item_save')         ->to('cmsitems#saveitem');
+    $auth->post('/cms/item_activate')     ->to('cmsitems#activate');
+    $auth->post('/cms/item_hide')         ->to('cmsitems#hide');
+    $auth->post('/cms/item_delete')       ->to('cmsitems#delete');
 
     # управление почтновыми сообщениями, рассылками
-    $auth->post('/cms/mail')             ->to('cmsmail#index');
-    $auth->post('/cms/mail_add')         ->to('cmsmail#add');
-    $auth->post('/cms/mail_edit')        ->to('cmsmail#edit');
-    $auth->post('/cms/mail_save')        ->to('cmsmail#save');
-    $auth->post('/cms/mail_activate')    ->to('cmsmail#activate');
-    $auth->post('/cms/mail_hide')        ->to('cmsmail#hide');
-    $auth->post('/cms/mail_delete')      ->to('cmsmail#delete');
+    $auth->post('/cms/mail')              ->to('cmsmail#index');
+    $auth->post('/cms/mail_add')          ->to('cmsmail#add');
+    $auth->post('/cms/mail_edit')         ->to('cmsmail#edit');
+    $auth->post('/cms/mail_save')         ->to('cmsmail#save');
+    $auth->post('/cms/mail_activate')     ->to('cmsmail#activate');
+    $auth->post('/cms/mail_hide')         ->to('cmsmail#hide');
+    $auth->post('/cms/mail_delete')       ->to('cmsmail#delete');
 
     # управление библиотекой
-    $auth->post('/library/')            ->to('library#index');
-    $auth->post('/library/list')        ->to('library#list');
-    $auth->post('/library/search')      ->to('library#search');
-    $auth->post('/library/add')         ->to('library#add');
-    $auth->post('/library/edit')        ->to('library#edit');
-    $auth->post('/library/save')        ->to('library#save');
-    $auth->post('/library/upload')      ->to('library#upload');
-    $auth->post('/library/activate')    ->to('library#activate');
-    $auth->post('/library/hide')        ->to('library#hide');
-    $auth->post('/library/delete')      ->to('library#delete');
+    $auth->post('/library/')              ->to('library#index');
+    $auth->post('/library/list')          ->to('library#list');
+    $auth->post('/library/search')        ->to('library#search');
+    $auth->post('/library/add')           ->to('library#add');
+    $auth->post('/library/edit')          ->to('library#edit');
+    $auth->post('/library/save')          ->to('library#save');
+    $auth->post('/library/upload')        ->to('library#upload');
+    $auth->post('/library/activate')      ->to('library#activate');
+    $auth->post('/library/hide')          ->to('library#hide');
+    $auth->post('/library/delete')        ->to('library#delete');
 
     # проверка заданий
-    $auth->post('/mentors/')            ->to('mentors#index');
-    $auth->post('/mentors/setmentor')   ->to('mentors#setmentor');
-    $auth->post('/mentors/unsetmentor') ->to('mentors#unsetmentor');
-    $auth->post('/mentors/tasks')       ->to('mentors#tasks');
-    $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
-    $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
-    $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
-    $auth->post('/mentors/setmark')     ->to('mentors#setmark'); # возможно не нужно ?????????
+    $auth->post('/mentors/')              ->to('mentors#index');
+    $auth->post('/mentors/setmentor')     ->to('mentors#setmentor');
+    $auth->post('/mentors/unsetmentor')   ->to('mentors#unsetmentor');
+    $auth->post('/mentors/tasks')         ->to('mentors#tasks');
+    $auth->post('/mentors/viewtask')      ->to('mentors#viewtask');
+    $auth->post('/mentors/addcomment')    ->to('mentors#addcomment');
+    $auth->post('/mentors/savecomment')   ->to('mentors#savecomment');
+    $auth->post('/mentors/setmark')       ->to('mentors#setmark'); # возможно не нужно ?????????
  # возможно еще что-то ?????????
 
     # управление календарями/расписанием
-    $auth->post('/scheduler/')          ->to('scheduler#index');
-    $auth->post('/scheduler/add')       ->to('scheduler#add');
-    $auth->post('/scheduler/edit')      ->to('scheduler#edit');
-    $auth->post('/scheduler/save')      ->to('scheduler#save');
-    $auth->post('/scheduler/move')      ->to('scheduler#move');
-    $auth->post('/scheduler/activate')  ->to('scheduler#activate');
-    $auth->post('/scheduler/hide')      ->to('scheduler#hide');
-    $auth->post('/scheduler/delete')    ->to('scheduler#delete');
+    $auth->post('/scheduler/')            ->to('scheduler#index');
+    $auth->post('/scheduler/add')         ->to('scheduler#add');
+    $auth->post('/scheduler/edit')        ->to('scheduler#edit');
+    $auth->post('/scheduler/save')        ->to('scheduler#save');
+    $auth->post('/scheduler/move')        ->to('scheduler#move');
+    $auth->post('/scheduler/activate')    ->to('scheduler#activate');
+    $auth->post('/scheduler/hide')        ->to('scheduler#hide');
+    $auth->post('/scheduler/delete')      ->to('scheduler#delete');
 
     # согласование программы предмета
-    $auth->post('/agreement/')          ->to('agreement#index');
-    $auth->post('/agreement/add')       ->to('agreement#add');
-    $auth->post('/agreement/edit')      ->to('agreement#edit');
-    $auth->post('/agreement/save')      ->to('agreement#save');
-    $auth->post('/agreement/request')   ->to('agreement#request');
-    $auth->post('/agreement/reject')    ->to('agreement#reject');
-    $auth->post('/agreement/approve')   ->to('agreement#approve');
-    $auth->post('/agreement/comment')   ->to('agreement#comment');
-    $auth->post('/agreement/delete')    ->to('agreement#delete'); # возможно не нужно ?????????
+    $auth->post('/agreement/')            ->to('agreement#index');
+    $auth->post('/agreement/add')         ->to('agreement#add');
+    $auth->post('/agreement/edit')        ->to('agreement#edit');
+    $auth->post('/agreement/save')        ->to('agreement#save');
+    $auth->post('/agreement/request')     ->to('agreement#request');
+    $auth->post('/agreement/reject')      ->to('agreement#reject');
+    $auth->post('/agreement/approve')     ->to('agreement#approve');
+    $auth->post('/agreement/comment')     ->to('agreement#comment');
+    $auth->post('/agreement/delete')      ->to('agreement#delete'); # возможно не нужно ?????????
 
     # управление темами
-    $auth->post('/user/')               ->to('user#index');
-    $auth->post('/user/list')           ->to('user#list');
-    $auth->post('/user/add')            ->to('user#add');
-    $auth->post('/user/edit')           ->to('user#edit');
-    $auth->post('/user/save')           ->to('user#save');
-    $auth->post('/user/activate')       ->to('user#activate');
-    $auth->post('/user/hide')           ->to('user#hide');
-    $auth->post('/user/delete')         ->to('user#index');
+    $auth->post('/user/')                 ->to('user#index');
+    $auth->post('/user/list')             ->to('user#list');
+    $auth->post('/user/add')              ->to('user#add');
+    $auth->post('/user/edit')             ->to('user#edit');
+    $auth->post('/user/save')             ->to('user#save');
+    $auth->post('/user/activate')         ->to('user#activate');
+    $auth->post('/user/hide')             ->to('user#hide');
+    $auth->post('/user/delete')           ->to('user#index');
 
     # управление группами пользователей
     #$auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки

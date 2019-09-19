@@ -43,13 +43,15 @@
 
 <script>
 
-  import NavBarUserMenu from './NavBarUserMenu'
+  //import NavBarUserMenu from './NavBarUserMenu'
 
   export default {
 
     name: 'NavBar',
 
-    components: {NavBarUserMenu},
+    components: {
+      NavBarUserMenu: () => import('./NavBarUserMenu')
+    },
 
     data () {
       return {}
@@ -58,7 +60,7 @@
     computed: {
 
       leftToggle () {
-        return this.$store.getters.cardLeftAction
+        return this.$store.getters.navBarLeftAction
       },
 
       leftToggleState () {
@@ -68,7 +70,9 @@
       // заголовок страницы
       pageTitle () {
         if (this.$route.params.title) {
-          return '<span class="uk-text-muted">' + this.$route.meta.breadcrumb + ':</span> ' + this.$route.params.title
+          return '<span class="uk-text-success">' +
+            this.$route.meta.breadcrumb + ' - </span> '
+            + this.$route.params.title
         } else {
           return this.$route.meta.breadcrumb
         }
@@ -79,7 +83,7 @@
 
     methods: {
       leftToggleAction () {
-        this.$store.commit('card_left_state', !this.leftToggleState)
+        this.$store.commit('card_left_show', !this.leftToggleState)
       }
     }
   }

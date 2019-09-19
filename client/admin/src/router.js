@@ -15,7 +15,8 @@ const router = new Router({
       meta:      {
         authRequired: false
       }
-    }, {
+    },
+    {
       path:           '/',
       name:           'Main',
       component:      () => import('./views/Main'),
@@ -23,11 +24,12 @@ const router = new Router({
       sideMenuParent: true,
       meta:           {
         authRequired: true
-      }, children:    [
+      },
+      children:       [
         {
-          path:      '/dashboard',
-          name:      'Dashboard',
-          component: () => import('./components/dashboard/DashBoard'),
+          path:          '/dashboard',
+          name:          'Dashboard',
+          component:     () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -46,9 +48,9 @@ const router = new Router({
             breadcrumb:   'Контент'
           }
         }, {
-          path:      '/courses',
-          name:      'Courses',
-          component: () => import('./components/dashboard/DashBoard'),
+          path:          '/courses',
+          name:          'Courses',
+          component:     () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -56,9 +58,9 @@ const router = new Router({
             breadcrumb:   'Курсы'
           }
         }, {
-          path:      '/review',
-          name:      'Review',
-          component: () => import('./components/dashboard/DashBoard'),
+          path:          '/review',
+          name:          'Review',
+          component:     () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -66,9 +68,9 @@ const router = new Router({
             breadcrumb:   'Отзывы'
           }
         }, {
-          path:      '/users',
-          name:      'Users',
-          component: () => import('./components/dashboard/DashBoard'),
+          path:          '/users',
+          name:          'Users',
+          component:     () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -76,19 +78,19 @@ const router = new Router({
             breadcrumb:   'Пользователи'
           }
         }, {
-          path:      '/media',
-          name:      'Media',
-          component: () => import('./components/dashboard/DashBoard'),
+          path:          '/media',
+          name:          'Media',
+          component:     () => import('./components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
             icon:         'img/icons/sidebar_media.svg',
             breadcrumb:   'Медиа хранилище'
           }
-        },  {
-          path:      '/groups',
-          name:      'Groups',
-          component: () => import('./components/dashboard/DashBoard'),
+        }, {
+          path:          '/groups',
+          name:          'Groups',
+          component:     () => import('./components/dashboard/DashBoard'),
           //component: () => import('./components/groups/Groups'),
           showInSideBar: true,
           meta:          {
@@ -97,9 +99,9 @@ const router = new Router({
             breadcrumb:   'Управление группами пользователей'
           }
         }, {
-          path:      '/profile',
-          name:      'Profile',
-          component: () => import('./components/profile/Account'),
+          path:          '/profile',
+          name:          'Profile',
+          component:     () => import('./components/profile/Account'),
           showInSideBar: false,
           meta:          {
             authRequired: true,
@@ -118,9 +120,9 @@ const router = new Router({
           },
           children:      [
             {
-              path:      '/settings/:id',
-              name:      'SettingItem',
-              component: () => import('./components/ui/table/Table'),
+              path:          '/settings/:id',
+              name:          'SettingItem',
+              component:     () => import('./components/ui/cmsTable/Table'),
               showInSideBar: false,
               meta:          {
                 authRequired: true,
@@ -130,7 +132,8 @@ const router = new Router({
           ]
         }
       ]
-    }, {
+    },
+    {
       path:          '/404',
       name:          'pageNotFound',
       component:     () => import('./views/PageNotFound'),
@@ -139,10 +142,14 @@ const router = new Router({
         authRequired: false,
         breadcrumb:   'Страница не найдена'
       }
-    }, {
+    },
+    {
       path:     '/*',
       redirect: '/404',
-      meta:     {authRequired: false}
+      meta:     {
+        authRequired: false,
+        breadcrumb:   'Страница не найдена'
+      }
     }
 
   ]

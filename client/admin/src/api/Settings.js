@@ -2,10 +2,11 @@ import Api from './Api.js'
 
 export default {
 
-  tree () {
+  get_tree (id = 0) {
     return Api()({
-      url:    'cms/set',
-      method: 'post'
+      url:    'settings/get_tree',
+      method: 'post',
+      params: id
     })
   },
 
@@ -16,18 +17,18 @@ export default {
    */
 
   // добавление
-  set_add (params) {
-    return Api()({
-      url:    'cms/set_add',
-      method: 'post',
-      params: params
-    })
-  },
+  //set_add (params) {
+  //  return Api()({
+  //    url:    'cms/set_add',
+  //    method: 'post',
+  //    params: params
+  //  })
+  //},
 
-  // Обновление
+  // Обновление / добавление
   set_save (params) {
     return Api()({
-      url:    'cms/set_save',
+      url:    'settings/save',
       method: 'post',
       params: params
     })
@@ -36,7 +37,7 @@ export default {
   // удаление
   set_delete (id) {
     return Api()({
-      url:    'cms/set_delete',
+      url:    'settings/delete',
       method: 'post',
       params: id
     })
