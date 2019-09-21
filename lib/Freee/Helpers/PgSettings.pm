@@ -255,10 +255,12 @@ sub register {
     $app->helper( 'insert_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
+        my $id;
 
-        $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
-        my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' });
-
+        if ( $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+            $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
+        }
+ 
         return $id;
     });
 
@@ -302,53 +304,44 @@ sub register {
     $app->helper( 'delete_group' => sub {
         my ($self, $id) = @_;
         return unless $id;
+        my $db_result = 0;
 
-        # $dbh->begin_work();
+        eval { 
 
-        # unless ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id) ) {
-        #     $dbh->rollback();
-        # } 
-        # else {
-        #     unless ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
-        #         $dbh->rollback();
-        #     }
-        #     else {
-        #         $db_result = 1;
-        #     }
-        # }
+            $self->pg_dbh->begin_work();
 
-        # $dbh->commit();
+            if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id) ) {
 
-        # return $db_result;
+                if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
 
+                    if ( $db_result == "0E0") { 
+                        print "Row for deleting doesn't exist \n";
+                        $db_result = 0;
+                        $self->pg_dbh->rollback();
 
+                    }   
 
+                }
+                else {
+                    print "Folder delete doesn't work \n";
+                    $self->pg_dbh->rollback();
+                }
 
-        # my $pg_dbh;
-        # $self->$pg_dbh->begin_work();
-        # my $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id);
-        # print Dumper($db_result);
-        # $db_result = 0;
-        # unless ( $db_result ) {
-        #     $self->$pg_dbh->rollback();
-        #     return 0;
-        # }
-        # $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id);
-        # print Dumper($db_result);
-        # unless ( $db_result ) {
-        #     $self->$pg_dbh->rollback();
-        #     return 0;
-        # }
-        # $self->$pg_dbh->commit();
-        # return $db_result;
-        
+            } 
+            else {
+                print "Children delete doesn't work \n";
+                $self->pg_dbh->rollback();
+            }
 
+            $self->pg_dbh->commit();
 
+        } ;
 
-        
-        my $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id);
-        $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id);
-
+        if ($@) { 
+                $self->pg_dbh->rollback();
+                print "Delete doesn't work \n";
+        } 
+        print "$db_result \n";
         return $db_result;
 
     });
@@ -401,7 +394,6 @@ sub register {
         return unless $id;
 
         my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
-
         return $db_result;
     });
 }

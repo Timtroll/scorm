@@ -40,21 +40,19 @@ sub add {
     $data{'lib_id'} = $self->param('lib_id');
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
+    $data{'lib_id'} = $self->param('lib_id') || 0;
     $data{'editable'} = $self->param('editable') || 0;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
     $data{'status'} = $self->param('status') || 0;
-    $data{'lib_id'} = 0 unless $data{'lib_id'} =~ /\d+/;
 
     # запись дополнительных значений, если это не folder
     if ( $self->param('lib_id') ) {
-        my @fields = ("value", "required");
-        foreach (@fields) {
-            $data{$_} = $self->param($_) || 0;
-        }
+       $data{'required'} = $self->param('required') || 0;
+       $data{'value'} = $self->param('value') || "";
     }
 
-    my ($id, $lib_id, @mess);
+    my ($id, @mess, $resp);
 
     #проверка lib_id
     if ( $self->lib_id_check( $data{'lib_id'} ) ){ 
@@ -76,7 +74,6 @@ sub add {
         push @mess, "Wrong lib_id";
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;   
@@ -116,21 +113,18 @@ sub update {
 
     my (%data, $data, $id, $lib_id, @mess);
     $data{'id'} = $self->param('id');
-    $data{'lib_id'} = $self->param('lib_id');
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
+    $data{'lib_id'} = $self->param('lib_id') || 0;
     $data{'editable'} = $self->param('editable') || 0;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
     $data{'status'} = $self->param('status') || 0;
-    $data{'lib_id'} = 0 unless $data{'lib_id'} =~ /\d+/;
 
     # запись дополнительных значений, если это не folder
     if ( $self->param('lib_id') ) {
-        my @fields = ("value", "required");
-        foreach (@fields) {
-            $data{$_} = $self->param($_) || 0;
-        }
+       $data{'required'} = $self->param('required') || 0;
+       $data{'value'} = $self->param('value') || "";
     }
 
     # проверка поля lib_id
@@ -143,7 +137,7 @@ sub update {
             if ( $self->id_check( $data{'id'} ) ) {
 
                 #обновление
-                print Dumper(\%data);
+                #print Dumper(\%data);
                 $id = $self->update_group( \%data );
                 push @mess, "Could not update setting item '$data{'label'}'" unless $id;
 
@@ -187,7 +181,7 @@ sub delete {
 
             # процесс удаления
             $id = $self->delete_group( $id );
-            push @mess, "Could not deleted '$id'" unless $id;
+            push @mess, "Could not deleted" unless $id;
 
         }
         else {
