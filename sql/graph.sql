@@ -1,7 +1,12 @@
 DROP TYPE IF EXISTS "subscriptions_field_type";
+DROP TYPE IF EXISTS "EAV_field_type";
+CREATE TYPE "public"."EAV_field_type" AS ENUM ('blob', 'boolean', 'int', 'string', 'datetime');
+ALTER TYPE "public"."EAV_field_type" OWNER TO "troll";
 
-CREATE TYPE "public"."subscriptions_field_type" AS ENUM ('blob', 'boolean', 'int', 'string', 'datetime');
-ALTER TYPE "public"."subscriptions_field_type" OWNER TO "otrs";
+DROP TYPE IF EXISTS "subscriptions_object_type";
+DROP TYPE IF EXISTS "EAV_object_type";
+CREATE TYPE "public"."EAV_object_type" AS ENUM ('user');
+ALTER TYPE "public"."EAV_object_type" OWNER TO "troll";
 
 
 /* */
@@ -14,12 +19,7 @@ CONSTRAINT "EAV_links_pkey" PRIMARY KEY ("parent", "id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_links" OWNER TO "otrs";
-
-CREATE INDEX "EAV_links_id_distance_idx" ON "public"."EAV_links" USING btree ("id", "distance");
-CREATE INDEX "EAV_links_id_idx" ON "public"."EAV_links" USING btree ("id");
-CREATE INDEX "EAV_links_parent_distance_idx" ON "public"."EAV_links" USING btree ("parent", "distance");
-CREATE INDEX "EAV_links_parent_idx" ON "public"."EAV_links" USING btree ("parent");
+ALTER TABLE "public"."EAV_links" OWNER TO "troll";
 
 CREATE OR REPLACE FUNCTION "public"."EAV_links_trigger_ai"()
   RETURNS "pg_catalog"."trigger" AS $BODY$
@@ -42,31 +42,38 @@ $BODY$
   LANGUAGE 'plpgsql' VOLATILE COST 100
 ;
 
-ALTER FUNCTION "public"."EAV_links_trigger_ai"() OWNER TO "otrs";
+ALTER FUNCTION "public"."EAV_links_trigger_ai"() OWNER TO "troll";
 
 CREATE TRIGGER "EAV_links_trigger_ai" AFTER INSERT ON "public"."EAV_links"
 FOR EACH ROW
 EXECUTE PROCEDURE "EAV_links_trigger_ai"();
 
 /* */
-DROP SEQUENCE "public".eav_fields_id_seq CASCADE; 
+
+DROP SEQUENCE IF EXISTS "public".eav_fields_id_seq CASCADE; 
 CREATE SEQUENCE "public".eav_fields_id_seq;
+
+DROP SEQUENCE IF EXISTS "public".EAV_field_type CASCADE; 
+CREATE SEQUENCE "public".EAV_field_type;
+
+DROP SEQUENCE IF EXISTS "public".EAV_object_type CASCADE; 
+CREATE SEQUENCE "public".EAV_object_type;
+
 
 CREATE TABLE "public"."EAV_fields" (
 "id" int4 DEFAULT nextval('eav_fields_id_seq'::regclass) NOT NULL,
 "alias" varchar(255) COLLATE "default" NOT NULL,
 "title" varchar(255) COLLATE "default" NOT NULL,
-"type" "public"."subscriptions_field_type" DEFAULT 'blob'::subscriptions_field_type,
+"type" "public"."EAV_field_type" DEFAULT 'blob',
 "default_value" varchar(255) COLLATE "default",
-"set" "public"."subscriptions_object_type",
+"set" "public"."EAV_object_type",
 CONSTRAINT "EAV_fields_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_fields" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_fields" OWNER TO "troll";
 
-CREATE UNIQUE INDEX "EAV_fields_set_alias_idx" ON "public"."EAV_fields" USING btree ("set", "alias");
 
 /* */
 CREATE TABLE "public"."EAV_data_string_history" (
@@ -79,7 +86,7 @@ CONSTRAINT "EAV_data_string_history_pkey" PRIMARY KEY ("id", "field_id", "date_c
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_string_history" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_string_history" OWNER TO "troll";
 
 /* */
 CREATE TABLE "public"."EAV_data_string" (
@@ -91,11 +98,8 @@ CONSTRAINT "EAV_data_string_pkey" PRIMARY KEY ("id", "field_id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_string" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_string" OWNER TO "troll";
 
-CREATE INDEX "EAV_data_string_field_id_data_idx" ON "public"."EAV_data_string" USING btree ("field_id", "data");
-CREATE INDEX "EAV_data_string_id_field_id_data_idx" ON "public"."EAV_data_string" USING btree ("id", "field_id", "data");
-CREATE INDEX "EAV_data_string_id_field_id_idx" ON "public"."EAV_data_string" USING btree ("id", "field_id");
 
 /* */
 CREATE TABLE "public"."EAV_data_int4_history" (
@@ -108,7 +112,7 @@ CONSTRAINT "EAV_data_int4_history_pkey" PRIMARY KEY ("id", "field_id", "date_cha
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_int4_history" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_int4_history" OWNER TO "troll";
 
 /* */
 CREATE TABLE "public"."EAV_data_int4" (
@@ -120,11 +124,8 @@ CONSTRAINT "EAV_data_int4_pkey" PRIMARY KEY ("id", "field_id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_int4" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_int4" OWNER TO "troll";
 
-CREATE INDEX "EAV_data_int4_field_id_data_idx" ON "public"."EAV_data_int4" USING btree ("field_id", "data");
-CREATE INDEX "EAV_data_int4_id_field_id_data_idx" ON "public"."EAV_data_int4" USING btree ("id", "field_id", "data");
-CREATE INDEX "EAV_data_int4_id_field_id_idx" ON "public"."EAV_data_int4" USING btree ("id", "field_id");
 
 /* */
 CREATE TABLE "public"."EAV_data_datetime_history" (
@@ -137,7 +138,7 @@ CONSTRAINT "EAV_data_datetime_history_pkey" PRIMARY KEY ("id", "field_id", "date
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_datetime_history" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_datetime_history" OWNER TO "troll";
 
 /* */
 CREATE TABLE "public"."EAV_data_datetime" (
@@ -149,11 +150,8 @@ CONSTRAINT "EAV_data_datetime_pkey" PRIMARY KEY ("id", "field_id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_datetime" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_datetime" OWNER TO "troll";
 
-CREATE INDEX "EAV_data_datetime_field_id_data_idx" ON "public"."EAV_data_datetime" USING btree ("field_id", "data");
-CREATE INDEX "EAV_data_datetime_id_field_id_data_idx" ON "public"."EAV_data_datetime" USING btree ("id", "field_id", "data");
-CREATE INDEX "EAV_data_datetime_id_field_id_idx" ON "public"."EAV_data_datetime" USING btree ("id", "field_id");
 
 /* */
 CREATE TABLE "public"."EAV_data_boolean_history" (
@@ -166,7 +164,7 @@ CONSTRAINT "EAV_data_boolean_history_pkey" PRIMARY KEY ("id", "field_id", "date_
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_boolean_history" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_boolean_history" OWNER TO "troll";
 
 /* */
 CREATE TABLE "public"."EAV_data_boolean" (
@@ -178,23 +176,19 @@ CONSTRAINT "EAV_data_boolean_pkey" PRIMARY KEY ("id", "field_id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_data_boolean" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_data_boolean" OWNER TO "troll";
 
-CREATE INDEX "EAV_data_boolean_field_id_data_idx" ON "public"."EAV_data_boolean" USING btree ("field_id", "data");
-CREATE INDEX "EAV_data_boolean_id_field_id_data_idx" ON "public"."EAV_data_boolean" USING btree ("id", "field_id", "data");
-CREATE INDEX "EAV_data_boolean_id_field_id_idx" ON "public"."EAV_data_boolean" USING btree ("id", "field_id");
 
 /* */
-DROP SEQUENCE "public".eav_items_id_seq CASCADE; 
---DROP SEQUENCE "public".eav_items_id_seq CASCADE IF EXISTS "public".eav_items_id_seq;
-
+--DROP SEQUENCE "public".eav_items_id_seq CASCADE; 
+DROP SEQUENCE IF EXISTS "public".eav_items_id_seq CASCADE;
 CREATE SEQUENCE "public".eav_items_id_seq;
 
 CREATE TABLE "public"."EAV_items" (
 "id" int4 DEFAULT nextval('eav_items_id_seq'::regclass) NOT NULL,
 "publish" bool DEFAULT false NOT NULL,
 "import_id" int4 DEFAULT 0,
-"import_type" "public"."subscriptions_object_type",
+"import_type" "public"."EAV_object_type",
 "date_created" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
 "date_updated" date,
 "title" varchar(255) COLLATE "default",
@@ -205,7 +199,7 @@ CONSTRAINT "EAV_items_pkey" PRIMARY KEY ("id")
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."EAV_items" OWNER TO "otrs";
+ALTER TABLE "public"."EAV_items" OWNER TO "troll";
 
 CREATE UNIQUE INDEX "EAV_items_id_has_childs_idx" ON "public"."EAV_items" USING btree ("id", "has_childs");
 CREATE UNIQUE INDEX "EAV_items_id_import_type_has_childs_idx" ON "public"."EAV_items" USING btree ("id", "import_type", "has_childs");
@@ -216,3 +210,21 @@ CREATE INDEX "EAV_items_import_id_import_type_idx" ON "public"."EAV_items" USING
 CREATE INDEX "EAV_items_import_type_title_idx" ON "public"."EAV_items" USING btree ("import_type", "title");
 CREATE INDEX "EAV_items_publish_import_type_title_idx" ON "public"."EAV_items" USING btree ("publish", "import_type", "title");
 
+CREATE INDEX "EAV_data_string_field_id_data_idx" ON "public"."EAV_data_string" USING btree ("field_id", "data");
+CREATE INDEX "EAV_data_string_id_field_id_data_idx" ON "public"."EAV_data_string" USING btree ("id", "field_id", "data");
+CREATE INDEX "EAV_data_string_id_field_id_idx" ON "public"."EAV_data_string" USING btree ("id", "field_id");
+
+CREATE INDEX "EAV_data_boolean_field_id_data_idx" ON "public"."EAV_data_boolean" USING btree ("field_id", "data");
+CREATE INDEX "EAV_data_boolean_id_field_id_data_idx" ON "public"."EAV_data_boolean" USING btree ("id", "field_id", "data");
+CREATE INDEX "EAV_data_boolean_id_field_id_idx" ON "public"."EAV_data_boolean" USING btree ("id", "field_id");
+CREATE INDEX "EAV_data_datetime_field_id_data_idx" ON "public"."EAV_data_datetime" USING btree ("field_id", "data");
+CREATE INDEX "EAV_data_datetime_id_field_id_data_idx" ON "public"."EAV_data_datetime" USING btree ("id", "field_id", "data");
+CREATE INDEX "EAV_data_datetime_id_field_id_idx" ON "public"."EAV_data_datetime" USING btree ("id", "field_id");
+CREATE INDEX "EAV_data_int4_field_id_data_idx" ON "public"."EAV_data_int4" USING btree ("field_id", "data");
+CREATE INDEX "EAV_data_int4_id_field_id_data_idx" ON "public"."EAV_data_int4" USING btree ("id", "field_id", "data");
+CREATE INDEX "EAV_data_int4_id_field_id_idx" ON "public"."EAV_data_int4" USING btree ("id", "field_id");
+CREATE UNIQUE INDEX "EAV_fields_set_alias_idx" ON "public"."EAV_fields" USING btree ("set", "alias");
+CREATE INDEX "EAV_links_id_distance_idx" ON "public"."EAV_links" USING btree ("id", "distance");
+CREATE INDEX "EAV_links_id_idx" ON "public"."EAV_links" USING btree ("id");
+CREATE INDEX "EAV_links_parent_distance_idx" ON "public"."EAV_links" USING btree ("parent", "distance");
+CREATE INDEX "EAV_links_parent_idx" ON "public"."EAV_links" USING btree ("parent");

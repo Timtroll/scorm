@@ -1,6 +1,6 @@
-Drop table groups;
-Drop SEQUENCE groups_id_seq;
-CREATE SEQUENCE groups_id_seq;
+DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
+CREATE SEQUENCE "public".groups_id_seq;
+
 CREATE TABLE "public"."groups" (
 "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
 "lib_id" int4,
@@ -15,4 +15,4 @@ CREATE TABLE "public"."groups" (
 WITH (OIDS=FALSE)
 ;
 
-ALTER TABLE "public"."groups" OWNER TO "postgres";
+ALTER TABLE "public"."groups" OWNER TO "troll";
