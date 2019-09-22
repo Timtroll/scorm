@@ -13,7 +13,6 @@ use validate;
 use Data::Dumper;
 
 $| = 1;
-# has [qw( websockets amqp )];
 
 # This method will run once at server start
 sub startup {
@@ -36,13 +35,13 @@ sub startup {
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');
+    $self->plugin('Freee::Helpers::PgGroups');
 
     # init Pg connection
     $self->pg_init();
 
     # init Beanstalk connection
     $self->beans_init();
-print $self->beans_init(), "\n";
 
     # prepare validate functions
     prepare_validate();
@@ -158,7 +157,7 @@ print $self->beans_init(), "\n";
     $auth->post('/agreement/reject')      ->to('agreement#reject');
     $auth->post('/agreement/approve')     ->to('agreement#approve');
     $auth->post('/agreement/comment')     ->to('agreement#comment');
-    $auth->post('/agreement/delete')      ->to('agreement#delete'); # возможно не нужно ?????????
+    $auth->post('/agreement/delete')      ->to('agreement#delete');     # возможно не нужно ?????????
 
     # управление темами
     $auth->post('/user/')                 ->to('user#index');
@@ -169,6 +168,15 @@ print $self->beans_init(), "\n";
     $auth->post('/user/activate')         ->to('user#activate');
     $auth->post('/user/hide')             ->to('user#hide');
     $auth->post('/user/delete')           ->to('user#index');
+
+    # управление группами пользователей
+    $auth->post('/groups/')               ->to('groups#index');        # список групп
+    $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
+    $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
+    $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
+    # $auth->post('/groups/status')      ->to('groups#status');
+    $auth->post('/groups/hide')           ->to('groups#hide');         # отключить группу
+    $auth->post('/groups/activate')       ->to('groups#activate');     # включить группу
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');
@@ -239,6 +247,8 @@ print $self->beans_init(), "\n";
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
+
+
 
     # $r->any('/*')->to('index#index');
 }
