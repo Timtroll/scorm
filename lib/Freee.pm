@@ -74,12 +74,13 @@ sub startup {
 
     $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
 #    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
+    $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка настройки
+    $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
+    $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
     $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
     $auth->post('/settings/hide')         ->to('settings#hide');          # отлючение настройки
-    $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
     # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
-    $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');
@@ -248,9 +249,7 @@ sub startup {
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
-
-
-    # $r->any('/*')->to('index#index');
+    $r->any('/*')->to('index#index');
 }
 
 1;

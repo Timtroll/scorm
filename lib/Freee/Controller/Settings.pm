@@ -9,102 +9,154 @@ use Encode;
 use Freee::Mock::Settings;
 use Data::Dumper;
 
+#####################
+# Работа с фолдерами
+
+sub proto_folder {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'proto_folder'
+        }
+    );
+}
+
+sub get_folder {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'get_folder'
+        }
+    );
+}
+
+sub get_tree {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'get_tree'
+        }
+    );
+}
+
+sub save_folder {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'save_folder'
+        }
+    );
+}
+
+sub delete_folder {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'delete_folder'
+        }
+    );
+}
+
+#####################
+# Работа с Настройками
+
 # Список настроек из базы в виде объекта как в Mock/Settings.pm
 sub get_leafs {
     my $self = shift;
 
-#    # читаем настройки из базы
-#    my $list = $self->all_settings();
+   # читаем настройки из базы
+   my $list = $self->all_settings();
 
-#     my $settings = {};
-#     foreach my $id (sort {$a <=> $b} keys %$list) {
-#         # формируем данные для таблицы
-#         $$list{$id}{'table'} = $self->table_obj({
-#             'settings'  => {},
-#             'header'    => [
-#                 { "key" => "id", "label" => "id" },
-#                 { "key" => "label", "label" => "Название" },
-#                 # { "key" => "type", "label" => "Тип поля" },
-#                 { "key" => "value", "label" => "Значение" },
-#             ],
-#             'body'      => $$list{$id}{'table'}
-#         });
-#         push @{$$settings{'settings'}}, $$list{$id};
-#     }
+    my $set = {};
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        # формируем данные для таблицы
+        $$list{$id}{'table'} = $self->table_obj({
+            'settings'  => {},
+            'header'    => [
+                { "key" => "id", "label" => "id" },
+                { "key" => "label", "label" => "Название" },
+                # { "key" => "type", "label" => "Тип поля" },
+                { "key" => "value", "label" => "Значение" },
+            ],
+            'body'      => $$list{$id}{'table'}
+        });
+        push @{$$set{'settings'}}, $$list{$id};
+    }
 
-#     $$settings{'status'} = 'ok';
-# print Dumper($settings);
+    $$set{'status'} = 'ok';
+print Dumper($set);
 
     # показываем все настройки
-    $self->render( json => $settings );
+    $self->render( json => $set );
+    # $self->render( json => $settings );
 }
 
-sub set_tab_list {
-    my $self = shift;
+# загрузка данных в таблицу настроек из /Mock/Settings.pm
+sub set_load_default {
+    my ($self) = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'set_tab_list'
+    # очистка таблицы и сброс счетчика
+    $self->reset_setting();
+
+    my @mess;
+    foreach my $folder ( @{$settings->{'settings'}} ) {
+        my $sub = {
+            'label' => $$folder{'label'},
+            'name'  => $$folder{'label'},
+            'lib_id'=> 0
+        };
+        my $id = $self->insert_setting($sub, []);
+        push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
+
+        foreach ( @{$$folder{'table'}->{'body'}} ) {
+            # указываем родительский id
+            $_->{'lib_id'} = $id;
+
+            # сериализуем поля vaue и selected
+            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
+            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
+
+            my $newid = $self->insert_setting($_, ['lib_id']);
+            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
         }
-    );
-}
-
-sub set_addtab {
-    my $self = shift;
-
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'set_addtab'
-        }
-    );
-}
-
-sub set_savetab {
-    my $self = shift;
-
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'set_savetab'
-        }
-    );
-}
-
-sub set_deletetab {
-    my $self = shift;
-
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'set_deletetab'
-        }
-    );
-}
-
-# получение настройки по id
-# my $row = $self->set_get_one(2)
-sub set_get_one {
-    my $self = shift;
-
-    my $id = $self->param('id');
-
-    my $row = $self->get_row( $id );
+    }
 
     my $resp;
-    $resp->{'status'} = $row ? 'ok' : 'fail';
-    $resp->{'data'} = $row if $row;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
 
     $self->render( 'json' => $resp );
 }
 
+sub proto_leaf {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'proto_leaf'
+        }
+    );
+}
+
 # для создания настройки
-# my $id = $self->insert_setting({
+# my $id = $self->add({
 #     "folder"      => 0,           - это запись настроек
 #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
@@ -120,7 +172,7 @@ sub set_get_one {
 #     "required"    => 1              - обязательное поле
 # });
 # для создания группы настроек
-# my $id = $self->insert_setting({
+# my $id = $self->add({
 #     "folder"      => 1,           - это группа настроек
 #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
@@ -129,7 +181,7 @@ sub set_get_one {
 #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
-sub set_add {
+sub add {
     my ($self, $data) = @_;
 
     # read params
@@ -174,45 +226,24 @@ sub set_add {
     $self->render( 'json' => $resp );
 }
 
-# загрузка данных в таблицу настроек из /Mock/Settings.pm
-sub set_load_default {
-    my ($self) = shift;
+# получение настройки по id
+# my $row = $self->edit(2)
+sub edit {
+    my $self = shift;
 
-    # очистка таблицы и сброс счетчика
-    $self->reset_setting();
+    my $id = $self->param('id');
 
-    my @mess;
-    foreach my $folder ( @{$settings->{'settings'}} ) {
-        my $sub = {
-            'label' => $$folder{'label'},
-            'name'  => $$folder{'label'},
-            'lib_id'=> 0
-        };
-        my $id = $self->insert_setting($sub, []);
-        push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
-
-        foreach ( @{$$folder{'table'}->{'body'}} ) {
-            # указываем родительский id
-            $_->{'lib_id'} = $id;
-
-            # сериализуем поля vaue и selected
-            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
-            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
-
-            my $newid = $self->insert_setting($_, ['lib_id']);
-            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
-        }
-    }
+    my $row = $self->get_row( $id );
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'status'} = $row ? 'ok' : 'fail';
+    $resp->{'data'} = $row if $row;
 
     $self->render( 'json' => $resp );
 }
 
 # для сохранения настройки
-# my $id = $self->insert_setting({
+# my $id = $self->save({
 #     "folder"      => 0,           - это запись настроек
 #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
@@ -228,7 +259,7 @@ sub set_load_default {
 #     "required"    => 1              - обязательное поле
 # });
 # для сохранения группы настроек
-# my $id = $self->insert_setting({
+# my $id = $self->save({
 #     "folder"      => 1,           - это группа настроек
 #     "lib_id"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
@@ -237,7 +268,7 @@ sub set_load_default {
 #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
-sub set_save {
+sub save {
     my ($self) = shift;
 
     # read params
@@ -272,7 +303,7 @@ sub set_save {
             $data{$_} = $self->param($_);
         }
     }
-print Dumper(\%data);
+
     my $id = $self->save_setting( \%data, [] );
     push @mess, "Could not update setting item '$data{'label'}'" unless $id;
 
@@ -287,8 +318,8 @@ print Dumper(\%data);
 }
 
 # для удаления настройки
-# my $true = $self->delete_setting( 99 );
-sub set_delete {
+# my $true = $self->delete( 99 );
+sub delete {
     my $self = shift;
 
     # read params
@@ -308,6 +339,30 @@ sub set_delete {
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
+}
+
+sub activate {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'activate'
+        }
+    );
+}
+
+sub hide {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'hide'
+        }
+    );
 }
 
 1;
