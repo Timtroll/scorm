@@ -4,10 +4,11 @@ public
 
 .DS_Store
 client/admin/node_modules/
-# client/admin/dist
+client/admin/dist
+client/admin/yarn.lock
+client/admin/package-lock.json
 
 # firebase
-client/admin/.firebase/
 *.log
 
 # local env files
