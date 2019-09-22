@@ -2,6 +2,7 @@ import Api from './Api.js'
 
 export default {
 
+  // получить дерево
   get_tree (id = 0) {
     return Api()({
       url:    'settings/get_tree',
@@ -10,20 +11,14 @@ export default {
     })
   },
 
-  /**
-   * настройки
-   * @param params
-   * @returns {AxiosPromise}
-   */
-
-  // добавление
-  //set_add (params) {
-  //  return Api()({
-  //    url:    'cms/set_add',
-  //    method: 'post',
-  //    params: params
-  //  })
-  //},
+  // получить прототип нового элемента
+  get_tree_proto () {
+    return Api()({
+      url:    'settings/proto_folder',
+      method: 'post',
+    })
+  },
+  
 
   // Обновление / добавление
   set_save (params) {

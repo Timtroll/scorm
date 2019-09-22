@@ -1,7 +1,7 @@
 import router from './../../../router'
 import methods from './../../methods'
 import UIkit from 'uikit/dist/js/uikit.min'
-import Api from './../../../api/Settings'
+import Api from './../../../api/_Settings'
 
 
 const actions = {
@@ -14,7 +14,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('cms_request')
 
-      Api.get_tree()
+      Api.get_list()
          .then(response => {
            if (response.status === 200) {
 

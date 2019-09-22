@@ -1,5 +1,9 @@
 const getters = {
 
+  table_status: state => state.table.status,
+  table_flat:   state => state.table.tableFlat,
+  table_items:  state => state.table.items
+
   //cardLeftState: state => state.main.leftShow,
   //
   //cardLeftAction:      state => state.main.navBarLeftAction,

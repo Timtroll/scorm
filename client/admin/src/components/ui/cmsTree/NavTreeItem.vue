@@ -88,7 +88,7 @@
     name: 'NavTreeItem',
 
     components: {
-      'NavTree': () => import('./NavTree')
+      NavTree: () => import('./NavTree')
     },
     props:      {
 
@@ -138,20 +138,20 @@
 
       click (item) {
 
+        // если folder = 1 -
         if (this.navItem.folder === 1) {
           this.toggleChildren()
         } else {
           if (this.navActiveId !== this.navItem.id) {
             this.$store.commit('editPanel_show', false)
             this.$store.commit('tree_active', item.id)
-            this.$store.commit('set_table', item)
+            this.$store.dispatch('getTable', item.id)
 
             this.$router.push({
               name:   'SettingItem',
               params: {
                 id:    item.id,
-                title: item.label,
-                item:  item
+                title: item.label
               }
             })
 

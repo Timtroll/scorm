@@ -14,7 +14,7 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <!--<router-view/>-->
+        <router-view/>
       </transition>
 
     </template>
@@ -100,7 +100,7 @@
       },
 
       closeAddGroup () {
-        this.$store.commit('editPanel/editPanel_group', false)
+        this.$store.commit('editPanel_group', false)
       }
     }
 
