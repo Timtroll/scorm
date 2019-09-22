@@ -10,7 +10,7 @@ use Freee::Mock::Settings;
 use Data::Dumper;
 
 # Список настроек из базы в виде объекта как в Mock/Settings.pm
-sub index {
+sub get_leafs {
     my $self = shift;
 
 #    # читаем настройки из базы

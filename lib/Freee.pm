@@ -61,9 +61,6 @@ print $self->beans_init(), "\n";
 
     my $auth = $r->under()                ->to('auth#check_token');
 
-    $auth->post('/settings/get_one')      ->to('settings#get_one');       # загрузка одной настройки
-    $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
-
     # левая менюха (дерево без листочков)
     $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');     # прототип для добавлениястроки (все поля)
     $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # список полей для фолдера
@@ -74,10 +71,13 @@ print $self->beans_init(), "\n";
 
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');     # список листочков узла дерева
+    $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
+
     $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
-    $auth->post('/settings/edit')         ->to('settings#edit');          # добавление настройки
+#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
+    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка настройки
     $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
-    $auth->post('/settings/hide')         ->to('settings#hide');          # Список полей для редактирования настройки
+    $auth->post('/settings/hide')         ->to('settings#hide');          # отлючение настройки
     $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
     # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
     $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
