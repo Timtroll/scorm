@@ -64,17 +64,17 @@ print $self->beans_init(), "\n";
     $auth->post('/settings/get_one')      ->to('settings#get_one');       # загрузка одной настройки
     $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
 
-    # левая менюха (дерево)
-    $auth->post('/settings/proto_folder') ->to('settings#proto_folder');  # прототип для добавлениястроки (все поля)
-    $auth->post('/settings/edit_tab')     ->to('settings#edit_tab');      # список полей для фолдера
-    $auth->post('/settings/get_list')     ->to('settings#get_list');      # список фолдеров/настроек по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+    # левая менюха (дерево без листочков)
+    $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');     # прототип для добавлениястроки (все поля)
+    $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # список полей для фолдера
 # ???????????? сделать полное дерево с текущим уровнем
-    $auth->post('/settings/get_tree')     ->to('settings#get_tree');      # дерево по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
-    $auth->post('/settings/save_tab')     ->to('settings#save_tab');      # добавление/сохранение фолдера
-    $auth->post('/settings/delete_tab')   ->to('settings#delete_tab');    # удаление фолдера
+    $auth->post('/settings/get_tree')      ->to('settings#get_tree');         # Все дерево без листочков
+    $auth->post('/settings/save_folder')   ->to('settings#save_folder');      # добавление/сохранение фолдера
+    $auth->post('/settings/delete_folder') ->to('settings#delete_folder');    # удаление фолдера
 
     # строки настроек
-    $auth->post('/settings/proto_row')    ->to('settings#proto_row');     # прототип для добавления строки (все поля)
+    $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');     # список листочков узла дерева
+    $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
     $auth->post('/settings/edit')         ->to('settings#edit');          # добавление настройки
     $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
     $auth->post('/settings/hide')         ->to('settings#hide');          # Список полей для редактирования настройки
