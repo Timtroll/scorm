@@ -98,35 +98,26 @@ sub register {
         my $db_result = 0;
 
         eval { 
-
             $self->pg_dbh->begin_work();
-
             if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "parent"='.$id) ) {
-
                 if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
-
                     if ( $db_result == "0E0") { 
                         print "Row for deleting doesn't exist \n";
                         $db_result = 0;
                         $self->pg_dbh->rollback();
-
                     }   
-
                 }
                 else {
                     print "Folder delete doesn't work \n";
                     $self->pg_dbh->rollback();
                 }
-
             } 
             else {
                 print "Children delete doesn't work \n";
                 $self->pg_dbh->rollback();
             }
-
             $self->pg_dbh->commit();
-
-        } ;
+        };
 
         if ($@) { 
                 $self->pg_dbh->rollback();
@@ -158,16 +149,13 @@ sub register {
 
         # это не фолдер?
         if ( $parent ) {
-
             # есть родитель?
             if ( $self->id_check( $parent ) ) {
-
                 # родитель фолдер?
                 if ( $self->pg_dbh->selectrow_array( 'SELECT parent FROM "public"."groups" WHERE "id"='.$parent ) ) {
                     return 0;
                 }
             } 
-
             else {
                 return 0;
             }

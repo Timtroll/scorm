@@ -28,7 +28,13 @@ sub register {
         my $self = shift;
 
         my $list = $self->pg_dbh->selectall_hashref(
-            'SELECT id, label FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings);',
+            # 'SELECT id, label FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings);',
+            'SELECT s.*, COUNT( s."id" )
+                FROM settings AS s
+                LEFT JOIN "settings" AS sL ON sL."parent" = s."id"
+                WHERE s.parent = 0
+                GROUP BY s."id"
+                ORDER BY s."id"',
             'id'
         );
 
