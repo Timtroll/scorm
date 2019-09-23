@@ -234,7 +234,7 @@
     },
 
     beforeDestroy () {
-      this.$store.commit('cms_table_row_data', null)
+      this.$store.commit('editPanel/editPanel_data', null)
     },
 
     data () {

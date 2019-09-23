@@ -13,7 +13,6 @@ use validate;
 use Data::Dumper;
 
 $| = 1;
-# has [qw( websockets amqp )];
 
 # This method will run once at server start
 sub startup {
@@ -36,13 +35,13 @@ sub startup {
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');
+    $self->plugin('Freee::Helpers::PgGroups');
 
     # init Pg connection
     $self->pg_init();
 
     # init Beanstalk connection
     $self->beans_init();
-print $self->beans_init(), "\n";
 
     # prepare validate functions
     prepare_validate();
@@ -61,26 +60,26 @@ print $self->beans_init(), "\n";
 
     my $auth = $r->under()                ->to('auth#check_token');
 
-    $auth->post('/settings/get_one')      ->to('settings#get_one');       # загрузка одной настройки
-    $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
-
-    # левая менюха (дерево)
-    $auth->post('/settings/proto_folder') ->to('settings#proto_folder');  # прототип для добавлениястроки (все поля)
-    $auth->post('/settings/edit_tab')     ->to('settings#edit_tab');      # список полей для фолдера
-    $auth->post('/settings/get_list')     ->to('settings#get_list');      # список фолдеров/настроек по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
+    # левая менюха (дерево без листочков)
+    $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');     # прототип для добавлениястроки (все поля)
+    $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # список полей для фолдера
 # ???????????? сделать полное дерево с текущим уровнем
-    $auth->post('/settings/get_tree')     ->to('settings#get_tree');      # дерево по id парента (id 0 - корневые фолдеры, folder 0 - список детей)
-    $auth->post('/settings/save_tab')     ->to('settings#save_tab');      # добавление/сохранение фолдера
-    $auth->post('/settings/delete_tab')   ->to('settings#delete_tab');    # удаление фолдера
+    $auth->post('/settings/get_tree')      ->to('settings#get_tree');         # Все дерево без листочков
+    $auth->post('/settings/save_folder')   ->to('settings#save_folder');      # добавление/сохранение фолдера
+    $auth->post('/settings/delete_folder') ->to('settings#delete_folder');    # удаление фолдера
 
     # строки настроек
-    $auth->post('/settings/proto_row')    ->to('settings#proto_row');     # прототип для добавления строки (все поля)
-    $auth->post('/settings/edit')         ->to('settings#edit');          # добавление настройки
-    $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
-    $auth->post('/settings/hide')         ->to('settings#hide');          # Список полей для редактирования настройки
+    $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');     # список листочков узла дерева
+    $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
+    $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
+#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
+    $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки
+    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка настройки
     $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
-    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
     $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
+    $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
+    $auth->post('/settings/hide')         ->to('settings#hide');          # отлючение настройки
+    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');
@@ -158,7 +157,7 @@ print $self->beans_init(), "\n";
     $auth->post('/agreement/reject')      ->to('agreement#reject');
     $auth->post('/agreement/approve')     ->to('agreement#approve');
     $auth->post('/agreement/comment')     ->to('agreement#comment');
-    $auth->post('/agreement/delete')      ->to('agreement#delete'); # возможно не нужно ?????????
+    $auth->post('/agreement/delete')      ->to('agreement#delete');     # возможно не нужно ?????????
 
     # управление темами
     $auth->post('/user/')                 ->to('user#index');
@@ -171,18 +170,13 @@ print $self->beans_init(), "\n";
     $auth->post('/user/delete')           ->to('user#index');
 
     # управление группами пользователей
-    #$auth->post('/cms/set_get_one')     ->to('settings#set_get_one');       # загрузка одной настройки
-    #$auth->post('/cms/set_load_default')->to('settings#set_load_default');  # загрузка дефолтных настроек
-    #$auth->post('/cms/set')             ->to('settings#index');         # объект с настройками
-    #$auth->post('/cms/set_tab_list')    ->to('settings#set_tab_list');  # раздел
-    #$auth->post('/cms/set_addtab')      ->to('settings#set_addtab');
-    #$auth->post('/cms/set_savetab')     ->to('settings#set_savetab');   # подраздел
-    #$auth->post('/cms/set_deletetab')   ->to('settings#set_deletetab');
-    $auth->post('/groups/add')         ->to('groups#add');       # строка таблицы
-    $auth->post('/groups/update')      ->to('groups#update');
-    $auth->post('/groups/delete')      ->to('groups#delete');    #удаление из таблицы групп
-    $auth->post('/groups/status')      ->to('groups#status');
-    
+    $auth->post('/groups/')               ->to('groups#index');        # список групп
+    $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
+    $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
+    $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
+    # $auth->post('/groups/status')      ->to('groups#status');
+    $auth->post('/groups/hide')           ->to('groups#hide');         # отключить группу
+    $auth->post('/groups/activate')       ->to('groups#activate');     # включить группу
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');
@@ -254,9 +248,7 @@ print $self->beans_init(), "\n";
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
-
-
-    # $r->any('/*')->to('index#index');
+    $r->any('/*')->to('index#index');
 }
 
 1;

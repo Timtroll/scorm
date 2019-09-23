@@ -21,12 +21,15 @@ sub register {
     # Helper for Postgress
 
     $app->helper( 'pg_dbh' => sub {
+        # если в конфиге установлен test = 1 - подключаемся к тестово базе
+        my $database = 'pg_main';
+        $database = 'pg_main_test' if ($config->{'test'});
         unless ($dbh) {
             $dbh = DBI->connect(
-                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'},
-                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'},
-                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'},
-                $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}
+                $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
+                $config->{'dbs'}->{'databases'}->{$database}->{'username'},
+                $config->{'dbs'}->{'databases'}->{$database}->{'password'},
+                $config->{'dbs'}->{'databases'}->{$database}->{'options'}
             );
         }
         $dbh->{errstr} = sub {
@@ -42,7 +45,7 @@ sub register {
         $sth->execute();
         my $fields = $sth->fetchall_arrayref({});
         $sth->finish();
-# print "fields", Dumper($fields);
+
         $FieldsAsArray = $fields;
         $Fields = {};
         foreach my $field ( @$fields ) {

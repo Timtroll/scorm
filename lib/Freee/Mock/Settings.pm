@@ -13,221 +13,6 @@ our $pref;
 
 $settings = {
   "settings"=> [
-
-  # {
-  #   "label"       => "CMS",
-  #   "id"          => 1,
-  #   "component"   => "Settings",
-  #   "opened"      => 0,
-  #   "folder"      => 1,
-  #   "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #   "children"    => [
-  #     {
-  #       "label"       => "Ядро",
-  #       "id"          => 1,
-  #       "component"   => "Settings",
-  #       "opened"      => 0,
-  #       "folder"      => 1,
-  #       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #       "children"    => [],
-  #       "table"       => {
-  #         "settings" => {
-  #           "readOnly"    => 0,
-  #           "totalCount"  => 3,
-  #           "editable"    => 1,
-  #           "removable"   => 1,
-  #           "massEdit"    => 0
-  #         },
-  #         "header"=>   [
-  #           {
-  #             # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-  #             "key"   => "name",
-  #             # Значение этого поля будет выведено в шапке таблицы
-  #             "label" => "Системное название"
-  #           },{
-  #             "key"   => "label",
-  #             "label" => "Рашифровка"
-  #           },{
-  #             "key"   => "value",
-  #             "label" => "Значение"
-  #           },{
-  #             "key"   => "type",
-  #             "label" => "Тип"
-  #           }
-  #         ],
-  #         "body"=>     [
-  #           {
-  #             "editable"      => 1,
-  #             "required"      => 1,
-  #             "type"          => "InputNumber",
-  #             "name"          => "import_step_index",
-  #             "label"         => "индекс внутри шага обновления",
-  #             "placeholder"   => "",
-  #             "mask"          => "[0..9\\w ]+",
-  #             "value"         => "",
-  #             "selected"      => []
-  #           }
-  #         ]
-  #       },
-  #     {
-  #       "label"       => "Ядро111",
-  #       "id"          => 1,
-  #       "component"   => "",
-  #       "opened"      => 0,
-  #       "folder"      => 1,
-  #       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #       "children"    => [],
-  #       "table"       => {
-  #         "settings" => {
-  #           "readOnly"    => 0,
-  #           "totalCount"  => 3,
-  #           "editable"    => 1,
-  #           "removable"   => 1,
-  #           "massEdit"    => 0
-  #         },
-  #         "header"=>   [
-  #           {
-  #             # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-  #             "key"   => "name",
-  #             # Значение этого поля будет выведено в шапке таблицы
-  #             "label" => "Системное название"
-  #           },{
-  #             "key"   => "label",
-  #             "label" => "Рашифровка"
-  #           },{
-  #             "key"   => "value",
-  #             "label" => "Значение"
-  #           },{
-  #             "key"   => "type",
-  #             "label" => "Тип"
-  #           }
-  #         ],
-  #         "body"=>     [
-  #           {
-  #             "editable"      => 1,
-  #             "required"      => 1,
-  #             "type"          => "InputNumber",
-  #             "name"          => "import_step_index",
-  #             "label"         => "индекс внутри шага обновления",
-  #             "placeholder"   => "",
-  #             "mask"          => "[0..9\\w ]+",
-  #             "value"         => "",
-  #             "selected"      => []
-  #           }
-  #         ]
-  #       }
-  #     }
-  #   ],
-  #   "table"       => {}
-  # },
-  # {
-  #   "label"       => "scorm",
-  #   "id"          => 1,
-  #   "component"   => "Settings",
-  #   "opened"      => 0,
-  #   "folder"      => 1,
-  #   "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #   "children"    => [
-  #     {
-  #       "label"       => "Ядро",
-  #       "id"          => 1,
-  #       "component"   => "Settings",
-  #       "opened"      => 0,
-  #       "folder"      => 1,
-  #       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #       "children"    => [],
-  #       "table"       => {
-  #         "settings" => {
-  #           "readOnly"    => 0,
-  #           "totalCount"  => 3,
-  #           "editable"    => 1,
-  #           "removable"   => 1,
-  #           "massEdit"    => 0
-  #         },
-  #         "header"=>   [
-  #           {
-  #             # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-  #             "key"   => "name",
-  #             # Значение этого поля будет выведено в шапке таблицы
-  #             "label" => "Системное название"
-  #           },{
-  #             "key"   => "label",
-  #             "label" => "Рашифровка"
-  #           },{
-  #             "key"   => "value",
-  #             "label" => "Значение"
-  #           },{
-  #             "key"   => "type",
-  #             "label" => "Тип"
-  #           }
-  #         ],
-  #         "body"=>     [
-  #           {
-  #             "editable"      => 1,
-  #             "required"      => 1,
-  #             "type"          => "InputNumber",
-  #             "name"          => "import_step_index",
-  #             "label"         => "индекс внутри шага обновления",
-  #             "placeholder"   => "",
-  #             "mask"          => "[0..9\\w ]+",
-  #             "value"         => "",
-  #             "selected"      => []
-  #           }
-  #         ]
-  #       },
-  #     {
-  #       "label"       => "Ядро111",
-  #       "id"          => 1,
-  #       "component"   => "Settings",
-  #       "opened"      => 0,
-  #       "folder"      => 1,
-  #       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-  #       "children"    => [],
-  #       "table"       => {
-  #         "settings" => {
-  #           "readOnly"    => 0,
-  #           "totalCount"  => 3,
-  #           "editable"    => 1,
-  #           "removable"   => 1,
-  #           "massEdit"    => 0
-  #         },
-  #         "header"=>   [
-  #           {
-  #             # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-  #             "key"   => "name",
-  #             # Значение этого поля будет выведено в шапке таблицы
-  #             "label" => "Системное название"
-  #           },{
-  #             "key"   => "label",
-  #             "label" => "Рашифровка"
-  #           },{
-  #             "key"   => "value",
-  #             "label" => "Значение"
-  #           },{
-  #             "key"   => "type",
-  #             "label" => "Тип"
-  #           }
-  #         ],
-  #         "body"=>     [
-  #           {
-  #             "editable"      => 1,
-  #             "required"      => 1,
-  #             "type"          => "InputNumber",
-  #             "name"          => "import_step_index",
-  #             "label"         => "индекс внутри шага обновления",
-  #             "placeholder"   => "",
-  #             "mask"          => "[0..9\\w ]+",
-  #             "value"         => "",
-  #             "selected"      => []
-  #           }
-  #         ]
-  #       }
-  #     }
-  #   ],
-  #   "table"       => {}
-  # },
-
-
     {
       "label"       => "CMS",
       "id"          => 1,
@@ -283,7 +68,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1011,
                 "removable"     => 1,
                 "folder"        => 0
@@ -298,7 +83,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1012,
                 "removable"     => 1,
                 "folder"        => 0
@@ -314,7 +99,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => ["CKEditor"],
                 "selected"      => ["CKEditor", "EditorJs"],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1013,
                 "removable"     => 1,
                 "folder"        => 0
@@ -329,7 +114,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => [["0"], ["gallery"], ["crop"], ["179"], ["281"]],
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1014,
                 "removable"     => 1,
                 "folder"        => 0
@@ -344,7 +129,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "rus",
                 "selected"      => ["rus", "en", "esp", "ch"],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1015,
                 "removable"     => 1,
                 "folder"        => 0
@@ -359,7 +144,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1016,
                 "removable"     => 1,
                 "folder"        => 0
@@ -374,7 +159,7 @@ $settings = {
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1017,
                 "removable"     => 1,
                 "folder"        => 0
@@ -389,7 +174,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1018,
                 "removable"     => 1,
                 "folder"        => 0
@@ -404,7 +189,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"=>    [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 1019,
                 "removable"     => 1,
                 "folder"        => 0
@@ -422,7 +207,7 @@ $settings = {
                   ["8", "сентября"], ["9", "октября"], ["10", "ноября"], ["11", "декабря"]
                 ],
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10110,
                 "removable"     => 1,
                 "folder"        => 0
@@ -437,7 +222,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10111,
                 "removable"     => 1,
                 "folder"        => 0
@@ -455,7 +240,7 @@ $settings = {
                   ["8", "сентябрь"], ["9", "октябрь"], ["10", "ноябрь"], ["11", "декабрь"]
                 ],
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10112,
                 "removable"     => 1,
                 "folder"        => 0
@@ -473,7 +258,7 @@ $settings = {
                   ["8", "Сентябрь"], ["9", "Октябрь"], ["10", "Ноябрь"], ["11", "Декабрь"]
                 ],
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10113,
                 "removable"     => 1,
                 "folder"        => 0
@@ -488,7 +273,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10114,
                 "removable"     => 1,
                 "folder"        => 0
@@ -503,7 +288,7 @@ $settings = {
                 "mask"          => "[0..9\:\/-_\\.\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10115,
                 "removable"     => 1,
                 "folder"        => 0
@@ -518,7 +303,7 @@ $settings = {
                 "mask"          => "[0..9\:\/-_\\.\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10116,
                 "removable"     => 1,
                 "folder"        => 0
@@ -533,7 +318,7 @@ $settings = {
                 "mask"          => "[- \\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 101,
+                "parent"        => 101,
                 "id"            => 10117,
                 "removable"     => 1,
                 "folder"        => 0
@@ -585,7 +370,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1021,
                 "removable"     => 1,
                 "folder"        => 0
@@ -600,7 +385,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1022,
                 "removable"     => 1,
                 "folder"        => 0
@@ -615,7 +400,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1023,
                 "removable"     => 1,
                 "folder"        => 0
@@ -630,7 +415,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1024,
                 "removable"     => 1,
                 "folder"        => 0
@@ -645,7 +430,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1025,
                 "removable"     => 1,
                 "folder"        => 0
@@ -660,7 +445,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1026,
                 "removable"     => 1,
                 "folder"        => 0
@@ -675,7 +460,7 @@ $settings = {
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1027,
                 "removable"     => 1,
                 "folder"        => 0
@@ -690,7 +475,7 @@ $settings = {
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1028,
                 "removable"     => 1,
                 "folder"        => 0
@@ -705,7 +490,7 @@ $settings = {
                 "mask"          => "[\\@_-\\.0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 1029,
                 "removable"     => 1,
                 "folder"        => 0
@@ -720,7 +505,7 @@ $settings = {
                 "mask"          => "[_-\\.0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 10210,
                 "removable"     => 1,
                 "folder"        => 0
@@ -735,7 +520,7 @@ $settings = {
                 "mask"          => "[\\@_-0..9\\w]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 102,
+                "parent"        => 102,
                 "id"            => 10211,
                 "removable"     => 1,
                 "folder"        => 0
@@ -787,7 +572,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1031,
                 "removable"     => 1,
                 "folder"        => 0
@@ -802,7 +587,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1032,
                 "removable"     => 1,
                 "folder"        => 0
@@ -817,7 +602,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1033,
                 "removable"     => 1,
                 "folder"        => 0
@@ -832,7 +617,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1034,
                 "removable"     => 1,
                 "folder"        => 0
@@ -847,7 +632,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1035,
                 "removable"     => 1,
                 "folder"        => 0
@@ -862,7 +647,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 103,
+                "parent"        => 103,
                 "id"            => 1036,
                 "removable"     => 1,
                 "folder"        => 0
@@ -914,7 +699,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 104,
+                "parent"        => 104,
                 "id"            => 1041,
                 "removable"     => 1,
                 "folder"        => 0
@@ -929,7 +714,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => 12,
                 "selected"      => [12, 30, 50],
-                "lib_id"        => 104,
+                "parent"        => 104,
                 "id"            => 1042,
                 "removable"     => 1,
                 "folder"        => 0
@@ -942,7 +727,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 104,
+                "parent"        => 104,
                 "id"            => 1043,
                 "removable"     => 1,
                 "folder"        => 0
@@ -994,7 +779,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1051,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1009,7 +794,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1052,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1024,7 +809,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1053,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1039,7 +824,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1054,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1054,7 +839,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1055,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1069,7 +854,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1056,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1084,7 +869,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1057,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1099,7 +884,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1058,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1114,7 +899,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 1059,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1129,7 +914,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 10510,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1144,7 +929,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 10511,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1159,7 +944,7 @@ $settings = {
                 "mask"          => "\\d+",
                 "value"         => "220",
                 "selected"      => [],
-                "lib_id"        => 105,
+                "parent"        => 105,
                 "id"            => 10512,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1209,7 +994,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
                 "selected"      => [],
-                "lib_id"        => 106,
+                "parent"        => 106,
                 "id"            => 1061,
                 "removable"     => 1,
                 "folder"        => 0
@@ -1261,7 +1046,7 @@ $settings = {
               "mask"          => "",
               "value"         => "",
               "selected"      => [],
-              "lib_id"        => 107,
+              "parent"        => 107,
               "id"            => 1071,
               "removable"     => 1,
               "folder"        => 0
@@ -1276,7 +1061,7 @@ $settings = {
               "mask"          => "",
               "value"         => "",
               "selected"      => [],
-              "lib_id"        => 107,
+              "parent"        => 107,
               "id"            => 1072,
               "removable"     => 1,
               "folder"        => 0
@@ -1334,7 +1119,7 @@ $settings = {
                   ["25", "Тесты"]
                 ],
                 "selected"      => [],
-                "lib_id"        => 108,
+                "parent"        => 108,
                 "id"            => 1081
               },
               {
@@ -1347,7 +1132,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => [["число"], ["строка"], ["текстовая область"], ["Селект"], ["список"], ["вложенный список"]],
                 "selected"      => [],
-                "lib_id"        => 108,
+                "parent"        => 108,
                 "id"            => 1082
               },
               {
@@ -1360,7 +1145,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 108,
+                "parent"        => 108,
                 "id"            => 1083
               },
               {
@@ -1373,7 +1158,7 @@ $settings = {
                 "mask"          => "",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 108,
+                "parent"        => 108,
                 "id"            => 1084
               }
             ]
@@ -1437,7 +1222,7 @@ $settings = {
                 "mask"          => "[0..9\\w ]+",
                 "value"         => "",
                 "selected"      => [],
-                "lib_id"        => 301,
+                "parent"        => 301,
                 "id"            => 3011,
                 "readOnly"      => 1,
                 "removable"     => 1,

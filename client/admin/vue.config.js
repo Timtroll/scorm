@@ -1,4 +1,5 @@
 module.exports = {
+
   runtimeCompiler:     true,
   productionSourceMap: false,
 
@@ -8,12 +9,14 @@ module.exports = {
         'ru'
       ]
     },
+
     i18n:   {
       locale:         'ru',
       fallbackLocale: 'ru',
       localeDir:      'locales',
       enableInSFC:    false
     },
+
     meta:   {
       projectName: 'Scorm',
       url:         'https://freee.su',

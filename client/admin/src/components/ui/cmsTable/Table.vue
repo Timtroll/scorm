@@ -159,7 +159,6 @@ s
   export default {
     name:       'Table',
     components: {TableRow, Card, List},
-    props:      {},
 
     data () {
       return {

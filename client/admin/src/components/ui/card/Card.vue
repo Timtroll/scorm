@@ -237,7 +237,7 @@
         this.bodyLeftWidth = this.$refs.bodyLeft.offsetWidth
         window.addEventListener('resize', this.handleResize)
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('cms_table_row_show', false)
+          this.$store.commit('editPanel_show', false)
         }
       }
     },

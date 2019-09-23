@@ -13,7 +13,7 @@ sub index {
     $self = shift;
 
 print "2\n";
-    my $test = $self->table_obj({
+    my $test = $self->_table_obj({
         "settings"  => {
             "readOnly"    => 0,
             # "totalCount"  => scalar(@{$table->{'body'}}),

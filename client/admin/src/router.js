@@ -36,7 +36,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_dashboard.svg',
             breadcrumb:   'Рабочий стол'
           }
-        }, {
+        },
+        {
           path:      '/pages',
           name:      'Pages',
           component: () => import('./components/dashboard/DashBoard'),
@@ -47,7 +48,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_pages.svg',
             breadcrumb:   'Контент'
           }
-        }, {
+        },
+        {
           path:          '/courses',
           name:          'Courses',
           component:     () => import('./components/dashboard/DashBoard'),
@@ -57,7 +59,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_courses.svg',
             breadcrumb:   'Курсы'
           }
-        }, {
+        },
+        {
           path:          '/review',
           name:          'Review',
           component:     () => import('./components/dashboard/DashBoard'),
@@ -67,7 +70,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_review.svg',
             breadcrumb:   'Отзывы'
           }
-        }, {
+        },
+        {
           path:          '/users',
           name:          'Users',
           component:     () => import('./components/dashboard/DashBoard'),
@@ -77,7 +81,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Пользователи'
           }
-        }, {
+        },
+        {
           path:          '/media',
           name:          'Media',
           component:     () => import('./components/dashboard/DashBoard'),
@@ -87,7 +92,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_media.svg',
             breadcrumb:   'Медиа хранилище'
           }
-        }, {
+        },
+        {
           path:          '/groups',
           name:          'Groups',
           component:     () => import('./components/dashboard/DashBoard'),
@@ -98,7 +104,8 @@ const router = new Router({
             icon:         'img/icons/sidebar_users.svg',
             breadcrumb:   'Управление группами пользователей'
           }
-        }, {
+        },
+        {
           path:          '/profile',
           name:          'Profile',
           component:     () => import('./components/profile/Account'),
@@ -108,7 +115,8 @@ const router = new Router({
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Профиль пользователя'
           }
-        }, {
+        },
+        {
           path:          '/settings',
           name:          'Settings',
           component:     () => import('./components/settings/Settings'),

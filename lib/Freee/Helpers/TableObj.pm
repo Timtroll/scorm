@@ -15,7 +15,7 @@ sub register {
     #################################
     # Helper for Creating table structures for vue
 
-    $app->helper( 'table_obj' => sub {
+    $app->helper( '_table_obj' => sub {
         my ( $self, $params ) = @_ ;
 
         return {} unless ($$params{'body'} || ref $$params{'body'} ne 'ARRAY');

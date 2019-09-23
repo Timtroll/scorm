@@ -1,8 +1,8 @@
 const getters = {
 
-  tree:     state => state.items,
-  activeId: state => state.activeId,
-  status:   state => state.status
+  tree:     state => state.tree.items,
+  activeId: state => state.tree.activeId,
+  tree_status:   state => state.tree.status
 
 }
 

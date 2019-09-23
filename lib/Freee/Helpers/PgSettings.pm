@@ -22,6 +22,19 @@ sub register {
     # таблица настроек
     ###################################################################
 
+    # получить дерево настроек без листьев
+    # my $true = $self->_get_tree();
+    $app->helper( '_get_tree' => sub {
+        my $self = shift;
+
+        my $list = $self->pg_dbh->selectall_hashref(
+            'SELECT id, label FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings);',
+            'id'
+        );
+
+        return $list;
+    });
+
     # очистка дефолтных настроек
     # my $true = $self->reset_setting();
     $app->helper( 'reset_setting' => sub {
@@ -41,7 +54,7 @@ sub register {
         # запоминаем корневые элементы
         my $out = {};
         foreach my $parent (sort {$a <=> $b} keys %$list) {
-            if ($$list{$parent}{'lib_id'} == 0) {
+            if ($$list{$parent}{'parent'} == 0) {
                 # запоминаем корневые элементы и удаляем их
                 $$out{$parent} = {
                     "label"     => $$list{$parent}{'label'},
@@ -58,15 +71,15 @@ sub register {
         }
 
         foreach my $id (sort {$a <=> $b} keys %$list) {
-            next if $id == $$list{$id}{'lib_id'};
+            next if $id == $$list{$id}{'parent'};
 
-            my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
+            my ($lst, $keys) = &children( $$list{$id}{'parent'}, $list );
 
-            if ( $$out{ $$list{$id}{'lib_id'} } ) {
-                $$out{ $$list{$id}{'lib_id'} }{'table'} = $lst;
+            if ( $$out{ $$list{$id}{'parent'} } ) {
+                $$out{ $$list{$id}{'parent'} }{'table'} = $lst;
 
                 my %keys = map {$_, 1} split(' ', $keys);
-                $$out{ $$list{$id}{'lib_id'} }{'keywords'} = join(' ', keys %keys);
+                $$out{ $$list{$id}{'parent'} }{'keywords'} = join(' ', keys %keys);
             }
         }
 
@@ -80,7 +93,7 @@ sub register {
         my @out = ();
         my $keys = '';
         foreach my $id (sort {$a <=> $b} keys %$hash ) {
-            if ($$hash{$id}{'lib_id'} == $parent) {
+            if ($$hash{$id}{'parent'} == $parent) {
                 my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
                 $$hash{$id}{'keywords'} = join(' ', keys %keys);
                 $keys .= "$$hash{$id}{'keywords'} ";
@@ -110,7 +123,7 @@ sub register {
 
     # для создания настройки
     # my $id = $self->insert_setting({
-    #     "lib_id",   - обязательно
+    #     "parent",   - обязательно
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "value",
@@ -122,7 +135,7 @@ sub register {
     # });
     # для создания группы настроек
     # my $id = $self->insert_setting({
-    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "readOnly",       - не обязательно, по умолчанию 0
     #     "editable" int,   - не обязательно, по умолчанию 1
@@ -148,7 +161,7 @@ sub register {
     # для сохранения настройки
     # my $id = $self->insert_setting({
     #     "id",       - обязательно (должно быть больше 0)
-    #     "lib_id",   - обязательно (должно быть больше 0)
+    #     "parent",   - обязательно (должно быть больше 0)
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "value",
@@ -161,7 +174,7 @@ sub register {
     # для создания группы настроек
     # my $id = $self->insert_setting({
     #     "id",       - обязательно (должно быть больше 0),
-    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "readOnly",       - не обязательно, по умолчанию 0
@@ -209,192 +222,12 @@ sub register {
         my $row = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."settings" WHERE "id"='.$id);
 
         # десериализуем поля vaue и selected
-# print Dumper($row);
         $$row{'value'} = '' if ($$row{'value'} eq 'null');
         $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
         $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
         $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
         
         return $row;
-    });
-
-
-
-
-
-
-
-    ###################################################################
-    # таблица групп пользователей
-    ###################################################################
-
-
-    # для создания возможностей групп пользователей
-    # my $id = $self->insert_group({
-    #       "folder"      => 0,           - это возможности пользователя
-    #     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "editable"    => 0,           - не обязательно, по умолчанию 0
-    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    #     "value"       => "",            - строка или json
-    #     "required"    => 0            - не обязательно, по умолчанию 0
-    # });
-    # для создания группы пользователей
-    # my $id = $self->insert_group({
-    #     "folder"      => 1,           - это группа пользователей
-    #     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "editable"    => 0,           - не обязательно, по умолчанию 0
-    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    # });
-    # возвращается id записи    
-    $app->helper( 'insert_group' => sub {
-        my ($self, $data) = @_;
-        return unless $data;
-        my $id;
-
-        if ( $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-            $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
-        }
- 
-        return $id;
-    });
-
-
-    # для создания возможностей групп пользователей
-    # my $id = $self->insert_group({
-    #     "folder"      => 0,           - это возможности пользователя
-    #     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "editable"    => 0,           - не обязательно, по умолчанию 0
-    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    #     "value"       => "",            - строка или json
-    #     "required"    => 0            - не обязательно, по умолчанию 0
-    # });
-    # для создания группы пользователей
-    # my $id = $self->insert_group({
-    #     "folder"      => 1,           - это группа пользователей
-    #     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "editable"    => 0,           - не обязательно, по умолчанию 0
-    #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    # });
-    # возвращается true/false
-    $app->helper( 'update_group' => sub {
-        my ($self, $data) = @_;
-        return unless $data;
-
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
-
-        return $db_result;
-    });
-
-
-    # для удаления группы пользователей
-    # my $true = $self->delete_group( 99 );
-    # возвращается true/false
-    $app->helper( 'delete_group' => sub {
-        my ($self, $id) = @_;
-        return unless $id;
-        my $db_result = 0;
-
-        eval { 
-
-            $self->pg_dbh->begin_work();
-
-            if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id) ) {
-
-                if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
-
-                    if ( $db_result == "0E0") { 
-                        print "Row for deleting doesn't exist \n";
-                        $db_result = 0;
-                        $self->pg_dbh->rollback();
-
-                    }   
-
-                }
-                else {
-                    print "Folder delete doesn't work \n";
-                    $self->pg_dbh->rollback();
-                }
-
-            } 
-            else {
-                print "Children delete doesn't work \n";
-                $self->pg_dbh->rollback();
-            }
-
-            $self->pg_dbh->commit();
-
-        } ;
-
-        if ($@) { 
-                $self->pg_dbh->rollback();
-                print "Delete doesn't work \n";
-        } 
-        print "$db_result \n";
-        return $db_result;
-
-    });
-
-
-    # для изменения параметра status
-    # возвращается true/false
-    $app->helper( 'status_group' => sub {
-        my ($self, $data) = @_;
-        return unless $data;
-
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
-
-        return $db_result;
-    });
-
-
-    # для проверки корректности наследования
-    # my $true = $self->lib_id_check( 99 );
-    # возвращается true/false
-    $app->helper( 'lib_id_check' => sub {
-        my ($self, $lib_id) = @_;
-
-        # это не фолдер?
-        if ( $lib_id ) {
-
-            # есть родитель?
-            if ( $self->id_check( $lib_id ) ) {
-
-                # родитель фолдер?
-                if ( $self->pg_dbh->selectrow_array( 'SELECT lib_id FROM "public"."groups" WHERE "id"='.$lib_id ) ) {
-                    return 0;
-                }
-            } 
-
-            else {
-                return 0;
-            }
-        }
-
-        return 1;
-    });
-
-
-    # для проверки существования строки с данным id
-    # my $true = $self->id_check( 99 );
-    # возвращается true/false
-    $app->helper( 'id_check' => sub {
-        my ($self, $id) = @_;
-        return unless $id;
-
-        my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
-        return $db_result;
     });
 }
 
