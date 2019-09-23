@@ -1,7 +1,7 @@
 {
   "settings": {
     "editable": 1,
-    "lib_id": 10,
+    "parent": 10,
     "variableType": 0,
     "massEdit": 1,
     "sort": {

@@ -22,6 +22,19 @@ sub register {
     # таблица настроек
     ###################################################################
 
+    # получить дерево настроек без листьев
+    # my $true = $self->_get_tree();
+    $app->helper( '_get_tree' => sub {
+        my $self = shift;
+
+        my $list = $self->pg_dbh->selectall_hashref(
+            'SELECT id, label FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings);',
+            'id'
+        );
+
+        return $list;
+    });
+
     # очистка дефолтных настроек
     # my $true = $self->reset_setting();
     $app->helper( 'reset_setting' => sub {
@@ -41,7 +54,7 @@ sub register {
         # запоминаем корневые элементы
         my $out = {};
         foreach my $parent (sort {$a <=> $b} keys %$list) {
-            if ($$list{$parent}{'lib_id'} == 0) {
+            if ($$list{$parent}{'parent'} == 0) {
                 # запоминаем корневые элементы и удаляем их
                 $$out{$parent} = {
                     "label"     => $$list{$parent}{'label'},
@@ -58,15 +71,15 @@ sub register {
         }
 
         foreach my $id (sort {$a <=> $b} keys %$list) {
-            next if $id == $$list{$id}{'lib_id'};
+            next if $id == $$list{$id}{'parent'};
 
-            my ($lst, $keys) = &children( $$list{$id}{'lib_id'}, $list );
+            my ($lst, $keys) = &children( $$list{$id}{'parent'}, $list );
 
-            if ( $$out{ $$list{$id}{'lib_id'} } ) {
-                $$out{ $$list{$id}{'lib_id'} }{'table'} = $lst;
+            if ( $$out{ $$list{$id}{'parent'} } ) {
+                $$out{ $$list{$id}{'parent'} }{'table'} = $lst;
 
                 my %keys = map {$_, 1} split(' ', $keys);
-                $$out{ $$list{$id}{'lib_id'} }{'keywords'} = join(' ', keys %keys);
+                $$out{ $$list{$id}{'parent'} }{'keywords'} = join(' ', keys %keys);
             }
         }
 
@@ -80,7 +93,7 @@ sub register {
         my @out = ();
         my $keys = '';
         foreach my $id (sort {$a <=> $b} keys %$hash ) {
-            if ($$hash{$id}{'lib_id'} == $parent) {
+            if ($$hash{$id}{'parent'} == $parent) {
                 my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
                 $$hash{$id}{'keywords'} = join(' ', keys %keys);
                 $keys .= "$$hash{$id}{'keywords'} ";
@@ -110,7 +123,7 @@ sub register {
 
     # для создания настройки
     # my $id = $self->insert_setting({
-    #     "lib_id",   - обязательно
+    #     "parent",   - обязательно
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "value",
@@ -122,7 +135,7 @@ sub register {
     # });
     # для создания группы настроек
     # my $id = $self->insert_setting({
-    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "readOnly",       - не обязательно, по умолчанию 0
     #     "editable" int,   - не обязательно, по умолчанию 1
@@ -148,7 +161,7 @@ sub register {
     # для сохранения настройки
     # my $id = $self->insert_setting({
     #     "id",       - обязательно (должно быть больше 0)
-    #     "lib_id",   - обязательно (должно быть больше 0)
+    #     "parent",   - обязательно (должно быть больше 0)
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "value",
@@ -161,7 +174,7 @@ sub register {
     # для создания группы настроек
     # my $id = $self->insert_setting({
     #     "id",       - обязательно (должно быть больше 0),
-    #     "lib_id",   - обязательно (если корень - 0, или owner id),
+    #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "name",     - обязательно
     #     "readOnly",       - не обязательно, по умолчанию 0

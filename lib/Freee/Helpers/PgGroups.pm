@@ -23,7 +23,7 @@ sub register {
     # для создания возможностей групп пользователей
     # my $id = $self->insert_group({
     #       "folder"      => 0,           - это возможности пользователя
-    #     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+    #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
     #     "name",       => 'name'       - обязательно (системное название, латиница)
     #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -35,7 +35,7 @@ sub register {
     # для создания группы пользователей
     # my $id = $self->insert_group({
     #     "folder"      => 1,           - это группа пользователей
-    #     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
+    #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
     #     "label"       => 'название',  - обязательно (название для отображения)
     #     "name",       => 'name'       - обязательно (системное название, латиница)
     #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -59,7 +59,7 @@ sub register {
     # для создания возможностей групп пользователей
     # my $id = $self->insert_group({
     #     "folder"      => 0,           - это возможности пользователя
-    #     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+    #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
     #     "name",       => 'name'       - обязательно (системное название, латиница)
     #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -71,7 +71,7 @@ sub register {
     # для создания группы пользователей
     # my $id = $self->insert_group({
     #     "folder"      => 1,           - это группа пользователей
-    #     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
+    #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
     #     "label"       => 'название',  - обязательно (название для отображения)
     #     "name",       => 'name'       - обязательно (системное название, латиница)
     #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -101,7 +101,7 @@ sub register {
 
             $self->pg_dbh->begin_work();
 
-            if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "lib_id"='.$id) ) {
+            if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "parent"='.$id) ) {
 
                 if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
 
@@ -151,19 +151,19 @@ sub register {
 
 
     # для проверки корректности наследования
-    # my $true = $self->lib_id_check( 99 );
+    # my $true = $self->parent_check( 99 );
     # возвращается true/false
-    $app->helper( 'lib_id_check' => sub {
-        my ($self, $lib_id) = @_;
+    $app->helper( 'parent_check' => sub {
+        my ($self, $parent) = @_;
 
         # это не фолдер?
-        if ( $lib_id ) {
+        if ( $parent ) {
 
             # есть родитель?
-            if ( $self->id_check( $lib_id ) ) {
+            if ( $self->id_check( $parent ) ) {
 
                 # родитель фолдер?
-                if ( $self->pg_dbh->selectrow_array( 'SELECT lib_id FROM "public"."groups" WHERE "id"='.$lib_id ) ) {
+                if ( $self->pg_dbh->selectrow_array( 'SELECT parent FROM "public"."groups" WHERE "id"='.$parent ) ) {
                     return 0;
                 }
             } 

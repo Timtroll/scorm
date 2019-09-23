@@ -71,7 +71,6 @@ sub startup {
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');     # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');  # загрузка дефолтных настроек
-
     $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
 #    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки

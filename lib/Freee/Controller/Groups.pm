@@ -18,7 +18,7 @@ sub index {
 
 # группы пользователей
 # my $id = $self->insert_group({
-#     "lib_id"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
+#     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
@@ -33,7 +33,7 @@ sub add {
 
     # read params
     my %data = (
-        'lib_id'    => $self->param('lib_id') || 0,
+        'parent'    => $self->param('parent') || 0,
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
         'value'     => $self->param('value') || '',
@@ -46,8 +46,8 @@ sub add {
 
     my ($id, @mess, $resp);
 
-    # проверка lib_id
-    # if ( $self->lib_id_check( $data{'lib_id'} ) ){ 
+    # проверка parent
+    # if ( $self->parent_check( $data{'parent'} ) ){ 
         #проверка остальных полей
         if (  $data{'label'} && $data{'name'} ) {
             #добавление
@@ -59,7 +59,7 @@ sub add {
         }
     # }
     # else {
-    #     push @mess, "Wrong lib_id";
+    #     push @mess, "Wrong parent";
     # }
 
     $resp->{'message'} = join("\n", @mess) unless $id;
@@ -72,7 +72,7 @@ sub add {
 # my $id = $self->insert_group({
 #      "id"        => 1            - id обновляемого элемента ( >0 )
 #     "folder"      => 0,           - это возможности пользователя
-#     "lib_id"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+#     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -85,7 +85,7 @@ sub add {
 # my $id = $self->insert_group({
 #       "id"        => 1            - id обновляемого элемента ( >0 )
 #     "folder"      => 1,           - это группа пользователей
-#     "lib_id"      => 0,           - обязательно 0 (должно быть натуральным числом) 
+#     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "editable"    => 0,           - не обязательно, по умолчанию 0
@@ -96,24 +96,24 @@ sub add {
 sub update {
     my ($self) = shift;
 
-    my (%data, $data, $id, $lib_id, @mess);
+    my (%data, $data, $id, $parent, @mess);
     $data{'id'} = $self->param('id');
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
-    $data{'lib_id'} = $self->param('lib_id') || 0;
+    $data{'parent'} = $self->param('parent') || 0;
     $data{'editable'} = $self->param('editable') || 0;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
     $data{'status'} = $self->param('status') || 0;
 
     # запись дополнительных значений, если это не folder
-    if ( $self->param('lib_id') ) {
+    if ( $self->param('parent') ) {
        $data{'required'} = $self->param('required') || 0;
        $data{'value'} = $self->param('value') || "";
     }
 
-    # проверка поля lib_id
-    if ( $self->lib_id_check( $data{'lib_id'} ) ) {
+    # проверка поля parent
+    if ( $self->parent_check( $data{'parent'} ) ) {
         # проверка остальных обязательных полей
         if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
             # проверка существования обновляемой строки
@@ -130,7 +130,7 @@ sub update {
         }
     }
     else {
-        push @mess, "Wrong lib_id";
+        push @mess, "Wrong parent";
     }
 
     my $resp;
