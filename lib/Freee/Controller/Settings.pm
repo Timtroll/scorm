@@ -43,20 +43,20 @@ sub get_tree {
    # читаем настройки из базы
     my $list = $self->_get_tree();
 
-    my $out = [];
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        
-    }
-
-    $self->render(
-        'json'    => {
-            'status'  => 'ok',
-            'list'    => $out
+    # делаем дерево в виде массива из плоской таблицы наследований по parent
+    my $set = {};
+    foreach my $id (sort { $$list{$b}{'parent'} <=> $$list{$a}{'parent'} or $a <=> $b } keys %$list) {
+        $$list{$id}{'children'} = [] unless ( defined $$list{$id}{'children'});
+        if ($$list{$id}{'parent'}) {
+            $$list{$id}{'children'} = [];
+            push @{$$list{$$list{$id}{'parent'}}{'children'}}, $$list{$id};
+            next;
         }
-    );
+        push @{$$set{'list'}}, $$list{$id};
+    }
+    $$set{'status'} = 'ok';
 
-# use Freee::Mock::GetTree;
-#     $self->render( json => $get_tree );
+    $self->render( 'json' => $set );
 }
 
 sub save_folder {

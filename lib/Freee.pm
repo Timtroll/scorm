@@ -172,7 +172,7 @@ sub startup {
     $auth->post('/groups/')               ->to('groups#index');        # список групп
     $auth->post('/groups/routes')         ->to('groups#routes');       # список настроек по роутам
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
-    $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
+    $auth->post('/groups/update')         ->to('groups#save');         # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
     $auth->post('/groups/hide')           ->to('groups#hide');         # отключить группу
     $auth->post('/groups/activate')       ->to('groups#activate');     # включить группу
