@@ -45,6 +45,7 @@
 
 <script>
 
+  import brace from 'brace'
   import editor from 'vue2-ace-editor'
 
   export default {
