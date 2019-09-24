@@ -1,4 +1,4 @@
-package Freee::Mock::GetLeafs;
+package Freee=>=>Mock=>=>GetLeafs;
 
 use utf8;
 
@@ -111,6 +111,7 @@ $get_leafs = {
           "placeholder"=> "Number",
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
+          "typeVariable" => 0,
           "value"=> 556.4,
           "selected"=> []
         },
@@ -120,6 +121,7 @@ $get_leafs = {
           "placeholder"=> "text",
           "mask"=> "",
           "type"=> "InputText",
+          "typeVariable" => 0,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -129,6 +131,7 @@ $get_leafs = {
           "placeholder"=> "textarea",
           "mask"=> "",
           "type"=> "InputTextarea",
+          "typeVariable" => 0,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -138,6 +141,7 @@ $get_leafs = {
           "placeholder"=> "editor",
           "mask"=> "",
           "type"=> "InputCKEditor",
+          "typeVariable" => 0,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -147,6 +151,7 @@ $get_leafs = {
           "placeholder"=> "codeEditor",
           "mask"=> "",
           "type"=> "InputCode",
+          "typeVariable" => 0,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -156,6 +161,7 @@ $get_leafs = {
           "placeholder"=> "boolean",
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
+          "typeVariable" => 0,
           "value"=> 1,
           "selected"=> []
         },
@@ -165,6 +171,7 @@ $get_leafs = {
           "placeholder"=> "radio",
           "mask"=> "",
           "type"=> "InputRadio",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -174,6 +181,7 @@ $get_leafs = {
           "placeholder"=> "select",
           "mask"=> "",
           "type"=> "InputSelect",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -183,6 +191,7 @@ $get_leafs = {
           "placeholder"=> "list",
           "mask"=> "",
           "type"=> "InputDoubleList",
+          "typeVariable" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -197,6 +206,7 @@ $get_leafs = {
           "placeholder"=> "Number",
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
+          "typeVariable" => 0,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -206,6 +216,7 @@ $get_leafs = {
           "placeholder"=> "text",
           "mask"=> "",
           "type"=> "InputText",
+          "typeVariable" => 0,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -215,6 +226,7 @@ $get_leafs = {
           "placeholder"=> "textarea",
           "mask"=> "",
           "type"=> "InputTextarea",
+          "typeVariable" => 0,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -224,6 +236,7 @@ $get_leafs = {
           "placeholder"=> "editor",
           "mask"=> "",
           "type"=> "InputCKEditor",
+          "typeVariable" => 0,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -233,6 +246,7 @@ $get_leafs = {
           "placeholder"=> "codeEditor",
           "mask"=> "",
           "type"=> "InputCode",
+          "typeVariable" => 0,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -242,6 +256,7 @@ $get_leafs = {
           "placeholder"=> "boolean",
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
+          "typeVariable" => 0,
           "value"=> 1,
           "selected"=> []
         },
@@ -251,6 +266,7 @@ $get_leafs = {
           "placeholder"=> "radio",
           "mask"=> "",
           "type"=> "InputRadio",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -260,6 +276,7 @@ $get_leafs = {
           "placeholder"=> "select",
           "mask"=> "",
           "type"=> "InputSelect",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -269,6 +286,7 @@ $get_leafs = {
           "placeholder"=> "list",
           "mask"=> "",
           "type"=> "InputDoubleList",
+          "typeVariable" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -283,6 +301,7 @@ $get_leafs = {
           "placeholder"=> "Number",
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
+          "typeVariable" => 0,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -292,6 +311,7 @@ $get_leafs = {
           "placeholder"=> "text",
           "mask"=> "",
           "type"=> "InputText",
+          "typeVariable" => 0,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -301,6 +321,7 @@ $get_leafs = {
           "placeholder"=> "textarea",
           "mask"=> "",
           "type"=> "InputTextarea",
+          "typeVariable" => 0,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -310,6 +331,7 @@ $get_leafs = {
           "placeholder"=> "editor",
           "mask"=> "",
           "type"=> "InputCKEditor",
+          "typeVariable" => 0,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -319,6 +341,7 @@ $get_leafs = {
           "placeholder"=> "codeEditor",
           "mask"=> "",
           "type"=> "InputCode",
+          "typeVariable" => 0,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -328,6 +351,7 @@ $get_leafs = {
           "placeholder"=> "boolean",
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
+          "typeVariable" => 0,
           "value"=> 1,
           "selected"=> []
         },
@@ -337,6 +361,7 @@ $get_leafs = {
           "placeholder"=> "radio",
           "mask"=> "",
           "type"=> "InputRadio",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -346,6 +371,7 @@ $get_leafs = {
           "placeholder"=> "select",
           "mask"=> "",
           "type"=> "InputSelect",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -355,6 +381,7 @@ $get_leafs = {
           "placeholder"=> "list",
           "mask"=> "",
           "type"=> "InputDoubleList",
+          "typeVariable" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -369,6 +396,7 @@ $get_leafs = {
           "placeholder"=> "Number",
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
+          "typeVariable" => 0,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -378,6 +406,7 @@ $get_leafs = {
           "placeholder"=> "text",
           "mask"=> "",
           "type"=> "InputText",
+          "typeVariable" => 0,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -387,6 +416,7 @@ $get_leafs = {
           "placeholder"=> "textarea",
           "mask"=> "",
           "type"=> "InputTextarea",
+          "typeVariable" => 0,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -396,6 +426,7 @@ $get_leafs = {
           "placeholder"=> "editor",
           "mask"=> "",
           "type"=> "InputCKEditor",
+          "typeVariable" => 0,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -405,6 +436,7 @@ $get_leafs = {
           "placeholder"=> "codeEditor",
           "mask"=> "",
           "type"=> "InputCode",
+          "typeVariable" => 0,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -414,6 +446,7 @@ $get_leafs = {
           "placeholder"=> "boolean",
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
+          "typeVariable" => 0,
           "value"=> 1,
           "selected"=> []
         },
@@ -423,6 +456,7 @@ $get_leafs = {
           "placeholder"=> "radio",
           "mask"=> "",
           "type"=> "InputRadio",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -432,6 +466,7 @@ $get_leafs = {
           "placeholder"=> "select",
           "mask"=> "",
           "type"=> "InputSelect",
+          "typeVariable" => 0,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -441,12 +476,14 @@ $get_leafs = {
           "placeholder"=> "list",
           "mask"=> "",
           "type"=> "InputDoubleList",
+          "typeVariable" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
       ]
     }
   ]
-};
+}
+;
 
 1;

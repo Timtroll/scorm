@@ -1,4 +1,4 @@
-package Freee=>=>Mock=>=>GetTree;
+package Freee::Mock::GetTree;
 
 use utf8;
 
