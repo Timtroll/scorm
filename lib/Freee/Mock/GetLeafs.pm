@@ -112,7 +112,7 @@ $mock_get_leafs = {
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
           "typeVariable" => 0,
-          "action" => "activate", # действие на клик по ячейке - передать id таблицы + строку c изменениями
+          "action" => 1, # действие на клик по ячейке - передать id таблицы + строку c изменениями
           "value"=> 556.4,
           "selected"=> []
         },
@@ -123,7 +123,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputText",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -134,7 +134,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputTextarea",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -145,7 +145,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCKEditor",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -156,7 +156,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCode",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -167,7 +167,7 @@ $mock_get_leafs = {
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 1,
           "selected"=> []
         },
@@ -178,7 +178,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputRadio",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -189,7 +189,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputSelect",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -200,7 +200,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputDoubleList",
           "typeVariable" => 1,
-          "action" => "activate",
+          "action" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -216,7 +216,7 @@ $mock_get_leafs = {
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -227,7 +227,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputText",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -238,7 +238,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputTextarea",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -249,7 +249,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCKEditor",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -260,7 +260,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCode",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -271,7 +271,7 @@ $mock_get_leafs = {
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 1,
           "selected"=> []
         },
@@ -282,7 +282,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputRadio",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -293,7 +293,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputSelect",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -304,7 +304,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputDoubleList",
           "typeVariable" => 1,
-          "action" => "activate",
+          "action" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -320,7 +320,7 @@ $mock_get_leafs = {
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -331,7 +331,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputText",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -342,7 +342,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputTextarea",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -353,7 +353,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCKEditor",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -364,7 +364,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCode",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -375,7 +375,7 @@ $mock_get_leafs = {
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 1,
           "selected"=> []
         },
@@ -386,7 +386,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputRadio",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -397,7 +397,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputSelect",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -408,7 +408,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputDoubleList",
           "typeVariable" => 1,
-          "action" => "activate",
+          "action" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
@@ -424,7 +424,7 @@ $mock_get_leafs = {
           "mask"=> "[0..9\\w ]+",
           "type"=> "InputNumber",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 65677.3,
           "selected"=> []
         },
@@ -435,7 +435,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputText",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовое поле",
           "selected"=> []
         },
@@ -446,7 +446,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputTextarea",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовая область",
           "selected"=> []
         },
@@ -457,7 +457,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCKEditor",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Текстовый редактор - CKEditor",
           "selected"=> []
         },
@@ -468,7 +468,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputCode",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Редактор кода - ACE",
           "selected"=> []
         },
@@ -479,7 +479,7 @@ $mock_get_leafs = {
           "mask"=> "[0..1\\w ]+",
           "type"=> "InputBoolean",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> 1,
           "selected"=> []
         },
@@ -490,7 +490,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputRadio",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -501,7 +501,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputSelect",
           "typeVariable" => 0,
-          "action" => "activate",
+          "action" => 1,
           "value"=> "Два",
           "selected"=> ["Раз", "Два"]
         },
@@ -512,7 +512,7 @@ $mock_get_leafs = {
           "mask"=> "",
           "type"=> "InputDoubleList",
           "typeVariable" => 1,
-          "action" => "activate",
+          "action" => 1,
           "value"=> [["1", "Пн"], ["2", "Вт"], ["3", "Ср"]],
           "selected"=> []
         }
