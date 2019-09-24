@@ -63,7 +63,6 @@ sub startup {
     # левая менюха (дерево без листочков)
     $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');     # прототип для добавлениястроки (все поля)
     $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # список полей для фолдера
-# ???????????? сделать полное дерево с текущим уровнем
     $auth->post('/settings/get_tree')      ->to('settings#get_tree');         # Все дерево без листочков
     $auth->post('/settings/save_folder')   ->to('settings#save_folder');      # добавление/сохранение фолдера
     $auth->post('/settings/delete_folder') ->to('settings#delete_folder');    # удаление фолдера
@@ -74,7 +73,7 @@ sub startup {
     $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');    # прототип для добавления строки (все поля)
 #    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки
-    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка настройки
+    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');        # удаление настройки
     $auth->post('/settings/activate')     ->to('settings#activate');      # включение настройки
@@ -175,8 +174,8 @@ sub startup {
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
     $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
-    $auth->post('/groups/hide')           ->to('groups#hide');         # отключить доступ
-    $auth->post('/groups/activate')       ->to('groups#activate');     # включить доступ
+    $auth->post('/groups/hide')           ->to('groups#hide');         # отключить группу
+    $auth->post('/groups/activate')       ->to('groups#activate');     # включить группу
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');

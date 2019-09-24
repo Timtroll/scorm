@@ -43,6 +43,9 @@ sub get_tree {
    # читаем настройки из базы
     my $list = $self->_get_tree();
 
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+    }
+
     $self->render(
         'json'    => {
             'status'  => 'ok',
@@ -82,31 +85,34 @@ sub delete_folder {
 sub get_leafs {
     my $self = shift;
 
-   # читаем настройки из базы
-   my $list = $self->all_settings();
+#    # читаем настройки из базы
+#    my $list = $self->all_settings();
 
-    my $set = {};
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        # формируем данные для таблицы
-        $$list{$id}{'table'} = $self->_table_obj({
-            'settings'  => {},
-            'header'    => [
-                { "key" => "id", "label" => "id" },
-                { "key" => "label", "label" => "Название" },
-                # { "key" => "type", "label" => "Тип поля" },
-                { "key" => "value", "label" => "Значение" },
-            ],
-            'body'      => $$list{$id}{'table'}
-        });
-        push @{$$set{'settings'}}, $$list{$id};
-    }
+#     my $set = {};
+#     foreach my $id (sort {$a <=> $b} keys %$list) {
+#         # формируем данные для таблицы
+#         $$list{$id}{'table'} = $self->_table_obj({
+#             'settings'  => {},
+#             'header'    => [
+#                 { "key" => "id", "label" => "id" },
+#                 { "key" => "label", "label" => "Название" },
+#                 # { "key" => "type", "label" => "Тип поля" },
+#                 { "key" => "value", "label" => "Значение" },
+#             ],
+#             'body'      => $$list{$id}{'table'}
+#         });
+#         push @{$$set{'settings'}}, $$list{$id};
+#     }
 
-    $$set{'status'} = 'ok';
-print Dumper($set);
+#     $$set{'status'} = 'ok';
+# print Dumper($set);
 
-    # показываем все настройки
-    $self->render( json => $set );
-    # $self->render( json => $settings );
+#     # показываем все настройки
+#     $self->render( json => $set );
+#     # $self->render( json => $settings );
+
+use Freee::Mock::GetLeafs;
+    $self->render( json => $get_leafs );
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
