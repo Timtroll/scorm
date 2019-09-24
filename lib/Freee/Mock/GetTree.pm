@@ -11,7 +11,9 @@ our @EXPORT = qw( $get_tree);
 our @EXPORT_OK = qw( $get_tree );
 our $pref;
 
-$get_tree = [
+$get_tree = {
+  "status" => "ok",
+  "list" => [
   {
     "component"=> "Settings",
     "folder"=> 1,
@@ -118,6 +120,6 @@ $get_tree = [
       }
     ]
   }
-];
+]};
 
 1;

@@ -40,21 +40,23 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-   # # читаем настройки из базы
-   #  my $list = $self->_get_tree();
+   # читаем настройки из базы
+    my $list = $self->_get_tree();
 
-   #  foreach my $id (sort {$a <=> $b} keys %$list) {
-   #  }
+    my $out = [];
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        
+    }
 
-   #  $self->render(
-   #      'json'    => {
-   #          'status'  => 'ok',
-   #          'list'    => $list
-   #      }
-   #  );
+    $self->render(
+        'json'    => {
+            'status'  => 'ok',
+            'list'    => $out
+        }
+    );
 
-use Freee::Mock::GetTree;
-    $self->render( json => $get_tree );
+# use Freee::Mock::GetTree;
+#     $self->render( json => $get_tree );
 }
 
 sub save_folder {
