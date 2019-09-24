@@ -45,7 +45,7 @@
 
 <script>
 
-  import brace from 'brace'
+  //import brace from 'brace'
   import editor from 'vue2-ace-editor'
 
   export default {
@@ -146,28 +146,28 @@
       editorInit: () => {
 
         //language extension prerequsite...
-        require('brace/ext/language_tools')
-        require('brace/ext/beautify')
+        import('brace/ext/language_tools')
+        import('brace/ext/beautify')
         //require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
 
-        require('brace/ext/error_marker')
-        require('brace/ext/searchbox')
-        require('brace/ext/whitespace')
-        require('brace/ext/statusbar')
+        import('brace/ext/error_marker')
+        import('brace/ext/searchbox')
+        import('brace/ext/whitespace')
+        import('brace/ext/statusbar')
 
         //language
-        require('brace/mode/html')
-        require('brace/mode/javascript')
-        require('brace/mode/sass')
-        require('brace/mode/scss')
-        require('brace/mode/css')
-        require('brace/mode/perl')
+        import('brace/mode/html')
+        import('brace/mode/javascript')
+        import('brace/mode/sass')
+        import('brace/mode/scss')
+        import('brace/mode/css')
+        import('brace/mode/perl')
 
         // theme
-        require('brace/theme/dracula')
+        import('brace/theme/dracula')
 
         // snippet
-        require('brace/snippets/javascript')
+        import('brace/snippets/javascript')
         //require(['emmet/emmet'], (data) => {
         //  window.emmet = data.emmet
         //})
