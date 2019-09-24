@@ -89,7 +89,7 @@ sub get_leafs {
     my $self = shift;
 
    # читаем настройки из базы
-   my $list = $self->all_settings();
+   # my $list = $self->all_settings();
 
 #     my $set = {};
 #     foreach my $id (sort {$a <=> $b} keys %$list) {
@@ -115,7 +115,7 @@ sub get_leafs {
 #     # $self->render( json => $settings );
 
 use Freee::Mock::GetLeafs;
-    $self->render( json => $get_leafs );
+    $self->render( json => $mock_get_leafs );
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm

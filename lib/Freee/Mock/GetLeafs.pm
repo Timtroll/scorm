@@ -1,17 +1,17 @@
-package Freee=>=>Mock=>=>GetLeafs;
+package Freee::Mock::GetLeafs;
 
 use utf8;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $get_leafs );
+use vars qw( @ISA @EXPORT @EXPORT_OK $mock_get_leafs );
 
 
 our @ISA = qw( Exporter );
-our @EXPORT = qw( $get_leafs);
-our @EXPORT_OK = qw( $get_leafs );
+our @EXPORT = qw( $mock_get_leafs);
+our @EXPORT_OK = qw( $mock_get_leafs );
 our $pref;
 
-$get_leafs = {
+$mock_get_leafs = {
   "settings"=> {
     "editable"=> 1,
     "parent"=> 10,
