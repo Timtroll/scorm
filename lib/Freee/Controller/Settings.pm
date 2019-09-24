@@ -40,18 +40,21 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-   # читаем настройки из базы
-    my $list = $self->_get_tree();
+   # # читаем настройки из базы
+   #  my $list = $self->_get_tree();
 
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-    }
+   #  foreach my $id (sort {$a <=> $b} keys %$list) {
+   #  }
 
-    $self->render(
-        'json'    => {
-            'status'  => 'ok',
-            'list'    => $list
-        }
-    );
+   #  $self->render(
+   #      'json'    => {
+   #          'status'  => 'ok',
+   #          'list'    => $list
+   #      }
+   #  );
+
+use Freee::Mock::GetTree;
+    $self->render( json => $get_tree );
 }
 
 sub save_folder {
@@ -85,8 +88,8 @@ sub delete_folder {
 sub get_leafs {
     my $self = shift;
 
-#    # читаем настройки из базы
-#    my $list = $self->all_settings();
+   # читаем настройки из базы
+   my $list = $self->all_settings();
 
 #     my $set = {};
 #     foreach my $id (sort {$a <=> $b} keys %$list) {
