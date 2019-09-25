@@ -42,7 +42,7 @@ sub startup {
     $self->pg_init();
 
     # init Beanstalk connection
-    $self->beans_init();
+    $self->_beans_init();
 
     # prepare validate functions
     prepare_validate();
@@ -63,8 +63,8 @@ sub startup {
 
     # левая менюха (дерево без листочков)
     $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');     # прототип для добавлениястроки (все поля)
-    $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # список полей для фолдера
     $auth->post('/settings/get_tree')      ->to('settings#get_tree');         # Все дерево без листочков
+    $auth->post('/settings/get_folder')    ->to('settings#get_folder');       # получить данные фолдера настроек
     $auth->post('/settings/save_folder')   ->to('settings#save_folder');      # добавление/сохранение фолдера
     $auth->post('/settings/delete_folder') ->to('settings#delete_folder');    # удаление фолдера
 

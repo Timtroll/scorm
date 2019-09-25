@@ -40,6 +40,16 @@ sub register {
         return $list;
     });
 
+    # получить данные фолдера настроек
+    # my $true = $self->_get_folder();
+    $app->helper( '_get_folder' => sub {
+        my $self = shift;
+
+        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+
+        return 1;
+    });
+
     # очистка дефолтных настроек
     # my $true = $self->reset_setting();
     $app->helper( '_reset_setting' => sub {
@@ -72,7 +82,7 @@ sub register {
     });
 
     # для создания настройки
-    # my $id = $self->insert_setting({
+    # my $id = $self->_insert_setting({
     #     "parent",   - обязательно
     #     "label",    - обязательно
     #     "name",     - обязательно
@@ -84,14 +94,14 @@ sub register {
     #     "selected",
     # });
     # для создания группы настроек
-    # my $id = $self->insert_setting({
+    # my $id = $self->_insert_setting({
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "readOnly",       - не обязательно, по умолчанию 0
     #     "editable" int,   - не обязательно, по умолчанию 1
     #     "removable" int,  - не обязательно, по умолчанию 1
     # });
-    $app->helper( 'insert_setting' => sub {
+    $app->helper( '_insert_setting' => sub {
         my ($self, $data) = @_;
 
         return unless $data;
@@ -109,7 +119,7 @@ sub register {
     });
 
     # для сохранения настройки
-    # my $id = $self->insert_setting({
+    # my $id = $self->_save_setting({
     #     "id",       - обязательно (должно быть больше 0)
     #     "parent",   - обязательно (должно быть больше 0)
     #     "label",    - обязательно
@@ -122,7 +132,7 @@ sub register {
     #     "selected",
     # });
     # для создания группы настроек
-    # my $id = $self->insert_setting({
+    # my $id = $self->_save_setting({
     #     "id",       - обязательно (должно быть больше 0),
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
@@ -132,7 +142,7 @@ sub register {
     #     "removable" int,  - не обязательно, по умолчанию 1
     # });
     # возвращается id записи
-    $app->helper( 'save_setting' => sub {
+    $app->helper( '_save_setting' => sub {
         my ($self, $data) = @_;
 
         return unless $data;
@@ -149,9 +159,9 @@ sub register {
     });
 
     # для удаления настройки
-    # my $true = $self->delete_setting( 99 );
+    # my $true = $self->_delete_setting( 99 );
     # возвращается true/false
-    $app->helper( 'delete_setting' => sub {
+    $app->helper( '_delete_setting' => sub {
         my ($self, $id) = @_;
 
         return unless $id;
@@ -162,9 +172,9 @@ sub register {
     });
 
     # читаем одну настройку
-    # my $row = $self->get_row( 99 );
+    # my $row = $self->_get_setting( 99 );
     # возвращается строка в виде объекта
-    $app->helper( 'get_row' => sub {
+    $app->helper( '_get_setting' => sub {
         my ($self, $id) = @_;
 
         return unless $id;

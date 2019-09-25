@@ -21,7 +21,7 @@ sub register {
     # Helper for Groups
 
     # для создания возможностей групп пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_insert_group({
     #       "folder"      => 0,           - это возможности пользователя
     #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -33,7 +33,7 @@ sub register {
     #     "required"    => 0            - не обязательно, по умолчанию 0
     # });
     # для создания группы пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_insert_group({
     #     "folder"      => 1,           - это группа пользователей
     #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -43,7 +43,7 @@ sub register {
     #     "removable"   => 0,           - не обязательно, по умолчанию 0
     # });
     # возвращается id записи    
-    $app->helper( 'insert_group' => sub {
+    $app->helper( '_insert_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
         my $id;
@@ -57,7 +57,7 @@ sub register {
 
 
     # для создания возможностей групп пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_update_group({
     #     "folder"      => 0,           - это возможности пользователя
     #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -69,7 +69,7 @@ sub register {
     #     "required"    => 0            - не обязательно, по умолчанию 0
     # });
     # для создания группы пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_update_group({
     #     "folder"      => 1,           - это группа пользователей
     #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -79,7 +79,7 @@ sub register {
     #     "removable"   => 0,           - не обязательно, по умолчанию 0
     # });
     # возвращается true/false
-    $app->helper( 'update_group' => sub {
+    $app->helper( '_update_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
 
@@ -90,9 +90,9 @@ sub register {
 
 
     # для удаления группы пользователей
-    # my $true = $self->delete_group( 99 );
+    # my $true = $self->_delete_group( 99 );
     # возвращается true/false
-    $app->helper( 'delete_group' => sub {
+    $app->helper( '_delete_group' => sub {
         my ($self, $id) = @_;
         return unless $id;
         my $db_result = 0;
@@ -131,7 +131,7 @@ sub register {
 
     # для изменения параметра status
     # возвращается true/false
-    $app->helper( 'status_group' => sub {
+    $app->helper( '_status_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
 
@@ -142,9 +142,9 @@ sub register {
 
 
     # для проверки корректности наследования
-    # my $true = $self->parent_check( 99 );
+    # my $true = $self->_parent_check( 99 );
     # возвращается true/false
-    $app->helper( 'parent_check' => sub {
+    $app->helper( '_parent_check' => sub {
         my ($self, $parent) = @_;
 
         # это не фолдер?
@@ -166,9 +166,9 @@ sub register {
 
 
     # для проверки существования строки с данным id
-    # my $true = $self->id_check( 99 );
+    # my $true = $self->_id_check( 99 );
     # возвращается true/false
-    $app->helper( 'id_check' => sub {
+    $app->helper( '_id_check' => sub {
         my ($self, $id) = @_;
         return unless $id;
 

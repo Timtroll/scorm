@@ -17,7 +17,7 @@ sub index {
 }
 
 # группы пользователей
-# my $id = $self->insert_group({
+# my $id = $self->add({
 #     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
@@ -51,7 +51,7 @@ sub add {
         #проверка остальных полей
         if (  $data{'label'} && $data{'name'} ) {
             #добавление
-            $id = $self->insert_group( \%data );
+            $id = $self->_insert_group( \%data );
             push @mess, "Could not new group item '$data{'label'}'" unless $id;
         }
         else {
@@ -69,7 +69,7 @@ sub add {
 }
 
 # для обновления возможностей групп пользователей
-# my $id = $self->insert_group({
+# my $id = $self->update({
 #      "id"        => 1            - id обновляемого элемента ( >0 )
 #     "folder"      => 0,           - это возможности пользователя
 #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
@@ -82,7 +82,7 @@ sub add {
 #     "required"    => 0            - не обязательно, по умолчанию 0
 # });
 # для создания группы пользователей
-# my $id = $self->insert_group({
+# my $id = $self->update({
 #       "id"        => 1            - id обновляемого элемента ( >0 )
 #     "folder"      => 1,           - это группа пользователей
 #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
@@ -113,13 +113,13 @@ sub update {
     }
 
     # проверка поля parent
-    if ( $self->parent_check( $data{'parent'} ) ) {
+    if ( $self->_parent_check( $data{'parent'} ) ) {
         # проверка остальных обязательных полей
         if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
             # проверка существования обновляемой строки
-            if ( $self->id_check( $data{'id'} ) ) {
+            if ( $self->_id_check( $data{'id'} ) ) {
                 #обновление
-                $id = $self->update_group( \%data );
+                $id = $self->_update_group( \%data );
                 push @mess, "Could not update setting item '$data{'label'}'" unless $id;
             }
             else {
@@ -154,9 +154,9 @@ sub delete {
     # проверка обязательных полей
     if ( $id ) {
         # проверка на существование удаляемой строки в groups
-        if ( $self->id_check( $id ) ) {
+        if ( $self->_id_check( $id ) ) {
             # процесс удаления
-            $id = $self->delete_group( $id );
+            $id = $self->_delete_group( $id );
             push @mess, "Could not deleted" unless $id;
         }
         else {
@@ -194,9 +194,9 @@ sub status {
         # проверка статуса
         if ( ( $data{'status'} == 0 ) || ( $data{'status'} == 1 ) ) {
             # проверка на существование строки 
-            if ( $self->id_check( $data{'id'} ) ) {
+            if ( $self->_id_check( $data{'id'} ) ) {
                 #процесс смены статуса
-                $id = $self->status_group( \%data, [] );
+                $id = $self->_status_group( \%data, [] );
                 push @mess, "Can't change status" unless $id;
             }
             else {

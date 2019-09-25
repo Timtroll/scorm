@@ -15,7 +15,7 @@ sub register {
 
     #################################
     # Helper for RabbitMQ
-    $app->helper( 'beans_init' => sub {
+    $app->helper( '_beans_init' => sub {
         unless ($beans) {
             $beans = Beanstalk::Client->new( $config->{'beans'} );
             $beans->connect();
@@ -24,7 +24,7 @@ sub register {
         return $beans;
     });
 
-    $app->helper( 'events' => sub {
+    $app->helper( '_events' => sub {
         # state $events = Mojo::EventEmitter->new;
         return Mojo::EventEmitter->new;
     });

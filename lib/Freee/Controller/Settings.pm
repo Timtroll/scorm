@@ -27,11 +27,15 @@ sub proto_folder {
 sub get_folder {
     my $self = shift;
 
+    my $id = $self->param('id');
+
+    # выбираем листья ветки дерева
+    my $folder = $self->_get_folder($id);
+
     $self->render(
         'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'get_folder'
+            'status'  => 'ok',
+            'data'    => $folder
         }
     );
 }
@@ -122,23 +126,10 @@ sub get_leafs {
         "body"      => $list
     });
 
-    # $self->render(
-    #     'json'    => {
-    #         'controller'    => 'Cmsarticle',
-    #         'route'         => 'index',
-    #         'status'        => 'ok',
-    #         'params'        => $self->req->params->to_hash,
-    #         'test'          => $test
-    #     }
-    # );
-
     $self->render( 'json' => {
         status  => 'ok',
         list    => $table
     });
-
-# use Freee::Mock::GetLeafs;
-#     $self->render( json => $mock_get_leafs );
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
@@ -155,7 +146,7 @@ sub set_load_default {
             'name'  => $$folder{'label'},
             'parent'=> 0
         };
-        my $id = $self->insert_setting($sub, []);
+        my $id = $self->_insert_setting($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         foreach ( @{$$folder{'table'}->{'body'}} ) {
@@ -166,7 +157,7 @@ sub set_load_default {
             $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
             $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
 
-            my $newid = $self->insert_setting($_, ['parent']);
+            my $newid = $self->_insert_setting($_, ['parent']);
             push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
         }
     }
@@ -250,7 +241,7 @@ sub add {
         }
     }
 
-    my $id = $self->insert_setting( \%data, [] );
+    my $id = $self->_insert_setting( \%data, [] );
     push @mess, "Could not new setting item '$data{'label'}'" unless $id;
 
     my $resp;
@@ -268,7 +259,7 @@ sub edit {
 
     my $id = $self->param('id');
 
-    my $row = $self->get_row( $id );
+    my $row = $self->_get_setting( $id );
 
     my $resp;
     $resp->{'status'} = $row ? 'ok' : 'fail';
@@ -339,7 +330,7 @@ sub save {
         }
     }
 
-    my $id = $self->save_setting( \%data, [] );
+    my $id = $self->_save_setting( \%data, [] );
     push @mess, "Could not update setting item '$data{'label'}'" unless $id;
 
     my $resp;
@@ -363,7 +354,7 @@ sub delete {
     $id = 0 unless $id =~ /\d+/;
     push @mess, "Could not id for deleting" unless $id;
 
-    $id = $self->delete_setting( $id );
+    $id = $self->_delete_setting( $id );
     push @mess, "Could not deleted '$id'" unless $id;
 
     my $resp;
