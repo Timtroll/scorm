@@ -8,7 +8,8 @@ const state = {
     status:   'loading',
     open:     false,
     activeId: null,
-    items:    []
+    items:    [],
+    itemsFlat:    []
   }
 
 }
