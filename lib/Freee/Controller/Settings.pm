@@ -40,23 +40,12 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-   # читаем настройки из базы
-    my $list = $self->_get_tree();
+    my $list = $self->_get_tree(1);
 
-    # делаем дерево в виде массива из плоской таблицы наследований по parent
-    my $set = {};
-    foreach my $id (sort { $$list{$b}{'parent'} <=> $$list{$a}{'parent'} or $a <=> $b } keys %$list) {
-        $$list{$id}{'children'} = [] unless ( defined $$list{$id}{'children'});
-        if ($$list{$id}{'parent'}) {
-            $$list{$id}{'children'} = [];
-            push @{$$list{$$list{$id}{'parent'}}{'children'}}, $$list{$id};
-            next;
-        }
-        push @{$$set{'list'}}, $$list{$id};
-    }
-    $$set{'status'} = 'ok';
-
-    $self->render( 'json' => $set );
+    $self->render( 'json' => {
+        status  => 'ok',
+        list    => $list
+    });
 }
 
 sub save_folder {
@@ -91,7 +80,7 @@ sub get_leafs {
     my $self = shift;
 
    # читаем настройки из базы
-   # my $list = $self->all_settings();
+   # my $list = $self->_all_settings();
 
 #     my $set = {};
 #     foreach my $id (sort {$a <=> $b} keys %$list) {

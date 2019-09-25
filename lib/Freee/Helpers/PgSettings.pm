@@ -2,7 +2,6 @@ package Freee::Helpers::PgSettings;
 
 use strict;
 use warnings;
-
 use utf8;
 
 use base 'Mojolicious::Plugin';
@@ -26,17 +25,23 @@ sub register {
     # my $true = $self->_get_tree();
     $app->helper( '_get_tree' => sub {
         my $self = shift;
+        my $no_children = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref(
-            'SELECT * FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings);',
-            # 'SELECT s.*, COUNT( s."id" )
-            #     FROM settings AS s
-            #     LEFT JOIN "settings" AS sL ON sL."parent" = s."id"
-            #     WHERE s.parent = 0
-            #     GROUP BY s."id"
-            #     ORDER BY s."id"',
-            'id'
-        );
+        my $list;
+        if ($no_children) {
+            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) ORDER by id', { Slice=> {} } );
+        }
+        else {
+            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent FROM "public".settings ORDER by id', { Slice=> {} } );
+# 'SELECT s.*, COUNT( s."id" )
+#     FROM settings AS s
+#     LEFT JOIN "settings" AS sL ON sL."parent" = s."id"
+#     WHERE s.parent = 0
+#     GROUP BY s."id"
+#     ORDER BY s."id"',
+        }
+
+        $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
         return $list;
     });
@@ -52,80 +57,15 @@ sub register {
     });
 
     # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
-    $app->helper( 'all_settings' => sub {
+    $app->helper( '_all_settings' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."settings"', 'id');
+        my $list = $self->pg_dbh->selectall_arrayref('SELECT * FROM "public".settings ORDER by id', { Slice=> {} } );
 
-        # запоминаем корневые элементы
-        my $out = {};
-        foreach my $parent (sort {$a <=> $b} keys %$list) {
-            if ($$list{$parent}{'parent'} == 0) {
-                # запоминаем корневые элементы и удаляем их
-                $$out{$parent} = {
-                    "label"     => $$list{$parent}{'label'},
-                    "id"        => $$list{$parent}{'id'},
-                    "component" => '',
-                    "opened"    => 0,
-                    "keywords"  => '',
-                    "children"  => [],
-                    "table"     => []
-                };
+        $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
-                delete $$list{$parent};
-            }
-        }
-
-        foreach my $id (sort {$a <=> $b} keys %$list) {
-            next if $id == $$list{$id}{'parent'};
-
-            my ($lst, $keys) = &children( $$list{$id}{'parent'}, $list );
-
-            if ( $$out{ $$list{$id}{'parent'} } ) {
-                $$out{ $$list{$id}{'parent'} }{'table'} = $lst;
-
-                my %keys = map {$_, 1} split(' ', $keys);
-                $$out{ $$list{$id}{'parent'} }{'keywords'} = join(' ', keys %keys);
-            }
-        }
-
-        return $out;
+        return $list;
     });
-
-    # слежубная, для поиска наследников
-    sub children {
-        my ($parent, $hash) = @_;
-
-        my @out = ();
-        my $keys = '';
-        foreach my $id (sort {$a <=> $b} keys %$hash ) {
-            if ($$hash{$id}{'parent'} == $parent) {
-                my %keys = map {$_, 1} split(' ', $$hash{$id}{'label'});
-                $$hash{$id}{'keywords'} = join(' ', keys %keys);
-                $keys .= "$$hash{$id}{'keywords'} ";
-
-                # десериализуем поля vaue и selected
-                foreach my $val ('value', 'selected') {
-                    # if ($$hash{$id}{$val} =~ s/^\"//) {
-# warn($$hash{$id}{$val});
-                    #     $$hash{$id}{$val} =~ s/\\\"/\"/g;
-                    #     $$hash{$id}{$val} =~ s/\"$//;
-                    # }
-
-                    if ($$hash{$id}{$val} =~ /^\[/) {
-                        $$hash{$id}{$val} = JSON::XS->new->allow_nonref->decode($$hash{$id}{$val});
-                        # $$hash{$id}{$val} = JSON::XS->new->decode($$hash{$id}{$val});
-# warn(Dumper($$hash{$id}{$val}));
-# warn('--');
-                    }
-                }
-                push @out, $$hash{$id};
-            }
-        }
-        $keys =~ s/\s+/ /g;
-
-        return \@out, $keys;
-    }
 
     # для создания настройки
     # my $id = $self->insert_setting({

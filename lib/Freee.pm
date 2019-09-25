@@ -36,6 +36,7 @@ sub startup {
     $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
+    $self->plugin('Freee::Helpers::Tree');
 
     # init Pg connection
     $self->pg_init();
