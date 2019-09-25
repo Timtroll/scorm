@@ -1,14 +1,33 @@
 import router from './../../../router'
-import methods from './../../methods'
+import {flatTree, notify} from './../../methods'
 import Api from './../../../api/Table'
-//import UIkit from 'uikit/dist/js/uikit.min'
 
 const actions = {
 
-  getTable ({commit, state}, id) {
-    const table = require('../../../assets/mock/Table.json')
+  async getTable ({commit, state}, id) {
+    try {
+      commit('table_status_request')
 
-    commit('set_table', table)
+      const response = await Api.get_leafs(id)
+      //const routeId  = router.currentRoute.params.id
+
+      if (response.status === 200) {
+        const resp = await response.data
+
+        //if (typeof resp['list'] !== 'undefined') {
+        //  const table = resp.list
+        //
+        //}
+
+        commit('set_table', resp)
+        commit('table_status_success')
+
+      }
+
+    } catch (e) {
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
 
   }
 
