@@ -5,10 +5,8 @@
         :header-left="true"
         :body-padding="false"
         :header-small="true"
-
         :header-padding-none="true"
-        :body-right-header-title="card.bodyRightTitle"
-        :body-right-show="tableRowDetail.open">
+        :loader="loader">
     <!--:loader="notEmptyTable"-->
 
     <template #headerLeft>
@@ -133,32 +131,21 @@
         </table>
       </div>
     </template>
-s
-    <!--bodyRight-->
-    <template #bodyRight>
-      <!--:row-data="JSON.parse(JSON.stringify(card.bodyRightItem))"-->
-      <List :row-data="card.bodyRightItem"
-            :required="editRequired"
-            :parent="libId"
-            :folder="0"
-            :add="card.add"
-            :labels="card.bodyRightTitle"
-            v-on:title="card.bodyRightTitle = $event"
-            v-on:close="toggleRightPanel"></List>
-    </template>
 
   </Card>
 
 </template>
 
 <script>
-  import TableRow from './TableRow'
-  import Card from '../../ui/card/Card'
-  import List from '../cmsList/List'
 
   export default {
-    name:       'Table',
-    components: {TableRow, Card, List},
+
+    name: 'Table',
+
+    components: {
+      TableRow: () => import('./TableRow'),
+      Card:     () => import('../../ui/card/Card')
+    },
 
     data () {
       return {
@@ -167,11 +154,8 @@ s
         checked:     false,
 
         card: {
-          bodyRightShow:  true,
-          bodyRightTitle: null,
-          bodyRightItem:  null,
-          add:            false,
-          folder:         0
+          add:    false,
+          folder: 0
         },
 
         editRequired: {
@@ -179,27 +163,16 @@ s
           placeholder: true,
           label:       true,
           type:        true
-        },
-
-        addTpl: {
-          folder:      0,
-          lib_id:      +this.libId,
-          label:       '',
-          name:        '',
-          type:        '',
-          placeholder: '',
-          editable:    1,
-          mask:        '',
-          readOnly:    0,
-          required:    1,
-          value:       '',
-          selected:    []
         }
 
       }
     },
 
     computed: {
+
+      loader () {
+        return this.$store.getters.table_status
+      },
 
       notEmptyTable () {
         return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'
@@ -214,7 +187,7 @@ s
       },
 
       table () {
-        return this.$store.getters.pageTable
+        return this.$store.getters.table_items
       },
 
       massEdit () {
@@ -253,30 +226,6 @@ s
         }
       },
 
-      //tableRows () {
-      //  if (this.table) {
-      //    const table        = this.table.body,
-      //          displayTable = [],
-      //          header       = this.table.header,
-      //          flatHeader   = header.map(item => item.key)
-      //
-      //    table.forEach((item) => {
-      //      //const keys    = Object.keys(item)
-      //      const newItem = []
-      //
-      //      flatHeader.forEach((headItem, i) => {
-      //        if (item.hasOwnProperty(headItem)) {
-      //          newItem.push({val: item[headItem], key: headItem})
-      //        }
-      //      })
-      //
-      //      displayTable.push(newItem)
-      //    })
-      //
-      //    return displayTable
-      //  }
-      //},
-
       // Поиск по полю label && keywords
       filterSearch () {
 
@@ -286,8 +235,8 @@ s
 
           return tableBody.filter(item => {
             return !this.searchInput
+              || item.name.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
               || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
-              || item.keywords.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
           })
         }
       }
@@ -297,22 +246,22 @@ s
     methods: {
 
       add_row () {
-        this.card.bodyRightItem  = this.addTpl
-        this.card.add            = true
-        this.card.bodyRightTitle = this.$t('actions.addRow')
-        this.toggleRightPanel()
-        this.$store.commit('cms_row_success')
+        //this.card.bodyRightItem  = this.addTpl
+        //this.card.add            = true
+        //this.card.bodyRightTitle = this.$t('actions.addRow')
+        //this.toggleRightPanel()
+        //this.$store.commit('cms_row_success')
       },
 
       edit (event) {
-        this.card.bodyRightTitle = null
-        this.card.add            = false
-        this.card.bodyRightItem  = event
-        this.$store.commit('cms_row_success')
+        //this.card.bodyRightTitle = null
+        //this.card.add            = false
+        //this.card.bodyRightItem  = event
+        //this.$store.commit('cms_row_success')
       },
 
       remove (event) {
-        this.$emit('remove', event)
+        //this.$emit('remove', event)
       },
 
       notCheckedAll () {
@@ -326,11 +275,11 @@ s
       // Очистка поля поиска
       clearSearchVal () {
         this.searchInput = null
-      },
-
-      toggleRightPanel () {
-        this.$store.commit('cms_table_row_show', !this.tableRowDetail.open)
       }
+
+      //toggleRightPanel () {
+      //  this.$store.commit('cms_table_row_show', !this.tableRowDetail.open)
+      //}
 
     }
   }
