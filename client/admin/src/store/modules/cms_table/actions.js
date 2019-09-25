@@ -1,7 +1,6 @@
 import router from './../../../router'
 import methods from './../../methods'
 import Api from './../../../api/Table'
-
 //import UIkit from 'uikit/dist/js/uikit.min'
 
 const actions = {
