@@ -4,9 +4,9 @@ SOURCE=`pwd`
 echo $SOURCE
 
 echo "-------"
-echo "stop and start mojo daemon"
+echo "stop mojo daemon: $SOURCE"
 cd $SOURCE
-$SOURCE/starting.sh stop
+./starting.sh stop
 
 echo "-------"
 echo "git checkout master"
@@ -45,9 +45,9 @@ echo "remove $SOURCE/log/deploy.lock"
 rm $SOURCE/log/deploy.lock
 
 echo "-------"
-echo "start mojo daemon"
+echo "start mojo daemon: $SOURCE"
 cd $SOURCE
-$SOURCE/starting.sh start
+./starting.sh start
 
 
 echo "Finish"
