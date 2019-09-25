@@ -77,10 +77,12 @@ sub delete_folder {
 
 # выбираем листья ветки дерева
 sub get_leafs {
-    my ($self, $id) = @_;
+    my $self = shift;
+
+    my $id = $data{'id'} = $self->param('id');
 
     # выбираем листья ветки дерева
-    my $list = $self->_get_leafs();
+    my $list = $self->_get_leafs($id);
 
     $self->render( 'json' => {
         status  => 'ok',

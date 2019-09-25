@@ -4,6 +4,11 @@ SOURCE=`pwd`
 echo $SOURCE
 
 echo "-------"
+echo "stop and start mojo daemon"
+cd $SOURCE
+$SOURCE/starting.sh stop
+
+echo "-------"
 echo "git checkout master"
 git checkout master
 
@@ -36,14 +41,14 @@ echo "copy dist to public"
 cp -a $SOURCE/client/admin/dist/. $SOURCE/public
 
 echo "-------"
-echo "stop and start mojo daemon"
-cd $SOURCE
-$SOURCE/starting.sh stop
-./starting.sh start
-
-echo "-------"
 echo "remove $SOURCE/log/deploy.lock"
 rm $SOURCE/log/deploy.lock
+
+echo "-------"
+echo "start mojo daemon"
+cd $SOURCE
+$SOURCE/starting.sh start
+
 
 echo "Finish"
 # if [ "$?" != "0" ] ; then

@@ -55,7 +55,7 @@ sub register {
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
 
-        my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"=$id ORDER by id' );
+        my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id' );
 
         return $list;
     });
