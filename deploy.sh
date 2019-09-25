@@ -59,6 +59,7 @@ rm $SOURCE/log/deploy.lock
 
 
 echo "Finish"
+
 # if [ "$?" != "0" ] ; then
 #     echo
 #     echo "ERROR: Execution failed."
