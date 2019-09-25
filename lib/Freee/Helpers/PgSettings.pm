@@ -33,12 +33,6 @@ sub register {
         }
         else {
             $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent FROM "public".settings ORDER by id', { Slice=> {} } );
-# 'SELECT s.*, COUNT( s."id" )
-#     FROM settings AS s
-#     LEFT JOIN "settings" AS sL ON sL."parent" = s."id"
-#     WHERE s.parent = 0
-#     GROUP BY s."id"
-#     ORDER BY s."id"',
         }
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
@@ -48,12 +42,22 @@ sub register {
 
     # очистка дефолтных настроек
     # my $true = $self->reset_setting();
-    $app->helper( 'reset_setting' => sub {
+    $app->helper( '_reset_setting' => sub {
         my $self = shift;
 
         $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
 
         return 1;
+    });
+
+    # выбираем листья ветки дерева по id парента
+    # my $true = $self->_get_leafs(11);
+    $app->helper( '_get_leafs' => sub {
+        my ($self, $id) = @_;
+
+        my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"=$id ORDER by id' );
+
+        return $list;
     });
 
     # получение списка настроек из базы в виде объекта как в Mock/Settings.pm

@@ -75,38 +75,20 @@ sub delete_folder {
 #####################
 # Работа с Настройками
 
-# Список настроек из базы в виде объекта как в Mock/Settings.pm
+# выбираем листья ветки дерева
 sub get_leafs {
-    my $self = shift;
+    my ($self, $id) = @_;
 
-   # читаем настройки из базы
-   # my $list = $self->_all_settings();
+    # выбираем листья ветки дерева
+    my $list = $self->_get_leafs();
 
-#     my $set = {};
-#     foreach my $id (sort {$a <=> $b} keys %$list) {
-#         # формируем данные для таблицы
-#         $$list{$id}{'table'} = $self->_table_obj({
-#             'settings'  => {},
-#             'header'    => [
-#                 { "key" => "id", "label" => "id" },
-#                 { "key" => "label", "label" => "Название" },
-#                 # { "key" => "type", "label" => "Тип поля" },
-#                 { "key" => "value", "label" => "Значение" },
-#             ],
-#             'body'      => $$list{$id}{'table'}
-#         });
-#         push @{$$set{'settings'}}, $$list{$id};
-#     }
+    $self->render( 'json' => {
+        status  => 'ok',
+        list    => $list
+    });
 
-#     $$set{'status'} = 'ok';
-# print Dumper($set);
-
-#     # показываем все настройки
-#     $self->render( json => $set );
-#     # $self->render( json => $settings );
-
-use Freee::Mock::GetLeafs;
-    $self->render( json => $mock_get_leafs );
+# use Freee::Mock::GetLeafs;
+#     $self->render( json => $mock_get_leafs );
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm

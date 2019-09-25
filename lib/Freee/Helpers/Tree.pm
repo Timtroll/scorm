@@ -11,23 +11,30 @@ use constant DEBUGGING => 0;
 sub register {
     my ($self, $app) = @_;
 
+    # построение дерева по плоской таблице с парентами
+    # $self->_list_to_tree(<list>, <id_field>, <parent>, <start_id>, <children_key>);
+    # <list>        - ссылка на массив, из которого строим дерево
+    # <id_field>    - название поля, которе содержит id записи
+    # <parent>      - название поля, которе содержит parent записи
+    # <start_id>    - с какого id начинаем строить дерево (id корня дерева)
+    # <children_key> - название поля, в которое кладем дочерние объекты
     $app->helper( '_list_to_tree' => sub {
-        my ($self, $list, $idField, $parentField, $startId, $TreeChildrenKey) = @_;
+        my ($self, $list, $id_field, $parent_field, $start_id, $children_key) = @_;
 
-        $TreeChildrenKey ||= 'children';
-        $idField ||= 'id';
-        $parentField ||= 'parent';
+        $children_key ||= 'children';
+        $id_field ||= 'id';
+        $parent_field ||= 'parent';
         return () unless ($list);
 
         my $root_id = -1;
 
-        warn "Using id field $idField and parent field $parentField\n" if DEBUGGING;
+        warn "Using id field $id_field and parent field $parent_field\n" if DEBUGGING;
 
-        # If given a startId the find that object in the list and ensure that
+        # If given a start_id the find that object in the list and ensure that
         # that is processed first.  Patch from Kevin White [kevin.white/oupjournals-org]
-        if ( defined $startId ) {
+        if ( defined $start_id ) {
             for ( my $i = 0; $i < scalar @{$list}; $i++ ) {
-                if ( ${$list}[$i]->{$idField} =~ /^$startId$/ ) {
+                if ( ${$list}[$i]->{$id_field} =~ /^$start_id$/ ) {
                     unshift( @{$list}, splice( @{$list}, $i, 1 ) );
                     last;
                 }
@@ -36,13 +43,13 @@ sub register {
 
         my @tree;
         my %index;
-        # Put objects into a nested tree structure
+        # построение дерева
         foreach my $obj (@{$list}) {
             $obj->{'keywords'} = $obj->{'label'};
             $obj->{folder} = 0;
-            die "list_to_tree:  Object undefined\n" unless $obj;
-            my $id = $obj->{$idField} || die "list_to_tree:  No $idField in object\n";
-            my $pid = $obj->{$parentField} || $id;
+            die "_list_to_tree:  Object undefined\n" unless $obj;
+            my $id = $obj->{$id_field} || die "_list_to_tree: No $id_field in object\n";
+            my $pid = $obj->{$parent_field} || $id;
 
             if ($root_id == -1) {
                 $pid = $id;
@@ -51,14 +58,14 @@ sub register {
 
             warn "Adding object #$id to parent #$pid\n" if DEBUGGING;
 
-            # Add object node to index
+            # добавляем объект в индекс
             if (defined $index{$id}) {
-                if (defined $index{$id}->{$idField}) {
-                    warn "_list_to_tree:  Duplicate object $id.\n";
+                if (defined $index{$id}->{$id_field}) {
+                    warn "_list_to_tree: Duplicate object $id.\n";
                     return [];
                 }
                 else {
-                    $obj->{$TreeChildrenKey} = $index{$id}->{$TreeChildrenKey};
+                    $obj->{$children_key} = $index{$id}->{$children_key};
                     $index{$id} = $obj;
                 }
             }
@@ -66,23 +73,22 @@ sub register {
                 $index{$id} = $obj;
             }
 
-            # If this is a root object, put into tree directly
-
+            # если это корневой объект, сразу кладем его в дерево
             if ($id == $pid) {
                 warn "Adding $id to tree\n" if DEBUGGING;
                 push @tree, $obj;
 
                 warn "Now there are ", $#tree + 1, " items in tree\n" if DEBUGGING;
             }
-            # Add it as a child of the appropriate parent object
+            # иначе добавляем его как дочерний элемент
             else {
                 warn "Adding $id as child of $pid\n" if DEBUGGING;
                 $index{$pid}->{folder} = 1;
-                push @{$index{$pid}->{$TreeChildrenKey}}, $obj;
+                push @{$index{$pid}->{$children_key}}, $obj;
             }
         }   
 
-        warn "Tree:  @tree  (", $#tree+1, " items)\n" if DEBUGGING;
+        warn "Tree: @tree (", $#tree + 1, " items)\n" if DEBUGGING;
 
         return \@tree;
     });
