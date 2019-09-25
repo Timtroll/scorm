@@ -6,6 +6,7 @@
         :body-left-toggle-show="true"
         :body-right="true"
         :body-right-show="pageTableAddGroupShow"
+        :loader="loader"
         :body-padding="false">
 
     <!-- // Body // -->
@@ -38,9 +39,6 @@
 
 <script>
 
-  // Mock
-  const TreeData = require('./../../assets/mock/navTree')
-
   export default {
 
     name: 'Settings',
@@ -62,9 +60,7 @@
     },
 
     created () {
-      this.$store.commit('set_tree', TreeData)
-      this.$store.commit('tree_status_success')
-      //this.$store.dispatch('getTree')
+      this.$store.dispatch('getTree')
     },
 
     beforeDestroy () {

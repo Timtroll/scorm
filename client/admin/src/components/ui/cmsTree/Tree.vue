@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-flex uk-height-1-1 uk-flex-column">
+  <div class="uk-flex uk-height-1-1 uk-flex-column uk-position-relative">
 
     <!--Nav tree header-->
     <div class="pos-border-bottom">
@@ -62,16 +62,19 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
   import IconBug from '../icons/IconBug'
+  import {flatTree} from '../../../store/methods'
 
   export default {
 
     components: {
       IconBug,
+      Loader:  () => import('../icons/Loader'),
       NavTree: () => import('./NavTree')
     },
 
@@ -96,35 +99,7 @@
       flattenNav () {
         if (this.searchInput) {
 
-          const nav        = [...this.nav]
-          const flattenNav = []
-
-          const flat = (arr) => {
-            arr.forEach((item) => {
-
-              let newItem = {
-                label:     item.label,
-                id:        item.id,
-                keywords:  item.keywords,
-                folder:    item.folder,
-                component: item.component,
-                opened:    item.opened,
-                children:  item.children
-              }
-
-              if (item.folder !== 1) {
-                flattenNav.push(newItem)
-              }
-
-              if (item.children && item.children.length > 0) {
-                flat(item.children)
-              }
-            })
-          }
-
-          flat(nav)
-
-          return flattenNav
+          return flatTree([...this.nav])
 
         } else {
           return this.nav
@@ -135,16 +110,18 @@
       // Поиск по полю label && keywords
       filterSearch () {
 
-        return this.flattenNav
-                   .filter(item => {
-                     return !this.searchInput
-                       || item.label
-                              .toLowerCase()
-                              .indexOf(this.searchInput.toLowerCase()) > -1
-                       || item.keywords
-                              .toLowerCase()
-                              .indexOf(this.searchInput.toLowerCase()) > -1
-                   })
+        if (this.flattenNav) {
+          return this.flattenNav
+                     .filter(item => {
+                       return !this.searchInput
+                         || item.name
+                                .toLowerCase()
+                                .indexOf(this.searchInput.toLowerCase()) > -1
+                         || item.keywords
+                                .toLowerCase()
+                                .indexOf(this.searchInput.toLowerCase()) > -1
+                     })
+        }
 
       }
     },

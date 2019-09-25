@@ -3,11 +3,10 @@ import Api from './Api.js'
 export default {
 
   // получить дерево
-  get_list (id = 0) {
+  get_tree () {
     return Api()({
-      url:    'settings/get_list',
-      method: 'post',
-      params: id
+      url:    'settings/get_tree',
+      method: 'post'
     })
   },
 
@@ -15,10 +14,9 @@ export default {
   proto_folder () {
     return Api()({
       url:    'settings/proto_folder',
-      method: 'post',
+      method: 'post'
     })
   },
-
 
   // Обновление / добавление
   save_tab (params) {

@@ -1,42 +1,45 @@
 import UIkit from 'uikit/dist/js/uikit.min'
 
-const methods = {
+// Плоское дерево
+const flatTree = (arr) => {
 
-  // flat tree structure
-  flat (arr) {
+  const tree = []
 
-    const tableData = []
-
+  const _flatTree = (arr) => {
     arr.forEach((item) => {
-
       let newItem = {
-        label:     item.label,
-        id:        item.id,
-        folder:    item.folder,
-        keywords:  item.keywords,
-        component: item.component,
-        table:     item.table
+        folder:   item.folder,
+        id:       item.id,
+        name:     item.name,
+        keywords: item.keywords,
+        parent:   item.parent
       }
 
-      tableData.push(newItem)
+      tree.push(newItem)
 
       if (item.children && item.children.length > 0) {
-        this.flat(item.children)
+        _flatTree(item.children)
       }
     })
-
-    return tableData
-  },
-
-  // Notifications
-  notify(message, status = 'primary', timeout = '3000', pos = 'top-center'){
-    UIkit.notification({
-      message: message,
-      status:  status,
-      pos:     pos,
-      timeout: timeout
-    })
   }
+
+  _flatTree(arr)
+
+  return tree
 }
 
-export default methods
+// Notifications
+const notify = (message, status = 'primary', timeout = '3000', pos = 'top-center') => {
+  UIkit.notification({
+    message: message,
+    status:  status,
+    pos:     pos,
+    timeout: timeout
+  })
+
+}
+
+export {
+  flatTree,
+  notify
+}

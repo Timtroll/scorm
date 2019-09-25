@@ -7,9 +7,7 @@ const actions = {
 
   getTable ({commit, state}, id) {
     const table = require('../../../assets/mock/Table.json')
-
     commit('set_table', table)
-
   }
 
 }
