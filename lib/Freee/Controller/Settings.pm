@@ -79,14 +79,61 @@ sub delete_folder {
 sub get_leafs {
     my $self = shift;
 
-    my $id = $data{'id'} = $self->param('id');
+    my $id = $self->param('id');
 
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
+    my $table = $self->_table_obj({
+        "settings"  => {
+            "editable"      => 1,    # радатирование inline?
+            "parent"        => 10,   # id парента?
+            "variableType"  => 0,    # ???
+            "massEdit"      => 0,    # групповое редактировани
+                "sort" => {              # сотрировка по
+                "name"    => "id",
+                "order"   => "asc"
+            }
+        },
+        # ????????????? # тянем из настроек
+        "page" => {
+          "current_page"    => 1,
+          "per_page"        => 100,
+          # "total"           => scalar(@{$list->{'body'}})
+        },
+        "header"    => [
+            {
+                "key"       => "name",
+                "label"     => "Расшифровка",
+                "editable"  => 0,
+                "required"  => 0,
+                "show"      => 1,
+                "inline"    => 0
+            },
+            { "key" => "label",         "label" => "Расшифровка" },
+            { "key" => "value",         "label" => "Расшифровка" },
+            { "key" => "type",          "label" => "Расшифровка" },
+            { "key" => "placeholder",   "label" => "Расшифровка" },
+            { "key" => "mask",          "label" => "Расшифровка" },
+            { "key" => "selected",      "label" => "Расшифровка" },
+            { "key" => "editable",      "label" => "Расшифровка" }
+        ],
+        "body"      => $list
+    });
+
+    # $self->render(
+    #     'json'    => {
+    #         'controller'    => 'Cmsarticle',
+    #         'route'         => 'index',
+    #         'status'        => 'ok',
+    #         'params'        => $self->req->params->to_hash,
+    #         'test'          => $test
+    #     }
+    # );
+
     $self->render( 'json' => {
         status  => 'ok',
-        list    => $list
+        list    => $table
     });
 
 # use Freee::Mock::GetLeafs;
