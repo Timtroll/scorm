@@ -3,6 +3,7 @@ const mutations = {
   /* NAV Tree */
 
   set_tree (state, data) {state.tree.items = data},
+  set_tree_flat (state, data) {state.tree.itemsFlat = data},
 
   // Active tree item
   tree_active (state, id) {state.tree.activeId = id},
