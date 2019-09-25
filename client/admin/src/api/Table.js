@@ -3,25 +3,26 @@ import Api from './Api.js'
 export default {
 
   // получить дерево
-  get_tree (id = 0) {
+  get_leafs (id) {
     return Api()({
-      url:    'settings/get_tree',
+      url:    'settings/get_leafs',
       method: 'post',
-      params: id
+      params: {
+        id: id
+      }
     })
   },
 
   // получить прототип нового элемента
-  get_tree_proto () {
+  get_proto_leaf () {
     return Api()({
-      url:    'settings/proto_folder',
-      method: 'post',
+      url:    'settings/proto_leaf',
+      method: 'post'
     })
   },
-  
 
   // Обновление / добавление
-  set_save (params) {
+  leafs_save (params) {
     return Api()({
       url:    'settings/save',
       method: 'post',
@@ -30,7 +31,7 @@ export default {
   },
 
   // удаление
-  set_delete (id) {
+  leafs_delete (id) {
     return Api()({
       url:    'settings/delete',
       method: 'post',
