@@ -4,20 +4,22 @@ SOURCE=`pwd`
 echo $SOURCE
 
 echo "-------"
-echo "stop mojo daemon: $SOURCE"
+echo "stop mojo daemon:"
+echo "cd $SOURCE"
 cd $SOURCE
+echo "./starting.sh stop"
 ./starting.sh stop
 
 echo "-------"
-echo "git checkout master"
+echo "git checkout master:"
 git checkout master
 
 echo "-------"
-echo "git checkout master"
+echo "git status:"
 git status
 
 echo "-------"
-echo "git pull"
+echo "git pull:"
 git pull
 
 echo "-------"
@@ -25,7 +27,8 @@ echo "cd $SOURCE/client/admin"
 cd $SOURCE/client/admin
 
 echo "-------"
-echo "delete folder $SOURCE/client/admin/dist"
+echo "delete folder:"
+echo "rm -rf $SOURCE/client/admin/dist"
 rm -rf $SOURCE/client/admin/dist
 
 echo "-------"
@@ -33,20 +36,25 @@ echo "yarn run build"
 yarn run build
 
 echo "-------"
-echo "delete content of public"
+echo "delete content of public:"
+echo "rm -rf $SOURCE/public/*"
 rm -rf $SOURCE/public/*
 
 echo "-------"
-echo "copy dist to public"
+echo "copy dist to public:"
+echo "cp -a $SOURCE/client/admin/dist/. $SOURCE/public"
 cp -a $SOURCE/client/admin/dist/. $SOURCE/public
 
 echo "-------"
-echo "remove $SOURCE/log/deploy.lock"
+echo "remove .lock:"
+echo "rm $SOURCE/log/deploy.lock"
 rm $SOURCE/log/deploy.lock
 
 echo "-------"
-echo "start mojo daemon: $SOURCE"
+echo "start mojo daemon:"
+echo "cd $SOURCE"
 cd $SOURCE
+echo "./starting.sh start"
 ./starting.sh start
 
 
