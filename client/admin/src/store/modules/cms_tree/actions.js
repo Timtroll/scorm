@@ -10,7 +10,8 @@ const actions = {
     try {
       commit('tree_status_request')
 
-      let response = await Api.get_tree()
+      const response = await Api.get_tree()
+      //const routeId  = router.currentRoute.params.id
 
       if (response.status === 200) {
         const resp = await response.data
@@ -18,17 +19,13 @@ const actions = {
         if (typeof resp['list'] !== 'undefined') {
           const tree = resp.list
 
-          console.log(tree)
-
-          commit('set_tree', tree)
-          commit('tree_status_success')
-
-          //const routeId = router.currentRoute.params.id
-
           if (tree.length > 0) {
-            //Плоское дерево
-            //const _flatTree = flatTree([...tree])
+            commit('set_tree', tree)
+            commit('tree_status_success')
 
+            //Плоское дерево
+            const flattenTree = flatTree([...tree])
+            commit('set_tree_flat', flattenTree)
           }
         }
 
