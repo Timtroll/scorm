@@ -3,12 +3,12 @@
 SOURCE=`pwd`
 echo $SOURCE
 
-echo "-------"
-echo "stop mojo daemon:"
-echo "cd $SOURCE"
-cd $SOURCE
-echo "./starting.sh stop"
-./starting.sh stop
+# echo "-------"
+# echo "stop mojo daemon:"
+# echo "cd $SOURCE"
+# cd $SOURCE
+# echo "./starting.sh stop"
+# ./starting.sh stop
 
 echo "-------"
 echo "git checkout master:"
@@ -50,12 +50,12 @@ echo "remove .lock:"
 echo "rm $SOURCE/log/deploy.lock"
 rm $SOURCE/log/deploy.lock
 
-echo "-------"
-echo "start mojo daemon:"
-echo "cd $SOURCE"
-cd $SOURCE
-echo "./starting.sh start"
-./starting.sh start
+# echo "-------"
+# echo "start mojo daemon:"
+# echo "cd $SOURCE"
+# cd $SOURCE
+# echo "./starting.sh start"
+# ./starting.sh start
 
 
 echo "Finish"
