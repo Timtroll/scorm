@@ -110,13 +110,14 @@ sub get_leafs {
                 "show"      => 1,
                 "inline"    => 0
             },
-            { "key" => "label",         "label" => "Расшифровка" },
-            { "key" => "value",         "label" => "Расшифровка" },
-            { "key" => "type",          "label" => "Расшифровка" },
-            { "key" => "placeholder",   "label" => "Расшифровка" },
-            { "key" => "mask",          "label" => "Расшифровка" },
-            { "key" => "selected",      "label" => "Расшифровка" },
-            { "key" => "editable",      "label" => "Расшифровка" }
+            { "key" => "label",         "label" => "Название" },
+            { "key" => "value",         "label" => "Значение" },
+            { "key" => "type",          "label" => "Тип" },
+            { "key" => "mask",          "label" => "Маска" },
+
+            # { "key" => "placeholder",   "label" => "placeholder" },
+            # { "key" => "selected",      "label" => "Расшифровка" },
+            # { "key" => "editable",      "label" => "Расшифровка" }
         ],
         "body"      => $list
     });
