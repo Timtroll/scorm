@@ -78,7 +78,7 @@ const router = new Router({
           showInSideBar: true,
           meta:          {
             authRequired: true,
-            icon:         'img/icons/sidebar_roles.svg',
+            icon:         'img/icons/sidebar_users.svg',
             breadcrumb:   'Пользователи'
           }
         },
@@ -101,7 +101,7 @@ const router = new Router({
           showInSideBar: true,
           meta:          {
             authRequired: true,
-            icon:         'img/icons/sidebar_users.svg',
+            icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Управление группами пользователей'
           }
         },

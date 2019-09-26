@@ -6,11 +6,11 @@ const state = {
 
   editPanel: {
     status: 'loading',
-    open:   false,
+    //open:   false,
     group:  false,
     add:    true,
     large:  false,
-    item:   {}
+    item:   null
   }
 
 }

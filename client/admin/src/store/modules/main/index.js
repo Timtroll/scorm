@@ -14,7 +14,7 @@ const state = {
   card: {
     leftShow:        true,
     leftNavClick:    true,
-    rightShow:       true,
+    rightShow:       false,
     rightPanelLarge: false
   },
 
