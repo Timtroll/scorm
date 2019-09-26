@@ -90,20 +90,26 @@ sub get_leafs {
     my $list = $self->_get_leafs($id);
 
     my $lst = [];
-    foreach (@$list) {
-        my $row = {
-            'id' => $_->{'id'},
-            'data' => {
-                "name"          => $_->{'name'},
-                "label"         => $_->{'label'},
-                "placeholder"   => $_->{'label'},
-                "mask"          => $_->{'mask'},
-                "type"          => $_->{'type'},
-                "value"         => $_->{'value'},
-                "selected"      => decode_json $_->{'selected'}
-            }
-        };
-        push @$lst, $row;
+    foreach my $row (@$list) {
+        my $row_list = [];
+        map {
+            my $row = {
+                'id' => $_,
+                'data' => {
+                    "name"          => $$row{'name'},
+                    "label"         => $$row{'name'},
+                    "placeholder"   => $$row{'name'},
+                    "mask"          => '',
+                    "type"          => 'InputNumber',
+                    "value"         => $$row{'name'},
+                    "selected"      => []
+                }
+            };
+            push @$row_list, $row;
+            # push @$row_list, $_;
+        } ( keys %$row);
+        push @$lst, $row_list;
+        # push @$lst, $row;
     }
     my $table = $self->_table_obj({
         "settings"  => {
