@@ -4,6 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::JSON qw(decode_json encode_json);
 use Encode;
 
 use Freee::Mock::Settings;
@@ -88,13 +89,29 @@ sub get_leafs {
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
+    my $lst = [];
+    foreach (@$list) {
+        my $row = {
+            'id' => $_->{'id'},
+            'data' => {
+                "name"          => $_->{'name'},
+                "label"         => $_->{'label'},
+                "placeholder"   => $_->{'label'},
+                "mask"          => $_->{'mask'},
+                "type"          => $_->{'type'},
+                "value"         => $_->{'value'},
+                "selected"      => decode_json $_->{'selected'}
+            }
+        };
+        push @$lst, $row;
+    }
     my $table = $self->_table_obj({
         "settings"  => {
             "editable"      => 1,    # радатирование inline?
             "parent"        => 10,   # id парента?
             "variableType"  => 0,    # ???
             "massEdit"      => 0,    # групповое редактировани
-                "sort" => {              # сотрировка по
+            "sort" => {              # сотрировка по
                 "name"    => "id",
                 "order"   => "asc"
             }
@@ -123,7 +140,7 @@ sub get_leafs {
             # { "key" => "selected",      "label" => "Расшифровка" },
             # { "key" => "editable",      "label" => "Расшифровка" }
         ],
-        "body"      => $list
+        "body"      => $lst
     });
 
     $self->render( 'json' => {
