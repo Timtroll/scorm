@@ -139,7 +139,7 @@
           this.toggleChildren()
         } else {
           if (this.navActiveId !== this.navItem.id) {
-            this.$store.commit('editPanel_show', false)
+            this.$store.commit('card_right_show', false)
             this.$store.commit('tree_active', item.id)
             this.$store.dispatch('getTable', item.id)
 

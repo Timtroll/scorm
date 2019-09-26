@@ -27,7 +27,9 @@ const actions = {
       throw 'ERROR: ' + e
     }
 
-  }
+  },
+
+  async removeTableRow ({commit, state}, id) {}
 
 }
 export default actions

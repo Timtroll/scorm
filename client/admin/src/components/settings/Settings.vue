@@ -5,7 +5,7 @@
         :body-left-padding="false"
         :body-left-toggle-show="true"
         :body-right="true"
-        :body-right-show="pageTableAddGroupShow"
+        :body-right-show="editPanel_show"
         :loader="loader"
         :body-padding="false">
 
@@ -73,8 +73,8 @@
         return this.$store.getters.tree_status
       },
 
-      pageTableAddGroupShow () {
-        return this.$store.getters.pageTableAddGroupShow
+      editPanel_show () {
+        return this.$store.getters.cardRightState
       },
 
       // Left nav tree

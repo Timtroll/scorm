@@ -91,8 +91,8 @@
 
     computed: {
 
-      pageTableRowShow () {
-        return this.$store.getters.pageTableRowShow
+      cardRightState () {
+        return this.$store.getters.cardRightState
       }
     },
 
@@ -118,12 +118,14 @@
       },
 
       edit (event) {
-        if (!this.pageTableRowShow) {
-          this.$emit('edit-row', this.fullData)
+
+        if (!this.cardRightState) {
+          this.$store.commit('editPanel_data', this.fullData)
+          //this.$emit('edit-row', this.fullData)
         }
 
-        this.$store.commit('cms_table_row_data', event)
-        this.$store.commit('cms_table_row_show', !this.pageTableRowShow)
+        this.$store.commit('editPanel_data', event)
+        this.$store.commit('card_right_show', !this.cardRightState)
 
       },
 

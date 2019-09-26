@@ -234,7 +234,7 @@
     },
 
     beforeDestroy () {
-      this.$store.commit('editPanel/editPanel_data', null)
+      this.$store.commit('editPanel_data', null)
     },
 
     data () {
@@ -284,7 +284,7 @@
     computed: {
 
       pageTableRowData () {
-        return this.$store.getters.pageTableRowData
+        return this.$store.getters.editPanel_item
       },
 
       // Проверка на уникальность поля 'name' в таблице
@@ -307,12 +307,12 @@
 
       // широкая / узкая панель редактирования
       rightPanelSize () {
-        return this.$store.getters.rightPanelSize
+        return this.$store.getters.editPanel_large
       },
 
       // лоадер
       loader () {
-        return this.$store.getters.queryRowStatus
+        return this.$store.getters.editPanel_status
       },
 
       // если данные в форме изменились
@@ -329,19 +329,19 @@
 
       //
       parentId () {
-        return this.rowData.lib_id || this.parent || 0
+        return this.rowData.parent || this.parent || 0
       }
     },
 
     methods: {
 
       toggleSize () {
-        this.$store.commit('right_panel_size', !this.rightPanelSize)
+        this.$store.commit('editPanel_size', !this.rightPanelSize)
       },
 
       close () {
         this.$emit('close')
-        this.$store.commit('cms_table_row_show', false)
+        this.$store.commit('card_right_show', false)
       },
 
       // Action on Submit
