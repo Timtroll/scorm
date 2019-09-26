@@ -89,28 +89,39 @@ sub get_leafs {
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
-    my $lst = [];
-    foreach my $row (@$list) {
-        my $row_list = [];
-        map {
-            my $row = {
-                'id' => $_,
-                'data' => {
-                    "name"          => $$row{'name'},
-                    "label"         => $$row{'name'},
-                    "placeholder"   => $$row{'name'},
-                    "mask"          => '',
-                    "type"          => 'InputNumber',
-                    "value"         => $$row{'name'},
-                    "selected"      => []
-                }
-            };
-            push @$row_list, $row;
-            # push @$row_list, $_;
-        } ( keys %$row);
-        push @$lst, $row_list;
-        # push @$lst, $row;
-    }
+    # my $mock ={
+    #     "name"          => $$row{'name'},
+    #     "label"         => $$row{'name'},
+    #     "placeholder"   => $$row{'name'},
+
+    #     "mask"          => '',
+    #     "type"          => 'InputNumber',
+    #     "value"         => $$row{'name'},
+    #     "selected"      => []
+    # }
+
+    # my $lst = [];
+    # foreach my $row (@$list) {
+    #     # my $row_list = [];
+    #     # map {
+    #     #     my $row = {
+    #     #         'id' => $_,
+    #     #         'data' => {
+    #     #             "name"          => $$row{'name'},
+    #     #             "label"         => $$row{'name'},
+    #     #             "placeholder"   => $$row{'name'},
+    #     #             "mask"          => '',
+    #     #             "type"          => 'InputNumber',
+    #     #             "value"         => $$row{'name'},
+    #     #             "selected"      => []
+    #     #         }
+    #     #     };
+    #     #     push @$row_list, $row;
+    #     #     # push @$row_list, $_;
+    #     # } ( keys %$row);
+    #     # push @$lst, $row_list;
+    #     push @$lst, $row;
+    # }
     my $table = $self->_table_obj({
         "settings"  => {
             "editable"      => 1,    # радатирование inline?
@@ -128,25 +139,23 @@ sub get_leafs {
           "per_page"        => 100,
           # "total"           => scalar(@{$list->{'body'}})
         },
+        # 
         "header"    => [
-            {
-                "key"       => "name",
-                "label"     => "Расшифровка",
-                "editable"  => 0,
-                "required"  => 0,
-                "show"      => 1,
-                "inline"    => 0
-            },
-            { "key" => "label",         "label" => "Название" },
-            { "key" => "value",         "label" => "Значение" },
-            { "key" => "type",          "label" => "Тип" },
-            { "key" => "mask",          "label" => "Маска" },
-
-            # { "key" => "placeholder",   "label" => "placeholder" },
-            # { "key" => "selected",      "label" => "Расшифровка" },
-            # { "key" => "editable",      "label" => "Расшифровка" }
+            { "key" => "name",          "label" => "Расшифровка", "show"      => 1,  "inline"    => 0 },
+            { "key" => "label",         "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "editable",      "label" => "Редактируемость", "show"      => 1,  "inline"    => 0 },
+            { "key" => "id",            "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "mask",          "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "parent",        "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "placeholder",   "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "readOnly",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "removable",     "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "required",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "selected",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "type",          "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "value",         "label" => "Название", "show"      => 1,  "inline"    => 0 },
         ],
-        "body"      => $lst
+        "body"      => $list
     });
 
     $self->render( 'json' => {
