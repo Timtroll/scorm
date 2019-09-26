@@ -1,17 +1,16 @@
+DROP TABLE IF EXISTS "public"."groups";
 DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
 CREATE SEQUENCE "public".groups_id_seq;
 
 CREATE TABLE "public"."groups" (
 "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
-"lib_id" int4,
 "label" varchar(255) COLLATE "default" NOT NULL,
 "name" varchar(255) COLLATE "default" NOT NULL,
 "value" text COLLATE "default" NOT NULL,
 "required" int4 DEFAULT 0,
 "readOnly" int4 DEFAULT 0,
 "editable" int4 DEFAULT 0,
-"removable" int4 DEFAULT 0,
-"status" int4 DEFAULT 1 NOT NULL
+"removable" int4 DEFAULT 0
 )
 WITH (OIDS=FALSE)
 ;

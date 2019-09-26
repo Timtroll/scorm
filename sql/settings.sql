@@ -3,7 +3,7 @@ CREATE SEQUENCE "public".settings_id_seq;
 
 CREATE TABLE "public"."settings" (
 "id" int4 DEFAULT nextval('settings_id_seq'::regclass) NOT NULL,
-"lib_id" int4,
+"parent" int4,
 "label" varchar(255) COLLATE "default" NOT NULL,
 "name" varchar(255) COLLATE "default" NOT NULL,
 "value" text COLLATE "default",

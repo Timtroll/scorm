@@ -10,15 +10,37 @@ use Freee::Mock::Settings;
 use Data::Dumper;
 
 sub index {
-    my ($self) = shift;
+    my $self = shift;
 
-    my $resp = {id => '22', status => 'ok'};
-    $self->render( 'json' => $resp );
+    # читаем настройки из базы
+    my $list = $self->all_groups();
+    my $set = {};
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        # формируем данные для таблицы
+        $$list{$id}{'table'} = $self->_table_obj({
+            'groups'  => {},
+            'header'    => [
+                { "key" => "id", "label" => "id" },
+                { "key" => "label", "label" => "Название" },
+                # { "key" => "type", "label" => "Тип поля" },
+                { "key" => "value", "label" => "Значение" },
+            ],
+            'body'      => $$list{$id}{'table'}
+        });
+        print "3 \n";
+        push @{$$set{'groups'}}, $$list{$id};
+    }
+
+    $$set{'status'} = 'ok';
+print Dumper($set);
+
+    # показываем все настройки
+    $self->render( json => $set );
 }
 
-# группы пользователей
+
+# добавление группы пользователей
 # my $id = $self->insert_group({
-#     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
@@ -26,14 +48,12 @@ sub index {
 #     "editable"    => 0,               - не обязательно, по умолчанию 0
 #     "readOnly"    => 0,               - не обязательно, по умолчанию 0
 #     "removable"   => 0,               - не обязательно, по умолчанию 0
-#     "status"      => 0                - по умолчанию 0
 # });
 sub add {
     my ($self, $data) = @_;
 
     # read params
     my %data = (
-        'parent'    => $self->param('parent') || 0,
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
         'value'     => $self->param('value') || '',
@@ -41,53 +61,35 @@ sub add {
         'editable'  => $self->param('editable') || 0,
         'readOnly'  => $self->param('readOnly') || 0,
         'removable' => $self->param('removable') || 0,
-        'status'    => $self->param('status') || 0
     );
 
     my ($id, @mess, $resp);
 
-    # проверка parent
-    # if ( $self->parent_check( $data{'parent'} ) ){ 
-        #проверка остальных полей
-        if (  $data{'label'} && $data{'name'} ) {
-            #добавление
-            $id = $self->insert_group( \%data );
-            push @mess, "Could not new group item '$data{'label'}'" unless $id;
-        }
-        else {
-            push @mess, "Required fields do not exist";
-        }
-    # }
-    # else {
-    #     push @mess, "Wrong parent";
-    # }
-
+    
+    #проверка остальных полей
+    if (  $data{'label'} && $data{'name'} ) {
+        #добавление
+        $id = $self->insert_group( \%data );
+        push @mess, "Could not new group item '$data{'label'}'" unless $id;
+    }
+    else {
+        push @mess, "Required fields do not exist";
+    }
+ 
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
     $self->render( 'json' => $resp );
 }
 
-# для обновления возможностей групп пользователей
-# my $id = $self->insert_group({
-#      "id"        => 1            - id обновляемого элемента ( >0 )
-#     "folder"      => 0,           - это возможности пользователя
-#     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 0,           - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
-#     "value"       => "",            - строка или json
-#     "required"    => 0            - не обязательно, по умолчанию 0
-# });
+
 # для создания группы пользователей
 # my $id = $self->insert_group({
 #       "id"        => 1            - id обновляемого элемента ( >0 )
-#     "folder"      => 1,           - это группа пользователей
-#     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-#     "label"       => 'название',  - обязательно (название для отображения)
+#     "label"       => 'название'   - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "value"       => "",          - строка или json
+#     "required"    => 0,           - не обязательно, по умолчанию 0
 #     "editable"    => 0,           - не обязательно, по умолчанию 0
 #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 0,           - не обязательно, по умолчанию 0
@@ -100,39 +102,27 @@ sub update {
     $data{'id'} = $self->param('id');
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
-    $data{'parent'} = $self->param('parent') || 0;
+    $data{'value'} = $self->param('value') || "";
+    $data{'required'} = $self->param('required') || 0;
     $data{'editable'} = $self->param('editable') || 0;
     $data{'readOnly'} = $self->param('readOnly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
-    $data{'status'} = $self->param('status') || 0;
 
-    # запись дополнительных значений, если это не folder
-    if ( $self->param('parent') ) {
-       $data{'required'} = $self->param('required') || 0;
-       $data{'value'} = $self->param('value') || "";
-    }
-
-    # проверка поля parent
-    if ( $self->parent_check( $data{'parent'} ) ) {
-        # проверка остальных обязательных полей
-        if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
-            # проверка существования обновляемой строки
-            if ( $self->id_check( $data{'id'} ) ) {
-                #обновление
-                $id = $self->update_group( \%data );
-                push @mess, "Could not update setting item '$data{'label'}'" unless $id;
-            }
-            else {
-                push @mess, "Can't find row for updating";                
-            }
-        } else {
-            push @mess, "Required fields do not exist";
+    # проверка обязательных полей
+    if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+        # проверка существования обновляемой строки
+        if ( $self->id_check( $data{'id'} ) ) {
+            #обновление
+            $id = $self->update_group( \%data );
+            push @mess, "Could not update setting item '$data{'label'}'" unless $id;
         }
+        else {
+            push @mess, "Can't find row for updating";                
+        }
+    } else {
+        push @mess, "Required fields do not exist";
     }
-    else {
-        push @mess, "Wrong parent";
-    }
-
+    
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
@@ -175,48 +165,5 @@ sub delete {
 
     $self->render( 'json' => $resp );
 }
-
-# для смены статуса
-#  "id"     => 1 - id изменяемого элемента ( > 0 )
-#  "status" => 0 или 1 - новый статус элемента
-sub status {
-    my $self = shift;
-
-    # read params
-    my (%data, $id);
-    $data{'id'} = $self->param('id');
-    $data{'status'} = $self->param('status');
-
-    my @mess;
-
-     # проверка id
-    if ( $data{'id'} ) {
-        # проверка статуса
-        if ( ( $data{'status'} == 0 ) || ( $data{'status'} == 1 ) ) {
-            # проверка на существование строки 
-            if ( $self->id_check( $data{'id'} ) ) {
-                #процесс смены статуса
-                $id = $self->status_group( \%data, [] );
-                push @mess, "Can't change status" unless $id;
-            }
-            else {
-                push @mess, "Can't find row for updating";
-            }
-        }
-        else {
-            push @mess, "New status is wrong";
-        }
-    } 
-    else {
-        push @mess, "Need id for changing";
-    }
-    
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
-
-    $self->render( 'json' => $resp );
-}
-
 
 1;
