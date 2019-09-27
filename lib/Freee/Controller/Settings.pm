@@ -24,7 +24,8 @@ sub proto_folder {
         "keywords"  => "",
         "name"      => "",
         "label"     => "",
-        "opened"    => 0
+        "opened"    => 0,
+        "status"    => 
     };
 
     $self->render( 'json' => { 'status' => 'ok', 'proto' => $proto });
@@ -33,23 +34,25 @@ sub proto_folder {
 sub get_folder {
     my $self = shift;
 
+
     my $id = $self->param('id');
 
+    # проверка обязательных полей
     my @mess;
-    push @mess, "Could not deleted '$id'" unless $id;
+    $id = 0 unless $id =~ /\d+/;
+    push @mess, "Id wrong or empty" unless $id;
+
+    unless (@mess) {
+        $id = $self->_get_folder( $id );
+        push @mess, "Could not get '$id'" unless $id;
+    }
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'data'} = $id if $id;
 
-    unless ($id || $id =~ /^\d+$/) {
-        $self->render( 'json' => { 'status' => 'fail', 'message' => 'Id empty or not digit'});
-    }
-    else {
-        # выбираем листья ветки дерева
-        my $folder = $self->_get_folder($id);
-
-        $self->render( 'json' => { 'status' => 'ok', 'data' => $folder});
-    }
+    $self->render( 'json' => $resp );
 }
 
 # получить дерево без листьев
@@ -64,6 +67,8 @@ sub get_tree {
 sub save_folder {
     my $self = shift;
 
+# проверка обязательных полей
+# ?????????
     my %params = {
         'id'          => $self->param('id'),
         'name'        => $self->param('name') || '',
@@ -79,6 +84,7 @@ sub save_folder {
         'readOnly'    => $self->param('readOnly') || 0,
         'editable'    => $self->param('editable') || 1,
         'removable'   => $self->param('removable') || 1
+        'status'      => $self->param('status') || 1
     };
 
     # выбираем листья ветки дерева

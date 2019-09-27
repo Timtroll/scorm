@@ -40,29 +40,32 @@ sub register {
         return $list;
     });
 
-    # получить данные фолдера настроек
-    # my $true = $self->_get_folder();
+    # читаем данные фолдера
+    # my $row = $self->_get_folder( 99 );
+    # возвращается объект
     $app->helper( '_get_folder' => sub {
-        my $self = shift;
+        my ($self, $id) = @_;
 
-        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+        return unless $id;
 
-        return 1;
+        my $row = $self->pg_dbh->selectrow_hashref('SELECT id, parent, folder, keywords, name, label, opened FROM "public"."settings" WHERE "id"='.$id);
+
+        # десериализуем поля vaue и selected
+        $$row{'value'} = '' if ($$row{'value'} eq 'null');
+        $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
+
+        return $row;
     });
 
-    # получить данные фолдера настроек
-    # my $true = $self->_get_folder();
+    # сохранить данные фолдера настроек
+    # my $true = $self->_save_folder({<data>});
+    # <data> - хэш редактируемых полей
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
-        $self->pg_dbh->do( 'INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).')
-            VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') 
-            ON CONFLICT (id, name) 
-            DO NOTHING');
-        # $self->pg_dbh->do('INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
-        # my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
+        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
 
-        return 1;
+        return $rv;
     });
 
     # удаление фолдера
@@ -78,33 +81,12 @@ sub register {
         return $rv;
     });
 
-    # очистка дефолтных настроек
-    # my $true = $self->reset_setting();
-    $app->helper( '_reset_setting' => sub {
-        my $self = shift;
-
-        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
-
-        return 1;
-    });
-
     # выбираем листья ветки дерева по id парента
     # my $true = $self->_get_leafs(11);
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
 
         my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id', { Slice=> {} } );
-
-        return $list;
-    });
-
-    # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
-    $app->helper( '_all_settings' => sub {
-        my $self = shift;
-
-        my $list = $self->pg_dbh->selectall_arrayref('SELECT * FROM "public".settings ORDER by id', { Slice=> {} } );
-
-        $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
         return $list;
     });
@@ -217,6 +199,28 @@ sub register {
         
         return $row;
     });
+
+    # очистка дефолтных настроек
+    # my $true = $self->_reset_settings();
+    $app->helper( '_reset_settings' => sub {
+        my $self = shift;
+
+        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+
+        return 1;
+    });
+
+    # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
+    $app->helper( '_all_settings' => sub {
+        my $self = shift;
+
+        my $list = $self->pg_dbh->selectall_arrayref('SELECT * FROM "public".settings ORDER by id', { Slice=> {} } );
+
+        $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
+
+        return $list;
+    });
+
 }
 
 1;
