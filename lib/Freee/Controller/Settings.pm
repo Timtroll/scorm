@@ -109,8 +109,8 @@ sub get_leafs {
         },
         # 
         "header"    => [
-            { "key" => "name",          "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
-            { "key" => "label",         "label" => "Название",           "show"  => 1,  "inline"    => 0 },
+            { "key" => "name",          "label" => "Название",           "show"  => 1,  "inline"    => 0 },
+            { "key" => "label",         "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
             { "key" => "editable",      "label" => "Редактируемость",    "show"  => 0,  "inline"    => 0 },
             { "key" => "id",            "label" => "id",                 "show"  => 1,  "inline"    => 0 },
             { "key" => "mask",          "label" => "Маска",              "show"  => 0,  "inline"    => 0 },
