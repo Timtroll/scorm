@@ -89,42 +89,10 @@ sub get_leafs {
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
-    # my $mock ={
-    #     "name"          => $$row{'name'},
-    #     "label"         => $$row{'name'},
-    #     "placeholder"   => $$row{'name'},
 
-    #     "mask"          => '',
-    #     "type"          => 'InputNumber',
-    #     "value"         => $$row{'name'},
-    #     "selected"      => []
-    # }
-
-    # my $lst = [];
-    # foreach my $row (@$list) {
-    #     # my $row_list = [];
-    #     # map {
-    #     #     my $row = {
-    #     #         'id' => $_,
-    #     #         'data' => {
-    #     #             "name"          => $$row{'name'},
-    #     #             "label"         => $$row{'name'},
-    #     #             "placeholder"   => $$row{'name'},
-    #     #             "mask"          => '',
-    #     #             "type"          => 'InputNumber',
-    #     #             "value"         => $$row{'name'},
-    #     #             "selected"      => []
-    #     #         }
-    #     #     };
-    #     #     push @$row_list, $row;
-    #     #     # push @$row_list, $_;
-    #     # } ( keys %$row);
-    #     # push @$lst, $row_list;
-    #     push @$lst, $row;
-    # }
     my $table = $self->_table_obj({
         "settings"  => {
-            "editable"      => 1,    # радатирование inline?
+            "editable"      => 1,    # редатирование inline?
             "parent"        => 10,   # id парента?
             "variableType"  => 0,    # ???
             "massEdit"      => 0,    # групповое редактировани
@@ -141,19 +109,19 @@ sub get_leafs {
         },
         # 
         "header"    => [
-            { "key" => "name",          "label" => "Расшифровка", "show"      => 1,  "inline"    => 0 },
-            { "key" => "label",         "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "editable",      "label" => "Редактируемость", "show"      => 1,  "inline"    => 0 },
-            { "key" => "id",            "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "mask",          "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "parent",        "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "placeholder",   "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "readOnly",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "removable",     "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "required",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "selected",      "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "type",          "label" => "Название", "show"      => 1,  "inline"    => 0 },
-            { "key" => "value",         "label" => "Название", "show"      => 1,  "inline"    => 0 },
+            { "key" => "name",          "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
+            { "key" => "label",         "label" => "Название",           "show"  => 1,  "inline"    => 0 },
+            { "key" => "editable",      "label" => "Редактируемость",    "show"  => 0,  "inline"    => 0 },
+            { "key" => "id",            "label" => "id",                 "show"  => 1,  "inline"    => 0 },
+            { "key" => "mask",          "label" => "Маска",              "show"  => 0,  "inline"    => 0 },
+            { "key" => "parent",        "label" => "Родитель",           "show"  => 0,  "inline"    => 0 },
+            { "key" => "placeholder",   "label" => "Подсказка",          "show"  => 1,  "inline"    => 0 },
+            { "key" => "readOnly",      "label" => "Только для чтения",  "show"  => 0,  "inline"    => 0 },
+            { "key" => "removable",     "label" => "Удаляемость",        "show"  => 0,  "inline"    => 0 },
+            { "key" => "required",      "label" => "Обязательные",       "show"  => 1,  "inline"    => 0 },
+            { "key" => "selected",      "label" => "вВыбранные значения","show"  => 0,  "inline"    => 0 },
+            { "key" => "type",          "label" => "Тип",                "show"  => 0,  "inline"    => 0 },
+            { "key" => "value",         "label" => "Значение",           "show"  => 1,  "inline"    => 1 },
         ],
         "body"      => $list
     });
