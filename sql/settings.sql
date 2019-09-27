@@ -14,7 +14,8 @@ CREATE TABLE "public"."settings" (
 "required" int4 DEFAULT 1,
 "readOnly" int4 DEFAULT 0,
 "editable" int4 DEFAULT 1,
-"removable" int4 DEFAULT 1
+"removable" int4 DEFAULT 1,
+"status" int2 DEFAULT 1 NOT NULL
 )
 WITH (OIDS=FALSE)
 ;

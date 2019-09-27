@@ -10,7 +10,7 @@ CREATE TABLE "public"."groups" (
 "readOnly" int4 DEFAULT 0,
 "editable" int4 DEFAULT 0,
 "removable" int4 DEFAULT 0,
-"status" int4 DEFAULT 1 NOT NULL
+"status" int2 DEFAULT 1 NOT NULL
 )
 WITH (OIDS=FALSE)
 ;

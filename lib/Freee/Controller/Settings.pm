@@ -13,16 +13,21 @@ use Data::Dumper;
 #####################
 # Работа с фолдерами
 
+# получить прототип фолдера
 sub proto_folder {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'proto_folder'
-        }
-    );
+    my $proto = {
+        "id"        => 0,
+        "parent"    => 0,
+        "folder"    => 1,
+        "keywords"  => "",
+        "name"      => "",
+        "label"     => "",
+        "opened"    => 0
+    };
+
+    $self->render( 'json' => { 'status' => 'ok', 'proto' => $proto });
 }
 
 sub get_folder {
@@ -30,15 +35,21 @@ sub get_folder {
 
     my $id = $self->param('id');
 
-    # выбираем листья ветки дерева
-    my $folder = $self->_get_folder($id);
+    my @mess;
+    push @mess, "Could not deleted '$id'" unless $id;
 
-    $self->render(
-        'json'    => {
-            'status'  => 'ok',
-            'data'    => $folder
-        }
-    );
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+
+    unless ($id || $id =~ /^\d+$/) {
+        $self->render( 'json' => { 'status' => 'fail', 'message' => 'Id empty or not digit'});
+    }
+    else {
+        # выбираем листья ветки дерева
+        my $folder = $self->_get_folder($id);
+
+        $self->render( 'json' => { 'status' => 'ok', 'data' => $folder});
+    }
 }
 
 # получить дерево без листьев
@@ -47,34 +58,56 @@ sub get_tree {
 
     my $list = $self->_get_tree(1);
 
-    $self->render( 'json' => {
-        status  => 'ok',
-        list    => $list
-    });
+    $self->render( 'json' => { 'status' => 'ok', 'list' => $list });
 }
 
 sub save_folder {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'save_folder'
-        }
-    );
+    my %params = {
+        'id'          => $self->param('id'),
+        'name'        => $self->param('name') || '',
+        'placeholder' => $self->param('placeholder') || '',
+        'label'       => $self->param('label') || '',
+        'parent'      => $self->param('parent') || 0,
+        'value'       => $self->param('value') || '',
+        'type'        => $self->param('type') || 'InputText',
+        'mask'        => $self->param('mask') || '',
+        'selected'    => $self->param('selected'),
+
+        'required'    => $self->param('required') || 1,
+        'readOnly'    => $self->param('readOnly') || 0,
+        'editable'    => $self->param('editable') || 1,
+        'removable'   => $self->param('removable') || 1
+    };
+
+    # выбираем листья ветки дерева
+    my $folder = $self->_save_folder(\%params);
+
+    $self->render( 'json' => { 'status' => 'ok' } );
 }
 
 sub delete_folder {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'delete_folder'
-        }
-    );
+    my $id = $self->param('id');
+
+    # проверка обязательных полей
+    my @mess;
+    $id = 0 unless $id =~ /\d+/;
+    push @mess, "Id wrong or empty" unless $id;
+
+    unless (@mess) {
+        $id = $self->_delete_folder( $id );
+        push @mess, "Could not deleted '$id'" unless $id;
+    }
+
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 #####################
@@ -126,10 +159,7 @@ sub get_leafs {
         "body"      => $list
     });
 
-    $self->render( 'json' => {
-        status  => 'ok',
-        list    => $table
-    });
+    $self->render( 'json' => { 'status' => 'ok', 'list' => $table });
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
@@ -169,19 +199,31 @@ sub set_load_default {
     $self->render( 'json' => $resp );
 }
 
+# прототип настройки
 sub proto_leaf {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'proto_leaf'
-        }
-    );
+    my $proto = {
+        "editable"      => 1,
+        "id"            => 0,
+        "label"         => "",
+        "mask"          => "",
+        "name"          => "",
+        "parent"        => 0,
+        "placeholder"   => "",
+        "readOnly"      => 0,
+        "removable"     => 1,
+        "required"      => 1,
+        "selected"      => "[]",
+        "type"          => "InputNext",
+        "value"         => ""
+    };
+
+    $self->render( 'json' => { 'status' => 'ok', 'proto' => $proto });
+
 }
 
-# для создания настройки
+# создание настройки
 # my $id = $self->add({
 #     "folder"      => 0,           - это запись настроек
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
@@ -197,7 +239,7 @@ sub proto_leaf {
 #     "selected"    => "CKEditor",    - значение по-умолчанию для select
 #     "required"    => 1              - обязательное поле
 # });
-# для создания группы настроек
+# создание группы настроек
 # my $id = $self->add({
 #     "folder"      => 1,           - это группа настроек
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
@@ -268,7 +310,7 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
-# для сохранения настройки
+# сохранение настройки
 # my $id = $self->save({
 #     "folder"      => 0,           - это запись настроек
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
@@ -284,7 +326,7 @@ sub edit {
 #     "selected"    => "CKEditor",    - значение по-умолчанию для select
 #     "required"    => 1              - обязательное поле
 # });
-# для сохранения группы настроек
+# сохранение группы настроек
 # my $id = $self->save({
 #     "folder"      => 1,           - это группа настроек
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
@@ -341,21 +383,22 @@ sub save {
     $self->render( 'json' => $resp );
 }
 
-# для удаления настройки
+# удаление настройки
 # my $true = $self->delete( 99 );
 sub delete {
     my $self = shift;
 
-    # read params
     my $id = $self->param('id');
 
     # проверка обязательных полей
     my @mess;
     $id = 0 unless $id =~ /\d+/;
-    push @mess, "Could not id for deleting" unless $id;
+    push @mess, "Id wrong or empty" unless $id;
 
-    $id = $self->_delete_setting( $id );
-    push @mess, "Could not deleted '$id'" unless $id;
+    unless (@mess) {
+        $id = $self->_delete_setting( $id );
+        push @mess, "Could not deleted '$id'" unless $id;
+    }
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;

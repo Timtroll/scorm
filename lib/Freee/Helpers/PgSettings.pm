@@ -50,6 +50,34 @@ sub register {
         return 1;
     });
 
+    # получить данные фолдера настроек
+    # my $true = $self->_get_folder();
+    $app->helper( '_save_folder' => sub {
+        my ($self, $data) = @_;
+
+        $self->pg_dbh->do( 'INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).')
+            VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') 
+            ON CONFLICT (id, name) 
+            DO NOTHING');
+        # $self->pg_dbh->do('INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
+        # my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
+
+        return 1;
+    });
+
+    # удаление фолдера
+    # my $true = $self->_delete_folder( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_folder' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $rv = $self->pg_dbh->do('DELETE FROM "public"."settings" WHERE "id"='.$id);
+
+        return $rv;
+    });
+
     # очистка дефолтных настроек
     # my $true = $self->reset_setting();
     $app->helper( '_reset_setting' => sub {
@@ -81,7 +109,7 @@ sub register {
         return $list;
     });
 
-    # для создания настройки
+    # создание настройки
     # my $id = $self->_insert_setting({
     #     "parent",   - обязательно
     #     "label",    - обязательно
@@ -93,7 +121,7 @@ sub register {
     #     "mask"
     #     "selected",
     # });
-    # для создания группы настроек
+    # создание группы настроек
     # my $id = $self->_insert_setting({
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
@@ -118,7 +146,7 @@ sub register {
         return $id;
     });
 
-    # для сохранения настройки
+    # сохранение настройки
     # my $id = $self->_save_setting({
     #     "id",       - обязательно (должно быть больше 0)
     #     "parent",   - обязательно (должно быть больше 0)
@@ -131,7 +159,7 @@ sub register {
     #     "mask"
     #     "selected",
     # });
-    # для создания группы настроек
+    # сохранение группы настроек
     # my $id = $self->_save_setting({
     #     "id",       - обязательно (должно быть больше 0),
     #     "parent",   - обязательно (если корень - 0, или owner id),
@@ -158,7 +186,7 @@ sub register {
         return $rv;
     });
 
-    # для удаления настройки
+    # удаление настройки
     # my $true = $self->_delete_setting( 99 );
     # возвращается true/false
     $app->helper( '_delete_setting' => sub {
