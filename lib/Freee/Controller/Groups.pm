@@ -8,36 +8,74 @@ use Encode;
 
 use Freee::Mock::Settings;
 use Data::Dumper;
+use common;
+    
 
+# вывод списка групп в виде объекта как в Mock
+#    "label"       => "scorm",
+#    "id"          => 1,
+#    "component"   => "Groups",
+#    "opened"      => 0,
+#    "folder"      => 1,
+#    "keywords"    => "",
+#    "children"    => [],
+#    "table"       => {}
 sub index {
     my $self = shift;
+    my ( $list, $set );
 
-    # читаем настройки из базы
-    my $list = $self->all_groups();
-    my $set = {};
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        # формируем данные для таблицы
-        $$list{$id}{'table'} = $self->_table_obj({
-            'groups'  => {},
-            'header'    => [
-                { "key" => "id", "label" => "id" },
-                { "key" => "label", "label" => "Название" },
-                # { "key" => "type", "label" => "Тип поля" },
-                { "key" => "value", "label" => "Значение" },
-            ],
-            'body'      => $$list{$id}{'table'}
-        });
-        print "3 \n";
-        push @{$$set{'groups'}}, $$list{$id};
+    # читаем группы из базы
+    unless ( $list = $self->_all_groups() ) {
+        return "Can't connect to the database";
     }
 
-    $$set{'status'} = 'ok';
-print Dumper($set);
+    # формируем данные для вывода
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        # $$list{$id}{'component'} = "Groups";
+        # $$list{$id}{'opened'} = 0;
+        # $$list{$id}{'folder'} = 1;
+        # $$list{$id}{'keywords'} = "";
+        # $$list{$id}{'children'} = [];
+        # $$list{$id}{'table'} = {};
+        my $row = {
+            'id'        => $id,
+            'label'     => $$list{$id}{'label'},
+            'component' => "Groups",
+            'opened'    => 0,
+            'folder'    => 1,
+            'keywords'  => "",
+            'children'  => [],
+            'table'     => {}
+        };
+        push @{$set}, $row;
+    }
 
-    # показываем все настройки
+    # показываем все группы
     $self->render( json => $set );
 }
 
+# вывод списка роутов групп
+#    "value"       => "value"
+sub routes {
+    my $self = shift;
+    my ( $list, $set );
+
+    # читаем группы из базы
+    unless ( $list = $self->_groups_values() ) {
+        return "Can't connect to the database";
+    }
+
+    # формируем данные для вывода
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        my $row = {
+            'value'     => $$list{$id}{'value'}
+        };
+        push @{$set}, $row;
+    }
+
+print Dumper( $self->_all_routes );
+    $self->render( json => $set );
+}
 
 # добавление группы пользователей
 # my $id = $self->insert_group({
@@ -69,7 +107,7 @@ sub add {
     #проверка остальных полей
     if (  $data{'label'} && $data{'name'} ) {
         #добавление
-        $id = $self->insert_group( \%data );
+        $id = $self->_insert_group( \%data );
         push @mess, "Could not new group item '$data{'label'}'" unless $id;
     }
     else {
@@ -111,9 +149,9 @@ sub update {
     # проверка обязательных полей
     if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
         # проверка существования обновляемой строки
-        if ( $self->id_check( $data{'id'} ) ) {
+        if ( $self->_id_check( $data{'id'} ) ) {
             #обновление
-            $id = $self->update_group( \%data );
+            $id = $self->_update_group( \%data );
             push @mess, "Could not update setting item '$data{'label'}'" unless $id;
         }
         else {
@@ -144,9 +182,9 @@ sub delete {
     # проверка обязательных полей
     if ( $id ) {
         # проверка на существование удаляемой строки в groups
-        if ( $self->id_check( $id ) ) {
+        if ( $self->_id_check( $id ) ) {
             # процесс удаления
-            $id = $self->delete_group( $id );
+            $id = $self->_delete_group( $id );
             push @mess, "Could not deleted" unless $id;
         }
         else {

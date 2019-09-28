@@ -171,7 +171,7 @@ sub startup {
 
     # управление группами пользователей
     $auth->post('/groups/')               ->to('groups#index');        # список групп
-    $auth->post('/groups/routes')         ->to('groups#routes');       # список список значений value
+    $auth->post('/groups/routes')         ->to('groups#routes');       # список значений value
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
     $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
@@ -247,6 +247,14 @@ sub startup {
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
     $r->any('/*')->to('index#index');
+
+    foreach (@{$auth->{children}} ) {
+        my $val = $_->{pattern}->{defaults}->{action};       
+        my $key = $_->{pattern}->{'unparsed'};        
+        $$routs{$key} = $val;       
+    }
+    $self->_all_routes($routs);
+    
 }
 
 1;

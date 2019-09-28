@@ -21,34 +21,31 @@ sub register {
     # Helper for Groups
 
 
-    # получение списка настроек из базы в виде объекта как в Mock/Settings.pm
-    $app->helper( 'all_groups' => sub {
+    # получение списка групп из базы в виде объекта как в Mock/Groups.pm
+    # my $list = $self->_all_groups();
+    # возвращает массив хэшей
+    $app->helper( '_all_groups' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."groups"', 'id');
-print "list: \n";
-print Dumper($list);
-#         my $out = {};
-#         foreach my $id (sort {$a <=> $b} keys %$list) {  
-#             $$out{$id} = {
-#                 "id"        => $$list{$id}{'id'},           
-#                 "label"     => $$list{$id}{'label'},
-#                 "name"      => $$list{$id}{'name'},
-#                 "value"     => $$list{$id}{'value'},
-#                 "required"  => $$list{$id}{'required'},
-#                 "readOnly"  => $$list{$id}{'readOnly'},
-#                 "editable"  => $$list{$id}{'editable'},
-#                 "removable" => $$list{$id}{'removable'}
-#             };
-#         }
-# print "out: \n";
-# print Dumper($out);
+        my $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
+
         return $list;
     });
 
+    # получение списка роутов
+    $app->helper( '_all_routes' => sub {
+        my $self = shift;
+        my $list = shift;
+
+        unless ( $list ) {
+            $list = $routs;
+        }
+
+        return $list;
+    });
 
     # добавление группы пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_insert_group({
     #     "label"       => 'название',      - название для отображения
     #     "name",       => 'name',          - системное название, латиница
     #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
@@ -57,7 +54,7 @@ print Dumper($list);
     #     "readOnly"    => 0,               - не обязательно, по умолчанию 0
     #     "removable"   => 0,               - не обязательно, по умолчанию 0
     # возвращается id записи    
-    $app->helper( 'insert_group' => sub {
+    $app->helper( '_insert_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
         my $id;
@@ -71,7 +68,7 @@ print Dumper($list);
 
 
     # изменение группы пользователей
-    # my $id = $self->insert_group({
+    # my $id = $self->_update_group({
     #     "label"       => 'название',      - название для отображения
     #     "name",       => 'name',          - системное название, латиница
     #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
@@ -80,7 +77,7 @@ print Dumper($list);
     #     "readOnly"    => 0,               - не обязательно, по умолчанию 0
     #     "removable"   => 0,               - не обязательно, по умолчанию 0
     # возвращается true/false
-    $app->helper( 'update_group' => sub {
+    $app->helper( '_update_group' => sub {
         my ($self, $data) = @_;
         return unless $data;
 
@@ -91,9 +88,9 @@ print Dumper($list);
 
 
     # для удаления группы пользователей
-    # my $true = $self->delete_group( 99 );
+    # my $true = $self->_delete_group( 99 );
     # возвращается true/false
-    $app->helper( 'delete_group' => sub {
+    $app->helper( '_delete_group' => sub {
         my ($self, $id) = @_;
         return unless $id;
         my $db_result = 0;
@@ -108,9 +105,9 @@ print Dumper($list);
     });
 
     # для проверки существования строки с данным id
-    # my $true = $self->id_check( 99 );
+    # my $true = $self->_id_check( 99 );
     # возвращается true/false
-    $app->helper( 'id_check' => sub {
+    $app->helper( '_id_check' => sub {
         my ($self, $id) = @_;
         return unless $id;
 
