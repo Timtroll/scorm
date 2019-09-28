@@ -438,4 +438,10 @@ sub hide {
     );
 }
 
+sub inputs {
+    my $self = shift;
+
+    $self->render( 'json' => $self->_inputComponents() );
+}
+
 1;
