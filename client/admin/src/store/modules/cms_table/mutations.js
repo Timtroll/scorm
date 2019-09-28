@@ -8,7 +8,9 @@ const mutations = {
   // статус
   table_status_request (state) {state.table.status = 'loading'},
   table_status_success (state, data) {state.table.status = 'success'},
-  table_status_error (state) {state.table.status = 'error'}
+  table_status_error (state) {state.table.status = 'error'},
+
+
 
 }
 export default mutations

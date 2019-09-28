@@ -1,10 +1,11 @@
 import router from './../../../router'
-import {flatTree, notify} from './../../methods'
+import {notify} from './../../methods'
 import Api from './../../../api/Table'
 
 const actions = {
 
   async getTable ({commit, state}, id) {
+
     try {
       commit('table_status_request')
 

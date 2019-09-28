@@ -1,5 +1,5 @@
 import router from './../../../router'
-import {flatTree, notify} from './../../methods'
+import {notify, flatTree} from '../../methods'
 import Api from './../../../api/Tree'
 
 const actions = {

@@ -51,6 +51,8 @@ $checkbox-switch-small-size: 14px
 $checkbox-switch-xsmall-size: 12px
 $checkbox-switch-border-size: 2px
 $checkbox-switch-duration: 0.1s
+$checkbox-switch-color-off: $global-secondary-background
+$checkbox-switch-color-on: $global-success-background
 
 .pos-checkbox-switch
   transition: all $checkbox-switch-duration/2 ease-out $checkbox-switch-duration
@@ -64,20 +66,20 @@ $checkbox-switch-duration: 0.1s
   box-sizing: border-box
   border-radius: 500px
   //border: $global-border-width solid $global-border
-  background-color: $global-muted-color
+  background-color: $checkbox-switch-color-off
   box-shadow: inset -$checkbox-switch-size 0 0 0 $global-background
   cursor: pointer
   border: none
 
   &:disabled
-    background-color: lighten($global-muted-color, 23%)
+    background-color: lighten($global-muted-background, 23%)
     cursor: default
 
     &::after
       box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.07)
 
     &:checked
-      background-color: lighten($global-success-background, 23%)
+      background-color: lighten($checkbox-switch-color-on, 23%)
 
   &.right
     margin-left: auto
@@ -117,7 +119,7 @@ $checkbox-switch-duration: 0.1s
 
 
   &:checked
-    background-color: $global-success-background
+    background-color: $checkbox-switch-color-on
 
     &::after
       left: calc(50% - 2px)

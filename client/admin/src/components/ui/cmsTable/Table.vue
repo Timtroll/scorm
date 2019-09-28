@@ -3,6 +3,7 @@
         :header-large="false"
         :header-bgr-default="true"
         :header-left="true"
+        :header-right="true"
         :body-padding="false"
         :header-small="true"
         :header-padding-none="true"
@@ -10,7 +11,8 @@
     <!--:loader="notEmptyTable"-->
 
     <template #headerLeft>
-      <div class="uk-flex">
+      <div class="uk-flex"
+           v-if="header">
 
         <!--Add Row-->
         <button type="button"
@@ -34,6 +36,43 @@
           <span class="uk-margin-small-left uk-visible@s"
                 v-text="$t('actions.remove')"></span>
         </button>
+
+      </div>
+
+    </template>
+
+    <!--Показать колонки-->
+    <template #headerRight>
+      <div class="uk-flex-column uk-flex pos-border-left">
+        <button class="uk-button uk-button-default pos-border-radius-none pos-border-none"
+                type="button">
+          <img src="/img/icons/icon__input_table_row.svg"
+               width="22"
+               height="22"
+               uk-svg></button>
+
+        <div uk-dropdown="mode: click; offset:0">
+          <ul class="uk-nav uk-dropdown-nav">
+
+            <li class="uk-nav-header"
+                v-text="$t('table.headerItems')"></li>
+            <li class="uk-nav-divider"></li>
+
+            <li v-for="(item, index) in header">
+              <label class="uk-grid-small"
+                     uk-grid>
+                <span class="uk-width-expand uk-text-truncate"
+                      v-text="item.label"></span>
+                <input class="pos-checkbox-switch xsmall"
+                       v-model.number="item.show"
+                       :true-value="1"
+                       :false-value="0"
+                       @change="updateVisibleColumns(header)"
+                       type="checkbox">
+              </label>
+            </li>
+          </ul>
+        </div>
 
       </div>
 
@@ -69,7 +108,7 @@
     <template #body>
 
       <div class="pos-table-container">
-        <table v-if="table"
+        <table v-if="tableRows"
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
@@ -86,8 +125,9 @@
             </th>
 
             <!--header rows data-->
-            <th v-for="item in table.header"
-                v-text="item.label"></th>
+            <th v-for="item in tableHeader"
+                v-text="item"></th>
+
             <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
               <!--edit Row-->
               <div class="uk-margin-small-right uk-display-inline-block">
@@ -158,6 +198,8 @@
           folder: 0
         },
 
+        header: [],
+
         editRequired: {
           name:        true,
           placeholder: true,
@@ -168,10 +210,29 @@
       }
     },
 
+    watch: {
+      table () {
+        if (this.table) {
+          //this.header = JSON.parse(JSON.stringify(this.table.header))
+
+          const headerLocal = localStorage.getItem('settings_header_rows_' + this.tableId)
+          if (headerLocal) {
+            this.header = JSON.parse(headerLocal)
+          } else {
+            this.header = JSON.parse(JSON.stringify(this.table.header))
+          }
+        }
+      }
+    },
+
     computed: {
 
       loader () {
         return this.$store.getters.table_status
+      },
+
+      tableId () {
+        return this.$route.params.id
       },
 
       notEmptyTable () {
@@ -202,12 +263,20 @@
         return this.$store.getters.pageTableRow
       },
 
+      // Шапка таблицы
+      tableHeader () {
+        if (this.header) {
+          return this.header.filter(item => item.show === 1).map(item => item.key)
+        }
+
+      },
+
+      //Тело таблицы
       tableRows () {
         if (this.filterSearch) {
           const table        = this.filterSearch,
                 displayTable = [],
-                header       = this.table.header,
-                flatHeader   = header.map(item => item.key)
+                flatHeader   = this.tableHeader
 
           table.forEach((item) => {
             //const keys    = Object.keys(item)
@@ -244,6 +313,13 @@
     },
 
     methods: {
+
+      // сохранение настроек видимости колонок таблицы
+      updateVisibleColumns (item) {
+        localStorage.setItem(
+          'settings_header_rows_' + this.tableId, JSON.stringify(item)
+        )
+      },
 
       add_row () {
         //this.card.bodyRightItem  = this.addTpl

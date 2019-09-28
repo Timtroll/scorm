@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '../../../router'
-import methods from './../../methods'
+import {notify} from './../../methods'
 import Api from './../../../api/Auth'
 
 const actions = {
@@ -22,13 +22,13 @@ const actions = {
              commit('auth_success', token, user)
              resolve(response)
            } else {
-             methods.notify(resp.mess, 'danger')
+             notify(resp.mess, 'danger')
              commit('auth_error')
              localStorage.removeItem('token')
            }
          })
          .catch(err => {
-           methods.notify(err, 'danger')
+           notify(err, 'danger')
            commit('auth_error')
            reject(err)
          })
@@ -47,13 +47,13 @@ const actions = {
              commit('logout')
              localStorage.removeItem('token')
              delete axios.defaults.headers.common['Authorization']
-             methods.notify('До встречи!', 'success')
+            notify('До встречи!', 'success')
              router.push({name: 'Login'})
              resolve(response)
            }
          })
          .catch(err => {
-           methods.notify(err, 'danger')
+          notify(err, 'danger')
            reject(err)
          })
 
