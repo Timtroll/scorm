@@ -83,7 +83,7 @@ sub save_folder {
         'required'    => $self->param('required') || 1,
         'readOnly'    => $self->param('readOnly') || 0,
         'editable'    => $self->param('editable') || 1,
-        'removable'   => $self->param('removable') || 1
+        'removable'   => $self->param('removable') || 1,
         'status'      => $self->param('status') || 1
     };
 
