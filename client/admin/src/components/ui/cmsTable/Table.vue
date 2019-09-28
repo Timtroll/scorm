@@ -47,11 +47,11 @@
         <button class="uk-button uk-button-default pos-border-radius-none pos-border-none"
                 type="button">
           <img src="/img/icons/icon__input_table_row.svg"
-               width="22"
-               height="22"
+               width="20"
+               height="20"
                uk-svg></button>
 
-        <div uk-dropdown="mode: click; offset:0">
+        <div uk-dropdown="mode: click; offset: 0; pos: bottom-right">
           <ul class="uk-nav uk-dropdown-nav">
 
             <li class="uk-nav-header"
@@ -211,11 +211,12 @@
     },
 
     watch: {
-      table () {
-        if (this.table) {
-          //this.header = JSON.parse(JSON.stringify(this.table.header))
 
+      table () {
+
+        if (this.table) {
           const headerLocal = localStorage.getItem('settings_header_rows_' + this.tableId)
+
           if (headerLocal) {
             this.header = JSON.parse(headerLocal)
           } else {
@@ -223,6 +224,21 @@
           }
         }
       }
+
+    },
+
+    mounted () {
+
+      if (this.notEmptyTable === 'error') {
+
+        this.$store.commit('card_right_show', false)
+        this.$store.commit('tree_active', this.tableId)
+        this.$store.dispatch('getTable', this.tableId)
+      } else {
+
+        console.log('this.tableRows', 'not undefined')
+      }
+
     },
 
     computed: {
@@ -237,14 +253,6 @@
 
       notEmptyTable () {
         return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'
-      },
-
-      libId () {
-        if (this.table && this.table.body[0] && this.table.body[0].lib_id) {
-          return +this.table.body[0].lib_id
-        } else {
-          return +this.$store.getters.pageTableCurrentId
-        }
       },
 
       table () {

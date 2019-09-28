@@ -55,12 +55,18 @@
     data () {
       return {
         leftNavToggleMobile: false
-
       }
     },
 
     created () {
+
+      // Подучение дерева с сервера
       this.$store.dispatch('getTree')
+
+      // установка в store Id активного документа
+      if (this.tableId) {
+        this.$store.commit('table_current', Number(this.tableId))
+      }
     },
 
     beforeDestroy () {
@@ -71,6 +77,10 @@
 
       loader () {
         return this.$store.getters.tree_status
+      },
+
+      tableId () {
+        return this.$route.params.id
       },
 
       editPanel_show () {
