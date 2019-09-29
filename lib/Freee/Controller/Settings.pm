@@ -42,15 +42,16 @@ sub get_folder {
     $id = 0 unless $id =~ /\d+/;
     push @mess, "Id wrong or empty" unless $id;
 
+    my $data;
     unless (@mess) {
-        $id = $self->_get_folder( $id );
-        push @mess, "Could not get '$id'" unless $id;
+        $data = $self->_get_folder( $id );
+        push @mess, "Could not get '$id'" unless $data;
     }
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
-    $resp->{'data'} = $id if $id;
+    $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
@@ -108,7 +109,7 @@ sub delete_folder {
     }
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 
@@ -278,7 +279,7 @@ sub add {
     push @mess, "Could not new setting item '$data{'label'}'" unless $id;
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 
@@ -297,15 +298,17 @@ sub edit {
     $id = 0 unless $id =~ /\d+/;
     push @mess, "Id wrong or empty" unless $id;
 
+    my $data;
     unless (@mess) {
-        $id = $self->_get_setting( $id );
-        push @mess, "Could not get '$id'" unless $id;
+        $data = $self->_get_setting( $id );
+        push @mess, "Could not get '$id'" unless $data;
     }
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
-    $resp->{'data'} = $id if $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = $data ? 'ok' : 'fail';
+    $resp->{'id'} = $id if $id;
+    $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
@@ -370,10 +373,10 @@ sub save {
     }
 
     my $id = $self->_save_setting( \%data, [] );
-    push @mess, "Could not update setting item '$data{'label'}'" unless $id;
+    push @mess, "Could not update setting item '$data{'id'}: $data{'label'}'" unless $id;
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 
@@ -398,7 +401,7 @@ sub delete {
     }
 
     my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 

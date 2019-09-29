@@ -51,8 +51,10 @@ sub register {
         my $row = $self->pg_dbh->selectrow_hashref('SELECT id, parent, folder, keywords, name, label, opened FROM "public"."settings" WHERE "id"='.$id);
 
         # десериализуем поля vaue и selected
-        $$row{'value'} = '' if ($$row{'value'} eq 'null');
-        $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
+        if ($row) {
+            $$row{'value'} = '' if ($$row{'value'} eq 'null');
+            $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
+        }
 
         return $row;
     });
@@ -188,10 +190,12 @@ sub register {
         my $row = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."settings" WHERE "id"='.$id);
 
         # десериализуем поля vaue и selected
-        $$row{'value'} = '' if ($$row{'value'} eq 'null');
-        $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-        $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
-        $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
+        if ($row) {
+            $$row{'value'} = '' if ($$row{'value'} eq 'null');
+            $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
+            $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
+            $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}) if (ref($$row{'selected'}) eq 'ARRAY');
+        }
         
         return $row;
     });
