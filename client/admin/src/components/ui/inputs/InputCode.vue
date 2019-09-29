@@ -146,22 +146,22 @@
       editorInit: () => {
 
         //language extension prerequsite...
-        import('brace/ext/language_tools')
-        import('brace/ext/beautify')
-        //require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
-
-        import('brace/ext/error_marker')
-        import('brace/ext/searchbox')
-        import('brace/ext/whitespace')
-        import('brace/ext/statusbar')
-
-        //language
-        import('brace/mode/html')
-        import('brace/mode/javascript')
-        import('brace/mode/sass')
-        import('brace/mode/scss')
-        import('brace/mode/css')
-        import('brace/mode/perl')
+        //import('brace/ext/language_tools')
+        //import('brace/ext/beautify')
+        ////require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
+        //
+        //import('brace/ext/error_marker')
+        //import('brace/ext/searchbox')
+        //import('brace/ext/whitespace')
+        //import('brace/ext/statusbar')
+        //
+        ////language
+        //import('brace/mode/html')
+        //import('brace/mode/javascript')
+        //import('brace/mode/sass')
+        //import('brace/mode/scss')
+        //import('brace/mode/css')
+        //import('brace/mode/perl')
 
         // theme
         import('brace/theme/dracula')
