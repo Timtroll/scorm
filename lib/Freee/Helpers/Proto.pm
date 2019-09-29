@@ -26,12 +26,12 @@ sub register {
             'label'         => 'InputText',
             'mask'          => 'InputText',
             'placeholder'   => 'InputText',
-            'readonly'      => 0,
-            'required'      => 1,
-            'selected'      => '[]',
-            'type'          => '[]',
+            'readonly'      => 'InputBoolean',
+            'required'      => 'InputBoolean',
+            'selected'      => 'InputDoubleList',
+            'type'          => 'InputSelect',
             'value'         => 'InputText',
-            'parent'        => 'InputNumber',
+            'parent'        => 'InputNumber'
         );
         my $out = [];
         foreach my $col (@$list) {
