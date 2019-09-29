@@ -46,7 +46,7 @@
 <script>
 
   //import brace from 'brace'
-  import editor from 'vue2-ace-editor'
+  //import editor from 'vue2-ace-editor'
 
   export default {
     name: 'InputCode',
@@ -164,10 +164,10 @@
         //import('brace/mode/perl')
 
         // theme
-        import('brace/theme/dracula')
+        //import('brace/theme/dracula')
 
         // snippet
-        import('brace/snippets/javascript')
+        //import('brace/snippets/javascript')
         //require(['emmet/emmet'], (data) => {
         //  window.emmet = data.emmet
         //})
