@@ -15,9 +15,8 @@ sub index {
 print "2\n";
     my $test = $self->_table_obj({
         "settings"  => {
-            "readOnly"    => 0,
+            "readonly"    => 0,
             # "totalCount"  => scalar(@{$table->{'body'}}),
-            "editable"    => 1,
             "removable"   => 1,
             "massEdit"    => 0
         },
@@ -29,7 +28,6 @@ print "2\n";
             { "key" => "placeholder",   "label" => "Расшифровка" },
             { "key" => "mask",          "label" => "Расшифровка" },
             { "key" => "selected",      "label" => "Расшифровка" },
-            { "key" => "editable",      "label" => "Расшифровка" }
         ],
         "body"      => []
     });

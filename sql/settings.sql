@@ -12,8 +12,7 @@ CREATE TABLE "public"."settings" (
 "mask" varchar(255) COLLATE "default",
 "selected" text COLLATE "default",
 "required" int4 DEFAULT 1,
-"readOnly" int4 DEFAULT 0,
-"editable" int4 DEFAULT 1,
+"readonly" int4 DEFAULT 0,
 "removable" int4 DEFAULT 1,
 "status" int2 DEFAULT 1 NOT NULL
 )

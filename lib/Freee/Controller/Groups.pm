@@ -23,8 +23,7 @@ sub index {
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
 #     "required"    => 0,               - не обязательно, по умолчанию 0
-#     "editable"    => 0,               - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,               - не обязательно, по умолчанию 0
+#     "readonly"    => 0,               - не обязательно, по умолчанию 0
 #     "removable"   => 0,               - не обязательно, по умолчанию 0
 #     "status"      => 0                - по умолчанию 0
 # });
@@ -38,8 +37,7 @@ sub add {
         'name'      => $self->param('name'),
         'value'     => $self->param('value') || '',
         'required'  => $self->param('required') || 0,
-        'editable'  => $self->param('editable') || 0,
-        'readOnly'  => $self->param('readOnly') || 0,
+        'readonly'  => $self->param('readonly') || 0,
         'removable' => $self->param('removable') || 0,
         'status'    => $self->param('status') || 0
     );
@@ -75,8 +73,7 @@ sub add {
 #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 0,           - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 0,           - не обязательно, по умолчанию 0
 #     "value"       => "",            - строка или json
 #     "required"    => 0            - не обязательно, по умолчанию 0
@@ -88,8 +85,7 @@ sub add {
 #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 0,           - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 0,           - не обязательно, по умолчанию 0
 # });
 # обновление групп
@@ -101,8 +97,7 @@ sub update {
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
     $data{'parent'} = $self->param('parent') || 0;
-    $data{'editable'} = $self->param('editable') || 0;
-    $data{'readOnly'} = $self->param('readOnly') || 0;
+    $data{'readonly'} = $self->param('readonly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
     $data{'status'} = $self->param('status') || 0;
 

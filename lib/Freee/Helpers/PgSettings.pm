@@ -99,7 +99,6 @@ sub register {
     #     "value",
     #     "type",
     #     "placeholder",
-    #     "editable",
     #     "mask"
     #     "selected",
     # });
@@ -107,8 +106,7 @@ sub register {
     # my $id = $self->_insert_setting({
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
-    #     "readOnly",       - не обязательно, по умолчанию 0
-    #     "editable" int,   - не обязательно, по умолчанию 1
+    #     "readonly",       - не обязательно, по умолчанию 0
     #     "removable" int,  - не обязательно, по умолчанию 1
     # });
     $app->helper( '_insert_setting' => sub {
@@ -137,7 +135,6 @@ sub register {
     #     "value",
     #     "type",
     #     "placeholder",
-    #     "editable",
     #     "mask"
     #     "selected",
     # });
@@ -147,8 +144,7 @@ sub register {
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "name",     - обязательно
-    #     "readOnly",       - не обязательно, по умолчанию 0
-    #     "editable" int,   - не обязательно, по умолчанию 1
+    #     "readonly",       - не обязательно, по умолчанию 0
     #     "removable" int,  - не обязательно, по умолчанию 1
     # });
     # возвращается id записи

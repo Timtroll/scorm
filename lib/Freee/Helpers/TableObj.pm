@@ -22,8 +22,7 @@ sub register {
 
         # дефолтные установки, если не заданы в $params
         my $table;
-        $$table{'settings'}{'readOnly'} = 0 unless $$params{'settings'}{'readOnly'};
-        $$table{'settings'}{'editable'} = 1 unless $$params{'settings'}{'editable'};
+        $$table{'settings'}{'readonly'} = 0 unless $$params{'settings'}{'readonly'};
         $$table{'settings'}{'removable'} = 1 unless $$params{'settings'}{'removable'};
         $$table{'settings'}{'massEdit'} = 0 unless $$params{'settings'}{'massEdit'};
         $$table{'settings'}{'totalCount'} = scalar( @{$$params{'body'}} );

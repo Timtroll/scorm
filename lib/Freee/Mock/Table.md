@@ -18,7 +18,7 @@
 ## SETTINGS - Настройки таблицы
 ```
 "settings": {
-  "editable":  1,
+  "readonly":  1,
   "parent":    101,
   "variableType":  0,
   "sort":      {
@@ -35,7 +35,7 @@
 
 | Ключ | Тип | Описание | Значение по умолчанию |
 |---|---|---|---|
-| editable | Number | Таблица доступна для редактирования | 1 |
+| readonly | Number | Таблица недоступна для редактирования | 1 |
 | parent | Number | ID Родителя | - |
 | variableType | Number/String | Название ключа поля, в котором, можно менять тип поля | 0 |
 | sort | Object | Настройки сортировки | - |
@@ -52,7 +52,7 @@
   {
     "key":         "number",
     "label":       "Число",
-    "editable":    0,
+    "readonly":    0,
     "required":    1,
     "show":        1,
     "inline":      0
@@ -64,7 +64,7 @@
 |---|---|---|---|
 | key | String | Ключ поля | - |
 | label | String | Расшивровка поля | - |
-| editable | Number | Разрешено редактирование полей колонки | 1 |
+| readonly | Number | Запрещено редактирование полей колонки | 1 |
 | required | Number | Поля колонки обязательны для заполнения | 0 |
 | show | Number | Показать колонку в таблице | 1 |
 | inline | Number | Разрешено инлайн редактирование колонки (только InputBoolean) | 0 |

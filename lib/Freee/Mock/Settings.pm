@@ -31,9 +31,8 @@ $settings = {
           "children"    => [],
           "table"       => {
             "settings"  => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0,
               "sortBy"      => "id",
@@ -59,7 +58,7 @@ $settings = {
             ],
             "body"  =>[
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "fullDebugMode",
@@ -74,7 +73,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "fullDebugMode",
@@ -90,7 +89,7 @@ $settings = {
               },
 
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputSelect",
                 "name"          => "editorsList",
@@ -105,7 +104,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "mediaImagesConf",
@@ -120,7 +119,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputSelect",
                 "name"          => "multilang",
@@ -135,7 +134,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "RUDAYS",
@@ -150,7 +149,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "admin_email",
@@ -165,7 +164,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "pages_pp",
@@ -180,7 +179,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "num_pp",
@@ -195,7 +194,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "RUMONTHPSMALL",
@@ -213,7 +212,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "RUMONTHP",
@@ -228,7 +227,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "RUMONTHSMALL",
@@ -246,7 +245,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "RUMONTH",
@@ -264,7 +263,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "users_parent_category",
@@ -279,7 +278,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "site_domain",
@@ -294,7 +293,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "site_url",
@@ -309,7 +308,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "site_label",
@@ -336,9 +335,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings" => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -361,7 +359,7 @@ $settings = {
             ],
             "body"=>     [
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "import_step_index",
@@ -376,7 +374,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "import_step",
@@ -391,7 +389,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "XMLUpdateProcessing",
@@ -406,7 +404,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "JSSC_rebuild",
@@ -421,7 +419,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "lastXMLMTime",
@@ -436,7 +434,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "lastXMLSize",
@@ -451,7 +449,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "salesEmail",
@@ -466,7 +464,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "mailAddress",
@@ -481,7 +479,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "mailLogin",
@@ -496,7 +494,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "mailPass",
@@ -511,7 +509,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "mailSMTP",
@@ -538,9 +536,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings" => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -563,7 +560,7 @@ $settings = {
             ],
             "body"=>     [
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputTextarea",
                 "name"          => "pageBlocksOptions",
@@ -578,7 +575,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "pageMenuLocationlabels",
@@ -593,7 +590,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "contacts_phone",
@@ -608,7 +605,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "contacts_bottom_address",
@@ -623,7 +620,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputTextarea",
                 "name"          => "countersTopCode",
@@ -638,7 +635,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputTextarea",
                 "name"          => "countersBottomCode",
@@ -665,9 +662,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings"=> {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -690,7 +686,7 @@ $settings = {
             ],
             "body"=>     [
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "AllowAdminFilter",
@@ -705,7 +701,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputSelect",
                 "name"          => "CatalogNumPPVariants",
@@ -745,9 +741,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings"      => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -770,7 +765,7 @@ $settings = {
             ],
             "body"=>     [
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "minWidth",
@@ -785,7 +780,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "minHeight",
@@ -800,7 +795,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "maxBorderHeight",
@@ -815,7 +810,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "maxBorderWidth",
@@ -830,7 +825,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "minBorderHeight",
@@ -845,7 +840,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "minBorderWidth",
@@ -860,7 +855,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "max_attachments_size",
@@ -875,7 +870,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "default_max_attachments_size",
@@ -890,7 +885,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "middle_preview_height",
@@ -905,7 +900,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "middle_preview_width",
@@ -920,7 +915,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "small_preview_height",
@@ -935,7 +930,7 @@ $settings = {
                 "folder"        => 0
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "small_preview_width",
@@ -962,9 +957,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings"=> {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -987,6 +981,7 @@ $settings = {
             ],
             "body"=>     [
               {
+                "readonly"      => 0,
                 "type"          => "InputDoubleList",
                 "name"          => "newsPageID",
                 "label"         => "Точки привязки категорий новостей",
@@ -1012,9 +1007,8 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings"=> {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -1037,7 +1031,7 @@ $settings = {
             ],
             "body"=>     [
             {
-              "editable"      => 1,
+              "readonly"      => 0,
               "required"      => 1,
               "type"          => "InputNumber",
               "name"          => "UserTestsQuestionsContainerID",
@@ -1052,7 +1046,7 @@ $settings = {
               "folder"        => 0
             },
             {
-              "editable"      => 1,
+              "readonly"      => 0,
               "required"      => 1,
               "type"          => "InputNumber",
               "name"          => "UserTestsContainerID",
@@ -1079,9 +1073,9 @@ $settings = {
           "children"  => [],
           "table" => {
             "settings"=> {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
+              "readonly"    => 1,
               "removable"   => 1,
               "massEdit"    => 0
             },
@@ -1104,7 +1098,7 @@ $settings = {
             ],
             "body"=>     [
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "libid",
@@ -1123,7 +1117,7 @@ $settings = {
                 "id"            => 1081
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "type",
@@ -1136,7 +1130,7 @@ $settings = {
                 "id"            => 1082
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "pname",
@@ -1149,7 +1143,7 @@ $settings = {
                 "id"            => 1083
               },
               {
-                "editable"      => 1,
+                "readonly"      => 0,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "pdescr",
@@ -1185,9 +1179,8 @@ $settings = {
           "children"    => [],
           "table"       => {
             "settings"  => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0,
               "sortBy"      => "id",
@@ -1213,7 +1206,6 @@ $settings = {
             ],
             "body"  =>[
               {
-                "editable"      => 1,
                 "required"      => 1,
                 "type"          => "InputNumber",
                 "name"          => "Lection",
@@ -1224,7 +1216,7 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 301,
                 "id"            => 3011,
-                "readOnly"      => 1,
+                "readonly"      => 0,
                 "removable"     => 1,
                 "folder"        => 0
               }

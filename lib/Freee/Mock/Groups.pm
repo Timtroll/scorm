@@ -31,9 +31,8 @@ $groups = {
           "children"    => [],
           "table"       => {
             "settings"  => {
-              "readOnly"    => 0,
+              "readonly"    => 0,
               "totalCount"  => 3,
-              "editable"    => 1,
               "removable"   => 1,
               "massEdit"    => 0,
               "sortBy"      => "id",
@@ -71,7 +70,7 @@ $groups = {
             ],
             "body"  =>[
               {
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputText",
                 "name"          => "modules",
@@ -85,7 +84,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "admin",
@@ -99,7 +98,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "guest",
@@ -113,7 +112,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "cmsmanager",
@@ -127,7 +126,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "cmsuser",
@@ -141,7 +140,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "scormrector",
@@ -155,7 +154,7 @@ $groups = {
                 "removable"     => 1,
                 "folder"        => 1
               },{
-                "editable"      => 1,
+                "readonly"      => 1,
                 "required"      => 1,
                 "type"          => "InputCheckbox",
                 "name"          => "scormteacher",

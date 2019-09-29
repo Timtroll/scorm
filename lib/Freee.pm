@@ -31,8 +31,9 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
+    $self->plugin('Freee::Helpers::Utils');
+    $self->plugin('Freee::Helpers::Proto');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');

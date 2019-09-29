@@ -81,8 +81,7 @@ sub save_folder {
         'selected'    => $self->param('selected'),
 
         'required'    => $self->param('required') || 1,
-        'readOnly'    => $self->param('readOnly') || 0,
-        'editable'    => $self->param('editable') || 1,
+        'readonly'    => $self->param('readonly') || 0,
         'removable'   => $self->param('removable') || 1,
         'status'      => $self->param('status') || 1
     };
@@ -131,7 +130,7 @@ sub get_leafs {
 
     my $table = $self->_table_obj({
         "settings"  => {
-            "editable"      => 1,    # редатирование inline?
+            "readonly"      => 0,    # редатирование запрещено
             "parent"        => 10,   # id парента?
             "variableType"  => 0,    # ???
             "massEdit"      => 0,    # групповое редактировани
@@ -150,12 +149,11 @@ sub get_leafs {
         "header"    => [
             { "key" => "name",          "label" => "Название",           "show"  => 1,  "inline"    => 0 },
             { "key" => "label",         "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
-            { "key" => "editable",      "label" => "Редактируемость",    "show"  => 0,  "inline"    => 0 },
             { "key" => "id",            "label" => "id",                 "show"  => 1,  "inline"    => 0 },
             { "key" => "mask",          "label" => "Маска",              "show"  => 0,  "inline"    => 0 },
             { "key" => "parent",        "label" => "Родитель",           "show"  => 0,  "inline"    => 0 },
             { "key" => "placeholder",   "label" => "Подсказка",          "show"  => 1,  "inline"    => 0 },
-            { "key" => "readOnly",      "label" => "Только для чтения",  "show"  => 0,  "inline"    => 0 },
+            { "key" => "readonly",      "label" => "Только для чтения",  "show"  => 0,  "inline"    => 0 },
             { "key" => "removable",     "label" => "Удаляемость",        "show"  => 0,  "inline"    => 0 },
             { "key" => "required",      "label" => "Обязательные",       "show"  => 1,  "inline"    => 0 },
             { "key" => "selected",      "label" => "вВыбранные значения","show"  => 0,  "inline"    => 0 },
@@ -209,23 +207,13 @@ sub set_load_default {
 sub proto_leaf {
     my $self = shift;
 
-    my $proto = {
-        "editable"      => 1,
-        "id"            => 0,
-        "label"         => "",
-        "mask"          => "",
-        "name"          => "",
-        "parent"        => 0,
-        "placeholder"   => "",
-        "readOnly"      => 0,
-        "removable"     => 1,
-        "required"      => 1,
-        "selected"      => "[]",
-        "type"          => "InputNext",
-        "value"         => ""
-    };
+    my $proto = $self->_proto_leaf('settings');
 
-    $self->render( 'json' => { 'status' => 'ok', 'proto' => $proto });
+    $self->render( 'json' => {
+        'status' => 'ok',
+        'id'     => 0,
+        'data'   => $proto
+    });
 
 }
 
@@ -235,8 +223,7 @@ sub proto_leaf {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 1,           - не обязательно, по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
@@ -251,8 +238,7 @@ sub proto_leaf {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 1,           - не обязательно, по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub add {
@@ -277,8 +263,7 @@ sub add {
     }
 
     # поля для группы настроек
-    $data{'editable'} = $self->param('editable') || 1;
-    $data{'readOnly'} = $self->param('readOnly') || 0;
+    $data{'readonly'} = $self->param('readonly') || 0;
     $data{'removable'} = $self->param('removable') || 1;
 
     # готовим запись настроек, если это не folder
@@ -307,11 +292,20 @@ sub edit {
 
     my $id = $self->param('id');
 
-    my $row = $self->_get_setting( $id );
+    # проверка обязательных полей
+    my @mess;
+    $id = 0 unless $id =~ /\d+/;
+    push @mess, "Id wrong or empty" unless $id;
+
+    unless (@mess) {
+        $id = $self->_get_setting( $id );
+        push @mess, "Could not get '$id'" unless $id;
+    }
 
     my $resp;
-    $resp->{'status'} = $row ? 'ok' : 'fail';
-    $resp->{'data'} = $row if $row;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'data'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
@@ -322,8 +316,7 @@ sub edit {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 1,           - не обязательно, по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
@@ -338,8 +331,7 @@ sub edit {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "editable"    => 1,           - не обязательно, по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub save {
@@ -366,8 +358,7 @@ sub save {
     }
 
     # поля для группы настроек
-    $data{'editable'} = $self->param('editable') || 0;
-    $data{'readOnly'} = $self->param('readOnly') || 0;
+    $data{'readonly'} = $self->param('readonly') || 0;
     $data{'removable'} = $self->param('removable') || 0;
 
     # готовим запись настроек, если это не folder
@@ -441,7 +432,7 @@ sub hide {
 sub inputs {
     my $self = shift;
 
-    $self->render( 'json' => $self->_inputComponents() );
+    $self->render( 'json' => $self->_input_components() );
 }
 
 1;

@@ -13,7 +13,7 @@ our $pref;
 
 $mock_get_leafs = {
   "settings"=> {
-    "editable"=> 1,
+    "readonly"=> 1,
     "parent"=> 10,
     "variableType"=> 0,
     "massEdit"=> 1,
@@ -31,7 +31,7 @@ $mock_get_leafs = {
     {
       "key"=> "number",
       "label"=> "Число",
-      "editable"=> 0,
+      "readonly"=> 0,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -39,7 +39,7 @@ $mock_get_leafs = {
     {
       "key"=> "text",
       "label"=> "Текстовое поле",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -47,7 +47,7 @@ $mock_get_leafs = {
     {
       "key"=> "textarea",
       "label"=> "Текстовая область",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -55,7 +55,7 @@ $mock_get_leafs = {
     {
       "key"=> "editor",
       "label"=> "Текстовый редактор - CKEditor",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -63,7 +63,7 @@ $mock_get_leafs = {
     {
       "key"=> "codeEditor",
       "label"=> "Редактор кода",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -71,7 +71,7 @@ $mock_get_leafs = {
     {
       "key"=> "boolean",
       "label"=> "Чекбокс",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 1
@@ -79,7 +79,7 @@ $mock_get_leafs = {
     {
       "key"=> "radio",
       "label"=> "Радио кнопки",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -87,7 +87,7 @@ $mock_get_leafs = {
     {
       "key"=> "select",
       "label"=> "Выпадающий список",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0
@@ -95,7 +95,7 @@ $mock_get_leafs = {
     {
       "key"=> "list",
       "label"=> "Массив значений",
-      "editable"=> 1,
+      "readonly"=> 1,
       "required"=> 1,
       "show"=> 1,
       "inline"=> 0

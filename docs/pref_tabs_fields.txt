@@ -9,16 +9,15 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
         "header":   ["name", "label", "value", "type"],
         "body":     [
           {
-            "editable":    true,
+            "readonly":    false,
             "type":        "InputNumber",
             "name":        "fullDebugMode",
             "label":       "режим обновления",
@@ -175,9 +174,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -283,9 +281,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -352,9 +349,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -397,9 +393,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -513,9 +508,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -542,9 +536,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
@@ -578,9 +571,8 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
-          "editable":   1,
           "removable":  1,
           "massEdit":   0
         },
