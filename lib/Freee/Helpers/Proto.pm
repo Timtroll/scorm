@@ -29,7 +29,7 @@ sub register {
             'readonly'      => 'InputBoolean',
             'required'      => 'InputBoolean',
             'selected'      => 'InputDoubleList',
-            'type'          => 'InputSelect',
+            'type'          => 'InpuType',
             'value'         => 'InputText',
             'parent'        => 'InputNumber'
         );
