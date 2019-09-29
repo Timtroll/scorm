@@ -75,6 +75,7 @@ sub register {
     # возвращается true/false
     $app->helper( '_update_group' => sub {
         my ($self, $data) = @_;
+
         return unless $data;
 
         my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
@@ -82,6 +83,33 @@ sub register {
         return $db_result;
     });
 
+    # отключение группы/роута
+    # my $id = $self->_hide_group(<id>);
+    # <id> - id группы/роута, которую отключаем
+    # возвращается true/false
+    $app->helper( '_hide_group' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $db_result = $self->pg_dbh->do( 'UPDATE "public"."groups" SET "status"=0 WHERE "id"='.$$data{id} ) if $$data{id};
+
+        return $db_result;
+    });
+
+    # активация группы/роута
+    # my $id = $self->_activate_group(<id>);
+    # <id> - id группы/роута, которую автивируем
+    # возвращается true/false
+    $app->helper( '_activate_group' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $db_result = $self->pg_dbh->do( 'UPDATE "public"."groups" SET "status"=1 WHERE "id"='.$$data{id} ) if $$data{id};
+
+        return $db_result;
+    });
 
     # для удаления группы пользователей
     # my $true = $self->_delete_group( 99 );

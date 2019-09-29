@@ -31,12 +31,6 @@ sub index {
 
     # формируем данные для вывода
     foreach my $id (sort {$a <=> $b} keys %$list) {
-        # $$list{$id}{'component'} = "Groups";
-        # $$list{$id}{'opened'} = 0;
-        # $$list{$id}{'folder'} = 1;
-        # $$list{$id}{'keywords'} = "";
-        # $$list{$id}{'children'} = [];
-        # $$list{$id}{'table'} = {};
         my $row = {
             'id'        => $id,
             'label'     => $$list{$id}{'label'},
@@ -62,7 +56,7 @@ sub routes {
 
     # читаем группы из базы
     unless ( $list = $self->_groups_values() ) {
-        return "Can't connect to the database";
+        return "Can't find list of routes";
     }
 
     # формируем данные для вывода
@@ -78,6 +72,7 @@ sub routes {
 
 # добавление группы пользователей
 # my $id = $self->insert_group({
+#     "parent"      => '1',             - id родителя, если нет, то - 0, корневой
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
@@ -90,6 +85,7 @@ sub add {
 
     # read params
     my %data = (
+        'parent'    => $self->param('parent') || 0,
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
         'value'     => $self->param('value') || '',
@@ -101,13 +97,13 @@ sub add {
     my ($id, @mess, $resp);
     
     # проверка остальных полей
-    if (  $data{'label'} && $data{'name'} ) {
+    if ( $data{'label'} && $data{'name'} ) {
         #добавление
         $id = $self->_insert_group( \%data );
-        push @mess, "Could not new group item '$data{'label'}'" unless $id;
+        push @mess, "Could not new group item '$data{'label'}' group/route" unless $id;
     }
     else {
-        push @mess, "Required fields do not exist";
+        push @mess, "Required fields do not exist group/route";
     }
  
     $resp->{'message'} = join("\n", @mess) unless $id;
@@ -135,7 +131,6 @@ sub update {
     $data{'id'} = $self->param('id');
     $data{'label'} = $self->param('label');
     $data{'name'} = $self->param('name');
-    $data{'parent'} = $self->param('parent') || 0;
     $data{'readonly'} = $self->param('readonly') || 0;
     $data{'value'} = $self->param('value') || "";
     $data{'required'} = $self->param('required') || 0;
@@ -153,33 +148,34 @@ sub update {
         if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
             # проверка существования обновляемой строки
             if ( $self->_id_check( $data{'id'} ) ) {
-                #обновление
+                # обновление
                 $id = $self->_update_group( \%data );
-                push @mess, "Could not update setting item '$data{'label'}'" unless $id;
+                push @mess, "Could not update setting item '$data{'label'}' group/route" unless $id;
             }
             else {
-                push @mess, "Can't find row for updating";                
+                push @mess, "Can't find row for updating '$data{'id'}' for group/route";                
             }
         }
         else {
-            push @mess, "Required fields do not exist";
+            push @mess, "Required fields do not exist for group/route";
         }
     }
     else {
-        push @mess, "Required fields do not exist";
+        push @mess, "Required fields do not exist for group/route";
     }
     
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
-    #$resp->{'id'} = $id if $id;
+    $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
 
 
 # удалениe из групп пользователей
-#  "id" => 1 - id удаляемого элемента ( >0 )
+# my $id = $self->delete("id");
+# "id" => 1 - id удаляемого элемента ( > 0 )
 sub delete {
     my $self = shift;
 
@@ -193,15 +189,71 @@ sub delete {
         if ( $self->_id_check( $id ) ) {
             # процесс удаления
             $id = $self->_delete_group( $id );
-            push @mess, "Could not deleted" unless $id;
+            push @mess, "Could not deleted '$id' group/route" unless $id;
         }
         else {
             $id = 0;
-            push @mess, "Can't find row for deleting";
+            push @mess, "Can't find row '$id' for deleting group/route";
         }
     } 
     else {
-        push @mess, "Could not id for deleting" unless $id;
+        push @mess, "Could not id for deleting group/route" unless $id;
+    }
+
+    #вывод результата
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+
+    $self->render( 'json' => $resp );
+}
+
+# отключение группы или роута
+# my $id = $self->hide("id");
+# "id" => 1 - id отключаемой группы или роута ( > 0 )
+sub hide {
+    my $self = shift;
+
+    # read params
+    my $id = $self->param('id');
+    my @mess;
+   
+    # проверка обязательных полей
+    if ( $id ) {
+        # процесс отключения
+        my $res = $self->_hide_group( $id );
+        push @mess, "Could not hide '$id' group/route" unless $res;
+    } 
+    else {
+        push @mess, "Could not 'id' for hiding group/route" unless $id;
+    }
+
+    #вывод результата
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+
+    $self->render( 'json' => $resp );
+}
+
+# активация группы или роута
+# my $id = $self->activate("id");
+# "id" => 1 - id отключаемой группы или роута ( > 0 )
+sub activate {
+    my $self = shift;
+
+    # read params
+    my $id = $self->param('id');
+    my @mess;
+   
+    # проверка обязательных полей
+    if ( $id ) {
+        # процесс отключения
+        my $res = $self->_activate_group( $id );
+        push @mess, "Could not activate '$id' group/route" unless $res;
+    } 
+    else {
+        push @mess, "Could not 'id' for activating group/route" unless $id;
     }
 
     #вывод результата

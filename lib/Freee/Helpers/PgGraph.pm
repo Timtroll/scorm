@@ -24,6 +24,7 @@ sub register {
         # если в конфиге установлен test = 1 - подключаемся к тестово базе
         my $database = 'pg_main';
         $database = 'pg_main_test' if ($config->{'test'});
+
         unless ($dbh) {
             $dbh = DBI->connect(
                 $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},

@@ -55,10 +55,6 @@ sub register {
         return $out;
 
     });
-
-    $app->helper( '_input_components' => sub {
-        return $config->{'inputComponents'};
-    });
 }
 
 1;

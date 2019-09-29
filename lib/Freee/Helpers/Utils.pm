@@ -11,8 +11,8 @@ use common;
 sub register {
     my ($self, $app) = @_;
 
-    $app->helper( '_util' => sub {
-        return;
+    $app->helper( '_input_components' => sub {
+        return $config->{'inputComponents'};
     });
 }
 
