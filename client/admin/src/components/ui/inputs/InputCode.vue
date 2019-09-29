@@ -28,14 +28,14 @@
             </a>
           </div>
           <div class="uk-flex-1">
-            <editor v-model="valueInput"
-                    ref='codeEditor'
-                    @init="editorInit"
-                    lang="html"
-                    :options="editorOptions"
-                    theme="dracula"
-                    width="100%"
-                    :height="editorHeight"></editor>
+            <!--<editor v-model="valueInput"-->
+            <!--        ref='codeEditor'-->
+            <!--        @init="editorInit"-->
+            <!--        lang="html"-->
+            <!--        :options="editorOptions"-->
+            <!--        theme="dracula"-->
+            <!--        width="100%"-->
+            <!--        :height="editorHeight"></editor>-->
           </div>
         </div>
       </div>
