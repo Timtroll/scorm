@@ -54,19 +54,47 @@
 
     data () {
       return {
-        leftNavToggleMobile: false
+        leftNavToggleMobile: false,
+
+        actions: {
+          tree: {
+            get:    'getTree',
+            save:   'saveFolder',
+            remove: 'removeFolder',
+            proto:  this.$store.getters['settings/protoFolder']
+          },
+
+          table: {
+            get:    'getTable',
+            save:   'saveTable',
+            remove: 'removeTableRow',
+            proto:  'protoTable'
+          },
+
+          editPanel: {
+            get:    'getTree',
+            save:   'saveTree',
+            remove: 'removeTree'
+          }
+        }
+
       }
     },
 
     created () {
 
-      // Подучение дерева с сервера
-      this.$store.dispatch('getTree')
+      this.$store.commit('card_actions', this.actions)
+
+      // Получение дерева с сервера
+      this.$store.dispatch(this.actions.tree.get)
 
       // установка в store Id активного документа
       if (this.tableId) {
         this.$store.commit('table_current', Number(this.tableId))
       }
+
+      // Размер панели редактирования
+      this.$store.commit('editPanel_size', false)
     },
 
     beforeDestroy () {

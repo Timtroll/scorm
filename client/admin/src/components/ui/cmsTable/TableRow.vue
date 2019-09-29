@@ -91,8 +91,16 @@
 
     computed: {
 
+      actions () {
+        return this.$store.getters.cardActions
+      },
+
       cardRightState () {
         return this.$store.getters.cardRightState
+      },
+
+      inputComponents () {
+        return this.$store.getters.inputComponents.length > 0
       }
     },
 
@@ -117,14 +125,19 @@
         this.checkedRow = true
       },
 
-      edit (event) {
+      edit () {
 
-        if (!this.cardRightState) {
-          this.$store.commit('editPanel_data', this.fullData)
-          //this.$emit('edit-row', this.fullData)
+        if (!this.inputComponents) {
+          this.$store.dispatch('settingsInputs')
         }
 
-        this.$store.commit('editPanel_data', event)
+        this.$store.dispatch('settings_edit', this.fullData.id)
+
+        //if (!this.cardRightState) {
+        //  this.$store.commit('editPanel_data', this.fullData)
+        //}
+        //
+        //this.$store.commit('editPanel_data', event)
         this.$store.commit('card_right_show', !this.cardRightState)
 
       },

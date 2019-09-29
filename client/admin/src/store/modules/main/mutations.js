@@ -13,6 +13,10 @@ const mutations = {
 
   card_left_nav_click (state, data) {
     state.leftNavClick = data
+  },
+
+  card_actions (state, data) {
+    state.actions = data
   }
 
 }

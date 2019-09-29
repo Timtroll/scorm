@@ -6,7 +6,6 @@ const actions = {
 
   // Дерево категорий
   async getTree ({commit, state}) {
-
     try {
       commit('tree_status_request')
 
@@ -35,7 +34,27 @@ const actions = {
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
+  },
 
+  async protoFolder ({commit, state}) {
+    try {} catch (e) {
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
+  },
+
+  async saveFolder ({commit, state}, id) {
+    try {} catch (e) {
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
+  },
+
+  async removeFolder ({commit, state}, id) {
+    try {} catch (e) {
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
   }
 
 }

@@ -1,7 +1,5 @@
 const getters = {
 
-  inputComponents: state => state.inputComponents,
-
   pageTitle: state => state.pageTitle,
 
   navBarLeftAction: state => state.navBarLeftAction,
@@ -9,7 +7,9 @@ const getters = {
   cardLeftState:       state => state.card.leftShow,
   cardRightPanelLarge: state => state.card.rightPanelLarge,
   cardRightState:      state => state.card.rightShow,
-  cardLeftClickAction: state => state.card.leftShow
+  cardLeftClickAction: state => state.card.leftShow,
+
+  cardActions:         state => state.actions
 
 }
 

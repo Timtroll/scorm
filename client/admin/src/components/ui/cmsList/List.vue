@@ -199,6 +199,7 @@
 
     // Закрыть панель при нажатии "ESC"
     created () {
+
       document.onkeydown = evt => {
         evt = evt || window.event
         if (evt.keyCode === 27) {
@@ -206,31 +207,39 @@
         }
       }
 
+
+
     },
 
     mounted () {
-      if (!this.add) {
-        this.currentName = this.rowData.name
-      }
+
+      //if (!this.add) {
+      //  this.currentName = this.rowData.name
+      //}
     },
 
     props: {
-      rowData: {
-        //type:     Object,
-        //required: true
-      },
-      add:     {
+
+      //rowData: {
+      //  //type:     Object,
+      //  //required: true
+      //},
+
+      add: {
         type:    Boolean,
         default: false
       },
-      group:   {
+
+      group: {
         type:    Boolean,
         default: false
       },
-      parent:  {
+
+      parent: {
         type: Number
       },
-      labels:  {}
+
+      labels: {}
     },
 
     beforeDestroy () {

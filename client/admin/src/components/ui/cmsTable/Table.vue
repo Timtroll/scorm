@@ -230,13 +230,9 @@
     mounted () {
 
       if (this.notEmptyTable === 'error') {
-
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
         this.$store.dispatch('getTable', this.tableId)
-      } else {
-
-        console.log('this.tableRows', 'not undefined')
       }
 
     },

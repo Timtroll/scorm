@@ -1,82 +1,60 @@
-
-
-
 import actions from './actions'
 import mutations from './mutations'
 import getters from './getters'
 
 const state = {
 
-  tree: {
-    status:   'loading',
-    open:     false,
-    activeId: null,
-    items:    []
-  },
-
-  table: {
-    status:     'loading',
-    current:    null,
-    tableFlat:  null,
-    tableNames: null,
-    items:      []
-  },
-
-  editPanel: {
-    status: 'loading',
-    show:   false,
-    add:    true,
-    large:  false,
-    item:   {}
-  },
-
-  //editPanel: {
-  //  state: {
-  //    open:   false,
-  //    status: 'loading'
-  //  }
-  //},
-
-  //cms: {
-  //  data:       null,
-  //  status:     '',
-  //  current:    null,
-  //  table:      null,
-  //  tableFlat:  null,
-  //  tableNames: null,
-  //  row:        {
-  //    open:   false,
-  //    status: 'loading',
-  //    data:   null
-  //  },
-  //  addGroup:   {
-  //    show: false,
-  //    add:  true,
-  //    data: {}
-  //  },
-  //  updateRow:  null
-  //},
-
-  main: {
-    pageTitle:        '',
-    navBarLeftAction: {
-      visibility: true,
-      icon:       'icon__nav.svg'
+  protoFolder: [
+    {
+      label:       'Родитель',
+      mask:        '',
+      name:        'parent',
+      placeholder: '',
+      readonly:    0,
+      required:    1,
+      selected:    [],
+      type:        'InputNumber',
+      value:       ''
     },
-    leftShow:         true,
-    leftNavClick:     true,
-    rightShow:        true,
-    rightPanelLarge:  false
-  },
-
-  //pageLoader: true,
-
-
+    {
+      label:       'Имя',
+      mask:        '',
+      name:        'label',
+      placeholder: '',
+      readonly:    0,
+      required:    1,
+      selected:    [],
+      type:        'InputText',
+      value:       ''
+    },
+    {
+      label:       'Системное имя',
+      mask:        '',
+      name:        'name',
+      placeholder: '',
+      readonly:    0,
+      required:    1,
+      selected:    [],
+      type:        'InputText',
+      value:       ''
+    },
+    {
+      label:       'Статус',
+      mask:        '',
+      name:        'status',
+      placeholder: '',
+      readonly:    0,
+      required:    0,
+      selected:    [],
+      type:        'InputBoolean',
+      value:       ''
+    }
+  ]
 
 }
 
 export default {
-  namespaced: false,
+  namespaced: true,
   state:      state,
   actions:    actions,
   mutations:  mutations,

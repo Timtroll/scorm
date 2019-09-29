@@ -4,14 +4,16 @@ import getters from './getters'
 
 const state = {
 
-  editPanel: {
+  editPanel:       {
     status: 'loading',
     //open:   false,
     group:  false,
     add:    true,
     large:  false,
     item:   null
-  }
+  },
+
+  inputComponents: []
 
 }
 

@@ -42,7 +42,7 @@
 <script>
 
   // Mock
-  const MockTree = () => require('./../../assets/mock/navTree')
+  //const MockTree = () => require('../../assets/mock/settings_proto_leaf')
 
   export default {
 

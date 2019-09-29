@@ -11,6 +11,7 @@ const state = {
     tableNames: null,
     items:      []
   }
+
 }
 
 export default {

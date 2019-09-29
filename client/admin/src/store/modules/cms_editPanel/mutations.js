@@ -24,7 +24,9 @@ const mutations = {
     state.editPanel.item = data
   },
 
-
+  editPanel_inputs (state, data) {
+    state.inputComponents = data
+  }
 
 }
 export default mutations
