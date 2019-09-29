@@ -28,6 +28,8 @@ sub register {
             'placeholder'   => 'InputText',
             'readonly'      => 'InputBoolean',
             'required'      => 'InputBoolean',
+            'removable'     => 'InputBoolean',
+            'status'        => 'InputBoolean',
             'selected'      => 'InputDoubleList',
             'type'          => 'InpuType',
             'value'         => 'InputText',
