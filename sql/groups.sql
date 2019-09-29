@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS "public"."groups";
 DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
 CREATE SEQUENCE "public".groups_id_seq;
 

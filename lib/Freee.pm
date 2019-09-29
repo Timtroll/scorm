@@ -76,14 +76,12 @@ sub startup {
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
     $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');      # прототип для добавления строки (все поля)
-#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
     $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
     $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
-    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');
@@ -253,6 +251,14 @@ sub startup {
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
     $r->any('/*')->to('index#index');
+
+    foreach (@{$auth->{children}} ) {
+        my $val = $_->{pattern}->{defaults}->{action};       
+        my $key = $_->{pattern}->{'unparsed'};        
+        $$routs{$key} = $val;       
+    }
+    $self->_all_routes($routs);
+    
 }
 
 1;

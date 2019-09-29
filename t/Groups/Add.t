@@ -17,7 +17,7 @@ clear_db();
 
 # положительные тесты
 
-# нету поля parent
+# поле parent = 0
 my $data = {
     parent      => 0,
     name        => 'name',
@@ -26,30 +26,47 @@ my $data = {
     required    => 0,
     readOnly    => 0,
     editable    => 1,
-    removable   => 0,
-    status      => 1
+    removable   => 0
 };
+
 my $result = { id => '1', status => 'ok' };
+
 $t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8')
     ->json_is( $result );
 
-#поле parent = 0
-# $data = { parent => '0',name => 'test2', label => 'test2'};
+# поле parent != 0
+$data->{parent} = 1;
 $data->{name} = 'test2';
 $data->{label} = 'test2';
-$result = {id => '2', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
+$result = { id => '2', status => 'ok' };
 
-#поле parent != 0 и наследуется
-$data = { parent => '1',name => 'test3', label => 'test3'};
-$result = {id => '3', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
+$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
 
-$data = { parent => '1',name => 'test4', label => 'test4'};
-$result = {id => '4', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
+#
+$data->{parent} = 1;
+$data->{name} = 'name3';
+$data->{label} = 'label3';
+$result = { id => '3', status => 'ok'};
+
+$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
+
+#
+$data->{name} = 'name4';
+$data->{label} = 'label4';
+$result = { id => '4', status => 'ok' };
+
+$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
 
 
 # отрицательные тесты
@@ -68,6 +85,17 @@ $t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200
 $data = { parent => '404', name => 'test', label => 'test'};
 $result = { message => "Wrong parent", status => "fail" };
 $t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data  )->status_is(200)->json_is( $result );
+
+$data->{parent} = 0;
+$data->{name} = undef;
+$data->{label} = 'label5';
+
+$result = { message => "Required fields do not exist", status => "fail" };
+
+$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
 
 done_testing();
 

@@ -20,26 +20,37 @@ sub register {
     #################################
     # Helper for Groups
 
-    # для создания возможностей групп пользователей
+    # получение списка групп из базы в виде объекта как в Mock/Groups.pm
+    # my $list = $self->_all_groups();
+    # возвращает массив хэшей
+    $app->helper( '_all_groups' => sub {
+        my $self = shift;
+
+        my $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
+
+        return $list;
+    });
+
+    # получение списка роутов
+    $app->helper( '_all_routes' => sub {
+        my $self = shift;
+        my $list = shift;
+
+        unless ( $list ) {
+            $list = $routs;
+        }
+
+        return $list;
+    });
+
+    # добавление группы пользователей
     # my $id = $self->_insert_group({
-    #       "folder"      => 0,           - это возможности пользователя
-    #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    #     "value"       => "",            - строка или json
-    #     "required"    => 0            - не обязательно, по умолчанию 0
-    # });
-    # для создания группы пользователей
-    # my $id = $self->_insert_group({
-    #     "folder"      => 1,           - это группа пользователей
-    #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    # });
+    #     "label"       => 'название',      - название для отображения
+    #     "name",       => 'name',          - системное название, латиница
+    #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
+    #     "required"    => 0,               - не обязательно, по умолчанию 0
+    #     "readonly"    => 0,               - не обязательно, по умолчанию 0
+    #     "removable"   => 0,               - не обязательно, по умолчанию 0
     # возвращается id записи    
     $app->helper( '_insert_group' => sub {
         my ($self, $data) = @_;
@@ -53,27 +64,14 @@ sub register {
         return $id;
     });
 
-
-    # для создания возможностей групп пользователей
+    # изменение группы пользователей
     # my $id = $self->_update_group({
-    #     "folder"      => 0,           - это возможности пользователя
-    #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    #     "value"       => "",            - строка или json
-    #     "required"    => 0            - не обязательно, по умолчанию 0
-    # });
-    # для создания группы пользователей
-    # my $id = $self->_update_group({
-    #     "folder"      => 1,           - это группа пользователей
-    #     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-    #     "label"       => 'название',  - обязательно (название для отображения)
-    #     "name",       => 'name'       - обязательно (системное название, латиница)
-    #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-    #     "removable"   => 0,           - не обязательно, по умолчанию 0
-    # });
+    #     "label"       => 'название',      - название для отображения
+    #     "name",       => 'name',          - системное название, латиница
+    #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
+    #     "required"    => 0,               - не обязательно, по умолчанию 0
+    #     "readonly"    => 0,               - не обязательно, по умолчанию 0
+    #     "removable"   => 0,               - не обязательно, по умолчанию 0
     # возвращается true/false
     $app->helper( '_update_group' => sub {
         my ($self, $data) = @_;
@@ -92,7 +90,12 @@ sub register {
         my ($self, $id) = @_;
         return unless $id;
         my $db_result = 0;
-
+        
+        if ( ($db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) == "0E0") { 
+            print "Row for deleting doesn't exist \n";
+            $db_result = 0;
+        }   
+     
         eval { 
             $self->pg_dbh->begin_work();
             if ( $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "parent"='.$id) ) {
@@ -120,46 +123,9 @@ sub register {
                 print "Delete doesn't work \n";
         } 
         print "$db_result \n";
-        return $db_result;
-
-    });
-
-
-    # для изменения параметра status
-    # возвращается true/false
-    $app->helper( '_status_group' => sub {
-        my ($self, $data) = @_;
-        return unless $data;
-
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
 
         return $db_result;
     });
-
-
-    # для проверки корректности наследования
-    # my $true = $self->_parent_check( 99 );
-    # возвращается true/false
-    $app->helper( '_parent_check' => sub {
-        my ($self, $parent) = @_;
-
-        # это не фолдер?
-        if ( $parent ) {
-            # есть родитель?
-            if ( $self->id_check( $parent ) ) {
-                # родитель фолдер?
-                if ( $self->pg_dbh->selectrow_array( 'SELECT parent FROM "public"."groups" WHERE "id"='.$parent ) ) {
-                    return 0;
-                }
-            } 
-            else {
-                return 0;
-            }
-        }
-
-        return 1;
-    });
-
 
     # для проверки существования строки с данным id
     # my $true = $self->_id_check( 99 );
@@ -169,6 +135,7 @@ sub register {
         return unless $id;
 
         my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+
         return $db_result;
     });
 }
