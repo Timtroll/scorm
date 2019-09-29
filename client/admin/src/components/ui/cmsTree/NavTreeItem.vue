@@ -100,9 +100,10 @@
         const children = [...this.navItem.children]
 
         if (children && children.length > 0) {
-          this.opened = !!children.find(i => i.id === Number(this.$store.getters.navActiveId))
+          this.opened = !!children.find(i => i.id === Number(this.$store.getters.activeId))
         }
       }
+
     },
 
     data () {
@@ -118,12 +119,13 @@
     computed: {
 
       navActiveId () {
-        return this.$store.getters.table_current
+        return this.$store.getters.activeId
       },
 
       cardLeftClickAction () {
         return this.$store.getters.cardLeftClickAction
       }
+
     },
 
     methods: {
@@ -139,6 +141,7 @@
           this.toggleChildren()
         } else {
           if (this.navActiveId !== this.navItem.id) {
+
             this.$store.commit('card_right_show', false)
             this.$store.commit('tree_active', item.id)
             this.$store.dispatch('getTable', item.id)
