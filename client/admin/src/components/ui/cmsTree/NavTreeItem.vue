@@ -119,7 +119,7 @@
     computed: {
 
       navActiveId () {
-        return this.$store.getters.table_current
+        return this.$store.getters.activeId
       },
 
       cardLeftClickAction () {
