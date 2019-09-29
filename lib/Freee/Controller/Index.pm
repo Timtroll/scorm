@@ -10,6 +10,21 @@ sub doc {
     my ($self);
     $self = shift;
 
+    my $routs;
+    foreach my $route (@{$self->{match}->{root}->{children}} ) {
+        if (defined $route->{children} && ref($route->{children}) eq 'ARRAY') {
+            if (@{$route->{children}}) {
+                map {
+                    $$routs{$_->{pattern}->{'unparsed'}} = $_->{pattern}->{defaults}->{action};
+                } (@{$route->{children}});
+                last;
+            }
+        }
+    }
+    # $self->_all_routes($routs);
+    $self->render( 'json' => { 'status' => 'ok', 'proto' => $routs });
+return;
+
     # Postgres Работа с полями
 
     # очистка базы 
