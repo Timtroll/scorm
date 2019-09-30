@@ -62,8 +62,6 @@ sub startup {
 
     my $auth = $r->under()                ->to('auth#check_token');
 
-    $auth->post('/settings/inputs')       ->to('settings#inputs');          # типы html полей
-
     # левая менюха (дерево без листочков)
     $auth->post('/settings/get_tree')      ->to('settings#get_tree');       # Все дерево без листочков
     $auth->post('/settings/get_folder')    ->to('settings#get_folder');     # получить данные фолдера настроек

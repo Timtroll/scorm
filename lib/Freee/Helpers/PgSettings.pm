@@ -188,7 +188,7 @@ sub register {
         return unless $id;
 
         my $row = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."settings" WHERE "id"='.$id);
-warn $row;
+
         # десериализуем поля vaue и selected
         my $out = [];
         if ($row) {
