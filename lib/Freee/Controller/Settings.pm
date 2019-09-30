@@ -305,6 +305,7 @@ sub edit {
     }
 
     my $resp;
+    $resp->{'type'} = 'settings';
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $data ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;

@@ -33,7 +33,6 @@ sub startup {
 
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Utils');
-    $self->plugin('Freee::Helpers::Proto');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');
@@ -66,7 +65,6 @@ sub startup {
     $auth->post('/settings/inputs')       ->to('settings#inputs');          # типы html полей
 
     # левая менюха (дерево без листочков)
-    $auth->post('/settings/proto_folder')  ->to('settings#proto_folder');   # прототип для добавлениястроки (все поля)
     $auth->post('/settings/get_tree')      ->to('settings#get_tree');       # Все дерево без листочков
     $auth->post('/settings/get_folder')    ->to('settings#get_folder');     # получить данные фолдера настроек
     $auth->post('/settings/save_folder')   ->to('settings#save_folder');    # добавление/сохранение фолдера
@@ -75,7 +73,6 @@ sub startup {
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
-    $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');      # прототип для добавления строки (все поля)
 #    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
