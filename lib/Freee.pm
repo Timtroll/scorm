@@ -250,6 +250,14 @@ sub startup {
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
     $r->any('/*')->to('index#index');
+
+    # сохраняем все роуты
+    foreach (@{$auth->{children}} ) {
+        my $val = $_->{pattern}->{defaults}->{action};       
+        my $key = $_->{pattern}->{'unparsed'};        
+        $$routs{$key} = $val;       
+    }
+    # $self->_all_routes($routs);
 }
 
 1;

@@ -13,24 +13,7 @@ use Data::Dumper;
 #####################
 # Работа с фолдерами
 
-# получить прототип фолдера
-sub proto_folder {
-    my $self = shift;
-
-    my $proto = {
-        "id"        => 0,
-        "parent"    => 0,
-        "folder"    => 1,
-        "keywords"  => "",
-        "name"      => "",
-        "label"     => "",
-        "opened"    => 0,
-        "status"    => 
-    };
-
-    $self->render( 'json' => { 'status' => 'ok', 'proto' => $proto });
-}
-
+# получить данные фолдера
 sub get_folder {
     my $self = shift;
 
@@ -202,20 +185,6 @@ sub set_load_default {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
 
     $self->render( 'json' => $resp );
-}
-
-# прототип настройки
-sub proto_leaf {
-    my $self = shift;
-
-    my $proto = $self->_proto_leaf('settings');
-
-    $self->render( 'json' => {
-        'status' => 'ok',
-        'id'     => 0,
-        'data'   => $proto
-    });
-
 }
 
 # создание настройки

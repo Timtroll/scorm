@@ -5,12 +5,13 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
+use common;
 
 sub doc {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    # Postgres Работа с полями
+    $self->render( 'json' => { 'status' => 'ok', 'routes' => $routs });
+return;    # Postgres Работа с полями
 
     # очистка базы 
     print Dumper( $self->tranc_bases() );
