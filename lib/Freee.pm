@@ -38,6 +38,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::Tree');
+    $self->plugin('Freee::Helpers::PgRoutes');
 
     # init Pg connection
     $self->pg_init();
@@ -170,12 +171,22 @@ sub startup {
 
     # управление группами пользователей
     $auth->post('/groups/')               ->to('groups#index');        # список групп
-    $auth->post('/groups/routes')         ->to('groups#routes');       # список настроек по роутам
+    # $auth->post('/groups/routes')         ->to('groups#routes');       # список настроек по роутам
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
     $auth->post('/groups/update')         ->to('groups#save');         # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
-    $auth->post('/groups/hide')           ->to('groups#hide');         # отключить группу
-    $auth->post('/groups/activate')       ->to('groups#activate');     # включить группу
+    $auth->post('/groups/hide')           ->to('groups#hide');         # выключение группы
+    $auth->post('/groups/activate')       ->to('groups#activate');     # включение группы
+
+    # управление роутами
+    $auth->post('/routes/')               ->to('routes#index');        # список групп
+    # $auth->post('/groups/routes')       ->to('groups#routes');       # список значений value
+    $auth->post('/routes/add')            ->to('routes#add');          # добавление группы
+    $auth->post('/routes/update')         ->to('routes#update');       # обновление данных группы
+    $auth->post('/routes/delete')         ->to('routes#delete');       # удаление группы
+    $auth->post('/routes/hide')           ->to('routes#hide');         # выключение роута
+    $auth->post('/routes/activate')       ->to('routes#activate');     # включение роута
+
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');
@@ -255,6 +266,7 @@ sub startup {
         my $key = $_->{pattern}->{'unparsed'};        
         $$routs{$key} = $val;       
     }
+
     # $self->_all_routes($routs);
 }
 

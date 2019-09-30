@@ -24,88 +24,37 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'        => 1,
-            'name'      => 'name',
-            'label'     => 'label',
-            'status'    => 1
+            'id'        => 1
         },
         'result' => {
             'status'  => 'ok'
         },
         'comment' => {
-            'text' => 'All fields:' 
-        }
-    },
-    2 => {
-        'data' => {
-            'id'        => 1,
-            'name'      => 'name',
-            'label'     => 'label'
-        },
-        'result' => {
-            'status'  => 'ok'
-        },
-        'comment' => {
-            'text' => 'No status:' 
+            'text' => 'All right:' 
         }
     },
 
     # отрицательные тесты
-    3 => {
+    2 => {
         'data' => {
-            'id'        => 404,
-            'name'      => 'name',
-            'label'     => 'label',
-            'status'    => 1
+            'id'        => 404
         },
         'result' => {
-            'message' => "Can't find row for updating",
+            'message' => "Can't find row for hiding",
             'status'  => 'fail'
         },
         'comment' => {
             'text' => 'Wrong id:' 
         }
     },
-    4 => {
-        'data' => {
-            'name'      => 'name',
-            'label'     => 'label',
-            'status'    => 1
-        },
+    3 => {
+        'data' => {},
         'result' => {
-            'message' => 'Required fields do not exist',
+            'message' => 'Need id for changing',
             'status'  => 'fail'
         },
         'comment' => {
-            'text' => 'No id:' 
-        }
-    },
-    5 => {
-        'data' => {
-            'id'        => 1,
-            'label'     => 'label',
-            'status'    => 1
-        },
-        'result' => {
-            'message' => 'Required fields do not exist',
-            'status'  => 'fail'
-        },
-        'comment' => {
-            'text' => 'No name:' 
-        }
-    },
-    6 => {
-        'data' => {
-            'id'        => 1,
-            'name'      => 'name',
-            'status'    => 1
-        },
-        'result' => {
-            'message' => 'Required fields do not exist',
-            'status'  => 'fail'
-        },
-        'comment' => {
-            'text' => 'No label:' 
+            'text' => 'No data:' 
         }
     },
 };
@@ -114,11 +63,12 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )
+    $t->post_ok('http://127.0.0.1:4444/groups/hide' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
 };
+
 
 done_testing();
 
@@ -132,3 +82,5 @@ sub clear_db {
         warn("Turn on 'test' option in config")
     }
 }
+
+

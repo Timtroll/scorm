@@ -15,59 +15,95 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-# положительные тесты
+my $test_data = {
+    # положительные тесты
+    1 => {
+        'data' => {
+            'name'        => 'name1',
+            'label'       => 'label1',
+            'status'      => 1
+        },
+        'result' => {
+            'id'      => '1',
+            'status'  => 'ok'
+        },
+        'comment' => {
+            'text' => 'All fields:' 
+        }
+    },
+    2 => {
+        'data' => {
+            'name'        => 'name2',
+            'label'       => 'label2'
+        },
+        'result' => {
+            'id'      => '2',
+            'status'  => 'ok'
+        },
+        'comment' => {
+            'text' => 'No status:' 
+        }
+    },
+    3 => {
+        'data' => {
+            'name'        => 'name3',
+            'label'       => 'label3'
+        },
+        'result' => {
+            'id'      => '3',
+            'status'  => 'ok',
+        },
+        'comment' => {
+            'text' => 'Status zero:' 
+        }
+    },
 
-# нету поля parent
-my $data = {
-    parent      => 0,
-    name        => 'name',
-    label       => 'label',
-    value       => 'value',
-    required    => 0,
-    readOnly    => 0,
-    editable    => 1,
-    removable   => 0,
-    status      => 1
+    # отрицательные тесты
+    4 => {
+        'data' => {
+            'name'        => 'name4'
+        },
+        'result' => {
+            'message' => 'Required fields do not exist',
+            'status'  => 'fail'
+        },
+        'comment' => {
+            'text' => 'No label:' 
+        }
+    },
+    5 => {
+        'data' => {
+            'label'       => 'label5',
+        },
+        'result' => {
+            'message' => 'Required fields do not exist',
+            'status'  => 'fail'
+        },
+        'comment' => {
+            'text' => 'No name:' 
+        }
+    },
+    6 => {
+        'data' => { },
+        'result' => {
+            'message' => 'Required fields do not exist',
+            'status'  => 'fail'
+        },
+        'comment' => {
+            'text' => 'Empty data:' 
+        }
+    },
 };
-my $result = { id => '1', status => 'ok' };
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
-    ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
 
-#поле parent = 0
-# $data = { parent => '0',name => 'test2', label => 'test2'};
-$data->{name} = 'test2';
-$data->{label} = 'test2';
-$result = {id => '2', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
-
-#поле parent != 0 и наследуется
-$data = { parent => '1',name => 'test3', label => 'test3'};
-$result = {id => '3', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
-
-$data = { parent => '1',name => 'test4', label => 'test4'};
-$result = {id => '4', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
-
-
-# отрицательные тесты
-
-# нету поля name
-$data = { parent => '0', label => 'test' };
-$result = { message => "Required fields do not exist", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
-
-# наследование не от фолдера
-$data = { parent => '3', name => 'test', label => 'test'};
-$result = { message => "Wrong parent", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )->status_is(200)->json_is( $result );
-
-# наследование от не существующего элемента
-$data = { parent => '404', name => 'test', label => 'test'};
-$result = { message => "Wrong parent", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data  )->status_is(200)->json_is( $result );
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    my $data = $$test_data{$test}{'data'};
+    my $result = $$test_data{$test}{'result'};
+    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
+    $t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+        ->status_is(200)
+        ->content_type_is('application/json;charset=UTF-8')
+        ->json_is( $result );
+};
 
 done_testing();
 

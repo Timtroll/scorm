@@ -15,8 +15,8 @@ $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
 #Ввод данных для удаления
-my $data = {name => 'test', label => 'test'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
+my $data = {name => 'test', label => 'test', parent => 1};
+$t->post_ok('http://127.0.0.1:4444/routes/add' => form => $data )
     ->status_is(200)
     ->json_is( {'id' => 1,'status' => 'ok'} );
 
@@ -63,7 +63,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/groups/delete' => form => $data )
+    $t->post_ok('http://127.0.0.1:4444/routes/delete' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
@@ -75,8 +75,8 @@ done_testing();
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")
