@@ -1,4 +1,4 @@
-import Api from './Api.js'
+import Api from '../Api.js'
 
 export default {
 

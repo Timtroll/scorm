@@ -1,4 +1,4 @@
-import Api from './Api.js'
+import Api from '../Api.js'
 
 export default {
 
@@ -6,14 +6,6 @@ export default {
   get_tree () {
     return Api()({
       url:    'settings/get_tree',
-      method: 'post'
-    })
-  },
-
-  // получить прототип нового элемента
-  proto_folder () {
-    return Api()({
-      url:    'settings/proto_folder',
       method: 'post'
     })
   },

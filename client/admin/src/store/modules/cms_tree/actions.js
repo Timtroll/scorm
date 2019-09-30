@@ -1,6 +1,6 @@
 import router from './../../../router'
 import {notify, flatTree} from '../../methods'
-import Api from './../../../api/Tree'
+import Api from '../../../api/settings/Tree'
 
 const actions = {
 
@@ -36,12 +36,7 @@ const actions = {
     }
   },
 
-  async protoFolder ({commit, state}) {
-    try {} catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
-    }
-  },
+
 
   async saveFolder ({commit, state}, id) {
     try {} catch (e) {

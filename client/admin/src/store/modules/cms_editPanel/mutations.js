@@ -26,7 +26,10 @@ const mutations = {
 
   editPanel_inputs (state, data) {
     state.inputComponents = data
-  }
+  },
+
+  // api
+  editPanel_api (state, data) {state.editPanel.api = data}
 
 }
 export default mutations

@@ -1,9 +1,9 @@
-import Api from './Api.js'
+import Api from '../Api.js'
 
 export default {
 
   // получить Листочек
-  settings_edit (id) {
+  list_edit (id) {
     return Api()({
       url:    'settings/edit',
       method: 'post',
@@ -13,24 +13,8 @@ export default {
     })
   },
 
-  // прототип Листочка
-  settings_proto_leaf () {
-    return Api()({
-      url:    'settings/proto_leaf',
-      method: 'post'
-    })
-  },
-
-  // прототип Листочка
-  settings_inputs () {
-    return Api()({
-      url:    '/settings/inputs',
-      method: 'post'
-    })
-  },
-
   // добавление/сохранение настройки
-  settings_save (id, data) {
+  list_save (id, data) {
     return Api()({
       url:    'settings/save',
       method: 'post',
@@ -42,7 +26,7 @@ export default {
   },
 
   // удаление настройки
-  settings_delete (id) {
+  list_delete (id) {
     return Api()({
       url:    'settings/delete',
       method: 'post',
@@ -53,7 +37,7 @@ export default {
   },
 
   // включение настройки
-  settings_activate (id) {
+  list_activate (id) {
     return Api()({
       url:    'settings/activate',
       method: 'post',

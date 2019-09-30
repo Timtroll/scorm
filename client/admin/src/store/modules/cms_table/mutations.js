@@ -11,7 +11,8 @@ const mutations = {
   table_status_success (state, data) {state.table.status = 'success'},
   table_status_error (state) {state.table.status = 'error'},
 
-
+  // api
+  table_api (state, data) {state.table.api = data}
 
 }
 export default mutations

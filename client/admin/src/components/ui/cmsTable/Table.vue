@@ -126,7 +126,7 @@
 
             <!--header rows data-->
             <th v-for="item in tableHeader"
-                v-text="item"></th>
+                v-text="item.label"></th>
 
             <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
               <!--edit Row-->
@@ -232,12 +232,16 @@
       if (this.notEmptyTable === 'error') {
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
-        this.$store.dispatch('getTable', this.tableId)
+        this.$store.dispatch(this.table_api.get,  this.tableId)
       }
 
     },
 
     computed: {
+
+      table_api () {
+        return this.$store.getters.table_api
+      },
 
       loader () {
         return this.$store.getters.table_status
@@ -270,9 +274,8 @@
       // Шапка таблицы
       tableHeader () {
         if (this.header) {
-          return this.header.filter(item => item.show === 1).map(item => item.key)
+          return this.header.filter(item => item.show === 1)
         }
-
       },
 
       //Тело таблицы
@@ -280,15 +283,17 @@
         if (this.filterSearch) {
           const table        = this.filterSearch,
                 displayTable = [],
-                flatHeader   = this.tableHeader
+                flatHeader   = this.tableHeader.map(item => item.key)
 
           table.forEach((item) => {
-            //const keys    = Object.keys(item)
             const newItem = []
 
             flatHeader.forEach((headItem, i) => {
               if (item.hasOwnProperty(headItem)) {
-                newItem.push({val: item[headItem], key: headItem})
+                newItem.push({
+                  val: item[headItem],
+                  key: headItem
+                })
               }
             })
 

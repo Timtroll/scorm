@@ -86,7 +86,8 @@
     components: {
       NavTree: () => import('./NavTree')
     },
-    props:      {
+
+    props: {
       navItem: {
         type: Object
       }
@@ -117,9 +118,14 @@
 
     computed: {
 
-      actions () {
-        return this.$store.getters.cardActions
+      tree_api () {
+        return this.$store.getters.tree_api
       },
+
+      table_api () {
+        return this.$store.getters.table_api
+      },
+
 
       navActiveId () {
         return this.$store.getters.activeId
@@ -147,7 +153,7 @@
 
             this.$store.commit('card_right_show', false)
             this.$store.commit('tree_active', item.id)
-            this.$store.dispatch(this.actions.table.get, item.id)
+            this.$store.dispatch(this.table_api.get, item.id)
 
             this.$router.push({
               name:   'SettingItem',
@@ -204,7 +210,7 @@
       // remove group
       remove (id) {
         if (id) {
-          this.$store.dispatch(this.actions.tree.remove, id)
+          this.$store.dispatch(this.tree_api.remove, id)
         }
       }
 

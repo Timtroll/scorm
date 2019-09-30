@@ -1,6 +1,12 @@
 import UIkit from 'uikit/dist/js/uikit.min'
 
-// Notifications
+/**
+ * Notifications
+ * @param message
+ * @param status
+ * @param timeout
+ * @param pos
+ */
 function notify (message, status = 'primary', timeout = '3000', pos = 'top-center') {
   UIkit.notification({
     message: message,
@@ -11,7 +17,11 @@ function notify (message, status = 'primary', timeout = '3000', pos = 'top-cente
 
 }
 
-// Плоское дерево
+/**
+ * Плоское дерево
+ * @param arr
+ * @returns {[]}
+ */
 function flatTree (arr) {
   const tree      = []
   const _flatTree = (arr) => {
@@ -37,9 +47,22 @@ function flatTree (arr) {
 
 }
 
-export  {
+/**
+ * mergeObject
+ * @param arr
+ * @param object
+ */
+//function mergeObject (arr, object) {
+//  if (arr && object) {
+//    console.log('arr', arr, 'object', object)
+//  }
+//
+//}
+
+export {
   notify,
   flatTree
+  //mergeObject
 }
 
 

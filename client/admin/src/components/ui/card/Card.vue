@@ -121,14 +121,14 @@
 
   export default {
 
-    name:       'Card',
+    name: 'Card',
 
     components: {
       Loader:  () => import('../icons/Loader'),
       IconBug: () => import('../icons/IconBug')
     },
 
-    props:      {
+    props: {
 
       // header
       header:            {
@@ -233,9 +233,12 @@
     mounted () {
 
       if (this.bodyRight || this.bodyLeft) {
+
         this.bodyWidth     = this.$refs.body.offsetWidth
         this.bodyLeftWidth = this.$refs.bodyLeft.offsetWidth
+
         window.addEventListener('resize', this.handleResize)
+
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
           this.$store.commit('editPanel_show', false)
         }
@@ -248,13 +251,13 @@
       RightToggleState () {
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('cardRightState', false)
+          this.$store.commit('editPanel_show', false)
         }
       },
 
       cardLeftClickAction () {
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('cardLeftState', false)
+          this.$store.commit('card_left_show', false)
         }
       }
     },
@@ -267,7 +270,7 @@
       },
 
       rightPanelSize () {
-        return this.$store.getters.cardRightPanelLarge
+        return this.$store.getters.editPanel_large
       },
 
       leftToggleState () {

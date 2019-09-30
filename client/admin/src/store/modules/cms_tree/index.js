@@ -5,11 +5,12 @@ import getters from './getters'
 const state = {
 
   tree: {
-    status:   'loading',
-    open:     false,
-    activeId: null,
-    items:    [],
-    itemsFlat:    []
+    status:    'loading',
+    open:      false,
+    activeId:  null,
+    items:     [],
+    itemsFlat: [],
+    api:       null
   }
 
 }

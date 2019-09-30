@@ -62,12 +62,16 @@
   },
   "list":     {
     "name":            "Системное название",
-    "placeholder":     "Placeholder",
+    "placeholder":     "Подсказка",
     "label":           "Рашифровка",
-    "mask":            "Маска",
-    "type":            "Тип",
+    "mask":            "Маска ввода",
+    "type":            "Тип поля ввода",
     "value":           "Значение",
-    "editable":        "Редактируемое",
+    "parent":          "Родитель",
+    "status":          "Статус",
+    "selected":        "Список значений",
+    "required":        "Обязательно для заполнения",
+    "readonly":        "Только для чтения",
     "namePlaceholder": "Только латинские буквы"
   },
   "messages": {

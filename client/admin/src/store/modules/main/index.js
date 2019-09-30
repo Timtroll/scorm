@@ -16,11 +16,7 @@ const state = {
     leftNavClick:    true,
     rightShow:       false,
     rightPanelLarge: false
-  },
-
-  actions: null,
-
-  proto: null
+  }
 
 }
 

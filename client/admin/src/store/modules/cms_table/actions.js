@@ -1,6 +1,5 @@
-import router from './../../../router'
 import {notify} from './../../methods'
-import Api from './../../../api/Table'
+import Api from '../../../api/settings/Table'
 
 const actions = {
 

@@ -30,7 +30,8 @@
     <!--bodyRight-->
     <template #bodyRight>
       <List :labels="'Добавить группу настроек'"
-            :group="true"
+            :data="editPanel_data"
+            :group="false"
             v-on:close="closeAddGroup"></List>
     </template>
 
@@ -38,6 +39,9 @@
 </template>
 
 <script>
+
+  //import Vuex модуля settings
+  //const settingsVuex = () => import('@/store/modules/settings/')
 
   export default {
 
@@ -54,27 +58,28 @@
 
     data () {
       return {
+
         leftNavToggleMobile: false,
 
         actions: {
+
           tree: {
             get:    'getTree',
             save:   'saveFolder',
-            remove: 'removeFolder',
-            proto:  this.$store.getters['settings/protoFolder']
+            remove: 'removeFolder'
           },
 
           table: {
-            get:    'getTable',
-            save:   'saveTable',
-            remove: 'removeTableRow',
-            proto:  'protoTable'
+            get:      'getTable',
+            save:     'saveTableRow',
+            remove:   'removeTableRow',
+            activate: 'activateTableRow',
+            hide:     'hideTableRow'
           },
 
           editPanel: {
-            get:    'getTree',
-            save:   'saveTree',
-            remove: 'removeTree'
+            get:  'getEditPanel',
+            save: 'saveEditPanel'
           }
         }
 
@@ -83,9 +88,7 @@
 
     created () {
 
-      this.$store.commit('card_actions', this.actions)
-
-      // Получение дерева с сервера
+      //// Получение дерева с сервера
       this.$store.dispatch(this.actions.tree.get)
 
       // установка в store Id активного документа
@@ -95,10 +98,21 @@
 
       // Размер панели редактирования
       this.$store.commit('editPanel_size', false)
+      this.$store.commit('table_api', this.actions.table)
+      this.$store.commit('tree_api', this.actions.tree)
+      this.$store.commit('editPanel_api', this.actions.editPanel)
+    },
+
+    mounted () {
+      // Регистрация Vuex модуля settings
+      //this.$store.registerModule('settings', settingsVuex)
     },
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
+
+      // выгрузка Vuex модуля settings
+      //this.$store.unregisterModule('settings')
     },
 
     computed: {
@@ -113,6 +127,10 @@
 
       editPanel_show () {
         return this.$store.getters.cardRightState
+      },
+
+      editPanel_data () {
+        return this.$store.getters.editPanel_item
       },
 
       // Left nav tree

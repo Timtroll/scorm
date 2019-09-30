@@ -1,6 +1,7 @@
 const getters = {
 
-  protoFolder: state => state.protoFolder
+  protoFolder: state => state.prototypes.folder,
+  protoLeaf:   state => state.prototypes.leaf
 
 }
 

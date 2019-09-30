@@ -91,8 +91,12 @@
 
     computed: {
 
-      actions () {
-        return this.$store.getters.cardActions
+      editPanel_api () {
+        return this.$store.getters.editPanel_api
+      },
+
+      table_api () {
+        return this.$store.getters.table_api
       },
 
       cardRightState () {
@@ -125,19 +129,9 @@
         this.checkedRow = true
       },
 
-      edit () {
+      edit (item) {
 
-        if (!this.inputComponents) {
-          this.$store.dispatch('settingsInputs')
-        }
-
-        this.$store.dispatch('settings_edit', this.fullData.id)
-
-        //if (!this.cardRightState) {
-        //  this.$store.commit('editPanel_data', this.fullData)
-        //}
-        //
-        //this.$store.commit('editPanel_data', event)
+        this.$store.dispatch(this.editPanel_api.get, item.id)
         this.$store.commit('card_right_show', !this.cardRightState)
 
       },

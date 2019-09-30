@@ -4,16 +4,49 @@ import getters from './getters'
 
 const state = {
 
-  editPanel:       {
+  editPanel: {
     status: 'loading',
-    //open:   false,
     group:  false,
     add:    true,
+    folder: false,
     large:  false,
-    item:   null
+    item:   null,
+    api: null
   },
 
-  inputComponents: []
+  inputComponents: [
+    {
+      value: 'InputText',
+      label: 'Текстовое поле'
+    }, {
+      value: 'InputNumber',
+      label: 'Число'
+    }, {
+      value: 'inputDateTime',
+      label: 'Дата и время'
+    }, {
+      value: 'InputTextarea',
+      label: 'Текстовая область'
+    }, {
+      value: 'InputCKEditor',
+      label: 'Текстовый редактор - CKEditor'
+    }, {
+      value: 'InputBoolean',
+      label: 'Чекбокс'
+    }, {
+      value: 'InputRadio',
+      label: 'Радио кнопки'
+    }, {
+      value: 'InputSelect',
+      label: 'Выпадающий список'
+    }, {
+      value: 'InputDoubleList',
+      label: 'Массив значений'
+    }, {
+      value: 'InputCode',
+      label: 'Редактор кода'
+    }
+  ]
 
 }
 

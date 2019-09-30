@@ -9,7 +9,8 @@ const state = {
     current:    null,
     tableFlat:  null,
     tableNames: null,
-    items:      []
+    items:      [],
+    api:        null
   }
 
 }
