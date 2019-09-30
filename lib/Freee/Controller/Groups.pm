@@ -6,7 +6,7 @@ use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
-use Freee::Mock::Settings;
+use Freee::Mock::Groups;
 use Data::Dumper;
 use common;
     
@@ -31,12 +31,6 @@ sub index {
 
     # формируем данные для вывода
     foreach my $id (sort {$a <=> $b} keys %$list) {
-        # $$list{$id}{'component'} = "Groups";
-        # $$list{$id}{'opened'} = 0;
-        # $$list{$id}{'folder'} = 1;
-        # $$list{$id}{'keywords'} = "";
-        # $$list{$id}{'children'} = [];
-        # $$list{$id}{'table'} = {};
         my $row = {
             'id'        => $id,
             'label'     => $$list{$id}{'label'},
@@ -54,38 +48,13 @@ sub index {
     $self->render( json => $set );
 }
 
-# вывод списка роутов групп
-#    "value"       => "value"
-sub routes {
-    my $self = shift;
-    my ( $list, $set );
-
-    # читаем группы из базы
-    unless ( $list = $self->_groups_values() ) {
-        return "Can't connect to the database";
-    }
-
-    # формируем данные для вывода
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        my $row = {
-            'value'     => $$list{$id}{'value'}
-        };
-        push @{$set}, $row;
-    }
-
-print Dumper( $self->_all_routes );
-    $self->render( json => $set );
-}
 
 # добавление группы пользователей
 # my $id = $self->insert_group({
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
-#     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
-#     "required"    => 0,               - не обязательно, по умолчанию 0
-#     "editable"    => 0,               - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,               - не обязательно, по умолчанию 0
-#     "removable"   => 0,               - не обязательно, по умолчанию 0
+#     "status"      => 0 или 1,         - активна ли группа
+
 # });
 sub add {
     my ($self, $data) = @_;
@@ -94,11 +63,7 @@ sub add {
     my %data = (
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
-        'value'     => $self->param('value') || '',
-        'required'  => $self->param('required') || 0,
-        'editable'  => $self->param('editable') || 0,
-        'readOnly'  => $self->param('readOnly') || 0,
-        'removable' => $self->param('removable') || 0,
+        'status'    => $self->param('status') || 0
     );
 
     my ($id, @mess, $resp);
@@ -126,26 +91,21 @@ sub add {
 #       "id"        => 1            - id обновляемого элемента ( >0 )
 #     "label"       => 'название'   - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "value"       => "",          - строка или json
-#     "required"    => 0,           - не обязательно, по умолчанию 0
-#     "editable"    => 0,           - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
+#     "status"      => 0 или 1,     - активна ли группа
 # });
 # обновление групп
 sub update {
     my ($self) = shift;
+    my ( $id, $parent, @mess );
 
-    my (%data, $data, $id, $parent, @mess);
-    $data{'id'} = $self->param('id');
-    $data{'label'} = $self->param('label');
-    $data{'name'} = $self->param('name');
-    $data{'value'} = $self->param('value') || "";
-    $data{'required'} = $self->param('required') || 0;
-    $data{'editable'} = $self->param('editable') || 0;
-    $data{'readOnly'} = $self->param('readOnly') || 0;
-    $data{'removable'} = $self->param('removable') || 0;
-
+    # чтение параметров
+    my %data = (
+        'id'        => $self->param('id'),
+        'label'     => $self->param('label'),
+        'name'      => $self->param('name'),
+        'status'    => $self->param('status') || 0
+    );
+    
     # проверка обязательных полей
     if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
         # проверка существования обновляемой строки
@@ -201,6 +161,74 @@ sub delete {
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
 
+    $self->render( 'json' => $resp );
+}
+
+# для деактивации элемента
+#  "id"     => 1 - id изменяемого элемента ( > 0 )
+#  элементу присваивается "status" = 0
+sub hide {
+    my $self = shift;
+
+    # read params
+    my $id = $self->param('id');
+    my @mess;
+
+    # проверка id
+    if ( $id ) {       
+        # проверка на существование строки 
+        if ( $self->_id_check( $id ) ) {
+            #процесс смены статуса
+            $id = $self->_hide_group( $id );
+            push @mess, "Can't change status" unless $id;
+        }
+        else {
+            $id = 0;
+            push @mess, "Can't find row for hiding";
+        }
+    } 
+    else {
+        push @mess, "Need id for changing";
+    }
+
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+
+    $self->render( 'json' => $resp );
+}
+
+
+# для активации элемента
+#  "id"     => 1 - id изменяемого элемента ( > 0 )
+#  элементу присваивается "status" = 1
+sub activate {
+    my $self = shift;
+
+    # read params
+    my $id = $self->param('id');
+    my @mess;
+
+    # проверка id
+    if ( $id ) {       
+        # проверка на существование строки 
+        if ( $self->_id_check( $id ) ) {
+            #процесс смены статуса
+            $id = $self->_activate_group( $id );
+            push @mess, "Can't change status" unless $id;
+        }
+        else {
+            $id = 0;
+            push @mess, "Can't find row for activating";
+        }
+    } 
+    else {
+        push @mess, "Need id for changing";
+    }
+    
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
     $self->render( 'json' => $resp );
 }
 

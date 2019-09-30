@@ -32,7 +32,6 @@ sub register {
         return $list;
     });
 
-    # получение списка роутов
     $app->helper( '_all_routes' => sub {
         my $self = shift;
         my $list = shift;
@@ -43,6 +42,7 @@ sub register {
 
         return $list;
     });
+
 
     # добавление группы пользователей
     # my $id = $self->_insert_group({
@@ -91,18 +91,66 @@ sub register {
     # my $true = $self->_delete_group( 99 );
     # возвращается true/false
     $app->helper( '_delete_group' => sub {
-        my ($self, $id) = @_;
+     my ($self, $id) = @_;
         return unless $id;
         my $db_result = 0;
-        
-        if ( ($db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) == "0E0") { 
-            print "Row for deleting doesn't exist \n";
-            $db_result = 0;
-        }   
-     
+
+        eval { 
+            $self->pg_dbh->begin_work();
+
+            if ( $self->pg_dbh->do('DELETE FROM "public"."routes" WHERE "parent"='.$id ) ) {
+                if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
+                    if ( $db_result == "0E0") { 
+                        print "Row for deleting doesn't exist \n";
+                        $db_result = 0;
+                        $self->pg_dbh->rollback();
+                    }   
+                }
+                else {
+                    print "Folder delete doesn't work \n";
+                    $self->pg_dbh->rollback();
+                }
+            } 
+            else {
+                print "Children delete doesn't work \n";
+                $self->pg_dbh->rollback();
+            }
+
+            $self->pg_dbh->commit();
+        } ;
+
+        if ($@) { 
+                $self->pg_dbh->rollback();
+                print "Delete doesn't work \n";
+        } 
 
         return $db_result;
     });
+
+
+    # для изменения параметра status на 0
+    # возвращается true/false
+    $app->helper( '_hide_group' => sub {
+        my ($self, $id) = @_;
+        return unless $id;
+
+        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET "status" = 0 WHERE "id"='.$id );
+
+        return $db_result;
+    });
+
+
+    # для изменения параметра status на 1
+    # возвращается true/false
+    $app->helper( '_activate_group' => sub {
+        my ($self, $id) = @_;
+        return unless $id;
+
+        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET "status" = 1 WHERE "id"='.$id );
+
+        return $db_result;
+    });
+
 
     # для проверки существования строки с данным id
     # my $true = $self->_id_check( 99 );
