@@ -194,8 +194,8 @@ sub register {
         if ($row) {
             $$row{'value'} = '' if ($$row{'value'} eq 'null');
             $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-            $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
-            $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});# if (ref($$row{'selected'}) eq 'ARRAY');
+            $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if ($$row{'value'} =~ /^\[/);
+            $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}); # if (ref($$row{'selected'}) eq 'ARRAY');
             $$row{'status'} = $$row{'status'} || 0;
         }
         

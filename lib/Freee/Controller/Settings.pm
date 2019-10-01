@@ -115,15 +115,15 @@ sub get_leafs {
     my $table = {
         "settings" => {
             "massEdit" => 1,    # групповое редактировани
-            "sort" => {              # сотрировка по
+            "sort" => {         # сотрировка по
                 "name"    => "id",
                 "order"   => "asc"
             },
             "page" => {
               "current_page"    => 1,
               "per_page"        => 100,
-              "total"           => scalar(@{$list->{'body'}})
-            },
+              # "total"           => scalar(@{$list->{'body'}})
+            }
         },
         "body" => $list
     };
