@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal not-stacked">
     <div>
-      <label v-text="label || placeholder"
+      <label v-text="label"
              class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+             v-if="label"></label>
 
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
@@ -16,7 +16,7 @@
           <input class="uk-input"
                  pattern="[0-9]*"
                  inputmode="numeric"
-                 :disabled="!editable"
+                 :disabled="readonly === 1"
                  :class="validate"
                  v-model.number.trim="valueInput"
                  type="number"
@@ -33,24 +33,22 @@
     name: 'InputNumber',
 
     props: {
-
-      value:       {},
+      value:       '',
+      name:        '',
       label:       {
         default: '',
         type:    String
-      },
-      status:      { // 'loading' / 'success' / 'error'
-        default: '',
-        type:    String
-      },
-      mask:        {
-        type: RegExp
       },
       placeholder: {
         default: '',
         type:    String
       },
-      editable:    {default: 1}
+      readonly:    {default: 0, type: Number},
+      required:    {default: 0, type: Number},
+      mask:        {
+        type: RegExp
+      }
+
     },
 
     data () {

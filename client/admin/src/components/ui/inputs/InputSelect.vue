@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal uk-overflow-hidden">
     <div>
-      <label v-text="label || placeholder"
+      <label v-text="label"
              class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+             v-if="label"></label>
 
       <div class="uk-form-controls">
         <div class="uk-grid-small"
@@ -13,22 +13,23 @@
 
             <select v-model="valueInput"
                     v-if="isObject"
-                    :disabled="!editable || editValues"
+                    :disabled="readonly === 1 || editValues"
                     @change="update">
               <option v-for="item in notEmptyEditValues"
                       :value="item.value">{{item.label}}
               </option>
             </select>
+
             <select v-model="valueInput"
                     v-else
-                    :disabled="!editable || editValues"
+                    :disabled="readonly === 1 || editValues"
                     @change="update">
               <option v-for="item in valuesInput">{{item}}</option>
             </select>
 
             <button class="uk-button pos-button-select"
                     :class="validate"
-                    :disabled="!editable || editValues"
+                    :disabled="readonly === 1 || editValues"
                     type="button"
                     tabindex="-1">
               <span></span>
@@ -41,7 +42,8 @@
 
           <!--edit Options toggle-->
           <div class="uk-width-auto"
-               v-if="valuesEditable && editable">
+               v-if="valuesEditable && readonly === 0">
+
             <button type="button"
                     class="uk-button"
                     :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
@@ -63,7 +65,7 @@
         <!--editValues-->
         <transition name="slide-bottom">
           <div class="pos-placeholder"
-               v-if="editValues && valuesEditable && editable">
+               v-if="editValues && valuesEditable && readonly === 0">
             <div class="uk-grid-collapse uk-flex-middle"
                  uk-grid>
 
@@ -145,35 +147,39 @@
     props: {
 
       value:          {},
-      values:         {
+      selected:         {
         type:    Array,
         default: ['']
       },
+
       label:          {
         default: '',
         type:    String
       },
+
       status:         { // 'loading' / 'success' / 'error'
         default: '',
         type:    String
       },
+
       placeholder:    {
         default: '',
         type:    String
       },
+
       valuesEditable: {
-        default: true,
+        default: false,
         type:    Boolean
       },
-      editable:       {default: 1},
-      required:       {}
+      readonly:    {default: 0, type: Number},
+      required:    {default: 0, type: Number},
     },
 
     data () {
 
       return {
         valueInput:  this.value,
-        valuesInput: JSON.parse(JSON.stringify(this.values)) || [''],
+        valuesInput: JSON.parse(JSON.stringify(this.selected)) || [''],
         editValues:  false
       }
     },

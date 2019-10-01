@@ -4,7 +4,14 @@ import store from '../../store'
 
 const actions = {
 
-  // получить Листочек
+  /**
+   * получить Листочек настроек
+   * @param commit
+   * @param state
+   * @param getters
+   * @param id
+   * @returns {Promise<void>}
+   */
   async getEditPanel ({commit, state, getters}, id) {
 
     try {

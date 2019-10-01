@@ -4,6 +4,7 @@ import getters from './getters'
 
 const state = {
   prototypes:{
+
     folder: [
       {
         label:       'Родитель',
@@ -102,7 +103,7 @@ const state = {
         name:        'placeholder',
         placeholder: '',
         readonly:    0,
-        required:    1,
+        required:    0,
         add:         true,
         selected:    [],
         type:        'InputText',

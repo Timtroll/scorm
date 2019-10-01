@@ -45,18 +45,21 @@
 
         <ul class="pos-list"
             v-if="data.length > 0">
+
           <li v-for="(item, index) in data"
               :key="index">
             <component v-bind:is="item.type"
                        :value="item.value"
+                       :name="item.name"
                        :selected="item.selected"
-                       :required="true"
-                       v-focus
+                       :readonly="item.readonly"
+                       :add="item.add"
+                       :required="item.required"
                        :mask="item.mask"
                        :label="item.label"
-                       :editable="item.editable"
                        :placeholder="item.placeholder">
             </component>
+
           </li>
         </ul>
 

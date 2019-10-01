@@ -1,9 +1,9 @@
 <template>
   <div class="uk-form-horizontal">
     <div>
-      <label v-text="label || placeholder"
+      <label v-text="label"
              class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+             v-if="label"></label>
 
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">
@@ -14,7 +14,7 @@
                  height="18">
           </div>
           <input class="uk-input"
-                 :disabled="!editable"
+                 :disabled="readonly === 1"
                  :class="validate"
                  v-model.trim="valueInput"
                  type="text"
@@ -31,7 +31,8 @@
     name: 'InputText',
 
     props: {
-      value:       {},
+      value:       '',
+      name:        '',
       label:       {
         default: '',
         type:    String
@@ -40,11 +41,12 @@
         default: '',
         type:    String
       },
-      editable:    {default: 1},
+      readonly:    {default: 0, type: Number},
+      required:    {default: 0, type: Number},
       mask:        {
         type: RegExp
-      },
-      required:    {}
+      }
+
     },
 
     data () {
@@ -72,6 +74,7 @@
       validate () {
 
         let validClass = null
+
         if (this.required) {
           if (!this.valueInput && this.valueInput.length < 1) {
             validClass = 'uk-form-danger'
