@@ -4,41 +4,36 @@ use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-# use Freee::Helpers::TableObj;
-
 use Data::Dumper;
 
 sub index {
     my ($self);
     $self = shift;
 
-print "2\n";
-    my $test = $self->_table_obj({
-        "settings"  => {
-            "readonly"    => 0,
-            # "totalCount"  => scalar(@{$table->{'body'}}),
-            "removable"   => 1,
-            "massEdit"    => 0
+    my $list = { 'body' => [] };
+    my $table = {
+        "settings" => {
+            "massEdit" => 1,    # групповое редактировани
+            "sort" => {              # сотрировка по
+                "name"    => "id",
+                "order"   => "asc"
+            },
+            "page" => {
+              "current_page"    => 1,
+              "per_page"        => 100
+              "total"           => scalar(@{$list->{'body'}})
+            },
         },
-        "header"    => [
-            { "key" => "name",          "label" => "Расшифровка" },
-            { "key" => "label",         "label" => "Расшифровка" },
-            { "key" => "value",         "label" => "Расшифровка" },
-            { "key" => "type",          "label" => "Расшифровка" },
-            { "key" => "placeholder",   "label" => "Расшифровка" },
-            { "key" => "mask",          "label" => "Расшифровка" },
-            { "key" => "selected",      "label" => "Расшифровка" },
-        ],
-        "body"      => []
-    });
+        "body" => $list
+    };
 
     $self->render(
         'json'    => {
             'controller'    => 'Cmsarticle',
             'route'         => 'index',
             'status'        => 'ok',
-            'params'        => $self->req->params->to_hash,
-            'test'          => $test
+            # 'params'        => $self->req->params->to_hash,
+            'table'          => $table
         }
     );
 }

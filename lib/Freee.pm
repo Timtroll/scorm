@@ -34,7 +34,6 @@ sub startup {
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::Beanstalk');
-    $self->plugin('Freee::Helpers::TableObj');
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::Tree');

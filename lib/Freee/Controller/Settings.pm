@@ -111,41 +111,22 @@ sub get_leafs {
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
-
-    my $table = $self->_table_obj({
-        "settings"  => {
-            "readonly"      => 0,    # редатирование запрещено
-            "parent"        => 10,   # id парента?
-            "variableType"  => 0,    # ???
-            "massEdit"      => 0,    # групповое редактировани
+    # данные для таблицы
+    my $table = {
+        "settings" => {
+            "massEdit" => 1,    # групповое редактировани
             "sort" => {              # сотрировка по
                 "name"    => "id",
                 "order"   => "asc"
-            }
+            },
+            "page" => {
+              "current_page"    => 1,
+              "per_page"        => 100
+              "total"           => scalar(@{$list->{'body'}})
+            },
         },
-        # ????????????? # тянем из настроек
-        "page" => {
-          "current_page"    => 1,
-          "per_page"        => 100,
-          # "total"           => scalar(@{$list->{'body'}})
-        },
-        # 
-        "header"    => [
-            { "key" => "name",          "label" => "Название",           "show"  => 1,  "inline"    => 0 },
-            { "key" => "label",         "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
-            { "key" => "id",            "label" => "id",                 "show"  => 1,  "inline"    => 0 },
-            { "key" => "mask",          "label" => "Маска",              "show"  => 0,  "inline"    => 0 },
-            { "key" => "parent",        "label" => "Родитель",           "show"  => 0,  "inline"    => 0 },
-            { "key" => "placeholder",   "label" => "Подсказка",          "show"  => 1,  "inline"    => 0 },
-            { "key" => "readonly",      "label" => "Только для чтения",  "show"  => 0,  "inline"    => 0 },
-            { "key" => "removable",     "label" => "Удаляемость",        "show"  => 0,  "inline"    => 0 },
-            { "key" => "required",      "label" => "Обязательные",       "show"  => 1,  "inline"    => 0 },
-            { "key" => "selected",      "label" => "вВыбранные значения","show"  => 0,  "inline"    => 0 },
-            { "key" => "type",          "label" => "Тип",                "show"  => 0,  "inline"    => 0 },
-            { "key" => "value",         "label" => "Значение",           "show"  => 1,  "inline"    => 1 },
-        ],
-        "body"      => $list
-    });
+        "body" => $list
+    };
 
     $self->render( 'json' => { 'status' => 'ok', 'list' => $table });
 }

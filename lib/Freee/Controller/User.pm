@@ -4,8 +4,6 @@ use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
 
-# use Freee::Helpers::TableObj;
-
 use Data::Dumper;
 
 sub index {
