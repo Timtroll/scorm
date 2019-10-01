@@ -46,7 +46,7 @@
         <ul class="pos-list"
             v-if="data.length > 0">
 
-          <li v-for="(item, index) in data"
+          <li v-for="(item, index) in dataNew"
               :key="index">
             <component v-bind:is="item.type"
                        :value="item.value"
@@ -57,7 +57,8 @@
                        :required="item.required"
                        :mask="item.mask"
                        :label="item.label"
-                       :placeholder="item.placeholder">
+                       :placeholder="item.placeholder"
+                       @changeType="changeType($event)">
             </component>
 
           </li>
@@ -109,8 +110,6 @@
 
 <script>
 
-  //import {mergeObject} from './../../../store/methods'
-
   export default {
 
     name: 'List',
@@ -131,12 +130,12 @@
     },
 
     // Закрыть панель при нажатии "ESC"
-    created () {
+    mounted () {
 
       document.onkeydown = evt => {
         evt = evt || window.event
         if (evt.keyCode === 27) {
-          this.$emit('close')
+          this.close()
         }
       }
 
@@ -154,6 +153,11 @@
         default: false
       },
 
+      variableTypeField: {
+        type:    String,
+        default: 'value'
+      },
+
       parent: {
         type: Number
       },
@@ -167,8 +171,19 @@
 
     data () {
       return {
-        dataNew: {}
+        dataNew: []
       }
+    },
+
+    watch: {
+
+      data () {
+
+        if (this.data) {
+          this.dataNew = JSON.parse(JSON.stringify(this.data))
+        }
+      }
+
     },
 
     computed: {
@@ -204,6 +219,10 @@
       // список компонентов для ввода
       inputComponents () {
         return this.$store.getters.inputComponents
+      },
+
+      findVariableTypeField () {
+        return this.dataNew.findIndex(item => item.name === this.variableTypeField)
       }
 
       ////
@@ -213,6 +232,15 @@
     },
 
     methods: {
+
+      variableType (type) {
+
+        if (type === this.variableTypeField) {
+          return this.variableTypeField
+        } else {
+          return type
+        }
+      },
 
       toggleSize () {
         this.$store.commit('editPanel_size', !this.editPanel_large)
@@ -224,8 +252,7 @@
       },
 
       changeType (event) {
-        this.component       = event
-        this.editedData.type = event
+        this.dataNew[this.findVariableTypeField].type = event
       }
 
     }

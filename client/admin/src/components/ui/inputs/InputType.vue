@@ -138,6 +138,7 @@
 
       update () {
         this.$emit('change', this.isChanged)
+        this.$emit('changeType', this.valueInput)
         this.$emit('value', this.valueInput)
       }
 

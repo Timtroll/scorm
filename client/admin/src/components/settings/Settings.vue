@@ -31,7 +31,8 @@
     <template #bodyRight>
       <List :labels="'Добавить группу настроек'"
             :data="editPanel_data"
-            :group="false"
+            :variable-type-tield="'value'"
+            :add="false"
             v-on:close="closeAddGroup"></List>
     </template>
 
