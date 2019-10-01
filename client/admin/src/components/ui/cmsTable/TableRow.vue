@@ -91,6 +91,11 @@
 
     computed: {
 
+      // Поле можно удалять
+      removable () {
+        return this.rowData.removable !== 1;
+      },
+
       editPanel_api () {
         return this.$store.getters.editPanel_api
       },
@@ -136,7 +141,8 @@
 
       },
 
-      remove (event) {
+      remove () {
+
         this.$store.dispatch('removeTableRow', this.fullData.id)
       }
 

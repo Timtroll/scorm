@@ -97,7 +97,10 @@
         this.$store.commit('table_current', Number(this.tableId))
       }
 
-      // Размер панели редактирования
+      //// запись прототипа из json в store
+      this.$store.commit('settings/proto_leaf', protoLeaf)
+
+      //// Размер панели редактирования
       this.$store.commit('editPanel_size', false)
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
@@ -107,8 +110,7 @@
     async mounted () {
       // Регистрация Vuex модуля settings
       //this.$store.registerModule('settings', settingsVuex)
-      this.protoLeaf = await protoLeaf
-      this.$store.commit('settings/proto_leaf', protoLeaf)
+
     },
 
     beforeDestroy () {

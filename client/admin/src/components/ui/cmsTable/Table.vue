@@ -27,12 +27,13 @@
         </button>
 
         <!--Remove Row-->
-        <button class="uk-button-danger pos-border-radius-none pos-border-none"
-                v-if="massEdit">
+        <button class="uk-button-default pos-border-radius-none pos-border-none uk-flex uk-flex-middle"
+                v-if="massEdit"
+                disabled>
           <img src="/img/icons/icon__trash.svg"
                uk-svg
-               width="10"
-               height="10">
+               width="12"
+               height="12">
           <span class="uk-margin-small-left uk-visible@s"
                 v-text="$t('actions.remove')"></span>
         </button>
@@ -81,7 +82,7 @@
     <template #header>
 
       <!--table searchInput-->
-      <div class="uk-position-relative uk-width-medium uk-margin-auto-left">
+      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left">
         <a @click.prevent="clearSearchVal"
            v-if="searchInput"
            class="uk-form-icon uk-form-icon-flip">
@@ -153,8 +154,8 @@
             </th>
           </tr>
           </thead>
-          <tbody>
 
+          <tbody>
           <TableRow
               :row-data="row"
               :mass-edit="massEdit"
@@ -166,8 +167,8 @@
               :key="index"
               v-on:remove="remove(row)">
           </TableRow>
-
           </tbody>
+
         </table>
       </div>
     </template>
@@ -232,7 +233,7 @@
       if (this.notEmptyTable === 'error') {
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
-        this.$store.dispatch(this.table_api.get,  this.tableId)
+        this.$store.dispatch(this.table_api.get, this.tableId)
       }
 
       //this.header = JSON.parse(JSON.stringify(this.protoLeaf))
@@ -266,6 +267,7 @@
       },
 
       massEdit () {
+
         if (this.table && this.table.settings && this.table.settings.massEdit) {
           return this.table.settings.massEdit
         } else {

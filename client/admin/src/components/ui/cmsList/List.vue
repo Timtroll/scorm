@@ -181,6 +181,14 @@
 
         if (this.data) {
           this.dataNew = JSON.parse(JSON.stringify(this.data))
+
+        }
+
+      },
+
+      findTypeField () {
+        if (this.findTypeField && this.findTypeField.value) {
+          this.dataNew[this.findVariableTypeField].type = this.findTypeField.value
         }
       }
 
@@ -223,7 +231,13 @@
 
       findVariableTypeField () {
         return this.dataNew.findIndex(item => item.name === this.variableTypeField)
+      },
+
+      findTypeField () {
+        return this.dataNew.find(item => item.name === 'type')
       }
+
+
 
       ////
       //parentId () {
