@@ -5,7 +5,7 @@
     <div class="pos-card-header">
 
       <!--headerLeft-->
-      <a class="pos-card-header-item link"
+      <a class="pos-card-header-item link uk-visible@m"
          :class="{'uk-text-danger' : editPanel_large}"
          @click.prevent="toggleSize">
 
@@ -126,7 +126,8 @@
       InputRadio:      () => import('../inputs/InputRadio'),
       InputDoubleList: () => import('../inputs/InputDoubleList'),
       inputDateTime:   () => import('../inputs/inputDateTime'),
-      InputCode:       () => import('../inputs/InputCode')
+      InputCode:       () => import('../inputs/InputCode'),
+      InputType:       () => import('../inputs/InputType')
     },
 
     // Закрыть панель при нажатии "ESC"

@@ -164,15 +164,14 @@ const state = {
         type:        'InputSelect',
         value:       []
       }, {
-        label:       'Тип поля ввода',
+        label:       'Тип поля Значение',
         //mask:        '',
         name:        'type',
         placeholder: '',
         readonly:    0,
-        required:    0,
+        required:    1,
         add:         true,
-        selected:    [],
-        type:        'InputSelect',
+        type:        'InputType',
         value:       'InputText'
       }, {
         label:       'Значение',

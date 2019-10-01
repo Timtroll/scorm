@@ -152,7 +152,7 @@
       },
 
       closeAddGroup () {
-        this.$store.commit('editPanel_group', false)
+        this.$store.commit('card_right_show', false)
       }
     }
 
