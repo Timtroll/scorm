@@ -141,7 +141,7 @@
     props: {
 
       data: {
-        type:     Array,
+        //type:     Array,
         required: true
       },
 

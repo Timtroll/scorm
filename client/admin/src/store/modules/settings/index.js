@@ -54,7 +54,7 @@ const state = {
     leaf: [
       {
         label:       'ID',
-        mask:        /[^a-zA-Z-]/g,
+        //mask:        /[^a-zA-Z-]/g,
         name:        'id',
         placeholder: '',
         readonly:    1,
@@ -62,10 +62,10 @@ const state = {
         add:         false,
         selected:    [],
         type:        'InputNumber',
-        value:       ''
+        value:       null
       }, {
         label:       'Родитель',
-        mask:        /^\d+$/,
+        //mask:        /^\d+$/,
         name:        'parent',
         placeholder: '',
         readonly:    1,
@@ -73,10 +73,10 @@ const state = {
         add:         true,
         selected:    [],
         type:        'InputNumber',
-        value:       ''
+        value:       null
       }, {
         label:       'Системное имя',
-        mask:        /[^a-zA-Z-]/g,
+        //mask:        /[^a-zA-Z-]/g,
         name:        'name',
         placeholder: 'Только латинские буквы без пробелов',
         readonly:    0,
@@ -84,10 +84,10 @@ const state = {
         add:         true,
         selected:    [],
         type:        'InputText',
-        value:       ''
+        value:       null
       }, {
         label:       'Расшифровка',
-        mask:        '',
+        //mask:        '',
         name:        'label',
         placeholder: '',
         readonly:    0,
@@ -95,10 +95,10 @@ const state = {
         add:         true,
         selected:    [],
         type:        'InputText',
-        value:       ''
+        value:       null
       }, {
         label:       'Подсказка',
-        mask:        '',
+        //mask:        '',
         name:        'placeholder',
         placeholder: '',
         readonly:    0,
@@ -106,10 +106,10 @@ const state = {
         add:         true,
         selected:    [],
         type:        'InputText',
-        value:       ''
+        value:       null
       }, {
         label:       'Статус',
-        mask:        /[^[0-1]+$]/g,
+        //mask:        /[^[0-1]+$]/g,
         name:        'status',
         placeholder: '',
         readonly:    0,
@@ -120,7 +120,7 @@ const state = {
         value:       1
       }, {
         label:       'Только для чтения',
-        mask:        /[^[0-1]+$]/g,
+        //mask:        /[^[0-1]+$]/g,
         name:        'readonly',
         placeholder: '',
         readonly:    0,
@@ -131,7 +131,7 @@ const state = {
         value:       0
       }, {
         label:       'Можно удалять',
-        mask:        /[^[0-1]+$]/g,
+        //mask:        /[^[0-1]+$]/g,
         name:        'removable',
         placeholder: '',
         readonly:    0,
@@ -141,8 +141,8 @@ const state = {
         type:        'InputBoolean',
         value:       1
       }, {
-        label:       'Обязательно для заполнени',
-        mask:        /[^[0-1]+$]/g,
+        label:       'Обязательное поле',
+        //mask:        /[^[0-1]+$]/g,
         name:        'required',
         placeholder: '',
         readonly:    0,
@@ -153,7 +153,7 @@ const state = {
         value:       1
       }, {
         label:       'Список значений',
-        mask:        null,
+        //mask:        null,
         name:        'selected',
         placeholder: '',
         readonly:    0,
@@ -164,7 +164,7 @@ const state = {
         value:       []
       }, {
         label:       'Тип поля ввода',
-        mask:        '',
+        //mask:        '',
         name:        'type',
         placeholder: '',
         readonly:    0,
@@ -175,7 +175,7 @@ const state = {
         value:       'InputText'
       }, {
         label:       'Значение',
-        mask:        '',
+        //mask:        '',
         name:        'value',
         placeholder: '',
         readonly:    0,
@@ -183,7 +183,7 @@ const state = {
         add:         true,
         selected:    [],
         type:        'InputText',
-        value:       ''
+        value:       null
       }
     ]
   }
