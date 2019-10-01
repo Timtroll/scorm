@@ -6,139 +6,126 @@ use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
-use Freee::Mock::Settings;
+use Freee::Mock::Groups;
 use Data::Dumper;
+use common;
+    
 
+# вывод списка групп в виде объекта как в Mock
+#    "label"       => "scorm",
+#    "id"          => 1,
+#    "component"   => "Groups",
+#    "opened"      => 0,
+#    "folder"      => 1,
+#    "keywords"    => "",
+#    "children"    => [],
+#    "table"       => {}
 sub index {
-    my ($self) = shift;
+    my $self = shift;
+    my ( $list, $set );
 
-    my $resp = {id => '22', status => 'ok'};
-    $self->render( 'json' => $resp );
+    # читаем группы из базы
+    unless ( $list = $self->_all_groups() ) {
+        return "Can't connect to the database";
+    }
+
+    # формируем данные для вывода
+    foreach my $id (sort {$a <=> $b} keys %$list) {
+        my $row = {
+            'id'        => $id,
+            'label'     => $$list{$id}{'label'},
+            'component' => "Groups",
+            'opened'    => 0,
+            'folder'    => 1,
+            'keywords'  => "",
+            'children'  => [],
+            'table'     => {}
+        };
+        push @{$set}, $row;
+    }
+
+    $self->render( json => $set );
 }
 
-# группы пользователей
-# my $id = $self->add({
-#     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
+# добавление группы
+# my $id = $self->insert_group({
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
-#     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
-#     "required"    => 0,               - не обязательно, по умолчанию 0
-#     "readonly"    => 0,               - не обязательно, по умолчанию 0
-#     "removable"   => 0,               - не обязательно, по умолчанию 0
-#     "status"      => 0                - по умолчанию 0
+#     "status"      => 0 или 1,         - активна ли группа
 # });
 sub add {
     my ($self, $data) = @_;
 
     # read params
     my %data = (
-        'parent'    => $self->param('parent') || 0,
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
-        'value'     => $self->param('value') || '',
-        'required'  => $self->param('required') || 0,
-        'readonly'  => $self->param('readonly') || 0,
-        'removable' => $self->param('removable') || 0,
-        'status'    => $self->param('status') || 0
+        'status'    => $self->param('status') || 1
     );
 
     my ($id, @mess, $resp);
-
-    # проверка parent
-    # if ( $self->parent_check( $data{'parent'} ) ){ 
-        #проверка остальных полей
-        if (  $data{'label'} && $data{'name'} ) {
-            #добавление
-            $id = $self->_insert_group( \%data );
-            push @mess, "Could not new group item '$data{'label'}'" unless $id;
-        }
-        else {
-            push @mess, "Required fields do not exist";
-        }
-    # }
-    # else {
-    #     push @mess, "Wrong parent";
-    # }
-
+    
+    # проверка остальных полей
+    if ( $data{'label'} && $data{'name'} ) {
+        # добавление группы
+        $id = $self->_insert_group( \%data );
+        push @mess, "Could not new group item '$data{'label'}'" unless $id;
+    }
+    else {
+        push @mess, "Required fields do not exist";
+    }
+ 
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
+
     $self->render( 'json' => $resp );
 }
 
-# для обновления возможностей групп пользователей
+# обновление группы
 # my $id = $self->update({
-#      "id"        => 1            - id обновляемого элемента ( >0 )
-#     "folder"      => 0,           - это возможности пользователя
-#     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
-#     "value"       => "",            - строка или json
-#     "required"    => 0            - не обязательно, по умолчанию 0
+#     "id"        => 1            - id обновляемого элемента ( >0 )
+#     "label"     => 'название'   - обязательно (название для отображения)
+#     "name",     => 'name'       - обязательно (системное название, латиница)
+#     "status"    => 0 или 1      - активна ли группа
 # });
-# для создания группы пользователей
-# my $id = $self->update({
-#       "id"        => 1            - id обновляемого элемента ( >0 )
-#     "folder"      => 1,           - это группа пользователей
-#     "parent"      => 0,           - обязательно 0 (должно быть натуральным числом) 
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
-# });
-# обновление групп
 sub update {
     my ($self) = shift;
+    my ( $id, $parent, @mess );
 
-    my (%data, $data, $id, $parent, @mess);
-    $data{'id'} = $self->param('id');
-    $data{'label'} = $self->param('label');
-    $data{'name'} = $self->param('name');
-    $data{'parent'} = $self->param('parent') || 0;
-    $data{'readonly'} = $self->param('readonly') || 0;
-    $data{'removable'} = $self->param('removable') || 0;
-    $data{'status'} = $self->param('status') || 0;
-
-    # запись дополнительных значений, если это не folder
-    if ( $self->param('parent') ) {
-       $data{'required'} = $self->param('required') || 0;
-       $data{'value'} = $self->param('value') || "";
-    }
-
-    # проверка поля parent
-    if ( $self->_parent_check( $data{'parent'} ) ) {
-        # проверка остальных обязательных полей
-        if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
-            # проверка существования обновляемой строки
-            if ( $self->_id_check( $data{'id'} ) ) {
-                #обновление
-                $id = $self->_update_group( \%data );
-                push @mess, "Could not update setting item '$data{'label'}'" unless $id;
-            }
-            else {
-                push @mess, "Can't find row for updating";                
-            }
-        } else {
-            push @mess, "Required fields do not exist";
+    # чтение параметров
+    my %data = (
+        'id'        => $self->param('id'),
+        'label'     => $self->param('label'),
+        'name'      => $self->param('name'),
+        'status'    => $self->param('status') || 0
+    );
+    
+    # проверка обязательных полей
+    if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+        # проверка существования обновляемой строки
+        if ( $self->_id_check( $data{'id'} ) ) {
+            # обновление группы
+            $id = $self->_update_group( \%data );
+            push @mess, "Could not update setting item '$data{'label'}'" unless $id;
         }
+        else {
+            push @mess, "Can't find row for updating";                
+        }
+    } else {
+        push @mess, "Required fields do not exist";
     }
-    else {
-        push @mess, "Wrong parent";
-    }
-
+    
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
-    #$resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
 
 
-# удалениe из групп пользователей
-#  "id" => 1 - id удаляемого элемента ( >0 )
+# удалениe группы 
+# "id" => 1 - id удаляемого элемента ( >0 )
 sub delete {
     my $self = shift;
 
@@ -150,7 +137,7 @@ sub delete {
     if ( $id ) {
         # проверка на существование удаляемой строки в groups
         if ( $self->_id_check( $id ) ) {
-            # процесс удаления
+            # удаление группы
             $id = $self->_delete_group( $id );
             push @mess, "Could not deleted" unless $id;
         }
@@ -163,7 +150,7 @@ sub delete {
         push @mess, "Could not id for deleting" unless $id;
     }
 
-    #вывод результата
+    # вывод результата
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
@@ -171,35 +158,62 @@ sub delete {
     $self->render( 'json' => $resp );
 }
 
-# для смены статуса
+# деактивация элемента
 #  "id"     => 1 - id изменяемого элемента ( > 0 )
-#  "status" => 0 или 1 - новый статус элемента
-sub status {
+#  элементу присваивается "status" = 0
+sub hide {
     my $self = shift;
 
     # read params
-    my (%data, $id);
-    $data{'id'} = $self->param('id');
-    $data{'status'} = $self->param('status');
-
+    my $id = $self->param('id');
     my @mess;
 
-     # проверка id
-    if ( $data{'id'} ) {
-        # проверка статуса
-        if ( ( $data{'status'} == 0 ) || ( $data{'status'} == 1 ) ) {
-            # проверка на существование строки 
-            if ( $self->_id_check( $data{'id'} ) ) {
-                #процесс смены статуса
-                $id = $self->_status_group( \%data, [] );
-                push @mess, "Can't change status" unless $id;
-            }
-            else {
-                push @mess, "Can't find row for updating";
-            }
+    # проверка id
+    if ( $id ) {       
+        # проверка на существование строки 
+        if ( $self->_id_check( $id ) ) {
+            # деактивация элемента
+            $id = $self->_hide_group( $id );
+            push @mess, "Can't change status" unless $id;
         }
         else {
-            push @mess, "New status is wrong";
+            $id = 0;
+            push @mess, "Can't find row for hiding";
+        }
+    } 
+    else {
+        push @mess, "Need id for changing";
+    }
+
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'status'} = $id ? 'ok' : 'fail';
+
+    $self->render( 'json' => $resp );
+}
+
+
+# активация элемента
+#  "id"     => 1 - id изменяемого элемента ( > 0 )
+#  элементу присваивается "status" = 1
+sub activate {
+    my $self = shift;
+
+    # read params
+    my $id = $self->param('id');
+    my @mess;
+
+    # проверка id
+    if ( $id ) {       
+        # проверка на существование строки 
+        if ( $self->_id_check( $id ) ) {
+            # активация элемента
+            $id = $self->_activate_group( $id );
+            push @mess, "Can't change status" unless $id;
+        }
+        else {
+            $id = 0;
+            push @mess, "Can't find row for activating";
         }
     } 
     else {
@@ -212,6 +226,5 @@ sub status {
 
     $self->render( 'json' => $resp );
 }
-
 
 1;
