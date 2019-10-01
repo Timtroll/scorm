@@ -115,15 +115,18 @@
 
     props: {
 
-      value:       {},
-      status:      { // 'loading' / 'success' / 'error'
+      value: {},
+
+      status: { // 'loading' / 'success' / 'error'
         default: '',
         type:    String
       },
-      label:       {
+
+      label: {
         default: '',
         type:    String
       },
+
       placeholder: {
         default: '',
         type:    String
@@ -148,6 +151,7 @@
     },
 
     watch: {
+
       isChanged () {
         this.update()
       }
