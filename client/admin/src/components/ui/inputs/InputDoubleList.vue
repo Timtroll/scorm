@@ -137,7 +137,7 @@
     data () {
 
       return {
-        valuesInput: this.changeValueType(JSON.parse(JSON.stringify(this.value))) || [['']],
+        valuesInput: JSON.parse(JSON.stringify(this.value)) || [['']],
         editValues:  false,
         doubleCell:  false
       }
@@ -166,14 +166,6 @@
     },
 
     methods: {
-
-      changeValueType (data) {
-        if (Array.isArray(data)) {
-          return data
-        } else {
-          return JSON.parse(data)
-        }
-      },
 
       arrayLength (arr) {
         if (Array.isArray(arr) && arr.length === 2) {
