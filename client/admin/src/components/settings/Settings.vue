@@ -41,8 +41,8 @@
 
 <script>
 
-  //import Vuex модуля settings
-  //const settingsVuex = () => import('@/store/modules/settings/')
+  //import прототипа колонок таблицы
+  import protoLeaf from './../../assets/json/proto/settings/leaf.json'
 
   export default {
 
@@ -104,9 +104,11 @@
       this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
-    mounted () {
+    async mounted () {
       // Регистрация Vuex модуля settings
       //this.$store.registerModule('settings', settingsVuex)
+      this.protoLeaf = await protoLeaf
+      this.$store.commit('settings/proto_leaf', protoLeaf)
     },
 
     beforeDestroy () {

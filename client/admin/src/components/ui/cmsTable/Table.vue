@@ -220,7 +220,7 @@
           if (headerLocal) {
             this.header = JSON.parse(headerLocal)
           } else {
-            this.header = JSON.parse(JSON.stringify(this.table.header))
+            this.header = JSON.parse(JSON.stringify(this.protoLeaf))
           }
         }
       }
@@ -235,6 +235,8 @@
         this.$store.dispatch(this.table_api.get,  this.tableId)
       }
 
+      //this.header = JSON.parse(JSON.stringify(this.protoLeaf))
+
     },
 
     computed: {
@@ -245,6 +247,10 @@
 
       loader () {
         return this.$store.getters.table_status
+      },
+
+      protoLeaf () {
+        return this.$store.getters['settings/protoLeaf']
       },
 
       tableId () {
@@ -283,7 +289,7 @@
         if (this.filterSearch) {
           const table        = this.filterSearch,
                 displayTable = [],
-                flatHeader   = this.tableHeader.map(item => item.key)
+                flatHeader   = this.tableHeader.map(item => item.name)
 
           table.forEach((item) => {
             const newItem = []
