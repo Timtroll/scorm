@@ -8,7 +8,9 @@
     "add":         false,
     "selected":    [],
     "type":        "InputNumber",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        1
   },
   {
     "label":       "Родитель",
@@ -19,7 +21,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputNumber",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Системное имя",
@@ -30,7 +34,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputText",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        1
   },
   {
     "label":       "Расшифровка",
@@ -41,7 +47,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputText",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        1
   },
   {
     "label":       "Подсказка",
@@ -52,7 +60,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputText",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Статус",
@@ -63,7 +73,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputBoolean",
-    "value":       1
+    "value":       1,
+    "inline":      1,
+    "show":        1
   },
   {
     "label":       "Только для чтения",
@@ -74,7 +86,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputBoolean",
-    "value":       0
+    "value":       0,
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Можно удалять",
@@ -85,7 +99,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputBoolean",
-    "value":       1
+    "value":       1,
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Обязательное поле",
@@ -96,7 +112,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputBoolean",
-    "value":       1
+    "value":       1,
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Список значений",
@@ -107,7 +125,9 @@
     "add":         true,
     "selected":    [],
     "type":        "InputSelect",
-    "value":       []
+    "value":       [],
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Тип поля Значение",
@@ -117,7 +137,9 @@
     "required":    1,
     "add":         true,
     "type":        "InputType",
-    "value":       "InputText"
+    "value":       "InputText",
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Значение",
@@ -128,6 +150,8 @@
     "add":         true,
     "selected":    [],
     "type":        "InputText",
-    "value":       null
+    "value":       null,
+    "inline":      0,
+    "show":        1
   }
 ]
