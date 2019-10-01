@@ -58,6 +58,7 @@
                        :mask="item.mask"
                        :label="item.label"
                        :placeholder="item.placeholder"
+                       @change="dataChanged[index].changed = $event"
                        @changeType="changeType($event)">
             </component>
 
@@ -86,21 +87,21 @@
       <div class="pos-card-header--content"></div>
 
       <div class="pos-card-header-item">
-        <!--<button class="uk-button-success uk-button uk-button-small"-->
-        <!--        @click.prevent="action"-->
-        <!--        :disabled="!isValid">-->
-        <!--  <img src="/img/icons/icon__save.svg"-->
-        <!--       uk-svg-->
-        <!--       width="14"-->
-        <!--       height="14">-->
+        <button class="uk-button-success uk-button uk-button-small"
+                @click.prevent="save"
+                :disabled="!dataIsChanged">
+          <img src="/img/icons/icon__save.svg"
+               uk-svg
+               width="14"
+               height="14">
 
-        <!--  <span class="uk-margin-small-left"-->
-        <!--        v-text="$t('actions.add')"-->
-        <!--        v-if="add"></span>-->
-        <!--  <span class="uk-margin-small-left"-->
-        <!--        v-text="$t('actions.save')"-->
-        <!--        v-else></span>-->
-        <!--</button>-->
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.add')"
+                v-if="add"></span>
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.save')"
+                v-else></span>
+        </button>
       </div>
 
     </div>
@@ -171,7 +172,8 @@
 
     data () {
       return {
-        dataNew: []
+        dataNew:     [],
+        dataChanged: []
       }
     },
 
@@ -180,8 +182,8 @@
       data () {
 
         if (this.data) {
-          this.dataNew = JSON.parse(JSON.stringify(this.data))
-
+          this.dataNew     = JSON.parse(JSON.stringify(this.data))
+          this.dataChanged = this.createDataChanged(this.data)
         }
 
       },
@@ -218,12 +220,14 @@
         return this.$store.getters.editPanel_status
       },
 
-      //// если данные в форме изменились
-      //dataIsChanged () {
-      //  if (this.dataIsChange) {
-      //    return !Object.values(this.dataIsChange).every(item => !item)
-      //  }
-      //},
+      // если данные в форме изменились
+      dataIsChanged () {
+        if (this.dataChanged) {
+          const data = this.dataChanged.map(item => item.changed)
+          console.log(data)
+          return data.includes(true)
+        }
+      },
 
       // список компонентов для ввода
       inputComponents () {
@@ -236,6 +240,11 @@
 
       findTypeField () {
         return this.dataNew.find(item => item.name === 'type')
+      },
+
+      id () {
+        const idEl = this.dataNew.find(item => item.name === 'id')
+        return idEl.value
       }
 
 
@@ -247,6 +256,21 @@
     },
 
     methods: {
+
+      createDataChanged (arr) {
+
+        const newArr = []
+
+        arr.forEach(item => {
+          const newItem = {
+            name:    item.name,
+            changed: false
+          }
+          newArr.push(newItem)
+        })
+
+        return newArr
+      },
 
       variableType (type) {
 
@@ -268,6 +292,10 @@
 
       changeType (event) {
         this.dataNew[this.findVariableTypeField].type = event
+      },
+
+      save () {
+        this.$emit('save', this.dataNew)
       }
 
     }
