@@ -186,6 +186,7 @@
 
       },
 
+      // установка типа поля VALUE при загрузке
       findTypeField () {
         if (this.findTypeField && this.findTypeField.value) {
           this.dataNew[this.findVariableTypeField].type = this.findTypeField.value
