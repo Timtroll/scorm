@@ -17,9 +17,12 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', {}) // очистка данных VUEX
+
+      store.commit('card_right_show', true)
       //commit('editPanel_show', true, {root: true}) // открытие правой панели
 
       const response = await Api.list_edit(id)
+      console.log(response)
 
       if (response.status === 200) {
 
@@ -30,11 +33,12 @@ const actions = {
           item.value = resp.data[item.name]
         }
 
-        store.commit('editPanel_data', proto, {root: true}) // запись данных во VUEX
-        store.commit('editPanel_status_success', {root: true}) // статус - успех
+        store.commit('editPanel_data', proto) // запись данных во VUEX
+        store.commit('editPanel_status_success') // статус - успех
       }
     } catch (e) {
-      store.commit('editPanel_status_error', {root: true}) // статус - ошибка
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('card_right_show', false)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }

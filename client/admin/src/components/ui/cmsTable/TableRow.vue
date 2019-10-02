@@ -136,7 +136,6 @@
       edit (item) {
 
         this.$store.dispatch(this.editPanel_api.get, item.id)
-        this.$store.commit('card_right_show', !this.cardRightState)
 
       },
 
