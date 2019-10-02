@@ -52,7 +52,7 @@
                height="20"
                uk-svg></button>
 
-        <div uk-dropdown="mode: click; offset: 0; pos: bottom-right">
+        <div uk-dropdown="mode: click; offset: 0; pos: bottom-right; animation: uk-animation-slide-right-medium">
           <ul class="uk-nav uk-dropdown-nav">
 
             <li class="uk-nav-header"
