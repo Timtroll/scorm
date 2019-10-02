@@ -50,15 +50,16 @@ echo "remove .lock:"
 echo "rm $SOURCE/log/deploy.lock"
 rm $SOURCE/log/deploy.lock
 
+echo "Finish"
+
 # echo "-------"
-# echo "start mojo daemon:"
+# echo "restart mojo daemon:"
 # echo "cd $SOURCE"
 # cd $SOURCE
-# echo "./starting.sh start"
+# echo "./starting.sh restart"
 # ./starting.sh start
 
 
-echo "Finish"
 
 # if [ "$?" != "0" ] ; then
 #     echo

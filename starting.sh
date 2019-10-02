@@ -29,10 +29,34 @@ stopme() {
     fi
 }
 
+restartme() {
+    if [ -n "$PID" ]
+        then
+            kill -9 $PID 
+            echo "Service stoppped"
+
+        else
+            echo "Service not starting"
+    fi
+
+    cd $DIR
+    echo "Starting $APPNAME daemon at $DOMAIN"
+    perl /usr/local/bin/morbo $SCRIPT reload --listen http://$DOMAIN > /dev/null 2>&1 &
+
+    NEWPID=`ps -aef | grep $APPNAME | grep -v grep | awk '{print $2}'`
+    if [ -n "$NEWPID" ]
+        then
+            echo "Service started successfully"
+        else
+            echo "Service not starting"
+    fi
+}
+
+
 case "$1" in 
     start)   startme ;;
     stop)    stopme ;;
-    restart) stopme; startme ;;
+    restart) restartme ;;
     *) echo "usage: $0 start|stop|restart" >&2
        exit 1
        ;;

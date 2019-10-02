@@ -1,0 +1,23 @@
+[Unit]
+Description=Freee
+After=syslog.target
+After=network.target
+After=nginx.service
+After=postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=forking
+PIDFile=/tmp/pids/service.pid
+WorkingDirectory=/home/troll/workspace/scorm/master
+
+User=troll
+Group=troll
+
+ExecStart=/usr/local/bin/bundle exec service -C /home/troll/workspace/scorm/master/starting.sh start
+ExecStop=/usr/local/bin/bundle exec service -S /home/troll/workspace/scorm/master/starting.sh stop
+ExecReload=/usr/local/bin/bundle exec service -S /home/troll/workspace/scorm/master/starting.sh restart
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target 
