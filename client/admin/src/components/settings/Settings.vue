@@ -33,6 +33,7 @@
             :data="editPanel_data"
             :variable-type-tield="'value'"
             :add="false"
+            v-on:save="saveLeaf($event)"
             v-on:close="closeAddGroup"></List>
     </template>
 
@@ -79,8 +80,8 @@
           },
 
           editPanel: {
-            get:  'getEditPanel',
-            save: 'saveEditPanel'
+            get:  'settings/leafEdit',
+            save: 'settings/leafSave'
           }
         }
 
@@ -158,6 +159,15 @@
 
       closeAddGroup () {
         this.$store.commit('card_right_show', false)
+      },
+
+      // сохранение Листочка
+      saveLeaf (data) {
+        const objData = {}
+        const arr     = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {objData[item.name] = item.value})
+
+        this.$store.dispatch(this.actions.editPanel.save, objData)
       }
     }
 

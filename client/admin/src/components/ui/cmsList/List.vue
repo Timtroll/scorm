@@ -58,6 +58,7 @@
                        :mask="item.mask"
                        :label="item.label"
                        :placeholder="item.placeholder"
+                       @value="dataNew[index].value = $event"
                        @change="dataChanged[index].changed = $event"
                        @changeType="changeType($event)">
             </component>
@@ -224,7 +225,6 @@
       dataIsChanged () {
         if (this.dataChanged) {
           const data = this.dataChanged.map(item => item.changed)
-          console.log(data)
           return data.includes(true)
         }
       },

@@ -154,6 +154,7 @@ const router = new Router({
     {
       path:     '/*',
       redirect: '/404',
+      name: 'pageNotFoundRedirect',
       meta:     {
         authRequired: false,
         breadcrumb:   'Страница не найдена'
@@ -163,23 +164,25 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(
+  (to, from, next) => {
 
-  const isAuthorised = store.getters.isLoggedIn
+    const isAuthorised = store.getters.isLoggedIn
 
-  if (to.matched.some(record => record.meta.authRequired)) {
+    if (to.matched.some(record => record.meta.authRequired)) {
 
-    if (!isAuthorised) {
-      next({
-        name:  'Login',
-        query: {redirect: to.fullPath}
-      })
+      if (!isAuthorised) {
+        next({
+          name:  'Login',
+          query: {redirect: to.name}
+        })
+      } else {
+        next()
+      }
     } else {
       next()
     }
-  } else {
-    next()
   }
-})
+)
 
 export default router

@@ -93,7 +93,7 @@
 
       // Поле можно удалять
       removable () {
-        return this.rowData.removable !== 1;
+        return this.rowData.removable !== 1
       },
 
       editPanel_api () {
@@ -129,7 +129,6 @@
       notCheckedAll () {
         if (this.checkedAll) {
           this.$emit('check')
-
         }
         this.checkedRow = true
       },
