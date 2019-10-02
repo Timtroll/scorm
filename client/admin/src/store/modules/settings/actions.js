@@ -48,16 +48,82 @@ const actions = {
     }
   },
 
-  async saveFolder ({commit, state}, id) {
-    try {} catch (e) {
-      store.commit('tree_status_error')
+  /**
+   * Tree folder save
+   * @param commit
+   * @param state
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async saveFolder ({commit, state, dispatch}, item) {
+    try {
+      store.commit('editPanel_status_request') // статус - запрос
+
+      const response = await Api_Tree.save_tab(item)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          dispatch('getTree', item.parent)
+          store.commit('card_right_show', false)
+          store.commit('editPanel_data', []) // очистка данных VUEX
+          store.commit('editPanel_status_success') // статус - успех
+          notify(resp.status, 'success') // уведомление об ошибке
+
+        } else {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+        }
+      }
+
+    } catch (e) {
+      store.commit('editPanel_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
   },
 
-  async removeFolder ({commit, state}, id) {
-    try {} catch (e) {
+  /**
+   *
+   * @param dispatch
+   * @param id
+   * @returns {Promise<void>}
+   */
+  async removeFolder ({dispatch}, id) {
+    try {
+      store.commit('tree_status_request')
+
+      const response = await Api_Tree.delete_tab(id)
+
+      if (response.status === 200) {
+        const resp = await response.data
+
+        if (resp.status === 'ok') {
+          dispatch('getTree')
+          notify(resp.status, 'success') // уведомление об ошибке
+        } else {
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+        }
+
+      }
+      const resp = await response.data
+
+      if (typeof resp['list'] !== 'undefined') {
+        const tree = resp.list
+
+        if (tree.length > 0) {
+          store.commit('set_tree', tree)
+          store.commit('tree_status_success')
+
+          //Плоское дерево
+          const flattenTree = flatTree([...tree])
+          store.commit('set_tree_flat', flattenTree)
+        }
+      }
+    } catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -152,7 +218,6 @@ const actions = {
   async leafSave ({commit, state, getters, dispatch}, item) {
 
     try {
-
       store.commit('editPanel_status_request') // статус - запрос
 
       const response = await Api_EditPanel.list_save(item)
