@@ -66,13 +66,13 @@
         actions: {
 
           tree: {
-            get:    'getTree',
-            save:   'saveFolder',
-            remove: 'removeFolder'
+            get:    'settings/getTree',
+            save:   'settings/saveFolder',
+            remove: 'settings/removeFolder'
           },
 
           table: {
-            get:      'getTable',
+            get:      'settings/getTable',
             save:     'saveTableRow',
             remove:   'removeTableRow',
             activate: 'activateTableRow',
