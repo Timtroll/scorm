@@ -115,10 +115,10 @@
       <div class="pos-card-loader"
            v-else-if="loader === 'error'">
         <div>
-          <IconBug :width="40"
-                   :height="40"></IconBug>
+          <IconBug :width="60"
+                   :height="60"></IconBug>
           <div class="uk-margin-small-top"
-               v-text="$t('actions.requestError')"></div>
+               v-html="$t('actions.requestError')"></div>
         </div>
       </div>
     </transition>

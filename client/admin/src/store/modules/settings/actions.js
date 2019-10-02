@@ -42,6 +42,7 @@ const actions = {
       }
 
     } catch (e) {
+      store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
@@ -49,6 +50,7 @@ const actions = {
 
   async saveFolder ({commit, state}, id) {
     try {} catch (e) {
+      store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
@@ -56,6 +58,7 @@ const actions = {
 
   async removeFolder ({commit, state}, id) {
     try {} catch (e) {
+      store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
