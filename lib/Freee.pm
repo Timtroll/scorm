@@ -45,7 +45,7 @@ sub startup {
 
     # init Beanstalk connection
     $self->_beans_init();
-
+ 
     # prepare validate functions
     prepare_validate();
 
@@ -171,9 +171,9 @@ sub startup {
 
     # управление группами пользователей
     $auth->post('/groups/')               ->to('groups#index');        # список групп
-    # $auth->post('/groups/routes')         ->to('groups#routes');       # список настроек по роутам
+    # $auth->post('/groups/routes')         ->to('groups#routes');     # список настроек по роутам
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
-    $auth->post('/groups/update')         ->to('groups#save');         # обновление данных группы
+    $auth->post('/groups/update')         ->to('groups#update');       # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
     $auth->post('/groups/hide')           ->to('groups#hide');         # выключение группы
     $auth->post('/groups/activate')       ->to('groups#activate');     # включение группы

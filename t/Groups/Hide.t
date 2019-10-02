@@ -1,3 +1,6 @@
+# деактивация элемента
+#  "id"     => 1 - id изменяемого элемента ( > 0 )
+#  элементу присваивается "status" = 0
 use Mojo::Base -strict;
 
 use Test::More;
@@ -14,11 +17,17 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-#Ввод данных для удаления
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
+
+#Ввод данных для сокрытия
 my $data = {name => 'test', label => 'test'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 1,'status' => 'ok'} );
+$t->post_ok( $host.'/groups/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
 
 my $test_data = {
     # положительные тесты
@@ -27,10 +36,10 @@ my $test_data = {
             'id'        => 1
         },
         'result' => {
-            'status'  => 'ok'
+            'status'    => 'ok'
         },
         'comment' => {
-            'text' => 'All right:' 
+            'text'      => 'All right:' 
         }
     },
 
@@ -40,21 +49,20 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message' => "Can't find row for hiding",
-            'status'  => 'fail'
+            'message'   => "Can't find row for hiding",
+            'status'    => 'fail'
         },
         'comment' => {
-            'text' => 'Wrong id:' 
+            'text'      => 'Wrong id:' 
         }
     },
     3 => {
-        'data' => {},
         'result' => {
-            'message' => 'Need id for changing',
-            'status'  => 'fail'
+            'message'   => 'Need id for changing',
+            'status'    => 'fail'
         },
         'comment' => {
-            'text' => 'No data:' 
+            'text'      => 'No data:' 
         }
     },
 };
@@ -63,7 +71,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/groups/hide' => form => $data )
+    $t->post_ok($host.'/groups/hide' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

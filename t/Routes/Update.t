@@ -1,3 +1,15 @@
+# обновление роута
+# my $id = $self->insert_route({
+#      "id"         => 1            - id обновляемого элемента ( >0 )
+#     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "status"      => 0,           - по умолчанию 1
+#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+#     "removable"   => 0,           - не обязательно, по умолчанию 0
+#     "value"       => "",          - строка или json
+#     "required"    => 0            - не обязательно, по умолчанию 0
+# });
 use Mojo::Base -strict;
 
 use Test::More;
@@ -14,11 +26,40 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-#Ввод данных для удаления
-my $data = {name => 'test', label => 'test', parent => 1};
-$t->post_ok('http://127.0.0.1:4444/routes/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 1,'status' => 'ok'} );
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
+
+# Ввод данных для обновления
+my $data = {
+    name        => 'name1', 
+    label       => 'label1', 
+    parent      => 1,
+    status      => 1,
+    value       => '{"/route":0}',
+    required    => 0,
+    readOnly    => 0,
+    removable   => 0
+};
+$t->post_ok( $host.'/routes/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    last;
+}
+$t->json_is( {'id' => 1,'status' => 'ok'} );
+
+$data = {
+    name        => 'name',
+    label       => 'label',
+    parent      => 1,
+    status      => 1,
+    value       => '{"/route":0}',
+    required    => 0,
+    readOnly    => 0,
+    removable   => 0
+};
+$t->post_ok($host.'/routes/add' => form => $data )
+    ->status_is(200);
+    ->json_is( {'id' => 2,'status' => 'ok'} );
 
 my $test_data = {
     # положительные тесты
@@ -38,7 +79,7 @@ my $test_data = {
             'status'    => 'ok'
         },
         'comment' => {
-            'text' => 'All fields:' 
+            'text'      => 'All fields:' 
         }
     },
     2 => {
@@ -56,7 +97,7 @@ my $test_data = {
             'status'    => 'ok'
         },
         'comment' => {
-            'text' => 'No value:' 
+            'text'      => 'No value:' 
         }
     },
     3 => {
@@ -74,7 +115,7 @@ my $test_data = {
             'status'    => 'ok'
         },
         'comment' => {
-            'text' => 'No status:' 
+            'text'      => 'No status:' 
         }
     },
     4 => {
@@ -225,13 +266,33 @@ my $test_data = {
             'text'      => 'Wrong id:' 
         }
     },
+    12 => {
+        'data' => {
+            'id'        => 1,
+            'parent'    => 1,
+            'label'     => 'label',
+            'name'      => 'name',            
+            'value'     => '{"/route":0}',
+            'status'    => 0,
+            'required'  => 0,
+            'readOnly'  => 0,
+            'removable' => 0
+        },
+        'result' => {
+            'message'   => "Could not update setting item 'label'",
+            'status'    => 'fail'
+        },
+        'comment' => {
+            'text'      => 'Mistake from DB:' 
+        }
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/routes/update' => form => $data )
+    $t->post_ok($host.'/routes/update' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

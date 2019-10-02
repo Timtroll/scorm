@@ -8,7 +8,7 @@ CREATE TABLE "public"."routes" (
 "label" varchar(255) COLLATE "default" NOT NULL,
 "name" varchar(255) COLLATE "default" NOT NULL,
 "value" json,
-"status" int4 DEFAULT 0,
+"status" int2 DEFAULT 1 NOT NULL,
 "required" int4 DEFAULT 0,
 "readOnly" int4 DEFAULT 0,
 "removable" int4 DEFAULT 0
