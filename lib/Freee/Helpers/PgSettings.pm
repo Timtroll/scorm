@@ -117,12 +117,17 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
+        $$data{'value'} = $$data{'value'} ? $$data{'value'} : ''; # if ($$data{'value'} eq 'null');
+        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : ''; # '' if ($$data{'selected'} eq 'null');
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        $self->pg_dbh->do('INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
+        my $sql ='INSERT INTO "public"."settings" ('.
+            join( ',', map { '"'.$_.'"' } keys %$data ).
+            ') VALUES ('.
+            join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            ') RETURNING "id"';
+        $self->pg_dbh->do($sql);
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
         return $id;
@@ -215,6 +220,7 @@ sub register {
         my $self = shift;
 
         $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'ALTER SEQUENCE settings_id_seq RESTART;' );
 
         return 1;
     });

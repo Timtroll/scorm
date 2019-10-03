@@ -5,6 +5,7 @@ use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw(decode_json encode_json);
+use JSON::XS;
 use Encode;
 
 use Freee::Mock::Settings;
@@ -135,30 +136,65 @@ sub get_leafs {
 sub load_default {
     my $self = shift;
 
-warn Dumper($self);
     # очистка таблицы и сброс счетчика
     $self->_reset_settings();
 
     my @mess;
     foreach my $folder ( @{$settings->{'settings'}} ) {
         my $sub = {
-            'label' => $$folder{'label'},
-            'name'  => $$folder{'label'},
-            'parent'=> 0
+            "name"          => $$folder{'name'},
+            "placeholder"   => $$folder{'placeholder'} || '',
+            "label"         => $$folder{'label'},
+            "mask"          => $$folder{'mask'} || '',
+            "value"         => $$folder{'value'} || '',
+            "selected"      => $$folder{'selected'} || '',
+            "required"      => $$folder{'required'} || 0,
+            "readonly"      => 0,
+            "status"        => 1,
+            "parent"        => 0
         };
         my $id = $self->_insert_setting($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
-        foreach ( @{$$folder{'table'}->{'body'}} ) {
-            # указываем родительский id
-            $_->{'parent'} = $id;
+        if (@{$$folder{'children'}}) {
+            foreach my $subfolder ( @{$$folder{'children'}} ) {
+                # # сериализуем поля vaue и selected
+                # $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
+                # $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
 
-            # сериализуем поля vaue и selected
-            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
-            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
+                $sub = {
+                    "name"          => $$subfolder{'name'},
+                    "placeholder"   => $$subfolder{'placeholder'} || '',
+                    "label"         => $$subfolder{'label'},
+                    "mask"          => $$subfolder{'mask'} || '',
+                    "value"         => $$subfolder{'value'} || '',
+                    "selected"      => $$subfolder{'selected'} || '',
+                    "required"      => $$subfolder{'required'} || 0,
+                    "readonly"      => 0,
+                    "status"        => 1,
+                    "parent"        => $id  # указываем родительский id
+                };
+                my $newid = $self->_insert_setting($sub, []);
+                push @mess, "Could not add setting item '$$subfolder{'label'}' in Folder '$$subfolder{'label'}'" unless $newid;
 
-            my $newid = $self->_insert_setting($_, ['parent']);
-            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
+                foreach my $children ( @{$$subfolder{'children'}} ) {
+                    $sub = {
+                        "name"          => $$children{'name'},
+                        "placeholder"   => $$children{'placeholder'} || '',
+                        "label"         => $$children{'label'},
+                        "mask"          => $$children{'mask'} || '',
+                        "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : '',
+                        "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
+                        "required"      => $$children{'required'} || 0,
+                        "readonly"      => 0,
+                        "status"        => 1,
+                        "parent"        => $newid  # указываем родительский id
+                    };
+
+                    my $chldid = $self->_insert_setting($sub, []);
+                    push @mess, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
+                }
+            }
         }
     }
 

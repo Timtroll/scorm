@@ -1,5 +1,6 @@
 package Freee::Mock::Settings;
 
+# Только для загрузки в таблицу
 use utf8;
 
 use Exporter();
@@ -14,49 +15,21 @@ our $pref;
 $settings = {
   "settings"=> [
     {
+      "name"        => "cms",
       "label"       => "CMS",
       "id"          => 1,
-      "component"   => "Settings",
       "opened"      => 0,
-      "folder"      => 1,
+      "parent"      => 0,
       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
       "children"    => [
         {
+          "name"        => "core",
           "label"       => "Ядро",
           "id"          => 101,
-          "component"   => "",
           "opened"      => 0,
-          "folder"      => 0,
+          "parent"      => 1,
           "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-          "children"    => [],
-          "table"       => {
-            "settings"  => {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0,
-              "sortBy"      => "id",
-              "sortOrder"   => "asc"
-            },
-            # В таблице выведутся поля, с ключами указаннымы в  "header"
-            "header" => [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"  =>[
+          "children"    => [
               {
                 "readonly"      => 0,
                 "required"      => 1,
@@ -69,8 +42,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1011,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -84,8 +55,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1012,
-                "removable"     => 1,
-                "folder"        => 0
               },
 
               {
@@ -100,8 +69,6 @@ $settings = {
                 "selected"      => ["CKEditor", "EditorJs"],
                 "parent"        => 101,
                 "id"            => 1013,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -115,8 +82,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1014,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -130,8 +95,6 @@ $settings = {
                 "selected"      => ["rus", "en", "esp", "ch"],
                 "parent"        => 101,
                 "id"            => 1015,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -145,8 +108,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1016,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -160,8 +121,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1017,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -175,8 +134,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 1018,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -190,8 +147,6 @@ $settings = {
                 "selected"=>    [],
                 "parent"        => 101,
                 "id"            => 1019,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -208,8 +163,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10110,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -223,8 +176,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10111,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -241,8 +192,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10112,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -259,8 +208,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10113,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -274,8 +221,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10114,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -289,13 +234,10 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10115,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
                 "required"      => 1,
-                "type"          => "InputText",
                 "name"          => "site_url",
                 "label"         => "URL сайта включая http://",
                 "placeholder"   => "http://freee.su",
@@ -304,13 +246,10 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10116,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
                 "required"      => 1,
-                "type"          => "InputText",
                 "name"          => "site_label",
                 "label"         => "имя сайта",
                 "placeholder"   => "Образовательная система",
@@ -319,45 +258,17 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 101,
                 "id"            => 10117,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "preferences",
           "label"     => "Настройки",
           "id"        => 102,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings" => {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
               {
                 "readonly"      => 0,
                 "required"      => 1,
@@ -370,8 +281,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1021,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -385,8 +294,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1022,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -400,8 +307,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1023,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -415,8 +320,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1024,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -430,8 +333,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1025,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -445,8 +346,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1026,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -460,8 +359,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1027,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -475,8 +372,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1028,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -490,8 +385,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 1029,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -505,8 +398,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 10210,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -520,45 +411,17 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 102,
                 "id"            => 10211,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "pages",
           "label"     => "Страницы сайта",
           "id"        => 103,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  =>  "",
-          "children"  => [],
-          "table" => {
-            "settings" => {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
               {
                 "readonly"      => 0,
                 "required"      => 1,
@@ -571,8 +434,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1031,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -586,8 +447,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1032,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -601,8 +460,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1033,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -616,8 +473,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1034,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -631,8 +486,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1035,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -646,45 +499,17 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 103,
                 "id"            => 1036,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "catalog",
           "label"     => "Каталог",
           "id"        => 104,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings"=> {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
               {
                 "readonly"      => 0,
                 "required"      => 1,
@@ -697,8 +522,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 104,
                 "id"            => 1041,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -712,8 +535,6 @@ $settings = {
                 "selected"      => [12, 30, 50],
                 "parent"        => 104,
                 "id"            => 1042,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "type"          => "InputNumber",
@@ -725,45 +546,17 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 104,
                 "id"            => 1043,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "media",
           "label"     => "Медиа",
           "id"        => 105,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings"      => {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
               {
                 "readonly"      => 0,
                 "required"      => 1,
@@ -776,8 +569,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1051,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -791,8 +582,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1052,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -806,8 +595,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1053,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -821,8 +608,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1054,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -836,8 +621,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1055,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -851,8 +634,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1056,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -866,8 +647,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1057,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -881,8 +660,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1058,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -896,8 +673,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 1059,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -911,8 +686,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 10510,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -926,8 +699,6 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 10511,
-                "removable"     => 1,
-                "folder"        => 0
               },
               {
                 "readonly"      => 0,
@@ -941,47 +712,20 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 105,
                 "id"            => 10512,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "news",
           "label"     => "Новости",
           "id"        => 106,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings"=> {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
               {
                 "readonly"      => 0,
+                "required"      => 1,
                 "type"          => "InputDoubleList",
                 "name"          => "newsPageID",
                 "label"         => "Точки привязки категорий новостей",
@@ -991,45 +735,17 @@ $settings = {
                 "selected"      => [],
                 "parent"        => 106,
                 "id"            => 1061,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         },
         {
+          "name"      => "tests",
           "label"     => "Тесты",
           "id"        => 107,
-          "component" => "",
           "opened"    => 0,
-          "folder"      => 0,
+          "parent"    => 1,
           "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings"=> {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
+          "children"  => [
             {
               "readonly"      => 0,
               "required"      => 1,
@@ -1062,149 +778,25 @@ $settings = {
             }
             ]
           }
-        },
-        {
-          "label"     => "Добавить параметр",
-          "id"        => 108,
-          "component" => "",
-          "opened"    => 0,
-          "folder"      => 0,
-          "keywords"  => "",
-          "children"  => [],
-          "table" => {
-            "settings"=> {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "readonly"    => 1,
-              "removable"   => 1,
-              "massEdit"    => 0
-            },
-            "header"=>   [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"=>     [
-              {
-                "readonly"      => 0,
-                "required"      => 1,
-                "type"          => "InputDoubleList",
-                "name"          => "libid",
-                "label"         => "Модуль владелец",
-                "placeholder"   => "",
-                "mask"          => "",
-                "value"         => [
-                  ["1", "Шаблоны"], ["2", "Календарь"], ["3", "заявки"], ["4", "Редактор форм"], ["5", "Страницы сайта"], ["6", "Пользователи сайта"],
-                  ["7", "Медиа"], ["8", "Новости"], ["9", "Облако тэгов"], ["10", "Отзывы"], ["11", "Каталог"], ["12", "Формы"], ["13", "Настройки"],
-                  ["14", "Форум"], ["15", "Поиск"], ["16", "банеры"], ["17", "Вакансии"], ["18", "Визуальный редактор"], ["19", "Администраторы"],
-                  ["20", "Файловый менеджер"], ["21", "Управление MySQL"], ["22", "LiveSupport"], ["23", "Учёт"], ["24", "Вопросы к курсам"],
-                  ["25", "Тесты"]
-                ],
-                "selected"      => [],
-                "parent"        => 108,
-                "id"            => 1081
-              },
-              {
-                "readonly"      => 0,
-                "required"      => 1,
-                "type"          => "InputDoubleList",
-                "name"          => "type",
-                "label"         => "Тип параметра",
-                "placeholder"   => "",
-                "mask"          => "",
-                "value"         => [["число"], ["строка"], ["текстовая область"], ["Селект"], ["список"], ["вложенный список"]],
-                "selected"      => [],
-                "parent"        => 108,
-                "id"            => 1082
-              },
-              {
-                "readonly"      => 0,
-                "required"      => 1,
-                "type"          => "InputText",
-                "name"          => "pname",
-                "label"         => "Название переменной",
-                "placeholder"   => "",
-                "mask"          => "",
-                "value"         => "",
-                "selected"      => [],
-                "parent"        => 108,
-                "id"            => 1083
-              },
-              {
-                "readonly"      => 0,
-                "required"      => 1,
-                "type"          => "InputText",
-                "name"          => "pdescr",
-                "label"         => "Описание переменной",
-                "placeholder"   => "",
-                "mask"          => "",
-                "value"         => "",
-                "selected"      => [],
-                "parent"        => 108,
-                "id"            => 1084
-              }
-            ]
-          }
-        }
-      ],
-      "table"       => {}
+      ]
     },
     {
+      "name"        => "scorm",
       "label"       => "Scorm",
+      "value"       => "",
       "id"          => 3,
-      "component"   => "Settings",
       "opened"      => 0,
-      "folder"      => 1,
+      "parent"      => 0,
       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
       "children"    => [
         {
+          "name"        => "lections",
           "label"       => "Лекции",
           "id"          => 301,
-          "component"   => "",
           "opened"      => 0,
-          "folder"      => 0,
+          "parent"      => 3,
           "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
-          "children"    => [],
-          "table"       => {
-            "settings"  => {
-              "readonly"    => 0,
-              "totalCount"  => 3,
-              "removable"   => 1,
-              "massEdit"    => 0,
-              "sortBy"      => "id",
-              "sortOrder"   => "asc"
-            },
-            # В таблице выведутся поля, с ключами указаннымы в  "header"
-            "header" => [
-              {
-                # Значение этого поля должно соответствовать ключу в объекте массива "body" ("name" => "name")
-                "key"   => "name",
-                # Значение этого поля будет выведено в шапке таблицы
-                "label" => "Системное название"
-              },{
-                "key"   => "label",
-                "label" => "Рашифровка"
-              },{
-                "key"   => "value",
-                "label" => "Значение"
-              },{
-                "key"   => "type",
-                "label" => "Тип"
-              }
-            ],
-            "body"  =>[
+          "children"    => [
               {
                 "required"      => 1,
                 "type"          => "InputNumber",
@@ -1217,14 +809,10 @@ $settings = {
                 "parent"        => 301,
                 "id"            => 3011,
                 "readonly"      => 0,
-                "removable"     => 1,
-                "folder"        => 0
               }
             ]
-          }
         }
-      ],
-      "table"       => {}
+      ]
     }
   ]
 };
