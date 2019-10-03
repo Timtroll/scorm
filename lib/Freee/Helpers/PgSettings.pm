@@ -192,11 +192,18 @@ sub register {
         # десериализуем поля vaue и selected
         my $out = [];
         if ($row) {
-            $$row{'value'} = '' if ($$row{'value'} eq 'null');
-            $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-            $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if ($$row{'value'} =~ /^\[/);
-            $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'}); # if (ref($$row{'selected'}) eq 'ARRAY');
-            $$row{'status'} = $$row{'status'} || 0;
+            $$row{'label'}      = $$row{'label'} ? $$row{'label'} : '';
+            $$row{'mask'}       = $$row{'mask'} ? $$row{'mask'} : '';
+            $$row{'name'}       = $$row{'name'} ? $$row{'name'} : '';
+            $$row{'parent'}     = $$row{'parent'} || 0;
+            $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
+            $$row{'readonly'}   = $$row{'readonly'} || 0;
+            $$row{'removable'}  = $$row{'removable'} || 0;
+            $$row{'required'}   = $$row{'required'} || 0;
+            $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
+            $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
+            $$row{'selected'}   = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
+            $$row{'status'}     = $$row{'status'} || 0;
         }
         
         return $row;

@@ -132,11 +132,12 @@ sub get_leafs {
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
-sub set_load_default {
-    my ($self) = shift;
+sub load_default {
+    my $self = shift;
 
+warn Dumper($self);
     # очистка таблицы и сброс счетчика
-    $self->reset_setting();
+    $self->_reset_settings();
 
     my @mess;
     foreach my $folder ( @{$settings->{'settings'}} ) {
