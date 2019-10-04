@@ -18,7 +18,6 @@ use Data::Dumper;
 sub get_folder {
     my $self = shift;
 
-
     my $id = $self->param('id');
 
     # проверка обязательных полей

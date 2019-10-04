@@ -92,6 +92,8 @@ sub register {
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
 
+        return unless $id;
+
         my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id', { Slice=> {} } );
 
         return $list;
