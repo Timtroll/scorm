@@ -36,6 +36,10 @@ const actions = {
             //Плоское дерево
             const flattenTree = flatTree([...tree])
             store.commit('set_tree_flat', flattenTree)
+          } else {
+            store.commit('tree_status_error')
+            store.commit('table_status_error')
+            notify('В дереве пусто', 'warning')
           }
         }
 
