@@ -65,7 +65,11 @@ sub register {
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
-        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        my $rv = $self->pg_dbh->do(
+            'UPDATE "public"."settings" SET '.
+            join( ', ', map { my $val = $$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ); '"'.$_.'"='.$val ) } keys %$data ).
+            ' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
+        ) if $$data{id};
 
         return $rv;
     });
@@ -117,8 +121,8 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = $$data{'value'} ? $$data{'value'} : ''; # if ($$data{'value'} eq 'null');
-        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : ''; # '' if ($$data{'selected'} eq 'null');
+        $$data{'value'} = $$data{'value'} ? $$data{'value'} : '';
+        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : '';
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
@@ -128,6 +132,7 @@ sub register {
             join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
         $self->pg_dbh->do($sql);
+
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
         return $id;
@@ -166,7 +171,10 @@ sub register {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.
+             join( ', ', map { my $val = $$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ); '"'.$_.'"='.$val ) } keys %$data ).
+            " WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
+        ) if $$data{id};
 
         return $rv;
     });
