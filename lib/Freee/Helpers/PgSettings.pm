@@ -65,10 +65,9 @@ sub register {
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
+        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
         my $rv = $self->pg_dbh->do(
-            'UPDATE "public"."settings" SET '.
-            join( ', ', map { my $val = $$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ); '"'.$_.'"='.$val ) } keys %$data ).
-            ' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
+            'UPDATE "public"."settings" SET '.$fields.' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
         ) if $$data{id};
 
         return $rv;
@@ -173,9 +172,9 @@ sub register {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.
-             join( ', ', map { my $val = $$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ); '"'.$_.'"='.$val ) } keys %$data ).
-            " WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
+        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        my $rv = $self->pg_dbh->do(
+            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};
 
         return $rv;
