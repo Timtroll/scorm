@@ -31,7 +31,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -49,7 +49,7 @@ my $test_data = {
             'name'      => 'name2',            
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -67,7 +67,7 @@ my $test_data = {
             'name'      => 'name3',            
             'value'     => '{"/route":0}',
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -85,7 +85,7 @@ my $test_data = {
             'name'      => 'name4',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -110,7 +110,7 @@ my $test_data = {
             'status'    => 'ok'
         },
         'comment' => {
-            'text'      => 'No readOnly:' 
+            'text'      => 'No readonly:' 
         }
     },
     6 => {
@@ -122,7 +122,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0
+            'readonly'  => 0
         },
         'result' => {
             'status'    => 'ok'
@@ -156,7 +156,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -175,7 +175,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -194,7 +194,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
@@ -214,7 +214,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
+            'readonly'  => 0,
             'removable' => 0
         },
         'result' => {
