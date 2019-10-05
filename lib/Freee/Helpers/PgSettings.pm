@@ -65,9 +65,12 @@ sub register {
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
-        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        my $fields = join( ', ', map {
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+        } keys %$data );
+
         my $rv = $self->pg_dbh->do(
-            'UPDATE "public"."settings" SET '.$fields.' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
+            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};
 
         return $rv;
@@ -167,20 +170,17 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        if (defined $$data{'value'} ) {
+            $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        }
+        if (defined $$data{'selected'} ) {
+            $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        }
 
         my $fields = join( ', ', map {
-            if ($$data{$_}) {
-                '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} );
-            }
-            else {
-                "\"".$_."\"=''";
-            }
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
-warn $fields;
+
         my $rv = $self->pg_dbh->do(
             'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};

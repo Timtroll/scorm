@@ -43,10 +43,10 @@ sub register {
     });
 
     # Валидация указанного блока полей при чтении html запроса
-    # my $list = $self->_html_check('settings');
+    # my $list = $self->_check('settings');
     # возвращает 1/undef
-    $app->helper( '_html_check' => sub {
-        return unless $_[1];
+    $app->helper( '_check' => sub {
+        return 0 unless $_[1];
 
         my @error = ();
         if ( defined $config->{'vfields'}->{$_[1]} ) {
@@ -77,84 +77,83 @@ sub register {
             }
         }
 
-        return {
-            status => @error ? 'fail' : 'ok',
-            mess => \@error
-        };
+        return @error ? 0 : 1, \@error;
+        # return {
+        #     status => @error ? 'fail' : 'ok',
+        #     mess => \@error
+        # };
     });
 
     # загрузка правил валидации html полоей
-    # my $list = $self->_load_vfields('settings');
+    # my $list = $self->_vfields('get_tree');
     # возвращает 1/undef
-    $app->helper( '_load_vfields' => sub {
+    $app->helper( '_vfields' => sub {
 
+        $vfields = {
+            # волидация роутов
+            # 'settings'  => {
+            '/settings/save'  => {
+                "id"            => [ 'required', qr{^\d+$} ],
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+                "placeholder"   => [ '', qr{.*}, 256 ],
+                "mask"          => [ '', qr{.*}, 256 ],
+                "value"         => [ '', qr{.*}, 10000 ],
+                "selected"      => [ '', qr{.*}, 10000 ],
+                "required"      => [ '', qr{^\d+$} ],
+                "readonly"      => [ '', qr{^\d+$} ],
+                "status"        => [ 'required', qr{^[01]$} ]
+            },
+            'groups'  => {
+                "id"            => [ '', qr{^\d+$} ],
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+                "value"         => [ '', qr{.*}, 10000 ],
+                "required"      => [ '', qr{^\d+$} ],
+                "readonly"      => [ '', qr{^\d+$} ],
+                "status"        => [ '', qr{^[01]$} ]
+            },
+            'routes'  => {
+                "id"            => [ '', qr{^\d+$} ],
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+                "value"         => [ '', qr{.*}, 10000 ],
+                "required"      => [ '', qr{^\d+$} ],
+                "readonly"      => [ '', qr{^\d+$} ]
+            },
+            'forum_themes'  => {
+                "id"            => [ '', qr{^\d+$} ],
+                "user_id"       => [ '', qr{^\d+$} ],
+                "title"         => [ '', qr{.*}, 10000 ],
+                "url"           => [ '', qr{http.*?//.*}, 256 ],
+                "rate"          => [ '', qr{^\d+$} ],
+                "date_created"  => [ '', qr{^\d+$} ]
+            },
+            'forum_rates'  => {
+                "user_id"       => [ '', qr{^\d+$} ],
+                "msg_id"        => [ '', qr{^\d+$} ],
+                "like_value"    => [ '', qr{^\d+$} ]
+            },
+            'forum_rates'  => {
+                "id"            => [ '', qr{^\d+$} ],
+                "theme_id"      => [ '', qr{^\d+$} ],
+                "user_id"       => [ '', qr{^\d+$} ],
+                "anounce"       => [ '', qr{^[01]$} ],
+                "date_created"  => [ '', qr{^\d+$} ],
+                "msg"           => [ '', qr{.*}, 10000 ],
+                "rate"          => [ '', qr{^\d+$} ]
+            }
+            # поля запросов
+            # ''  => {
 
-    $vfields = {
-        # поля таблиц
-        # 'settings'  => {
-        'get_tree'  => {
-            "id"            => [ 'required', qr{^\d+$} ],
-            "parent"        => [ '', qr{^\d+$} ],
-            "name"          => [ '', qr{.*}, 256 ],
-            "label"         => [ '', qr{.*}, 256 ],
-            "placeholder"   => [ '', qr{.*}, 256 ],
-            "mask"          => [ '', qr{.*}, 256 ],
-            "value"         => [ '', qr{.*}, 10000 ],
-            "selected"      => [ '', qr{.*}, 10000 ],
-            "required"      => [ '', qr{^\d+$} ],
-            "readonly"      => [ '', qr{^\d+$} ],
-            "status"        => [ '', qr{^[01]$} ]
-        },
-        'groups'  => {
-            "id"            => [ '', qr{^\d+$} ],
-            "parent"        => [ '', qr{^\d+$} ],
-            "name"          => [ '', qr{.*}, 256 ],
-            "label"         => [ '', qr{.*}, 256 ],
-            "value"         => [ '', qr{.*}, 10000 ],
-            "required"      => [ '', qr{^\d+$} ],
-            "readonly"      => [ '', qr{^\d+$} ],
-            "status"        => [ '', qr{^[01]$} ]
-        },
-        'routes'  => {
-            "id"            => [ '', qr{^\d+$} ],
-            "parent"        => [ '', qr{^\d+$} ],
-            "name"          => [ '', qr{.*}, 256 ],
-            "label"         => [ '', qr{.*}, 256 ],
-            "value"         => [ '', qr{.*}, 10000 ],
-            "required"      => [ '', qr{^\d+$} ],
-            "readonly"      => [ '', qr{^\d+$} ]
-        },
-        'forum_themes'  => {
-            "id"            => [ '', qr{^\d+$} ],
-            "user_id"       => [ '', qr{^\d+$} ],
-            "title"         => [ '', qr{.*}, 10000 ],
-            "url"           => [ '', qr{http.*?//.*}, 256 ],
-            "rate"          => [ '', qr{^\d+$} ],
-            "date_created"  => [ '', qr{^\d+$} ]
-        },
-        'forum_rates'  => {
-            "user_id"       => [ '', qr{^\d+$} ],
-            "msg_id"        => [ '', qr{^\d+$} ],
-            "like_value"    => [ '', qr{^\d+$} ]
-        },
-        'forum_rates'  => {
-            "id"            => [ '', qr{^\d+$} ],
-            "theme_id"      => [ '', qr{^\d+$} ],
-            "user_id"       => [ '', qr{^\d+$} ],
-            "anounce"       => [ '', qr{^[01]$} ],
-            "date_created"  => [ '', qr{^\d+$} ],
-            "msg"           => [ '', qr{.*}, 10000 ],
-            "rate"          => [ '', qr{^\d+$} ]
-        }
-        # поля запросов
-        # ''  => {
-
-        # }
-    };
+            # }
+        };
 
         return $vfields;
     });
-
 }
 
 1;

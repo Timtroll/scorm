@@ -1,11 +1,19 @@
 package Freee::Controller::Index;
 
 use utf8;
+use strict;
+use warnings;
 
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 use common;
+
+sub error {
+    my $self = shift;
+
+    $self->render( 'json' => { 'status' => 'fail', 'message' => $self->param('message') } );
+}
 
 sub doc {
     my $self = shift;
@@ -69,7 +77,7 @@ return;    # Postgres Работа с полями
     }
     ));
 
-    # сохранение хаписи
+    # сохранение записи
     # print Dumper( $self->pg_store('lesson',
     # {
     #     publish => \1,

@@ -9,7 +9,6 @@ use Mojolicious::Plugin::Config;
 use Mojo::Log;
 
 use common;
-use validate;
 use Data::Dumper;
 
 $| = 1;
@@ -39,17 +38,15 @@ sub startup {
     $self->plugin('Freee::Helpers::Tree');
     $self->plugin('Freee::Helpers::PgRoutes');
 
+    # звгрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
-    $vfields = $self->_load_vfields();
+    $vfields = $self->_vfields();
 
     # init Pg connection
     $self->pg_init();
 
     # init Beanstalk connection
     $self->_beans_init();
-
-    # prepare validate functions
-    prepare_validate();
 
     # Router
     my $r = $self->routes;
@@ -62,6 +59,8 @@ sub startup {
     $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')         ->to('websocket#index');
 
+    # роут на который происходит редирект, для вывода ошибок
+    $r->any('/error/')                     ->to('index#error');
 
     my $auth = $r->under()                ->to('auth#check_token');
 

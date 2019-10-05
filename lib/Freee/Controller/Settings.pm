@@ -59,10 +59,10 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-    # валидация html запрсоа
-    if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
-        my $res = $self->_html_check( $$routs{$self->url_for} );
-    }
+    # # валидация html запрсоа
+    # if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
+    #     my $res = $self->_check( $$routs{$self->url_for} );
+    # }
 
     my $list = $self->_get_tree(1);
 
@@ -325,46 +325,55 @@ sub edit {
 #     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub save {
-    my ($self) = shift;
+    my $self = shift;
 
     # read params
-    my %data;
-    $data{'id'} = $self->param('id');
-    $data{'parent'} = $self->param('parent');
-    $data{'label'} = $self->param('label');
-    $data{'name'} = $self->param('name');
+    my ($id, @mess, %data);
 
-    # проверка обязательных полей
-    my @mess;
-    $data{'id'} = 0 unless $data{'id'};
-    $data{'parent'} = 0 unless $data{'parent'};
-    $data{'label'} = '' unless $data{'label'};
-    $data{'name'} = '' unless $data{'name'};
-    unless (
-        (($data{'parent'} == 0) && $data{'id'} && $data{'label'}) ||
-        (($data{'parent'} > 0) && $data{'id'} && $data{'label'} && $data{'name'})
-    ) {
-        push @mess, 'Not exists required fields';
-    }
+    # $data{'id'} = $self->param('id');
+    # $data{'parent'} = $self->param('parent');
+    # $data{'label'} = $self->param('label');
+    # $data{'name'} = $self->param('name');
 
-    # поля для группы настроек
-    $data{'readonly'} = $self->param('readonly') || 0;
-    $data{'removable'} = $self->param('removable') || 0;
+    # # проверка обязательных полей
+    # $data{'id'} = 0 unless $data{'id'};
+    # $data{'parent'} = 0 unless $data{'parent'};
+    # $data{'label'} = '' unless $data{'label'};
+    # $data{'name'} = '' unless $data{'name'};
+    # unless (
+    #     (($data{'parent'} == 0) && $data{'id'} && $data{'label'}) ||
+    #     (($data{'parent'} > 0) && $data{'id'} && $data{'label'} && $data{'name'})
+    # ) {
+    #     push @mess, 'Not exists required fields';
+    # }
+
+    # # поля для группы настроек
+    # $data{'readonly'} = $self->param('readonly') || 0;
+    # $data{'removable'} = $self->param('removable') || 0;
 
     # готовим запись настроек, если это не folder
-    unless ($self->param('folder')) {
-        my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
-        foreach (@fields) {
-            $data{$_} = $self->param($_);
-        }
-    }
+    # unless ($self->param('folder')) {
+    #     my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
+    #     foreach (@fields) {
+    #         $data{$_} = $self->param($_);
+    #     }
+    # }
+warn "=====";
+warn $self->url_for;
 
-    my $id = $self->_save_setting( \%data, [] );
-    push @mess, "Could not update setting item '$data{'id'}: $data{'label'}'" unless $id;
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    unless (@mess) {
+        foreach (keys %{$$vfields{$self->url_for}}) {
+            $data{$_} = $self->param($_) if $self->param($_);
+        }
+ warn Dumper(\%data);
+       $id = $self->_save_setting( \%data, [] );
+        push @mess, "Could not update setting item '$data{'id'}: $data{'label'}'" unless $id;
+    }
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
