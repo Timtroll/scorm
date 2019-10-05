@@ -18,14 +18,15 @@
              width="16"></a>
     </td>
     <!--data-->
-    <td v-for="(item, index) in rowData"
+    <td v-for="(item, index) in updateData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @click="edit(fullData, rowData[index].inline, item.key)">
+        @click="edit(updateData[index].inline, item.key)">
 
       <label class="uk-text-center uk-display-block cursor-pointer"
-             v-if="rowData[index].inline === 1">
+             v-if="updateData[index].inline === 1">
         <input type="checkbox"
+               v-model="updateData[index].val"
                class="pos-checkbox-switch xsmall">
       </label>
 
@@ -92,9 +93,23 @@
 
     watch: {
 
+      rowData () {
+        this.updateData = JSON.parse(JSON.stringify(this.rowData))
+      },
+
       checkedAll () {
         this.checkedRow = this.checkedAll
       }
+    },
+
+    async mounted () {
+
+      //const input = this.rowData
+      //const data      = await function () {
+      //  return input
+      //}
+      this.updateData = JSON.parse(JSON.stringify(this.rowData))
+
     },
 
     computed: {
@@ -124,7 +139,9 @@
     data () {
       return {
         ellipsis:   true,
-        checkedRow: false
+        checkedRow: false,
+        updateData: []
+
       }
     },
 
@@ -141,22 +158,22 @@
         this.checkedRow = true
       },
 
-      edit (item, inline = 0, key) {
-
-        console.log('inline', inline, 'field', 'key', key)
+      edit (inline = 0, key) {
 
         if (inline === 1) {
-          //console.log('inline 1', inline)
-          const data = {
-            id: item.id,
-            [key]: Number(!item.val)
-          }
 
-          console.log(data)
+          //const data = {
+          //  id:    item.id,
+          //  [key]: Number(!item.val)
+          //}
 
-          this.$store.dispatch(this.table_api.saveField, data, item.parent)
+          const data = JSON.parse(JSON.stringify(this.fullData))
+          data[key]  = Number(!data[key])
+
+          this.$store.dispatch(this.table_api.saveField, data)
+          //this.$store.dispatch(this.table_api.saveField, data, item.parent)
         } else {
-          this.$store.dispatch(this.editPanel_api.get, item.id)
+          this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
         }
 
       },

@@ -249,10 +249,13 @@ const actions = {
     }
   },
 
-  async leafSaveField ({commit, state, getters, dispatch}, item, parent) {
+  async leafSaveField ({commit, state, getters, dispatch}, item) {
+
+    const parentId =  Number(item.parent)
 
     try {
       //store.commit('editPanel_status_request') // статус - запрос
+
 
       const response = await Api_EditPanel.list_save(item)
 
@@ -261,14 +264,16 @@ const actions = {
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTable', parent)
+          dispatch('getTable', parentId)
           notify(resp.status, 'success') // уведомление об ошибке
 
         } else {
+          dispatch('getTable', parentId)
           notify('ERROR: ' + e, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {
+      dispatch('getTable', parentId)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
