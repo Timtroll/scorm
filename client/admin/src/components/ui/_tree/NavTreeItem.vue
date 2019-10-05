@@ -167,7 +167,7 @@
           label:     '',
           name:      '',
           editable:  1,
-          readOnly:  0,
+          readonly:  0,
           removable: 1
         }
 
@@ -185,7 +185,7 @@
           label:     item.label,
           name:      item.name,
           editable:  item.editable,
-          readOnly:  0,
+          readonly:  0,
           removable: 1
         }
 

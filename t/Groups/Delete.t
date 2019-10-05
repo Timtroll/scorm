@@ -37,9 +37,7 @@ my $test_data = {
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'All right:' 
-        }
+        'comment' => 'All right:' 
     },
 
     # отрицательные тесты
@@ -51,26 +49,21 @@ my $test_data = {
             'message'   => "Can't find row for deleting",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
     3 => {
-        'data' => {},
         'result' => {
             'message'   => 'Could not id for deleting',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No data:' 
-        }
+        'comment' => 'No data:' 
     },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
     $t->post_ok($host.'/groups/delete' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

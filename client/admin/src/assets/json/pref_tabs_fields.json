@@ -9,7 +9,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -175,7 +175,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -283,7 +283,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -352,7 +352,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -397,7 +397,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -513,7 +513,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -542,7 +542,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,
@@ -578,7 +578,7 @@
       "children":  [],
       "table":     {
         "settings": {
-          "readOnly":   false,
+          "readonly":   false,
           "totalCount": 3,
           "editable":   1,
           "removable":  1,

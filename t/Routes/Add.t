@@ -5,8 +5,7 @@
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
 #     "required"    => 0,               - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,               - не обязательно, по умолчанию 0
-#     "removable"   => 0,               - не обязательно, по умолчанию 0
+#     "readonly"    => 0,               - не обязательно, по умолчанию 0
 #     "status"      => 0                - по умолчанию 1
 use Mojo::Base -strict;
 
@@ -38,8 +37,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 1,
@@ -54,8 +52,7 @@ my $test_data = {
             'name'      => 'name2',            
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 2,
@@ -70,8 +67,7 @@ my $test_data = {
             'name'      => 'name3',            
             'value'     => '{"/route":0}',
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 3,
@@ -86,8 +82,7 @@ my $test_data = {
             'name'      => 'name4',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 4,
@@ -102,42 +97,24 @@ my $test_data = {
             'name'      => 'name5',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'required'  => 0,
-            'removable' => 0
+            'required'  => 0
         },
         'result' => {
             'id'        => 5,
             'status'    => 'ok'
         },
-        'comment' => 'No readOnly:'
-    },
-    6 => {
-        'data' => {
-            'parent'    => 1,
-            'label'     => 'label6',
-            'name'      => 'name6',            
-            'value'     => '{"/route":0}',
-            'status'    => 0,
-            'required'  => 0,
-            'readonly'  => 0
-        },
-        'result' => {
-            'id'        => '6',
-            'status'    => 'ok'
-        },
-        'comment' => 'No removable:'
+        'comment' => 'No readonly:'
     },
 
     # отрицательные тесты
-    7 => {
+    6 => {
         'data' => {
             'label'     => 'label7',
             'name'      => 'name7',            
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Wrong parent',
@@ -145,15 +122,14 @@ my $test_data = {
         },
         'comment' => 'No parent:'
     },
-    8 => {
+    7 => {
         'data' => {
             'parent'    => 1,
             'name'      => 'name8',            
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',
@@ -161,15 +137,14 @@ my $test_data = {
         },
         'comment' => 'No label:'
     },
-    9 => {
+    8 => {
         'data' => {
             'parent'    => 1,
             'label'     => 'label9',
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',
@@ -177,7 +152,7 @@ my $test_data = {
         },
         'comment' => 'No name:'
     },
-    10 => {
+    9 => {
         'data' => {
             'parent'    => 1,
             'label'     => 'label1',
@@ -185,8 +160,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => "Could not add new route item 'label1'",

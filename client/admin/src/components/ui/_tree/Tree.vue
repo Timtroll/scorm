@@ -146,7 +146,7 @@
           label:     '',
           name:      '',
           editable:  1,
-          readOnly:  0,
+          readonly:  0,
           removable: 1
         }
 

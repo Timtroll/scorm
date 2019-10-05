@@ -49,7 +49,7 @@ my $test_data = {
             'message'   => "Can't find row for hiding",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong id:' 
+        'comment' => 'Wrong id:'
     },
     3 => {
         'result' => {

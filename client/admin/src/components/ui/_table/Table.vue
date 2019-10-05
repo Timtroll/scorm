@@ -191,7 +191,7 @@ s
           placeholder: '',
           editable:    1,
           mask:        '',
-          readOnly:    0,
+          readonly:    0,
           required:    1,
           value:       '',
           selected:    []

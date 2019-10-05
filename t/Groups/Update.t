@@ -24,39 +24,40 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-# Ввод данных для обновления
-my $data = {
-    name        => 'name1', 
-    label       => 'label1', 
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
-};
-$t->post_ok( $host.'/groups/add' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    last;
-}
-$t->json_is( {'id' => 1,'status' => 'ok'} );
-
-$data = {
-    name        => 'name2',
-    label       => 'label2',
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
-};
-$t->post_ok($host.'/groups/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 2,'status' => 'ok'} );
-
 my $test_data = {
+    1 => {
+        'data' => {
+            'name'      => 'name1',
+            'label'     => 'label1',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '1',
+            'status'    => 'ok'
+        }
+    },
+    2 => {
+        'data' => {
+            'name'      => 'name2',
+            'label'     => 'label2',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok' 
+        }
+    }
+};
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
+}
+
+$test_data = {
     # положительные тесты
     1 => {
         'data' => {
@@ -68,9 +69,7 @@ my $test_data = {
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'All fields:' 
-        }
+        'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
@@ -81,9 +80,7 @@ my $test_data = {
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No status:' 
-        }
+        'comment' => 'No status:' 
     },
 
     # отрицательные тесты
@@ -98,9 +95,7 @@ my $test_data = {
             'message'   => "Can't find row for updating",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
     4 => {
         'data' => {
@@ -112,9 +107,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No id:' 
-        }
+        'comment' => 'No id:' 
     },
     5 => {
         'data' => {
@@ -126,9 +119,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No name:' 
-        }
+        'comment' => 'No name:' 
     },
     6 => {
         'data' => {
@@ -140,9 +131,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No label:' 
-        }
+        'comment' => 'No label:' 
     },
     7 => {
         'data' => {
@@ -155,16 +144,14 @@ my $test_data = {
             'message'   => "Could not update setting item 'label2'",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'Mistake from DB:' 
-        }
+        'comment' => 'Mistake from DB:' 
     }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
+    diag ( $$test_data{$test}{'comment'} );
     $t->post_ok($host.'/groups/update' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

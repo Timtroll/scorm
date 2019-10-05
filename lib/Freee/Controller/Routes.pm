@@ -55,8 +55,7 @@ sub index {
 #     "name",       => 'name',          - системное название, латиница
 #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
 #     "required"    => 0,               - не обязательно, по умолчанию 0
-#     "readOnly"    => 0,               - не обязательно, по умолчанию 0
-#     "removable"   => 0,               - не обязательно, по умолчанию 0
+#     "readonly"    => 0,               - не обязательно, по умолчанию 0
 #     "status"      => 0                - по умолчанию 1
 # });
 sub add {
@@ -72,8 +71,7 @@ sub add {
         'value'     => $self->param('value')     || '{"/route":0}',
         'status'    => $self->param('status')    || 1,
         'required'  => $self->param('required')  || 0,
-        'readOnly'  => $self->param('readOnly')  || 0,
-        'removable' => $self->param('removable') || 0
+        'readonly'  => $self->param('readonly')  || 0
     );
 
     # проверка parent
@@ -106,8 +104,7 @@ sub add {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "status"      => 0,           - по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "value"       => "",          - строка или json
 #     "required"    => 0            - не обязательно, по умолчанию 0
 # });
@@ -123,8 +120,7 @@ sub update {
         'name'      => $self->param('name'),
         'value'     => $self->param('value')     || '{"/route":0}',
         'status'    => $self->param('status')    || 1,
-        'readOnly'  => $self->param('readOnly')  || 0,
-        'removable' => $self->param('removable') || 0,
+        'readonly'  => $self->param('readonly')  || 0,
         'required'  => $self->param('required')  || 0
     );
 

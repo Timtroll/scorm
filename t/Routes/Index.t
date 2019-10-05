@@ -27,68 +27,70 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Ввод данных для вывода
-my $data = {
-    name        => 'name1', 
-    label       => 'label1', 
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
+my $test_data = {
+    1 => {
+        'data' => {
+            'parent'    => 1,
+            'name'      => 'name1',
+            'label'     => 'label1',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '1',
+            'status'    => 'ok'
+        }
+    },
+    2 => {
+        'data' => {
+            'parent'    => 1,
+            'name'      => 'name2',
+            'label'     => 'label2',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok' 
+        }
+    }
 };
-$t->post_ok($host.'/routes/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 1,'status' => 'ok'} );
-
-$data = {
-    name        => 'name2',
-    label       => 'label2',
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
-};
-$t->post_ok($host.'/routes/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 2,'status' => 'ok'} );
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/routes/add' => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
+}
 
 # index
-my $result = 
-    [
-          {
-            'label'     => 'label1',
-            'id'        => 1,
-            'table'     => {},
-            'opened'    => 0,
-            'children'  => [],
-            'component' => 'Routes',
-            'folder'    => 0,
-            'keywords'  => ''
-          },
-          {
-            'component' => 'Routes',
-            'children'  => [],
-            'folder'    => 0,
-            'keywords'  => '',
-            'opened'    => 0,
-            'label'     => 'label2',
-            'table'     => {},
-            'id'        => 2
-          }
-        ];
+my $result = [
+    {
+    'label'     => 'label1',
+    'id'        => 1,
+    'table'     => {},
+    'opened'    => 0,
+    'children'  => [],
+    'component' => 'Routes',
+    'folder'    => 0,
+    'keywords'  => ''
+    },
+    {
+    'label'     => 'label2',
+    'id'        => 2,
+    'table'     => {},
+    'opened'    => 0,
+    'children'  => [],
+    'component' => 'Routes',
+    'folder'    => 0,
+    'keywords'  => ''
+    },
+];
 
-my $data = $$test_data{$test}{'data'};
-my $result = $$test_data{$test}{'result'};
-$t->post_ok( $host.'/routes/index' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    last;
-}
-$t->content_type_is('application/json;charset=UTF-8');
-$t->json_is( $result );
+diag ("\n All routes: ");
+$t->post_ok( $host.'/routes/' )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
 
 
 done_testing();

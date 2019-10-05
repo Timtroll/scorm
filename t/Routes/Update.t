@@ -5,8 +5,7 @@
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "status"      => 0,           - по умолчанию 1
-#     "readOnly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 0,           - не обязательно, по умолчанию 0
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 #     "value"       => "",          - строка или json
 #     "required"    => 0            - не обязательно, по умолчанию 0
 # });
@@ -30,38 +29,42 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Ввод данных для обновления
-my $data = {
-    name        => 'name1', 
-    label       => 'label1', 
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
-};
-$t->post_ok( $host.'/routes/add' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    last;
-}
-$t->json_is( {'id' => 1,'status' => 'ok'} );
-
-$data = {
-    name        => 'name',
-    label       => 'label',
-    parent      => 1,
-    status      => 1,
-    value       => '{"/route":0}',
-    required    => 0,
-    readOnly    => 0,
-    removable   => 0
-};
-$t->post_ok($host.'/routes/add' => form => $data )
-    ->status_is(200);
-    ->json_is( {'id' => 2,'status' => 'ok'} );
-
 my $test_data = {
+    1 => {
+        'data' => {
+            'parent'    => 1,
+            'name'      => 'name1',
+            'label'     => 'label1',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '1',
+            'status'    => 'ok'
+        }
+    },
+    2 => {
+        'data' => {
+            'parent'    => 1,
+            'name'      => 'name',
+            'label'     => 'label',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok' 
+        }
+    }
+};
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/routes/add' => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
+}
+
+$test_data = {
     # положительные тесты
     1 => {
         'data' => {
@@ -72,15 +75,12 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'All fields:' 
-        }
+        'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
@@ -90,15 +90,12 @@ my $test_data = {
             'name'      => 'name2',            
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No value:' 
-        }
+        'comment' => 'No value:' 
     },
     3 => {
         'data' => {
@@ -108,15 +105,12 @@ my $test_data = {
             'name'      => 'name3',            
             'value'     => '{"/route":0}',
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No status:' 
-        }
+        'comment' => 'No status:' 
     },
     4 => {
         'data' => {
@@ -126,15 +120,12 @@ my $test_data = {
             'name'      => 'name4',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No required:' 
-        }
+        'comment' => 'No required:' 
     },
     5 => {
         'data' => {
@@ -144,37 +135,16 @@ my $test_data = {
             'name'      => 'name5',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'required'  => 0,
-            'removable' => 0
+            'required'  => 0
         },
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No readonly:' 
-        }
-    },
-    6 => {
-        'data' => {
-            'id'        => 1,
-            'parent'    => 1,
-            'label'     => 'label6',
-            'name'      => 'name6',            
-            'value'     => '{"/route":0}',
-            'status'    => 0,
-            'required'  => 0,
-            'readonly'  => 0
-        },
-        'result' => {
-            'status'    => 'ok'
-        },
-        'comment' => {
-            'text'      => 'No removable:' 
-        }
+        'comment' => 'No readonly:' 
     },
     
     # отрицательные тесты
-    7 => {
+    6 => {
         'data' => {
             'parent'    => 1,
             'name'      => 'name7',
@@ -185,11 +155,9 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No id:' 
-        }
+        'comment' => 'No id:' 
     },
-    8 => {
+    7 => {
         'data' => {
             'id'        => 1,
             'label'     => 'label8',
@@ -197,18 +165,15 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Wrong parent',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No parent:' 
-        }
+        'comment' => 'No parent:' 
     },
-    9 => {
+    8 => {
         'data' => {
             'id'        => 1,
             'parent'    => 1,
@@ -216,18 +181,15 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No label:' 
-        }
+        'comment' => 'No label:' 
     },
-    10 => {
+    9 => {
         'data' => {
             'id'        => 1,
             'parent'    => 1,
@@ -235,18 +197,15 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No name:' 
-        }
+        'comment' => 'No name:' 
     },
-    11 => {
+    10 => {
         'data' => {
             'id'        => 404,
             'parent'    => 1,
@@ -255,18 +214,15 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => "Can't find row for updating",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
-    12 => {
+    11 => {
         'data' => {
             'id'        => 1,
             'parent'    => 1,
@@ -275,23 +231,20 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readOnly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => "Could not update setting item 'label'",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'Mistake from DB:' 
-        }
+        'comment' => 'Mistake from DB:' 
     }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
     $t->post_ok($host.'/routes/update' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

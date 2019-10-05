@@ -38,9 +38,7 @@ my $test_data = {
         'result' => {
             'status'  => 'ok'
         },
-        'comment' => {
-            'text'    => 'All right:' 
-        }
+        'comment' => 'All right:' 
     },
 
     # отрицательные тесты
@@ -52,9 +50,7 @@ my $test_data = {
             'message' => "Can't find row for activating",
             'status'  => 'fail'
         },
-        'comment' => {
-            'text'    => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
     3 => {
         'data' => {},
@@ -62,16 +58,14 @@ my $test_data = {
             'message' => 'Need id for changing',
             'status'  => 'fail'
         },
-        'comment' => {
-            'text'    => 'No data:' 
-        }
+        'comment' => 'No data:' 
     },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
+    diag ( $$test_data{$test}{'comment'} );
     $t->post_ok($host.'/groups/activate' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

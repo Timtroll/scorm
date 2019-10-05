@@ -256,7 +256,7 @@
           folder:      Number(this.rowData.folder),
           lib_id:      Number(this.rowData.lib_id),
           editable:    Number(this.rowData.editable),
-          readOnly:    Number(this.rowData.readOnly),
+          readonly:    Number(this.rowData.readonly),
           required:    Number(this.rowData.required),
           removable:   Number(this.rowData.removable),
           mask:        this.rowData.mask,
@@ -380,7 +380,7 @@
         #     "label"       => 'название',  - обязательно (название для отображения)
         #     "name",       => 'name'       - обязательно (системное название, латиница)
         #     "editable"    => 1,           - не обязательно, по умолчанию 1
-        #     "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        #     "readonly"    => 0,           - не обязательно, по умолчанию 0
         #     "removable"   => 1,           - не обязательно, по умолчанию 1
         #     "value"       => "",            - строка или json
         #     "type"        => "InputNumber", - тип поля из конфига
@@ -399,7 +399,7 @@
           placeholder: data.placeholder,
           editable:    data.editable,
           mask:        data.mask,
-          readOnly:    0,
+          readonly:    0,
           required:    1,
           value:       data.value,
           selected:    data.selected
@@ -462,7 +462,7 @@
         "label"       => 'название',  - обязательно (название для отображения)
         "name",       => 'name'       - обязательно (системное название, латиница)
         "editable"    => 1,           - не обязательно, по умолчанию 1
-        "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        "readonly"    => 0,           - не обязательно, по умолчанию 0
         "removable"   => 1,           - не обязательно, по умолчанию 1
        */
         const newData = {
@@ -470,7 +470,7 @@
           lib_id:    this.parentId,
           label:     data.label,
           name:      data.name,
-          readOnly:  0,
+          readonly:  0,
           removable: 1,
           required:  1
         }
@@ -491,7 +491,7 @@
         "label"       => 'название',  - обязательно (название для отображения)
         "name",       => 'name'       - обязательно (системное название, латиница)
         "editable"    => 1,           - не обязательно, по умолчанию 1
-        "readOnly"    => 0,           - не обязательно, по умолчанию 0
+        "readonly"    => 0,           - не обязательно, по умолчанию 0
         "removable"   => 1,           - не обязательно, по умолчанию 1
        */
         const newData = {
@@ -500,7 +500,7 @@
           lib_id:    this.parentId,
           label:     data.label,
           name:      data.name,
-          readOnly:  0,
+          readonly:  0,
           removable: 1,
           required:  1
         }

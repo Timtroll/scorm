@@ -36,9 +36,7 @@ my $test_data = {
             'id'        => '1',
             'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'All fields:' 
-        }
+        'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
@@ -49,9 +47,7 @@ my $test_data = {
             'id'        => '2',
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No status:' 
-        }
+        'comment' => 'No status:' 
     },
     3 => {
         'data' => {
@@ -62,9 +58,7 @@ my $test_data = {
             'id'        => '3',
             'status'    => 'ok',
         },
-        'comment' => {
-            'text'      => 'Status zero:' 
-        }
+        'comment' => 'Status zero:' 
     },
 
     # отрицательные тесты
@@ -76,9 +70,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No label:' 
-        }
+        'comment' => 'No label:' 
     },
     5 => {
         'data' => {
@@ -88,9 +80,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No name:' 
-        }
+        'comment' => 'No name:' 
     },
     6 => {
         'data' => { },
@@ -98,9 +88,7 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'Empty data:' 
-        }
+        'comment' => 'Empty data:' 
     },
     7 => {
         'data' => {
@@ -112,13 +100,12 @@ my $test_data = {
             'message'    => "Could not add new group item 'label1'",
             'status'     => 'fail'
         },
-        'comment' => {
-            'text'       => 'Mistake from DB:' 
-        }
+        'comment' => 'Mistake from DB:' 
     },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     $t->post_ok( $host.'/groups/add' => form => $data );

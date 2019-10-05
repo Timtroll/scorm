@@ -26,7 +26,7 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Ввод данных для вывода
-my $data = [
+my $test_data = {
     1 => {
         'data' => {
             'name'      => 'name1',
@@ -36,9 +36,6 @@ my $data = [
         'result' => {
             'id'        => '1',
             'status'    => 'ok'
-        },
-        'comment' => {
-            'text' => 'All fields:' 
         }
     },
     2 => {
@@ -52,13 +49,16 @@ my $data = [
             'status'    => 'ok' 
         }
     }
-];
-$t->post_ok( $host.'/groups/add' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit;
+};
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
 }
-$t->json_is( {'id' => 1,'status' => 'ok'} );
+
 
 # index
 my $result = [
@@ -84,9 +84,8 @@ my $result = [
     }
 ];
 
-my $result = $$test_data{$test}{'result'};
-diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-$t->post_ok( $host.'/groups/index' )
+diag ("\n All groups: ");
+$t->post_ok( $host.'/groups/' )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8')
     ->json_is( $result );

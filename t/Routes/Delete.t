@@ -21,11 +21,13 @@ my $host = $t->app->config->{'host'};
 
 #Ввод данных для удаления
 my $data = {name => 'test', label => 'test', parent => 1};
+my $result = {id => 1, status => 'ok'};
 $t->post_ok( $host.'/routes/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
 }
+$t->json_is( $result );
 
 my $test_data = {
     # положительные тесты
