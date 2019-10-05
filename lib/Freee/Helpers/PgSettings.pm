@@ -176,7 +176,8 @@ sub register {
         if (defined $$data{'selected'} ) {
             $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
         }
-
+warn '===========';
+warn Dumper($data);
         my $fields = join( ', ', map {
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
