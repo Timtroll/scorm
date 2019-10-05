@@ -80,6 +80,8 @@ sub check_token {
     my ($self, %data);
     $self = shift;
 
+print "route = ", $$routs{$self->url_for}, "\n";
+
 # для отладки
 return 1;
 

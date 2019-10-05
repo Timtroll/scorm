@@ -30,8 +30,6 @@ sub register {
 
         warn "Using id field $id_field and parent field $parent_field\n" if DEBUGGING;
 
-        # If given a start_id the find that object in the list and ensure that
-        # that is processed first.  Patch from Kevin White [kevin.white/oupjournals-org]
         if ( defined $start_id ) {
             for ( my $i = 0; $i < scalar @{$list}; $i++ ) {
                 if ( ${$list}[$i]->{$id_field} =~ /^$start_id$/ ) {

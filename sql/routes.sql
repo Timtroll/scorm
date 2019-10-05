@@ -10,7 +10,7 @@ CREATE TABLE "public"."routes" (
 "value" json,
 "status" int4 DEFAULT 0,
 "required" int4 DEFAULT 0,
-"readonly" int4 DEFAULT 0,
+"readonly" int4 DEFAULT 0
 )
 WITH (OIDS=FALSE)
 ;

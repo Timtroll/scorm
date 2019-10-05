@@ -9,7 +9,7 @@ use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
-use experimental 'smartmatch';
+# use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
@@ -47,7 +47,7 @@ sub register {
         $sth->finish();
 
         $FieldsAsArray = $fields;
-        $Fields = {};
+        my $Fields = {};
         foreach my $field ( @$fields ) {
             $Fields->{ $field->{set} }->{ $field->{alias} } = $field;
             $FeildsById->{ $$field{id} } = $field;

@@ -10,6 +10,22 @@ use Encode;
 
 use Freee::Mock::Settings;
 use Data::Dumper;
+use common;
+
+use Validator::LIVR;
+my $validator = Validator::LIVR->new({
+    "id"            => 'integer',
+    "parent"        => { one_of => ['required', 'integer'] },
+    "name"          => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
+    "label"         => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
+    "placeholder"   => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
+    "mask"          => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
+    "value"         => { 'list_of' => ['required', 'any', { max_number => 10000 } ]},
+    "selected"      => { 'list_of' => ['required', 'any', { max_number => 10000 } ]},
+    "required"      => { one_of => [1, 0] },
+    "readonly"      => { one_of => [1, 0] },
+    "status"        => { one_of => [1, 0] }
+});
 
 #####################
 # Работа с фолдерами
@@ -42,6 +58,11 @@ sub get_folder {
 # получить дерево без листьев
 sub get_tree {
     my $self = shift;
+
+    # валидация html запрсоа
+    if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
+        my $res = $self->_html_check( $$routs{$self->url_for} );
+    }
 
     my $list = $self->_get_tree(1);
 
