@@ -30,12 +30,11 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Utils');
+    $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
-    $self->plugin('Freee::Helpers::Tree');
     $self->plugin('Freee::Helpers::PgRoutes');
 
     # загрузка правил валидации
@@ -59,7 +58,7 @@ sub startup {
     $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')         ->to('websocket#index');
 
-    # роут на который происходит редирект, для вывода ошибок
+    # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                     ->to('index#error');
 
     my $auth = $r->under()                ->to('auth#check_token');
@@ -73,14 +72,14 @@ sub startup {
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
-#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
+#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');       # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
     # $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
     # $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
-    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
+    # $auth->post('/settings/group_save')        ->to('settings#group_save'); # групповое добавление/сохранение настроек
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');
@@ -185,8 +184,8 @@ sub startup {
     $auth->post('/routes/add')            ->to('routes#add');          # добавление группы
     $auth->post('/routes/update')         ->to('routes#update');       # обновление данных группы
     $auth->post('/routes/delete')         ->to('routes#delete');       # удаление группы
-    $auth->post('/routes/hide')           ->to('routes#hide');         # выключение роута
-    $auth->post('/routes/activate')       ->to('routes#activate');     # включение роута
+    # $auth->post('/routes/hide')           ->to('routes#hide');         # выключение роута
+    # $auth->post('/routes/activate')       ->to('routes#activate');     # включение роута
 
 
     # управление темами
@@ -267,8 +266,6 @@ sub startup {
         my $key = $_->{pattern}->{'unparsed'};        
         $$routs{$key} = $val;       
     }
-
-    # $self->_all_routes($routs);
 }
 
 1;

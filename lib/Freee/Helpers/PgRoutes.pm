@@ -20,14 +20,11 @@ sub register {
     #################################
     # Helper for Routes
 
-
-    # получение списка рутов из базы в виде объекта
-    # my $list = $self->_all_routes();
-    # возвращает массив хэшей
+    # получение списка рутов из базы в массива хэшей
     $app->helper( '_routes_values' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."routes"', 'id');
+        my $list = $self->pg_dbh->selectall_hashref('SELECT id, label FROM "public"."routes"', 'id');
 
         return $list;
     });

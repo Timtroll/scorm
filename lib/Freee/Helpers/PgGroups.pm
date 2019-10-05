@@ -31,18 +31,6 @@ sub register {
         return $list;
     });
 
-    # получение всех роутов
-    $app->helper( '_all_routes' => sub {
-        my ($self, $list) = @_;
-
-        unless ( $list ) {
-            $list = $routs;
-        }
-
-        return $list;
-    });
-
-
     # добавление группы пользователей
     # my $id = $self->_insert_group({
     #     "id"          => '1',             - id элемента

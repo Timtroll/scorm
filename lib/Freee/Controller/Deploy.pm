@@ -5,6 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use FindBin;
 
+# Деплой и сборка js приложения 
 sub index {
     my ($self);
     $self = shift;
