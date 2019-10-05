@@ -97,20 +97,6 @@
     "show":        0
   },
   {
-    "label":       "Можно удалять",
-    "name":        "removable",
-    "placeholder": "",
-    "readonly":    0,
-    "required":    0,
-    "mask":        null,
-    "add":         true,
-    "selected":    [],
-    "type":        "InputBoolean",
-    "value":       1,
-    "inline":      1,
-    "show":        0
-  },
-  {
     "label":       "Обязательное поле",
     "name":        "required",
     "placeholder": "",
