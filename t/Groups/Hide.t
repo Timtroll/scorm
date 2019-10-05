@@ -27,7 +27,6 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
 }
-$t->content_type_is('application/json;charset=UTF-8');
 
 my $test_data = {
     # положительные тесты
@@ -38,9 +37,7 @@ my $test_data = {
         'result' => {
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'All right:' 
-        }
+        'comment' => 'All right:' 
     },
 
     # отрицательные тесты
@@ -52,25 +49,21 @@ my $test_data = {
             'message'   => "Can't find row for hiding",
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => 'Need id for changing',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No data:' 
-        }
+        'comment' => 'No data:' 
     },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
     $t->post_ok($host.'/groups/hide' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
