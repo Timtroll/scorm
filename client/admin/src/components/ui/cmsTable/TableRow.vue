@@ -168,7 +168,7 @@
           //}
 
           const data = {...this.fullData}
-          data[key]  = '"'+ Number(!data[key]) + '"'
+          data[key]  = '' + Number(!data[key])
 
           this.$store.dispatch(this.table_api.saveField, data)
           //this.$store.dispatch(this.table_api.saveField, data, item.parent)
