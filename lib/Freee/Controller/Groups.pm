@@ -7,9 +7,9 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
 use Freee::Mock::Groups;
-use Data::Dumper;
 use common;
     
+use Data::Dumper;
 
 # вывод списка групп в виде объекта как в Mock
 #    "label"       => "scorm",

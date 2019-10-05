@@ -31,7 +31,9 @@
     <template #bodyRight>
       <List :labels="'Добавить группу настроек'"
             :data="editPanel_data"
-            :group="false"
+            :variable-type-tield="'value'"
+            :add="false"
+            v-on:save="saveLeaf($event)"
             v-on:close="closeAddGroup"></List>
     </template>
 
@@ -40,8 +42,8 @@
 
 <script>
 
-  //import Vuex модуля settings
-  //const settingsVuex = () => import('@/store/modules/settings/')
+  //import прототипа колонок таблицы
+  import protoLeaf from './../../assets/json/proto/settings/leaf.json'
 
   export default {
 
@@ -64,22 +66,23 @@
         actions: {
 
           tree: {
-            get:    'getTree',
-            save:   'saveFolder',
-            remove: 'removeFolder'
+            get:    'settings/getTree',
+            save:   'settings/saveFolder',
+            remove: 'settings/removeFolder'
           },
 
           table: {
-            get:      'getTable',
-            save:     'saveTableRow',
-            remove:   'removeTableRow',
-            activate: 'activateTableRow',
-            hide:     'hideTableRow'
+            get:       'settings/getTable',
+            save:      'saveTableRow',
+            saveField: 'settings/leafSaveField',
+            remove:    'removeTableRow',
+            activate:  'activateTableRow',
+            hide:      'hideTableRow'
           },
 
           editPanel: {
-            get:  'getEditPanel',
-            save: 'saveEditPanel'
+            get:  'settings/leafEdit',
+            save: 'settings/leafSave'
           }
         }
 
@@ -96,16 +99,20 @@
         this.$store.commit('table_current', Number(this.tableId))
       }
 
-      // Размер панели редактирования
+      //// запись прототипа из json в store
+      this.$store.commit('settings/proto_leaf', protoLeaf)
+
+      //// Размер панели редактирования
       this.$store.commit('editPanel_size', false)
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
       this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
-    mounted () {
+    async mounted () {
       // Регистрация Vuex модуля settings
       //this.$store.registerModule('settings', settingsVuex)
+
     },
 
     beforeDestroy () {
@@ -152,7 +159,16 @@
       },
 
       closeAddGroup () {
-        this.$store.commit('editPanel_group', false)
+        this.$store.commit('card_right_show', false)
+      },
+
+      // сохранение Листочка
+      saveLeaf (data) {
+        const objData = {}
+        const arr     = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {objData[item.name] = item.value})
+
+        this.$store.dispatch(this.actions.editPanel.save, objData)
       }
     }
 

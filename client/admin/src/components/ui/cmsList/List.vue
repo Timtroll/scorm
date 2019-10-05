@@ -5,7 +5,7 @@
     <div class="pos-card-header">
 
       <!--headerLeft-->
-      <a class="pos-card-header-item link"
+      <a class="pos-card-header-item link uk-visible@m"
          :class="{'uk-text-danger' : editPanel_large}"
          @click.prevent="toggleSize">
 
@@ -46,7 +46,7 @@
         <ul class="pos-list"
             v-if="data.length > 0">
 
-          <li v-for="(item, index) in data"
+          <li v-for="(item, index) in dataNew"
               :key="index">
             <component v-bind:is="item.type"
                        :value="item.value"
@@ -57,7 +57,10 @@
                        :required="item.required"
                        :mask="item.mask"
                        :label="item.label"
-                       :placeholder="item.placeholder">
+                       :placeholder="item.placeholder"
+                       @value="dataNew[index].value = $event"
+                       @change="dataChanged[index].changed = $event"
+                       @changeType="changeType($event)">
             </component>
 
           </li>
@@ -85,21 +88,21 @@
       <div class="pos-card-header--content"></div>
 
       <div class="pos-card-header-item">
-        <!--<button class="uk-button-success uk-button uk-button-small"-->
-        <!--        @click.prevent="action"-->
-        <!--        :disabled="!isValid">-->
-        <!--  <img src="/img/icons/icon__save.svg"-->
-        <!--       uk-svg-->
-        <!--       width="14"-->
-        <!--       height="14">-->
+        <button class="uk-button-success uk-button uk-button-small"
+                @click.prevent="save"
+                :disabled="!dataIsChanged">
+          <img src="/img/icons/icon__save.svg"
+               uk-svg
+               width="14"
+               height="14">
 
-        <!--  <span class="uk-margin-small-left"-->
-        <!--        v-text="$t('actions.add')"-->
-        <!--        v-if="add"></span>-->
-        <!--  <span class="uk-margin-small-left"-->
-        <!--        v-text="$t('actions.save')"-->
-        <!--        v-else></span>-->
-        <!--</button>-->
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.add')"
+                v-if="add"></span>
+          <span class="uk-margin-small-left"
+                v-text="$t('actions.save')"
+                v-else></span>
+        </button>
       </div>
 
     </div>
@@ -108,8 +111,6 @@
 </template>
 
 <script>
-
-  //import {mergeObject} from './../../../store/methods'
 
   export default {
 
@@ -126,16 +127,17 @@
       InputRadio:      () => import('../inputs/InputRadio'),
       InputDoubleList: () => import('../inputs/InputDoubleList'),
       inputDateTime:   () => import('../inputs/inputDateTime'),
-      InputCode:       () => import('../inputs/InputCode')
+      InputCode:       () => import('../inputs/InputCode'),
+      InputType:       () => import('../inputs/InputType')
     },
 
     // Закрыть панель при нажатии "ESC"
-    created () {
+    mounted () {
 
       document.onkeydown = evt => {
         evt = evt || window.event
         if (evt.keyCode === 27) {
-          this.$emit('close')
+          this.close()
         }
       }
 
@@ -153,6 +155,11 @@
         default: false
       },
 
+      variableTypeField: {
+        type:    String,
+        default: 'value'
+      },
+
       parent: {
         type: Number
       },
@@ -166,8 +173,29 @@
 
     data () {
       return {
-        dataNew: {}
+        dataNew:     [],
+        dataChanged: []
       }
+    },
+
+    watch: {
+
+      data () {
+
+        if (this.data) {
+          this.dataNew     = JSON.parse(JSON.stringify(this.data))
+          this.dataChanged = this.createDataChanged(this.data)
+        }
+
+      },
+
+      // установка типа поля VALUE при загрузке
+      findTypeField () {
+        if (this.findTypeField && this.findTypeField.value) {
+          this.dataNew[this.findVariableTypeField].type = this.findTypeField.value
+        }
+      }
+
     },
 
     computed: {
@@ -193,17 +221,33 @@
         return this.$store.getters.editPanel_status
       },
 
-      //// если данные в форме изменились
-      //dataIsChanged () {
-      //  if (this.dataIsChange) {
-      //    return !Object.values(this.dataIsChange).every(item => !item)
-      //  }
-      //},
+      // если данные в форме изменились
+      dataIsChanged () {
+        if (this.dataChanged) {
+          const data = this.dataChanged.map(item => item.changed)
+          return data.includes(true)
+        }
+      },
 
       // список компонентов для ввода
       inputComponents () {
         return this.$store.getters.inputComponents
+      },
+
+      findVariableTypeField () {
+        return this.dataNew.findIndex(item => item.name === this.variableTypeField)
+      },
+
+      findTypeField () {
+        return this.dataNew.find(item => item.name === 'type')
+      },
+
+      id () {
+        const idEl = this.dataNew.find(item => item.name === 'id')
+        return idEl.value
       }
+
+
 
       ////
       //parentId () {
@@ -212,6 +256,30 @@
     },
 
     methods: {
+
+      createDataChanged (arr) {
+
+        const newArr = []
+
+        arr.forEach(item => {
+          const newItem = {
+            name:    item.name,
+            changed: false
+          }
+          newArr.push(newItem)
+        })
+
+        return newArr
+      },
+
+      variableType (type) {
+
+        if (type === this.variableTypeField) {
+          return this.variableTypeField
+        } else {
+          return type
+        }
+      },
 
       toggleSize () {
         this.$store.commit('editPanel_size', !this.editPanel_large)
@@ -223,8 +291,11 @@
       },
 
       changeType (event) {
-        this.component       = event
-        this.editedData.type = event
+        this.dataNew[this.findVariableTypeField].type = event
+      },
+
+      save () {
+        this.$emit('save', this.dataNew)
       }
 
     }

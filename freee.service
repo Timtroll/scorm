@@ -1,0 +1,23 @@
+[Unit]
+Description=Freee
+After=syslog.target
+After=network.target
+After=nginx.service
+After=postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=forking
+PIDFile=/tmp/freee.pid
+WorkingDirectory=/home/troll/workspace/scorm/master
+
+User=troll
+Group=troll
+
+ExecStart=/home/troll/workspace/scorm/master/starting.sh start
+ExecStop=/home/troll/workspace/scorm/master/starting.sh stop
+ExecReload=/home/troll/workspace/scorm/master/starting.sh restart
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target 

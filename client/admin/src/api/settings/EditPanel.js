@@ -14,14 +14,11 @@ export default {
   },
 
   // добавление/сохранение настройки
-  list_save (id, data) {
+  list_save (data) {
     return Api()({
       url:    'settings/save',
       method: 'post',
-      params: {
-        id:   id,
-        data: data
-      }
+      params: data
     })
   },
 

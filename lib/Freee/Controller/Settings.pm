@@ -4,7 +4,8 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw(decode_json encode_json);
+# use Mojo::JSON qw(decode_json encode_json);
+use JSON::XS;
 use Encode;
 
 use Freee::Mock::Settings;
@@ -16,7 +17,6 @@ use Data::Dumper;
 # получить данные фолдера
 sub get_folder {
     my $self = shift;
-
 
     my $id = $self->param('id');
 
@@ -111,72 +111,68 @@ sub get_leafs {
     # выбираем листья ветки дерева
     my $list = $self->_get_leafs($id);
 
-
-    my $table = $self->_table_obj({
-        "settings"  => {
-            "readonly"      => 0,    # редатирование запрещено
-            "parent"        => 10,   # id парента?
-            "variableType"  => 0,    # ???
-            "massEdit"      => 0,    # групповое редактировани
-            "sort" => {              # сотрировка по
+    # данные для таблицы
+    my $table = {
+        "settings" => {
+            "massEdit" => 1,    # групповое редактировани
+            "sort" => {         # сотрировка по
                 "name"    => "id",
                 "order"   => "asc"
+            },
+            "page" => {
+              "current_page"    => 1,
+              "per_page"        => 100,
+              # "total"           => scalar(@{$list->{'body'}})
             }
         },
-        # ????????????? # тянем из настроек
-        "page" => {
-          "current_page"    => 1,
-          "per_page"        => 100,
-          # "total"           => scalar(@{$list->{'body'}})
-        },
-        # 
-        "header"    => [
-            { "key" => "name",          "label" => "Название",           "show"  => 1,  "inline"    => 0 },
-            { "key" => "label",         "label" => "Расшифровка",        "show"  => 1,  "inline"    => 0 },
-            { "key" => "id",            "label" => "id",                 "show"  => 1,  "inline"    => 0 },
-            { "key" => "mask",          "label" => "Маска",              "show"  => 0,  "inline"    => 0 },
-            { "key" => "parent",        "label" => "Родитель",           "show"  => 0,  "inline"    => 0 },
-            { "key" => "placeholder",   "label" => "Подсказка",          "show"  => 1,  "inline"    => 0 },
-            { "key" => "readonly",      "label" => "Только для чтения",  "show"  => 0,  "inline"    => 0 },
-            { "key" => "removable",     "label" => "Удаляемость",        "show"  => 0,  "inline"    => 0 },
-            { "key" => "required",      "label" => "Обязательные",       "show"  => 1,  "inline"    => 0 },
-            { "key" => "selected",      "label" => "вВыбранные значения","show"  => 0,  "inline"    => 0 },
-            { "key" => "type",          "label" => "Тип",                "show"  => 0,  "inline"    => 0 },
-            { "key" => "value",         "label" => "Значение",           "show"  => 1,  "inline"    => 1 },
-        ],
-        "body"      => $list
-    });
+        "body" => $list
+    };
 
     $self->render( 'json' => { 'status' => 'ok', 'list' => $table });
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
-sub set_load_default {
-    my ($self) = shift;
+sub load_default {
+    my $self = shift;
 
     # очистка таблицы и сброс счетчика
-    $self->reset_setting();
+    $self->_reset_settings();
 
     my @mess;
     foreach my $folder ( @{$settings->{'settings'}} ) {
         my $sub = {
-            'label' => $$folder{'label'},
-            'name'  => $$folder{'label'},
-            'parent'=> 0
+            "name"          => $$folder{'name'},
+            "placeholder"   => $$folder{'placeholder'} || '',
+            "label"         => $$folder{'label'},
+            "mask"          => $$folder{'mask'} || '',
+            "value"         => $$folder{'value'} || '',
+            "selected"      => $$folder{'selected'} || '',
+            "required"      => $$folder{'required'} || 0,
+            "readonly"      => 0,
+            "status"        => 1,
+            "parent"        => 0
         };
         my $id = $self->_insert_setting($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
-        foreach ( @{$$folder{'table'}->{'body'}} ) {
-            # указываем родительский id
-            $_->{'parent'} = $id;
+        if (@{$$folder{'children'}}) {
+            foreach my $children ( @{$$folder{'children'}} ) {
+                $sub = {
+                    "name"          => $$children{'name'},
+                    "placeholder"   => $$children{'placeholder'} || '',
+                    "label"         => $$children{'label'},
+                    "mask"          => $$children{'mask'} || '',
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : '',
+                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
+                    "required"      => $$children{'required'} || 0,
+                    "readonly"      => 0,
+                    "status"        => 1,
+                    "parent"        => $id  # указываем родительский id
+                };
 
-            # сериализуем поля vaue и selected
-            $_->{'value'} = JSON::XS->new->allow_nonref->encode($_->{'value'}) if (ref($_{'value'}) eq 'ARRAY');
-            $_->{'selected'} = JSON::XS->new->allow_nonref->encode($_->{'selected'}) if (ref($_{'selected'}) eq 'ARRAY');
-
-            my $newid = $self->_insert_setting($_, ['parent']);
-            push @mess, "Could not add setting item '$_->{'label'}' in Folder '$$folder{'label'}'" unless $newid;
+                my $chldid = $self->_insert_setting($sub, []);
+                push @mess, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
+            }
         }
     }
 

@@ -65,7 +65,10 @@ sub register {
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
-        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        my $rv = $self->pg_dbh->do(
+            'UPDATE "public"."settings" SET '.$fields.' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
+        ) if $$data{id};
 
         return $rv;
     });
@@ -87,6 +90,8 @@ sub register {
     # my $true = $self->_get_leafs(11);
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
+
+        return unless $id;
 
         my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id', { Slice=> {} } );
 
@@ -117,12 +122,18 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
+        $$data{'value'} = $$data{'value'} ? $$data{'value'} : '';
+        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : '';
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        $self->pg_dbh->do('INSERT INTO "public"."settings" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"');
+        my $sql ='INSERT INTO "public"."settings" ('.
+            join( ',', map { '"'.$_.'"' } keys %$data ).
+            ') VALUES ('.
+            join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            ') RETURNING "id"';
+        $self->pg_dbh->do($sql);
+
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
         return $id;
@@ -161,7 +172,10 @@ sub register {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        my $rv = $self->pg_dbh->do('UPDATE "public"."settings" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        my $rv = $self->pg_dbh->do(
+            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
+        ) if $$data{id};
 
         return $rv;
     });
@@ -192,11 +206,18 @@ sub register {
         # десериализуем поля vaue и selected
         my $out = [];
         if ($row) {
-            $$row{'value'} = '' if ($$row{'value'} eq 'null');
-            $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-            $$row{'value'} = JSON::XS->new->allow_nonref->decode($$row{'value'}) if (ref($$row{'value'}) eq 'ARRAY');
-            $$row{'selected'} = JSON::XS->new->allow_nonref->decode($$row{'selected'});# if (ref($$row{'selected'}) eq 'ARRAY');
-            $$row{'status'} = $$row{'status'} || 0;
+            $$row{'label'}      = $$row{'label'} ? $$row{'label'} : '';
+            $$row{'mask'}       = $$row{'mask'} ? $$row{'mask'} : '';
+            $$row{'name'}       = $$row{'name'} ? $$row{'name'} : '';
+            $$row{'parent'}     = $$row{'parent'} || 0;
+            $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
+            $$row{'readonly'}   = $$row{'readonly'} || 0;
+            $$row{'removable'}  = $$row{'removable'} || 0;
+            $$row{'required'}   = $$row{'required'} || 0;
+            $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
+            $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
+            $$row{'selected'}   = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
+            $$row{'status'}     = $$row{'status'} || 0;
         }
         
         return $row;
@@ -208,6 +229,7 @@ sub register {
         my $self = shift;
 
         $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
+        $self->pg_dbh->do( 'ALTER SEQUENCE settings_id_seq RESTART;' );
 
         return 1;
     });

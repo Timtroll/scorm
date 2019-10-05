@@ -111,6 +111,16 @@
                v-text="$t('actions.loading')"></div>
         </div>
       </div>
+      <!--error-->
+      <div class="pos-card-loader"
+           v-else-if="loader === 'error'">
+        <div>
+          <IconBug :width="60"
+                   :height="60"></IconBug>
+          <div class="uk-margin-small-top"
+               v-html="$t('actions.requestError')"></div>
+        </div>
+      </div>
     </transition>
 
   </div>
