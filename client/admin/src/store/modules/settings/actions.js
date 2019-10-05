@@ -251,13 +251,12 @@ const actions = {
 
   async leafSaveField ({commit, state, getters, dispatch}, item) {
 
-    const parentId =  Number(item.parent)
+    const parentId = item.parent
 
     try {
       //store.commit('editPanel_status_request') // статус - запрос
 
-
-      const response = await Api_EditPanel.list_save(item)
+      const response = await Api_EditPanel.list_save(item.data)
 
       if (response.status === 200) {
 

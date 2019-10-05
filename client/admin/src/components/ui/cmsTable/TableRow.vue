@@ -162,16 +162,17 @@
 
         if (inline === 1) {
 
-          //const data = {
-          //  id:    item.id,
-          //  [key]: Number(!item.val)
-          //}
-
           const data = {...this.fullData}
-          data[key]  = '' + Number(!data[key])
 
-          this.$store.dispatch(this.table_api.saveField, data)
-          //this.$store.dispatch(this.table_api.saveField, data, item.parent)
+          const sendData = {
+            parent: data.parent,
+            data:   {
+              id:    data.id,
+              [key]: '' + Number(!data[key])
+            }
+          }
+
+          this.$store.dispatch(this.table_api.saveField, sendData)
         } else {
           this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
         }
