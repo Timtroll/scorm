@@ -34,8 +34,8 @@ sub login {
     $json = { 'status' => 'ok' };
 
     # clear input data
-    # $in{'login'} = $self->validate('chars', 'login');
-    # $in{'pass'} = $self->validate('symbchars', 'pass');
+    $in{'login'} = $self->param('login');
+    $in{'pass'} = $self->param('pass');
     # $in{'capcha'} = $self->validate('chars', 'capcha');
 
     if ($in{'login'} && $in{'pass'}) {
