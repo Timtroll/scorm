@@ -93,7 +93,7 @@
     "selected":    [],
     "type":        "InputBoolean",
     "value":       0,
-    "inline":      0,
+    "inline":      1,
     "show":        0
   },
   {
@@ -107,7 +107,7 @@
     "selected":    [],
     "type":        "InputBoolean",
     "value":       1,
-    "inline":      0,
+    "inline":      1,
     "show":        0
   },
   {
@@ -121,7 +121,7 @@
     "selected":    [],
     "type":        "InputBoolean",
     "value":       1,
-    "inline":      0,
+    "inline":      1,
     "show":        0
   },
   {

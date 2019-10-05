@@ -129,7 +129,8 @@
 
             <!--header rows data-->
             <th v-for="item in tableHeader"
-                v-text="item.label"></th>
+                v-text="item.label"
+                :class="{'inline': item.inline === 1}"></th>
 
             <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
               <!--edit Row-->
