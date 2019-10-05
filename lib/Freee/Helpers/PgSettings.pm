@@ -9,7 +9,7 @@ use JSON::XS;
 
 use DBD::Pg;
 use DBI;
-use experimental 'smartmatch';
+# use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
@@ -172,7 +172,15 @@ sub register {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
 
-        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        my $fields = join( ', ', map {
+            if ($$data{$_}) {
+                '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} );
+            }
+            else {
+                "\"".$_."\"=''";
+            }
+        } keys %$data );
+warn $fields;
         my $rv = $self->pg_dbh->do(
             'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};

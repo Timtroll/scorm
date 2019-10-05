@@ -39,6 +39,9 @@ sub startup {
     $self->plugin('Freee::Helpers::Tree');
     $self->plugin('Freee::Helpers::PgRoutes');
 
+    $self->plugin('Freee::Helpers::Validate');
+    $vfields = $self->_load_vfields();
+
     # init Pg connection
     $self->pg_init();
 

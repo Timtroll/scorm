@@ -9,7 +9,7 @@ use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
-use experimental 'smartmatch';
+# use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
