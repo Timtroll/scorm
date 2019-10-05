@@ -47,7 +47,7 @@ sub register {
     # возвращает 1/undef
     $app->helper( '_check' => sub {
         return 0 unless $_[1];
-
+warn ('check ', $_[1]);
         my @error = ();
         if ( defined $config->{'vfields'}->{$_[1]} ) {
             my $valid = $config->{'vfields'}->{$_[1]};
@@ -85,20 +85,36 @@ warn $val;
         # };
     });
 
+    # формирование типов перед сохранением в БД
+    # my $list = $self->_check_fields($$vfields{'/settings/save'}});
+    # возвращает ссылку на хэш из $self->param(*)
+    $app->helper( '_check_fields' => sub {
+        my $self = shift;
+
+        return unless $self->url_for;
+
+        my %data = ();
+        foreach (keys %{$$vfields{$self->url_for}}) {
+            $data{$_} = $self->param($_) if defined $self->param($_);
+        }
+
+        return \%data
+    });
+
     # загрузка правил валидации html полоей
-    # my $list = $self->_vfields('get_tree');
+    # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
-    $app->helper( '_vfields' => sub {
+    $app->helper( '_param_fields' => sub {
 
         $vfields = {
             # волидация роутов
-            # 'settings'  => {
             '/settings/save'  => {
                 "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
                 "name"          => [ '', qr{.*}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
                 "placeholder"   => [ '', qr{.*}, 256 ],
+                "type"          => [ '', qr{\w+}, 256 ],
                 "mask"          => [ '', qr{.*}, 256 ],
                 "value"         => [ '', qr{.*}, 10000 ],
                 "selected"      => [ '', qr{.*}, 10000 ],
@@ -106,6 +122,21 @@ warn $val;
                 "readonly"      => [ '', qr{^\d+$} ],
                 "status"        => [ 'required', qr{^[01]$} ]
             },
+            '/settings/add'  => {
+                "id"            => [ 'required', qr{^\d+$} ],
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+                "placeholder"   => [ '', qr{.*}, 256 ],
+                "type"          => [ '', qr{\w+}, 256 ],
+                "mask"          => [ '', qr{.*}, 256 ],
+                "value"         => [ '', qr{.*}, 10000 ],
+                "selected"      => [ '', qr{.*}, 10000 ],
+                "required"      => [ '', qr{^\d+$} ],
+                "readonly"      => [ '', qr{^\d+$} ],
+                "status"        => [ 'required', qr{^[01]$} ]
+            },
+
             'groups'  => {
                 "id"            => [ '', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],

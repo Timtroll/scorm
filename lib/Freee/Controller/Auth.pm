@@ -84,7 +84,8 @@ print "route = ", $self->url_for, "\n";
 
     # валидируем входные параметры, если есть соответствующие правила
     if (defined $$vfields{$self->url_for}) {
-        my ($res, $err) = $self->_check( $$routs{$self->url_for} );
+        # my ($res, $err) = $self->_check( $$routs{$self->url_for} );
+        my ($res, $err) = $self->_check( $self->url_for );
 
         unless ($res) {
             # выводим ошибки, если валидация html данных не прошла

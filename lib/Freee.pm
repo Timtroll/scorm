@@ -40,7 +40,7 @@ sub startup {
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
-    $vfields = $self->_vfields();
+    $vfields = $self->_param_fields();
 
     # init Pg connection
     $self->pg_init();
