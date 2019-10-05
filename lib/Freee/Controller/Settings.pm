@@ -349,7 +349,7 @@ warn $self->url_for;
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
     unless (@mess) {
         foreach (keys %{$$vfields{$self->url_for}}) {
-            $data{$_} = $self->param($_) if $self->param($_);
+            $data{$_} = $self->param($_) if ($self->param($_) || $self->param($_) =~ /0/);
         }
  warn Dumper(\%data);
        $id = $self->_save_setting( \%data, [] );
