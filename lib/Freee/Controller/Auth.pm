@@ -136,7 +136,7 @@ sub _get_token {
     $self = shift;
     $user = shift;
 
-    $in{'token'} = $self->validate('chars', 'token');
+    $in{'token'} = $self->param('token');
 
     # create token
     $error = 0;
