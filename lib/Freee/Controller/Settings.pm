@@ -217,34 +217,8 @@ sub add {
 
     # read params
     my ($id, %data, @mess);
-
-    # $data{'parent'} = $self->param('parent');
-    # $data{'label'} = $self->param('label');
-    # $data{'name'} = $self->param('name');
-
-    # # проверка обязательных полей
-    # $data{'parent'} = 0 unless $data{'parent'};
-    # $data{'label'} = '' unless $data{'label'};
-    # $data{'name'} = '' unless $data{'name'};
-    # unless (
-    #     (($data{'parent'} == 0) && $data{'label'}) ||
-    #     (($data{'parent'} > 0) && $data{'label'} && $data{'name'})
-    # ) {
-    #     push @mess, 'Not exists required fields';
-    # }
-
-    # # поля для группы настроек
-    # $data{'readonly'} = $self->param('readonly') || 0;
-
-    # # готовим запись настроек, если это не folder
-    # unless ($self->param('folder')) {
-    #     my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
-    #     foreach (@fields) {
-    #         $data{$_} = $self->param($_);
-    #     }
-    # }
-
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
     unless (@mess) {
         # проверка записываемых данных
         my $data = $self->_check_fields();
@@ -345,49 +319,64 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my $id = $self->param('id');
+    my ($id, $resp, @mess);
+    unless ( $id = $self->param('id') ) {
+        push @mess, "id is empty or 0";
+    }
+    else {
+        # проверка обязательных полей
+        $id = 0 unless $id =~ /\d+/;
+        push @mess, "Id wrong or empty" unless $id;
 
-    # проверка обязательных полей
-    my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Id wrong or empty" unless $id;
-
-    unless (@mess) {
-        $id = $self->_delete_setting( $id );
-        push @mess, "Could not deleted '$id'" unless $id;
+        unless (@mess) {
+            $id = $self->_delete_setting( $id );
+            push @mess, "Could not deleted '$id'" unless $id;
+        }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
 
-sub activate {
-    my $self = shift;
+# sub activate {
+#     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'activate'
-        }
-    );
-}
+#     my ($id, $resp, @mess);
+#     unless ( $id = $self->param('id') ) {
+#         push @mess, "id is empty or 0";
+#     }
+#     else {
+#         # проверка обязательных полей
+#         $id = 0 unless $id =~ /\d+/;
+#         push @mess, "Id wrong or empty" unless $id;
 
-sub hide {
-    my $self = shift;
+#         unless (@mess) {
+#             $id = $self->_delete_setting( $id );
+#             push @mess, "Could not deleted '$id'" unless $id;
+#         }
+#     }
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'hide'
-        }
-    );
-}
+#     $resp->{'message'} = join("\n", @mess) if @mess;
+#     $resp->{'status'} = @mess ? 'fail' : 'ok';
+#     $resp->{'id'} = $id if $id;
+
+#     $self->render( 'json' => $resp );
+# }
+
+# sub hide {
+#     my $self = shift;
+
+#     $self->render(
+#         'json'    => {
+#             'status'        => 'ok',
+#             'controller'    => 'Settings',
+#             'route'         => 'hide'
+#         }
+#     );
+# }
 
 sub inputs {
     my $self = shift;

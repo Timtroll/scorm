@@ -174,9 +174,6 @@ sub register {
         my ($self, $data) = @_;
 
         return unless $data;
-warn '===========';
-warn Dumper($data);
-warn '===========';
 
         # сериализуем поля vaue и selected
         if (defined $$data{'value'} ) {

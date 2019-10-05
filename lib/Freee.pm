@@ -78,8 +78,8 @@ sub startup {
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
-    $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
-    $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
+    # $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
+    # $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
     # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
 
     # управление контентом

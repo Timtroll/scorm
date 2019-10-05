@@ -47,7 +47,7 @@ sub register {
     # возвращает 1/undef
     $app->helper( '_check' => sub {
         return 0 unless $_[1];
-warn ('check ', $_[1]);
+
         my @error = ();
         if ( defined $config->{'vfields'}->{$_[1]} ) {
             my $valid = $config->{'vfields'}->{$_[1]};
@@ -55,7 +55,6 @@ warn ('check ', $_[1]);
             foreach my $fld (keys %$valid) {
                 # читаем поле
                 if (my $val = $_[0]->param($fld)) {
-warn $val;
                     # проверяем длинну поля, если указано проверять
                     if ($$valid{$fld}[2]) {
                         if ( length($val) < $$valid{$fld}[2]) {
@@ -123,7 +122,7 @@ warn $val;
                 "status"        => [ 'required', qr{^[01]$} ]
             },
             '/settings/add'  => {
-                "id"            => [ 'required', qr{^\d+$} ],
+                # "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
                 "name"          => [ '', qr{.*}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
