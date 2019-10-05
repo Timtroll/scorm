@@ -117,6 +117,8 @@
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
+      this.$store.commit('tree_active', null)
+
 
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')
