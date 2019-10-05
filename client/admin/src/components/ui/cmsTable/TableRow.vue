@@ -94,7 +94,7 @@
     watch: {
 
       rowData () {
-        this.updateData = JSON.parse(JSON.stringify(this.rowData))
+        this.updateData = {...this.rowData}
       },
 
       checkedAll () {
@@ -108,7 +108,7 @@
       //const data      = await function () {
       //  return input
       //}
-      this.updateData = JSON.parse(JSON.stringify(this.rowData))
+      this.updateData = {...this.rowData}
 
     },
 
@@ -167,8 +167,8 @@
           //  [key]: Number(!item.val)
           //}
 
-          const data = JSON.parse(JSON.stringify(this.fullData))
-          data[key]  = Number(!data[key])
+          const data = {...this.fullData}
+          data[key]  = '"'+ Number(!data[key]) + '"'
 
           this.$store.dispatch(this.table_api.saveField, data)
           //this.$store.dispatch(this.table_api.saveField, data, item.parent)

@@ -23,9 +23,9 @@
       </a>
 
       <!--header settings-->
-      <div class="pos-card-header--content"></div>
-      <!--<div class="pos-card-header&#45;&#45;content"-->
-      <!--     v-text="editedData.label"></div>-->
+      <!--<div class="pos-card-header&#45;&#45;content"></div>-->
+      <div class="pos-card-header--content"
+           v-text="title"></div>
 
       <!--headerRight-->
       <div class="pos-card-header-item">
@@ -199,6 +199,14 @@
     },
 
     computed: {
+
+      title () {
+        if (this.add) {
+          return this.$t('actions.add')
+        } else {
+          return this.$t('actions.edit')
+        }
+      },
 
       // Проверка на уникальность поля 'name' в таблице
       //tableNames () {
