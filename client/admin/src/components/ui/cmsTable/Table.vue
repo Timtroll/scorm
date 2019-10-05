@@ -152,7 +152,7 @@
                 <input type="checkbox"
                        v-model="checked"
                        @click="checkedAll"
-                       class="pos-checkbox-switch xsmall uk-display-inline-block">
+                       class="pos-checkbox-switch danger xsmall uk-display-inline-block">
               </div>
             </th>
           </tr>

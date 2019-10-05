@@ -58,7 +58,7 @@
              v-if="massEdit"
              @change="notCheckedAll"
              v-model="checkedRow"
-             class="pos-checkbox-switch xsmall uk-margin-small-left">
+             class="pos-checkbox-switch danger xsmall uk-margin-small-left">
     </td>
   </tr>
 
