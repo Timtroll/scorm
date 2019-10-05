@@ -72,7 +72,6 @@ sub save_folder {
 
         'required'    => $self->param('required') || 1,
         'readonly'    => $self->param('readonly') || 0,
-        'removable'   => $self->param('removable') || 1,
         'status'      => $self->param('status') || 1
     };
 
@@ -196,7 +195,6 @@ sub load_default {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
 #     "placeholder" => 'это название',- название для отображения в форме
@@ -211,7 +209,6 @@ sub load_default {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub add {
     my ($self, $data) = @_;
@@ -236,7 +233,6 @@ sub add {
 
     # поля для группы настроек
     $data{'readonly'} = $self->param('readonly') || 0;
-    $data{'removable'} = $self->param('removable') || 1;
 
     # готовим запись настроек, если это не folder
     unless ($self->param('folder')) {
@@ -292,7 +288,6 @@ sub edit {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
 #     "placeholder" => 'это название',- название для отображения в форме
@@ -307,7 +302,6 @@ sub edit {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub save {
     my $self = shift;
@@ -334,7 +328,6 @@ sub save {
 
     # # поля для группы настроек
     # $data{'readonly'} = $self->param('readonly') || 0;
-    # $data{'removable'} = $self->param('removable') || 0;
 
     # готовим запись настроек, если это не folder
     # unless ($self->param('folder')) {

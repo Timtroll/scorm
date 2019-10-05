@@ -25,8 +25,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 1,
@@ -43,8 +42,7 @@ my $test_data = {
             'name'      => 'name2',            
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 2,
@@ -61,8 +59,7 @@ my $test_data = {
             'name'      => 'name3',            
             'value'     => '{"/route":0}',
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 3,
@@ -79,8 +76,7 @@ my $test_data = {
             'name'      => 'name4',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'id'        => 4,
@@ -97,8 +93,7 @@ my $test_data = {
             'name'      => 'name5',            
             'value'     => '{"/route":0}',
             'status'    => 0,
-            'required'  => 0,
-            'removable' => 0
+            'required'  => 0
         },
         'result' => {
             'id'        => 5,
@@ -137,8 +132,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Wrong parent',
@@ -155,8 +149,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',
@@ -173,8 +166,7 @@ my $test_data = {
             'value'     => '{"/route":0}',
             'status'    => 0,
             'required'  => 0,
-            'readonly'  => 0,
-            'removable' => 0
+            'readonly'  => 0
         },
         'result' => {
             'message'   => 'Required fields do not exist',

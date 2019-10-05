@@ -33,7 +33,6 @@ $groups = {
             "settings"  => {
               "readonly"    => 0,
               "totalCount"  => 3,
-              "removable"   => 1,
               "massEdit"    => 0,
               "sortBy"      => "id",
               "sortOrder"   => "asc"
@@ -81,7 +80,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10011,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -95,7 +93,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -109,7 +106,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -123,7 +119,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -137,7 +132,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -151,7 +145,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               },{
                 "readonly"      => 1,
@@ -165,7 +158,6 @@ $groups = {
                 "selected"      => 0,
                 "parent"        => 1001,
                 "id"            => 10012,
-                "removable"     => 1,
                 "folder"        => 1
               }
             ]

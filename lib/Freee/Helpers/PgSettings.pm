@@ -116,8 +116,7 @@ sub register {
     # my $id = $self->_insert_setting({
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
-    #     "readonly",       - не обязательно, по умолчанию 0
-    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "readonly", - не обязательно, по умолчанию 0
     # });
     $app->helper( '_insert_setting' => sub {
         my ($self, $data) = @_;
@@ -160,8 +159,7 @@ sub register {
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "name",     - обязательно
-    #     "readonly",       - не обязательно, по умолчанию 0
-    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "readonly", - не обязательно, по умолчанию 0
     # });
     # возвращается id записи
     $app->helper( '_save_setting' => sub {
@@ -221,7 +219,6 @@ warn Dumper($data);
             $$row{'parent'}     = $$row{'parent'} || 0;
             $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
             $$row{'readonly'}   = $$row{'readonly'} || 0;
-            $$row{'removable'}  = $$row{'removable'} || 0;
             $$row{'required'}   = $$row{'required'} || 0;
             $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
             $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
