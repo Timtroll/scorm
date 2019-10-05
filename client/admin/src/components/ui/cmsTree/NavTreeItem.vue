@@ -37,6 +37,7 @@
         <!--Добавить дочерний раздел-->
         <a @click.prevent="addChildren(navItem.id)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
+           v-if="navItem.folder === 1"
            class="pos-side-nav-item-actions__add">
           <img src="/img/icons/icon__plus-doc.svg"
                uk-svg
@@ -125,7 +126,6 @@
       table_api () {
         return this.$store.getters.table_api
       },
-
 
       navActiveId () {
         return this.$store.getters.activeId
