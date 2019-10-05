@@ -65,11 +65,11 @@ sub add {
 
     my ($id, @mess, $resp);
     
-    # проверка остальных полей
+    # проверка обязательных полей
     if ( $data{'label'} && $data{'name'} ) {
         # добавление группы
         $id = $self->_insert_group( \%data );
-        push @mess, "Could not new group item '$data{'label'}'" unless $id;
+        push @mess, "Could not add new group item '$data{'label'}'" unless $id;
     }
     else {
         push @mess, "Required fields do not exist";
@@ -104,7 +104,7 @@ sub update {
     # проверка обязательных полей
     if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
         # проверка существования обновляемой строки
-        if ( $self->_id_check( $data{'id'} ) ) {
+        if ( $self->_group_id_check( $data{'id'} ) ) {
             # обновление группы
             $id = $self->_update_group( \%data );
             push @mess, "Could not update setting item '$data{'label'}'" unless $id;
@@ -136,7 +136,7 @@ sub delete {
     # проверка обязательных полей
     if ( $id ) {
         # проверка на существование удаляемой строки в groups
-        if ( $self->_id_check( $id ) ) {
+        if ( $self->_group_id_check( $id ) ) {
             # удаление группы
             $id = $self->_delete_group( $id );
             push @mess, "Could not deleted" unless $id;
@@ -171,7 +171,7 @@ sub hide {
     # проверка id
     if ( $id ) {       
         # проверка на существование строки 
-        if ( $self->_id_check( $id ) ) {
+        if ( $self->_group_id_check( $id ) ) {
             # деактивация элемента
             $id = $self->_hide_group( $id );
             push @mess, "Can't change status" unless $id;
@@ -206,7 +206,7 @@ sub activate {
     # проверка id
     if ( $id ) {       
         # проверка на существование строки 
-        if ( $self->_id_check( $id ) ) {
+        if ( $self->_group_id_check( $id ) ) {
             # активация элемента
             $id = $self->_activate_group( $id );
             push @mess, "Can't change status" unless $id;

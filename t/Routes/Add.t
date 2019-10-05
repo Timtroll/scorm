@@ -1,3 +1,12 @@
+# новый роут
+# my $id = $self->insert_route({
+#     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
+#     "label"       => 'название',      - название для отображения
+#     "name",       => 'name',          - системное название, латиница
+#     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
+#     "required"    => 0,               - не обязательно, по умолчанию 0
+#     "readonly"    => 0,               - не обязательно, по умолчанию 0
+#     "status"      => 0                - по умолчанию 1
 use Mojo::Base -strict;
 
 use Test::More;
@@ -15,6 +24,9 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
+
 my $test_data = {
     # положительные тесты
     1 => {
@@ -31,9 +43,7 @@ my $test_data = {
             'id'        => 1,
             'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'All fields:' 
-        }
+        'comment' => 'All fields:'
     },
     2 => {
         'data' => {
@@ -48,9 +58,7 @@ my $test_data = {
             'id'        => 2,
             'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'No value:' 
-        }
+        'comment' => 'No value:'
     },
     3 => {
         'data' => {
@@ -65,9 +73,7 @@ my $test_data = {
             'id'        => 3,
             'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'No status:' 
-        }
+        'comment' => 'No status:'
     },
     4 => {
         'data' => {
@@ -82,9 +88,7 @@ my $test_data = {
             'id'        => 4,
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No required:' 
-        }
+        'comment' => 'No required:'
     },
     5 => {
         'data' => {
@@ -99,33 +103,11 @@ my $test_data = {
             'id'        => 5,
             'status'    => 'ok'
         },
-        'comment' => {
-            'text'      => 'No readonly:' 
-        }
+        'comment' => 'No readonly:'
     },
-    6 => {
-        'data' => {
-            'parent'    => 1,
-            'label'     => 'label6',
-            'name'      => 'name6',            
-            'value'     => '{"/route":0}',
-            'status'    => 0,
-            'required'  => 0,
-            'readonly'  => 0
-        },
-        'result' => {
-            'id'        => '6',
-            'status'    => 'ok'
-        },
-        'comment' => {
-            'text'      => 'No removable:' 
-        }
-    },
-    
-
 
     # отрицательные тесты
-    7 => {
+    6 => {
         'data' => {
             'label'     => 'label7',
             'name'      => 'name7',            
@@ -138,11 +120,9 @@ my $test_data = {
             'message'   => 'Wrong parent',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No parent:' 
-        }
+        'comment' => 'No parent:'
     },
-    8 => {
+    7 => {
         'data' => {
             'parent'    => 1,
             'name'      => 'name8',            
@@ -155,11 +135,9 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No label:' 
-        }
+        'comment' => 'No label:'
     },
-    9 => {
+    8 => {
         'data' => {
             'parent'    => 1,
             'label'     => 'label9',
@@ -172,21 +150,37 @@ my $test_data = {
             'message'   => 'Required fields do not exist',
             'status'    => 'fail'
         },
-        'comment' => {
-            'text'      => 'No name:' 
-        }
+        'comment' => 'No name:'
     },
-    
+    9 => {
+        'data' => {
+            'parent'    => 1,
+            'label'     => 'label1',
+            'name'      => 'name1',            
+            'value'     => '{"/route":0}',
+            'status'    => 0,
+            'required'  => 0,
+            'readonly'  => 0
+        },
+        'result' => {
+            'message'   => "Could not add new route item 'label1'",
+            'status'    => 'fail'
+        },
+        'comment' => 'Mistake from DB:'
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/routes/add' => form => $data )
-        ->status_is(200)
-        ->content_type_is('application/json;charset=UTF-8')
-        ->json_is( $result );
+    $t->post_ok( $host.'/routes/add' => form => $data );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        last;
+    }
+    $t->content_type_is('application/json;charset=UTF-8');
+    $t->json_is( $result );
 };
 
 done_testing();

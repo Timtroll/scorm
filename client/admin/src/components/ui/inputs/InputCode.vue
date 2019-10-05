@@ -81,7 +81,7 @@
         fullSize:      false,
         editorOptions: {
           highlightActiveLine:       true,
-          readOnly:                  false,
+          readonly:                  false,
           showInvisibles:            false,
           tabSize:                   4,
           enableBasicAutocompletion: true,
@@ -94,7 +94,7 @@
 
     created () {
       if (this.editable === 0) {
-        this.editorOptions.readOnly = true
+        this.editorOptions.readonly = true
       }
     },
 
@@ -105,9 +105,9 @@
       },
 
       editable () {
-        this.editorOptions.readOnly = this.editable === 0
+        this.editorOptions.readonly = this.editable === 0
         if (this.$refs.codeEditor.editor) {
-          this.$refs.codeEditor.editor.$readOnly = (Boolean(!this.editable))
+          this.$refs.codeEditor.editor.$readonly = (Boolean(!this.editable))
         }
       }
 

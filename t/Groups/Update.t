@@ -1,3 +1,10 @@
+# обновление группы
+# my $id = $self->update({
+#     "id"        => 1            - id обновляемого элемента ( >0 )
+#     "label"     => 'название'   - обязательно (название для отображения)
+#     "name",     => 'name'       - обязательно (системное название, латиница)
+#     "status"    => 0 или 1      - активна ли группа
+# });
 use Mojo::Base -strict;
 
 use Test::More;
@@ -14,13 +21,43 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-#Ввод данных для удаления
-my $data = {name => 'test', label => 'test'};
-$t->post_ok('http://127.0.0.1:4444/groups/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 1,'status' => 'ok'} );
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
 
 my $test_data = {
+    1 => {
+        'data' => {
+            'name'      => 'name1',
+            'label'     => 'label1',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '1',
+            'status'    => 'ok'
+        }
+    },
+    2 => {
+        'data' => {
+            'name'      => 'name2',
+            'label'     => 'label2',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok' 
+        }
+    }
+};
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
+}
+
+$test_data = {
     # положительные тесты
     1 => {
         'data' => {
@@ -30,11 +67,9 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'status'  => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'All fields:' 
-        }
+        'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
@@ -43,11 +78,9 @@ my $test_data = {
             'label'     => 'label'
         },
         'result' => {
-            'status'  => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => {
-            'text' => 'No status:' 
-        }
+        'comment' => 'No status:' 
     },
 
     # отрицательные тесты
@@ -59,12 +92,10 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message' => "Can't find row for updating",
-            'status'  => 'fail'
+            'message'   => "Can't find row for updating",
+            'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'Wrong id:' 
-        }
+        'comment' => 'Wrong id:' 
     },
     4 => {
         'data' => {
@@ -73,12 +104,10 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message' => 'Required fields do not exist',
-            'status'  => 'fail'
+            'message'   => 'Required fields do not exist',
+            'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No id:' 
-        }
+        'comment' => 'No id:' 
     },
     5 => {
         'data' => {
@@ -87,12 +116,10 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message' => 'Required fields do not exist',
-            'status'  => 'fail'
+            'message'   => 'Required fields do not exist',
+            'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No name:' 
-        }
+        'comment' => 'No name:' 
     },
     6 => {
         'data' => {
@@ -101,20 +128,31 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message' => 'Required fields do not exist',
-            'status'  => 'fail'
+            'message'   => 'Required fields do not exist',
+            'status'    => 'fail'
         },
-        'comment' => {
-            'text' => 'No label:' 
-        }
+        'comment' => 'No label:' 
     },
+    7 => {
+        'data' => {
+            'id'        => 1,
+            'label'     => 'label2',
+            'name'      => 'name2',            
+            'status'    => 0
+        },
+        'result' => {
+            'message'   => "Could not update setting item 'label2'",
+            'status'    => 'fail'
+        },
+        'comment' => 'Mistake from DB:' 
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/groups/update' => form => $data )
+    diag ( $$test_data{$test}{'comment'} );
+    $t->post_ok($host.'/groups/update' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

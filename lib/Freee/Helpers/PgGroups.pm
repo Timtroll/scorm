@@ -45,10 +45,16 @@ sub register {
         return unless $data;
 
         my $id;
-        if ( $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-            $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
+        eval {
+            if ( $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
+            }
+        };
+
+        if ($@) { 
+            print $DBI::errstr . "\n";
         }
- 
+
         return $id;
     });
 
@@ -65,7 +71,14 @@ sub register {
 
         return unless $data;
 
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        my $db_result;
+        eval {
+            $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        };
+
+        if ($@) { 
+            print $DBI::errstr . "\n";
+        }
 
         return $db_result;
     });
@@ -138,9 +151,9 @@ sub register {
     });
 
     # существует ли строка с таким id
-    # my $true = $self->_id_check( 99 );
+    # my $true = $self->_group_id_check( 99 );
     # возвращается true/false
-    $app->helper( '_id_check' => sub {
+    $app->helper( '_group_id_check' => sub {
         my ($self, $id) = @_;
 
         return unless $id;
@@ -149,6 +162,7 @@ sub register {
 
         return $db_result;
     });
+    
 }
 
 1;

@@ -6,7 +6,7 @@
         type="text"
         v-bind:disabled="disabled"
         v-bind="inputAttributes"
-        v-bind:readonly="isReadOnly"
+        v-bind:readonly="isreadonly"
         v-bind:value="inputValue"
         v-on:input="editable && processUserInput($event.target.value)"
         v-on:focus="editable && open()"
@@ -230,7 +230,7 @@
 
       },
 
-      isReadOnly () {
+      isreadonly () {
         return !this.editable || (this.inputAttributes && this.inputAttributes.readonly)
       },
 

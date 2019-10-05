@@ -1,3 +1,5 @@
+# удалениe из групп пользователей
+#  "id" => 1 - id удаляемого элемента ( >0 )
 use Mojo::Base -strict;
 
 use Test::More;
@@ -14,11 +16,18 @@ my $t = Test::Mojo->new('Freee');
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
+
 #Ввод данных для удаления
 my $data = {name => 'test', label => 'test', parent => 1};
-$t->post_ok('http://127.0.0.1:4444/routes/add' => form => $data )
-    ->status_is(200)
-    ->json_is( {'id' => 1,'status' => 'ok'} );
+my $result = {id => 1, status => 'ok'};
+$t->post_ok( $host.'/routes/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    last;
+}
+$t->json_is( $result );
 
 my $test_data = {
     # положительные тесты
@@ -27,10 +36,10 @@ my $test_data = {
             'id'        => 1
         },
         'result' => {
-            'status'  => 'ok'
+            'status'    => 'ok'
         },
         'comment' => {
-            'text' => 'All right:' 
+            'text'      => 'All right:' 
         }
     },
 
@@ -40,21 +49,21 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message' => "Can't find row for deleting",
-            'status'  => 'fail'
+            'message'   => "Can't find row for deleting",
+            'status'    => 'fail'
         },
         'comment' => {
-            'text' => 'Wrong id:' 
+            'text'      => 'Wrong id:' 
         }
     },
     3 => {
         'data' => {},
         'result' => {
-            'message' => 'Could not id for deleting',
-            'status'  => 'fail'
+            'message'   => 'Could not id for deleting',
+            'status'    => 'fail'
         },
         'comment' => {
-            'text' => 'No data:' 
+            'text'      => 'No data:' 
         }
     },
 };
@@ -63,7 +72,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ("\n $$test_data{$test}{'comment'}{'text'} ");
-    $t->post_ok('http://127.0.0.1:4444/routes/delete' => form => $data )
+    $t->post_ok($host.'/routes/delete' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
