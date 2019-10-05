@@ -328,7 +328,7 @@ sub save {
         my $data = $self->_check_fields($self->url_for);
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $id = $self->_save_setting( $$data, [] ) unless @mess;
+        $id = $self->_save_setting( $data, [] ) unless @mess;
         push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
     }
 

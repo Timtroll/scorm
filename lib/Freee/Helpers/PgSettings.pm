@@ -124,10 +124,18 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = $$data{'value'} ? $$data{'value'} : '';
-        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : '';
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        # $$data{'value'} = $$data{'value'} ? $$data{'value'} : '';
+        # $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : '';
+        # $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        # $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+
+        # сериализуем поля vaue и selected
+        if (defined $$data{'value'} ) {
+            $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        }
+        if (defined $$data{'selected'} ) {
+            $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        }
 
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
