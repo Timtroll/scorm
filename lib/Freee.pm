@@ -38,7 +38,7 @@ sub startup {
     $self->plugin('Freee::Helpers::Tree');
     $self->plugin('Freee::Helpers::PgRoutes');
 
-    # звгрузка правил валидации
+    # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
     $vfields = $self->_vfields();
 

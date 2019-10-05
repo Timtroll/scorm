@@ -55,6 +55,7 @@ sub register {
             foreach my $fld (keys %$valid) {
                 # читаем поле
                 if (my $val = $_[0]->param($fld)) {
+warn $val;
                     # проверяем длинну поля, если указано проверять
                     if ($$valid{$fld}[2]) {
                         if ( length($val) < $$valid{$fld}[2]) {
