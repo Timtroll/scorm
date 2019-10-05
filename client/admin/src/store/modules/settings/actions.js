@@ -264,7 +264,9 @@ const actions = {
         if (resp.status === 'ok') {
 
           dispatch('getTable', parentId)
-          //notify(resp.status, 'success') // уведомление об ошибке
+          if (resp.message) {
+            notify(resp.message, 'success') // уведомление об ошибке
+          }
 
         } else {
           dispatch('getTable', parentId)
