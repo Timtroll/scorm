@@ -10,6 +10,7 @@
         :loader="loader">
     <!--:loader="notEmptyTable"-->
 
+    <!--actions add / mass remove-->
     <template #headerLeft>
       <div class="uk-flex"
            v-if="header">
@@ -79,6 +80,7 @@
 
     </template>
 
+    <!--search-->
     <template #header>
 
       <!--table searchInput-->
@@ -297,10 +299,12 @@
             const newItem = []
 
             flatHeader.forEach((headItem, i) => {
+
               if (item.hasOwnProperty(headItem)) {
                 newItem.push({
-                  val: item[headItem],
-                  key: headItem
+                  val:    item[headItem],
+                  key:    headItem,
+                  inline: this.tableHeader[i].inline // if header inline = 1
                 })
               }
             })

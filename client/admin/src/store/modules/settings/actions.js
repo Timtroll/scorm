@@ -247,6 +247,31 @@ const actions = {
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
+  },
+
+  async leafSaveField ({commit, state, getters, dispatch}, item, parent) {
+
+    try {
+      //store.commit('editPanel_status_request') // статус - запрос
+
+      const response = await Api_EditPanel.list_save(item)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          dispatch('getTable', parent)
+          notify(resp.status, 'success') // уведомление об ошибке
+
+        } else {
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+        }
+      }
+    } catch (e) {
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
   }
 
 }

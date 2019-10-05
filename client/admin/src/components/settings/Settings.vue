@@ -72,11 +72,12 @@
           },
 
           table: {
-            get:      'settings/getTable',
-            save:     'saveTableRow',
-            remove:   'removeTableRow',
-            activate: 'activateTableRow',
-            hide:     'hideTableRow'
+            get:       'settings/getTable',
+            save:      'saveTableRow',
+            saveField: 'settings/leafSaveField',
+            remove:    'removeTableRow',
+            activate:  'activateTableRow',
+            hide:      'hideTableRow'
           },
 
           editPanel: {

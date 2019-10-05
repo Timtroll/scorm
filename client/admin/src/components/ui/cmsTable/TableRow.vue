@@ -21,8 +21,16 @@
     <td v-for="(item, index) in rowData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @click="edit(fullData)">
-      <div v-text="item.val"></div>
+        @click="edit(fullData, rowData[index].inline, item.key)">
+
+      <label class="uk-text-center uk-display-block cursor-pointer"
+             v-if="rowData[index].inline === 1">
+        <input type="checkbox"
+               class="pos-checkbox-switch xsmall">
+      </label>
+
+      <div v-else
+           v-text="item.val"></div>
     </td>
 
     <!--check current-->
@@ -30,7 +38,7 @@
 
       <!--edit Row-->
       <a class="uk-icon-link uk-margin-small-right uk-display-inline-block"
-         @click.prevent="edit(fullData)">
+         @click.prevent="edit(rowData)">
         <img src="/img/icons/icon__edit.svg"
              width="16"
              height="16"
@@ -133,15 +141,29 @@
         this.checkedRow = true
       },
 
-      edit (item) {
+      edit (item, inline = 0, key) {
 
-        this.$store.dispatch(this.editPanel_api.get, item.id)
+        console.log('inline', inline, 'field', 'key', key)
+
+        if (inline === 1) {
+          //console.log('inline 1', inline)
+          const data = {
+            id: item.id,
+            [key]: Number(!item.val)
+          }
+
+          console.log(data)
+
+          this.$store.dispatch(this.table_api.saveField, data, item.parent)
+        } else {
+          this.$store.dispatch(this.editPanel_api.get, item.id)
+        }
 
       },
 
       remove () {
 
-        this.$store.dispatch('removeTableRow', this.fullData.id)
+        //this.$store.dispatch('removeTableRow', this.fullData.id)
       }
 
     }
