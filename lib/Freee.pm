@@ -72,7 +72,6 @@ sub startup {
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
-#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');       # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
@@ -179,13 +178,8 @@ sub startup {
     $auth->post('/groups/activate')       ->to('groups#activate');     # включение группы
 
     # управление роутами
-    $auth->post('/routes/')               ->to('routes#index');        # список групп
-    # $auth->post('/groups/routes')       ->to('groups#routes');       # список значений value
-    $auth->post('/routes/add')            ->to('routes#add');          # добавление группы
-    $auth->post('/routes/update')         ->to('routes#update');       # обновление данных группы
-    $auth->post('/routes/delete')         ->to('routes#delete');       # удаление группы
-    # $auth->post('/routes/hide')           ->to('routes#hide');         # выключение роута
-    # $auth->post('/routes/activate')       ->to('routes#activate');     # включение роута
+    $auth->post('/routes/')               ->to('routes#index');        # список роутов
+    $auth->post('/routes/update')         ->to('routes#update');       # обновление данных по роуту
 
 
     # управление темами
