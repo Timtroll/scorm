@@ -342,6 +342,7 @@
       },
 
       add_row () {
+
         const proto = JSON.parse(JSON.stringify(this.$store.getters['settings/protoLeaf']))
 
         proto.forEach(item => {

@@ -4,6 +4,7 @@ const getters = {
   editPanel_status: state => state.editPanel.status,
   editPanel_item:   state => state.editPanel.item,
   editPanel_add:   state => state.editPanel.add,
+  editPanel_folder:   state => state.editPanel.folder,
 
   inputComponents: state => state.inputComponents,
 

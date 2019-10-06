@@ -4,7 +4,6 @@ import store from '../../store'
 import {flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
 
-
 const actions = {
 
   // ***************************************
@@ -61,11 +60,12 @@ const actions = {
    * @param item
    * @returns {Promise<void>}
    */
-  async saveFolder ({commit, state, dispatch}, item) {
-    try {
-      store.commit('editPanel_status_request') // статус - запрос
+  async addFolder ({commit, state, dispatch}, item) {
 
-      const response = await Api_Tree.save_tab(item)
+
+    try {
+
+      const response = await Api_Tree.add_folder(item.fields)
 
       if (response.status === 200) {
 
@@ -92,7 +92,7 @@ const actions = {
   },
 
   /**
-   *
+   * Удалить Folder
    * @param dispatch
    * @param id
    * @returns {Promise<void>}
@@ -101,33 +101,43 @@ const actions = {
     try {
       store.commit('tree_status_request')
 
-      const response = await Api_Tree.delete_tab(id)
+      const response = await Api_Tree.delete_folder(id)
 
       if (response.status === 200) {
         const resp = await response.data
 
         if (resp.status === 'ok') {
           dispatch('getTree')
-          notify(resp.status, 'success') // уведомление об ошибке
+          // уведомление об успехе
+          if (resp.message) {
+            notify(resp.message, 'success')
+          } else {
+            notify(resp.status, 'success')
+          }
         } else {
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          // уведомление об ошибке
+          if (resp.message) {
+            notify(resp.message, 'danger')
+          } else {
+            notify(resp.status, 'danger')
+          }
         }
 
       }
-      const resp = await response.data
-
-      if (typeof resp['list'] !== 'undefined') {
-        const tree = resp.list
-
-        if (tree.length > 0) {
-          store.commit('set_tree', tree)
-          store.commit('tree_status_success')
-
-          //Плоское дерево
-          const flattenTree = flatTree([...tree])
-          store.commit('set_tree_flat', flattenTree)
-        }
-      }
+      //const resp = await response.data
+      //
+      //if (typeof resp['list'] !== 'undefined') {
+      //  const tree = resp.list
+      //
+      //  if (tree.length > 0) {
+      //    store.commit('set_tree', tree)
+      //    store.commit('tree_status_success')
+      //
+      //    //Плоское дерево
+      //    const flattenTree = flatTree([...tree])
+      //    store.commit('set_tree_flat', flattenTree)
+      //  }
+      //}
     } catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
@@ -173,15 +183,13 @@ const actions = {
    * @returns {Promise<void>}
    */
   async removeLeaf ({commit, dispatch, state}, item) {
-
-
-
     try {
       const response = await Api_EditPanel.list_delete(item.id)
 
       if (response.status === 200) {
 
         const resp = await response.data
+
         if (resp.status === 'ok') {
 
           dispatch('getTable', item.parent)

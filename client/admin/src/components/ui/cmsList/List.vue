@@ -264,12 +264,6 @@
         return idEl.value
       }
 
-
-
-      ////
-      //parentId () {
-      //  return this.rowData.parent || this.parent || 0
-      //}
     },
 
     methods: {
