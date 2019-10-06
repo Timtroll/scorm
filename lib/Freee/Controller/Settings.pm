@@ -65,7 +65,6 @@ sub save_folder {
             my $data = $self->_check_fields();
             push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
             # устанавляваем обязательные поля для фолдера
-            $$data{'folder'} = 1;
             $$data{'placeholder'} = '';
             $$data{'type'} = '';
             $$data{'mask'} = '';
@@ -106,7 +105,6 @@ sub add_folder {
         my $data = $self->_check_fields();
         push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
         # устанавляваем обязательные поля для фолдера
-        $$data{'folder'} = 1;
         $$data{'placeholder'} = '';
         $$data{'type'} = '';
         $$data{'mask'} = '';
