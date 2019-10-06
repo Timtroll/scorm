@@ -29,7 +29,7 @@ sub register {
 
         my $list;
         if ($no_children) {
-            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) ORDER by id', { Slice=> {} } );
+            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id', { Slice=> {} } );
         }
         else {
             $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent FROM "public".settings ORDER by id', { Slice=> {} } );
@@ -60,7 +60,10 @@ sub register {
             ') VALUES ('.
             join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
-        $self->pg_dbh->do($sql);
+        eval{
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
