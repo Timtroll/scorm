@@ -66,7 +66,8 @@ sub startup {
     # левая менюха (дерево без листочков)
     $auth->post('/settings/get_tree')      ->to('settings#get_tree');       # Все дерево без листочков
     $auth->post('/settings/get_folder')    ->to('settings#get_folder');     # получить данные фолдера настроек
-    $auth->post('/settings/save_folder')   ->to('settings#save_folder');    # добавление/сохранение фолдера
+    $auth->post('/settings/save_folder')   ->to('settings#add_folder');     # добавление фолдера
+    $auth->post('/settings/save_folder')   ->to('settings#save_folder');    # сохранение фолдера
     $auth->post('/settings/delete_folder') ->to('settings#delete_folder');  # удаление фолдера
 
     # строки настроек

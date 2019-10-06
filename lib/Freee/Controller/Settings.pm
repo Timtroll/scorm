@@ -57,28 +57,75 @@ sub get_tree {
 sub save_folder {
     my $self = shift;
 
-# проверка обязательных полей
-# ?????????
-    my %params = {
-        'id'          => $self->param('id'),
-        'name'        => $self->param('name') || '',
-        'placeholder' => $self->param('placeholder') || '',
-        'label'       => $self->param('label') || '',
-        'parent'      => $self->param('parent') || 0,
-        'value'       => $self->param('value') || '',
-        'type'        => $self->param('type') || 'InputText',
-        'mask'        => $self->param('mask') || '',
-        'selected'    => $self->param('selected'),
+    my ($id, %data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-        'required'    => $self->param('required') || 1,
-        'readonly'    => $self->param('readonly') || 0,
-        'status'      => $self->param('status') || 1
-    };
+        unless (@mess) {
+            # проверка записываемых данных
+            my $data = $self->_check_fields();
+            push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+            # устанавляваем обязательные поля для фолдера
+            $$data{'folder'} = 1;
+            $$data{'placeholder'} = '';
+            $$data{'type'} = '';
+            $$data{'mask'} = '';
+            $$data{'value'} = '';
+            $$data{'selected'} = '';
+            $$data{'required'} = '';
+            $$data{'readonly'} = 0;
+            $$data{'status'} = 1;
 
-    # выбираем листья ветки дерева
-    my $folder = $self->_save_folder(\%params);
+            $id = $self->_save_folder( $data, [] ) unless @mess;
+            push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+        }
 
-    $self->render( 'json' => { 'status' => 'ok' } );
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
+}
+
+# создание группы настроек
+# my $id = $self->add({
+#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "folder"      => 1,           - это группа настроек
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
+# });
+sub add_folder {
+    my ($self, $data) = @_;
+
+    my ($id, %data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка записываемых данных
+        my $data = $self->_check_fields();
+        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        # устанавляваем обязательные поля для фолдера
+        $$data{'folder'} = 1;
+        $$data{'placeholder'} = '';
+        $$data{'type'} = '';
+        $$data{'mask'} = '';
+        $$data{'value'} = '';
+        $$data{'selected'} = '';
+        $$data{'required'} = '';
+        $$data{'readonly'} = 0;
+        $$data{'status'} = 1;
+
+        $id = $self->_insert_folder( $data, [] ) unless @mess;
+        push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+    }
+
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 sub delete_folder {
@@ -203,14 +250,6 @@ sub load_default {
 #     "mask"        => '\d+',         - регулярное выражение
 #     "selected"    => "CKEditor",    - значение по-умолчанию для select
 #     "required"    => 1              - обязательное поле
-# });
-# создание группы настроек
-# my $id = $self->add({
-#     "folder"      => 1,           - это группа настроек
-#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 # });
 sub add {
     my ($self, $data) = @_;

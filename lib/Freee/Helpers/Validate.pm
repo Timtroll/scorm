@@ -107,6 +107,18 @@ sub register {
 
         $vfields = {
             # волидация роутов
+            '/settings/add_folder'  => {
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+            },
+            '/settings/save_folder'  => {
+                "id"            => [ 'required', qr{^\d+$} ],
+                "parent"        => [ '', qr{^\d+$} ],
+                "name"          => [ '', qr{.*}, 256 ],
+                "label"         => [ '', qr{.*}, 256 ],
+            },
+
             '/settings/save'  => {
                 "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
