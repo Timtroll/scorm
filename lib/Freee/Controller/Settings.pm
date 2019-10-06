@@ -70,7 +70,7 @@ sub save_folder {
             $$data{'mask'} = '';
             $$data{'value'} = '';
             $$data{'selected'} = '';
-            $$data{'required'} = '';
+            $$data{'required'} = 0;
             $$data{'readonly'} = 0;
             $$data{'status'} = 1;
 
@@ -110,7 +110,7 @@ sub add_folder {
         $$data{'mask'} = '';
         $$data{'value'} = '';
         $$data{'selected'} = '';
-        $$data{'required'} = '';
+        $$data{'required'} = 0;
         $$data{'readonly'} = 0;
         $$data{'status'} = 1;
 
