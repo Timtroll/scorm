@@ -32,7 +32,8 @@
       <List :labels="'Добавить группу настроек'"
             :data="editPanel_data"
             :variable-type-tield="'value'"
-            :add="false"
+            :add="editPanel_add"
+            :parent="tableId"
             v-on:save="saveLeaf($event)"
             v-on:close="closeAddGroup"></List>
     </template>
@@ -119,7 +120,6 @@
       this.$store.commit('editPanel_show', false)
       this.$store.commit('tree_active', null)
 
-
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')
     },
@@ -131,11 +131,15 @@
       },
 
       tableId () {
-        return this.$route.params.id
+        return Number(this.$route.params.id)
       },
 
       editPanel_show () {
         return this.$store.getters.cardRightState
+      },
+
+      editPanel_add () {
+        return this.$store.getters.editPanel_add
       },
 
       editPanel_data () {
@@ -166,11 +170,19 @@
 
       // сохранение Листочка
       saveLeaf (data) {
-        const objData = {}
-        const arr     = JSON.parse(JSON.stringify(data))
-        arr.forEach(item => {objData[item.name] = item.value})
 
-        this.$store.dispatch(this.actions.editPanel.save, objData)
+        if (this.editPanel_add) {}
+
+        const save = {
+          add:    this.editPanel_add,
+          fields: {}
+        }
+
+        const arr = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {save.fields[item.name] = item.value})
+
+        this.$store.dispatch(this.actions.editPanel.save, save)
+
       }
     }
 

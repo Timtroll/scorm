@@ -39,12 +39,11 @@
       </div>
     </div>
 
-    <!--settings-->
+    <!--Edit FORM-->
     <div class="pos-card-body">
       <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
 
-        <ul class="pos-list"
-            v-if="data.length > 0">
+        <ul class="pos-list">
 
           <li v-for="(item, index) in dataNew"
               :key="index">
@@ -166,15 +165,25 @@
 
       labels: {}
     },
+    created () {
+      if (this.add) {
+
+        this.dataAdd     = this.data.filter(item => item.add === true)
+        this.dataNew     = JSON.parse(JSON.stringify(this.dataAdd))
+        this.dataChanged = this.createDataChanged(this.dataAdd)
+      }
+    },
 
     beforeDestroy () {
       this.$store.commit('editPanel_data', null)
+      this.$store.commit('editPanel_add', false)
     },
 
     data () {
       return {
         dataNew:     [],
-        dataChanged: []
+        dataChanged: [],
+        dataAdd:     []
       }
     },
 
@@ -182,7 +191,7 @@
 
       data () {
 
-        if (this.data) {
+        if (this.data && !this.add) {
           this.dataNew     = JSON.parse(JSON.stringify(this.data))
           this.dataChanged = this.createDataChanged(this.data)
         }

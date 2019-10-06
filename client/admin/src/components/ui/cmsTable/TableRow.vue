@@ -93,6 +93,7 @@
 
     watch: {
 
+      // наблюдаем за измененнием данных в колонках
       rowData () {
         this.updateData = {...this.rowData}
       },
@@ -104,34 +105,30 @@
 
     async mounted () {
 
-      //const input = this.rowData
-      //const data      = await function () {
-      //  return input
-      //}
+      // копируем локально входные данные
       this.updateData = {...this.rowData}
 
     },
 
     computed: {
 
-      // Поле можно удалять
-      removable () {
-        return this.rowData.removable !== 1
+      removable () { // Поле можно удалять
+        return this.fullData.removable !== 1
       },
 
-      editPanel_api () {
+      editPanel_api () { // список запросов для правой панели
         return this.$store.getters.editPanel_api
       },
 
-      table_api () {
+      table_api () { // список запросов для таблицы
         return this.$store.getters.table_api
       },
 
-      cardRightState () {
+      cardRightState () { // статус правой панели
         return this.$store.getters.cardRightState
       },
 
-      inputComponents () {
+      inputComponents () { // список типов компонентов
         return this.$store.getters.inputComponents.length > 0
       }
     },
@@ -141,13 +138,12 @@
         ellipsis:   true,
         checkedRow: false,
         updateData: []
-
       }
     },
 
     methods: {
 
-      toggleEllipsis () {
+      toggleEllipsis () { // показать / скрыть весь текст в колонке
         this.ellipsis = !this.ellipsis
       },
 
@@ -160,21 +156,26 @@
 
       edit (inline = 0, key) {
 
-        if (inline === 1) {
-
-          const data = {...this.fullData}
-
-          const sendData = {
-            parent: data.parent,
-            data:   {
-              id:    data.id,
-              [key]: '' + Number(!data[key])
-            }
-          }
-
-          this.$store.dispatch(this.table_api.saveField, sendData)
+        if (this.cardRightState) { // если правая панель открыта - закрываем
+          this.$store.commit('card_right_show', !this.cardRightState)
         } else {
-          this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
+          if (inline === 1) { // если у колонки inline === 1 изменяем значение
+
+            const data = {...this.fullData}
+
+            const sendData = {
+              parent: data.parent,
+              data:   {
+                id:    data.id,
+                [key]: '' + Number(!data[key])
+              }
+            }
+
+            this.$store.dispatch(this.table_api.saveField, sendData)
+          } else { // если правая панель закрыта открываем для редактирования
+            this.$store.commit('editPanel_add', false)
+            this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
+          }
         }
 
       },

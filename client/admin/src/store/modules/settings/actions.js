@@ -182,13 +182,12 @@ const actions = {
 
     try {
       store.commit('editPanel_status_request') // статус - запрос
-      store.commit('editPanel_data', {}) // очистка данных VUEX
+      store.commit('editPanel_data', []) // очистка данных VUEX
 
       store.commit('card_right_show', true)
       //commit('editPanel_show', true, {root: true}) // открытие правой панели
 
       const response = await Api_EditPanel.list_edit(id)
-      console.log(response)
 
       if (response.status === 200) {
 
@@ -223,20 +222,27 @@ const actions = {
 
     try {
       store.commit('editPanel_status_request') // статус - запрос
-
-      const response = await Api_EditPanel.list_save(item)
+      let response
+      if (item.add) {
+        response = await Api_EditPanel.list_add(item.fields)
+      } else {
+        response = await Api_EditPanel.list_save(item.fields)
+      }
 
       if (response.status === 200) {
 
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTable', item.parent)
+          dispatch('getTable', item.fields.parent)
           store.commit('card_right_show', false)
           store.commit('editPanel_data', []) // очистка данных VUEX
           store.commit('editPanel_status_success') // статус - успех
           notify(resp.status, 'success') // уведомление об ошибке
 
+        } else if (resp.status === 'fail' && resp.message) {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify(resp.message, 'danger') // уведомление об ошибке
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + e, 'danger') // уведомление об ошибке

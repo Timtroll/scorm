@@ -166,9 +166,7 @@
               :checked-all="checked"
               v-for="(row, index) in tableRows"
               v-on:check="checkedAll"
-              v-on:edit-row="edit(filterSearch[index])"
-              :key="index"
-              v-on:remove="remove(row)">
+              :key="index">
           </TableRow>
           </tbody>
 
@@ -344,28 +342,30 @@
       },
 
       add_row () {
-        //this.card.bodyRightItem  = this.addTpl
-        //this.card.add            = true
-        //this.card.bodyRightTitle = this.$t('actions.addRow')
-        //this.toggleRightPanel()
-        //this.$store.commit('cms_row_success')
+        const proto = JSON.parse(JSON.stringify(this.$store.getters['settings/protoLeaf']))
+
+        proto.forEach(item => {
+          if (item.name === 'parent') {
+            item.value = this.tableId
+          }
+        })
+
+        this.$store.commit('editPanel_status_request')
+        this.$store.commit('editPanel_add', true)
+        this.$store.commit('card_right_show', true)
+        this.$store.commit('editPanel_data', [])
+
+        this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        this.$store.commit('editPanel_status_success') // статус - успех
+
       },
 
-      edit (event) {
-        //this.card.bodyRightTitle = null
-        //this.card.add            = false
-        //this.card.bodyRightItem  = event
-        //this.$store.commit('cms_row_success')
-      },
-
-      remove (event) {
-        //this.$emit('remove', event)
-      },
-
+      // отмена выделения всех строк
       notCheckedAll () {
         this.checked = false
       },
 
+      // выделить все строки
       checkedAll () {
         this.checked = !this.checked
       },
@@ -374,10 +374,6 @@
       clearSearchVal () {
         this.searchInput = null
       }
-
-      //toggleRightPanel () {
-      //  this.$store.commit('cms_table_row_show', !this.tableRowDetail.open)
-      //}
 
     }
   }
