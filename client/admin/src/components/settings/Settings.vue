@@ -76,9 +76,8 @@
             get:       'settings/getTable',
             save:      'saveTableRow',
             saveField: 'settings/leafSaveField',
-            remove:    'removeTableRow',
-            activate:  'activateTableRow',
-            hide:      'hideTableRow'
+            remove:    'settings/removeLeaf',
+
           },
 
           editPanel: {

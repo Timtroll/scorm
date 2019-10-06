@@ -47,7 +47,7 @@
 
       <!--remove Row-->
       <a class="uk-icon-link uk-link-muted uk-display-inline-block"
-         @click.prevent="remove(rowData)">
+         @click.prevent="remove(fullData)">
         <img height="16"
              src="/img/icons/icon__trash.svg"
              uk-svg
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+  import UIkit from 'uikit/dist/js/uikit.min'
+
   export default {
     name: 'TableRow',
 
@@ -154,6 +156,7 @@
         this.checkedRow = true
       },
 
+      // редактирование листочка / поля
       edit (inline = 0, key) {
 
         if (this.cardRightState) { // если правая панель открыта - закрываем
@@ -180,9 +183,12 @@
 
       },
 
-      remove () {
-
-        //this.$store.dispatch('removeTableRow', this.fullData.id)
+      // удаление листочка
+      remove (item) {
+        UIkit
+          .modal
+          .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
+          .then(() => this.$store.dispatch(this.table_api.remove, item), () => {})
       }
 
     }

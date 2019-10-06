@@ -4,6 +4,7 @@ import store from '../../store'
 import {flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
 
+
 const actions = {
 
   // ***************************************
@@ -137,7 +138,6 @@ const actions = {
   // ***************************************
   // TABLE
   // ***************************************
-
   async getTable ({commit, state}, id) {
 
     try {
@@ -164,7 +164,50 @@ const actions = {
 
   },
 
-  async removeTableRow ({commit, state}, id) {},
+  /**
+   * удалить Листочек настроек
+   * @param commit
+   * @param dispatch
+   * @param state
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async removeLeaf ({commit, dispatch, state}, item) {
+
+
+
+    try {
+      const response = await Api_EditPanel.list_delete(item.id)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          dispatch('getTable', item.parent)
+
+          // уведомление об успехе
+          if (resp.message) {
+            notify(resp.message, 'success')
+          } else {
+            notify(resp.status, 'success')
+          }
+
+        } else {
+          // уведомление об ошибке
+          if (resp.message) {
+            notify(resp.message, 'danger')
+          } else {
+            notify(resp.status, 'danger')
+          }
+        }
+
+      }
+    } catch (e) {
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
 
   // ***************************************
   // LEAF
