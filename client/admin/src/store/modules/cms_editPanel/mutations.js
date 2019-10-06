@@ -20,6 +20,10 @@ const mutations = {
     state.editPanel.open = data
   },
 
+  editPanel_folder (state, data) {
+    state.editPanel.folder = data
+  },
+
   editPanel_group (state, data) {
     state.editPanel.group = data
   },

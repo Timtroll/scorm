@@ -11,18 +11,27 @@ export default {
   },
 
   // Обновление / добавление
-  save_tab (params) {
+  save_folder (params) {
     return Api()({
-      url:    'settings/save_tab',
+      url:    'settings/save_folder',
+      method: 'post',
+      params: params
+    })
+  },
+
+  // Обновление / добавление
+  add_folder (params) {
+    return Api()({
+      url:    'settings/add_folder',
       method: 'post',
       params: params
     })
   },
 
   // удаление
-  delete_tab (id) {
+  delete_folder (id) {
     return Api()({
-      url:    'settings/delete_tab',
+      url:    'settings/delete_folder',
       method: 'post',
       params: id
     })

@@ -1,46 +1,57 @@
 [
   {
-    "label":       "Родитель",
-    "mask":        "",
-    "name":        "parent",
+    "label":       "ID",
+    "name":        "id",
     "placeholder": "",
-    "readonly":    0,
+    "readonly":    1,
     "required":    1,
+    "mask":        null,
+    "add":         false,
     "selected":    [],
     "type":        "InputNumber",
-    "value":       ""
+    "value":       "",
+    "inline":      0,
+    "show":        1
   },
   {
-    "label":       "Имя",
-    "mask":        "",
-    "name":        "label",
+    "label":       "Родитель",
+    "name":        "parent",
     "placeholder": "",
-    "readonly":    0,
+    "readonly":    1,
     "required":    1,
+    "add":         true,
     "selected":    [],
-    "type":        "InputText",
-    "value":       ""
+    "type":        "InputNumber",
+    "value":       "",
+    "inline":      0,
+    "show":        0
   },
   {
     "label":       "Системное имя",
-    "mask":        "",
     "name":        "name",
-    "placeholder": "",
+    "placeholder": "Только латинские буквы без пробелов",
     "readonly":    0,
     "required":    1,
+    "mask":        null,
+    "add":         true,
     "selected":    [],
     "type":        "InputText",
-    "value":       ""
+    "value":       "",
+    "inline":      0,
+    "show":        1
   },
   {
-    "label":       "Статус",
-    "mask":        "",
-    "name":        "status",
-    "placeholder": "",
+    "label":       "Расшифровка",
+    "name":        "label",
+    "placeholder": "Расшифровка настройки",
     "readonly":    0,
-    "required":    0,
+    "required":    1,
+    "mask":        null,
+    "add":         true,
     "selected":    [],
-    "type":        "InputBoolean",
-    "value":       ""
+    "type":        "InputText",
+    "value":       "",
+    "inline":      0,
+    "show":        1
   }
 ]
