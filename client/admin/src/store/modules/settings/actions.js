@@ -1,8 +1,10 @@
 import Api_EditPanel from '../../../api/settings/EditPanel'
 import Api_Tree from '../../../api/settings/Tree'
 import store from '../../store'
+import router from '../../../router'
 import {flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
+import Settings from '../../../components/settings/Settings'
 
 const actions = {
 
@@ -62,7 +64,6 @@ const actions = {
    */
   async addFolder ({commit, state, dispatch}, item) {
 
-
     try {
 
       const response = await Api_Tree.add_folder(item.fields)
@@ -72,10 +73,7 @@ const actions = {
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTree', item.parent)
-          store.commit('card_right_show', false)
-          store.commit('editPanel_data', []) // очистка данных VUEX
-          store.commit('editPanel_status_success') // статус - успех
+          dispatch('updateFolder')
           notify(resp.status, 'success') // уведомление об ошибке
 
         } else {
@@ -101,48 +99,40 @@ const actions = {
     try {
       store.commit('tree_status_request')
 
-      const response = await Api_Tree.delete_folder(id)
+      const response = await Api_Tree.delete_folder({id: id})
 
       if (response.status === 200) {
+
         const resp = await response.data
 
         if (resp.status === 'ok') {
-          dispatch('getTree')
-          // уведомление об успехе
-          if (resp.message) {
-            notify(resp.message, 'success')
-          } else {
-            notify(resp.status, 'success')
+
+          if (router.currentRoute.params.id === id) {
+            await router.push({name: 'Settings'})
           }
+          dispatch('updateFolder')
+          notify(resp.status, 'success') // уведомление об успехе
+
         } else {
-          // уведомление об ошибке
-          if (resp.message) {
-            notify(resp.message, 'danger')
-          } else {
-            notify(resp.status, 'danger')
-          }
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
         }
 
       }
-      //const resp = await response.data
-      //
-      //if (typeof resp['list'] !== 'undefined') {
-      //  const tree = resp.list
-      //
-      //  if (tree.length > 0) {
-      //    store.commit('set_tree', tree)
-      //    store.commit('tree_status_success')
-      //
-      //    //Плоское дерево
-      //    const flattenTree = flatTree([...tree])
-      //    store.commit('set_tree_flat', flattenTree)
-      //  }
-      //}
+
     } catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
     }
+  },
+
+  updateFolder ({dispatch}) {
+    dispatch('getTree')
+    store.commit('card_right_show', false)
+    store.commit('editPanel_data', []) // очистка данных VUEX
+    store.commit('editPanel_status_success') // статус - успех
+
   },
 
   // ***************************************

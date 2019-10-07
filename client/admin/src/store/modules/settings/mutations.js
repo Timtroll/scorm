@@ -7,6 +7,7 @@ const mutations = {
   proto_folder (state, data) {
     state.prototypes.folder = data
   }
+
 }
 export default mutations
 

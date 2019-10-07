@@ -79,6 +79,7 @@
 </template>
 
 <script>
+  import UIkit from 'uikit/dist/js/uikit.min'
 
   export default {
 
@@ -173,45 +174,48 @@
 
       // add children group
       addChildren (id) {
-        const group = {
-          folder:    1,
-          lib_id:    id,
-          label:     '',
-          name:      '',
-          editable:  1,
-          readonly:  0,
-          removable: 1
-        }
-
-        this.$store.commit('cms_add_group', group)
-        this.$store.commit('editPanel_group', true)
-        this.$store.commit('cms_show_add_edit_toggle', true)
-        this.$store.commit('editPanel_status_success')
+        //const group = {
+        //  folder:    1,
+        //  lib_id:    id,
+        //  label:     '',
+        //  name:      '',
+        //  editable:  1,
+        //  readonly:  0,
+        //  removable: 1
+        //}
+        //
+        //this.$store.commit('cms_add_group', group)
+        //this.$store.commit('editPanel_group', true)
+        //this.$store.commit('cms_show_add_edit_toggle', true)
+        //this.$store.commit('editPanel_status_success')
       },
 
       // edit children group
       editGroup (item) {
-        const group = {
-          folder:    1,
-          lib_id:    item.id,
-          label:     item.label,
-          name:      item.name,
-          editable:  item.editable,
-          readonly:  0,
-          removable: 1
-        }
-
-        this.$store.commit('cms_add_group', group)
-        this.$store.commit('editPanel_group', true)
-        this.$store.commit('cms_show_add_edit_toggle', false)
-        this.$store.commit('editPanel_status_success')
+        //const group = {
+        //  folder:    1,
+        //  lib_id:    item.id,
+        //  label:     item.label,
+        //  name:      item.name,
+        //  editable:  item.editable,
+        //  readonly:  0,
+        //  removable: 1
+        //}
+        //
+        //this.$store.commit('cms_add_group', group)
+        //this.$store.commit('editPanel_group', true)
+        //this.$store.commit('cms_show_add_edit_toggle', false)
+        //this.$store.commit('editPanel_status_success')
       },
 
       // remove group
       remove (id) {
-        if (id) {
-          this.$store.dispatch(this.tree_api.remove, id)
-        }
+
+        UIkit
+          .modal
+          .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
+          .then(() => this.$store.dispatch(this.tree_api.remove, id), () => {})
+
       }
 
     }
