@@ -3,6 +3,7 @@ import mutations from './mutations'
 import getters from './getters'
 
 const state = {
+
   prototypes: {
     folder: [],                   // прототип создания / редактирования ветки
     leaf:   []                    // прототип создания / редактирования листочка

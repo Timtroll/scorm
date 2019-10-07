@@ -7,6 +7,7 @@ CREATE TABLE "public"."settings" (
 "name" varchar(255) COLLATE "default" NOT NULL,
 "label" varchar(255) COLLATE "default" NOT NULL,
 "placeholder" varchar(255) COLLATE "default",
+"type" varchar(255) COLLATE "default",
 "mask" varchar(255) COLLATE "default",
 "value" text COLLATE "default",
 "selected" text COLLATE "default",

@@ -1,5 +1,6 @@
 package Freee::Controller::Auth;
 
+
 use open qw(:utf8);
 binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
@@ -10,7 +11,6 @@ use Digest::MD5 qw/md5_hex/;
 use Data::Dumper;
 
 use common;
-use validate;
 
 # route /login
 # POST:
@@ -34,8 +34,8 @@ sub login {
     $json = { 'status' => 'ok' };
 
     # clear input data
-    $in{'login'} = $self->validate('chars', 'login');
-    $in{'pass'} = $self->validate('symbchars', 'pass');
+    $in{'login'} = $self->param('login');
+    $in{'pass'} = $self->param('pass');
     # $in{'capcha'} = $self->validate('chars', 'capcha');
 
     if ($in{'login'} && $in{'pass'}) {
@@ -80,9 +80,20 @@ sub check_token {
     my ($self, %data);
     $self = shift;
 
-print "route = ", $$routs{$self->url_for}, "\n";
+print "route = ", $self->url_for, "\n";
 
-# для отладки
+    # валидируем входные параметры, если есть соответствующие правила
+    if (defined $$vfields{$self->url_for}) {
+        # my ($res, $err) = $self->_check( $$routs{$self->url_for} );
+        my ($res, $err) = $self->_check( $self->url_for );
+
+        unless ($res) {
+            # выводим ошибки, если валидация html данных не прошла
+            my $url = $self->url_for("/error/");
+            $self->redirect_to( $url->query( message => join("\n", @$err) ) );
+        }
+    }
+# # для отладки
 return 1;
 
 # ????????? удаляем?
@@ -102,7 +113,7 @@ return 1;
         if ( exists( $$tokens{$self->session('token')} ) ) {
             if ( $$tokens{$self->session('token')} ) {
 # ????????? доработать?
-# check permissions
+warn "check permissions\n";
                 # if ($$tokens{$self->session('token')}{'role_id'}) {
                 #     my $route = $self->url_for;
 
@@ -126,7 +137,7 @@ sub _get_token {
     $self = shift;
     $user = shift;
 
-    $in{'token'} = $self->validate('chars', 'token');
+    $in{'token'} = $self->param('token');
 
     # create token
     $error = 0;

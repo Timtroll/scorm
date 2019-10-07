@@ -29,7 +29,7 @@
 
         <!--Remove Row-->
         <button class="uk-button-default pos-border-radius-none pos-border-none uk-flex uk-flex-middle"
-                v-if="massEdit"
+                v-if="massEdit && tableNotEmpty"
                 disabled>
           <img src="/img/icons/icon__trash.svg"
                uk-svg
@@ -45,7 +45,8 @@
 
     <!--Показать колонки-->
     <template #headerRight>
-      <div class="uk-flex-column uk-flex pos-border-left">
+      <div class="uk-flex-column uk-flex pos-border-left"
+           v-if="tableNotEmpty">
         <button class="uk-button uk-button-default pos-border-radius-none pos-border-none"
                 type="button">
           <img src="/img/icons/icon__input_table_row.svg"
@@ -84,7 +85,8 @@
     <template #header>
 
       <!--table searchInput-->
-      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left">
+      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left"
+           v-if="tableNotEmpty">
         <a @click.prevent="clearSearchVal"
            v-if="searchInput"
            class="uk-form-icon uk-form-icon-flip">
@@ -111,7 +113,7 @@
     <template #body>
 
       <div class="pos-table-container">
-        <table v-if="tableRows"
+        <table v-if="tableNotEmpty"
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
@@ -129,7 +131,8 @@
 
             <!--header rows data-->
             <th v-for="item in tableHeader"
-                v-text="item.label"></th>
+                v-text="item.label"
+                :class="{'inline': item.inline === 1}"></th>
 
             <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
               <!--edit Row-->
@@ -151,7 +154,7 @@
                 <input type="checkbox"
                        v-model="checked"
                        @click="checkedAll"
-                       class="pos-checkbox-switch xsmall uk-display-inline-block">
+                       class="pos-checkbox-switch danger xsmall uk-display-inline-block">
               </div>
             </th>
           </tr>
@@ -165,9 +168,7 @@
               :checked-all="checked"
               v-for="(row, index) in tableRows"
               v-on:check="checkedAll"
-              v-on:edit-row="edit(filterSearch[index])"
-              :key="index"
-              v-on:remove="remove(row)">
+              :key="index">
           </TableRow>
           </tbody>
 
@@ -243,6 +244,12 @@
     },
 
     computed: {
+
+      tableNotEmpty () {
+        if (this.tableRows) {
+          return this.tableRows.length > 0
+        }
+      },
 
       table_api () {
         return this.$store.getters.table_api
@@ -343,28 +350,31 @@
       },
 
       add_row () {
-        //this.card.bodyRightItem  = this.addTpl
-        //this.card.add            = true
-        //this.card.bodyRightTitle = this.$t('actions.addRow')
-        //this.toggleRightPanel()
-        //this.$store.commit('cms_row_success')
+
+        const proto = JSON.parse(JSON.stringify(this.$store.getters['settings/protoLeaf']))
+
+        proto.forEach(item => {
+          if (item.name === 'parent') {
+            item.value = this.tableId
+          }
+        })
+
+        this.$store.commit('editPanel_status_request')
+        this.$store.commit('editPanel_add', true)
+        this.$store.commit('card_right_show', true)
+        this.$store.commit('editPanel_data', [])
+
+        this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        this.$store.commit('editPanel_status_success') // статус - успех
+
       },
 
-      edit (event) {
-        //this.card.bodyRightTitle = null
-        //this.card.add            = false
-        //this.card.bodyRightItem  = event
-        //this.$store.commit('cms_row_success')
-      },
-
-      remove (event) {
-        //this.$emit('remove', event)
-      },
-
+      // отмена выделения всех строк
       notCheckedAll () {
         this.checked = false
       },
 
+      // выделить все строки
       checkedAll () {
         this.checked = !this.checked
       },
@@ -373,10 +383,6 @@
       clearSearchVal () {
         this.searchInput = null
       }
-
-      //toggleRightPanel () {
-      //  this.$store.commit('cms_table_row_show', !this.tableRowDetail.open)
-      //}
 
     }
   }

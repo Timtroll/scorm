@@ -10,7 +10,7 @@
         <div class="uk-width-auto">
           <button type="button"
                   class="uk-button uk-button-success pos-border-radius-none pos-border-none"
-                  @click.prevent="addRoot">
+                  @click.prevent="addFolder(0)">
             <img src="/img/icons/icon__plus.svg"
                  width="18"
                  height="18"
@@ -67,13 +67,13 @@
 </template>
 
 <script>
-  import IconBug from '../icons/IconBug'
+
   import {flatTree} from '../../../store/methods'
 
   export default {
 
     components: {
-      IconBug,
+      IconBug: () => import('../icons/IconBug'),
       Loader:  () => import('../icons/Loader'),
       NavTree: () => import('./NavTree')
     },
@@ -93,6 +93,10 @@
     },
 
     computed: {
+
+      protoFolder () {
+        return this.$store.getters['settings/protoFolder']
+      },
 
       // преобразование дерева навигации в один уровень
       // для вывода результатов поиска
@@ -128,7 +132,24 @@
 
     methods: {
 
-      addRoot () {},
+      async addFolder (parent) {
+
+        const proto = await JSON.parse(JSON.stringify(this.protoFolder))
+
+        proto.forEach(item => {
+          if (item.name === 'parent') {
+            item.value = parent
+          }
+        })
+
+        this.$store.commit('editPanel_status_request')
+        this.$store.commit('editPanel_add', true)
+        this.$store.commit('editPanel_folder', true)
+        this.$store.commit('card_right_show', true)
+
+        this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        this.$store.commit('editPanel_status_success') // статус - успех
+      },
 
       // Очистка поля поиска
       clearSearchVal () {

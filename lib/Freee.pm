@@ -9,7 +9,6 @@ use Mojolicious::Plugin::Config;
 use Mojo::Log;
 
 use common;
-use validate;
 use Data::Dumper;
 
 $| = 1;
@@ -31,25 +30,22 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Utils');
+    $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
-    $self->plugin('Freee::Helpers::Tree');
     $self->plugin('Freee::Helpers::PgRoutes');
 
+    # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
-    $vfields = $self->_load_vfields();
+    $vfields = $self->_param_fields();
 
     # init Pg connection
     $self->pg_init();
 
     # init Beanstalk connection
     $self->_beans_init();
- 
-    # prepare validate functions
-    prepare_validate();
 
     # Router
     my $r = $self->routes;
@@ -62,26 +58,28 @@ sub startup {
     $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')         ->to('websocket#index');
 
+    # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
+    $r->any('/error/')                     ->to('index#error');
 
     my $auth = $r->under()                ->to('auth#check_token');
 
     # левая менюха (дерево без листочков)
-    $auth->post('/settings/get_tree')      ->to('settings#get_tree');       # Все дерево без листочков
-    $auth->post('/settings/get_folder')    ->to('settings#get_folder');     # получить данные фолдера настроек
-    $auth->post('/settings/save_folder')   ->to('settings#save_folder');    # добавление/сохранение фолдера
-    $auth->post('/settings/delete_folder') ->to('settings#delete_folder');  # удаление фолдера
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');       # Все дерево без листочков
+    $auth->post('/settings/get_folder')   ->to('settings#get_folder');     # получить данные фолдера настроек
+    $auth->post('/settings/add_folder')   ->to('settings#add_folder');     # добавление фолдера
+    $auth->post('/settings/save_folder')  ->to('settings#save_folder');    # сохранение фолдера
+    $auth->post('/settings/delete_folder')->to('settings#delete_folder');  # удаление фолдера
 
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
     $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
-#    $auth->post('/settings/get_leaf')     ->to('settings#get_leaf');      # загрузка одной настройки
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
-    $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
-    $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
-    # $auth->post('/settings/group_save')        ->to('settings#group_save');         # групповое добавление/сохранение настроек
+    # $auth->post('/settings/activate')     ->to('settings#activate');        # включение настройки
+    # $auth->post('/settings/hide')         ->to('settings#hide');            # отлючение настройки
+    # $auth->post('/settings/group_save')        ->to('settings#group_save'); # групповое добавление/сохранение настроек
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');
@@ -181,13 +179,8 @@ sub startup {
     $auth->post('/groups/activate')       ->to('groups#activate');     # включение группы
 
     # управление роутами
-    $auth->post('/routes/')               ->to('routes#index');        # список групп
-    # $auth->post('/groups/routes')       ->to('groups#routes');       # список значений value
-    $auth->post('/routes/add')            ->to('routes#add');          # добавление группы
-    $auth->post('/routes/update')         ->to('routes#update');       # обновление данных группы
-    $auth->post('/routes/delete')         ->to('routes#delete');       # удаление группы
-    $auth->post('/routes/hide')           ->to('routes#hide');         # выключение роута
-    $auth->post('/routes/activate')       ->to('routes#activate');     # включение роута
+    $auth->post('/routes/')               ->to('routes#index');        # список роутов
+    $auth->post('/routes/update')         ->to('routes#update');       # обновление данных по роуту
 
 
     # управление темами
@@ -268,8 +261,6 @@ sub startup {
         my $key = $_->{pattern}->{'unparsed'};        
         $$routs{$key} = $val;       
     }
-
-    # $self->_all_routes($routs);
 }
 
 1;

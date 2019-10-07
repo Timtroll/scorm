@@ -61,7 +61,6 @@
 
       valueInput () {
         if (this.mask) {
-          console.log('333')
           this.valueInput = this.valueInput.replace(this.mask, '')
         }
       }

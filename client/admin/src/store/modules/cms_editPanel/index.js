@@ -7,7 +7,7 @@ const state = {
   editPanel: {
     status: 'loading',
     group:  false,
-    add:    true,
+    add:    false,
     folder: false,
     large:  false,
     item:   null,

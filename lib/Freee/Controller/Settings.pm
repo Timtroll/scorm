@@ -12,21 +12,6 @@ use Freee::Mock::Settings;
 use Data::Dumper;
 use common;
 
-use Validator::LIVR;
-my $validator = Validator::LIVR->new({
-    "id"            => 'integer',
-    "parent"        => { one_of => ['required', 'integer'] },
-    "name"          => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
-    "label"         => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
-    "placeholder"   => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
-    "mask"          => { 'list_of' => ['required', 'any', { max_number => 256 } ]},
-    "value"         => { 'list_of' => ['required', 'any', { max_number => 10000 } ]},
-    "selected"      => { 'list_of' => ['required', 'any', { max_number => 10000 } ]},
-    "required"      => { one_of => [1, 0] },
-    "readonly"      => { one_of => [1, 0] },
-    "status"        => { one_of => [1, 0] }
-});
-
 #####################
 # Работа с фолдерами
 
@@ -59,10 +44,10 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-    # валидация html запрсоа
-    if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
-        my $res = $self->_html_check( $$routs{$self->url_for} );
-    }
+    # # валидация html запрсоа
+    # if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
+    #     my $res = $self->_check( $$routs{$self->url_for} );
+    # }
 
     my $list = $self->_get_tree(1);
 
@@ -72,29 +57,73 @@ sub get_tree {
 sub save_folder {
     my $self = shift;
 
-# проверка обязательных полей
-# ?????????
-    my %params = {
-        'id'          => $self->param('id'),
-        'name'        => $self->param('name') || '',
-        'placeholder' => $self->param('placeholder') || '',
-        'label'       => $self->param('label') || '',
-        'parent'      => $self->param('parent') || 0,
-        'value'       => $self->param('value') || '',
-        'type'        => $self->param('type') || 'InputText',
-        'mask'        => $self->param('mask') || '',
-        'selected'    => $self->param('selected'),
+    my ($id, %data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-        'required'    => $self->param('required') || 1,
-        'readonly'    => $self->param('readonly') || 0,
-        'removable'   => $self->param('removable') || 1,
-        'status'      => $self->param('status') || 1
-    };
+        unless (@mess) {
+            # проверка записываемых данных
+            my $data = $self->_check_fields();
+            push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+            # устанавляваем обязательные поля для фолдера
+            $$data{'placeholder'} = '';
+            $$data{'type'} = '';
+            $$data{'mask'} = '';
+            $$data{'value'} = '';
+            $$data{'selected'} = '';
+            $$data{'required'} = 0;
+            $$data{'readonly'} = 0;
+            $$data{'status'} = 1;
 
-    # выбираем листья ветки дерева
-    my $folder = $self->_save_folder(\%params);
+            $id = $self->_save_folder( $data, [] ) unless @mess;
+            push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+        }
 
-    $self->render( 'json' => { 'status' => 'ok' } );
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
+}
+
+# создание группы настроек
+# my $id = $self->add({
+#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
+#     "label"       => 'название',  - обязательно (название для отображения)
+#     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "folder"      => 1,           - это группа настроек
+#     "readonly"    => 0,           - не обязательно, по умолчанию 0
+# });
+sub add_folder {
+    my ($self, $data) = @_;
+
+    my ($id, %data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка записываемых данных
+        my $data = $self->_check_fields();
+        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        # устанавляваем обязательные поля для фолдера
+        $$data{'placeholder'} = '';
+        $$data{'type'} = '';
+        $$data{'mask'} = '';
+        $$data{'value'} = '';
+        $$data{'selected'} = '';
+        $$data{'required'} = 0;
+        $$data{'readonly'} = 0;
+        $$data{'status'} = 1;
+
+        $id = $self->_insert_folder( $data, [] ) unless @mess;
+        push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+    }
+
+    my $resp;
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 sub delete_folder {
@@ -166,6 +195,7 @@ sub load_default {
             "placeholder"   => $$folder{'placeholder'} || '',
             "label"         => $$folder{'label'},
             "mask"          => $$folder{'mask'} || '',
+            "type"          => $$folder{'type'} || '',
             "value"         => $$folder{'value'} || '',
             "selected"      => $$folder{'selected'} || '',
             "required"      => $$folder{'required'} || 0,
@@ -183,6 +213,7 @@ sub load_default {
                     "placeholder"   => $$children{'placeholder'} || '',
                     "label"         => $$children{'label'},
                     "mask"          => $$children{'mask'} || '',
+                    "type"          => $$children{'type'} || '',
                     "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : '',
                     "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
                     "required"      => $$children{'required'} || 0,
@@ -211,7 +242,6 @@ sub load_default {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
 #     "placeholder" => 'это название',- название для отображения в форме
@@ -219,54 +249,28 @@ sub load_default {
 #     "selected"    => "CKEditor",    - значение по-умолчанию для select
 #     "required"    => 1              - обязательное поле
 # });
-# создание группы настроек
-# my $id = $self->add({
-#     "folder"      => 1,           - это группа настроек
-#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
-# });
 sub add {
     my ($self, $data) = @_;
 
     # read params
-    my %data;
-    $data{'parent'} = $self->param('parent');
-    $data{'label'} = $self->param('label');
-    $data{'name'} = $self->param('name');
+    my ($id, %data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # проверка обязательных полей
-    my @mess;
-    $data{'parent'} = 0 unless $data{'parent'};
-    $data{'label'} = '' unless $data{'label'};
-    $data{'name'} = '' unless $data{'name'};
-    unless (
-        (($data{'parent'} == 0) && $data{'label'}) ||
-        (($data{'parent'} > 0) && $data{'label'} && $data{'name'})
-    ) {
-        push @mess, 'Not exists required fields';
+    unless (@mess) {
+        # проверка записываемых данных
+        my $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        $id = $self->_insert_setting( $data, [] ) unless @mess;
+        push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
     }
 
-    # поля для группы настроек
-    $data{'readonly'} = $self->param('readonly') || 0;
-    $data{'removable'} = $self->param('removable') || 1;
-
-    # готовим запись настроек, если это не folder
-    unless ($self->param('folder')) {
-        my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
-        foreach (@fields) {
-            $data{$_} = $self->param($_);
-        }
-    }
-
-    my $id = $self->_insert_setting( \%data, [] );
-    push @mess, "Could not new setting item '$data{'label'}'" unless $id;
+    # $id = $self->_insert_setting( \%data, [] );
+    # push @mess, "Could not new setting item '$data{'label'}'" unless $id;
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -277,23 +281,24 @@ sub add {
 sub edit {
     my $self = shift;
 
-    my $id = $self->param('id');
+    my ($id, $data, @mess, $resp);
+    unless ( $id = $self->param('id') ) {
+        push @mess, "id is empty or 0";
+    }
+    else {
+        # проверка обязательных полей
+        $id = 0 unless $id =~ /\d+/;
+        push @mess, "Id is wrong" unless $id;
 
-    # проверка обязательных полей
-    my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Id wrong or empty" unless $id;
-
-    my $data;
-    unless (@mess) {
-        $data = $self->_get_setting( $id );
-        push @mess, "Could not get '$id'" unless $data;
+        unless (@mess) {
+            $data = $self->_get_setting( $id );
+            push @mess, "Could not get '$id'" unless $data;
+        }
     }
 
-    my $resp;
     $resp->{'type'} = 'settings';
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $data ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
     $resp->{'data'} = $data if $data;
 
@@ -307,7 +312,6 @@ sub edit {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 #     "value"       => "",            - строка или json
 #     "type"        => "InputNumber", - тип поля из конфига
 #     "placeholder" => 'это название',- название для отображения в форме
@@ -322,49 +326,26 @@ sub edit {
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "removable"   => 1,           - не обязательно, по умолчанию 1
 # });
 sub save {
-    my ($self) = shift;
+    my $self = shift;
 
     # read params
-    my %data;
-    $data{'id'} = $self->param('id');
-    $data{'parent'} = $self->param('parent');
-    $data{'label'} = $self->param('label');
-    $data{'name'} = $self->param('name');
+    my ($id, @mess, $data);
 
-    # проверка обязательных полей
-    my @mess;
-    $data{'id'} = 0 unless $data{'id'};
-    $data{'parent'} = 0 unless $data{'parent'};
-    $data{'label'} = '' unless $data{'label'};
-    $data{'name'} = '' unless $data{'name'};
-    unless (
-        (($data{'parent'} == 0) && $data{'id'} && $data{'label'}) ||
-        (($data{'parent'} > 0) && $data{'id'} && $data{'label'} && $data{'name'})
-    ) {
-        push @mess, 'Not exists required fields';
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    unless (@mess) {
+        # проверка записываемых данных
+        my $data = $self->_check_fields($self->url_for);
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        $id = $self->_save_setting( $data, [] ) unless @mess;
+        push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
     }
-
-    # поля для группы настроек
-    $data{'readonly'} = $self->param('readonly') || 0;
-    $data{'removable'} = $self->param('removable') || 0;
-
-    # готовим запись настроек, если это не folder
-    unless ($self->param('folder')) {
-        my @fields = ("value", "type", "placeholder", "mask", "selected", "required");
-        foreach (@fields) {
-            $data{$_} = $self->param($_);
-        }
-    }
-
-    my $id = $self->_save_setting( \%data, [] );
-    push @mess, "Could not update setting item '$data{'id'}: $data{'label'}'" unless $id;
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -375,49 +356,64 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my $id = $self->param('id');
+    my ($id, $resp, @mess);
+    unless ( $id = $self->param('id') ) {
+        push @mess, "id is empty or 0";
+    }
+    else {
+        # проверка обязательных полей
+        $id = 0 unless $id =~ /\d+/;
+        push @mess, "Id wrong or empty" unless $id;
 
-    # проверка обязательных полей
-    my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Id wrong or empty" unless $id;
-
-    unless (@mess) {
-        $id = $self->_delete_setting( $id );
-        push @mess, "Could not deleted '$id'" unless $id;
+        unless (@mess) {
+            $id = $self->_delete_setting( $id );
+            push @mess, "Could not deleted '$id'" unless $id;
+        }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
 
-sub activate {
-    my $self = shift;
+# sub activate {
+#     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'activate'
-        }
-    );
-}
+#     my ($id, $resp, @mess);
+#     unless ( $id = $self->param('id') ) {
+#         push @mess, "id is empty or 0";
+#     }
+#     else {
+#         # проверка обязательных полей
+#         $id = 0 unless $id =~ /\d+/;
+#         push @mess, "Id wrong or empty" unless $id;
 
-sub hide {
-    my $self = shift;
+#         unless (@mess) {
+#             $id = $self->_delete_setting( $id );
+#             push @mess, "Could not deleted '$id'" unless $id;
+#         }
+#     }
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'hide'
-        }
-    );
-}
+#     $resp->{'message'} = join("\n", @mess) if @mess;
+#     $resp->{'status'} = @mess ? 'fail' : 'ok';
+#     $resp->{'id'} = $id if $id;
+
+#     $self->render( 'json' => $resp );
+# }
+
+# sub hide {
+#     my $self = shift;
+
+#     $self->render(
+#         'json'    => {
+#             'status'        => 'ok',
+#             'controller'    => 'Settings',
+#             'route'         => 'hide'
+#         }
+#     );
+# }
 
 sub inputs {
     my $self = shift;

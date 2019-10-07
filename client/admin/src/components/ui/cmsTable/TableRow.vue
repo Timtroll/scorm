@@ -18,14 +18,15 @@
              width="16"></a>
     </td>
     <!--data-->
-    <td v-for="(item, index) in rowData"
+    <td v-for="(item, index) in updateData"
         class="pos-table-row cursor-pointer"
         :class="{'ellipsis' : ellipsis}"
-        @click="edit(fullData, rowData[index].inline, item.key)">
+        @click="edit(updateData[index].inline, item.key)">
 
       <label class="uk-text-center uk-display-block cursor-pointer"
-             v-if="rowData[index].inline === 1">
+             v-if="updateData[index].inline === 1">
         <input type="checkbox"
+               v-model="updateData[index].val"
                class="pos-checkbox-switch xsmall">
       </label>
 
@@ -46,7 +47,7 @@
 
       <!--remove Row-->
       <a class="uk-icon-link uk-link-muted uk-display-inline-block"
-         @click.prevent="remove(rowData)">
+         @click.prevent="remove(fullData)">
         <img height="16"
              src="/img/icons/icon__trash.svg"
              uk-svg
@@ -57,13 +58,15 @@
              v-if="massEdit"
              @change="notCheckedAll"
              v-model="checkedRow"
-             class="pos-checkbox-switch xsmall uk-margin-small-left">
+             class="pos-checkbox-switch danger xsmall uk-margin-small-left">
     </td>
   </tr>
 
 </template>
 
 <script>
+  import UIkit from 'uikit/dist/js/uikit.min'
+
   export default {
     name: 'TableRow',
 
@@ -92,31 +95,42 @@
 
     watch: {
 
+      // наблюдаем за измененнием данных в колонках
+      rowData () {
+        this.updateData = {...this.rowData}
+      },
+
       checkedAll () {
         this.checkedRow = this.checkedAll
       }
     },
 
+    async mounted () {
+
+      // копируем локально входные данные
+      this.updateData = {...this.rowData}
+
+    },
+
     computed: {
 
-      // Поле можно удалять
-      removable () {
-        return this.rowData.removable !== 1
+      removable () { // Поле можно удалять
+        return this.fullData.removable !== 1
       },
 
-      editPanel_api () {
+      editPanel_api () { // список запросов для правой панели
         return this.$store.getters.editPanel_api
       },
 
-      table_api () {
+      table_api () { // список запросов для таблицы
         return this.$store.getters.table_api
       },
 
-      cardRightState () {
+      cardRightState () { // статус правой панели
         return this.$store.getters.cardRightState
       },
 
-      inputComponents () {
+      inputComponents () { // список типов компонентов
         return this.$store.getters.inputComponents.length > 0
       }
     },
@@ -124,13 +138,14 @@
     data () {
       return {
         ellipsis:   true,
-        checkedRow: false
+        checkedRow: false,
+        updateData: []
       }
     },
 
     methods: {
 
-      toggleEllipsis () {
+      toggleEllipsis () { // показать / скрыть весь текст в колонке
         this.ellipsis = !this.ellipsis
       },
 
@@ -141,29 +156,39 @@
         this.checkedRow = true
       },
 
-      edit (item, inline = 0, key) {
+      // редактирование листочка / поля
+      edit (inline = 0, key) {
 
-        console.log('inline', inline, 'field', 'key', key)
-
-        if (inline === 1) {
-          //console.log('inline 1', inline)
-          const data = {
-            id: item.id,
-            [key]: Number(!item.val)
-          }
-
-          console.log(data)
-
-          this.$store.dispatch(this.table_api.saveField, data, item.parent)
+        if (this.cardRightState) { // если правая панель открыта - закрываем
+          this.$store.commit('card_right_show', !this.cardRightState)
         } else {
-          this.$store.dispatch(this.editPanel_api.get, item.id)
+          if (inline === 1) { // если у колонки inline === 1 изменяем значение
+
+            const data = {...this.fullData}
+
+            const sendData = {
+              parent: data.parent,
+              data:   {
+                id:    data.id,
+                [key]: '' + Number(!data[key])
+              }
+            }
+
+            this.$store.dispatch(this.table_api.saveField, sendData)
+          } else { // если правая панель закрыта открываем для редактирования
+            this.$store.commit('editPanel_add', false)
+            this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
+          }
         }
 
       },
 
-      remove () {
-
-        //this.$store.dispatch('removeTableRow', this.fullData.id)
+      // удаление листочка
+      remove (item) {
+        UIkit
+          .modal
+          .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
+          .then(() => this.$store.dispatch(this.table_api.remove, item), () => {})
       }
 
     }

@@ -32,8 +32,10 @@
       <List :labels="'Добавить группу настроек'"
             :data="editPanel_data"
             :variable-type-tield="'value'"
-            :add="false"
-            v-on:save="saveLeaf($event)"
+            :add="editPanel_add"
+            :folder="editPanel_folder"
+            :parent="tableId"
+            v-on:save="save($event)"
             v-on:close="closeAddGroup"></List>
     </template>
 
@@ -44,6 +46,7 @@
 
   //import прототипа колонок таблицы
   import protoLeaf from './../../assets/json/proto/settings/leaf.json'
+  import protoFolder from './../../assets/json/proto/settings/folder.json'
 
   export default {
 
@@ -67,17 +70,17 @@
 
           tree: {
             get:    'settings/getTree',
+            add:    'settings/addFolder',
             save:   'settings/saveFolder',
             remove: 'settings/removeFolder'
           },
 
           table: {
             get:       'settings/getTable',
-            save:      'saveTableRow',
+            save:      'settings/leafSave',
             saveField: 'settings/leafSaveField',
-            remove:    'removeTableRow',
-            activate:  'activateTableRow',
-            hide:      'hideTableRow'
+            remove:    'settings/removeLeaf'
+
           },
 
           editPanel: {
@@ -99,9 +102,6 @@
         this.$store.commit('table_current', Number(this.tableId))
       }
 
-      //// запись прототипа из json в store
-      this.$store.commit('settings/proto_leaf', protoLeaf)
-
       //// Размер панели редактирования
       this.$store.commit('editPanel_size', false)
       this.$store.commit('table_api', this.actions.table)
@@ -109,14 +109,21 @@
       this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
-    async mounted () {
+    mounted () {
       // Регистрация Vuex модуля settings
       //this.$store.registerModule('settings', settingsVuex)
+
+      //// запись прототипа из json в store
+      this.$store.commit('settings/proto_leaf', protoLeaf)
+      this.$store.commit('settings/proto_folder', protoFolder)
 
     },
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
+      this.$store.commit('tree_active', null)
+      this.$store.commit('settings/proto_leaf', [])
+      this.$store.commit('settings/proto_folder', [])
 
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')
@@ -129,11 +136,19 @@
       },
 
       tableId () {
-        return this.$route.params.id
+        return Number(this.$route.params.id)
       },
 
       editPanel_show () {
         return this.$store.getters.cardRightState
+      },
+
+      editPanel_add () {
+        return this.$store.getters.editPanel_add
+      },
+
+      editPanel_folder () {
+        return this.$store.getters.editPanel_folder
       },
 
       editPanel_data () {
@@ -162,13 +177,48 @@
         this.$store.commit('card_right_show', false)
       },
 
+      save (data) {
+        if (this.editPanel_folder) {
+          this.saveFolder(data)
+        } else {
+          this.saveLeaf(data)
+        }
+      },
+
+      // сохранение Folder
+      saveFolder (data) {
+
+        if (this.editPanel_add) {
+          const save = {
+            add:    this.editPanel_add,
+            folder: true,
+            fields: {}
+          }
+
+          const arr = JSON.parse(JSON.stringify(data))
+          arr.forEach(item => {save.fields[item.name] = item.value})
+
+          this.$store.dispatch(this.actions.tree.add, save)
+        }
+
+      },
+
       // сохранение Листочка
       saveLeaf (data) {
-        const objData = {}
-        const arr     = JSON.parse(JSON.stringify(data))
-        arr.forEach(item => {objData[item.name] = item.value})
 
-        this.$store.dispatch(this.actions.editPanel.save, objData)
+        if (this.editPanel_add) {}
+
+        const save = {
+          add:    this.editPanel_add,
+          folder: false,
+          fields: {}
+        }
+
+        const arr = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {save.fields[item.name] = item.value})
+
+        this.$store.dispatch(this.actions.editPanel.save, save)
+
       }
     }
 

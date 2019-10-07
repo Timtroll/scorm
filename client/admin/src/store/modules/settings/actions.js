@@ -1,8 +1,10 @@
 import Api_EditPanel from '../../../api/settings/EditPanel'
 import Api_Tree from '../../../api/settings/Tree'
 import store from '../../store'
+import router from '../../../router'
 import {flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
+import Settings from '../../../components/settings/Settings'
 
 const actions = {
 
@@ -53,28 +55,25 @@ const actions = {
   },
 
   /**
-   * Tree folder save
+   * Tree folder add
    * @param commit
    * @param state
    * @param dispatch
    * @param item
    * @returns {Promise<void>}
    */
-  async saveFolder ({commit, state, dispatch}, item) {
-    try {
-      store.commit('editPanel_status_request') // статус - запрос
+  async addFolder ({commit, state, dispatch}, item) {
 
-      const response = await Api_Tree.save_tab(item)
+    try {
+
+      const response = await Api_Tree.add_folder(item.fields)
 
       if (response.status === 200) {
 
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTree', item.parent)
-          store.commit('card_right_show', false)
-          store.commit('editPanel_data', []) // очистка данных VUEX
-          store.commit('editPanel_status_success') // статус - успех
+          await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об ошибке
 
         } else {
@@ -91,7 +90,41 @@ const actions = {
   },
 
   /**
-   *
+   * Tree folder save
+   * @param commit
+   * @param state
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async saveFolder ({commit, state, dispatch}, item) {
+    try {
+
+      const response = await Api_Tree.save_folder(item.fields)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          await dispatch('_updateFolder')
+          notify(resp.status, 'success') // уведомление об ошибке
+
+        } else {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+        }
+      }
+
+    } catch (e) {
+      store.commit('editPanel_status_error')
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
+  },
+
+  /**
+   * Удалить Folder
    * @param dispatch
    * @param id
    * @returns {Promise<void>}
@@ -100,33 +133,28 @@ const actions = {
     try {
       store.commit('tree_status_request')
 
-      const response = await Api_Tree.delete_tab(id)
+      const response = await Api_Tree.delete_folder({id: id})
 
       if (response.status === 200) {
+
         const resp = await response.data
 
         if (resp.status === 'ok') {
-          dispatch('getTree')
-          notify(resp.status, 'success') // уведомление об ошибке
+
+          // если удаляем текушую страницу, то переходим в начало раздела
+          if (router.currentRoute.params.id === id) {
+            await router.push({name: 'Settings'})
+          }
+          await dispatch('_updateFolder')
+          notify(resp.status, 'success') // уведомление об успехе
+
         } else {
+          store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + e, 'danger') // уведомление об ошибке
         }
 
       }
-      const resp = await response.data
 
-      if (typeof resp['list'] !== 'undefined') {
-        const tree = resp.list
-
-        if (tree.length > 0) {
-          store.commit('set_tree', tree)
-          store.commit('tree_status_success')
-
-          //Плоское дерево
-          const flattenTree = flatTree([...tree])
-          store.commit('set_tree_flat', flattenTree)
-        }
-      }
     } catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
@@ -134,10 +162,18 @@ const actions = {
     }
   },
 
+  // Обновление фолдера
+  _updateFolder ({dispatch}) {
+    dispatch('getTree')
+    store.commit('card_right_show', false)
+    store.commit('editPanel_data', []) // очистка данных VUEX
+    store.commit('editPanel_status_success') // статус - успех
+
+  },
+
   // ***************************************
   // TABLE
   // ***************************************
-
   async getTable ({commit, state}, id) {
 
     try {
@@ -164,7 +200,48 @@ const actions = {
 
   },
 
-  async removeTableRow ({commit, state}, id) {},
+  /**
+   * удалить Листочек настроек
+   * @param commit
+   * @param dispatch
+   * @param state
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async removeLeaf ({commit, dispatch, state}, item) {
+    try {
+      const response = await Api_EditPanel.list_delete(item.id)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+
+        if (resp.status === 'ok') {
+
+          dispatch('getTable', item.parent)
+
+          // уведомление об успехе
+          if (resp.message) {
+            notify(resp.message, 'success')
+          } else {
+            notify(resp.status, 'success')
+          }
+
+        } else {
+          // уведомление об ошибке
+          if (resp.message) {
+            notify(resp.message, 'danger')
+          } else {
+            notify(resp.status, 'danger')
+          }
+        }
+
+      }
+    } catch (e) {
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
 
   // ***************************************
   // LEAF
@@ -182,13 +259,12 @@ const actions = {
 
     try {
       store.commit('editPanel_status_request') // статус - запрос
-      store.commit('editPanel_data', {}) // очистка данных VUEX
+      store.commit('editPanel_data', []) // очистка данных VUEX
 
       store.commit('card_right_show', true)
       //commit('editPanel_show', true, {root: true}) // открытие правой панели
 
       const response = await Api_EditPanel.list_edit(id)
-      console.log(response)
 
       if (response.status === 200) {
 
@@ -223,20 +299,27 @@ const actions = {
 
     try {
       store.commit('editPanel_status_request') // статус - запрос
-
-      const response = await Api_EditPanel.list_save(item)
+      let response
+      if (item.add) {
+        response = await Api_EditPanel.list_add(item.fields)
+      } else {
+        response = await Api_EditPanel.list_save(item.fields)
+      }
 
       if (response.status === 200) {
 
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTable', item.parent)
+          await dispatch('getTable', item.fields.parent)
           store.commit('card_right_show', false)
           store.commit('editPanel_data', []) // очистка данных VUEX
           store.commit('editPanel_status_success') // статус - успех
           notify(resp.status, 'success') // уведомление об ошибке
 
+        } else if (resp.status === 'fail' && resp.message) {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify(resp.message, 'danger') // уведомление об ошибке
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + e, 'danger') // уведомление об ошибке
@@ -249,26 +332,32 @@ const actions = {
     }
   },
 
-  async leafSaveField ({commit, state, getters, dispatch}, item, parent) {
+  async leafSaveField ({commit, state, getters, dispatch}, item) {
+
+    const parentId = item.parent
 
     try {
       //store.commit('editPanel_status_request') // статус - запрос
 
-      const response = await Api_EditPanel.list_save(item)
+      const response = await Api_EditPanel.list_save(item.data)
 
       if (response.status === 200) {
 
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTable', parent)
-          notify(resp.status, 'success') // уведомление об ошибке
+          dispatch('getTable', parentId)
+          if (resp.message) {
+            notify(resp.message, 'success') // уведомление об ошибке
+          }
 
         } else {
+          dispatch('getTable', parentId)
           notify('ERROR: ' + e, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {
+      dispatch('getTable', parentId)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }

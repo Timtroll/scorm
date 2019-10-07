@@ -750,7 +750,6 @@ $settings = {
           "selected"      => [],
           "parent"        => 107,
           "id"            => 1071,
-          "removable"     => 1,
           "folder"        => 0
         },
         {
@@ -765,7 +764,6 @@ $settings = {
           "selected"      => [],
           "parent"        => 107,
           "id"            => 1072,
-          "removable"     => 1,
           "folder"        => 0
         }
       ]

@@ -13,10 +13,19 @@ export default {
     })
   },
 
-  // добавление/сохранение настройки
+  // сохранение настройки
   list_save (data) {
     return Api()({
       url:    'settings/save',
+      method: 'post',
+      params: data
+    })
+  },
+
+  // добавление настройки
+  list_add (data) {
+    return Api()({
+      url:    'settings/add',
       method: 'post',
       params: data
     })
@@ -26,28 +35,6 @@ export default {
   list_delete (id) {
     return Api()({
       url:    'settings/delete',
-      method: 'post',
-      params: {
-        id: id
-      }
-    })
-  },
-
-  // включение настройки
-  list_activate (id) {
-    return Api()({
-      url:    'settings/activate',
-      method: 'post',
-      params: {
-        id: id
-      }
-    })
-  },
-
-  // отключение настройки
-  settings_hide (id) {
-    return Api()({
-      url:    'settings/hide',
       method: 'post',
       params: {
         id: id

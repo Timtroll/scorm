@@ -40,7 +40,7 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file &error $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+@EXPORT = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 
 # Find and manage the project root directory
@@ -48,13 +48,5 @@ my $home = Mojo::Home->new;
 $home->detect;
 
 sub rel_file { $home->rel_file(shift); }
-
-sub error {
-    my $self = shift;
-
-    $self->res->code(301);
-    $self->redirect_to('/500.html');
-    return;
-}
 
 1;

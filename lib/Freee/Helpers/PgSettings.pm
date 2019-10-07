@@ -29,7 +29,7 @@ sub register {
 
         my $list;
         if ($no_children) {
-            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) ORDER by id', { Slice=> {} } );
+            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id', { Slice=> {} } );
         }
         else {
             $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent FROM "public".settings ORDER by id', { Slice=> {} } );
@@ -40,34 +40,54 @@ sub register {
         return $list;
     });
 
-    # читаем данные фолдера
-    # my $row = $self->_get_folder( 99 );
+    # добавление фолдера настроек
+    # my $row = $self->_insert_folder({
+    #   'parent'  => 0,
+    #   'name':   => 'test23',
+    #   'label':  => 'цкцкцук',
+    # });
     # возвращается объект
-    $app->helper( '_get_folder' => sub {
-        my ($self, $id) = @_;
+    $app->helper( '_insert_folder' => sub {
+        my ($self, $data) = @_;
 
-        return unless $id;
+        return unless $data;
 
-        my $row = $self->pg_dbh->selectrow_hashref('SELECT id, parent, folder, keywords, name, label, opened FROM "public"."settings" WHERE "id"='.$id);
+        # пустые поля для value и selected
+        $$data{'value'} = $$data{'selected'} = '';
 
-        # десериализуем поля vaue и selected
-        if ($row) {
-            $$row{'value'} = '' if ($$row{'value'} eq 'null');
-            $$row{'selected'} = '' if ($$row{'selected'} eq 'null');
-        }
+        my $sql ='INSERT INTO "public"."settings" ('.
+            join( ',', map { '"'.$_.'"' } keys %$data ).
+            ') VALUES ('.
+            join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            ') RETURNING "id"';
+        eval{
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
-        return $row;
+        my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
+
+        return $id;
     });
 
     # сохранить данные фолдера настроек
-    # my $true = $self->_save_folder({<data>});
-    # <data> - хэш редактируемых полей
+    # my $true = $self->_save_folder({
+    #   'id'      => 12,
+    #   'parent'  => 0,
+    #   'name':   => 'test23',
+    #   'label':  => 'цкцкцук'
+    # });
     $app->helper( '_save_folder' => sub {
         my ($self, $data) = @_;
 
-        my $fields = join( ', ', map { '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data );
+        return unless $$data{'id'};
+
+        my $fields = join( ', ', map {
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+        } keys %$data );
+
         my $rv = $self->pg_dbh->do(
-            'UPDATE "public"."settings" SET '.$fields.' WHERE "id"='.$self->pg_dbh->quote( $$data{id} ).' RETURNING "id"'
+            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};
 
         return $rv;
@@ -113,8 +133,7 @@ sub register {
     # my $id = $self->_insert_setting({
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
-    #     "readonly",       - не обязательно, по умолчанию 0
-    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "readonly", - не обязательно, по умолчанию 0
     # });
     $app->helper( '_insert_setting' => sub {
         my ($self, $data) = @_;
@@ -122,10 +141,12 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = $$data{'value'} ? $$data{'value'} : '';
-        $$data{'selected'} =  $$data{'selected'} ? $$data{'selected'} : '';
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        if (defined $$data{'value'} ) {
+            $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        }
+        if (defined $$data{'selected'} ) {
+            $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        }
 
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
@@ -157,8 +178,7 @@ sub register {
     #     "parent",   - обязательно (если корень - 0, или owner id),
     #     "label",    - обязательно
     #     "name",     - обязательно
-    #     "readonly",       - не обязательно, по умолчанию 0
-    #     "removable" int,  - не обязательно, по умолчанию 1
+    #     "readonly", - не обязательно, по умолчанию 0
     # });
     # возвращается id записи
     $app->helper( '_save_setting' => sub {
@@ -167,20 +187,17 @@ sub register {
         return unless $data;
 
         # сериализуем поля vaue и selected
-        $$data{'value'} = '' if ($$data{'value'} eq 'null');
-        $$data{'selected'} = '' if ($$data{'selected'} eq 'null');
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        if (defined $$data{'value'} ) {
+            $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        }
+        if (defined $$data{'selected'} ) {
+            $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        }
 
         my $fields = join( ', ', map {
-            if ($$data{$_}) {
-                '"'.$_.'"='.$$data{$_} =~ /^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} );
-            }
-            else {
-                "\"".$_."\"=''";
-            }
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
-warn $fields;
+
         my $rv = $self->pg_dbh->do(
             'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
         ) if $$data{id};
@@ -220,7 +237,6 @@ warn $fields;
             $$row{'parent'}     = $$row{'parent'} || 0;
             $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
             $$row{'readonly'}   = $$row{'readonly'} || 0;
-            $$row{'removable'}  = $$row{'removable'} || 0;
             $$row{'required'}   = $$row{'required'} || 0;
             $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
             $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
