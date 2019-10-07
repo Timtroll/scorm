@@ -29,7 +29,7 @@
 
         <!--Remove Row-->
         <button class="uk-button-default pos-border-radius-none pos-border-none uk-flex uk-flex-middle"
-                v-if="massEdit"
+                v-if="massEdit && tableNotEmpty"
                 disabled>
           <img src="/img/icons/icon__trash.svg"
                uk-svg
@@ -45,7 +45,8 @@
 
     <!--Показать колонки-->
     <template #headerRight>
-      <div class="uk-flex-column uk-flex pos-border-left">
+      <div class="uk-flex-column uk-flex pos-border-left"
+           v-if="tableNotEmpty">
         <button class="uk-button uk-button-default pos-border-radius-none pos-border-none"
                 type="button">
           <img src="/img/icons/icon__input_table_row.svg"
@@ -84,7 +85,8 @@
     <template #header>
 
       <!--table searchInput-->
-      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left">
+      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left"
+           v-if="tableNotEmpty">
         <a @click.prevent="clearSearchVal"
            v-if="searchInput"
            class="uk-form-icon uk-form-icon-flip">
@@ -111,7 +113,7 @@
     <template #body>
 
       <div class="pos-table-container">
-        <table v-if="tableRows"
+        <table v-if="tableNotEmpty"
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
@@ -242,6 +244,12 @@
     },
 
     computed: {
+
+      tableNotEmpty () {
+        if (this.tableRows) {
+          return this.tableRows.length > 0
+        }
+      },
 
       table_api () {
         return this.$store.getters.table_api
