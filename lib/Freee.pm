@@ -181,6 +181,7 @@ sub startup {
     # управление роутами
     $auth->post('/routes/')               ->to('routes#index');        # список роутов
     $auth->post('/routes/update')         ->to('routes#update');       # обновление данных по роуту
+    $auth->post('/routes/sync')           ->to('routes#sync');         # синхронизация между роутами в системе и таблицей
 
 
     # управление темами
@@ -259,8 +260,9 @@ sub startup {
     foreach (@{$auth->{children}} ) {
         my $val = $_->{pattern}->{defaults}->{action};       
         my $key = $_->{pattern}->{'unparsed'};        
-        $$routs{$key} = $val;       
+        $$routs{$key} = $val;
     }
+# print Dumper ($routs);
 }
 
 1;
