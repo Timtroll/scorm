@@ -73,7 +73,7 @@ const actions = {
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('updateFolder')
+          await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об ошибке
 
         } else {
@@ -107,10 +107,11 @@ const actions = {
 
         if (resp.status === 'ok') {
 
+          // если удаляем текушую страницу, то переходим в начало раздела
           if (router.currentRoute.params.id === id) {
             await router.push({name: 'Settings'})
           }
-          dispatch('updateFolder')
+          await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об успехе
 
         } else {
@@ -127,7 +128,8 @@ const actions = {
     }
   },
 
-  updateFolder ({dispatch}) {
+  // Обновление фолдера
+  _updateFolder ({dispatch}) {
     dispatch('getTree')
     store.commit('card_right_show', false)
     store.commit('editPanel_data', []) // очистка данных VUEX
