@@ -188,18 +188,18 @@
       // сохранение Folder
       saveFolder (data) {
 
-        if (this.editPanel_add) {}
+        if (this.editPanel_add) {
+          const save = {
+            add:    this.editPanel_add,
+            folder: true,
+            fields: {}
+          }
 
-        const save = {
-          add:    this.editPanel_add,
-          folder: true,
-          fields: {}
+          const arr = JSON.parse(JSON.stringify(data))
+          arr.forEach(item => {save.fields[item.name] = item.value})
+
+          this.$store.dispatch(this.actions.tree.add, save)
         }
-
-        const arr = JSON.parse(JSON.stringify(data))
-        arr.forEach(item => {save.fields[item.name] = item.value})
-
-        this.$store.dispatch(this.actions.tree.add, save)
 
       },
 
