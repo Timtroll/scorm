@@ -173,7 +173,7 @@
       },
 
       // add children group
-      addChildren (id) {
+      addChildren (parent) {
         //const group = {
         //  folder:    1,
         //  lib_id:    id,
