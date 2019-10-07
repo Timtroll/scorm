@@ -55,7 +55,7 @@ const actions = {
   },
 
   /**
-   * Tree folder save
+   * Tree folder add
    * @param commit
    * @param state
    * @param dispatch
@@ -67,6 +67,40 @@ const actions = {
     try {
 
       const response = await Api_Tree.add_folder(item.fields)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          await dispatch('_updateFolder')
+          notify(resp.status, 'success') // уведомление об ошибке
+
+        } else {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+        }
+      }
+
+    } catch (e) {
+      store.commit('editPanel_status_error')
+      notify('ERROR: ' + e, 'danger')
+      throw 'ERROR: ' + e
+    }
+  },
+
+  /**
+   * Tree folder save
+   * @param commit
+   * @param state
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async saveFolder ({commit, state, dispatch}, item) {
+    try {
+
+      const response = await Api_Tree.save_folder(item.fields)
 
       if (response.status === 200) {
 
@@ -277,7 +311,7 @@ const actions = {
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          dispatch('getTable', item.fields.parent)
+          await dispatch('getTable', item.fields.parent)
           store.commit('card_right_show', false)
           store.commit('editPanel_data', []) // очистка данных VUEX
           store.commit('editPanel_status_success') // статус - успех
