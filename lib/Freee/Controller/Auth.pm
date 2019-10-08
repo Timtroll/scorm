@@ -89,10 +89,11 @@ print "route = ", $self->url_for, "\n";
 
         unless ($res) {
             # выводим ошибки, если валидация html данных не прошла
-            my $url = $self->url_for("/error/");
-            $self->redirect_to( $url->query( message => join("\n", @$err) ) );
+            $self->render( json => { 'status' => 'fail', message => join("\n", @$err) } );
+            return;
         }
     }
+
 # # для отладки
 return 1;
 

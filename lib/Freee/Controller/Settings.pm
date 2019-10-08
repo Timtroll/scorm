@@ -44,11 +44,6 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
-    # # валидация html запрсоа
-    # if (defined $config->{'vfields'}->{ $$routs{$self->url_for} }) {
-    #     my $res = $self->_check( $$routs{$self->url_for} );
-    # }
-
     my $list = $self->_get_tree(1);
 
     $self->render( 'json' => { 'status' => 'ok', 'list' => $list });
@@ -336,7 +331,7 @@ sub save {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
     unless (@mess) {
         # проверка записываемых данных
-        my $data = $self->_check_fields($self->url_for);
+        my $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         $id = $self->_save_setting( $data, [] ) unless @mess;
