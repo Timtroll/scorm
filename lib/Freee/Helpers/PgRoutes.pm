@@ -61,6 +61,8 @@ sub register {
         my $self = shift;
 
         my $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name FROM "public"."routes"', 'id');
+
+        my $hashlist;
 # print Dumper \%$routs;
 # print "\n";
 # print ( exists $$routs{ "/exam" } );
@@ -71,18 +73,82 @@ sub register {
 # }
 # print "\n";
 # print Dumper $$list{2}{'name'};
+
+# print Dumper $$list{9}{'name'};
+# print "\n";
+# print Dumper $$list{9};
+# print "\n";
+# print Dumper $routs;
+# my $t = $$list{9};
+# if ( exists $$list{9}{ "/lesson" } ) {
+#     print"aaaaa";
+# }
+# if ( exists $$routs{ "/lesson" } ) {
+#     print"bbbbb";
+# }
+
         foreach my $id (sort {$a <=> $b} keys %$list) {
             unless ( exists $$routs{ $$list{$id}{'name'} } ) {
                 $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
-            }        
-        }
-        foreach my $name keys %$routs) {
-            unless ( exists $$routs{ $$list{$id}{'name'} } ) {
-                $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
-            }        
+            }
+            $$hashlist{ $$list{ $id }{'name'} } = $id;      
         }
 
+        foreach my $name (keys %$routs) {
+            if ( exists $$hashlist{ $name } ) {
+                if ( $self->pg_dbh->do( 'INSERT INTO "public"."routes" (label,name) VALUES '.$name.','.$$routs{$name} ) ){
+                    print "\n";
+                    print $name;
+                    print "\n";
+                    print $$routs{$name};
+                    print "\n";
+                }
+            }
+        }
+    
+
+
+# print "\n";
+# print ( exists $$list{$id}{ $name } );
+# print "\n";
+# print ( exists $$routs{ $$list{2}{'name'} } );
+# unless ( exists $$routs{ $$list{2}{'name'} }) {
+#     print ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+# }
+# print "\n";
+# print Dumper $$routs{'key'};
+# print $$list{ '9' };
+# unless ( exists { %$list{ '9' } }{ '/lesson' } ) {
+#     print "aaaaaaa";
+# }
+
+#         foreach my $name (keys %$routs) {
+#             #print $name;
+#             if ( exists $$list{ '9' }{ $name } ){
+#                 print "aaaaaa";
+#             }
+            # foreach my $id (sort {$a <=> $b} keys %$list) {
+            #     if ( exists $$list{ $id }{ $name } ) {
+            #         print $$list{ $id }{ $name };
+            #     }
+            # }        
+        #}
+
+
+
+
         
+
+
+
+
+        # foreach my $id (sort {$a <=> $b} keys %$list) {
+        #     foreach my $name (keys %$routs) {
+        #         if ( exists ${ $$list{ $id } }{ $name } ) {
+        #             print"aaaaa";
+        #         }
+        #     }
+        # }
     });
 
 
