@@ -9,7 +9,6 @@ use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
-# use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
@@ -125,30 +124,6 @@ sub register {
         return $db_result;
     });
 
-
-    # отключение элемента
-    # возвращается true/false
-    $app->helper( '_hide_group' => sub {
-        my ($self, $id) = @_;
-
-        return unless $id;
-
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET "status" = 0 WHERE "id"='.$id );
-
-        return $db_result;
-    });
-
-    # активация элемента
-    # возвращается true/false
-    $app->helper( '_activate_group' => sub {
-        my ($self, $id) = @_;
-
-        return unless $id;
-
-        my $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET "status" = 1 WHERE "id"='.$id );
-
-        return $db_result;
-    });
 
     # существует ли строка с таким id
     # my $true = $self->_group_id_check( 99 );

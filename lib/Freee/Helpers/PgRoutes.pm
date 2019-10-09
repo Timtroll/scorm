@@ -17,6 +17,7 @@ sub register {
     # Helper for Routes
 
     # получение списка рутов из базы в массив хэшей
+    # my $routes = $self->_routes_values();
     $app->helper( '_routes_values' => sub {
         my $self = shift;
 
@@ -25,39 +26,8 @@ sub register {
         return $list;
     });
 
-    # # добавление роута
-    # # my $id = $self->insert_route({
-    # #     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
-    # #     "label"       => 'название',      - название для отображения
-    # #     "name",       => 'name',          - системное название, латиница
-    # #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
-    # #     "required"    => 0,               - не обязательно, по умолчанию 0
-    # #     "readonly"    => 0,               - не обязательно, по умолчанию 0
-    # #     "status"      => 0                - по умолчанию 1
-    # # });
-    # # возвращается id роута
-    # $app->helper( '_insert_route' => sub {
-    #     my ($self, $data) = @_;
-
-    #     return unless $data;
-
-    #     my $id;
-    #     eval{
-    #         if ( $self->pg_dbh->do('INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-    #             $id = $self->pg_dbh->last_insert_id( undef, 'public', 'routes', undef, { sequence => 'routes_id_seq' } );
-    #         }
-    #     };
-
-    #     if ($@) { 
-    #         print $DBI::errstr . "\n";
-    #     }
-
-    #     return $id;
-    # });
-
-
     # обновление роута
-    # my $id = $self->insert_route({
+    # my $id = $self->_update_route({
     #      "id"         => 1,           - id обновляемого элемента ( >0 )
     #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -85,54 +55,6 @@ sub register {
         return $db_result;
     });
 
-
-    # # удаление роута
-    # # my $true = $self->_delete_route( 99 );
-    # # возвращается true/false
-    # $app->helper( '_delete_route' => sub {
-    #     my ($self, $id) = @_;
-
-    #     return unless $id;
-
-    #     my $db_result = 0;
-        
-    #     if ( ( $db_result = $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ) ) == "0E0" ) { 
-    #         print "Row for deleting doesn't exist \n";
-    #         $db_result = 0;
-    #     }   
-
-    #     return $db_result;
-    # });
-
-
-    # # изменение параметра status на 0
-    # # возвращается true/false
-    # $app->helper( '_hide_route' => sub {
-
-    #     my ($self, $id) = @_;
-
-    #     return unless $id;
-
-    #     my $db_result = $self->pg_dbh->do('UPDATE "public"."routes" SET "status" = 0 WHERE "id"='.$id );
-
-    #     return $db_result;
-    # });
-
-
-    # # изменение параметра status на 1
-    # # возвращается true/false
-    # $app->helper( '_activate_route' => sub {
-
-    #     my ($self, $id) = @_;
-
-    #     return unless $id;
-
-    #     my $db_result = $self->pg_dbh->do('UPDATE "public"."routes" SET "status" = 1 WHERE "id"='.$id );
-
-    #     return $db_result;
-    # });
-
-
     # проверка корректности наследования
     # my $true = $self->_parent_check_route( 99 );
     # возвращается true/false
@@ -152,21 +74,6 @@ sub register {
 
         return $db_result;
     });
-
-
-    # # проверка существования строки с данным id
-    # # my $true = $self->_id_check_route( 99 );
-    # # возвращается true/false
-    # $app->helper( '_id_check_route' => sub {
-
-    #     my ($self, $id) = @_;
-
-    #     return unless $id;
-
-    #     my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."routes" WHERE "id"='.$id);
-
-    #     return $db_result;
-    # });
 }
 
 1;

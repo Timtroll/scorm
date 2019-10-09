@@ -4,12 +4,8 @@ CREATE SEQUENCE "public".groups_id_seq;
 
 CREATE TABLE "public"."groups" (
 "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
-"parent" int4,
 "label" varchar(255) COLLATE "default" NOT NULL,
 "name" varchar(255) COLLATE "default" NOT NULL,
-"value" text COLLATE "default",
-"required" int4 DEFAULT 0,
-"readonly" int4 DEFAULT 0,
 "status" int4 DEFAULT 1
 )
 WITH (OIDS=FALSE)

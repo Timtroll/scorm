@@ -109,20 +109,20 @@ sub register {
             # волидация роутов
             '/settings/add_folder'  => {
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
+                "label"         => [ 'required', qr{.*}, 256 ],
             },
             '/settings/save_folder'  => {
                 "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
             },
 
             '/settings/save'  => {
                 "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{^[A-Za-z]+$}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
                 "placeholder"   => [ '', qr{.*}, 256 ],
                 "type"          => [ '', qr{\w+}, 256 ],
@@ -134,10 +134,9 @@ sub register {
                 "status"        => [ 'required', qr{^[01]$} ]
             },
             '/settings/add'  => {
-                # "id"            => [ 'required', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
+                "label"         => [ 'required', qr{.*}, 256 ],
                 "placeholder"   => [ '', qr{.*}, 256 ],
                 "type"          => [ '', qr{\w+}, 256 ],
                 "mask"          => [ '', qr{.*}, 256 ],
@@ -151,7 +150,7 @@ sub register {
             'groups'  => {
                 "id"            => [ '', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
                 "value"         => [ '', qr{.*}, 10000 ],
                 "required"      => [ '', qr{^\d+$} ],
@@ -161,7 +160,7 @@ sub register {
             'routes'  => {
                 "id"            => [ '', qr{^\d+$} ],
                 "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ '', qr{.*}, 256 ],
+                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
                 "label"         => [ '', qr{.*}, 256 ],
                 "value"         => [ '', qr{.*}, 10000 ],
                 "required"      => [ '', qr{^\d+$} ],

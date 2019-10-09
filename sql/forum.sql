@@ -11,9 +11,7 @@ CREATE TABLE "public"."forum_messages" (
 "rate" int4 NOT NULL,
 CONSTRAINT "forum_messages_pkey" PRIMARY KEY ("id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_messages" OWNER TO "troll";
 ---------------------
 
@@ -23,9 +21,7 @@ CREATE TABLE "public"."forum_rates" (
 "like_value" int2 NOT NULL,
 CONSTRAINT "forum_rates_pkey" PRIMARY KEY ("user_id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_rates" OWNER TO "troll";
 ---------------------
 
@@ -41,9 +37,7 @@ CREATE TABLE "public"."forum_themes" (
 "date_created" int4 NOT NULL,
 CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_themes" OWNER TO "troll";
 ---------------------
 

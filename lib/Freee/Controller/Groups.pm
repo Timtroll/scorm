@@ -83,13 +83,13 @@ sub add {
 }
 
 # обновление группы
-# my $id = $self->update({
+# my $id = $self->save({
 #     "id"        => 1            - id обновляемого элемента ( >0 )
 #     "label"     => 'название'   - обязательно (название для отображения)
 #     "name",     => 'name'       - обязательно (системное название, латиница)
 #     "status"    => 0 или 1      - активна ли группа
 # });
-sub update {
+sub save {
     my ($self) = shift;
     my ( $id, $parent, @mess );
 
@@ -151,75 +151,6 @@ sub delete {
     }
 
     # вывод результата
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
-
-    $self->render( 'json' => $resp );
-}
-
-# деактивация элемента
-#  "id"     => 1 - id изменяемого элемента ( > 0 )
-#  элементу присваивается "status" = 0
-sub hide {
-    my $self = shift;
-
-    # read params
-    my $id = $self->param('id');
-    my @mess;
-
-    # проверка id
-    if ( $id ) {       
-        # проверка на существование строки 
-        if ( $self->_group_id_check( $id ) ) {
-            # деактивация элемента
-            $id = $self->_hide_group( $id );
-            push @mess, "Can't change status" unless $id;
-        }
-        else {
-            $id = 0;
-            push @mess, "Can't find row for hiding";
-        }
-    } 
-    else {
-        push @mess, "Need id for changing";
-    }
-
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
-
-    $self->render( 'json' => $resp );
-}
-
-
-# активация элемента
-#  "id"     => 1 - id изменяемого элемента ( > 0 )
-#  элементу присваивается "status" = 1
-sub activate {
-    my $self = shift;
-
-    # read params
-    my $id = $self->param('id');
-    my @mess;
-
-    # проверка id
-    if ( $id ) {       
-        # проверка на существование строки 
-        if ( $self->_group_id_check( $id ) ) {
-            # активация элемента
-            $id = $self->_activate_group( $id );
-            push @mess, "Can't change status" unless $id;
-        }
-        else {
-            $id = 0;
-            push @mess, "Can't find row for activating";
-        }
-    } 
-    else {
-        push @mess, "Need id for changing";
-    }
-    
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';

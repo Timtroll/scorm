@@ -46,58 +46,20 @@ sub index {
         push @{$set}, $row;
     }
 
-# показываем все роуты
+    # показываем доспупные роуты
     $self->render( json => $set );
 }
 
+# получение данных роута
+# my $id = $self->insert_route(<id>)
+# <id>  - id роута
+sub edit {
+    my $self = shift;
+    my ( $list, $set );
 
-# # новый роут
-# # my $id = $self->insert_route({
-# #     "parent"      => 5,               - id родителя (должно быть натуральным числом), 0 - фолдер
-# #     "label"       => 'название',      - название для отображения
-# #     "name",       => 'name',          - системное название, латиница
-# #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
-# #     "required"    => 0,               - не обязательно, по умолчанию 0
-# #     "readonly"    => 0,               - не обязательно, по умолчанию 0
-# #     "status"      => 0                - по умолчанию 1
-# # });
-# sub add {
-#     my ($self, $data) = @_;
-
-#     my ($id, @mess, $resp);
-
-#     # read params
-#     my %data = (
-#         'parent'    => $self->param('parent')    || 0,
-#         'label'     => $self->param('label'),
-#         'name'      => $self->param('name'),
-#         'value'     => $self->param('value')     || '{"/route":0}',
-#         'status'    => $self->param('status')    || 1,
-#         'required'  => $self->param('required')  || 0,
-#         'readonly'  => $self->param('readonly')  || 0
-#     );
-
-#     # проверка parent
-#     if ( $self->_parent_check_route( $data{'parent'} ) ) { 
-#         #проверка остальных полей
-#         if (  $data{'label'} && $data{'name'} ) {
-#             #добавление
-#             $id = $self->_insert_route( \%data );
-#             push @mess, "Could not add new route item '$data{'label'}'" unless $id;
-#         }
-#         else {
-#             push @mess, "Required fields do not exist";
-#         }
-#     }
-#     else {
-#         push @mess, "Wrong parent";
-#     }
-
-#     $resp->{'message'} = join("\n", @mess) unless $id;
-#     $resp->{'status'} = $id ? 'ok' : 'fail';
-#     $resp->{'id'} = $id if $id;
-#     $self->render( 'json' => $resp );
-# }
+    # показываем доспупные роуты
+    $self->render( json => {} );
+}
 
 
 # обновление роута
@@ -154,110 +116,5 @@ sub update {
 
     $self->render( 'json' => $resp );
 }
-
-
-# # удалениe из групп пользователей
-# #  "id" => 1 - id удаляемого элемента ( >0 )
-# sub delete {
-#     my $self = shift;
-
-#     # read params
-#     my $id = $self->param('id');
-#     my @mess;
-
-#     # проверка обязательных полей
-#     if ( $id ) {
-#         # проверка на существование удаляемой строки в routes
-#         if ( $self->_id_check_route( $id ) ) {
-#             # процесс удаления
-#             $id = $self->_delete_route( $id );
-#             push @mess, "Could not deleted" unless $id;
-#         }
-#         else {
-#             $id = 0;
-#             push @mess, "Can't find row for deleting";
-#         }
-#     } 
-#     else {
-#         push @mess, "Could not id for deleting" unless $id;
-#     }
-
-#     # вывод результата
-#     my $resp;
-#     $resp->{'message'} = join("\n", @mess) unless $id;
-#     $resp->{'status'} = $id ? 'ok' : 'fail';
-
-#     $self->render( 'json' => $resp );
-# }
-
-
-# # для деактивации роута
-# #  "id"     => 1 - id изменяемого элемента ( > 0 )
-# #  элементу присваивается "status" = 0
-# sub hide {
-#     my $self = shift;
-
-#     # read params
-#     my $id = $self->param('id');
-#     my @mess;
-
-#     # проверка id
-#     if ( $id ) {   
-#         # проверка на существование строки 
-#         if ( $self->_id_check_route( $id ) ) {
-#             # процесс смены статуса
-#             $id = $self->_hide_route( $id );
-#             push @mess, "Can't change status" unless $id;
-#         }
-#         else {
-#             $id = 0;
-#             push @mess, "Can't find row for hiding";
-#         }
-#     } 
-#     else {
-#         push @mess, "Need id for changing";
-#     }
-
-#     my $resp;
-#     $resp->{'message'} = join("\n", @mess) unless $id;
-#     $resp->{'status'} = $id ? 'ok' : 'fail';
-
-#     $self->render( 'json' => $resp );
-# }
-
-
-# # для активации роута
-# #  "id"     => 1 - id изменяемого элемента ( > 0 )
-# #  элементу присваивается "status" = 1
-# sub activate {
-#     my $self = shift;
-
-#     # read params
-#     my $id = $self->param('id');
-#     my @mess;
-
-#     # проверка id
-#     if ( $id ) {    
-#         # проверка на существование строки 
-#         if ( $self->_id_check_route( $id ) ) {
-#             # процесс смены статуса
-#             $id = $self->_activate_route( $id );
-#             push @mess, "Can't change status" unless $id;
-#         }
-#         else {
-#             $id = 0;
-#             push @mess, "Can't find row for activating";
-#         }
-#     } 
-#     else {
-#         push @mess, "Need id for changing";
-#     }
-    
-#     my $resp;
-#     $resp->{'message'} = join("\n", @mess) unless $id;
-#     $resp->{'status'} = $id ? 'ok' : 'fail';
-
-#     $self->render( 'json' => $resp );
-# }
 
 1;

@@ -1,3 +1,4 @@
+--таблица
 DROP SEQUENCE IF EXISTS "public".settings_id_seq; 
 CREATE SEQUENCE "public".settings_id_seq;
 
@@ -19,3 +20,20 @@ WITH (OIDS=FALSE)
 ;
 
 ALTER TABLE "public"."settings" OWNER TO "troll";
+
+
+---функция (рекурсивное удаление детей)
+CREATE OR REPLACE FUNCTION "public"."settings_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$
+BEGIN
+DELETE FROM "public"."settings" WHERE "parent" = OLD.id;
+
+RETURN OLD;
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+---триггер
+DROP TRIGGER IF EXISTS "settings_ad" ON "public"."settings";
+CREATE TRIGGER "settings_ad" AFTER DELETE ON "public"."settings"
+FOR EACH ROW
+EXECUTE PROCEDURE "settings_trigger_ad"();
