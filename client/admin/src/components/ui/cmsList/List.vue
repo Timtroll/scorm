@@ -167,10 +167,12 @@
     },
     created () {
       if (this.add) {
-
         this.dataAdd     = this.data.filter(item => item.add === true)
         this.dataNew     = JSON.parse(JSON.stringify(this.dataAdd))
         this.dataChanged = this.createDataChanged(this.dataAdd)
+      } else {
+        this.dataNew     = JSON.parse(JSON.stringify(this.data))
+        this.dataChanged = this.createDataChanged(this.data)
       }
     },
 

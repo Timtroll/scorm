@@ -132,8 +132,20 @@
         return this.$store.getters.activeId
       },
 
+      editPanel_api () { // список запросов для правой панели
+        return this.$store.getters.editPanel_api
+      },
+
+      protoFolder () {
+        return this.$store.getters['settings/protoFolder']
+      },
+
       cardLeftClickAction () {
         return this.$store.getters.cardLeftClickAction
+      },
+
+      cardRightState () { // статус правой панели
+        return this.$store.getters.cardRightState
       }
 
     },
@@ -191,21 +203,31 @@
       },
 
       // edit children group
-      editGroup (item) {
-        //const group = {
-        //  folder:    1,
-        //  lib_id:    item.id,
-        //  label:     item.label,
-        //  name:      item.name,
-        //  editable:  item.editable,
-        //  readonly:  0,
-        //  removable: 1
-        //}
-        //
-        //this.$store.commit('cms_add_group', group)
-        //this.$store.commit('editPanel_group', true)
-        //this.$store.commit('cms_show_add_edit_toggle', false)
-        //this.$store.commit('editPanel_status_success')
+      async editGroup (folder) {
+
+        //this.$store.dispatch(this.tree_api.save, id)
+
+        if (this.cardRightState) { // если правая панель открыта - закрываем
+          this.$store.commit('card_right_show', !this.cardRightState)
+        } else {
+
+          const proto = await JSON.parse(JSON.stringify(this.protoFolder))
+
+          for (let item of proto) {
+            console.log('item', item)
+            item.value = folder[item.name]
+          }
+
+          this.$store.commit('editPanel_status_request')
+          this.$store.commit('editPanel_add', false)
+          this.$store.commit('editPanel_folder', true)
+          this.$store.commit('card_right_show', true)
+
+          this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+          this.$store.commit('editPanel_status_success') // статус - успех
+
+        }
+
       },
 
       // remove group

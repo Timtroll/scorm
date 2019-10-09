@@ -86,6 +86,7 @@
           editPanel: {
             get:  'settings/leafEdit',
             save: 'settings/leafSave'
+
           }
         }
 
@@ -199,6 +200,17 @@
           arr.forEach(item => {save.fields[item.name] = item.value})
 
           this.$store.dispatch(this.actions.tree.add, save)
+        } else {
+          const save = {
+            add:    this.editPanel_add,
+            folder: true,
+            fields: {}
+          }
+
+          const arr = JSON.parse(JSON.stringify(data))
+          arr.forEach(item => {save.fields[item.name] = item.value})
+
+          this.$store.dispatch(this.actions.tree.save, save)
         }
 
       },

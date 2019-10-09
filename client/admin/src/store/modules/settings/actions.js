@@ -89,6 +89,33 @@ const actions = {
     }
   },
 
+  //async saveFolder ({commit, state, dispatch}, item) {
+  //
+  //  try {
+  //
+  //    const response = await Api_Tree.save_folder(item)
+  //
+  //    if (response.status === 200) {
+  //
+  //      const resp = await response.data
+  //      if (resp.status === 'ok') {
+  //
+  //        await dispatch('_updateFolder')
+  //        notify(resp.status, 'success') // уведомление об ошибке
+  //
+  //      } else {
+  //        store.commit('editPanel_status_error') // статус - ошибка
+  //        notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+  //      }
+  //    }
+  //
+  //  } catch (e) {
+  //    store.commit('editPanel_status_error')
+  //    notify('ERROR: ' + e, 'danger')
+  //    throw 'ERROR: ' + e
+  //  }
+  //},
+
   /**
    * Tree folder save
    * @param commit
