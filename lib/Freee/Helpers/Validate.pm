@@ -64,7 +64,7 @@ sub register {
                     my $val = $_[0]->param($fld) // 0;
 
                     # чистка от html
-                    $val = $hs->parse($val) unless $val =/\d+/;
+                    $val = $hs->parse($val) unless ($val or $val =~ /\d+/);
 
                     # проверяем длинну поля, если указано проверять
                     if ($$valid{$fld}[2]) {
@@ -142,7 +142,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os ],
                 "readonly"      => [ '', qr/^[01]$/os ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ],
@@ -156,6 +156,14 @@ sub register {
                 "required"      => [ '', qr/^[01]$/os ],
                 "readonly"      => [ '', qr/^[01]$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/settings/hide'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "status"        => [ 'required', qr/^[01]$/os ]
+            },
+            '/settings/activate'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
 
             'groups'  => {

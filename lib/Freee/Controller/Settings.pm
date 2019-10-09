@@ -362,4 +362,41 @@ sub delete {
     $self->render( 'json' => $resp );
 }
 
+sub activate {
+    my $self = shift;
+
+    my ($id, $resp, @mess);
+    unless ( $id = $self->param('id') ) {
+        push @mess, "id is empty or 0";
+    }
+    else {
+        # проверка обязательных полей
+        $id = 0 unless $id =~ /\d+/;
+        push @mess, "Id wrong or empty" unless $id;
+
+        unless (@mess) {
+            $id = $self->_delete_setting( $id );
+            push @mess, "Could not deleted '$id'" unless $id;
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
+}
+
+sub hide {
+    my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'        => 'ok',
+            'controller'    => 'Settings',
+            'route'         => 'hide'
+        }
+    );
+}
+
 1;
