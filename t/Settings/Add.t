@@ -1,74 +1,114 @@
+# добавление группы настроек
+# my $id = $self->insert_group({
+#     "label"        => 'название',    - название для отображения, обязательное поле
+#     "name",      => 'name',           - системное название, латиница, обязательное поле
+#     "status"      => 0 или 1,          - активна ли группа
+# });
 use Mojo::Base -strict;
 
-use Test::More;
-use Test::Mojo;
 use FindBin;
-
-use Data::Dumper;
-
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
+
+use Test::More;
+use Test::Mojo;
+use Freee::Mock::TypeFields;
+
+use Data::Dumper;
+
 my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-#########################################
-# положительные тесты
+# Устанавливаем адрес
+my $host = $t->app->config->{'host'};
 
-# нету поля parent
-my $data = {
-    parent      => 0,
-    name        => 'name',
-    label       => 'label',
-    value       => 'value',
-    required    => 0,
-    readonly    => 0,
-    editable    => 1,
-    removable   => 0,
-    status      => 1
+# добавляем тестовый раздел настроек
+$t->post_ok( $host.'/settings/add_folder' => form => {
+    "parent"        => 0,
+    "name"          => 'test',
+    "label"         => 'first test',
+});
+
+my $test_data = {
+    # положительные тесты
+    1 => {
+        'data' => {
+            'parent'      => 1,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok'
+        },
+        'comment' => 'All fields:' 
+    },
+    2 => {
+        'data' => {
+            'parent'      => 1,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'id'        => '3',
+            'status'    => 'ok'
+        },
+        'comment' => 'No status:' 
+    },
+
+    # отрицательные тесты
+    3 => {
+        'data' => {
+            'name'      => 'a',
+            'parent'      => 'a',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Validation error for 'name'. Field is empty or not exists",
+            'status'    => 'fail',
+        },
+        'comment' => 'Name empty:' 
+    },
 };
-my $result = { id => '1', status => 'ok' };
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )
-    ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
 
-# поле parent = 0
-# $data = { parent => '0',name => 'test2', label => 'test2'};
-$data->{name} = 'test2';
-$data->{label} = 'test2';
-$result = {id => '2', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )->status_is(200)->json_is( $result );
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
+    my $data = $$test_data{$test}{'data'};
+    my $result = $$test_data{$test}{'result'};
 
-# поле parent != 0 и наследуется
-$data = { parent => '1',name => 'test3', label => 'test3'};
-$result = {id => '3', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )->status_is(200)->json_is( $result );
-
-$data = { parent => '1',name => 'test4', label => 'test4'};
-$result = {id => '4', status => 'ok'};
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )->status_is(200)->json_is( $result );
-
-#########################################
-# отрицательные тесты
-
-# нету поля name
-$data = { parent => '0', label => 'test' };
-$result = { message => "Required fields do not exist", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )->status_is(200)->json_is( $result );
-
-# наследование не от фолдера
-$data = { parent => '3', name => 'test', label => 'test'};
-$result = { message => "Wrong parent", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data )->status_is(200)->json_is( $result );
-
-# наследование от не существующего элемента
-$data = { parent => '404', name => 'test', label => 'test'};
-$result = { message => "Wrong parent", status => "fail" };
-$t->post_ok('http://127.0.0.1:4444/settings/add' => form => $data  )->status_is(200)->json_is( $result );
+    $t->post_ok( $host.'/settings/add' => form => $data );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect \n");
+        last;
+    }
+    $t->content_type_is('application/json;charset=UTF-8');
+    $t->json_is( $result );
+};
 
 done_testing();
 
@@ -83,3 +123,10 @@ sub clear_db {
     }
 }
 
+# выбрать случайный html тип поля
+sub get_type {
+    my $i = int(rand( scalar(@$type) - 1 ));
+    my $j = $$type[$i];
+
+    return $$type[$i]{'value'};
+}

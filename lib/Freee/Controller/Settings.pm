@@ -248,7 +248,7 @@ sub add {
     my ($self, $data) = @_;
 
     # read params
-    my ($id, %data, @mess);
+    my ($id, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -259,9 +259,6 @@ sub add {
         $id = $self->_insert_setting( $data, [] ) unless @mess;
         push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
     }
-
-    # $id = $self->_insert_setting( \%data, [] );
-    # push @mess, "Could not new setting item '$data{'label'}'" unless $id;
 
     my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -314,14 +311,6 @@ sub edit {
 #     "selected"    => "CKEditor",    - значение по-умолчанию для select
 #     "required"    => 1              - обязательное поле
 # });
-# сохранение группы настроек
-# my $id = $self->save({
-#     "folder"      => 1,           - это группа настроек
-#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-# });
 sub save {
     my $self = shift;
 
@@ -371,49 +360,6 @@ sub delete {
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
-}
-
-# sub activate {
-#     my $self = shift;
-
-#     my ($id, $resp, @mess);
-#     unless ( $id = $self->param('id') ) {
-#         push @mess, "id is empty or 0";
-#     }
-#     else {
-#         # проверка обязательных полей
-#         $id = 0 unless $id =~ /\d+/;
-#         push @mess, "Id wrong or empty" unless $id;
-
-#         unless (@mess) {
-#             $id = $self->_delete_setting( $id );
-#             push @mess, "Could not deleted '$id'" unless $id;
-#         }
-#     }
-
-#     $resp->{'message'} = join("\n", @mess) if @mess;
-#     $resp->{'status'} = @mess ? 'fail' : 'ok';
-#     $resp->{'id'} = $id if $id;
-
-#     $self->render( 'json' => $resp );
-# }
-
-# sub hide {
-#     my $self = shift;
-
-#     $self->render(
-#         'json'    => {
-#             'status'        => 'ok',
-#             'controller'    => 'Settings',
-#             'route'         => 'hide'
-#         }
-#     );
-# }
-
-sub inputs {
-    my $self = shift;
-
-    $self->render( 'json' => $self->_input_components() );
 }
 
 1;

@@ -1,10 +1,29 @@
+DROP TABLE IF EXISTS "public"."EAV_links";
+DROP TABLE IF EXISTS "public"."EAV_links";
+DROP TABLE IF EXISTS "public"."EAV_fields";
+DROP TABLE IF EXISTS "public"."EAV_items";
+DROP TABLE IF EXISTS "public"."EAV_data_boolean";
+DROP TABLE IF EXISTS "public"."EAV_data_boolean_history";
+DROP TABLE IF EXISTS "public"."EAV_data_datetime";
+DROP TABLE IF EXISTS "public"."EAV_data_datetime_history";
+DROP TABLE IF EXISTS "public"."EAV_data_int4" CASCADE ;
+DROP TABLE IF EXISTS "public"."EAV_data_int4_history";
+DROP TABLE IF EXISTS "public"."EAV_data_string_history";
+DROP TABLE IF EXISTS "public"."EAV_data_string";
+
+DROP SEQUENCE IF EXISTS "public".eav_items_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS "public".eav_fields_id_seq CASCADE; 
+DROP SEQUENCE IF EXISTS "public".EAV_field_type CASCADE; 
+DROP SEQUENCE IF EXISTS "public".EAV_object_type CASCADE; 
+
 DROP TYPE IF EXISTS "subscriptions_field_type";
-DROP TYPE IF EXISTS "EAV_field_type";
+DROP TYPE IF EXISTS "EAV_field_type" CASCADE;
+DROP TYPE IF EXISTS "subscriptions_object_type";
+DROP TYPE IF EXISTS "EAV_object_type";
+
 CREATE TYPE "public"."EAV_field_type" AS ENUM ('blob', 'boolean', 'int', 'string', 'datetime');
 ALTER TYPE "public"."EAV_field_type" OWNER TO "troll";
 
-DROP TYPE IF EXISTS "subscriptions_object_type";
-DROP TYPE IF EXISTS "EAV_object_type";
 CREATE TYPE "public"."EAV_object_type" AS ENUM ('user');
 ALTER TYPE "public"."EAV_object_type" OWNER TO "troll";
 
@@ -16,8 +35,7 @@ CREATE TABLE "public"."EAV_links" (
 "distance" int4 DEFAULT 0 NOT NULL,
 CONSTRAINT "EAV_links_pkey" PRIMARY KEY ("parent", "id")
 )
-WITH (OIDS=FALSE)
-;
+WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."EAV_links" OWNER TO "troll";
 
@@ -39,8 +57,7 @@ BEGIN
     RETURN NEW;
 END;
 $BODY$
-  LANGUAGE 'plpgsql' VOLATILE COST 100
-;
+  LANGUAGE 'plpgsql' VOLATILE COST 100;
 
 ALTER FUNCTION "public"."EAV_links_trigger_ai"() OWNER TO "troll";
 
@@ -48,17 +65,11 @@ CREATE TRIGGER "EAV_links_trigger_ai" AFTER INSERT ON "public"."EAV_links"
 FOR EACH ROW
 EXECUTE PROCEDURE "EAV_links_trigger_ai"();
 
+
 /* */
-
-DROP SEQUENCE IF EXISTS "public".eav_fields_id_seq CASCADE; 
 CREATE SEQUENCE "public".eav_fields_id_seq;
-
-DROP SEQUENCE IF EXISTS "public".EAV_field_type CASCADE; 
 CREATE SEQUENCE "public".EAV_field_type;
-
-DROP SEQUENCE IF EXISTS "public".EAV_object_type CASCADE; 
 CREATE SEQUENCE "public".EAV_object_type;
-
 
 CREATE TABLE "public"."EAV_fields" (
 "id" int4 DEFAULT nextval('eav_fields_id_seq'::regclass) NOT NULL,
@@ -69,9 +80,7 @@ CREATE TABLE "public"."EAV_fields" (
 "set" "public"."EAV_object_type",
 CONSTRAINT "EAV_fields_pkey" PRIMARY KEY ("id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_fields" OWNER TO "troll";
 
 
@@ -83,10 +92,9 @@ CREATE TABLE "public"."EAV_data_string_history" (
 "data" varchar(255) COLLATE "default",
 CONSTRAINT "EAV_data_string_history_pkey" PRIMARY KEY ("id", "field_id", "date_changed")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_string_history" OWNER TO "troll";
+
 
 /* */
 CREATE TABLE "public"."EAV_data_string" (
@@ -95,9 +103,7 @@ CREATE TABLE "public"."EAV_data_string" (
 "data" varchar(255) COLLATE "default",
 CONSTRAINT "EAV_data_string_pkey" PRIMARY KEY ("id", "field_id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_string" OWNER TO "troll";
 
 
@@ -109,10 +115,9 @@ CREATE TABLE "public"."EAV_data_int4_history" (
 "data" int4,
 CONSTRAINT "EAV_data_int4_history_pkey" PRIMARY KEY ("id", "field_id", "date_changed")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_int4_history" OWNER TO "troll";
+
 
 /* */
 CREATE TABLE "public"."EAV_data_int4" (
@@ -121,9 +126,7 @@ CREATE TABLE "public"."EAV_data_int4" (
 "data" int4,
 CONSTRAINT "EAV_data_int4_pkey" PRIMARY KEY ("id", "field_id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_int4" OWNER TO "troll";
 
 
@@ -135,10 +138,9 @@ CREATE TABLE "public"."EAV_data_datetime_history" (
 "data" timestamp(6),
 CONSTRAINT "EAV_data_datetime_history_pkey" PRIMARY KEY ("id", "field_id", "date_changed")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_datetime_history" OWNER TO "troll";
+
 
 /* */
 CREATE TABLE "public"."EAV_data_datetime" (
@@ -147,9 +149,7 @@ CREATE TABLE "public"."EAV_data_datetime" (
 "data" timestamp(6),
 CONSTRAINT "EAV_data_datetime_pkey" PRIMARY KEY ("id", "field_id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_datetime" OWNER TO "troll";
 
 
@@ -161,10 +161,9 @@ CREATE TABLE "public"."EAV_data_boolean_history" (
 "data" bool,
 CONSTRAINT "EAV_data_boolean_history_pkey" PRIMARY KEY ("id", "field_id", "date_changed")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_boolean_history" OWNER TO "troll";
+
 
 /* */
 CREATE TABLE "public"."EAV_data_boolean" (
@@ -173,15 +172,11 @@ CREATE TABLE "public"."EAV_data_boolean" (
 "data" bool,
 CONSTRAINT "EAV_data_boolean_pkey" PRIMARY KEY ("id", "field_id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_data_boolean" OWNER TO "troll";
 
 
 /* */
---DROP SEQUENCE "public".eav_items_id_seq CASCADE; 
-DROP SEQUENCE IF EXISTS "public".eav_items_id_seq CASCADE;
 CREATE SEQUENCE "public".eav_items_id_seq;
 
 CREATE TABLE "public"."EAV_items" (
@@ -196,9 +191,7 @@ CREATE TABLE "public"."EAV_items" (
 "has_childs" int4 DEFAULT 0,
 CONSTRAINT "EAV_items_pkey" PRIMARY KEY ("id")
 )
-WITH (OIDS=FALSE)
-;
-
+WITH (OIDS=FALSE);
 ALTER TABLE "public"."EAV_items" OWNER TO "troll";
 
 CREATE UNIQUE INDEX "EAV_items_id_has_childs_idx" ON "public"."EAV_items" USING btree ("id", "has_childs");

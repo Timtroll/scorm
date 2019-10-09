@@ -9,7 +9,8 @@ use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
-# use experimental 'smartmatch';
+# use HTML::Restrict;
+use HTML::Strip;
 
 use Data::Dumper;
 use common;
@@ -32,7 +33,8 @@ sub register {
         my $re = qr{^\d{4}-\d{1,2}-\d{1,2}$};
         if ( $date =~ /$re/ ) {
             ($year, $month, $day) = split/-/, $date;
-        } else {
+        }
+        else {
             return;
         }
 
@@ -49,39 +51,47 @@ sub register {
         return 0 unless $_[1];
 
         my @error = ();
-        if ( defined $config->{'vfields'}->{$_[1]} ) {
-            my $valid = $config->{'vfields'}->{$_[1]};
+        # Проверка наличия объекта для валидации
+        if ( defined $vfields->{$_[1]} ) {
+            my $valid = $vfields->{$_[1]};
 
+            # проверка полей
+            my $hs = HTML::Strip->new();
             foreach my $fld (keys %$valid) {
-                # читаем поле
-                if (my $val = $_[0]->param($fld)) {
+                # Проверка обязательности поля
+                if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
+                    # читаем поле
+                    my $val = $_[0]->param($fld) // 0;
+
+                    # чистка от html
+                    $val = $hs->parse($val) unless $val =/\d+/;
+
                     # проверяем длинну поля, если указано проверять
                     if ($$valid{$fld}[2]) {
-                        if ( length($val) < $$valid{$fld}[2]) {
-                            push @error, "Validation error for '$fld' field (wrong length)";
+                        if ( length($val) > $$valid{$fld}[2]) {
+                            push @error, "Validation error for '$fld'. Field has wrong length";
                             next;
                         }
                     }
 
                     my $re = $$valid{$fld}[1];
                     # валидация по регэкспу
-                    unless ( $val =~ /$re/oi ) {
-                        push @error, "Validation error for '$fld' field (wrong type)";
+                    unless ( $val =~ $re ) {
+                        push @error, "Validation error for '$fld'. Field has wrong type";
                     }
                 }
                 else {
                     if ($$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required')) {
-                        push @error, "Validation error for '$fld' field (empty)";
+                        push @error, "Validation error for '$fld'. Field is empty or not exists";
                     }
                 }
             }
         }
+        else {
+            push @error, "Not exists validation data for route '$_[1]'";
+        }
 
         return @error ? 0 : 1, \@error;
-        # return {
-        #     status => @error ? 'fail' : 'ok',
-        #     mess => \@error
-        # };
     });
 
     # формирование типов перед сохранением в БД
@@ -94,7 +104,8 @@ sub register {
 
         my %data = ();
         foreach (keys %{$$vfields{$self->url_for}}) {
-            $data{$_} = $self->param($_) if defined $self->param($_);
+            # $data{$_} = $self->param($_) if defined $self->param($_);
+            $data{$_} = $self->param($_) // 0;
         }
 
         return \%data
@@ -106,92 +117,88 @@ sub register {
     $app->helper( '_param_fields' => sub {
 
         $vfields = {
-            # волидация роутов
+            # валидация роутов
             '/settings/add_folder'  => {
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
-                "label"         => [ 'required', qr{.*}, 256 ],
+                "parent"        => [ '', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
             },
             '/settings/save_folder'  => {
-                "id"            => [ 'required', qr{^\d+$} ],
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "parent"        => [ '', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
+                "label"         => [ '', qr/.*/os, 256 ],
             },
 
             '/settings/save'  => {
-                "id"            => [ 'required', qr{^\d+$} ],
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{^[A-Za-z]+$}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
-                "placeholder"   => [ '', qr{.*}, 256 ],
-                "type"          => [ '', qr{\w+}, 256 ],
-                "mask"          => [ '', qr{.*}, 256 ],
-                "value"         => [ '', qr{.*}, 10000 ],
-                "selected"      => [ '', qr{.*}, 10000 ],
-                "required"      => [ '', qr{^\d+$} ],
-                "readonly"      => [ '', qr{^\d+$} ],
-                "status"        => [ 'required', qr{^[01]$} ]
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "parent"        => [ '', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "label"         => [ '', qr/.*/os, 256 ],
+                "placeholder"   => [ '', qr/.*/os, 256 ],
+                "type"          => [ '', qr/\w+/os, 256 ],
+                "mask"          => [ '', qr/.*/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "selected"      => [ '', qr/.*/os, 10000 ],
+                "required"      => [ '', qr/^[01]$/os ],
+                "readonly"      => [ '', qr/^[01]$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
             },
             '/settings/add'  => {
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
-                "label"         => [ 'required', qr{.*}, 256 ],
-                "placeholder"   => [ '', qr{.*}, 256 ],
-                "type"          => [ '', qr{\w+}, 256 ],
-                "mask"          => [ '', qr{.*}, 256 ],
-                "value"         => [ '', qr{.*}, 10000 ],
-                "selected"      => [ '', qr{.*}, 10000 ],
-                "required"      => [ '', qr{^\d+$} ],
-                "readonly"      => [ '', qr{^\d+$} ],
-                "status"        => [ 'required', qr{^[01]$} ]
+                "parent"        => [ 'required', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "placeholder"   => [ '', qr/.*/os, 256 ],
+                "type"          => [ '', qr/\w+/os, 256 ],
+                "mask"          => [ '', qr/.*/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "selected"      => [ '', qr/.*/os, 10000 ],
+                "required"      => [ '', qr/^[01]$/os ],
+                "readonly"      => [ '', qr/^[01]$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
             },
 
             'groups'  => {
-                "id"            => [ '', qr{^\d+$} ],
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
-                "value"         => [ '', qr{.*}, 10000 ],
-                "required"      => [ '', qr{^\d+$} ],
-                "readonly"      => [ '', qr{^\d+$} ],
-                "status"        => [ '', qr{^[01]$} ]
+                "id"            => [ '', qr/^\d+$/os ],
+                "parent"        => [ '', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
+                "label"         => [ '', qr/.*/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "required"      => [ '', qr/^[01]$/os ],
+                "readonly"      => [ '', qr/^[01]$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
             },
             'routes'  => {
-                "id"            => [ '', qr{^\d+$} ],
-                "parent"        => [ '', qr{^\d+$} ],
-                "name"          => [ 'required', qr{[A-Za-z]+}, 256 ],
-                "label"         => [ '', qr{.*}, 256 ],
-                "value"         => [ '', qr{.*}, 10000 ],
-                "required"      => [ '', qr{^\d+$} ],
-                "readonly"      => [ '', qr{^\d+$} ]
+                "id"            => [ '', qr/^\d+$/os ],
+                "parent"        => [ '', qr/^\d+$/os ],
+                "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
+                "label"         => [ '', qr/.*/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "required"      => [ '', qr/^[01]$/os ],
+                "readonly"      => [ '', qr/^\d+$/os ]
             },
             'forum_themes'  => {
-                "id"            => [ '', qr{^\d+$} ],
-                "user_id"       => [ '', qr{^\d+$} ],
-                "title"         => [ '', qr{.*}, 10000 ],
-                "url"           => [ '', qr{http.*?//.*}, 256 ],
-                "rate"          => [ '', qr{^\d+$} ],
-                "date_created"  => [ '', qr{^\d+$} ]
+                "id"            => [ '', qr/^\d+$/os ],
+                "user_id"       => [ '', qr/^\d+$/os ],
+                "title"         => [ '', qr/.*/os, 10000 ],
+                "url"           => [ '', qr/http.*?\/\/.*/os, 256 ],
+                "rate"          => [ '', qr/^\d+$/os ],
+                "date_created"  => [ '', qr/^\d+$/os ]
             },
             'forum_rates'  => {
-                "user_id"       => [ '', qr{^\d+$} ],
-                "msg_id"        => [ '', qr{^\d+$} ],
-                "like_value"    => [ '', qr{^\d+$} ]
+                "user_id"       => [ '', qr/^\d+$/os ],
+                "msg_id"        => [ '', qr/^\d+$/os ],
+                "like_value"    => [ '', qr/^\d+$/os ]
             },
             'forum_rates'  => {
-                "id"            => [ '', qr{^\d+$} ],
-                "theme_id"      => [ '', qr{^\d+$} ],
-                "user_id"       => [ '', qr{^\d+$} ],
-                "anounce"       => [ '', qr{^[01]$} ],
-                "date_created"  => [ '', qr{^\d+$} ],
-                "msg"           => [ '', qr{.*}, 10000 ],
-                "rate"          => [ '', qr{^\d+$} ]
+                "id"            => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os ],
+                "user_id"       => [ '', qr/^\d+$/os ],
+                "anounce"       => [ '', qr/^[01]$/os ],
+                "date_created"  => [ '', qr/^\d+$/os ],
+                "msg"           => [ '', qr/.*/os, 10000 ],
+                "rate"          => [ '', qr/^\d+$/os ]
             }
-            # поля запросов
-            # ''  => {
-
-            # }
         };
 
         return $vfields;

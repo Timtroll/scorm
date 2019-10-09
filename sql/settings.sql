@@ -1,5 +1,8 @@
 --таблица
-DROP SEQUENCE IF EXISTS "public".settings_id_seq; 
+DROP TABLE IF EXISTS "public"."routes" CASCADE;
+DROP TRIGGER IF EXISTS "settings_ad" ON "public"."settings" CASCADE;
+DROP SEQUENCE IF EXISTS "public".settings_id_seq CASCADE; 
+
 CREATE SEQUENCE "public".settings_id_seq;
 
 CREATE TABLE "public"."settings" (
@@ -16,8 +19,7 @@ CREATE TABLE "public"."settings" (
 "readonly" int4 DEFAULT 0,
 "status" int2 DEFAULT 1 NOT NULL
 )
-WITH (OIDS=FALSE)
-;
+WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."settings" OWNER TO "troll";
 
@@ -33,7 +35,6 @@ $BODY$
 LANGUAGE 'plpgsql' VOLATILE COST 100;
 
 ---триггер
-DROP TRIGGER IF EXISTS "settings_ad" ON "public"."settings";
 CREATE TRIGGER "settings_ad" AFTER DELETE ON "public"."settings"
 FOR EACH ROW
 EXECUTE PROCEDURE "settings_trigger_ad"();

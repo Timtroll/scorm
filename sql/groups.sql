@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS "public"."groups";
+
 DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
 CREATE SEQUENCE "public".groups_id_seq;
 
@@ -8,8 +9,7 @@ CREATE TABLE "public"."groups" (
 "name" varchar(255) COLLATE "default" NOT NULL,
 "status" int4 DEFAULT 1
 )
-WITH (OIDS=FALSE)
-;
+WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."groups" OWNER TO "troll";
 

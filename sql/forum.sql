@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS "public"."forum_messages";
+
 DROP SEQUENCE IF EXISTS "public".forum_messages_id_seq; 
 CREATE SEQUENCE "public".forum_messages_id_seq;
 
@@ -15,6 +17,8 @@ WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_messages" OWNER TO "troll";
 ---------------------
 
+DROP TABLE IF EXISTS "public"."forum_rates";
+
 CREATE TABLE "public"."forum_rates" (
 "user_id" int4 NOT NULL,
 "msg_id" int4 NOT NULL,
@@ -24,6 +28,8 @@ CONSTRAINT "forum_rates_pkey" PRIMARY KEY ("user_id")
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_rates" OWNER TO "troll";
 ---------------------
+
+DROP TABLE IF EXISTS "public"."forum_themes";
 
 DROP SEQUENCE IF EXISTS "public".forum_themes_id_seq; 
 CREATE SEQUENCE "public".forum_themes_id_seq;
@@ -40,5 +46,3 @@ CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_themes" OWNER TO "troll";
 ---------------------
-
-
