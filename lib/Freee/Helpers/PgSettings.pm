@@ -58,7 +58,7 @@ sub register {
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
         eval{
             $self->pg_dbh->do($sql);
@@ -83,14 +83,20 @@ sub register {
         return unless $$data{'id'};
 
         my $fields = join( ', ', map {
-            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
-warn('UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"");
-        my $rv = $self->pg_dbh->do(
-            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
-        ) if $$data{id};
+        my $rv;
+        eval {
+            $rv = $self->pg_dbh->do(
+                'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id}
+            ) or warn "error $@";
+        };
+        if ($@) {
+            warn "DB error: $@";
+            return;
+        }
 
-        return $rv;
+        return 1;
     });
 
     # удаление фолдера
@@ -151,7 +157,7 @@ warn('+++');
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? $$data{$_} : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
         $self->pg_dbh->do($sql);
 
@@ -195,7 +201,7 @@ warn('+++');
         }
 
         my $fields = join( ', ', map {
-            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.$$data{$_} : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
 
         my $rv = $self->pg_dbh->do(

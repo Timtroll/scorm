@@ -74,6 +74,92 @@ sub register {
 
         return $db_result;
     });
+
+    # синхронизация между роутами в системе и таблицей
+    $app->helper( '_sync_routes' => sub {
+        my $self = shift;
+
+        my ($list, $id, $name, @result, $hashlist);
+
+        eval {
+            $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name FROM "public"."routes"', 'id');
+        };
+        if ($@) { 
+            return "Can't select from DB";
+        }
+
+        eval {
+            foreach $id (sort {$a <=> $b} keys %$list) {
+                unless ( exists $$routs{ $$list{$id}{'name'} } ) {
+                    $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
+                }
+                $$hashlist{ $$list{ $id }{'name'} } = $id;      
+            }
+        };
+        if ($@) { 
+            return "Can't delete from DB";
+        }
+
+        eval {
+            foreach $name (keys %$routs) {
+                unless ( exists $$hashlist{ $name } ) {
+                    if ( $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name") VALUES ('."'".$$routs{$name}."','".$name."')" ) ) {
+                         print "\n";
+                         print $name;
+                    }
+                }
+            }
+        };
+        if ($@) { 
+            return "Can't add to the DB";
+        }
+
+        return "ok";
+
+    });
+
+
+    # добавление роута
+    # my $id = $self->_insert_route({
+    #     "label"       => 'название',      - название для отображения
+    #     "name",       => 'name',          - системное название, латиница
+    #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
+    #     "status"      => 0                - активность элемента, по умолчанию 1
+    # });
+    # возвращается id роута
+    $app->helper( '_insert_route' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        my $id;
+        eval{
+            if ( $self->pg_dbh->do('INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'routes', undef, { sequence => 'routes_id_seq' } );
+            }
+        };
+
+        if ($@) { 
+            print $DBI::errstr . "\n";
+        }
+
+        return $id;
+    });
+
+
+    # проверка на наличие в бд строки с таким системным названием
+    # my $true = $self->_name_check_route ( /cms/item );
+    # возвращается true/false
+    $app->helper( '_name_check_route' => sub {
+
+        my ($self, $name) = @_;
+
+        return unless $name;
+
+        my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."routes" WHERE "name"='.$name);
+
+        return $db_result;
+    });
 }
 
 1;

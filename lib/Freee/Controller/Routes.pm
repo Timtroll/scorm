@@ -28,9 +28,6 @@ sub index {
         return "Can't connect to the database";
     }
 
-    # синхронизируем реальные роуты и те, что хранятся в базе
-    
-
     # формируем данные для вывода
     foreach my $id (sort {$a <=> $b} keys %$list) {
         my $row = {
@@ -50,21 +47,17 @@ sub index {
     $self->render( json => $set );
 }
 
-# получение данных роута
-# my $id = $self->insert_route(<id>)
-# <id>  - id роута
-sub edit {
+sub sync {
     my $self = shift;
-    my ( $list, $set );
+    
+    my $resp = $self->_sync_routes();
 
-    # показываем доспупные роуты
-    $self->render( json => {} );
+    $self->render( 'json' => $resp );
 }
 
-
 # обновление роута
-# my $id = $self->insert_route({
-#      "id"         => 1            - id обновляемого элемента ( >0 )
+# my $id = $self->save({
+#     "id"          => 1            - id обновляемого элемента ( >0 )
 #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
@@ -73,7 +66,7 @@ sub edit {
 #     "value"       => "",          - строка или json
 #     "required"    => 0            - не обязательно, по умолчанию 0
 # });
-sub update {
+sub save {
     my ($self) = shift;
     my ($id, $parent, @mess);
 

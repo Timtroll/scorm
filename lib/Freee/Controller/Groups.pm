@@ -53,6 +53,7 @@ sub index {
 #     "name",       => 'name',          - системное название, латиница
 #     "status"      => 0 или 1,         - активна ли группа
 # });
+
 sub add {
     my ($self, $data) = @_;
 
@@ -66,15 +67,16 @@ sub add {
     my ($id, @mess, $resp);
     
     # проверка обязательных полей
-    if ( $data{'label'} && $data{'name'} ) {
-        # добавление группы
-        $id = $self->_insert_group( \%data );
-        push @mess, "Could not add new group item '$data{'label'}'" unless $id;
-    }
-    else {
+    unless ( $data{'label'} && $data{'name'} ) {
         push @mess, "Required fields do not exist";
     }
- 
+
+    unless ( $id = $self->_insert_group( \%data, \@mess ) == [0-9]+ ) {
+        while ( $id ) {
+            push @mess, pop $$id;
+        }
+    }
+
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
@@ -122,7 +124,6 @@ sub save {
 
     $self->render( 'json' => $resp );
 }
-
 
 # удалениe группы 
 # "id" => 1 - id удаляемого элемента ( >0 )

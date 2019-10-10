@@ -226,7 +226,7 @@ sub startup {
     $auth->post('/exam/edit')           ->to('exam#edit');
     $auth->post('/exam/save')           ->to('exam#save');
     $auth->post('/exam/finish')         ->to('exam#finish');
- # возможно еще что-то ?????????
+# возможно еще что-то ?????????
 
     # обучение
     $auth->post('/lesson/')             ->to('lesson#index');
@@ -255,8 +255,9 @@ sub startup {
     foreach (@{$auth->{children}} ) {
         my $val = $_->{pattern}->{defaults}->{action};       
         my $key = $_->{pattern}->{'unparsed'};        
-        $$routs{$key} = $val;       
+        $$routs{$key} = $val;
     }
+# print Dumper ($routs);
 }
 
 1;

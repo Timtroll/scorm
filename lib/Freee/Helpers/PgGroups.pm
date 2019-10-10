@@ -39,7 +39,7 @@ sub register {
     # });
     # возвращается id записи    
     $app->helper( '_insert_group' => sub {
-        my ($self, $data) = @_;
+        my ($self, $data, $push) = @_;
 
         return unless $data;
 

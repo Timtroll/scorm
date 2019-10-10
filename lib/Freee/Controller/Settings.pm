@@ -67,10 +67,10 @@ sub save_folder {
             $$data{'selected'} = '';
             $$data{'required'} = 0;
             $$data{'readonly'} = 0;
-            $$data{'status'} = $self->param('status');
+            $$data{'status'} = $self->param('status') // 0;
 
             $id = $self->_save_folder( $data, [] ) unless @mess;
-            push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+            push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
         }
 
     my $resp;
