@@ -24,12 +24,15 @@
 
 <script>
 
-  import SideBar from '../components/ui/sidebar/SideBar'
-  import NavBar from '../components/ui/navbar/NavBar'
+  //import SideBar from '../components/ui/sidebar/SideBar'
+  //import NavBar from '../components/ui/navbar/NavBar'
 
   export default {
     name:       'Main',
-    components: {NavBar, SideBar}
+    components: {
+      NavBar:  () => import(/* webpackChunkName: "NavBar" */ '../components/ui/navbar/NavBar'),
+      SideBar: () => import(/* webpackChunkName: "SideBar" */ '../components/ui/sidebar/SideBar')
+    }
   }
 </script>
 

@@ -29,12 +29,14 @@
 </template>
 <script>
   import UIkit from 'uikit/dist/js/uikit'
-  import IconSetting from '../icons/IconSetting'
+  //import IconSetting from '../icons/IconSetting'
 
   export default {
 
     name:       'NavBarUserMenu',
-    components: {IconSetting},
+    components: {
+      IconSetting: () => import(/* webpackChunkName: "NavBarUserMenu" */ '../icons/IconSetting')
+    },
     props:      {
       size:  {
         type:    Number,

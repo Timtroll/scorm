@@ -43,14 +43,12 @@
 
 <script>
 
-  //import NavBarUserMenu from './NavBarUserMenu'
-
   export default {
 
     name: 'NavBar',
 
     components: {
-      NavBarUserMenu: () => import('./NavBarUserMenu')
+      NavBarUserMenu: () => import(/* webpackChunkName: "NavBarUserMenu" */ './NavBarUserMenu')
     },
 
     data () {

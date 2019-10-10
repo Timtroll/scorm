@@ -41,11 +41,12 @@
 
 <script>
 
-  import DatePick from './../datePick/DatePick'
+  //import DatePick from './../datePick/DatePick'
 
   export default {
     components: {
-      DatePick
+      DatePick: () => import(/* webpackChunkName: "NavTree" */  './../datePick/DatePick')
+
     },
 
     name: 'inputDateTime',

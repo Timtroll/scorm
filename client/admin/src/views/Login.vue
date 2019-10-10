@@ -94,13 +94,14 @@
   </div>
 </template>
 <script>
-  import KeyAnimations from '../components/auth/KeyAnimations'
 
   export default {
 
     name: 'Auth',
 
-    components: {KeyAnimations},
+    components: {
+      KeyAnimations: () => import(/* webpackChunkName: "KeyAnimations" */ '../components/auth/KeyAnimations')
+    },
 
     metaInfo () {
       return {
