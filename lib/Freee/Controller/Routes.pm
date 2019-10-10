@@ -50,9 +50,9 @@ sub index {
 sub sync {
     my $self = shift;
     
-    $self->_sync_routes();
+    my $resp = $self->_sync_routes();
 
-    $self->render( json => "ok" );
+    $self->render( 'json' => $resp );
 }
 
 # обновление роута
