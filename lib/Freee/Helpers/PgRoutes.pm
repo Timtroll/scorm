@@ -60,43 +60,80 @@ sub register {
     $app->helper( '_sync_routes' => sub {
         my $self = shift;
 
-        my ($list, $id, $name, @result, $hashlist);
+        my ($list, $id, $name, $groups, $parent, $hashlistName, $hashlistParent);
 
         eval {
-            $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name FROM "public"."routes"', 'id');
+            $groups = $self->_all_groups();
+        };
+        if ($@) { 
+            return "Can't connect to the Groups DB";
+        }
+
+        eval {
+            $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name, parent FROM "public"."routes"', 'id');
         };
         if ($@) { 
             return "Can't select from DB";
         }
 
-        eval {
+        foreach $parent (sort {$a <=> $b} keys %$groups) {
+
             foreach $id (sort {$a <=> $b} keys %$list) {
-                unless ( exists $$routs{ $$list{$id}{'name'} } ) {
+                unless ( ( exists $$routs{ $$list{$id}{'name'} } ) && ( exists $$groups{ $$list{$id}{'parent'} } ) ) {
                     $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
                 }
-                $$hashlist{ $$list{ $id }{'name'} } = $id;      
+                $$hashlistName{ $$list{ $id }{'name'} } = $id;
+                $$hashlistParent{ $$list{ $id }{'parent'} } = $id;
             }
-        };
-        if ($@) { 
-            return "Can't delete from DB";
-        }
 
-        eval {
             foreach $name (keys %$routs) {
-                unless ( exists $$hashlist{ $name } ) {
-                    if ( $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name") VALUES ('."'".$$routs{$name}."','".$name."')" ) ) {
-                         print "\n";
-                         print $name;
-                    }
+                unless ( ( exists $$hashlistName{ $name } ) && ( exists $$hashlistParent{ $parent } ) ) {
+                    $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name","parent") VALUES ('."'".$$routs{$name}."','".$name."','".$parent."')" );
                 }
             }
-        };
-        if ($@) { 
-            return "Can't add to the DB";
         }
 
-        return "ok";
+        return 1;
 
+
+        #my $hashlist;
+        # eval {
+        #     foreach $id (sort {$a <=> $b} keys %$list) {
+        #         unless ( exists $$routs{ $$list{$id}{'name'} } ) {
+        #             $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
+        #         }
+        #         # $$hashlist{ $$list{ $id }{'name'} } = $id;      
+        #     }
+        # };
+        # if ($@) { 
+        #     return "Can't delete from DB";
+        # }
+
+        # eval {
+        #     foreach $name (keys %$routs) {
+        #         unless ( exists $$hashlist{ $name } ) {
+        #             $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name") VALUES ('."'".$$routs{$name}."','".$name."')" );
+        #         }
+        #     }
+        # };
+        # if ($@) { 
+        #     return "Can't add to the DB";
+        # }
+
+
+        # foreach my $parent (sort {$a <=> $b} keys %$groups) {
+
+        #     foreach $id (sort {$a <=> $b} keys %$list) {
+        #             $$hashlistName{ $$list{ $id }{'name'} } = $id;
+        #             $$hashlistParent{ $$list{ $id }{'parent'} } = $id;
+        #     }
+
+        #     foreach $name (keys %$routs) {
+        #         unless ( ( exists $$hashlistName{ $name } ) && ( exists $$hashlistParent{ $parent } ) ) {
+        #             $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name","parent") VALUES ('."'".$$routs{$name}."','".$name."','".$parent."')" );
+        #         }
+        #     }
+        # }
     });
 
 
