@@ -77,16 +77,6 @@ my $test_data = {
     # отрицательные тесты
     3 => {
         'data' => {
-            'name'      => 'a',
-            'parent'      => 'a',
-            'label'       => 'label',
-            'placeholder' => 'placeholder',
-            'type'        => get_type(),
-            'mask'        => 'mask',
-            'value'       => 'value',
-            'selected'    => '[]',
-            'readonly'    => 0,
-            'status'      => 0
         },
         'result' => {
             'message'   => "Validation error for 'name'. Field is empty or not exists",
@@ -94,6 +84,24 @@ my $test_data = {
         },
         'comment' => 'Name empty:' 
     },
+    # 4 => {
+    #     'data' => {
+    #         'parent'      => 1,
+    #         'label'       => 'label',
+    #         'placeholder' => 'placeholder',
+    #         'type'        => get_type(),
+    #         'mask'        => 'mask',
+    #         'value'       => 'value',
+    #         'selected'    => '[]',
+    #         'readonly'    => 0,
+    #         'status'      => 0
+    #     },
+    #     'result' => {
+    #         'message'   => "Validation error for 'name'. Field is empty or not exists",
+    #         'status'    => 'fail',
+    #     },
+    #     'comment' => 'Name empty:' 
+    # },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

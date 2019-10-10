@@ -9,7 +9,6 @@ use base 'Mojolicious::Plugin';
 
 use DBD::Pg;
 use DBI;
-# use HTML::Restrict;
 use HTML::Strip;
 
 use Data::Dumper;
@@ -67,8 +66,8 @@ sub register {
                     $val = $hs->parse($val) unless ($val or $val =~ /\d+/);
 
                     # проверяем длинну поля, если указано проверять
-                    if ($$valid{$fld}[2]) {
-                        if ( length($val) > $$valid{$fld}[2]) {
+                    if ( $$valid{$fld}[2] ) {
+                        if ( length($val) > $$valid{$fld}[2] ) {
                             push @error, "Validation error for '$fld'. Field has wrong length";
                             next;
                         }
@@ -81,7 +80,7 @@ sub register {
                     }
                 }
                 else {
-                    if ($$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required')) {
+                    if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
                         push @error, "Validation error for '$fld'. Field is empty or not exists";
                     }
                 }
@@ -129,7 +128,6 @@ sub register {
                 "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
                 "label"         => [ '', qr/.*/os, 256 ],
             },
-
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "parent"        => [ '', qr/^\d+$/os ],
@@ -155,15 +153,12 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os ],
                 "readonly"      => [ '', qr/^[01]$/os ],
-                "status"        => [ '', qr/^[01]$/os ]
-            },
-            '/settings/hide'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
                 "status"        => [ 'required', qr/^[01]$/os ]
             },
-            '/settings/activate'  => {
+            '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status', ] ],
+                "value"         => [ 'required', qr/^[01]$/os ]
             },
 
             'groups'  => {

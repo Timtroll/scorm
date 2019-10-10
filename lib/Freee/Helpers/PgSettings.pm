@@ -137,7 +137,7 @@ sub register {
     # });
     $app->helper( '_insert_setting' => sub {
         my ($self, $data) = @_;
-
+warn('+++');
         return unless $data;
 
         # сериализуем поля vaue и selected
