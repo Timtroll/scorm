@@ -5,9 +5,9 @@
         :body-left-padding="false"
         :body-left-toggle-show="true"
         :body-right="true"
-        :body-right-show="pageTableAddGroupShow"
-        :body-padding="false"
-        :loader="loader">
+        :body-right-show="editPanel_show"
+        :loader="loader"
+        :body-padding="false">
 
     <!-- // Body // -->
     <template #body>
@@ -29,10 +29,13 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-      <List :data="pageTableAddGroupData"
-            :labels="'Добавить группу настроек'"
-            :add="pageTableAddEditGroup"
-            :group="true"
+      <List :labels="'Добавить группу настроек'"
+            :data="editPanel_data"
+            :variable-type-tield="'value'"
+            :add="editPanel_add"
+            :folder="editPanel_folder"
+            :parent="tableId"
+            v-on:save="save($event)"
             v-on:close="closeAddGroup"></List>
     </template>
 
@@ -40,65 +43,122 @@
 </template>
 
 <script>
-  import Card from '../ui/card/Card'
-  import NavTree from '../ui/tree/NavTree'
-  import Tree from '../ui/tree/Tree'
-  import IconBug from '../ui/icons/IconBug'
-  import Loader from '../ui/icons/Loader'
-  import List from '../ui/list/List'
+
+  //import прототипа колонок таблицы
+  import protoLeaf from './../../assets/json/proto/settings/leaf.json'
+  import protoFolder from './../../assets/json/proto/settings/folder.json'
 
   export default {
 
-    name: 'Groups',
+    name: 'Settings',
 
     components: {
-      IconBug,
-      Tree,
-      NavTree,
-      Card,
-      Loader,
-      List
+      IconBug: () => import('../ui/icons/IconBug'),
+      Tree:    () => import('../ui/cmsTree/Tree'),
+      NavTree: () => import('../ui/cmsTree/NavTree'),
+      Card:    () => import('../ui/card/Card'),
+      Loader:  () => import('../ui/icons/Loader'),
+      List:    () => import('../ui/cmsList/List')
     },
 
     data () {
       return {
-        leftNavToggleMobile: false
+
+        leftNavToggleMobile: false,
+
+        actions: {
+
+          tree: {
+            get:    'settings/getTree',
+            add:    'settings/addFolder',
+            save:   'settings/saveFolder',
+            remove: 'settings/removeFolder'
+          },
+
+          table: {
+            get:       'settings/getTable',
+            save:      'settings/leafSave',
+            saveField: 'settings/leafSaveField',
+            remove:    'settings/removeLeaf'
+
+          },
+
+          editPanel: {
+            get:  'settings/leafEdit',
+            save: 'settings/leafSave'
+
+          }
+        }
+
       }
     },
 
     created () {
-      this.$store.dispatch('getTree')
+
+      //// Получение дерева с сервера
+      this.$store.dispatch(this.actions.tree.get)
+
+      // установка в store Id активного документа
+      if (this.tableId) {
+        this.$store.commit('table_current', Number(this.tableId))
+      }
+
+      //// Размер панели редактирования
+      this.$store.commit('editPanel_size', false)
+      this.$store.commit('table_api', this.actions.table)
+      this.$store.commit('tree_api', this.actions.tree)
+      this.$store.commit('editPanel_api', this.actions.editPanel)
+    },
+
+    mounted () {
+      // Регистрация Vuex модуля settings
+      //this.$store.registerModule('settings', settingsVuex)
+
+      //// запись прототипа из json в store
+      this.$store.commit('settings/proto_leaf', protoLeaf)
+      this.$store.commit('settings/proto_folder', protoFolder)
+
     },
 
     beforeDestroy () {
-      this.$store.commit('cms_table_row_show', false)
+      this.$store.commit('editPanel_show', false)
+      this.$store.commit('tree_active', null)
+      this.$store.commit('settings/proto_leaf', [])
+      this.$store.commit('settings/proto_folder', [])
+
+      // выгрузка Vuex модуля settings
+      //this.$store.unregisterModule('settings')
     },
 
     computed: {
 
-      pageTableAddGroupShow () {
-        return this.$store.getters.pageTableAddGroupShow
-      },
-
-      pageTableAddGroupData () {
-        return this.$store.getters.pageTableAddGroupData
-      },
-
-      pageTableAddEditGroup () {
-        return this.$store.getters.pageTableAddEditGroup
-      },
-
-      pageTable () {
-        return this.$store.state.cms.navTree.items
-      },
-
       loader () {
-        return this.$store.getters.queryStatus
+        return this.$store.getters.tree_status
+      },
+
+      tableId () {
+        return Number(this.$route.params.id)
+      },
+
+      editPanel_show () {
+        return this.$store.getters.cardRightState
+      },
+
+      editPanel_add () {
+        return this.$store.getters.editPanel_add
+      },
+
+      editPanel_folder () {
+        return this.$store.getters.editPanel_folder
+      },
+
+      editPanel_data () {
+        return this.$store.getters.editPanel_item
       },
 
       // Left nav tree
       nav () {
-        return this.$store.getters.Settings
+        return this.$store.getters.tree
       },
 
       cardLeftClickAction () {
@@ -115,7 +175,62 @@
       },
 
       closeAddGroup () {
-        this.$store.commit('cms_show_add_group', false)
+        this.$store.commit('card_right_show', false)
+      },
+
+      save (data) {
+        if (this.editPanel_folder) {
+          this.saveFolder(data)
+        } else {
+          this.saveLeaf(data)
+        }
+      },
+
+      // сохранение Folder
+      saveFolder (data) {
+
+        if (this.editPanel_add) {
+          const save = {
+            add:    this.editPanel_add,
+            folder: true,
+            fields: {}
+          }
+
+          const arr = JSON.parse(JSON.stringify(data))
+          arr.forEach(item => {save.fields[item.name] = item.value})
+
+          this.$store.dispatch(this.actions.tree.add, save)
+        } else {
+          const save = {
+            add:    this.editPanel_add,
+            folder: true,
+            fields: {}
+          }
+
+          const arr = JSON.parse(JSON.stringify(data))
+          arr.forEach(item => {save.fields[item.name] = item.value})
+
+          this.$store.dispatch(this.actions.tree.save, save)
+        }
+
+      },
+
+      // сохранение Листочка
+      saveLeaf (data) {
+
+        if (this.editPanel_add) {}
+
+        const save = {
+          add:    this.editPanel_add,
+          folder: false,
+          fields: {}
+        }
+
+        const arr = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {save.fields[item.name] = item.value})
+
+        this.$store.dispatch(this.actions.editPanel.save, save)
+
       }
     }
 

@@ -169,8 +169,9 @@
             const sendData = {
               parent: data.parent,
               data:   {
-                id:    data.id,
-                [key]: '' + Number(!data[key])
+                id:        data.id,
+                fieldname: key,
+                value:     '' + Number(!data[key])
               }
             }
 

@@ -53,12 +53,12 @@
     name: 'Settings',
 
     components: {
-      IconBug: () => import('../ui/icons/IconBug'),
-      Tree:    () => import('../ui/cmsTree/Tree'),
-      NavTree: () => import('../ui/cmsTree/NavTree'),
-      Card:    () => import('../ui/card/Card'),
-      Loader:  () => import('../ui/icons/Loader'),
-      List:    () => import('../ui/cmsList/List')
+      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../ui/icons/IconBug'),
+      Tree:    () => import(/* webpackChunkName: "Tree" */ '../ui/cmsTree/Tree'),
+      NavTree: () => import(/* webpackChunkName: "NavTree" */ '../ui/cmsTree/NavTree'),
+      Card:    () => import(/* webpackChunkName: "Card" */ '../ui/card/Card'),
+      Loader:  () => import(/* webpackChunkName: "Loader" */ '../ui/icons/Loader'),
+      List:    () => import(/* webpackChunkName: "List" */ '../ui/cmsList/List')
     },
 
     data () {

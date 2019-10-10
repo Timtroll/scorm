@@ -5,10 +5,10 @@
         <!--main-container-->
         <div class="pos-content uk-flex uk-flex-middle uk-flex-center uk-text-center">
           <div>
-            <p class="uk-heading-2xlarge"
-               v-text="$t('err404.title')"></p>
+            <p class="uk-heading-xlarge"
+               v-text="$t('pageNotFound.title')"></p>
             <p class="uk-h4 uk-text-lowercase uk-margin-remove uk-text-muted"
-               v-text="$t('err404.settings')"></p>
+               v-text="$t('pageNotFound.content')"></p>
           </div>
         </div>
 
@@ -24,13 +24,13 @@
 
 <script>
 
-  import SideBar from '../components/ui/sidebar/SideBar'
-  import NavBar from '../components/ui/navbar/NavBar'
-
   export default {
     name: 'PageNotFound',
 
-    components: {NavBar, SideBar},
+    components: {
+      NavBar:  () => import(/* webpackChunkName: "nav-bar" */  '../components/ui/navbar/NavBar'),
+      SideBar: () => import(/* webpackChunkName: "side-bar" */  '../components/ui/sidebar/SideBar')
+    },
 
     metaInfo () {
       return {

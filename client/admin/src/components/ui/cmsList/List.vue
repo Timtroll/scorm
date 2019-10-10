@@ -116,18 +116,18 @@
     name: 'List',
 
     components: {
-      Loader:          () => import('../icons/Loader'),
-      InputTextarea:   () => import('../inputs/InputTextarea'),
-      InputText:       () => import('../inputs/InputText'),
-      InputCKEditor:   () => import('../inputs/InputCKEditor'),
-      InputSelect:     () => import('../inputs/InputSelect'),
-      InputNumber:     () => import('../inputs/InputNumber'),
-      InputBoolean:    () => import('../inputs/InputBoolean'),
-      InputRadio:      () => import('../inputs/InputRadio'),
-      InputDoubleList: () => import('../inputs/InputDoubleList'),
-      inputDateTime:   () => import('../inputs/inputDateTime'),
-      InputCode:       () => import('../inputs/InputCode'),
-      InputType:       () => import('../inputs/InputType')
+      Loader:          () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
+      InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
+      InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
+      InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
+      InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
+      InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
+      InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
+      InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
+      InputDoubleList: () => import(/* webpackChunkName: "InputDoubleList" */ '../inputs/InputDoubleList'),
+      inputDateTime:   () => import(/* webpackChunkName: "inputDateTime" */ '../inputs/inputDateTime'),
+      InputCode:       () => import(/* webpackChunkName: "InputCode" */ '../inputs/InputCode'),
+      InputType:       () => import(/* webpackChunkName: "InputType" */ '../inputs/InputType')
     },
 
     // Закрыть панель при нажатии "ESC"

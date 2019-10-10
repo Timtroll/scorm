@@ -187,8 +187,8 @@
     name: 'Table',
 
     components: {
-      TableRow: () => import('./TableRow'),
-      Card:     () => import('../../ui/card/Card')
+      TableRow: () => import(/* webpackChunkName: "TableRow" */ './TableRow'),
+      Card:     () => import(/* webpackChunkName: "Card" */ '../../ui/card/Card')
     },
 
     data () {

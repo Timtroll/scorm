@@ -69,6 +69,47 @@
     "show":        0
   },
   {
+    "label":       "Список значений",
+    "name":        "selected",
+    "placeholder": "",
+    "readonly":    0,
+    "required":    0,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputSelect",
+    "value":       [],
+    "inline":      0,
+    "show":        0
+  },
+  {
+    "label":       "Тип поля Значение",
+    "name":        "type",
+    "placeholder": "",
+    "readonly":    0,
+    "required":    1,
+    "mask":        null,
+    "add":         true,
+    "type":        "InputType",
+    "value":       "InputText",
+    "inline":      0,
+    "show":        0
+  },
+  {
+    "label":       "Значение",
+    "name":        "value",
+    "placeholder": "Значение поля",
+    "readonly":    0,
+    "required":    0,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputText",
+    "value":       "",
+    "inline":      0,
+    "show":        1
+  },
+  {
     "label":       "Статус",
     "name":        "status",
     "placeholder": "",
@@ -109,46 +150,5 @@
     "value":       1,
     "inline":      1,
     "show":        0
-  },
-  {
-    "label":       "Список значений",
-    "name":        "selected",
-    "placeholder": "",
-    "readonly":    0,
-    "required":    0,
-    "mask":        null,
-    "add":         true,
-    "selected":    [],
-    "type":        "InputSelect",
-    "value":       [],
-    "inline":      0,
-    "show":        0
-  },
-  {
-    "label":       "Тип поля Значение",
-    "name":        "type",
-    "placeholder": "",
-    "readonly":    0,
-    "required":    1,
-    "mask":        null,
-    "add":         true,
-    "type":        "InputType",
-    "value":       "InputText",
-    "inline":      0,
-    "show":        0
-  },
-  {
-    "label":       "Значение",
-    "name":        "value",
-    "placeholder": "Значение поля",
-    "readonly":    0,
-    "required":    0,
-    "mask":        null,
-    "add":         true,
-    "selected":    [],
-    "type":        "InputText",
-    "value":       "",
-    "inline":      0,
-    "show":        1
   }
 ]

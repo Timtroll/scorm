@@ -73,9 +73,9 @@
   export default {
 
     components: {
-      IconBug: () => import('../icons/IconBug'),
-      Loader:  () => import('../icons/Loader'),
-      NavTree: () => import('./NavTree')
+      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../icons/IconBug'),
+      Loader:  () => import(/* webpackChunkName: "Loader" */ '../icons/Loader'),
+      NavTree: () => import(/* webpackChunkName: "NavTree" */ './NavTree')
     },
 
     name: 'Tree',

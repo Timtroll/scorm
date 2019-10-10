@@ -134,8 +134,8 @@
     name: 'Card',
 
     components: {
-      Loader:  () => import('../icons/Loader'),
-      IconBug: () => import('../icons/IconBug')
+      Loader:  () => import(/* webpackChunkName: "Loader" */ '../icons/Loader'),
+      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../icons/IconBug')
     },
 
     props: {

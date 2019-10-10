@@ -22,6 +22,15 @@ export default {
     })
   },
 
+  list_toggle (params) {
+    return Api()({
+      url:    'settings/toggle',
+      method: 'post',
+      params: params
+    })
+  },
+
+
   // добавление настройки
   list_add (data) {
     return Api()({

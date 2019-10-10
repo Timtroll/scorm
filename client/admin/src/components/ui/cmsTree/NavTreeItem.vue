@@ -86,7 +86,7 @@
     name: 'NavTreeItem',
 
     components: {
-      NavTree: () => import('./NavTree')
+      NavTree: () => import(/* webpackChunkName: "nav-tree" */ './NavTree')
     },
 
     props: {

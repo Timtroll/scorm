@@ -11,7 +11,7 @@ const router = new Router({
     {
       path:      '/login',
       name:      'Login',
-      component: () => import('./views/Login'),
+      component: () => import(/* webpackChunkName: "login" */ './views/Login'),
       meta:      {
         authRequired: false
       }
@@ -19,7 +19,7 @@ const router = new Router({
     {
       path:           '/',
       name:           'Main',
-      component:      () => import('./views/Main'),
+      component:      () => import(/* webpackChunkName: "main" */ './views/Main'),
       redirect:       {name: 'Dashboard'},
       sideMenuParent: true,
       meta:           {
@@ -29,7 +29,7 @@ const router = new Router({
         {
           path:          '/dashboard',
           name:          'Dashboard',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -40,7 +40,7 @@ const router = new Router({
         {
           path:      '/pages',
           name:      'Pages',
-          component: () => import('./components/dashboard/DashBoard'),
+          component: () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
 
           showInSideBar: true,
           meta:          {
@@ -52,7 +52,7 @@ const router = new Router({
         {
           path:          '/courses',
           name:          'Courses',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -63,7 +63,7 @@ const router = new Router({
         {
           path:          '/review',
           name:          'Review',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -74,7 +74,7 @@ const router = new Router({
         {
           path:          '/users',
           name:          'Users',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -85,7 +85,7 @@ const router = new Router({
         {
           path:          '/media',
           name:          'Media',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -96,7 +96,7 @@ const router = new Router({
         {
           path:          '/groups',
           name:          'Groups',
-          component:     () => import('./components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           //component: () => import('./components/groups/Groups'),
           showInSideBar: true,
           meta:          {
@@ -108,7 +108,7 @@ const router = new Router({
         {
           path:          '/profile',
           name:          'Profile',
-          component:     () => import('./components/profile/Account'),
+          component:     () => import(/* webpackChunkName: "account" */ './components/profile/Account'),
           showInSideBar: false,
           meta:          {
             authRequired: true,
@@ -119,7 +119,7 @@ const router = new Router({
         {
           path:          '/settings',
           name:          'Settings',
-          component:     () => import('./components/settings/Settings'),
+          component:     () => import(/* webpackChunkName: "settings" */ './components/settings/Settings'),
           showInSideBar: false,
           meta:          {
             authRequired: true,
@@ -130,7 +130,7 @@ const router = new Router({
             {
               path:          '/settings/:id',
               name:          'SettingItem',
-              component:     () => import('./components/ui/cmsTable/Table'),
+              component:     () => import(/* webpackChunkName: "table" */ './components/ui/cmsTable/Table'),
               showInSideBar: false,
               meta:          {
                 authRequired: true,

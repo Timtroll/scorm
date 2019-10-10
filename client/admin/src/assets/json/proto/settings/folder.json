@@ -53,5 +53,19 @@
     "value":       "",
     "inline":      0,
     "show":        1
+  },
+  {
+    "label":       "Статус",
+    "name":        "status",
+    "placeholder": "",
+    "readonly":    0,
+    "required":    0,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputBoolean",
+    "value":       1,
+    "inline":      1,
+    "show":        1
   }
 ]
