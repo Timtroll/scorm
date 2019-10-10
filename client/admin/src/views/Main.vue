@@ -24,9 +24,6 @@
 
 <script>
 
-  //import SideBar from '../components/ui/sidebar/SideBar'
-  //import NavBar from '../components/ui/navbar/NavBar'
-
   export default {
     name:       'Main',
     components: {
