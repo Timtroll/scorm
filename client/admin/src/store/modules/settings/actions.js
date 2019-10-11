@@ -78,7 +78,7 @@ const actions = {
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
 
@@ -99,9 +99,10 @@ const actions = {
    */
   async saveFolder ({commit, state, dispatch}, item) {
 
-    const response = await Api_Tree.save_folder(item.fields)
-
     try {
+
+      const response = await Api_Tree.save_folder(item.fields)
+
       if (response.status === 200) {
 
         const resp = await response.data
@@ -192,7 +193,6 @@ const actions = {
           store.commit('set_table', table)
           store.commit('table_status_success')
         }
-
       }
 
     } catch (e) {
