@@ -1,5 +1,5 @@
 --таблица
-DROP TABLE IF EXISTS "public"."routes" CASCADE;
+DROP TABLE IF EXISTS "public"."settings" CASCADE;
 DROP TRIGGER IF EXISTS "settings_ad" ON "public"."settings" CASCADE;
 DROP SEQUENCE IF EXISTS "public".settings_id_seq CASCADE; 
 
@@ -21,6 +21,7 @@ CREATE TABLE "public"."settings" (
 )
 WITH (OIDS=FALSE);
 
+CREATE UNIQUE INDEX "name_idx" ON "public"."settings" USING btree ("name");
 ALTER TABLE "public"."settings" OWNER TO "troll";
 
 

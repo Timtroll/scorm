@@ -38,11 +38,67 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
         return $list;
+    });
+
+    # читаем одну настройку
+    # my $row = $self->_get_folder( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_folder' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT * FROM "public"."settings" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ && return if ($@);
+
+        # десериализуем поля vaue и selected
+        my $out = [];
+        if ($row) {
+            $$row{'parent'}     = $$row{'parent'} // 0;
+            $$row{'name'}       = $$row{'name'} ? $$row{'name'} : '';
+            $$row{'label'}      = $$row{'label'} ? $$row{'label'} : '';
+            $$row{'mask'}       = '';
+            $$row{'placeholder'} = '';
+            $$row{'readonly'}   = 0;
+            $$row{'required'}   = 0;
+            $$row{'type'}       = '';
+            $$row{'value'}      = '';
+            $$row{'selected'}   = '';
+            $$row{'status'}     = $$row{'status'} // 0;
+        }
+        
+        return $row;
+    });
+
+    # проверяем поле name на дубликат
+    # my $row = $self->_exists_settings('name123', 'value123');
+    # возвращается 1/undef
+    $app->helper( '_exists_settings' => sub {
+        my ($self, $name, $val, $excude_id) = @_;
+
+        return unless $name;
+
+        # проверяем поле name на дубликат
+        my $sql = "SELECT id FROM \"public\".settings WHERE \"".$name."\"='".$val."'";
+        # исключаем из поиска id
+        $sql .='AND "id"<>'.$excude_id if $excude_id;
+warn($sql);
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ && return if ($@);
+
+        return $row;
     });
 
     # добавление фолдера настроек
@@ -68,7 +124,7 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -93,7 +149,7 @@ sub register {
         eval {
             $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -110,7 +166,7 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -127,7 +183,7 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return $list;
     });
@@ -170,7 +226,7 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -221,7 +277,7 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -238,7 +294,7 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -250,15 +306,16 @@ sub register {
     # <val>   - 1/0
     # возвращается true/false
     $app->helper( '_toggle_setting' => sub {
-        my ($self, $id, $field, $val) = @_;
+        my ($self, $data) = @_;
 
-        return unless $id;
+        return unless $data;
+        return unless ($$data{'id'} || $$data{'value'} || $$data{'fieldname'});
 
-        my $sql ='UPDATE "public"."settings" SET "'.$field.'"='.$val.' WHERE \"id\"='.$id;
+        my $sql ='UPDATE "public"."settings" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -276,7 +333,7 @@ sub register {
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         # десериализуем поля vaue и selected
         my $out = [];
@@ -284,14 +341,14 @@ sub register {
             $$row{'label'}      = $$row{'label'} ? $$row{'label'} : '';
             $$row{'mask'}       = $$row{'mask'} ? $$row{'mask'} : '';
             $$row{'name'}       = $$row{'name'} ? $$row{'name'} : '';
-            $$row{'parent'}     = $$row{'parent'} || 0;
+            $$row{'parent'}     = $$row{'parent'} // 0;
             $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
-            $$row{'readonly'}   = $$row{'readonly'} || 0;
-            $$row{'required'}   = $$row{'required'} || 0;
+            $$row{'readonly'}   = $$row{'readonly'} // 0;
+            $$row{'required'}   = $$row{'required'} // 0;
             $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
             $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
             $$row{'selected'}   = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
-            $$row{'status'}     = $$row{'status'} || 0;
+            $$row{'status'}     = $$row{'status'} // 0;
         }
         
         return $row;
@@ -306,13 +363,13 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         $sql = 'ALTER SEQUENCE settings_id_seq RESTART';
         eval {
             $self->pg_dbh->do($sql);
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         return 1;
     });
@@ -326,7 +383,7 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        return if ($@);
+        warn $@ && return if ($@);
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 

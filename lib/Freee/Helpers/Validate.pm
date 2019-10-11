@@ -56,32 +56,54 @@ sub register {
 
             # проверка полей
             my $hs = HTML::Strip->new();
-            foreach my $fld (keys %$valid) {
-                # Проверка обязательности поля
-                if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
-                    # читаем поле
-                    my $val = $_[0]->param($fld) // 0;
 
-                    # чистка от html
-                    $val = $hs->parse($val) unless ($val or $val =~ /\d+/);
+            # проверка для роутов */toggle
+            if (defined $_[0]->param('fieldname')) {
+                # есть ли в списке валидации значение param('fieldname')
+                my $id = $_[0]->param('id');
+                my $fieldname = $_[0]->param('fieldname');
+                my $val = $_[0]->param('value') // 0;
 
-                    # проверяем длинну поля, если указано проверять
-                    if ( $$valid{$fld}[2] ) {
-                        if ( length($val) > $$valid{$fld}[2] ) {
-                            push @error, "Validation error for '$fld'. Field has wrong length";
-                            next;
-                        }
-                    }
+                if ($fieldname && $id) {
+                    $fieldname = $hs->parse($fieldname) if ($fieldname);
 
-                    my $re = $$valid{$fld}[1];
-                    # валидация по регэкспу
-                    unless ( $val =~ $re ) {
-                        push @error, "Validation error for '$fld'. Field has wrong type";
+                    unless (grep {/$fieldname/} @{$$valid{'fieldname'}[1]}) {
+                        push @error, "The 'fieldname' not contain needed name";
                     }
                 }
                 else {
-                    if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
-                        push @error, "Validation error for '$fld'. Field is empty or not exists";
+                    push @error, "The 'fieldname' is empty";
+                }
+            }
+            # проверка полей для остальных роутов
+            else {
+                foreach my $fld (keys %$valid) {
+                    # Проверка обязательности поля
+                    if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
+                        # читаем поле
+                        my $val = $_[0]->param($fld) // 0;
+
+                        # чистка от html
+                        $val = $hs->parse($val) if ($val);
+
+                        # проверяем длинну поля, если указано проверять
+                        if ( $$valid{$fld}[2] ) {
+                            if ( length($val) > $$valid{$fld}[2] ) {
+                                push @error, "Validation error for '$fld'. Field has wrong length";
+                                next;
+                            }
+                        }
+
+                        my $re = $$valid{$fld}[1];
+                        # валидация по регэкспу
+                        unless ( $val =~ $re ) {
+                            push @error, "Validation error for '$fld'. Field has wrong type";
+                        }
+                    }
+                    else {
+                        if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
+                            push @error, "Validation error for '$fld'. Field is empty or not exists";
+                        }
                     }
                 }
             }
@@ -103,7 +125,6 @@ sub register {
 
         my %data = ();
         foreach (keys %{$$vfields{$self->url_for}}) {
-            # $data{$_} = $self->param($_) if defined $self->param($_);
             $data{$_} = $self->param($_) // 0;
         }
 
@@ -130,9 +151,9 @@ sub register {
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ '', qr/^\d+$/os ],
+                "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
-                "label"         => [ '', qr/.*/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
                 "type"          => [ '', qr/\w+/os, 256 ],
                 "mask"          => [ '', qr/.*/os, 256 ],
@@ -161,7 +182,7 @@ sub register {
             # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "fieldname"     => ['required', 'readonly', 'status'],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 

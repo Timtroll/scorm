@@ -77,7 +77,7 @@ sub startup {
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
     $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
-    $auth->post('/settings/activate')     ->to('settings#toggle');          # включение/отключение поля в строке настройки
+    $auth->post('/settings/toggle')       ->to('settings#toggle');          # включение/отключение поля в строке настройки
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');

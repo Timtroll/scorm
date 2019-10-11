@@ -56,7 +56,7 @@ sub save_folder {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
         unless (@mess) {
-            # проверка записываемых данных
+            # проверка данных
             my $data = $self->_check_fields();
             push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
             # устанавляваем обязательные поля для фолдера
@@ -96,21 +96,28 @@ sub add_folder {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        # проверка записываемых данных
+        # проверка данных
         my $data = $self->_check_fields();
         push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
-        # устанавляваем обязательные поля для фолдера
-        $$data{'placeholder'} = '';
-        $$data{'type'} = '';
-        $$data{'mask'} = '';
-        $$data{'value'} = '';
-        $$data{'selected'} = '';
-        $$data{'required'} = 0;
-        $$data{'readonly'} = 0;
-        $$data{'status'} = 1;
 
-        $id = $self->_insert_folder( $data, [] ) unless @mess;
-        push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+        # проверяем поле name на дубликат
+        if ($self->_exists_settings('name', $$data{'name'})) {
+            push @mess, "Folder item named '$$data{'name'}' is exists" unless $id;
+        }
+        else {
+            # устанавляваем обязательные поля для фолдера
+            $$data{'placeholder'} = '';
+            $$data{'type'} = '';
+            $$data{'mask'} = '';
+            $$data{'value'} = '';
+            $$data{'selected'} = '';
+            $$data{'required'} = 0;
+            $$data{'readonly'} = 0;
+            $$data{'status'} = 1;
+
+            $id = $self->_insert_folder( $data, [] ) unless @mess;
+            push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+        }
     }
 
     my $resp;
@@ -252,12 +259,18 @@ sub add {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        # проверка записываемых данных
+        # проверка данных
         my $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $id = $self->_insert_setting( $data, [] ) unless @mess;
-        push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
+        # проверяем поле name на дубликат
+        if ($self->_exists_settings('name', $$data{'name'})) {
+            push @mess, "Setting named '$$data{'name'}' is exists" unless $id;
+        }
+        else {
+            $id = $self->_insert_setting( $data, [] ) unless @mess;
+            push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
+        }
     }
 
     my $resp;
@@ -319,12 +332,18 @@ sub save {
 
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
     unless (@mess) {
-        # проверка записываемых данных
+        # проверка данных
         my $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $id = $self->_save_setting( $data, [] ) unless @mess;
-        push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+        # проверяем поле name на дубликат
+        if ($self->_exists_settings('name', $$data{'name'}, $$data{'id'}) && !@mess) {
+            push @mess, "Setting named '$$data{'name'}' is exists" unless $id;
+        }
+        else {
+            $id = $self->_save_setting( $data, [] ) unless @mess;
+            push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+        }
     }
 
     my $resp;
@@ -340,35 +359,51 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my ($id, $resp, @mess);
+    my ($del, $resp, $data, @mess);
 
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
     unless (@mess) {
-        # проверка записываемых данных
-        my $data = $self->_check_fields();
+        # проверка данных
+        $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $id = $self->_save_setting( $data, [] ) unless @mess;
-        push @mess, "Could not deleted '$$data{'id'}'" unless $id;
+        $del = $self->_delete_setting( $$data{'id'}, [] ) unless @mess;
+        push @mess, "Could not delete '$$data{'id'}'" unless $del;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
+    $resp->{'id'} = $$data{'id'} if $del;
 
     $self->render( 'json' => $resp );
 }
 
+# изменение поля на 1/0
+# my $true = $self->toggle( 
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
+# );
 sub toggle {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'        => 'ok',
-            'controller'    => 'Settings',
-            'route'         => 'hide'
-        }
-    );
+    my ($toggle, $resp, $data, @mess);
+
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        $toggle = $self->_toggle_setting( $data, [] ) unless @mess;
+        push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $toggle;
+
+    $self->render( 'json' => $resp );
 }
 
 1;
