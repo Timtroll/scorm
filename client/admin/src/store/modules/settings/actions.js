@@ -325,7 +325,7 @@ const actions = {
           notify(resp.message, 'danger') // уведомление об ошибке
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {
@@ -356,7 +356,7 @@ const actions = {
 
         } else {
           dispatch('getTable', parentId)
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {
