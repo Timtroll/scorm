@@ -47,13 +47,22 @@ sub index {
     $self->render( json => $set );
 }
 
+
+# синхронизация между роутами в системе и таблицей
 sub sync {
     my $self = shift;
-    
-    my $resp = $self->_sync_routes();
+
+    my @mess;
+
+    my $db = $self->_sync_routes();
+
+    my $resp->{'message'} = join("\n", "Everything is wrong") unless $db;
+
+    $resp->{'status'} = $db ? 'ok' : 'fail';
 
     $self->render( 'json' => $resp );
 }
+
 
 # обновление роута
 # my $id = $self->save({

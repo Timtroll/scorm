@@ -27,13 +27,18 @@ sub register {
         my $self = shift;
         my $no_children = shift;
 
-        my $list;
+        my ($list, $sql);
         if ($no_children) {
-            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id', { Slice=> {} } );
+            $sql = 'SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id';
         }
         else {
-            $list = $self->pg_dbh->selectall_arrayref('SELECT id, label, name, parent FROM "public".settings ORDER by id', { Slice=> {} } );
+            $sql = 'SELECT id, label, name, parent FROM "public".settings ORDER by id';
         }
+
+        eval {
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+        };
+        return if ($@);
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
@@ -60,7 +65,7 @@ sub register {
             ') VALUES ('.
             join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
-        eval{
+        eval {
             $self->pg_dbh->do($sql);
         };
         return if ($@);
@@ -85,16 +90,10 @@ sub register {
         my $fields = join( ', ', map {
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
-        my $rv;
         eval {
-            $rv = $self->pg_dbh->do(
-                'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id}
-            ) or warn "error $@";
+            $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
         };
-        if ($@) {
-            warn "DB error: $@";
-            return;
-        }
+        return if ($@);
 
         return 1;
     });
@@ -107,9 +106,13 @@ sub register {
 
         return unless $id;
 
-        my $rv = $self->pg_dbh->do('DELETE FROM "public"."settings" WHERE "id"='.$id);
+        my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
-        return $rv;
+        return 1;
     });
 
     # выбираем листья ветки дерева по id парента
@@ -119,7 +122,12 @@ sub register {
 
         return unless $id;
 
-        my $list = $self->pg_dbh->selectall_arrayref( 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id', { Slice=> {} } );
+        my $sql = 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id';
+        my $list;
+        eval {
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+        };
+        return if ($@);
 
         return $list;
     });
@@ -143,7 +151,7 @@ sub register {
     # });
     $app->helper( '_insert_setting' => sub {
         my ($self, $data) = @_;
-warn('+++');
+
         return unless $data;
 
         # сериализуем поля vaue и selected
@@ -159,7 +167,10 @@ warn('+++');
             ') VALUES ('.
             join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
             ') RETURNING "id"';
-        $self->pg_dbh->do($sql);
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -191,6 +202,7 @@ warn('+++');
         my ($self, $data) = @_;
 
         return unless $data;
+        return unless $$data{'id'};
 
         # сериализуем поля vaue и selected
         if (defined $$data{'value'} ) {
@@ -204,11 +216,14 @@ warn('+++');
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
 
-        my $rv = $self->pg_dbh->do(
-            'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\""
-        ) if $$data{id};
+        my $sql = 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{'id'};
 
-        return $rv;
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
+
+        return 1;
     });
 
     # удаление настройки
@@ -219,9 +234,33 @@ warn('+++');
 
         return unless $id;
 
-        my $rv = $self->pg_dbh->do('DELETE FROM "public"."settings" WHERE "id"='.$id);
+        my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
-        return $rv;
+        return 1;
+    });
+
+    # включение/отключение поля в строке настройки
+    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
+    # <id>    - id записи 
+    # <field> - имя поля в таблице
+    # <val>   - 1/0
+    # возвращается true/false
+    $app->helper( '_toggle_setting' => sub {
+        my ($self, $id, $field, $val) = @_;
+
+        return unless $id;
+
+        my $sql ='UPDATE "public"."settings" SET "'.$field.'"='.$val.' WHERE \"id\"='.$id;
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
+
+        return 1;
     });
 
     # читаем одну настройку
@@ -232,7 +271,12 @@ warn('+++');
 
         return unless $id;
 
-        my $row = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."settings" WHERE "id"='.$id);
+        my $sql = 'SELECT * FROM "public"."settings" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        return if ($@);
 
         # десериализуем поля vaue и selected
         my $out = [];
@@ -258,8 +302,17 @@ warn('+++');
     $app->helper( '_reset_settings' => sub {
         my $self = shift;
 
-        $self->pg_dbh->do( 'TRUNCATE "public"."settings" RESTART IDENTITY' );
-        $self->pg_dbh->do( 'ALTER SEQUENCE settings_id_seq RESTART;' );
+        my $sql = 'TRUNCATE "public"."settings" RESTART IDENTITY';
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
+
+        $sql = 'ALTER SEQUENCE settings_id_seq RESTART';
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        return if ($@);
 
         return 1;
     });
@@ -268,7 +321,12 @@ warn('+++');
     $app->helper( '_all_settings' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_arrayref('SELECT * FROM "public".settings ORDER by id', { Slice=> {} } );
+        my $sql = 'SELECT * FROM "public".settings ORDER by id';
+        my $list;
+        eval {
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+        };
+        return if ($@);
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 

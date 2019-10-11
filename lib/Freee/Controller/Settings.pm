@@ -341,18 +341,15 @@ sub delete {
     my $self = shift;
 
     my ($id, $resp, @mess);
-    unless ( $id = $self->param('id') ) {
-        push @mess, "id is empty or 0";
-    }
-    else {
-        # проверка обязательных полей
-        $id = 0 unless $id =~ /\d+/;
-        push @mess, "Id wrong or empty" unless $id;
 
-        unless (@mess) {
-            $id = $self->_delete_setting( $id );
-            push @mess, "Could not deleted '$id'" unless $id;
-        }
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    unless (@mess) {
+        # проверка записываемых данных
+        my $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        $id = $self->_save_setting( $data, [] ) unless @mess;
+        push @mess, "Could not deleted '$$data{'id'}'" unless $id;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -362,32 +359,7 @@ sub delete {
     $self->render( 'json' => $resp );
 }
 
-sub activate {
-    my $self = shift;
-
-    my ($id, $resp, @mess);
-    unless ( $id = $self->param('id') ) {
-        push @mess, "id is empty or 0";
-    }
-    else {
-        # проверка обязательных полей
-        $id = 0 unless $id =~ /\d+/;
-        push @mess, "Id wrong or empty" unless $id;
-
-        unless (@mess) {
-            $id = $self->_delete_setting( $id );
-            push @mess, "Could not deleted '$id'" unless $id;
-        }
-    }
-
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
-
-    $self->render( 'json' => $resp );
-}
-
-sub hide {
+sub toggle {
     my $self = shift;
 
     $self->render(

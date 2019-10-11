@@ -155,9 +155,13 @@ sub register {
                 "readonly"      => [ '', qr/^[01]$/os ],
                 "status"        => [ 'required', qr/^[01]$/os ]
             },
+            '/settings/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os ]
+            },
+            # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status', ] ],
+                "fieldname"     => ['required', 'readonly', 'status'],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
