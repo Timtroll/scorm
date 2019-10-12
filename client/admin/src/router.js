@@ -96,7 +96,7 @@ const router = new Router({
         {
           path:          '/groups',
           name:          'Groups',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './components/groups/Groups'),
           //component: () => import('./components/groups/Groups'),
           showInSideBar: true,
           meta:          {

@@ -1,10 +1,10 @@
-import Api_EditPanel from '../../../api/settings/EditPanel'
-import Api_Tree from '../../../api/settings/Tree'
+import Api_EditPanel from '../../../api/groups/EditPanel'
+import Api_Tree from '../../../api/groups/Tree'
 import store from '../../store'
 import router from '../../../router'
 import {flatTree, notify} from '../../methods'
-import Api from '../../../api/settings/Table'
-import Settings from '../../../components/settings/Settings'
+import Api from '../../../api/groups/Table'
+import Settings from '../../../components/groups/Groups'
 
 const actions = {
 
@@ -74,11 +74,21 @@ const actions = {
         if (resp.status === 'ok') {
 
           await dispatch('_updateFolder')
+
           notify(resp.status, 'success') // уведомление об ошибке
+
+          await dispatch('getTree', resp.id)
+          await store.commit('tree_active', resp.id)
+          await router.push({
+            name:   'SettingItem',
+            params: {
+              id: resp.id
+            }
+          })
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
 
@@ -89,33 +99,6 @@ const actions = {
     }
   },
 
-  //async saveFolder ({commit, state, dispatch}, item) {
-  //
-  //  try {
-  //
-  //    const response = await Api_Tree.save_folder(item)
-  //
-  //    if (response.status === 200) {
-  //
-  //      const resp = await response.data
-  //      if (resp.status === 'ok') {
-  //
-  //        await dispatch('_updateFolder')
-  //        notify(resp.status, 'success') // уведомление об ошибке
-  //
-  //      } else {
-  //        store.commit('editPanel_status_error') // статус - ошибка
-  //        notify('ERROR: ' + e, 'danger') // уведомление об ошибке
-  //      }
-  //    }
-  //
-  //  } catch (e) {
-  //    store.commit('editPanel_status_error')
-  //    notify('ERROR: ' + e, 'danger')
-  //    throw 'ERROR: ' + e
-  //  }
-  //},
-
   /**
    * Tree folder save
    * @param commit
@@ -125,6 +108,7 @@ const actions = {
    * @returns {Promise<void>}
    */
   async saveFolder ({commit, state, dispatch}, item) {
+
     try {
 
       const response = await Api_Tree.save_folder(item.fields)
@@ -139,8 +123,11 @@ const actions = {
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
+      } else {
+        store.commit('editPanel_status_error')
+        notify('ERROR: ' + response.message, 'danger')
       }
 
     } catch (e) {
@@ -216,7 +203,6 @@ const actions = {
           store.commit('set_table', table)
           store.commit('table_status_success')
         }
-
       }
 
     } catch (e) {
@@ -349,7 +335,7 @@ const actions = {
           notify(resp.message, 'danger') // уведомление об ошибке
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {
@@ -366,7 +352,7 @@ const actions = {
     try {
       //store.commit('editPanel_status_request') // статус - запрос
 
-      const response = await Api_EditPanel.list_save(item.data)
+      const response = await Api_EditPanel.list_toggle(item.data)
 
       if (response.status === 200) {
 
@@ -380,7 +366,7 @@ const actions = {
 
         } else {
           dispatch('getTable', parentId)
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
     } catch (e) {

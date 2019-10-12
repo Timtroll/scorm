@@ -74,7 +74,17 @@ const actions = {
         if (resp.status === 'ok') {
 
           await dispatch('_updateFolder')
+
           notify(resp.status, 'success') // уведомление об ошибке
+
+          await dispatch('getTree', resp.id)
+          await store.commit('tree_active', resp.id)
+          await router.push({
+            name:   'SettingItem',
+            params: {
+              id: resp.id
+            }
+          })
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
