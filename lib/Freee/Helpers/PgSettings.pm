@@ -146,6 +146,7 @@ warn($sql);
         my $fields = join( ', ', map {
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
+warn('UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id});
         eval {
             $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
         };

@@ -19,22 +19,14 @@ use common;
 sub get_folder {
     my $self = shift;
 
-    my $id = $self->param('id');
+    my ($resp, $data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # проверка обязательных полей
-    my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Id wrong or empty" unless $id;
+    $data = $self->_get_folder( $self->param('id') );
+    push @mess, "Could not get '".$self->param('id')."'" unless $data;
 
-    my $data;
-    unless (@mess) {
-        $data = $self->_get_folder( $id );
-        push @mess, "Could not get '$id'" unless $data;
-    }
-
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
@@ -44,36 +36,41 @@ sub get_folder {
 sub get_tree {
     my $self = shift;
 
+    # передаем 1, чтобы получить дерево без листьев
     my $list = $self->_get_tree(1);
 
-    $self->render( 'json' => { 'status' => 'ok', 'list' => $list });
+    my $resp;
+    $resp->{'message'} = 'Tree has not any branches' unless $list;
+    $resp->{'status'} = $list ? 'ok' : 'fail';
+    $resp->{'list'} = $list if $list;
+
+    $self->render( 'json' => $resp );
 }
 
 sub save_folder {
     my $self = shift;
 
-    my ($id, %data, @mess);
+    my ($id, $resp, %data, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-        unless (@mess) {
-            # проверка данных
-            my $data = $self->_check_fields();
-            push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
-            # устанавляваем обязательные поля для фолдера
-            $$data{'placeholder'} = '';
-            $$data{'type'} = '';
-            $$data{'mask'} = '';
-            $$data{'value'} = '';
-            $$data{'selected'} = '';
-            $$data{'required'} = 0;
-            $$data{'readonly'} = 0;
-            $$data{'status'} = $self->param('status') // 0;
+    unless (@mess) {
+        # проверка данных
+        my $data = $self->_check_fields();
+        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        # устанавляваем неиспользуемые для фолдера поля
+        $$data{'placeholder'} = '';
+        $$data{'type'} = '';
+        $$data{'mask'} = '';
+        $$data{'value'} = '';
+        $$data{'selected'} = '';
+        $$data{'required'} = 0;
+        $$data{'readonly'} = 0;
+        $$data{'status'} = $self->param('status') // 0;
 
-            $id = $self->_save_folder( $data, [] ) unless @mess;
-            push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
-        }
+        $id = $self->_save_folder( $data, [] ) unless @mess;
+        push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
+    }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
@@ -92,17 +89,17 @@ sub save_folder {
 sub add_folder {
     my ($self, $data) = @_;
 
-    my ($id, %data, @mess);
+    my ($id, $data, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        my $data = $self->_check_fields();
+        $data = $self->_check_fields();
         push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
 
         # проверяем поле name на дубликат
         if ($self->_exists_settings('name', $$data{'name'})) {
-            push @mess, "Folder item named '$$data{'name'}' is exists" unless $id;
+            push @mess, "Folder item named '$$data{'name'}' is exists";
         }
         else {
             # устанавляваем обязательные поля для фолдера
@@ -120,7 +117,6 @@ sub add_folder {
         }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
@@ -131,21 +127,16 @@ sub add_folder {
 sub delete_folder {
     my $self = shift;
 
-    my $id = $self->param('id');
-
-    # проверка обязательных полей
-    my @mess;
-    $id = 0 unless $id =~ /\d+/;
-    push @mess, "Id wrong or empty" unless $id;
+    my ($id, $resp, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        $id = $self->_delete_folder( $id );
-        push @mess, "Could not deleted '$id'" unless $id;
+        $id = $self->_delete_folder( $self->param('id') );
+        push @mess, "Could not delete folder '".$self->param('id')."'" unless $id;
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -158,13 +149,16 @@ sub delete_folder {
 sub get_leafs {
     my $self = shift;
 
-    my $id = $self->param('id');
+    my ($resp, $list, $table, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # выбираем листья ветки дерева
-    my $list = $self->_get_leafs($id);
+    unless (@mess) {
+        $list = $self->_get_leafs( $self->param('id') );
+        push @mess, "Could not get leafs for folder id '".$self->param('id')."'" unless $list;
+    }
 
     # данные для таблицы
-    my $table = {
+    $table = {
         "settings" => {
             "massEdit" => 1,    # групповое редактировани
             "sort" => {         # сотрировка по
@@ -178,9 +172,13 @@ sub get_leafs {
             }
         },
         "body" => $list
-    };
+    } unless @mess;
 
-    $self->render( 'json' => { 'status' => 'ok', 'list' => $table });
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $table if $table;
+
+    $self->render( 'json' => $resp );
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
