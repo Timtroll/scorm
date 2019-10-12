@@ -186,25 +186,33 @@ sub register {
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
-            'groups'  => {
-                "id"            => [ '', qr/^\d+$/os ],
-                "parent"        => [ '', qr/^\d+$/os ],
+
+            '/groups/add'  => {
+                "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
-                "label"         => [ '', qr/.*/os, 256 ],
-                "value"         => [ '', qr/.*/os, 10000 ],
-                "required"      => [ '', qr/^[01]$/os ],
-                "readonly"      => [ '', qr/^[01]$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            'routes'  => {
-                "id"            => [ '', qr/^\d+$/os ],
-                "parent"        => [ '', qr/^\d+$/os ],
+            '/groups/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/[A-Za-z]+/os, 256 ],
-                "label"         => [ '', qr/.*/os, 256 ],
-                "value"         => [ '', qr/.*/os, 10000 ],
-                "required"      => [ '', qr/^[01]$/os ],
-                "readonly"      => [ '', qr/^\d+$/os ]
+                "status"        => [ '', qr/^[01]$/os ]
             },
+            '/groups/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os ]
+            },
+
+
+            '/routes/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "parent"        => [ 'required', qr/^\d+$/os ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "status"        => [ 'required', qr/^[01]$/os ]
+            },
+
+            
             'forum_themes'  => {
                 "id"            => [ '', qr/^\d+$/os ],
                 "user_id"       => [ '', qr/^\d+$/os ],

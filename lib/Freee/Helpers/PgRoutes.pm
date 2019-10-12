@@ -21,7 +21,11 @@ sub register {
     $app->helper( '_routes_values' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref('SELECT id, label FROM "public"."routes"', 'id');
+        my $list;
+        eval {
+            $list = $self->pg_dbh->selectall_hashref('SELECT id, label FROM "public"."routes"', 'id');
+        };
+        warn $@ && return if ($@);
 
         return $list;
     });
@@ -47,10 +51,7 @@ sub register {
         eval {
             $db_result = $self->pg_dbh->do('UPDATE "public"."routes" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
         };
-
-        if ($@) { 
-            print $DBI::errstr . "\n";
-        }
+        warn $@ && return if ($@);
 
         return $db_result;
     });
@@ -67,9 +68,12 @@ sub register {
         # родитель задан?
         if ( $parent ) {
             # родитель существует?
-            if ( $self->pg_dbh->selectrow_array( 'SELECT * FROM "public"."groups" WHERE "id"='.$parent ) ) {
-                 $db_result = 1;   
-            }
+            eval {
+                if ( $self->pg_dbh->selectrow_array( 'SELECT * FROM "public"."groups" WHERE "id"='.$parent ) ) {
+                     $db_result = 1;   
+                };
+            };
+            warn $@ && return if ($@);
         }
 
         return $db_result;
@@ -84,22 +88,21 @@ sub register {
         eval {
             $groups = $self->_all_groups();
         };
-        if ($@) { 
-            return "Can't connect to the Groups DB";
-        }
+        warn $@ && return if ($@);
 
         eval {
             $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name, parent FROM "public"."routes"', 'id');
         };
-        if ($@) { 
-            return "Can't select from DB";
-        }
+        warn $@ && return if ($@);
 
         foreach $parent (sort {$a <=> $b} keys %$groups) {
 
             foreach $id (sort {$a <=> $b} keys %$list) {
                 unless ( ( exists $$routs{ $$list{$id}{'name'} } ) && ( exists $$groups{ $$list{$id}{'parent'} } ) ) {
-                    $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
+                    eval {
+                        $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id );
+                    };
+                    warn $@ && return if ($@);
                 }
                 $$hashlistName{ $$list{ $id }{'name'} } = $id;
                 $$hashlistParent{ $$list{ $id }{'parent'} } = $id;
@@ -107,52 +110,15 @@ sub register {
 
             foreach $name (keys %$routs) {
                 unless ( ( exists $$hashlistName{ $name } ) && ( exists $$hashlistParent{ $parent } ) ) {
-                    $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name","parent") VALUES ('."'".$$routs{$name}."','".$name."','".$parent."')" );
+                    eval {
+                        $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name","parent") VALUES ('."'".$$routs{$name}."','".$name."','".$parent."')" );
+                    };
+                    warn $@ && return if ($@);
                 }
             }
         }
 
         return 1;
-
-
-        #my $hashlist;
-        # eval {
-        #     foreach $id (sort {$a <=> $b} keys %$list) {
-        #         unless ( exists $$routs{ $$list{$id}{'name'} } ) {
-        #             $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$id ); 
-        #         }
-        #         # $$hashlist{ $$list{ $id }{'name'} } = $id;      
-        #     }
-        # };
-        # if ($@) { 
-        #     return "Can't delete from DB";
-        # }
-
-        # eval {
-        #     foreach $name (keys %$routs) {
-        #         unless ( exists $$hashlist{ $name } ) {
-        #             $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name") VALUES ('."'".$$routs{$name}."','".$name."')" );
-        #         }
-        #     }
-        # };
-        # if ($@) { 
-        #     return "Can't add to the DB";
-        # }
-
-
-        # foreach my $parent (sort {$a <=> $b} keys %$groups) {
-
-        #     foreach $id (sort {$a <=> $b} keys %$list) {
-        #             $$hashlistName{ $$list{ $id }{'name'} } = $id;
-        #             $$hashlistParent{ $$list{ $id }{'parent'} } = $id;
-        #     }
-
-        #     foreach $name (keys %$routs) {
-        #         unless ( ( exists $$hashlistName{ $name } ) && ( exists $$hashlistParent{ $parent } ) ) {
-        #             $self->pg_dbh->do( 'INSERT INTO "public"."routes" ("label","name","parent") VALUES ('."'".$$routs{$name}."','".$name."','".$parent."')" );
-        #         }
-        #     }
-        # }
     });
 
 
@@ -173,12 +139,9 @@ sub register {
         eval{
             if ( $self->pg_dbh->do('INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
                 $id = $self->pg_dbh->last_insert_id( undef, 'public', 'routes', undef, { sequence => 'routes_id_seq' } );
-            }
+            };
         };
-
-        if ($@) { 
-            print $DBI::errstr . "\n";
-        }
+        warn $@ && return if ($@);
 
         return $id;
     });
@@ -188,12 +151,15 @@ sub register {
     # my $true = $self->_name_check_route ( /cms/item );
     # возвращается true/false
     $app->helper( '_name_check_route' => sub {
-
         my ($self, $name) = @_;
 
         return unless $name;
+        my $db_result;
 
-        my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."routes" WHERE "name"='.$name);
+        eval{
+            $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."routes" WHERE "name"='.$name);
+        };
+        warn $@ && return if ($@);
 
         return $db_result;
     });

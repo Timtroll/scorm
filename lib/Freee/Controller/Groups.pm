@@ -66,16 +66,18 @@ sub add {
 
     my ($id, @mess, $resp);
     
-    # проверка обязательных полей
-    unless ( $data{'label'} && $data{'name'} ) {
-        push @mess, "Required fields do not exist";
-    }
+    # # проверка обязательных полей
+    # unless ( $data{'label'} && $data{'name'} ) {
+    #     push @mess, "Required fields do not exist";
+    # }
 
-    unless ( $id = $self->_insert_group( \%data, \@mess ) == [0-9]+ ) {
-        while ( $id ) {
-            push @mess, pop $$id;
-        }
-    }
+    # unless ( $id = $self->_insert_group( \%data, \@mess ) == [0-9]+ ) {
+    #     while ( $id ) {
+    #         push @mess, pop $$id;
+    #     }
+    # }
+
+    $id = $self->_insert_group( \%data );
 
     $resp->{'message'} = join("\n", @mess) unless $id;
     $resp->{'status'} = $id ? 'ok' : 'fail';
@@ -100,11 +102,11 @@ sub save {
         'id'        => $self->param('id'),
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
-        'status'    => $self->param('status') || 0
+        'status'    => $self->param('status') || 1
     );
     
-    # проверка обязательных полей
-    if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+    # # проверка обязательных полей
+    # if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
         # проверка существования обновляемой строки
         if ( $self->_group_id_check( $data{'id'} ) ) {
             # обновление группы
@@ -114,9 +116,9 @@ sub save {
         else {
             push @mess, "Can't find row for updating";                
         }
-    } else {
-        push @mess, "Required fields do not exist";
-    }
+    # } else {
+    #     push @mess, "Required fields do not exist";
+    # }
     
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
@@ -134,8 +136,8 @@ sub delete {
     my $id = $self->param('id');
     my @mess;
    
-    # проверка обязательных полей
-    if ( $id ) {
+    # # проверка обязательных полей
+    # if ( $id ) {
         # проверка на существование удаляемой строки в groups
         if ( $self->_group_id_check( $id ) ) {
             # удаление группы
@@ -146,10 +148,10 @@ sub delete {
             $id = 0;
             push @mess, "Can't find row for deleting";
         }
-    } 
-    else {
-        push @mess, "Could not id for deleting" unless $id;
-    }
+    # } 
+    # else {
+    #     push @mess, "Could not id for deleting" unless $id;
+    # }
 
     # вывод результата
     my $resp;
