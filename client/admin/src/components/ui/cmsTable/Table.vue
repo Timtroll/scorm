@@ -361,6 +361,7 @@
 
         this.$store.commit('editPanel_status_request')
         this.$store.commit('editPanel_add', true)
+        this.$store.commit('editPanel_folder', false)
         this.$store.commit('card_right_show', true)
         this.$store.commit('editPanel_data', [])
 

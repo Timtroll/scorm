@@ -175,6 +175,7 @@
               }
             }
 
+            this.$store.commit('editPanel_folder', false)
             this.$store.dispatch(this.table_api.saveField, sendData)
           } else { // если правая панель закрыта открываем для редактирования
             this.$store.commit('editPanel_add', false)
