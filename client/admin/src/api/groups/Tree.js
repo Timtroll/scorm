@@ -5,7 +5,7 @@ export default {
   // получить дерево
   get_tree () {
     return Api()({
-      url:    'groups',
+      url:    'groups/index',
       method: 'post'
     })
   },
