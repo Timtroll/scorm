@@ -24,7 +24,7 @@ sub index {
     my $self = shift;
 
     my ($list, $set, $resp, @mess);
-print "========\n";
+
     # читаем группы из базы
     unless ( $list = $self->_all_groups() ) {
         push @mess, "Can not get list of group";

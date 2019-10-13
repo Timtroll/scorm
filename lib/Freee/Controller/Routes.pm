@@ -10,7 +10,7 @@ use Freee::Mock::Settings;
 use Data::Dumper;
 use common;
 
-# вывод списка роутов в виде объекта 
+# вывод списка роутов группы в виде объекта 
 #    "label"       => "scorm",
 #    "id"          => 1,
 #    "component"   => "Routes",
@@ -21,32 +21,37 @@ use common;
 #    "table"       => {}
 sub index {
     my $self = shift;
-    my ( $list, $set );
 
-    # читаем руты из базы
+    my ($list, $set, $resp, @mess);
+
+    # читаем группы из базы
     unless ( $list = $self->_routes_values() ) {
-        return "Can't connect to the database";
+        push @mess, "Can not get list of routes";
     }
 
-    # формируем данные для вывода
-    foreach my $id (sort {$a <=> $b} keys %$list) {
-        my $row = {
-            'id'        => $id,
-            'label'     => $$list{$id}{'label'},
-            'component' => "Routes",
-            'opened'    => 0,
-            'folder'    => 0,
-            'keywords'  => "",
-            'children'  => [],
-            'table'     => {}
-        };
-        push @{$set}, $row;
+    unless (@mess) {
+        # формируем данные для вывода
+        foreach (sort {$a <=> $b} keys %$list) {
+            my $row = {
+                'id'        => $_,
+                'label'     => $$list{$_}{'label'},
+                'component' => "Groups",
+                'opened'    => 0,
+                'folder'    => 1,
+                'keywords'  => "",
+                'children'  => [],
+                'table'     => {}
+            };
+            push @{$set}, $row;
+        }
     }
 
-    # показываем доспупные роуты
-    $self->render( json => $set );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $set if $set;
+
+    $self->render( 'json' => $resp );
 }
-
 
 # обновление роута
 # my $id = $self->save({
