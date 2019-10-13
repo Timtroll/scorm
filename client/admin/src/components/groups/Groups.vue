@@ -50,15 +50,15 @@
 
   export default {
 
-    name: 'Settings',
+    name: 'Groups',
 
     components: {
-      IconBug: () => import('../ui/icons/IconBug'),
-      Tree:    () => import('../ui/cmsTree/Tree'),
-      NavTree: () => import('../ui/cmsTree/NavTree'),
-      Card:    () => import('../ui/card/Card'),
-      Loader:  () => import('../ui/icons/Loader'),
-      List:    () => import('../ui/cmsList/List')
+      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../ui/icons/IconBug'),
+      Tree:    () => import(/* webpackChunkName: "Tree" */ '../ui/cmsTree/Tree'),
+      NavTree: () => import(/* webpackChunkName: "NavTree" */ '../ui/cmsTree/NavTree'),
+      Card:    () => import(/* webpackChunkName: "Card" */ '../ui/card/Card'),
+      Loader:  () => import(/* webpackChunkName: "Loader" */ '../ui/icons/Loader'),
+      List:    () => import(/* webpackChunkName: "List" */ '../ui/cmsList/List')
     },
 
     data () {
@@ -69,23 +69,23 @@
         actions: {
 
           tree: {
-            get:    'settings/getTree',
-            add:    'settings/addFolder',
-            save:   'settings/saveFolder',
-            remove: 'settings/removeFolder'
+            get:    'groups/getTree',
+            add:    'groups/addFolder',
+            save:   'groups/saveFolder',
+            remove: 'groups/removeFolder'
           },
 
           table: {
-            get:       'settings/getTable',
-            save:      'settings/leafSave',
-            saveField: 'settings/leafSaveField',
-            remove:    'settings/removeLeaf'
+            get:       'groups/getTable',
+            save:      'groups/leafSave',
+            saveField: 'groups/leafSaveField',
+            remove:    'groups/removeLeaf'
 
           },
 
           editPanel: {
-            get:  'settings/leafEdit',
-            save: 'settings/leafSave'
+            get:  'groups/leafEdit',
+            save: 'groups/leafSave'
 
           }
         }
@@ -115,16 +115,16 @@
       //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
-      this.$store.commit('settings/proto_leaf', protoLeaf)
-      this.$store.commit('settings/proto_folder', protoFolder)
+      this.$store.commit('groups/proto_leaf', protoLeaf)
+      this.$store.commit('groups/proto_folder', protoFolder)
 
     },
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
       this.$store.commit('tree_active', null)
-      this.$store.commit('settings/proto_leaf', [])
-      this.$store.commit('settings/proto_folder', [])
+      this.$store.commit('groups/proto_leaf', [])
+      this.$store.commit('groups/proto_folder', [])
 
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')

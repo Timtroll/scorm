@@ -9,7 +9,6 @@ use JSON::XS;
 
 use DBD::Pg;
 use DBI;
-# use experimental 'smartmatch';
 
 use Data::Dumper;
 use common;
@@ -79,28 +78,6 @@ sub register {
         return $row;
     });
 
-    # проверяем поле name на дубликат
-    # my $row = $self->_exists_settings('name123', 'value123');
-    # возвращается 1/undef
-    $app->helper( '_exists_settings' => sub {
-        my ($self, $name, $val, $excude_id) = @_;
-
-        return unless $name;
-
-        # проверяем поле name на дубликат
-        my $sql = "SELECT id FROM \"public\".settings WHERE \"".$name."\"='".$val."'";
-        # исключаем из поиска id
-        $sql .='AND "id"<>'.$excude_id if $excude_id;
-warn($sql);
-        my $row;
-        eval {
-            $row = $self->pg_dbh->selectrow_hashref($sql);
-        };
-        warn $@ && return if ($@);
-
-        return $row;
-    });
-
     # добавление фолдера настроек
     # my $row = $self->_insert_folder({
     #   'parent'  => 0,
@@ -146,7 +123,7 @@ warn($sql);
         my $fields = join( ', ', map {
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
-warn('UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id});
+
         eval {
             $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
         };
@@ -390,7 +367,6 @@ warn('UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id});
 
         return $list;
     });
-
 }
 
 1;

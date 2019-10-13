@@ -13,4 +13,4 @@ WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."groups" OWNER TO "troll";
 
-CREATE UNIQUE INDEX "groups_label_name_idx" ON "public"."groups" USING btree ("label", "name");
+CREATE UNIQUE INDEX "groups_name_idx" ON "public"."groups" USING btree ("name");

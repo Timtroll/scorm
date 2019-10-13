@@ -93,8 +93,8 @@ sub save {
 
     # проверка поля parent
     if ( $self->_parent_check_route( $data{'parent'} ) ) {
-        # проверка остальных обязательных полей
-        if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+        # # проверка остальных обязательных полей
+        # if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
             # проверка существования обновляемой строки
             if ( $self->_id_check_route( $data{'id'} ) ) {
                 # обновление
@@ -104,9 +104,9 @@ sub save {
             else {
                 push @mess, "Can't find row for updating";                
             }
-        } else {
-            push @mess, "Required fields do not exist";
-        }
+        # } else {
+        #     push @mess, "Required fields do not exist";
+        # }
     }
     else {
         push @mess, "Wrong parent";

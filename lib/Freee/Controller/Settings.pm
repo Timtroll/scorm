@@ -4,7 +4,6 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-# use Mojo::JSON qw(decode_json encode_json);
 use JSON::XS;
 use Encode;
 
@@ -22,8 +21,16 @@ sub get_folder {
     my ($resp, $data, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    $data = $self->_get_folder( $self->param('id') );
-    push @mess, "Could not get '".$self->param('id')."'" unless $data;
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $data = $self->_get_folder( $self->param('id') );
+            push @mess, "Could not get '".$self->param('id')."'" unless $data;
+        }
+    }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -79,15 +86,16 @@ sub save_folder {
 }
 
 # создание группы настроек
-# my $id = $self->add({
+# my $id = $self->add();
+# {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
 #     "folder"      => 1,           - это группа настроек
 #     "readonly"    => 0,           - не обязательно, по умолчанию 0
-# });
+# }
 sub add_folder {
-    my ($self, $data) = @_;
+    my $self = shift;
 
     my ($id, $data, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
@@ -98,7 +106,7 @@ sub add_folder {
         push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
 
         # проверяем поле name на дубликат
-        if ($self->_exists_settings('name', $$data{'name'})) {
+        if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
             push @mess, "Folder item named '$$data{'name'}' is exists";
         }
         else {
@@ -124,15 +132,22 @@ sub add_folder {
     $self->render( 'json' => $resp );
 }
 
+# удаление фолдера настроек (с дочерними листьями)
 sub delete_folder {
     my $self = shift;
 
-    my ($id, $resp, @mess);
+    my ($id, $resp, $data, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        $id = $self->_delete_folder( $self->param('id') );
-        push @mess, "Could not delete folder '".$self->param('id')."'" unless $id;
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $id = $self->_delete_folder( $$data{'id'} );
+            push @mess, "Could not delete folder '".$$data{'id'}."'" unless $id;
+        }
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -146,15 +161,23 @@ sub delete_folder {
 # Работа с Настройками
 
 # выбираем листья ветки дерева
+# my $id = $self->get_leafs();
+# 'id' - id фолдера для которого выбираем листья
 sub get_leafs {
     my $self = shift;
 
-    my ($resp, $list, $table, @mess);
+    my ($resp, $list, $table, $data, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        $list = $self->_get_leafs( $self->param('id') );
-        push @mess, "Could not get leafs for folder id '".$self->param('id')."'" unless $list;
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $list = $self->_get_leafs( $$data{'id'} );
+            push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
+        }
     }
 
     # данные для таблицы
@@ -182,15 +205,16 @@ sub get_leafs {
 }
 
 # загрузка данных в таблицу настроек из /Mock/Settings.pm
+# my $id = $self->load_default();
 sub load_default {
     my $self = shift;
 
     # очистка таблицы и сброс счетчика
     $self->_reset_settings();
 
-    my @mess;
+    my ($id, $sub, $resp, @mess);
     foreach my $folder ( @{$settings->{'settings'}} ) {
-        my $sub = {
+        $sub = {
             "name"          => $$folder{'name'},
             "placeholder"   => $$folder{'placeholder'} || '',
             "label"         => $$folder{'label'},
@@ -203,7 +227,7 @@ sub load_default {
             "status"        => 1,
             "parent"        => 0
         };
-        my $id = $self->_insert_setting($sub, []);
+        $id = $self->_insert_setting($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         if (@{$$folder{'children'}}) {
@@ -228,7 +252,6 @@ sub load_default {
         }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
 
@@ -236,34 +259,33 @@ sub load_default {
 }
 
 # создание настройки
-# my $id = $self->add({
-#     "folder"      => 0,           - это запись настроек
-#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "value"       => "",            - строка или json
-#     "type"        => "InputNumber", - тип поля из конфига
-#     "placeholder" => 'это название',- название для отображения в форме
-#     "mask"        => '\d+',         - регулярное выражение
-#     "selected"    => "CKEditor",    - значение по-умолчанию для select
-#     "required"    => 1              - обязательное поле
-# });
+# my $id = $self->add();
+# "folder"      => 0,           - это запись настроек
+# "parent"      => 0,           - обязательно (должно быть натуральным числом)
+# "label"       => 'название',  - обязательно (название для отображения)
+# "name",       => 'name'       - обязательно (системное название, латиница)
+# "readonly"    => 0,           - не обязательно, по умолчанию 0
+# "value"       => "",            - строка или json
+# "type"        => "InputNumber", - тип поля из конфига
+# "placeholder" => 'это название',- название для отображения в форме
+# "mask"        => '\d+',         - регулярное выражение
+# "selected"    => "CKEditor",    - значение по-умолчанию для select
+# "required"    => 1              - обязательное поле
 sub add {
-    my ($self, $data) = @_;
+    my $self = shift;
 
     # read params
-    my ($id, @mess);
+    my ($id, $data, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        my $data = $self->_check_fields();
+        $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         # проверяем поле name на дубликат
-        if ($self->_exists_settings('name', $$data{'name'})) {
-            push @mess, "Setting named '$$data{'name'}' is exists" unless $id;
+        if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
+            push @mess, "Setting named '$$data{'name'}' is exists";
         }
         else {
             $id = $self->_insert_setting( $data, [] ) unless @mess;
@@ -271,7 +293,6 @@ sub add {
         }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
@@ -280,62 +301,59 @@ sub add {
 }
 
 # получение настройки по id
-# my $row = $self->edit(2)
+# my $row = $self->edit()
+# 'id' - id настрокйи
 sub edit {
     my $self = shift;
 
     my ($id, $data, @mess, $resp);
-    unless ( $id = $self->param('id') ) {
-        push @mess, "id is empty or 0";
-    }
-    else {
-        # проверка обязательных полей
-        $id = 0 unless $id =~ /\d+/;
-        push @mess, "Id is wrong" unless $id;
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-        unless (@mess) {
-            $data = $self->_get_setting( $id );
-            push @mess, "Could not get '$id'" unless $data;
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $data = $self->_get_setting( $$data{'id'} );
+            push @mess, "Could not get '".$$data{'id'}."'" unless $data;
         }
     }
 
-    $resp->{'type'} = 'settings';
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
     $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
 
 # сохранение настройки
-# my $id = $self->save({
-#     "folder"      => 0,           - это запись настроек
-#     "parent"      => 0,           - обязательно (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "value"       => "",            - строка или json
-#     "type"        => "InputNumber", - тип поля из конфига
-#     "placeholder" => 'это название',- название для отображения в форме
-#     "mask"        => '\d+',         - регулярное выражение
-#     "selected"    => "CKEditor",    - значение по-умолчанию для select
-#     "required"    => 1              - обязательное поле
-# });
+# my $id = $self->save();
+# "folder"      => 0,           - это запись настроек
+# "parent"      => 0,           - обязательно (должно быть натуральным числом)
+# "label"       => 'название',  - обязательно (название для отображения)
+# "name",       => 'name'       - обязательно (системное название, латиница)
+# "readonly"    => 0,           - не обязательно, по умолчанию 0
+# "value"       => "",            - строка или json
+# "type"        => "InputNumber", - тип поля из конфига
+# "placeholder" => 'это название',- название для отображения в форме
+# "mask"        => '\d+',         - регулярное выражение
+# "selected"    => "CKEditor",    - значение по-умолчанию для select
+# "required"    => 1              - обязательное поле
 sub save {
     my $self = shift;
 
     # read params
-    my ($id, @mess, $data);
-
+    my ($id, $data, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
     unless (@mess) {
         # проверка данных
-        my $data = $self->_check_fields();
+        $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         # проверяем поле name на дубликат
-        if ($self->_exists_settings('name', $$data{'name'}, $$data{'id'}) && !@mess) {
+        if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'}) && !@mess) {
             push @mess, "Setting named '$$data{'name'}' is exists" unless $id;
         }
         else {
@@ -344,7 +362,6 @@ sub save {
         }
     }
 
-    my $resp;
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
@@ -353,13 +370,14 @@ sub save {
 }
 
 # удаление настройки
-# my $true = $self->delete( 99 );
+# my $true = $self->delete();
+# 'id'  - id настрокйи
 sub delete {
     my $self = shift;
 
     my ($del, $resp, $data, @mess);
-
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
@@ -377,17 +395,16 @@ sub delete {
 }
 
 # изменение поля на 1/0
-# my $true = $self->toggle( 
+# my $true = $self->toggle();
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
-# );
 sub toggle {
     my $self = shift;
 
     my ($toggle, $resp, $data, @mess);
-
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();

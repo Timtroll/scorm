@@ -13,6 +13,30 @@ use constant DEBUGGING => 0;
 sub register {
     my ($self, $app) = @_;
 
+    # проверяем поле name на дубликат
+    # my $row = $self->_exists_in_table('settings', 'id', 22, 1);
+    # возвращается 1/undef
+    $app->helper( '_exists_in_table' => sub {
+        my ($self, $table,  $name, $val, $excude_id) = @_;
+
+        return unless $name;
+# ???????
+# Добавить проверку существования табдицы
+
+        # проверяем поле name на дубликат
+        my $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
+        # исключаем из поиска id
+        $sql .='AND "id"<>'.$excude_id if $excude_id;
+
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ && return if ($@);
+
+        return $row;
+    });
+
     # построение дерева по плоской таблице с парентами
     # $self->_list_to_tree(<list>, <id_field>, <parent>, <start_id>, <children_key>);
     # <list>        - ссылка на массив, из которого строим дерево
@@ -41,13 +65,13 @@ sub register {
             }
         }
 
-        my @tree;
-        my %index;
+        my (@tree, %index);
         # построение дерева
         foreach my $obj (@{$list}) {
             $obj->{'keywords'} = $obj->{'label'};
             $obj->{folder} = 0;
             die "_list_to_tree:  Object undefined\n" unless $obj;
+
             my $id = $obj->{$id_field} || die "_list_to_tree: No $id_field in object\n";
             my $pid = $obj->{$parent_field} || $id;
 

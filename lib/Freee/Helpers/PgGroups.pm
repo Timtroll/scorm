@@ -25,7 +25,11 @@ sub register {
     $app->helper( '_all_groups' => sub {
         my $self = shift;
 
-        my $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
+        my $list;
+        eval{
+            $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
+        };
+        warn $@ && return if ($@);
 
         return $list;
     });
@@ -49,10 +53,7 @@ sub register {
                 $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
             }
         };
-
-        if ($@) { 
-            print $DBI::errstr . "\n";
-        }
+        warn $@ && return if ($@);
 
         return $id;
     });
@@ -74,10 +75,7 @@ sub register {
         eval {
             $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
         };
-
-        if ($@) { 
-            print $DBI::errstr . "\n";
-        }
+        warn $@ && return if ($@);
 
         return $db_result;
     });
@@ -116,10 +114,7 @@ sub register {
             $self->pg_dbh->commit();
         };
 
-        if ($@) { 
-            $self->pg_dbh->rollback();
-            print "Delete doesn't work \n";
-        } 
+        warn $@ && $self->pg_dbh->rollback() if ($@);
 
         return $db_result;
     });
@@ -133,11 +128,14 @@ sub register {
 
         return unless $id;
 
-        my $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+        my $db_result;
+        eval {
+            $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+        };
+        warn $@ && return if ($@);
 
         return $db_result;
     });
     
 }
-
 1;

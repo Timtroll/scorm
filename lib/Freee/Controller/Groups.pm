@@ -22,18 +22,19 @@ use Data::Dumper;
 #    "table"       => {}
 sub index {
     my $self = shift;
-    my ( $list, $set );
+
+    my ($list, $set, $resp, @mess);
 
     # читаем группы из базы
     unless ( $list = $self->_all_groups() ) {
-        return "Can't connect to the database";
+        push @mess, "Can not get list of group";
     }
 
     # формируем данные для вывода
-    foreach my $id (sort {$a <=> $b} keys %$list) {
+    foreach (sort {$a <=> $b} keys %$list) {
         my $row = {
-            'id'        => $id,
-            'label'     => $$list{$id}{'label'},
+            'id'        => $_,
+            'label'     => $$list{$_}{'label'},
             'component' => "Groups",
             'opened'    => 0,
             'folder'    => 1,
@@ -44,40 +45,36 @@ sub index {
         push @{$set}, $row;
     }
 
-    $self->render( json => $set );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $set if $set;
+
+    $self->render( 'json' => $resp );
 }
 
 # добавление группы
-# my $id = $self->insert_group({
-#     "label"       => 'название',      - название для отображения
-#     "name",       => 'name',          - системное название, латиница
-#     "status"      => 0 или 1,         - активна ли группа
-# });
-
+# my $id = $self->insert_group();
+# "label"  - 'название',      - название для отображения
+# "name",  - 'name',          - системное название, латиница
+# "status" - 0 или 1,         - активна ли группа
 sub add {
-    my ($self, $data) = @_;
+    my $self = shift;
 
-    # read params
-    my %data = (
-        'label'     => $self->param('label'),
-        'name'      => $self->param('name'),
-        'status'    => $self->param('status') || 1
-    );
+    my ($id, $data, @mess, $resp);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    my ($id, @mess, $resp);
-    
-    # проверка обязательных полей
-    unless ( $data{'label'} && $data{'name'} ) {
-        push @mess, "Required fields do not exist";
-    }
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct setting item data '$$data{'name'}'" unless $data;
 
-    unless ( $id = $self->_insert_group( \%data, \@mess ) == [0-9]+ ) {
-        while ( $id ) {
-            push @mess, pop $$id;
+        if ($data) {
+            $id = $self->_insert_group( $data );
+            push @mess, "Could insert data" unless $id;
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) unless $id;
+    $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = $id ? 'ok' : 'fail';
     $resp->{'id'} = $id if $id;
 
@@ -100,13 +97,13 @@ sub save {
         'id'        => $self->param('id'),
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
-        'status'    => $self->param('status') || 0
+        'status'    => $self->param('status') || 1
     );
     
-    # проверка обязательных полей
-    if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+    # # проверка обязательных полей
+    # if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
         # проверка существования обновляемой строки
-        if ( $self->_group_id_check( $data{'id'} ) ) {
+        if ( $self->_exists_in_table( $data{'id'} ) ) {
             # обновление группы
             $id = $self->_update_group( \%data );
             push @mess, "Could not update setting item '$data{'label'}'" unless $id;
@@ -114,9 +111,9 @@ sub save {
         else {
             push @mess, "Can't find row for updating";                
         }
-    } else {
-        push @mess, "Required fields do not exist";
-    }
+    # } else {
+    #     push @mess, "Required fields do not exist";
+    # }
     
     my $resp;
     $resp->{'message'} = join("\n", @mess) unless $id;
@@ -134,8 +131,8 @@ sub delete {
     my $id = $self->param('id');
     my @mess;
    
-    # проверка обязательных полей
-    if ( $id ) {
+    # # проверка обязательных полей
+    # if ( $id ) {
         # проверка на существование удаляемой строки в groups
         if ( $self->_group_id_check( $id ) ) {
             # удаление группы
@@ -146,10 +143,10 @@ sub delete {
             $id = 0;
             push @mess, "Can't find row for deleting";
         }
-    } 
-    else {
-        push @mess, "Could not id for deleting" unless $id;
-    }
+    # } 
+    # else {
+    #     push @mess, "Could not id for deleting" unless $id;
+    # }
 
     # вывод результата
     my $resp;
