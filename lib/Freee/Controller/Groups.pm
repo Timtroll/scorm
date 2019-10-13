@@ -198,5 +198,4 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
-
 1;

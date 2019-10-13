@@ -19,11 +19,11 @@ sub register {
     # получение списка рутов из базы в массив хэшей
     # my $routes = $self->_routes_values();
     $app->helper( '_routes_list' => sub {
-        my $self = shift;
+        my ($self, $parent) = @_;
 
         my $list;
         eval {
-            $list = $self->pg_dbh->selectall_hashref('SELECT id, label FROM "public"."routes"', 'id');
+            $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."routes" WHERE "parent" = '.$parent, 'id');
         };
         warn $@ if $@;
         return if $@;
@@ -103,31 +103,27 @@ sub register {
     });
 
 
-# ???????????
-    # проверка корректности наследования
-    # my $true = $self->_parent_check_route( 99 );
+    # включение/отключение поля status в строке группы
+    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
+    # <id>    - id записи 
+    # <field> - имя поля в таблице
+    # <val>   - 1/0
     # возвращается true/false
-    $app->helper( '_parent_check_route' => sub {
+    $app->helper( '_toggle_group' => sub {
+        my ($self, $data) = @_;
 
-        my ($self, $parent) = @_;
+        return unless $data;
+        return unless ($$data{'id'} || $$data{'value'} || $$data{'fieldname'});
 
-        my $db_result = 0;
+        my $sql ='UPDATE "public"."routes" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        warn $@ if $@;
+        return if $@;
 
-        # родитель задан?
-        if ( $parent ) {
-            # родитель существует?
-            eval {
-                if ( $self->pg_dbh->selectrow_array( 'SELECT * FROM "public"."groups" WHERE "id"='.$parent ) ) {
-                     $db_result = 1;   
-                };
-            };
-            warn $@ if $@;
-            return if $@;
-        }
-
-        return $db_result;
+        return 1;
     });
-
 
 }
 

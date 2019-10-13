@@ -220,6 +220,9 @@ sub register {
             },
 
 
+            '/routes'  => {
+                "parent"            => [ 'required', qr/^\d+$/os ]
+            },
             '/routes/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 # "parent"        => [ 'required', qr/^\d+$/os ],

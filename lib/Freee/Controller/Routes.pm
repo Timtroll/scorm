@@ -22,92 +22,143 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    my ($list, $set, $resp, @mess);
+    my ( $list, $data, $table, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # читаем группы из базы
-    unless ( $list = $self->_routes_list() ) {
-        push @mess, "Can not get list of routes";
-    }
-
-    $set = [];
     unless (@mess) {
-        # формируем данные для вывода
-        foreach (sort {$a <=> $b} keys %$list) {
-            my $row = {
-                'id'        => $_,
-                'label'     => $$list{$_}{'label'},
-                'component' => "Groups",
-                'opened'    => 0,
-                'folder'    => 1,
-                'keywords'  => "",
-                'children'  => [],
-                'table'     => {}
-            };
-            push @{$set}, $row;
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Gruop id '$$data{'parent'}'" unless $data;
+
+        # проверка существования роута указанной группы
+        unless (@mess) {
+            if ( $self->_exists_in_table('routes', 'parent', $$data{'parent'}) ) {
+                # список роутов указанной группы
+                $list = $self->_routes_list( $$data{'parent'} );
+                push @mess, "Could not get list Routes for group '$$data{'parent'}'" unless $list;
+
+                # данные для таблицы
+                $table = {
+                    "settings" => {
+                        "massEdit" => 1,    # групповое редактировани
+                        "sort" => {         # сотрировка по
+                            "name"    => "id",
+                            "order"   => "asc"
+                        },
+                        "page" => {
+                          "current_page"    => 1,
+                          "per_page"        => 100,
+                          # "total"           => scalar(@{$list->{'body'}})
+                        }
+                    },
+                    "body" => $list
+                } unless @mess;
+            }
+            else {
+                push @mess, "Routes for Group id '$$data{'parent'}' is not exists";
+            }
         }
     }
 
+
+
+
+
+
+    # # читаем роуты из базы
+    # unless ( $list = $self->_routes_list() ) {
+    #     push @mess, "Can not get list of routes";
+    # }
+
+    # $set = [];
+    # unless (@mess) {
+    #     # формируем данные для вывода
+    #     foreach (sort {$a <=> $b} keys %$list) {
+    #         my $row = {
+    #             'id'        => $_,
+    #             'label'     => $$list{$_}{'label'},
+    #             'component' => "Groups",
+    #             'opened'    => 0,
+    #             'folder'    => 1,
+    #             'keywords'  => "",
+    #             'children'  => [],
+    #             'table'     => {}
+    #         };
+    #         push @{$set}, $row;
+    #     }
+    # }
+
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $set unless @mess;
+    $resp->{'list'} = $table unless @mess;
 
     $self->render( 'json' => $resp );
 }
 
 # обновление роута
-# my $id = $self->save({
-#     "id"          => 1            - id обновляемого элемента ( >0 )
-#     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
-#     "label"       => 'название',  - обязательно (название для отображения)
-#     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "status"      => 0,           - по умолчанию 1
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
-#     "value"       => "",          - строка или json
-#     "required"    => 0            - не обязательно, по умолчанию 0
-# });
+# my $id = $self->save();
+# "id"          => 1            - id обновляемого элемента ( >0 )
+# "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+# "label"       => 'название',  - обязательно (название для отображения)
+# "name",       => 'name'       - обязательно (системное название, латиница)
+# "status"      => 0,           - по умолчанию 1
+# "readonly"    => 0,           - не обязательно, по умолчанию 0
+# "value"       => "",          - строка или json
+# "required"    => 0            - не обязательно, по умолчанию 0
 sub save {
     my ($self) = shift;
-    my ($id, $parent, @mess);
 
-    # read params
-    my %data = (
-        'id'        => $self->param('id'),
-        'parent'    => $self->param('parent')    || 0,
-        'label'     => $self->param('label'),
-        'name'      => $self->param('name'),
-        "list"   => 0,
-        "add"    => 0,
-        "edit"   => 0,
-        "delete" => 0,
-        'status'    => $self->param('status')    || 1,
-        'readonly'  => $self->param('readonly')  || 0,
-        'required'  => $self->param('required')  || 0
-    );
+    my ( $id, $data, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # проверка поля parent
-    if ( $self->_parent_check_route( $data{'parent'} ) ) {
-        # # проверка остальных обязательных полей
-        # if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
-            # проверка существования обновляемой строки
-            if ( $self->_id_check_route( $data{'id'} ) ) {
-                # обновление
-                $id = $self->_update_route( \%data );
-                push @mess, "Could not update setting item '$data{'label'}'" unless $id;
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Route data '$$data{'name'}'" unless $data;
+
+        # проверка существования обновляемой строки
+        unless (@mess) {
+            if ( $self->_exists_in_table('routes', 'id', $$data{'id'}) ) {
+                # обновление данных группы
+                $id = $self->_update_route( $data );
+                push @mess, "Could not update Route named '$$data{'name'}'" unless $id;
             }
             else {
-                push @mess, "Can't find row for updating";                
+                push @mess, "Route '$$data{'id'}' is not exists";
             }
-        # } else {
-        #     push @mess, "Required fields do not exist";
-        # }
-    }
-    else {
-        push @mess, "Wrong parent";
+        }
     }
 
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
+}
+
+# изменение поля на 1/0
+# my $true = $self->toggle();
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
+sub toggle {
+    my $self = shift;
+
+    my ($toggle, $resp, $data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+
+        $toggle = $self->_toggle_route( $data ) unless @mess;
+        push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $toggle;
 
     $self->render( 'json' => $resp );
 }
