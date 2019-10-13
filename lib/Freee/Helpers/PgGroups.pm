@@ -25,13 +25,59 @@ sub register {
     $app->helper( '_all_groups' => sub {
         my $self = shift;
 
-        my $list;
+        # получаем список групп
+        my $groups;
         eval{
-            $list = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
+            $groups = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
-        return $list;
+        # синхронизация реальных роутов и роутов в группах
+        foreach my $parent (sort {$a <=> $b} keys %$groups) {
+            # получаем список роутов текущей группы
+            my $list = {};
+            eval {
+                $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name, parent FROM "public"."routes" WHERE "parent"='.$parent, 'name');
+            };
+            warn $@ if $@;
+            return if $@;
+
+            # проверка соответствия роута в таблице тому, что есть в реальном списке роутов
+            foreach my $route (keys %$list) {
+                # удаляем роуты, которые есть в таблице, но которых нет в реальном списке
+                unless ( defined $$routs{ $route } ) {
+                    eval {
+                        $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$$list{$route}{'id'} );
+                    };
+                }
+            }
+
+            # проверка соответствия роута в реальном списке роутов тому, что есть в таблице 
+            foreach my $route (keys %$routs) {
+                unless ( defined $$list{$route} ) {
+                    # добавляем роуты, которые есть в реальном списке, но которых нет в таблице
+                    my $data = {
+                        "parent" => $parent,
+                        "label"  => $$routs{$route},
+                        "name"   => $route,
+                        "list"   => 0,
+                        "add"    => 0,
+                        "edit"   => 0,
+                        "delete" => 0,
+                        "status" => 1
+                    };
+                    my $sql = 'INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
+                    eval {
+                        $self->pg_dbh->do( $sql );
+                    };
+                    warn $@ if $@;
+                    return if $@;
+                }
+            }
+        }
+
+        return $groups;
     });
 
     # читаем одну группу
@@ -47,7 +93,8 @@ sub register {
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return $row;
     });
@@ -71,7 +118,8 @@ sub register {
                 $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
             }
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return $id;
     });
@@ -93,7 +141,8 @@ sub register {
         eval {
             $db_result = $self->pg_dbh->do('UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return $db_result;
     });
@@ -110,7 +159,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -131,11 +181,11 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
-
 }
 
 1;

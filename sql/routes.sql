@@ -8,7 +8,10 @@ CREATE TABLE "public"."routes" (
 "parent" int4,
 "label" varchar(255) COLLATE "default" NOT NULL,
 "name" varchar(255) COLLATE "default" NOT NULL,
-"value" json,
+"list" int2 DEFAULT 1 NOT NULL,
+"add" int2 DEFAULT 1 NOT NULL,
+"edit" int2 DEFAULT 1 NOT NULL,
+"delete" int2 DEFAULT 1 NOT NULL,
 "status" int2 DEFAULT 1 NOT NULL
 )
 WITH (OIDS=FALSE);

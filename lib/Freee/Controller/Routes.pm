@@ -6,9 +6,9 @@ use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
-use Freee::Mock::Settings;
-use Data::Dumper;
 use common;
+
+use Data::Dumper;
 
 # вывод списка роутов группы в виде объекта 
 #    "label"       => "scorm",
@@ -25,10 +25,11 @@ sub index {
     my ($list, $set, $resp, @mess);
 
     # читаем группы из базы
-    unless ( $list = $self->_routes_values() ) {
+    unless ( $list = $self->_routes_list() ) {
         push @mess, "Can not get list of routes";
     }
 
+    $set = [];
     unless (@mess) {
         # формируем данные для вывода
         foreach (sort {$a <=> $b} keys %$list) {
@@ -48,7 +49,7 @@ sub index {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $set if $set;
+    $resp->{'list'} = $set unless @mess;
 
     $self->render( 'json' => $resp );
 }
@@ -74,7 +75,10 @@ sub save {
         'parent'    => $self->param('parent')    || 0,
         'label'     => $self->param('label'),
         'name'      => $self->param('name'),
-        'value'     => $self->param('value')     || '{"/route":0}',
+        "list"   => 0,
+        "add"    => 0,
+        "edit"   => 0,
+        "delete" => 0,
         'status'    => $self->param('status')    || 1,
         'readonly'  => $self->param('readonly')  || 0,
         'required'  => $self->param('required')  || 0

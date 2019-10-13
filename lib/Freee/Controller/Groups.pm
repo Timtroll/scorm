@@ -6,7 +6,6 @@ use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Encode;
 
-# use Freee::Mock::Groups;
 use common;
     
 use Data::Dumper;
@@ -30,6 +29,7 @@ sub index {
         push @mess, "Can not get list of group";
     }
 
+    $set = [];
     unless (@mess) {
         # формируем данные для вывода
         foreach (sort {$a <=> $b} keys %$list) {
@@ -49,7 +49,7 @@ sub index {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $set if $set;
+    $resp->{'list'} = $set unless @mess;
 
     $self->render( 'json' => $resp );
 }

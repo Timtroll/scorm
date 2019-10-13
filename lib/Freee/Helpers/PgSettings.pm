@@ -37,7 +37,8 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 
@@ -57,7 +58,8 @@ sub register {
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         # десериализуем поля vaue и selected
         my $out = [];
@@ -101,7 +103,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -127,7 +130,8 @@ sub register {
         eval {
             $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -144,7 +148,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -161,7 +166,8 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return $list;
     });
@@ -204,7 +210,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -255,7 +262,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -272,7 +280,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -293,7 +302,8 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -311,7 +321,8 @@ sub register {
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         # десериализуем поля vaue и selected
         my $out = [];
@@ -341,13 +352,15 @@ sub register {
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         $sql = 'ALTER SEQUENCE settings_id_seq RESTART';
         eval {
             $self->pg_dbh->do($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return 1;
     });
@@ -361,7 +374,8 @@ sub register {
         eval {
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
 

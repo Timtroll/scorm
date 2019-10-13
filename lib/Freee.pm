@@ -179,6 +179,7 @@ sub startup {
     $auth->post('/routes/')               ->to('routes#index');        # список роутов
     $auth->post('/routes/edit')           ->to('routes#edit');         # данные указанного роута
     $auth->post('/routes/save')           ->to('routes#save');         # обновление данных по роуту
+    $auth->post('/routes/toggle')         ->to('routes#toggle');       # включение/отключение поля в таблице роутов
 
     # управление темами
     $auth->post('/subject/')            ->to('subject#index');

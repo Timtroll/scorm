@@ -32,7 +32,8 @@ sub register {
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };
-        warn $@ && return if ($@);
+        warn $@ if $@;
+        return if $@;
 
         return $row;
     });

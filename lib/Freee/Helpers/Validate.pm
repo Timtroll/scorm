@@ -200,7 +200,7 @@ sub register {
 
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9]+$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/groups/save'  => {
@@ -222,11 +222,20 @@ sub register {
 
             '/routes/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ 'required', qr/^\d+$/os ],
-                "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
-                "value"         => [ '', qr/.*/os, 10000 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                # "parent"        => [ 'required', qr/^\d+$/os ],
+                # "label"         => [ 'required', qr/.*/os, 256 ],
+                # "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "list"          => [ '', qr/^[01]$/os ],
+                "add"           => [ '', qr/^[01]$/os ],
+                "edit"          => [ '', qr/^[01]$/os ],
+                "delete"        => [ '', qr/^[01]$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            # изменение поля 1/0 (fieldname - список разрешенных полей)
+            '/routes/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
+                "value"         => [ 'required', qr/^[01]$/os ]
             },
 
             
