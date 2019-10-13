@@ -31,6 +31,9 @@ const actions = {
         if (typeof resp['list'] !== 'undefined') {
           const tree = resp.list
 
+          // Добавляем folder = 0
+          tree.forEach(item => item.folder = 0)
+
           if (tree.length > 0) {
             store.commit('set_tree', tree)
             store.commit('tree_status_success')
