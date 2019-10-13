@@ -14,19 +14,6 @@
     "show":        1
   },
   {
-    "label":       "Родитель",
-    "name":        "parent",
-    "placeholder": "",
-    "readonly":    1,
-    "required":    1,
-    "add":         true,
-    "selected":    [],
-    "type":        "InputNumber",
-    "value":       "",
-    "inline":      0,
-    "show":        0
-  },
-  {
     "label":       "Системное имя",
     "name":        "name",
     "placeholder": "Только латинские буквы без пробелов",
