@@ -30,6 +30,24 @@ sub register {
         return $list;
     });
 
+    # читаем один роут
+    # my $row = $self->_get_route( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_route' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT * FROM "public"."routes" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ && return if ($@);
+
+        return $row;
+    });
+
     # обновление роута
     # my $id = $self->_update_route({
     #      "id"         => 1,           - id обновляемого элемента ( >0 )

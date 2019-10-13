@@ -74,7 +74,7 @@ sub save_folder {
         $$data{'readonly'} = 0;
         $$data{'status'} = $self->param('status') // 0;
 
-        $id = $self->_save_folder( $data, [] ) unless @mess;
+        $id = $self->_save_folder( $data ) unless @mess;
         push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
     }
 
@@ -120,7 +120,7 @@ sub add_folder {
             $$data{'readonly'} = 0;
             $$data{'status'} = 1;
 
-            $id = $self->_insert_folder( $data, [] ) unless @mess;
+            $id = $self->_insert_folder( $data ) unless @mess;
             push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
         }
     }
@@ -353,12 +353,14 @@ sub save {
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         # проверяем поле name на дубликат
-        if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'}) && !@mess) {
-            push @mess, "Setting named '$$data{'name'}' is exists" unless $id;
-        }
-        else {
-            $id = $self->_save_setting( $data, [] ) unless @mess;
-            push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+        unless (@mess) {
+            if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
+                push @mess, "Setting named '$$data{'name'}' is exists";
+            }
+            else {
+                $id = $self->_save_setting( $data, [] ) unless @mess;
+                push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+            }
         }
     }
 
@@ -383,7 +385,7 @@ sub delete {
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $del = $self->_delete_setting( $$data{'id'}, [] ) unless @mess;
+        $del = $self->_delete_setting( $$data{'id'} ) unless @mess;
         push @mess, "Could not delete '$$data{'id'}'" unless $del;
     }
 
@@ -410,7 +412,7 @@ sub toggle {
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $toggle = $self->_toggle_setting( $data, [] ) unless @mess;
+        $toggle = $self->_toggle_setting( $data ) unless @mess;
         push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
     }
 

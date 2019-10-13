@@ -34,6 +34,24 @@ sub register {
         return $list;
     });
 
+    # читаем одну группу
+    # my $row = $self->_get_group( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_group' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT * FROM "public"."groups" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ && return if ($@);
+
+        return $row;
+    });
+
     # добавление группы пользователей
     # my $id = $self->_insert_group({
     #     "id"          => '1',             - id элемента
@@ -80,8 +98,7 @@ sub register {
         return $db_result;
     });
 
-
-    # для удаления группы пользователей
+    # удаление группы
     # my $true = $self->_delete_group( 99 );
     # возвращается true/false
     $app->helper( '_delete_group' => sub {
@@ -89,53 +106,36 @@ sub register {
 
         return unless $id;
 
-        my $db_result = 0;
-
-        eval { 
-            $self->pg_dbh->begin_work();
-
-            if ( $self->pg_dbh->do('DELETE FROM "public"."routes" WHERE "parent"='.$id ) ) {
-                if ( $db_result = $self->pg_dbh->do('DELETE FROM "public"."groups" WHERE "id"='.$id ) ) {
-                    if ( $db_result == "0E0") { 
-                        print "Row for deleting doesn't exist \n";
-                        $db_result = 0;
-                        $self->pg_dbh->rollback();
-                    }   
-                }
-                else {
-                    print "Folder delete doesn't work \n";
-                    $self->pg_dbh->rollback();
-                }
-            } 
-            else {
-                print "Children delete doesn't work \n";
-                $self->pg_dbh->rollback();
-            }
-            $self->pg_dbh->commit();
-        };
-
-        warn $@ && $self->pg_dbh->rollback() if ($@);
-
-        return $db_result;
-    });
-
-
-    # существует ли строка с таким id
-    # my $true = $self->_group_id_check( 99 );
-    # возвращается true/false
-    $app->helper( '_group_id_check' => sub {
-        my ($self, $id) = @_;
-
-        return unless $id;
-
-        my $db_result;
+        my $sql = 'DELETE FROM "public"."groups" WHERE "id"='.$id;
         eval {
-            $db_result = $self->pg_dbh->selectrow_hashref('SELECT * FROM "public"."groups" WHERE "id"='.$id);
+            $self->pg_dbh->do($sql);
         };
         warn $@ && return if ($@);
 
-        return $db_result;
+        return 1;
     });
-    
+
+    # включение/отключение поля status в строке группы
+    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
+    # <id>    - id записи 
+    # <field> - имя поля в таблице
+    # <val>   - 1/0
+    # возвращается true/false
+    $app->helper( '_toggle_group' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+        return unless ($$data{'id'} || $$data{'value'} || $$data{'fieldname'});
+
+        my $sql ='UPDATE "public"."groups" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        warn $@ && return if ($@);
+
+        return 1;
+    });
+
 }
+
 1;

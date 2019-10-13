@@ -157,6 +157,7 @@ sub register {
             '/settings/delete_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
+
             '/settings/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
@@ -196,6 +197,7 @@ sub register {
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
+
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
@@ -209,6 +211,12 @@ sub register {
             },
             '/groups/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
+            },
+            # изменение поля 1/0 (fieldname - список разрешенных полей)
+            '/groups/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
+                "value"         => [ 'required', qr/^[01]$/os ]
             },
 
 

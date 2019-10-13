@@ -24,25 +24,27 @@ sub index {
     my $self = shift;
 
     my ($list, $set, $resp, @mess);
-
+print "========\n";
     # читаем группы из базы
     unless ( $list = $self->_all_groups() ) {
         push @mess, "Can not get list of group";
     }
 
-    # формируем данные для вывода
-    foreach (sort {$a <=> $b} keys %$list) {
-        my $row = {
-            'id'        => $_,
-            'label'     => $$list{$_}{'label'},
-            'component' => "Groups",
-            'opened'    => 0,
-            'folder'    => 1,
-            'keywords'  => "",
-            'children'  => [],
-            'table'     => {}
-        };
-        push @{$set}, $row;
+    unless (@mess) {
+        # формируем данные для вывода
+        foreach (sort {$a <=> $b} keys %$list) {
+            my $row = {
+                'id'        => $_,
+                'label'     => $$list{$_}{'label'},
+                'component' => "Groups",
+                'opened'    => 0,
+                'folder'    => 1,
+                'keywords'  => "",
+                'children'  => [],
+                'table'     => {}
+            };
+            push @{$set}, $row;
+        }
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -75,49 +77,72 @@ sub add {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
 
+# получение данных группы
+# my $row = $self->edit()
+# 'id' - id группы
+sub edit {
+    my $self = shift;
+
+    my ($id, $data, @mess, $resp);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $data = $self->_get_group( $$data{'id'} );
+            push @mess, "Could not get Group '".$$data{'id'}."'" unless $data;
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
+}
+
 # обновление группы
-# my $id = $self->save({
-#     "id"        => 1            - id обновляемого элемента ( >0 )
-#     "label"     => 'название'   - обязательно (название для отображения)
-#     "name",     => 'name'       - обязательно (системное название, латиница)
-#     "status"    => 0 или 1      - активна ли группа
-# });
+# my $id = $self->save();
+# "id"        => 1            - id обновляемого элемента ( >0 )
+# "label"     => 'название'   - обязательно (название для отображения)
+# "name",     => 'name'       - обязательно (системное название, латиница)
+# "status"    => 0 или 1      - активна ли группа
 sub save {
     my ($self) = shift;
-    my ( $id, $parent, @mess );
 
-    # чтение параметров
-    my %data = (
-        'id'        => $self->param('id'),
-        'label'     => $self->param('label'),
-        'name'      => $self->param('name'),
-        'status'    => $self->param('status') || 1
-    );
-    
-    # # проверка обязательных полей
-    # if ( $data{'label'} && $data{'name'} && $data{'id'} ) {
+    my ( $id, $parent, $data, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group data '$$data{'name'}'" unless $data;
+
         # проверка существования обновляемой строки
-        if ( $self->_exists_in_table( $data{'id'} ) ) {
-            # обновление группы
-            $id = $self->_update_group( \%data );
-            push @mess, "Could not update setting item '$data{'label'}'" unless $id;
+        unless (@mess) {
+            if ( $self->_exists_in_table('groups', 'id', $$data{'id'}) ) {
+                # обновление данных группы
+                $id = $self->_update_group( $data );
+                push @mess, "Could not update Group named '$$data{'name'}'" unless $id;
+            }
+            else {
+                push @mess, "Group named '$$data{'name'}' is not exists";
+            }
         }
-        else {
-            push @mess, "Can't find row for updating";                
-        }
-    # } else {
-    #     push @mess, "Required fields do not exist";
-    # }
-    
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }
@@ -127,33 +152,51 @@ sub save {
 sub delete {
     my $self = shift;
 
-    # read params
-    my $id = $self->param('id');
-    my @mess;
-   
-    # # проверка обязательных полей
-    # if ( $id ) {
-        # проверка на существование удаляемой строки в groups
-        if ( $self->_group_id_check( $id ) ) {
-            # удаление группы
-            $id = $self->_delete_group( $id );
-            push @mess, "Could not deleted" unless $id;
-        }
-        else {
-            $id = 0;
-            push @mess, "Can't find row for deleting";
-        }
-    # } 
-    # else {
-    #     push @mess, "Could not id for deleting" unless $id;
-    # }
+    my ($del, $resp, $data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # вывод результата
-    my $resp;
-    $resp->{'message'} = join("\n", @mess) unless $id;
-    $resp->{'status'} = $id ? 'ok' : 'fail';
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+
+        $del = $self->_delete_group( $$data{'id'} ) unless @mess;
+        push @mess, "Could not delete Group '$$data{'id'}'" unless $del;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $del;
 
     $self->render( 'json' => $resp );
 }
+
+# изменение поля на 1/0
+# my $true = $self->toggle();
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
+sub toggle {
+    my $self = shift;
+
+    my ($toggle, $resp, $data, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+
+        $toggle = $self->_toggle_group( $data ) unless @mess;
+        push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $toggle;
+
+    $self->render( 'json' => $resp );
+}
+
 
 1;
