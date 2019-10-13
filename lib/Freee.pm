@@ -170,7 +170,7 @@ sub startup {
     # управление группами пользователей
     $auth->post('/groups/')               ->to('groups#index');        # список групп
     $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
-    $auth->post('/groups/add')            ->to('groups#edit');         # загрузка данныъ группы
+    $auth->post('/groups/edit')           ->to('groups#edit');         # загрузка данныъ группы
     $auth->post('/groups/save')           ->to('groups#save');         # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
     $auth->post('/groups/toggle')         ->to('groups#toggle');       # включение/отключение группы
