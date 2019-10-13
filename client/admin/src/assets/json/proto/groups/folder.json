@@ -1,0 +1,58 @@
+[
+  {
+    "label":       "ID",
+    "name":        "id",
+    "placeholder": "",
+    "readonly":    1,
+    "required":    1,
+    "mask":        null,
+    "add":         false,
+    "selected":    [],
+    "type":        "InputNumber",
+    "value":       "",
+    "inline":      0,
+    "show":        1
+  },
+  {
+    "label":       "Системное имя",
+    "name":        "name",
+    "placeholder": "Только латинские буквы без пробелов",
+    "readonly":    0,
+    "required":    1,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputText",
+    "value":       "",
+    "inline":      0,
+    "show":        1
+  },
+  {
+    "label":       "Расшифровка",
+    "name":        "label",
+    "placeholder": "Расшифровка настройки",
+    "readonly":    0,
+    "required":    1,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputText",
+    "value":       "",
+    "inline":      0,
+    "show":        1
+  },
+  {
+    "label":       "Статус",
+    "name":        "status",
+    "placeholder": "",
+    "readonly":    0,
+    "required":    0,
+    "mask":        null,
+    "add":         true,
+    "selected":    [],
+    "type":        "InputBoolean",
+    "value":       1,
+    "inline":      1,
+    "show":        1
+  }
+]

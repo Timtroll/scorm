@@ -104,7 +104,7 @@ sub startup {
     $auth->post('/cms/item_hide')         ->to('cmsitems#hide');
     $auth->post('/cms/item_delete')       ->to('cmsitems#delete');
 
-    # управление почтновыми сообщениями, рассылками
+    # управление почтовыми сообщениями, рассылками
     $auth->post('/cms/mail')              ->to('cmsmail#index');
     $auth->post('/cms/mail_add')          ->to('cmsmail#add');
     $auth->post('/cms/mail_edit')         ->to('cmsmail#edit');
@@ -251,12 +251,26 @@ sub startup {
     $auth->post('/forum/addtext')       ->to('forum#addtext');
     $auth->post('/forum/deltext')       ->to('forum#deltext');
 
+    # управление группами пользователей
+    $auth->post('/groups/')               ->to('groups#index');        # список групп
+    $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
+    $auth->post('/groups/edit')           ->to('groups#edit');         # загрузка данныъ группы
+    $auth->post('/groups/save')           ->to('groups#save');         # обновление данных группы
+    $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
+    $auth->post('/groups/toggle')         ->to('groups#toggle');       # включение/отключение группы
+
+    # управление роутами
+    $auth->post('/routes/')               ->to('routes#index');        # список роутов
+    $auth->post('/routes/edit')           ->to('routes#edit');         # данные указанного роута
+    $auth->post('/routes/save')           ->to('routes#save');         # обновление данных по роуту
+
+
     $r->any('/*')->to('index#index');
 
     # сохраняем все роуты
     foreach (@{$auth->{children}} ) {
-        my $val = $_->{pattern}->{defaults}->{action};       
-        my $key = $_->{pattern}->{'unparsed'};        
+        my $val = $_->{pattern}->{defaults}->{action};
+        my $key = $_->{pattern}->{'unparsed'};
         $$routs{$key} = $val;
     }
 # print Dumper ($routs);

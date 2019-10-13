@@ -10,23 +10,20 @@
     </div>
     <div class="pos-sidebar-middle uk-light">
       <ul class="pos-sidebar--nav">
-        <router-link tag="li"
-                     exact-active-class="uk-active"
-                     active-class="uk-active"
-                     v-for="(item, index) in menu"
-                     :key="index"
-                     :to="item.path"
-                     append
-                     exact>
-          <a uk-tooltip
-             :pos="tooltipPosition"
-             :title="item.meta.breadcrumb">
+        <li v-for="(item, index) in menu"
+            :key="index"
+            :class="{'uk-active' : activeClass(item.name)}">
+          <router-link uk-tooltip
+                       exact
+                       :to="item.path"
+                       :pos="tooltipPosition"
+                       :title="item.meta.breadcrumb">
             <img :src="item.meta.icon"
                  uk-svg
                  width="24"
                  height="24">
-          </a>
-        </router-link>
+          </router-link>
+        </li>
       </ul>
     </div>
     <div class="pos-sidebar-bottom">
@@ -59,7 +56,7 @@
     data () {
 
       return {
-        width:    window.innerWidth,
+        width: window.innerWidth
       }
 
     },
@@ -88,6 +85,7 @@
 
     //
     methods: {
+      activeClass (name) {return this.$route.name === name || this.$route.meta.parentName === name },
 
       handleResize (event) {
         setTimeout(() => { this.width = window.innerWidth}, 300)

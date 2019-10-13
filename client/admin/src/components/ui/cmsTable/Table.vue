@@ -113,6 +113,7 @@
     <template #body>
 
       <div class="pos-table-container">
+
         <table v-if="tableNotEmpty"
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
@@ -173,6 +174,30 @@
           </tbody>
 
         </table>
+
+        <!--// empty Table-->
+        <div class="uk-position-cover uk-flex uk-flex-center uk-flex-middle uk-text-muted"
+             v-else>
+          <div class="uk-flex-center uk-flex uk-flex-column">
+
+            <img src="/img/icons/icon__empty.svg"
+                 class="uk-margin-auto"
+                 width="60"
+                 height="60"
+                 uk-svg>
+
+            <button type="button"
+                    class="uk-button uk-button-default uk-margin-top"
+                    @click.prevent="add_row">
+              <img src="/img/icons/icon__plus.svg"
+                   width="16"
+                   height="16"
+                   uk-svg>
+              <span class="uk-margin-small-left"
+                    v-text="$t('actions.add')"></span>
+            </button>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -181,6 +206,8 @@
 </template>
 
 <script>
+
+  import {clone} from '../../../store/methods'
 
   export default {
 
@@ -260,7 +287,7 @@
       },
 
       protoLeaf () {
-        return this.$store.getters['settings/protoLeaf']
+        return this.$store.getters.editPanel_proto
       },
 
       tableId () {
@@ -351,7 +378,8 @@
 
       add_row () {
 
-        const proto = JSON.parse(JSON.stringify(this.$store.getters['settings/protoLeaf']))
+        //const proto = clone(this.$store.getters.editPanel_proto)
+        const proto = JSON.parse(JSON.stringify(this.$store.getters.editPanel_proto))
 
         proto.forEach(item => {
           if (item.name === 'parent') {

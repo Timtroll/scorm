@@ -45,8 +45,9 @@
 <script>
 
   //import прототипа колонок таблицы
-  import protoLeaf from './../../assets/json/proto/settings/leaf.json'
-  import protoFolder from './../../assets/json/proto/settings/folder.json'
+  import protoLeaf from './../../assets/json/proto/groups/leaf.json'
+  import protoFolder from './../../assets/json/proto/groups/folder.json'
+  import groups from '@/store/modules/groups'
 
   export default {
 
@@ -69,14 +70,15 @@
         actions: {
 
           tree: {
-            get:    'groups/getTree',
-            add:    'groups/addFolder',
-            save:   'groups/saveFolder',
-            remove: 'groups/removeFolder'
+            get:                'groups/getTree',
+            add:                'groups/addFolder',
+            save:               'groups/saveFolder',
+            remove:             'groups/removeFolder',
+            childComponentName: 'GroupsItem'
           },
 
           table: {
-            get:       'groups/getTable',
+            get:       'groups/routes',
             save:      'groups/leafSave',
             saveField: 'groups/leafSaveField',
             remove:    'groups/removeLeaf'
@@ -93,21 +95,23 @@
       }
     },
 
-    created () {
+    async created () {
+
+      await this.$store.registerModule('groups', groups)
 
       //// Получение дерева с сервера
-      this.$store.dispatch(this.actions.tree.get)
+      await this.$store.dispatch(this.actions.tree.get)
 
       // установка в store Id активного документа
       if (this.tableId) {
-        this.$store.commit('table_current', Number(this.tableId))
+        await this.$store.commit('table_current', Number(this.tableId))
       }
 
       //// Размер панели редактирования
-      this.$store.commit('editPanel_size', false)
-      this.$store.commit('table_api', this.actions.table)
-      this.$store.commit('tree_api', this.actions.tree)
-      this.$store.commit('editPanel_api', this.actions.editPanel)
+      await this.$store.commit('editPanel_size', false)
+      await this.$store.commit('table_api', this.actions.table)
+      await this.$store.commit('tree_api', this.actions.tree)
+      await this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
     mounted () {
@@ -115,16 +119,16 @@
       //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
-      this.$store.commit('groups/proto_leaf', protoLeaf)
-      this.$store.commit('groups/proto_folder', protoFolder)
+      this.$store.commit('set_editPanel_proto', protoLeaf)
+      this.$store.commit('set_tree_proto', protoFolder)
 
     },
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
       this.$store.commit('tree_active', null)
-      this.$store.commit('groups/proto_leaf', [])
-      this.$store.commit('groups/proto_folder', [])
+      this.$store.commit('set_editPanel_proto', [])
+      this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')

@@ -28,15 +28,15 @@
            v-text="title"></div>
 
       <!--headerRight-->
-      <div class="pos-card-header-item">
-        <a class="pos-card-header-item uk-text-danger link"
-           @click.prevent="close">
-          <img src="/img/icons/icon__close.svg"
-               uk-svg
-               width="16"
-               height="16">
-        </a>
-      </div>
+
+      <a class="pos-card-header-item uk-text-danger link"
+         @click.prevent="close">
+        <img src="/img/icons/icon__close.svg"
+             uk-svg
+             width="16"
+             height="16">
+      </a>
+
     </div>
 
     <!--Edit FORM-->
@@ -165,6 +165,7 @@
 
       labels: {}
     },
+
     created () {
       if (this.add) {
         this.dataAdd     = this.data.filter(item => item.add === true)

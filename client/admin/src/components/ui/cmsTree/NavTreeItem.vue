@@ -80,6 +80,7 @@
 
 <script>
   import UIkit from 'uikit/dist/js/uikit.min'
+  import {clone} from '../../../store/methods'
 
   export default {
 
@@ -137,7 +138,7 @@
       },
 
       protoFolder () {
-        return this.$store.getters['settings/protoFolder']
+        return this.$store.getters.tree_proto
       },
 
       cardLeftClickAction () {
@@ -169,7 +170,7 @@
             this.$store.dispatch(this.table_api.get, item.id)
 
             this.$router.push({
-              name:   'SettingItem',
+              name:   this.tree_api.childComponentName,
               params: {
                 id:    item.id,
                 title: item.label
@@ -211,7 +212,8 @@
           this.$store.commit('card_right_show', !this.cardRightState)
         } else {
 
-          const proto = await JSON.parse(JSON.stringify(this.protoFolder))
+          const proto = await clone(this.protoFolder)
+          //const proto = await JSON.parse(JSON.stringify(this.protoFolder))
 
           for (let item of proto) {
             console.log('item', item)
