@@ -164,7 +164,7 @@ const actions = {
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
-          notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+          notify(resp.message, 'danger') // уведомление об ошибке
         }
 
       }
