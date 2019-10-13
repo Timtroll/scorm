@@ -11,7 +11,8 @@ const state = {
     folder: false,
     large:  false,
     item:   null,
-    api:    null
+    api:    null,
+    proto:  []
   },
 
   inputComponents: [

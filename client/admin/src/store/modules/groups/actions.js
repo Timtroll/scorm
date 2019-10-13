@@ -2,7 +2,7 @@ import Api_EditPanel from '../../../api/groups/EditPanel'
 import Api_Tree from '../../../api/groups/Tree'
 import store from '../../store'
 import router from '../../../router'
-import {flatTree, notify} from '../../methods'
+import {clone, flatTree, notify} from '../../methods'
 import Api from '../../../api/groups/Table'
 import Settings from '../../../components/groups/Groups'
 
@@ -80,7 +80,7 @@ const actions = {
           await dispatch('getTree', resp.id)
           await store.commit('tree_active', resp.id)
           await router.push({
-            name:   'SettingItem',
+            name:   'GroupsItem',
             params: {
               id: resp.id
             }
@@ -282,7 +282,7 @@ const actions = {
       if (response.status === 200) {
 
         const resp  = await response.data
-        const proto = JSON.parse(JSON.stringify(store.getters['settings/protoLeaf']))
+        const proto = clone(store.getters.editPanel_proto)
 
         for (let item of proto) {
           item.value = resp.data[item.name]

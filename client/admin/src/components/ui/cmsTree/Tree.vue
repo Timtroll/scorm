@@ -68,7 +68,7 @@
 
 <script>
 
-  import {flatTree} from '../../../store/methods'
+  import {clone, flatTree} from '../../../store/methods'
 
   export default {
 
@@ -94,8 +94,14 @@
 
     computed: {
 
+      tree_api () {
+        return this.$store.getters.tree_api
+      },
+
       protoFolder () {
-        return this.$store.getters['settings/protoFolder']
+        if (this.tree_api) {
+          return this.$store.getters.tree_proto
+        }
       },
 
       // преобразование дерева навигации в один уровень
@@ -134,7 +140,7 @@
 
       async addFolder (parent) {
 
-        const proto = await JSON.parse(JSON.stringify(this.protoFolder))
+        const proto = await clone(this.protoFolder)
 
         proto.forEach(item => {
           if (item.name === 'parent') {

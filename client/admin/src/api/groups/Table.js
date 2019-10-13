@@ -5,7 +5,7 @@ export default {
   // получить дерево
   get_leafs (id) {
     return Api()({
-      url:    'settings/get_leafs',
+      url:    'routes/get_leafs',
       method: 'post',
       params: {
         id: id
@@ -13,18 +13,19 @@ export default {
     })
   },
 
-  // получить прототип нового элемента
-  get_proto_leaf () {
+  // Обновление / добавление
+  leafs_edit (params) {
     return Api()({
-      url:    'settings/proto_leaf',
-      method: 'post'
+      url:    'routes/edit',
+      method: 'post',
+      params: params
     })
   },
 
   // Обновление / добавление
   leafs_save (params) {
     return Api()({
-      url:    'settings/save',
+      url:    'routes/save',
       method: 'post',
       params: params
     })
@@ -33,7 +34,7 @@ export default {
   // удаление
   leafs_delete (id) {
     return Api()({
-      url:    'settings/delete',
+      url:    'routes/delete',
       method: 'post',
       params: id
     })

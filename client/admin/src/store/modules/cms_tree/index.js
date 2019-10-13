@@ -10,7 +10,8 @@ const state = {
     activeId:  null,
     items:     [],
     itemsFlat: [],
-    api:       null
+    api:       null,
+    proto:     []
   }
 
 }

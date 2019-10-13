@@ -2,7 +2,7 @@ import Api_EditPanel from '../../../api/settings/EditPanel'
 import Api_Tree from '../../../api/settings/Tree'
 import store from '../../store'
 import router from '../../../router'
-import {flatTree, notify} from '../../methods'
+import {clone, flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
 import Settings from '../../../components/settings/Settings'
 
@@ -282,7 +282,7 @@ const actions = {
       if (response.status === 200) {
 
         const resp  = await response.data
-        const proto = JSON.parse(JSON.stringify(store.getters['settings/protoLeaf']))
+        const proto = clone(store.getters.editPanel_proto)
 
         for (let item of proto) {
           item.value = resp.data[item.name]

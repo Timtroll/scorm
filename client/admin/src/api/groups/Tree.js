@@ -5,7 +5,7 @@ export default {
   // получить дерево
   get_tree () {
     return Api()({
-      url:    'groups/index',
+      url:    'groups/',
       method: 'post'
     })
   },
@@ -13,7 +13,7 @@ export default {
   // Обновление / добавление
   save_folder (params) {
     return Api()({
-      url:    'settings/save_folder',
+      url:    'groups/save',
       method: 'post',
       params: params
     })
@@ -22,7 +22,7 @@ export default {
   // Обновление / добавление
   add_folder (params) {
     return Api()({
-      url:    'settings/add_folder',
+      url:    'groups/add',
       method: 'post',
       params: params
     })
@@ -31,7 +31,7 @@ export default {
   // удаление
   delete_folder (id) {
     return Api()({
-      url:    'settings/delete_folder',
+      url:    'groups/delete',
       method: 'post',
       params: id
     })

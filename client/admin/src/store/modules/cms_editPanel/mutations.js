@@ -12,6 +12,8 @@ const mutations = {
     state.editPanel.large = data
   },
 
+  set_editPanel_proto (state, data) {state.editPanel.proto = data},
+
   editPanel_add (state, data) {
     state.editPanel.add = data
   },

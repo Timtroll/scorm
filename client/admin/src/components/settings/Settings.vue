@@ -69,10 +69,11 @@
         actions: {
 
           tree: {
-            get:    'settings/getTree',
-            add:    'settings/addFolder',
-            save:   'settings/saveFolder',
-            remove: 'settings/removeFolder'
+            get:                'settings/getTree',
+            add:                'settings/addFolder',
+            save:               'settings/saveFolder',
+            remove:             'settings/removeFolder',
+            childComponentName: 'SettingItem'
           },
 
           table: {
@@ -86,7 +87,6 @@
           editPanel: {
             get:  'settings/leafEdit',
             save: 'settings/leafSave'
-
           }
         }
 
@@ -115,16 +115,16 @@
       //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
-      this.$store.commit('settings/proto_leaf', protoLeaf)
-      this.$store.commit('settings/proto_folder', protoFolder)
+      this.$store.commit('set_editPanel_proto', protoLeaf)
+      this.$store.commit('set_tree_proto', protoFolder)
 
     },
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
       this.$store.commit('tree_active', null)
-      this.$store.commit('settings/proto_leaf', [])
-      this.$store.commit('settings/proto_folder', [])
+      this.$store.commit('set_editPanel_proto', [])
+      this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
       //this.$store.unregisterModule('settings')
