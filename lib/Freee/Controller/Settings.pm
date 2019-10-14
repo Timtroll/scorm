@@ -414,7 +414,8 @@ sub toggle {
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
-        $toggle = $self->_toggle_setting( $data ) unless @mess;
+        $$data{'table'} = 'settings';
+        $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
     }
 

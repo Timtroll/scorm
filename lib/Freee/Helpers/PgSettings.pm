@@ -286,28 +286,6 @@ sub register {
         return 1;
     });
 
-    # включение/отключение поля в строке настройки
-    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
-    # <id>    - id записи 
-    # <field> - имя поля в таблице
-    # <val>   - 1/0
-    # возвращается true/false
-    $app->helper( '_toggle_setting' => sub {
-        my ($self, $data) = @_;
-
-        return unless $data;
-        return unless ($$data{'id'} || $$data{'value'} || $$data{'fieldname'});
-
-        my $sql ='UPDATE "public"."settings" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
-        eval {
-            $self->pg_dbh->do($sql);
-        };
-        warn $@ if $@;
-        return if $@;
-
-        return 1;
-    });
-
     # читаем одну настройку
     # my $row = $self->_get_setting( <id> );
     # возвращается строка в виде объекта
