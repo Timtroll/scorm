@@ -19,8 +19,8 @@
     </td>
     <!--data-->
     <td v-for="(item, index) in updateData"
-        class="pos-table-row cursor-pointer"
-        :class="{'ellipsis' : ellipsis}"
+        class="pos-table-row"
+        :class="{'ellipsis' : ellipsis, 'cursor-pointer' : editable === 1}"
         @click="edit(updateData[index].inline, item.key)">
 
       <label class="uk-text-center uk-display-block cursor-pointer"
@@ -190,7 +190,8 @@
 
             this.$store.commit('editPanel_folder', false)
             this.$store.dispatch(this.table_api.saveField, sendData)
-          } else { // если правая панель закрыта открываем для редактирования
+          } else if (this.editable === 1) { // если правая панель закрыта открываем для редактирования
+
             this.$store.commit('editPanel_add', false)
             this.$store.dispatch(this.editPanel_api.get, this.fullData.id)
           }
