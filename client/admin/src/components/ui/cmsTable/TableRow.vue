@@ -35,11 +35,13 @@
     </td>
 
     <!--check current-->
-    <td class="pos-table-checkbox uk-text-right uk-text-nowrap">
+    <td class="pos-table-checkbox uk-text-right uk-text-nowrap"
+        v-if="editable || removable || massEdit">
 
       <!--edit Row-->
       <a class="uk-icon-link uk-margin-small-right uk-display-inline-block"
-         @click.prevent="edit(rowData)">
+         @click.prevent="edit(rowData)"
+         v-if="editable">
         <img src="/img/icons/icon__edit.svg"
              width="16"
              height="16"
@@ -47,6 +49,7 @@
 
       <!--remove Row-->
       <a class="uk-icon-link uk-link-muted uk-display-inline-block"
+         v-if="removable"
          @click.prevent="remove(fullData)">
         <img height="16"
              src="/img/icons/icon__trash.svg"
@@ -79,6 +82,16 @@
 
       fullData: {
         required: true
+      },
+
+      removable: {
+        type:    Number,
+        default: false
+      },
+
+      editable: {
+        type:    Number,
+        default: false
       },
 
       massEdit: {
@@ -114,9 +127,9 @@
 
     computed: {
 
-      removable () { // Поле можно удалять
-        return this.fullData.removable !== 1
-      },
+      //removable () { // Поле можно удалять
+      //  return this.fullData.removable !== 1
+      //},
 
       editPanel_api () { // список запросов для правой панели
         return this.$store.getters.editPanel_api

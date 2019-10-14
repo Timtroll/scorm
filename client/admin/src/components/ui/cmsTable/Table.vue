@@ -135,20 +135,26 @@
                 v-text="item.label"
                 :class="{'inline': item.inline === 1}"></th>
 
-            <th class="uk-text-right pos-table-checkbox uk-text-nowrap">
+            <th class="uk-text-right pos-table-checkbox uk-text-nowrap"
+                v-if="editable || removable || massEdit">
+
               <!--edit Row-->
-              <div class="uk-margin-small-right uk-display-inline-block">
+              <div class="uk-margin-small-right uk-display-inline-block"
+                   v-if="editable">
                 <img src="/img/icons/icon__edit.svg"
                      width="16"
                      height="16"
                      uk-svg></div>
 
               <!--remove Row-->
-              <div class="uk-display-inline-block">
+              <div class="uk-display-inline-block"
+                   v-if="removable">
                 <img height="16"
                      src="/img/icons/icon__trash.svg"
                      uk-svg
-                     width="16"></div>
+                     width="16">
+              </div>
+
               <div v-if="massEdit"
                    class="uk-margin-small-left">
 
@@ -165,6 +171,8 @@
           <TableRow
               :row-data="row"
               :mass-edit="massEdit"
+              :editable="table.settings.editable"
+              :removable="table.settings.removable"
               :full-data="filterSearch[index]"
               :checked-all="checked"
               v-for="(row, index) in tableRows"
@@ -221,6 +229,9 @@
     data () {
       return {
 
+        tableId: null,
+        //table_api: null,
+
         searchInput: null,
         checked:     false,
 
@@ -258,12 +269,17 @@
 
     },
 
-    mounted () {
+    async mounted () {
+
+      this.tableId = this.$route.params.id
+      //this.table_api = await this.$store.getters.table_api
+
+      console.log(this.table_api)
 
       if (this.notEmptyTable === 'error') {
-        this.$store.commit('card_right_show', false)
-        this.$store.commit('tree_active', this.tableId)
-        this.$store.dispatch(this.table_api.get, this.tableId)
+        await this.$store.commit('card_right_show', false)
+        await this.$store.commit('tree_active', this.tableId)
+        //this.$store.dispatch(this.table_api.get, this.tableId)
       }
 
     },
@@ -291,6 +307,10 @@
       },
 
       table_api () {
+
+        const api = this.$store.getters.table_api
+        console.log('api', api)
+
         return this.$store.getters.table_api
       },
 
@@ -300,10 +320,6 @@
 
       protoLeaf () {
         return this.$store.getters.editPanel_proto
-      },
-
-      tableId () {
-        return this.$route.params.id
       },
 
       notEmptyTable () {
@@ -318,6 +334,24 @@
 
         if (this.table && this.table.settings && this.table.settings.massEdit) {
           return this.table.settings.massEdit
+        } else {
+          return 0
+        }
+      },
+
+      removable () {
+
+        if (this.table && this.table.settings && this.table.settings.removable) {
+          return this.table.settings.removable
+        } else {
+          return 0
+        }
+      },
+
+      editable () {
+
+        if (this.table && this.table.settings && this.table.settings.editable) {
+          return this.table.settings.editable
         } else {
           return 0
         }
@@ -358,6 +392,7 @@
             displayTable.push(newItem)
           })
 
+          this.$store.commit('table_status_success')
           return displayTable
         }
       },
@@ -369,7 +404,16 @@
 
           const tableBody = clone(this.table.body)
 
-          return tableBody.filter(item => {
+          let table = tableBody
+
+          if (this.table.settings.sort) {
+            const sortBy    = this.table.settings.sort.name,
+                  sortOrder = this.table.settings.sort.order
+
+            table = tableBody.sort(this.compareValues(sortBy, sortOrder))
+          }
+
+          return table.filter(item => {
             return !this.searchInput
               || item.name.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
               || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
@@ -389,24 +433,24 @@
 
       },
 
-      add_row () {
+      async add_row () {
 
-        const proto = clone(this.$store.getters.editPanel_proto)
+        const proto = await clone(this.$store.getters.editPanel_proto)
 
-        proto.forEach(item => {
+        await proto.forEach(item => {
           if (item.name === 'parent') {
             item.value = this.tableId
           }
         })
 
-        this.$store.commit('editPanel_status_request')
-        this.$store.commit('editPanel_add', true)
-        this.$store.commit('editPanel_folder', false)
-        this.$store.commit('card_right_show', true)
-        this.$store.commit('editPanel_data', [])
+        await this.$store.commit('editPanel_status_request')
+        await this.$store.commit('editPanel_add', true)
+        await this.$store.commit('editPanel_folder', false)
+        await this.$store.commit('card_right_show', true)
+        await this.$store.commit('editPanel_data', [])
 
-        this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        this.$store.commit('editPanel_status_success') // статус - успех
+        await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        await this.$store.commit('editPanel_status_success') // статус - успех
 
       },
 
@@ -423,6 +467,36 @@
       // Очистка поля поиска
       clearSearchVal () {
         this.searchInput = null
+      },
+
+      // sort
+      //sortBy (array, sortBy = 'name', sortOrder = 'asc') {
+      //  array.sort(this.compareValues(sortBy, sortOrder))
+      //},
+
+      // sort Function
+      compareValues (key, order = 'asc') {
+        return function (a, b) {
+          if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+            // свойства нет ни в одном из объектов
+            return 0
+          }
+
+          const varA = (typeof a[key] === 'string') ?
+            a[key].toUpperCase() : a[key]
+          const varB = (typeof b[key] === 'string') ?
+            b[key].toUpperCase() : b[key]
+
+          let comparison = 0
+          if (varA > varB) {
+            comparison = 1
+          } else if (varA < varB) {
+            comparison = -1
+          }
+          return (
+            (order === 'desc') ? (comparison * -1) : comparison
+          )
+        }
       }
 
     }
