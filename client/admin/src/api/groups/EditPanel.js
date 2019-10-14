@@ -24,7 +24,7 @@ export default {
 
   list_toggle (params) {
     return Api()({
-      url:    'settings/toggle',
+      url:    'route/toggle',
       method: 'post',
       params: params
     })

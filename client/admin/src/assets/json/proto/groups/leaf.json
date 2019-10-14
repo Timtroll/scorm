@@ -69,7 +69,7 @@
     "show":        1
   },
   {
-    "label":       "Добавление",
+    "label":       "Добавл.",
     "name":        "add",
     "placeholder": "",
     "readonly":    0,
@@ -83,7 +83,7 @@
     "show":        1
   },
   {
-    "label":       "Редактирование",
+    "label":       "Редакт.",
     "name":        "edit",
     "placeholder": "",
     "readonly":    0,
