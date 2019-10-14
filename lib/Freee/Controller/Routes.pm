@@ -41,7 +41,7 @@ sub index {
                 $table = {
                     "settings" => {
                         "massEdit"  => 0,        # групповое редактировани
-                        "editable"  => 1,        # разрешение редактирования
+                        "editable"  => 0,        # разрешение редактирования
                         "removable" => 0,        # разрешение удаления
                         "sort" => {         # сотрировка по
                             "name"    => "id",
@@ -61,34 +61,6 @@ sub index {
             }
         }
     }
-
-
-
-
-
-
-    # # читаем роуты из базы
-    # unless ( $list = $self->_routes_list() ) {
-    #     push @mess, "Can not get list of routes";
-    # }
-
-    # $set = [];
-    # unless (@mess) {
-    #     # формируем данные для вывода
-    #     foreach (sort {$a <=> $b} keys %$list) {
-    #         my $row = {
-    #             'id'        => $_,
-    #             'label'     => $$list{$_}{'label'},
-    #             'component' => "Groups",
-    #             'opened'    => 0,
-    #             'folder'    => 1,
-    #             'keywords'  => "",
-    #             'children'  => [],
-    #             'table'     => {}
-    #         };
-    #         push @{$set}, $row;
-    #     }
-    # }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
