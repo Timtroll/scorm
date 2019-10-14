@@ -139,7 +139,7 @@ sub register {
             # валидация роутов
             '/settings/add_folder'  => {
                 "parent"        => [ '', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
             },
             '/settings/get_folder'  => {
@@ -148,7 +148,7 @@ sub register {
             '/settings/save_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "parent"        => [ '', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ '', qr/.*/os, 256 ],
             },
             '/settings/get_leafs'  => {
@@ -160,7 +160,7 @@ sub register {
 
             '/settings/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
                 "type"          => [ '', qr/\w+/os, 256 ],
@@ -174,7 +174,7 @@ sub register {
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "parent"        => [ 'required', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
                 "type"          => [ '', qr/\w+/os, 256 ],
@@ -200,13 +200,13 @@ sub register {
 
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/groups/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/groups/delete'  => {

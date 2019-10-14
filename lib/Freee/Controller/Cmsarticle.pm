@@ -13,7 +13,9 @@ sub index {
     my $list = { 'body' => [] };
     my $table = {
         "settings" => {
-            "massEdit" => 1,    # групповое редактировани
+            "massEdit"  => 1,        # групповое редактировани
+            "editable"  => 1,        # разрешение редактирования
+            "removable" => 1,        # разрешение удаления
             "sort" => {              # сотрировка по
                 "name"    => "id",
                 "order"   => "asc"
