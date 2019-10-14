@@ -106,12 +106,12 @@ sub register {
 
 
     # включение/отключение поля status в строке группы
-    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
+    # my $true = $self->_toggle_route( <id>, <field>, <val> );
     # <id>    - id записи 
     # <field> - имя поля в таблице
     # <val>   - 1/0
     # возвращается true/false
-    $app->helper( '_toggle_group' => sub {
+    $app->helper( '_toggle_route' => sub {
         my ($self, $data) = @_;
 
         return unless $data;

@@ -44,7 +44,7 @@ sub index {
                         "editable"  => 0,        # разрешение редактирования
                         "removable" => 0,        # разрешение удаления
                         "sort" => {         # сотрировка по
-                            "name"    => "id",
+                            "name"    => "name",
                             "order"   => "asc"
                         },
                         "page" => {
