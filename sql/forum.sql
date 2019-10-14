@@ -1,3 +1,20 @@
+DROP TABLE IF EXISTS "public"."forum_groups";
+DROP SEQUENCE IF EXISTS "public".forum_groups_id_seq; 
+
+CREATE SEQUENCE "public".forum_groups_id_seq;
+
+CREATE TABLE "public"."forum_groups" (
+"id" int4 DEFAULT nextval('forum_groups_id_seq'::regclass) NOT NULL,
+"name" varchar(255) COLLATE "default" NOT NULL,
+"title" varchar(255) COLLATE "default" NOT NULL,
+"date_created" int4 NOT NULL,
+"status" int2 DEFAULT 1 NOT NULL,
+CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "public"."forum_groups" OWNER TO "troll";
+---------------------
+
 DROP TABLE IF EXISTS "public"."forum_messages";
 DROP SEQUENCE IF EXISTS "public".forum_messages_id_seq; 
 
@@ -61,24 +78,7 @@ $BODY$
 LANGUAGE 'plpgsql' VOLATILE COST 100;
 
 ---триггер
-CREATE TRIGGER "themes_ad" AFTER DELETE ON "public"."themes"
+CREATE TRIGGER "themes_ad" AFTER DELETE ON "public"."forum_themes"
 FOR EACH ROW
 EXECUTE PROCEDURE "themes_trigger_ad"();
 ---------------------
-
-DROP TABLE IF EXISTS "public"."forum_groups";
-DROP SEQUENCE IF EXISTS "public".forum_groups_id_seq; 
-
-CREATE SEQUENCE "public".forum_groups_id_seq;
-
-CREATE TABLE "public"."forum_groups" (
-"id" int4 DEFAULT nextval('forum_groups_id_seq'::regclass) NOT NULL,
-"name" int4 NOT NULL,
-"title" varchar(255) COLLATE "default" NOT NULL,
-"url" varchar(255) COLLATE "default" NOT NULL,
-"date_created" int4 NOT NULL,
-"status" int2 DEFAULT 1 NOT NULL,
-CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
-)
-WITH (OIDS=FALSE);
-ALTER TABLE "public"."forum_groups" OWNER TO "troll";

@@ -243,6 +243,36 @@ sub register {
             '/forum/theme'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
+            '/forum/add_theme'  => {
+                "user_id"       => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "url"           => [ '', qr/^.*$/os, 256 ],
+                "rate"          => [ '', qr/^\d+$/os ],
+                "date_created"  => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/edit_theme'  => {
+                "id"            => [ '', qr/^\d+$/os ]
+            },
+            '/forum/del_theme'  => {
+                "id"            => [ '', qr/^\d+$/os ]
+            },
+            '/forum/group'  => {
+                "id"            => [ '', qr/^\d+$/os ]
+            },
+            '/forum/add_group'  => {
+                "name"          => [ '', qr/^.*$/os, 256 ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "date_created"  => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/edit_group'  => {
+                "id"            => [ '', qr/^\d+$/os ]
+            },
+            '/forum/del_group'  => {
+                "id"            => [ '', qr/^\d+$/os ]
+            },
             '/forum/add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
                 "user_id"       => [ '', qr/^\d+$/os ],

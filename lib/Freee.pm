@@ -249,6 +249,11 @@ sub startup {
     $auth->post('/forum/add_theme')     ->to('forum#add_theme');
     $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
     $auth->post('/forum/del_theme')     ->to('forum#del_theme');
+    $auth->post('/forum/listgroups')    ->to('forum#listgroups');
+    $auth->post('/forum/group')         ->to('forum#group');
+    $auth->post('/forum/add_group')     ->to('forum#add_group');
+    $auth->post('/forum/edit_group')    ->to('forum#edit_group');
+    $auth->post('/forum/del_group')     ->to('forum#del_group');
     $auth->post('/forum/add')           ->to('forum#add');
     $auth->post('/forum/edit')          ->to('forum#edit');
     $auth->post('/forum/delete')        ->to('forum#delete');

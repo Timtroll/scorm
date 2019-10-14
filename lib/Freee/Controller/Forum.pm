@@ -86,6 +86,76 @@ sub del_theme {
     );
 }
 
+sub listgroups {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'forum',
+            'route'         => 'listgroups',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub group {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'forum',
+            'route'         => 'group',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub add_group {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'forum',
+            'route'         => 'add_group',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub edit_group {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'forum',
+            'route'         => 'edit_group',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
+sub del_group {
+    my ($self);
+    $self = shift;
+
+    $self->render(
+        'json'    => {
+            'controller'    => 'forum',
+            'route'         => 'del_group',
+            'status'        => 'ok',
+            'params'        => $self->req->params->to_hash
+        }
+    );
+}
+
 sub add {
     my ($self);
     $self = shift;
