@@ -45,8 +45,10 @@
 <script>
 
   //import прототипа колонок таблицы
-  import protoLeaf from './../../assets/json/proto/groups/leaf.json'
-  import protoFolder from './../../assets/json/proto/groups/folder.json'
+  import groupProtoLeaf from '@/assets/json/proto/groups/leaf.json'
+  import groupProtoFolder from '@/assets/json/proto/groups/folder.json'
+
+  // import VUEX module groups
   import groups from '@/store/modules/groups'
 
   export default {
@@ -78,7 +80,7 @@
           },
 
           table: {
-            get:       'groups/routes',
+            get:       'groups/getTable',
             save:      'groups/leafSave',
             saveField: 'groups/leafSaveField',
             remove:    'groups/removeLeaf'
@@ -115,13 +117,10 @@
     },
 
     mounted () {
-      // Регистрация Vuex модуля settings
-      //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', protoLeaf)
-      this.$store.commit('set_tree_proto', protoFolder)
-
+      this.$store.commit('set_editPanel_proto', groupProtoLeaf)
+      this.$store.commit('set_tree_proto', groupProtoFolder)
     },
 
     beforeDestroy () {

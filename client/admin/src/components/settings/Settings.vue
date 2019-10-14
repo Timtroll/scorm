@@ -45,8 +45,8 @@
 <script>
 
   //import прототипа колонок таблицы
-  import protoLeaf from './../../assets/json/proto/settings/leaf.json'
-  import protoFolder from './../../assets/json/proto/settings/folder.json'
+  import settingsProtoLeaf from './../../assets/json/proto/settings/leaf.json'
+  import settingsProtoFolder from './../../assets/json/proto/settings/folder.json'
 
   export default {
 
@@ -115,8 +115,8 @@
       //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', protoLeaf)
-      this.$store.commit('set_tree_proto', protoFolder)
+      this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
+      this.$store.commit('set_tree_proto', settingsProtoFolder)
 
     },
 
