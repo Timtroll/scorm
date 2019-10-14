@@ -48,6 +48,9 @@
   import settingsProtoLeaf from './../../assets/json/proto/settings/leaf.json'
   import settingsProtoFolder from './../../assets/json/proto/settings/folder.json'
 
+  // import VUEX module groups
+  import settings from '@/store/modules/settings'
+
   export default {
 
     name: 'Settings',
@@ -93,26 +96,29 @@
       }
     },
 
-    created () {
+    async created () {
+
+      // Регистрация Vuex модуля settings
+      await this.$store.registerModule('settings', settings)
 
       //// Получение дерева с сервера
-      this.$store.dispatch(this.actions.tree.get)
+      await this.$store.dispatch(this.actions.tree.get)
 
       // установка в store Id активного документа
       if (this.tableId) {
-        this.$store.commit('table_current', Number(this.tableId))
+        await this.$store.commit('table_current', Number(this.tableId))
       }
 
       //// Размер панели редактирования
-      this.$store.commit('editPanel_size', false)
-      this.$store.commit('table_api', this.actions.table)
-      this.$store.commit('tree_api', this.actions.tree)
-      this.$store.commit('editPanel_api', this.actions.editPanel)
+      await this.$store.commit('editPanel_size', false)
+
+      // // запросы
+      await this.$store.commit('table_api', this.actions.table)
+      await this.$store.commit('tree_api', this.actions.tree)
+      await this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
     mounted () {
-      // Регистрация Vuex модуля settings
-      //this.$store.registerModule('settings', settingsVuex)
 
       //// запись прототипа из json в store
       this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
@@ -127,7 +133,7 @@
       this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
-      //this.$store.unregisterModule('settings')
+      this.$store.unregisterModule('settings')
     },
 
     computed: {

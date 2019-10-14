@@ -88,8 +88,8 @@
           },
 
           editPanel: {
-            get:  'groups/leafEdit',
-            save: 'groups/leafSave'
+            get:  '',
+            save: ''
 
           }
         }
@@ -111,6 +111,8 @@
 
       //// Размер панели редактирования
       await this.$store.commit('editPanel_size', false)
+
+      // запросы
       await this.$store.commit('table_api', this.actions.table)
       await this.$store.commit('tree_api', this.actions.tree)
       await this.$store.commit('editPanel_api', this.actions.editPanel)
@@ -130,7 +132,7 @@
       this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
-      //this.$store.unregisterModule('settings')
+      this.$store.unregisterModule('groups')
     },
 
     computed: {

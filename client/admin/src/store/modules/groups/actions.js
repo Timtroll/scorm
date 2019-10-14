@@ -203,8 +203,8 @@ const actions = {
 
         if (typeof resp['list'] !== 'undefined') {
           const table = resp.list
-          store.commit('set_table', table)
-          store.commit('table_status_success')
+          await store.commit('set_table', table)
+          //await store.commit('table_status_success')
         }
       }
 
