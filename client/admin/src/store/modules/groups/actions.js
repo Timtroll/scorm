@@ -161,7 +161,7 @@ const actions = {
 
           // если удаляем текушую страницу, то переходим в начало раздела
           if (router.currentRoute.params.id === id) {
-            await router.push({name: 'Settings'})
+            await router.push({name: 'Groups'})
           }
           await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об успехе

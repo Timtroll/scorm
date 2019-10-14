@@ -100,7 +100,7 @@
 
       // open tree if children is active
       if (this.navItem && this.navItem.children) {
-        const children = [...this.navItem.children]
+        const children = clone(this.navItem.children)
 
         if (children && children.length > 0) {
           this.opened = !!children.find(i => i.id === Number(this.$store.getters.activeId))
