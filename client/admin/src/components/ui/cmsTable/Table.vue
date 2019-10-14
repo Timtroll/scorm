@@ -229,7 +229,7 @@
     data () {
       return {
 
-        tableId: null,
+        //tableId: null,
 
         searchInput: null,
         checked:     false,
@@ -264,23 +264,28 @@
             this.header = clone(this.protoLeaf)
           }
         }
-      },
-
-      async table_api () {
-
-        if (this.table_api) {
-
-          this.tableId = this.$route.params.id
-
-          if (this.notEmptyTable === 'error') {
-            this.$store.commit('card_right_show', false)
-            this.$store.commit('tree_active', this.tableId)
-            await this.$store.dispatch(this.table_api.get, this.tableId)
-          }
-        }
       }
 
     },
+
+    async created () {
+
+      if (this.$store.getters) {
+        console.log('created', await this.$store.getters.tree_api, await this.tableId)
+      }
+      if (this.notEmptyTable === 'error') {
+        this.$store.commit('card_right_show', false)
+        this.$store.commit('tree_active', this.tableId)
+        await this.$store.dispatch(this.table_api.get, this.tableId)
+      }
+      this.$nextTick(() => {})
+
+    },
+
+    mounted () {
+      console.log('mounted', this.$store.getters.tree_api, this.tableId)
+    },
+    updated () {console.log('updated', this.$store.getters.tree_api, this.tableId)},
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
@@ -298,21 +303,32 @@
         return this.$route.name
       },
 
+      table_api () {
+
+        //const api = this.$store.getters.table_api
+        //
+        //if (this.table_api) {
+        //  this.$store.commit('tree_active', this.tableId)
+        //  this.$store.dispatch(this.table_api.get, api)
+        //}
+
+        return this.$store.getters.table_api
+
+      },
+
       tableNotEmpty () {
         if (this.tableRows) {
           return this.tableRows.length > 0
         }
       },
 
-      table_api () {return this.$store.getters.table_api},
+      tableId () {return this.$route.params.id},
 
       loader () {return this.$store.getters.table_status},
 
       protoLeaf () {return this.$store.getters.editPanel_proto},
 
-      notEmptyTable () {
-        return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'
-      },
+      notEmptyTable () {return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'},
 
       table () {return this.$store.getters.table_items},
 

@@ -56,7 +56,7 @@
       <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
         <div>
-          <IconBug :size="100"
+          <IconBug :size="60"
                    :spin="true"></IconBug>
           <p v-html="$t('actions.searchError')"></p>
         </div>

@@ -111,6 +111,7 @@
                v-text="$t('actions.loading')"></div>
         </div>
       </div>
+
       <!--error-->
       <div class="pos-card-loader"
            v-else-if="loader === 'error'">
