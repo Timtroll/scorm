@@ -126,7 +126,8 @@ sub toggle {
         $data = $self->_check_fields();
         push @mess, "Not correct Group '$$data{'id'}'" unless $data;
 
-        $toggle = $self->_toggle_route( $data ) unless @mess;
+        $$data{'table'} = 'routes';
+        $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
     }
 

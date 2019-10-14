@@ -50,6 +50,28 @@ sub register {
         return $row;
     });
 
+    # включение/отключение (1/0) определенного поля в указанной таблице по id
+    # my $true = $self->_toggle_route( <table>, <id>, <field>, <val> );
+    # <id>    - id записи 
+    # <field> - имя поля в таблице
+    # <val>   - 1/0
+    # возвращается true/false
+    $app->helper( '_toggle' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+        return unless ($$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'});
+
+        my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
+        eval {
+            $self->pg_dbh->do($sql);
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return 1;
+    });
+
     # построение дерева по плоской таблице с парентами
     # $self->_list_to_tree(<list>, <id_field>, <parent>, <start_id>, <children_key>);
     # <list>        - ссылка на массив, из которого строим дерево
