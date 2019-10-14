@@ -246,18 +246,21 @@ sub startup {
     $auth->any('/forum/')               ->to('forum#index');
     $auth->post('/forum/listthemes')    ->to('forum#listthemes');
     $auth->post('/forum/theme')         ->to('forum#theme');
+    $auth->post('/forum/add_theme')     ->to('forum#add_theme');
+    $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
+    $auth->post('/forum/del_theme')     ->to('forum#del_theme');
     $auth->post('/forum/add')           ->to('forum#add');
     $auth->post('/forum/edit')          ->to('forum#edit');
     $auth->post('/forum/delete')        ->to('forum#delete');
-    $auth->post('/forum/toggle')        ->to('forum#toggle');
+    $auth->post('/forum/toggle')        ->to('forum#toggle');       # param('themes') изменение status темы, иначе меняем status сообщения
 
     # управление группами пользователей
-    $auth->post('/groups/')               ->to('groups#index');        # список групп
-    $auth->post('/groups/add')            ->to('groups#add');          # добавление группы
-    $auth->post('/groups/edit')           ->to('groups#edit');         # загрузка данныъ группы
-    $auth->post('/groups/save')           ->to('groups#save');         # обновление данных группы
-    $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
-    $auth->post('/groups/toggle')         ->to('groups#toggle');       # включение/отключение группы
+    $auth->post('/groups/')             ->to('groups#index');        # список групп
+    $auth->post('/groups/add')          ->to('groups#add');          # добавление группы
+    $auth->post('/groups/edit')         ->to('groups#edit');         # загрузка данныъ группы
+    $auth->post('/groups/save')         ->to('groups#save');         # обновление данных группы
+    $auth->post('/groups/delete')       ->to('groups#delete');       # удаление группы
+    $auth->post('/groups/toggle')       ->to('groups#toggle');       # включение/отключение группы
 
     # управление роутами
     $auth->post('/routes/')               ->to('routes#index');        # список роутов

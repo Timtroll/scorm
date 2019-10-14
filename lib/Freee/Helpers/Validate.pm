@@ -137,6 +137,7 @@ sub register {
     $app->helper( '_param_fields' => sub {
         $vfields = {
             # валидация роутов
+            # роуты settings/*
             '/settings/add_folder'  => {
                 "parent"        => [ '', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
@@ -157,7 +158,6 @@ sub register {
             '/settings/delete_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
-
             '/settings/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
@@ -191,13 +191,13 @@ sub register {
             '/settings/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
-            # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
+            # роуты groups/*
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
@@ -212,14 +212,13 @@ sub register {
             '/groups/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
-            # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/groups/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
-
+            # роуты routes/*
             '/routes'  => {
                 "parent"            => [ 'required', qr/^\d+$/os ]
             },
@@ -234,26 +233,34 @@ sub register {
                 "delete"        => [ '', qr/^[01]$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
-            
-            'forum_themes'  => {
-                "id"            => [ '', qr/^\d+$/os ],
-                "user_id"       => [ '', qr/^\d+$/os ],
-                "title"         => [ '', qr/.*/os, 10000 ],
-                "url"           => [ '', qr/http.*?\/\/.*/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
-                "date_created"  => [ '', qr/^\d+$/os ]
+            # роуты forum/*            
+            '/forum/theme'  => {
+                "id"            => [ '', qr/^\d+$/os ]
             },
-            'forum_rates'  => {
+            '/forum/add'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "user_id"       => [ '', qr/^\d+$/os ],
-                "msg_id"        => [ '', qr/^\d+$/os ],
-                "like_value"    => [ '', qr/^\d+$/os ]
+                "anounce"       => [ '', qr/^.*$/os, 256 ],
+                "date_created"  => [ '', qr/^\d+$/os ],
+                "msg"           => [ '', qr/^.*$/os, 256 ],
+                "rate"          => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/edit'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os ],
+                "user_id"       => [ '', qr/^\d+$/os ],
+                "anounce"       => [ '', qr/^.*$/os, 256 ],
+                "date_created"  => [ '', qr/^\d+$/os ],
+                "msg"           => [ '', qr/^.*$/os, 256 ],
+                "rate"          => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
             },
             'forum_rates'  => {
                 "id"            => [ '', qr/^\d+$/os ],
