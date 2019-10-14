@@ -246,8 +246,10 @@ sub startup {
     $auth->any('/forum/')               ->to('forum#index');
     $auth->post('/forum/listthemes')    ->to('forum#listthemes');
     $auth->post('/forum/theme')         ->to('forum#theme');
-    $auth->post('/forum/addtext')       ->to('forum#addtext');
-    $auth->post('/forum/deltext')       ->to('forum#deltext');
+    $auth->post('/forum/add')           ->to('forum#add');
+    $auth->post('/forum/edit')          ->to('forum#edit');
+    $auth->post('/forum/delete')        ->to('forum#delete');
+    $auth->post('/forum/toggle')        ->to('forum#toggle');
 
     # управление группами пользователей
     $auth->post('/groups/')               ->to('groups#index');        # список групп
