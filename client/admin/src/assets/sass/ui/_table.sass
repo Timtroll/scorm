@@ -3,6 +3,10 @@
 
 $table-min-width: 100px
 $table-max-width: $table-min-width * 6
+
+$table-inline-min-width: 45px
+$table-inline-max-width: 100px
+
 .pos-table-container
 
   overflow: auto
@@ -18,6 +22,7 @@ $table-max-width: $table-min-width * 6
 
 .pos-table
   margin: 0
+  position: relative
 
   a
     & > svg
@@ -26,6 +31,10 @@ $table-max-width: $table-min-width * 6
   tbody tr,
   thead tr
     background-color: $global-background
+
+  tbody td
+    @media (max-width: $breakpoint-small)
+      font-size: .85rem
 
   tbody td,
   thead th
@@ -46,10 +55,15 @@ $table-max-width: $table-min-width * 6
     line-height: 1.1
 
     &.inline
-      width: $table-min-width
-      min-width: $table-min-width
-      max-width: $table-min-width
+      //width: $table-inline-min-width
+      min-width: $table-inline-min-width
+      max-width: $table-inline-max-width
       text-align: center
+      overflow: hidden
+      white-space: nowrap
+      text-overflow: ellipsis
+      @media (max-width: $breakpoint-small)
+        max-width: $table-inline-min-width
 
     & > *
       display: inline-block
@@ -71,8 +85,6 @@ $table-max-width: $table-min-width * 6
   @media (max-width: $breakpoint-large)
     min-width: $table-min-width / 3
     max-width: $table-max-width / 3
-
-
 
 
   &:not(.ellipsis)
@@ -106,15 +118,22 @@ $table-max-width: $table-min-width * 6
   & > *
     min-width: 16px
 
+
 .pos-table-header
-  position: sticky
-  top: 0
+  //position: sticky
+  //top: 0
   z-index: 2
   background-color: $global-background
+  th
+    position: sticky
+    background-color: $global-background
+    top: 0
 
 .pos-table-expand
   text-align: center
   position: sticky
   left: 0
   background-color: inherit
+
+
 

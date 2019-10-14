@@ -230,7 +230,6 @@
       return {
 
         tableId: null,
-        //table_api: null,
 
         searchInput: null,
         checked:     false,
@@ -265,21 +264,20 @@
             this.header = clone(this.protoLeaf)
           }
         }
-      }
+      },
 
-    },
+      async table_api () {
 
-    async mounted () {
+        if (this.table_api) {
 
-      this.tableId = this.$route.params.id
-      //this.table_api = await this.$store.getters.table_api
+          this.tableId = this.$route.params.id
 
-      console.log(this.table_api)
-
-      if (this.notEmptyTable === 'error') {
-        await this.$store.commit('card_right_show', false)
-        await this.$store.commit('tree_active', this.tableId)
-        //this.$store.dispatch(this.table_api.get, this.tableId)
+          if (this.notEmptyTable === 'error') {
+            this.$store.commit('card_right_show', false)
+            this.$store.commit('tree_active', this.tableId)
+            await this.$store.dispatch(this.table_api.get, this.tableId)
+          }
+        }
       }
 
     },
@@ -306,29 +304,17 @@
         }
       },
 
-      table_api () {
+      table_api () {return this.$store.getters.table_api},
 
-        const api = this.$store.getters.table_api
-        console.log('api', api)
+      loader () {return this.$store.getters.table_status},
 
-        return this.$store.getters.table_api
-      },
-
-      loader () {
-        return this.$store.getters.table_status
-      },
-
-      protoLeaf () {
-        return this.$store.getters.editPanel_proto
-      },
+      protoLeaf () {return this.$store.getters.editPanel_proto},
 
       notEmptyTable () {
         return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'
       },
 
-      table () {
-        return this.$store.getters.table_items
-      },
+      table () {return this.$store.getters.table_items},
 
       massEdit () {
 
@@ -468,11 +454,6 @@
       clearSearchVal () {
         this.searchInput = null
       },
-
-      // sort
-      //sortBy (array, sortBy = 'name', sortOrder = 'asc') {
-      //  array.sort(this.compareValues(sortBy, sortOrder))
-      //},
 
       // sort Function
       compareValues (key, order = 'asc') {
