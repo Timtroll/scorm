@@ -55,7 +55,7 @@
     "show":        0
   },
   {
-    "label":       "Чтение",
+    "label":       "Список",
     "name":        "list",
     "placeholder": "",
     "readonly":    0,
