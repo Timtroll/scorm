@@ -173,11 +173,9 @@ sub startup {
     $auth->post('/groups/edit')           ->to('groups#edit');         # загрузка данныъ группы
     $auth->post('/groups/save')           ->to('groups#save');         # обновление данных группы
     $auth->post('/groups/delete')         ->to('groups#delete');       # удаление группы
-    $auth->post('/groups/toggle')         ->to('groups#toggle');       # включение/отключение группы
 
     # управление роутами
     $auth->post('/routes/')               ->to('routes#index');        # список роутов
-    $auth->post('/routes/edit')           ->to('routes#edit');         # данные указанного роута
     $auth->post('/routes/save')           ->to('routes#save');         # обновление данных по роуту
     $auth->post('/routes/toggle')         ->to('routes#toggle');       # включение/отключение поля в таблице роутов
 
