@@ -99,6 +99,11 @@
 
     async created () {
 
+      // запросы
+      this.$store.commit('table_api', this.actions.table)
+      this.$store.commit('tree_api', this.actions.tree)
+      this.$store.commit('editPanel_api', this.actions.editPanel)
+
       await this.$store.registerModule('groups', groups)
 
       //// Получение дерева с сервера
@@ -112,10 +117,6 @@
       //// Размер панели редактирования
       await this.$store.commit('editPanel_size', false)
 
-      // запросы
-      await this.$store.commit('table_api', this.actions.table)
-      await this.$store.commit('tree_api', this.actions.tree)
-      await this.$store.commit('editPanel_api', this.actions.editPanel)
     },
 
     mounted () {
