@@ -177,25 +177,25 @@ sub get_leafs {
         if ($data) {
             $list = $self->_get_leafs( $$data{'id'} );
             push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
+
+            # данные для таблицы
+            $table = {
+                "settings" => {
+                    "massEdit" => 1,    # групповое редактировани
+                    "sort" => {         # сотрировка по
+                        "name"    => "id",
+                        "order"   => "asc"
+                    },
+                    "page" => {
+                      "current_page"    => 1,
+                      "per_page"        => 100,
+                      "total"           => scalar(@$list)
+                    }
+                },
+                "body" => $list
+            } unless @mess;
         }
     }
-
-    # данные для таблицы
-    $table = {
-        "settings" => {
-            "massEdit" => 1,    # групповое редактировани
-            "sort" => {         # сотрировка по
-                "name"    => "id",
-                "order"   => "asc"
-            },
-            "page" => {
-              "current_page"    => 1,
-              "per_page"        => 100,
-              # "total"           => scalar(@{$list->{'body'}})
-            }
-        },
-        "body" => $list
-    } unless @mess;
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';

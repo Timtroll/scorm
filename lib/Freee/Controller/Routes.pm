@@ -48,7 +48,7 @@ sub index {
                         "page" => {
                           "current_page"    => 1,
                           "per_page"        => 100,
-                          # "total"           => scalar(@{$list->{'body'}})
+                          "total"           => scalar(@$list)
                         }
                     },
                     "body" => $list

@@ -7,28 +7,40 @@ use warnings;
 use base 'Mojolicious::Plugin';
 
 use common;
+use Data::Dumper;
 
 use constant DEBUGGING => 0;
 
 sub register {
     my ($self, $app) = @_;
 
-    # проверяем поле name на дубликат
-    # my $row = $self->_exists_in_table('settings', 'id', 22, 1);
+    # проверяем наличие таблицы и указанное поле на дубликат
+    # my $row = $self->_exists_in_table(<table>, '<id>', <value>, <excude_id>);
+    #  <table>       - имя таблицы, где будем искать
+    #  <id>         - название поле, которое будем искать
+    #  <value>      - значение поля, которое будем искать
+    #  <excude_id>  - исключаем указанный id
     # возвращается 1/undef
     $app->helper( '_exists_in_table' => sub {
         my ($self, $table,  $name, $val, $excude_id) = @_;
 
         return unless $name;
-# ???????
-# Добавить проверку существования табдицы
+
+        # Проверяем наличие таблицы в базе данных
+        my $sql = "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname != 'information_schema' and schemaname != 'pg_catalog' and tablename = '".$table."'";
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ if $@;
+        return if $@;
+        return unless $row->{'count'};
 
         # проверяем поле name на дубликат
-        my $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
+        $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
         # исключаем из поиска id
         $sql .='AND "id"<>'.$excude_id if $excude_id;
 
-        my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
         };

@@ -137,7 +137,7 @@ sub register {
     });
 
     # удаление фолдера
-    # my $true = $self->_delete_folder( 99 );
+    # my $true = $self->_delete_folder( <id> );
     # возвращается true/false
     $app->helper( '_delete_folder' => sub {
         my ($self, $id) = @_;
@@ -155,7 +155,7 @@ sub register {
     });
 
     # выбираем листья ветки дерева по id парента
-    # my $true = $self->_get_leafs(11);
+    # my $true = $self->_get_leafs( <id> );
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
 
@@ -269,7 +269,7 @@ sub register {
     });
 
     # удаление настройки
-    # my $true = $self->_delete_setting( 99 );
+    # my $true = $self->_delete_setting( <id> );
     # возвращается true/false
     $app->helper( '_delete_setting' => sub {
         my ($self, $id) = @_;
@@ -309,7 +309,7 @@ sub register {
     });
 
     # читаем одну настройку
-    # my $row = $self->_get_setting( 99 );
+    # my $row = $self->_get_setting( <id> );
     # возвращается строка в виде объекта
     $app->helper( '_get_setting' => sub {
         my ($self, $id) = @_;

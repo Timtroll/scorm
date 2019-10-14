@@ -23,7 +23,9 @@ sub register {
 
         my $list;
         eval {
-            $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."routes" WHERE "parent" = '.$parent, 'id');
+            # $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."routes" WHERE "parent" = '.$parent, 'id');
+            my $sql = 'SELECT * FROM "public"."routes" WHERE "parent" = '.$parent;
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
         };
         warn $@ if $@;
         return if $@;
