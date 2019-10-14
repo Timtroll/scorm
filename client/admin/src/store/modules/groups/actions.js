@@ -39,10 +39,11 @@ const actions = {
             store.commit('tree_status_success')
 
             //Плоское дерево
-            const flattenTree = flatTree([...tree])
+            const flattenTree = flatTree(clone(tree))
             store.commit('set_tree_flat', flattenTree)
           } else {
-            store.commit('tree_status_error')
+            store.commit('set_tree', [])
+            store.commit('tree_status_success')
             store.commit('table_status_error')
             notify('В дереве пусто', 'warning')
           }
