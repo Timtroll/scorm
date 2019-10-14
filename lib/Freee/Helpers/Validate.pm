@@ -237,7 +237,7 @@ sub register {
             # изменение поля 1/0 (fieldname - список разрешенных полей)
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
+                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
