@@ -246,12 +246,12 @@
       table () {
 
         if (this.table) {
-          const headerLocal = localStorage.getItem('settings_header_rows_' + this.tableId)
+          const headerLocal = localStorage.getItem(this.pageComponent + '_header_' + this.tableId)
 
           if (headerLocal) {
-            this.header = JSON.parse(headerLocal)
+            this.header = clone(headerLocal)
           } else {
-            this.header = JSON.parse(JSON.stringify(this.protoLeaf))
+            this.header = clone(this.protoLeaf)
           }
         }
       }
@@ -266,11 +266,23 @@
         this.$store.dispatch(this.table_api.get, this.tableId)
       }
 
-      //this.header = JSON.parse(JSON.stringify(this.protoLeaf))
+    },
 
+    beforeDestroy () {
+      this.$store.commit('editPanel_show', false)
+      this.$store.commit('tree_active', null)
+      this.$store.commit('set_editPanel_proto', [])
+      this.$store.commit('set_tree_proto', [])
+
+      // выгрузка Vuex модуля settings
+      //this.$store.unregisterModule('settings')
     },
 
     computed: {
+
+      pageComponent () {
+        return this.$route.name
+      },
 
       tableNotEmpty () {
         if (this.tableRows) {
@@ -355,7 +367,7 @@
 
         if (this.table.body) {
 
-          const tableBody = [...this.table.body]
+          const tableBody = clone(this.table.body)
 
           return tableBody.filter(item => {
             return !this.searchInput
@@ -372,14 +384,14 @@
       // сохранение настроек видимости колонок таблицы
       updateVisibleColumns (item) {
         localStorage.setItem(
-          'settings_header_rows_' + this.tableId, JSON.stringify(item)
+          this.pageComponent + '_header_' + this.tableId, JSON.stringify(item)
         )
+
       },
 
       add_row () {
 
-        //const proto = clone(this.$store.getters.editPanel_proto)
-        const proto = JSON.parse(JSON.stringify(this.$store.getters.editPanel_proto))
+        const proto = clone(this.$store.getters.editPanel_proto)
 
         proto.forEach(item => {
           if (item.name === 'parent') {

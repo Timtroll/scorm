@@ -5,7 +5,7 @@ export default {
   // получить Листочек
   list_edit (id) {
     return Api()({
-      url:    'settings/edit',
+      url:    'routes/edit',
       method: 'post',
       params: {
         id: id
@@ -16,7 +16,7 @@ export default {
   // сохранение настройки
   list_save (data) {
     return Api()({
-      url:    'settings/save',
+      url:    'routes/save',
       method: 'post',
       params: data
     })
@@ -30,25 +30,25 @@ export default {
     })
   },
 
-
-  // добавление настройки
-  list_add (data) {
-    return Api()({
-      url:    'settings/add',
-      method: 'post',
-      params: data
-    })
-  },
+  //
+  //// добавление настройки
+  //list_add (data) {
+  //  return Api()({
+  //    url:    'settings/add',
+  //    method: 'post',
+  //    params: data
+  //  })
+  //},
 
   // удаление настройки
-  list_delete (id) {
-    return Api()({
-      url:    'settings/delete',
-      method: 'post',
-      params: {
-        id: id
-      }
-    })
-  }
+  //list_delete (id) {
+  //  return Api()({
+  //    url:    'settings/delete',
+  //    method: 'post',
+  //    params: {
+  //      id: id
+  //    }
+  //  })
+  //}
 
 }
