@@ -17,7 +17,7 @@ $| = 1;
 sub startup {
     my $self = shift;
 
-    my ( $host );
+    my ( $host, $r, $auth );
 
     # load database config
     $config = $self->plugin(Config => { file => rel_file('./freee.conf') });
@@ -277,9 +277,7 @@ sub startup {
 
     # сохраняем все роуты
     foreach (@{$auth->{children}} ) {
-        my $val = $_->{pattern}->{defaults}->{action};
-        my $key = $_->{pattern}->{'unparsed'};
-        $$routs{$key} = $val;
+        $$routs{ $_->{pattern}->{defaults}->{action} } = $_->{pattern}->{'unparsed'};
     }
 # print Dumper ($routs);
 }

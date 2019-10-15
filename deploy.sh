@@ -36,9 +36,9 @@ echo "yarn run build"
 yarn run build
 
 echo "-------"
-echo "delete content of public:"
+echo "delete content of public (exclude dir 'forum'):"
 echo "rm -rf $SOURCE/public/*"
-rm -rf $SOURCE/public/*
+find /home/troll/workspace/scorm/master/public/ -maxdepth 1 -mindepth 1 -not -name forum -exec rm -rf {} \;
 
 echo "-------"
 echo "copy dist to public:"
