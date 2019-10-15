@@ -62,14 +62,15 @@ sub register {
         return unless $data;
         return unless ($$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'});
 
+        my $result;
         my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
         eval {
-            $self->pg_dbh->do($sql);
+            $result = $self->pg_dbh->do($sql) + 0;
         };
         warn $@ if $@;
         return if $@;
 
-        return 1;
+        return $result;
     });
 
     # построение дерева по плоской таблице с парентами

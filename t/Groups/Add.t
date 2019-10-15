@@ -41,63 +41,70 @@ my $test_data = {
     2 => {
         'data' => {
             'name'      => 'name2',
-            'label'     => 'label2'
+            'label'     => 'label2',
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok'
-        },
-        'comment' => 'No status:' 
-    },
-    3 => {
-        'data' => {
-            'name'      => 'name3',
-            'label'     => 'label3'
-        },
-        'result' => {
-            'id'        => '3',
             'status'    => 'ok',
         },
         'comment' => 'Status zero:' 
     },
 
     # отрицательные тесты
-    4 => {
+    3 => {
         'data' => {
-            'name'      => 'name4'
+            'name'      => 'name3',
+            'status'    => 1
         },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'label'. Field is empty or not exists",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
     },
-    5 => {
+    4 => {
         'data' => {
-            'label'     => 'label5',
+            'label'     => 'label4',
+            'status'    => 1
         },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'name'. Field is empty or not exists",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
     },
-    6 => {
-        'data' => { },
+   5 => {
+        'data' => {
+            'name'      => 'name5',
+            'label'     => 'label5'
+        },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'status'. Field is empty or not exists",
             'status'    => 'fail'
         },
-        'comment' => 'Empty data:' 
+        'comment' => 'No status:' 
+    },
+    6 => {
+        'data' => {
+            'name'      => 'label*',
+            'label'     => 'label6',
+            'status'    => 1
+        },
+        'result' => {
+            'message'   => "Validation error for 'name'. Field has wrong type",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong input format:' 
     },
     7 => {
         'data' => {
             'name'       => 'name1',
-            'label'      => 'label1',
+            'label'      => 'label7',
             'status'     => 1
         },
         'result' => {
-            'message'    => "Could not add new group item 'label1'",
+            'message'    => "Could not insert data",
             'status'     => 'fail'
         },
         'comment' => 'Mistake from DB:' 

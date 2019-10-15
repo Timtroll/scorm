@@ -155,14 +155,16 @@ sub register {
 
         return unless $id;
 
+        my $result;
         my $sql = 'DELETE FROM "public"."groups" WHERE "id"='.$id;
         eval {
-            $self->pg_dbh->do($sql);
+            $result = $self->pg_dbh->do($sql) + 0;
         };
+
         warn $@ if $@;
         return if $@;
 
-        return 1;
+        return $result;
     });
 }
 

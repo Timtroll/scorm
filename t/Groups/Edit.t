@@ -1,6 +1,5 @@
-# удалениe группы 
-# "id" => 1 - id удаляемого элемента ( >0 )
-use Mojo::Base -strict;
+# загрузка данных о группе
+#    "id" => 1;
 
 use Test::More;
 use Test::Mojo;
@@ -19,8 +18,8 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-# Ввод данных для удаления
-my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
+# Ввод данных для вывода
+my $data = {name => 'test', label => 'test', status => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -32,13 +31,18 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'        => 1
+            'id'    => 1
         },
         'result' => {
-            'id'        => 1,
+            'data'      => {
+                'id'        => 1,
+                'label'     => 'test',
+                'name'      => 'test',
+                'status'    => 1
+            },
             'status'    => 'ok'
         },
-        'comment' => 'All right:' 
+        'comment' => 'All right:'
     },
 
     # отрицательные тесты
@@ -47,7 +51,8 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not delete Group '404'",
+            'data'      => {},
+            'message'   => "Could not get Group ''",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -67,7 +72,7 @@ my $test_data = {
             'message'   => "Validation error for 'id'. Field has wrong type",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong type of id:' 
+        'comment' => 'Wrong id:' 
     },
 };
 
@@ -75,12 +80,11 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/groups/delete' => form => $data )
+    $t->post_ok($host.'/groups/edit' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
 };
-
 
 done_testing();
 

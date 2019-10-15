@@ -57,53 +57,41 @@ sub register {
             # проверка полей
             my $hs = HTML::Strip->new();
 
-            # проверка для роутов */toggle
-            if (defined $_[0]->param('fieldname')) {
-                # есть ли в списке валидации значение param('fieldname')
-                my $id = $_[0]->param('id');
-                my $fieldname = $_[0]->param('fieldname');
-                my $val = $_[0]->param('value') // 0;
+            # проверка для роутов
+            foreach my $fld (keys %$valid) {
+                # Проверка обязательности поля
+                if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
+                    # читаем поле
+                    my $val = $_[0]->param($fld) // 0;
 
-                if ($fieldname && $id) {
-                    $fieldname = $hs->parse($fieldname) if ($fieldname);
+                    # чистка от html
+                    $val = $hs->parse($val) if ($val);
 
-                    unless (grep {/$fieldname/} @{$$valid{'fieldname'}[1]}) {
-                        push @error, "The 'fieldname' not contain needed name";
-                    }
-                }
-                else {
-                    push @error, "The 'fieldname' is empty";
-                }
-            }
-            # проверка полей для остальных роутов
-            else {
-                foreach my $fld (keys %$valid) {
-                    # Проверка обязательности поля
-                    if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
-                        # читаем поле
-                        my $val = $_[0]->param($fld) // 0;
-
-                        # чистка от html
-                        $val = $hs->parse($val) if ($val);
-
-                        # проверяем длинну поля, если указано проверять
-                        if ( $$valid{$fld}[2] ) {
-                            if ( length($val) > $$valid{$fld}[2] ) {
-                                push @error, "Validation error for '$fld'. Field has wrong length";
-                                next;
-                            }
+                    # проверяем длинну поля, если указано проверять
+                    if ( $$valid{$fld}[2] ) {
+                        if ( length($val) > $$valid{$fld}[2] ) {
+                            push @error, "Validation error for '$fld'. Field has wrong length";
+                            next;
                         }
+                    }
 
-                        my $re = $$valid{$fld}[1];
-                        # валидация по регэкспу
+                    my $re = $$valid{$fld}[1];
+                    # есть ли значение в списке
+                    if (ref($re) eq 'ARRAY') {
+                        unless ( grep {/$val/} @{$$valid{$fld}[1]} ) {
+                            push @error, "Validation error for '$fld'. Field has wrong type=";
+                        }
+                    }
+                    # валидация по регэкспу
+                    else {
                         unless ( $val =~ $re ) {
                             push @error, "Validation error for '$fld'. Field has wrong type";
                         }
                     }
-                    else {
-                        if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
-                            push @error, "Validation error for '$fld'. Field is empty or not exists";
-                        }
+                }
+                else {
+                    if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
+                        push @error, "Validation error for '$fld'. Field is empty or not exists";
                     }
                 }
             }
@@ -125,10 +113,14 @@ sub register {
 
         my %data = ();
         foreach (keys %{$$vfields{$self->url_for}}) {
-            $data{$_} = $self->param($_) // 0;
+            # $data{$_} = undef;
+            $data{$_} = $self->param($_);
+            if ( defined $self->param($_) && ($$vfields{$self->url_for}{$_}[0] eq 'required') ) {
+                $data{$_} = $self->param($_) // 0;
+            }
         }
 
-        return \%data
+        return \%data;
     });
 
     # загрузка правил валидации html полоей
@@ -201,20 +193,23 @@ sub register {
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ 'required', qr/^[01]$/os ]
+            },
+            '/groups/edit'  => {
+                 "id"           => [ 'required', qr/^\d+$/os ]
             },
             '/groups/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/groups/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
             '/groups/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
+                "fieldname"     => [ 'required', ['status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 
