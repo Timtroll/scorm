@@ -6,7 +6,6 @@ use warnings;
 
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Config;
-use Mojolicious::Plugin::Model;
 use Mojo::Log;
 
 use common;
@@ -31,13 +30,9 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Model' => {namespaces => ['Freee::Model']});
-# client model
-# my $client = $self->model('users')->check(1, 2);
-my $client = $self->model('users-client');
-# warn $client->do();
-# warn $self->model('users')->check(1, 2);
-warn Dumper $self->model('users');
+    $self->plugin('Mojolicious::Plugin::Model' => {namespaces => ['Freee::Model']});
+$self->model('users-client')->do();
+$self->model('users')->check();
 warn '=freee=';
 
     $self->plugin('Freee::Helpers::Utils');

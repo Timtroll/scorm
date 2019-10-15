@@ -4,7 +4,7 @@ use Mojo::Base 'MojoX::Model';
 
 sub check {
   my ($self, $name, $pass) = @_;
-
+warn 'Users = check';
   # Constant
   return int rand 2;
   # return int rand 2;

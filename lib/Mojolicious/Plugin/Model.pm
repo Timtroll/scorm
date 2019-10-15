@@ -1,79 +1,80 @@
 package Mojolicious::Plugin::Model;
+
 use Mojo::Base 'Mojolicious::Plugin';
 
 use List::Util 'any';
 use Mojo::Loader ();
 use Mojo::Util 'camelize';
 
+use Data::Dumper;
+
 our $VERSION = '0.11';
 
 sub register {
-  my ($plugin, $app, $conf) = @_;
+    my ($plugin, $app, $conf) = @_;
 
-  $app->helper(
-    model => sub {
-      my ($self, $name) = @_;
-      $name //= $conf->{default};
-warn "++++++++=";
-      my $model;
-      return $model if $model = $plugin->{models}{$name};
+    $app->helper( 'model' => sub {
+        my ($self, $name) = @_;
 
-      my $class = _load_class_for_name($plugin, $app, $conf, $name)
-        or return undef;
+        $name //= $conf->{default};
+        my $model;
+        return $model if $model = $plugin->{models}{$name};
 
-      my $params = $conf->{params}{$name};
-      $model = $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
-      $plugin->{models}{$name} = $model;
-      return $model;
-    }
-  );
+        my $class = _load_class_for_name($plugin, $app, $conf, $name) or return undef;
 
-  $app->helper(
-    entity => sub {
-      my ($self, $name) = @_;
-      $name //= $conf->{default};
+        my $params = $conf->{params}{$name};
+        $model = $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
+        $plugin->{models}{$name} = $model;
 
-      my $class = _load_class_for_name($plugin, $app, $conf, $name)
-        or return undef;
+        return $model;
+    });
 
-      my $params = $conf->{params}{$name};
-      return $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
-    }
-  );
+    $app->helper( 'entity' => sub {
+        my ($self, $name) = @_;
 
+        $name //= $conf->{default};
+
+        my $class = _load_class_for_name($plugin, $app, $conf, $name) or return undef;
+
+        my $params = $conf->{params}{$name};
+
+        return $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
+    });
 }
 
 sub _load_class {
-  my $class = shift;
+    my $class = shift;
 
-  my $error = Mojo::Loader->can('new') ? Mojo::Loader->new->load($class) : Mojo::Loader::load_class($class);
+    my $error = Mojo::Loader->can('new') ? Mojo::Loader->new->load($class) : Mojo::Loader::load_class($class);
 
-  return 1 unless $error;
-  die $error if ref $error;
-  return;
+    return 1 unless $error;
+    die $error if ref $error;
+    return;
 }
 
 sub _load_class_for_name {
-  my ($plugin, $app, $conf, $name) = @_;
-  return $plugin->{classes_loaded}{$name} if $plugin->{classes_loaded}{$name};
+    my ($plugin, $app, $conf, $name) = @_;
 
-  my $ns   = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
-  my $base = $conf->{base_classes} // [qw(MojoX::Model)];
+    return $plugin->{classes_loaded}{$name} if $plugin->{classes_loaded}{$name};
 
-  $name = camelize($name) if $name =~ /^[a-z]/;
+    my $ns   = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
+    my $base = $conf->{base_classes} // [qw(MojoX::Model)];
 
-  for my $class ( map "${_}::$name", @$ns ) {
-    next unless _load_class($class);
+    $name = camelize($name) if $name =~ /^[a-z]/;
 
-    unless ( any { $class->isa($_) } @$base ) {
-      $app->log->debug(qq[Class "$class" is not a model]);
-      next;
+    for my $class ( map "${_}::$name", @$ns ) {
+        next unless _load_class($class);
+
+        unless ( any { $class->isa($_) } @$base ) {
+            $app->log->debug(qq[Class "$class" is not a model]);
+            next;
+        }
+        $plugin->{classes_loaded}{$name} = $class;
+        return $class;
     }
-    $plugin->{classes_loaded}{$name} = $class;
-    return $class;
-  }
-  $app->log->debug(qq[Model "$name" does not exist]);
-  return undef;
+    $app->log->debug(qq[Model "$name" does not exist]);
+
+    return undef;
 };
 
 1;
@@ -90,10 +91,10 @@ Mojolicious::Plugin::Model - Model for Mojolicious applications
 
 Model Users
 
-  package MyApp::Model::Users;
-  use Mojo::Base 'MojoX::Model';
+package MyApp::Model::Users;
+use Mojo::Base 'MojoX::Model';
 
-  sub check {
+sub check {
     my ($self, $name, $pass) = @_;
 
     # Constant
@@ -103,34 +104,33 @@ Model Users
     return $self->app->pg->db->query('...')->array->[0];
 
     # Or HTTP check
-    return $self->app->ua->post($url => json => {user => $name, pass => $pass})
-      ->res->tx->json('/result');
-  }
+    return $self->app->ua->post($url => json => {user => $name, pass => $pass})->res->tx->json('/result');
+}
 
-  1;
+1;
 
 Model Users-Client
 
-  package MyApp::Model::Users::Client;
-  use Mojo::Base 'MyApp::Model::User';
+package MyApp::Model::Users::Client;
+use Mojo::Base 'MyApp::Model::User';
 
-  sub do {
+sub do {
     my ($self) = @_;
-  }
+}
 
-  1;
+1;
 
 Mojolicious::Lite application
 
-  #!/usr/bin/env perl
-  use Mojolicious::Lite;
+#!/usr/bin/env perl
+use Mojolicious::Lite;
 
-  use lib 'lib';
+use lib 'lib';
 
-  plugin 'Model';
+plugin 'Model';
 
-  # /?user=sebastian&pass=secr3t
-  any '/' => sub {
+# /?user=sebastian&pass=secr3t
+any '/' => sub {
     my $c = shift;
 
     my $user = $c->param('user') || '';
@@ -142,21 +142,21 @@ Mojolicious::Lite application
 
     return $c->render(text => "Welcome $user.") if $c->model('users')->check($user, $pass);
     $c->render(text => 'Wrong username or password.');
-  };
+};
 
-  app->start;
+app->start;
 
 All available options
 
-  #!/usr/bin/env perl
-  use Mojolicious::Lite;
+#!/usr/bin/env perl
+use Mojolicious::Lite;
 
-  plugin Model => {
+plugin Model => {
     namespaces   => ['MyApp::Model', 'MyApp::CLI::Model'],
     base_classes => ['MyApp::Model'],
     default      => 'MyApp::Model::Pg',
     params => {Pg => {uri => 'postgresql://user@/mydb'}}
-  };
+};
 
 =head1 DESCRIPTION
 
@@ -169,36 +169,36 @@ L<Mojolicious::Plugin::Model> supports the following options.
 
 =head2 namespaces
 
-  # Mojolicious::Lite
-  plugin Model => {namespaces => ['MyApp::Model']};
+# Mojolicious::Lite
+plugin Model => {namespaces => ['MyApp::Model']};
 
 Namespace to load models from, defaults to C<$moniker::Model>.
 
 =head2 base_classes
 
-  # Mojolicious::Lite
-  plugin Model => {base_classes => ['MyApp::Model']};
+# Mojolicious::Lite
+plugin Model => {base_classes => ['MyApp::Model']};
 
 Base classes used to identify models, defaults to L<MojoX::Model>.
 
 =head2 default
 
-  # Mojolicious::Lite
-  plugin Model => {default => 'MyModel'};
+# Mojolicious::Lite
+plugin Model => {default => 'MyModel'};
 
-  any '/' => sub {
+any '/' => sub {
     my $c = shift();
     $c->model->do(); # used model MyModel
     # ...
-  }
+}
 
 The name of the default model to use if the name of the current model not
 specified.
 
 =head2 params
 
-  # Mojolicious::Lite
-  plugin Model => {params => {DBI => {dsn => 'dbi:mysql:mydb'}}};
+# Mojolicious::Lite
+plugin Model => {params => {DBI => {dsn => 'dbi:mysql:mydb'}}};
 
 Parameters to be passed to the class constructor of the model.
 
@@ -208,7 +208,7 @@ L<Mojolicious::Plugin::Model> implements the following helpers.
 
 =head2 model
 
-  my $model = $c->model($name);
+my $model = $c->model($name);
 
 Load, create and cache a model object with given name. Default class for
 model C<camelize($moniker)::Model>. Return C<undef> if model not found.
@@ -228,7 +228,7 @@ L<Mojolicious::Plugin> and implements the following new ones.
 
 =head2 register
 
-  $plugin->register(Mojolicious->new);
+$plugin->register(Mojolicious->new);
 
 Register plugin in L<Mojolicious> application.
 
