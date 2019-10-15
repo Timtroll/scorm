@@ -2,8 +2,9 @@
   <ul class="pos-sidebar--nav">
 
     <li :class="{'uk-active' : activeClass('Users')}">
-      <router-link :to="{name: 'Users'}" exact>
-        <img src="img/icons/sidebar_users.svg"
+      <router-link :to="{name: 'Users'}"
+                   exact>
+        <img uk-img="data-src:img/icons/sidebar_users.svg"
              uk-svg
              width="24"
              height="24">
@@ -11,8 +12,9 @@
     </li>
 
     <li :class="{'uk-active' : activeClass('Groups')}">
-      <router-link :to="{name: 'Groups'}" exact>
-        <img src="img/icons/sidebar_roles.svg"
+      <router-link :to="{name: 'Groups'}"
+                   exact>
+        <img uk-img="data-src:/img/icons/sidebar_roles.svg"
              uk-svg
              width="24"
              height="24">
@@ -20,7 +22,8 @@
     </li>
 
     <li :class="{'uk-active' : activeClass('Settings')}">
-      <router-link :to="{name: 'Settings'}" exact>
+      <router-link :to="{name: 'Settings'}"
+                   exact>
         <icon-setting :spin="true"></icon-setting>
       </router-link>
     </li>
@@ -28,12 +31,13 @@
   </ul>
 </template>
 <script>
-  import IconSetting from '../icons/IconSetting'
 
   export default {
 
     name:       'SideBarSettings',
-    components: {IconSetting},
+    components: {
+      IconSetting: () => import(/* webpackChunkName: "IconSetting" */ '../icons/IconSetting')
+    },
     props:      {
       size:  {
         type:    Number,

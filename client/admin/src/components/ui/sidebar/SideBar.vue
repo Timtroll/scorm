@@ -3,7 +3,7 @@
        id="sidebar">
     <div class="pos-sidebar-top uk-visible@m">
       <router-link :to="{name: 'Main'}">
-        <img src="../../../../public/img/logo__bw.svg"
+        <img uk-img="data-src:/img/logo__bw.svg"
              class="pos-sidebar-logo"
              uk-svg>
       </router-link>
@@ -18,7 +18,7 @@
                        :to="item.path"
                        :pos="tooltipPosition"
                        :title="item.meta.breadcrumb">
-            <img :src="item.meta.icon"
+            <img :uk-img="'data-src:' + item.meta.icon"
                  uk-svg
                  width="24"
                  height="24">
@@ -36,13 +36,14 @@
   </div>
 </template>
 <script>
-  import SideBarUserMenu from './SideBarSettings.vue'
 
   export default {
 
     name: 'SideBar',
 
-    components: {SideBarUserMenu},
+    components: {
+      SideBarUserMenu: () => import(/* webpackChunkName: "SideBarSettings" */ './SideBarSettings.vue')
+    },
 
     // Отслеживание изменния ширины экрана
     mounted () {
@@ -93,4 +94,3 @@
     }
   }
 </script>
-<style scoped></style>
