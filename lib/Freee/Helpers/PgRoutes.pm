@@ -103,30 +103,6 @@ sub register {
 
         return $id;
     });
-
-
-    # включение/отключение поля status в строке группы
-    # my $true = $self->_toggle_setting( <id>, <field>, <val> );
-    # <id>    - id записи 
-    # <field> - имя поля в таблице
-    # <val>   - 1/0
-    # возвращается true/false
-    $app->helper( '_toggle_group' => sub {
-        my ($self, $data) = @_;
-
-        return unless $data;
-        return unless ($$data{'id'} || $$data{'value'} || $$data{'fieldname'});
-
-        my $sql ='UPDATE "public"."routes" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
-        eval {
-            $self->pg_dbh->do($sql);
-        };
-        warn $@ if $@;
-        return if $@;
-
-        return 1;
-    });
-
 }
 
 1;

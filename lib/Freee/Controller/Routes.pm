@@ -44,7 +44,7 @@ sub index {
                         "editable"  => 0,        # разрешение редактирования
                         "removable" => 0,        # разрешение удаления
                         "sort" => {         # сотрировка по
-                            "name"    => "id",
+                            "name"    => "name",
                             "order"   => "asc"
                         },
                         "page" => {
@@ -126,7 +126,8 @@ sub toggle {
         $data = $self->_check_fields();
         push @mess, "Not correct Group '$$data{'id'}'" unless $data;
 
-        $toggle = $self->_toggle_route( $data ) unless @mess;
+        $$data{'table'} = 'routes';
+        $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
     }
 

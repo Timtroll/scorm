@@ -67,24 +67,14 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'status'    => 'ok'
+            'status'    => 'ok',
+            'id'        => 1,
         },
         'comment' => 'All fields:' 
     },
-    2 => {
-        'data' => {
-            'id'        => 1,
-            'name'      => 'name',
-            'label'     => 'label'
-        },
-        'result' => {
-            'status'    => 'ok'
-        },
-        'comment' => 'No status:' 
-    },
 
     # отрицательные тесты
-    3 => {
+    2 => {
         'data' => {
             'id'        => 404,
             'name'      => 'name',
@@ -92,48 +82,73 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Can't find row for updating",
+            'message'   => "Group named 'name' is not exists",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
-    4 => {
+    3 => {
         'data' => {
             'name'      => 'name',
             'label'     => 'label',
             'status'    => 1
         },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'id'. Field is empty or not exists",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
-    5 => {
+    4 => {
         'data' => {
             'id'        => 1,
             'label'     => 'label',
             'status'    => 1
         },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'name'. Field is empty or not exists",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
+    },
+    5 => {
+        'data' => {
+            'id'        => 1,
+            'name'      => 'name',
+            'status'    => 1
+        },
+        'result' => {
+            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'status'    => 'fail'
+        },
+        'comment' => 'No label:' 
     },
     6 => {
         'data' => {
             'id'        => 1,
             'name'      => 'name',
+            'label'     => 'label'
+        },
+        'result' => {
+            'message'   => "Validation error for 'status'. Field is empty or not exists",
+            'status'    => 'fail'
+        },
+        'comment' => 'No value:' 
+    },
+    7 => {
+        'data' => {
+            'id'        => 1,
+            'name'      => 'name*',
+            'label'     => 'label',
             'status'    => 1
         },
         'result' => {
-            'message'   => 'Required fields do not exist',
+            'message'   => "Validation error for 'name'. Field has wrong type",
             'status'    => 'fail'
         },
-        'comment' => 'No label:' 
+        'comment' => 'Wrong field type:' 
     },
-    7 => {
+    8 => {
         'data' => {
             'id'        => 1,
             'label'     => 'label2',
@@ -141,7 +156,7 @@ $test_data = {
             'status'    => 0
         },
         'result' => {
-            'message'   => "Could not update setting item 'label2'",
+            'message'   => "Could not update Group named 'name2'",
             'status'    => 'fail'
         },
         'comment' => 'Mistake from DB:' 
@@ -152,7 +167,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ( $$test_data{$test}{'comment'} );
-    $t->post_ok($host.'/groups/update' => form => $data )
+    $t->post_ok($host.'/groups/save' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

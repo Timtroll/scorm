@@ -61,28 +61,31 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 
 # index
-my $result = [
-    {
-        'label'     => 'label1',
-        'id'        => 1,
-        'table'     => {},
-        'opened'    => 0,
-        'children'  => [],
-        'component' => 'Groups',
-        'folder'    => 1,
-        'keywords'  => ''
-    },
-    {
-        'label'     => 'label2',
-        'id'        => 2,
-        'table'     => {},
-        'opened'    => 0,
-        'children'  => [],
-        'component' => 'Groups',
-        'folder'    => 1,
-        'keywords'  => ''
-    }
-];
+my $result = {
+    'list' => [
+        {
+            'label'     => 'label1',
+            'id'        => 1,
+            'table'     => {},
+            'opened'    => 0,
+            'children'  => [],
+            'component' => 'Groups',
+            'folder'    => 1,
+            'keywords'  => ''
+        },
+        {
+            'label'     => 'label2',
+            'id'        => 2,
+            'table'     => {},
+            'opened'    => 0,
+            'children'  => [],
+            'component' => 'Groups',
+            'folder'    => 1,
+            'keywords'  => ''
+        }
+    ],
+    'status' => 'ok'
+};
 
 diag ("\n All groups: ");
 $t->post_ok( $host.'/groups/' )

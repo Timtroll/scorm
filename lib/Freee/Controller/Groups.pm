@@ -72,7 +72,7 @@ sub add {
 
         if ($data) {
             $id = $self->_insert_group( $data );
-            push @mess, "Could insert data" unless $id;
+            push @mess, "Could not insert data" unless $id;
         }
     }
 
@@ -185,9 +185,12 @@ sub toggle {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
+print Dumper ($data);
+print "\n";
         push @mess, "Not correct Group '$$data{'id'}'" unless $data;
 
-        $toggle = $self->_toggle_group( $data ) unless @mess;
+        $$data{'table'} = 'groups';
+        $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
     }
 
