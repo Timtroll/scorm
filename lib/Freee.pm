@@ -6,6 +6,7 @@ use warnings;
 
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Config;
+use Mojolicious::Plugin::Model;
 use Mojo::Log;
 
 use common;
@@ -30,6 +31,15 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
+    $self->plugin('Model' => {namespaces => ['Freee::Model']});
+# client model
+# my $client = $self->model('users')->check(1, 2);
+my $client = $self->model('users-client');
+# warn $client->do();
+# warn $self->model('users')->check(1, 2);
+warn Dumper $self->model('users');
+warn '=freee=';
+
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
@@ -48,7 +58,7 @@ sub startup {
     $self->_beans_init();
 
     # Router
-    my $r = $self->routes;
+    $r = $self->routes;
     $r->post('/api/login')                ->to('auth#login');
     $r->any('/api/logout')                ->to('auth#logout');
 
@@ -61,7 +71,7 @@ sub startup {
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                     ->to('index#error');
 
-    my $auth = $r->under()                ->to('auth#check_token');
+    $auth = $r->under()                ->to('auth#check_token');
 
     # левая менюха (дерево без листочков)
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');       # Все дерево без листочков
