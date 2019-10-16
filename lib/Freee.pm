@@ -30,7 +30,8 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::MojoX::Model'], });
+    # $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::MojoX::Model'], });
+    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::Users'], });
 $self->model('users-client')->do();
 $self->model('users')->check();
 warn '=freee=';
@@ -66,14 +67,14 @@ warn '=freee=';
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                     ->to('index#error');
 
-    $auth = $r->under()                ->to('auth#check_token');
+    $auth = $r->under()->to('auth#check_token');
 
     # левая менюха (дерево без листочков)
-    $auth->post('/settings/get_tree')     ->to('settings#get_tree');       # Все дерево без листочков
-    $auth->post('/settings/get_folder')   ->to('settings#get_folder');     # получить данные фолдера настроек
-    $auth->post('/settings/add_folder')   ->to('settings#add_folder');     # добавление фолдера
-    $auth->post('/settings/save_folder')  ->to('settings#save_folder');    # сохранение фолдера
-    $auth->post('/settings/delete_folder')->to('settings#delete_folder');  # удаление фолдера
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');        # Все дерево без листочков
+    $auth->post('/settings/get_folder')   ->to('settings#get_folder');      # получить данные фолдера настроек
+    $auth->post('/settings/add_folder')   ->to('settings#add_folder');      # добавление фолдера
+    $auth->post('/settings/save_folder')  ->to('settings#save_folder');     # сохранение фолдера
+    $auth->post('/settings/delete_folder')->to('settings#delete_folder');   # удаление фолдера
 
     # строки настроек
     $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
@@ -263,7 +264,7 @@ warn '=freee=';
     $auth->post('/forum/add')           ->to('forum#add');
     $auth->post('/forum/edit')          ->to('forum#edit');
     $auth->post('/forum/delete')        ->to('forum#delete');
-    $auth->post('/forum/toggle')        ->to('forum#toggle');       # param('themes') изменение status темы, иначе меняем status сообщения
+    $auth->post('/forum/toggle')        ->to('forum#toggle');        # param('themes') изменение status темы, иначе меняем status сообщения
 
     # управление группами пользователей
     $auth->post('/groups/')             ->to('groups#index');        # список групп
@@ -274,9 +275,9 @@ warn '=freee=';
     $auth->post('/groups/toggle')       ->to('groups#toggle');       # включение/отключение группы
 
     # управление роутами
-    $auth->post('/routes/')               ->to('routes#index');        # список роутов
-    $auth->post('/routes/edit')           ->to('routes#edit');         # данные указанного роута
-    $auth->post('/routes/save')           ->to('routes#save');         # обновление данных по роуту
+    $auth->post('/routes/')               ->to('routes#index');      # список роутов
+    $auth->post('/routes/edit')           ->to('routes#edit');       # данные указанного роута
+    $auth->post('/routes/save')           ->to('routes#save');       # обновление данных по роуту
 
 
     $r->any('/*')->to('index#index');
@@ -285,7 +286,6 @@ warn '=freee=';
     foreach (@{$auth->{children}} ) {
         $$routs{ $_->{pattern}->{defaults}->{action} } = $_->{pattern}->{'unparsed'};
     }
-# print Dumper ($routs);
 }
 
 1;
