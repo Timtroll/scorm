@@ -1,5 +1,7 @@
-package MojoX::Model;
+package Freee::MojoX::Model;
+
 use Mojo::Base -base;
+# use Mojo::Base 'Freee::Model::Users';
 
 use Scalar::Util 'weaken';
 

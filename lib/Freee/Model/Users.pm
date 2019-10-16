@@ -1,6 +1,6 @@
 package Freee::Model::Users;
 
-use Mojo::Base 'MojoX::Model';
+use Mojo::Base 'Freee::MojoX::Model';
 
 sub check {
   my ($self, $name, $pass) = @_;

@@ -30,7 +30,7 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    $self->plugin('Mojolicious::Plugin::Model' => {namespaces => ['Freee::Model']});
+    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::MojoX::Model'], });
 $self->model('users-client')->do();
 $self->model('users')->check();
 warn '=freee=';
