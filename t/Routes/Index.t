@@ -1,12 +1,12 @@
-# вывод списка роутов в виде объекта 
-#    "label"       => "scorm",
-#    "id"          => 1,
-#    "component"   => "Routes",
-#    "opened"      => 0,
-#    "folder"      => 0,
-#    "keywords"    => "",
-#    "children"    => [],
-#    "table"       => {}
+# смена состояния роута
+# my $id = _update_route({
+# 'id'        =>    1     -  id роута для изменения ( > 0 )
+# 'list'      => 0 или 1  -   
+# 'add'       => 0 или 1  -    
+# 'edit'      => 0 или 1  -   
+# 'delete'    => 0 или 1  -   
+# 'status'    => 0 или 1  -  активен ли роут
+# });
 use Mojo::Base -strict;
 
 use Test::More;
@@ -19,91 +19,76 @@ BEGIN {
 
 my $t = Test::Mojo->new('Freee');
 
-# Включаем режим работы с тестовой базой и чистим таблицу
+# Включаем режим работы с тестовой базой и готовим таблицу групп
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-# Ввод данных для вывода
+#  Вводим группу родителя
+my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
+$t->post_ok( $host.'/groups/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+
 my $test_data = {
+    # положительные тесты
     1 => {
         'data' => {
-            'parent'    => 1,
-            'name'      => 'name1',
-            'label'     => 'label1',
-            'status'    => 1
+            'parent'    => 1
         },
         'result' => {
-            'id'        => '1',
+            'result'    => $result,
             'status'    => 'ok'
-        }
+        },
+        'comment' => 'All right:' 
     },
+    # отрицательные тесты
     2 => {
         'data' => {
-            'parent'    => 1,
-            'name'      => 'name2',
-            'label'     => 'label2',
-            'status'    => 1
+            'parent'    => 404,
         },
         'result' => {
-            'id'        => '2',
-            'status'    => 'ok' 
-        }
-    }
+            'message'   => "Routes for Group id '404' is not exists",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong parent:' 
+    },
+    3 => {
+        'data' => {
+            'parent'    => 'mistake',
+        },
+        'result' => {
+            'message'   => "Validation error for 'parent'. Field has wrong type",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong field type:' 
+    },
 };
+
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    $t->post_ok( $host.'/routes/add' => form => $$test_data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$test_data{$test}{'result'} );
-}
-
-# index
-my $result = [
-    {
-    'label'     => 'label1',
-    'id'        => 1,
-    'table'     => {},
-    'opened'    => 0,
-    'children'  => [],
-    'component' => 'Routes',
-    'folder'    => 0,
-    'keywords'  => ''
-    },
-    {
-    'label'     => 'label2',
-    'id'        => 2,
-    'table'     => {},
-    'opened'    => 0,
-    'children'  => [],
-    'component' => 'Routes',
-    'folder'    => 0,
-    'keywords'  => ''
-    },
-];
-
-diag ("\n All routes: ");
-$t->post_ok( $host.'/routes/' )
-    ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
-
+    my $data = $$test_data{$test}{'data'};
+    my $result = $$test_data{$test}{'result'};
+    diag ( $$test_data{$test}{'comment'} );
+    $t->post_ok($host.'/routes/' => form => $data )
+        ->status_is(200)
+        ->content_type_is('application/json;charset=UTF-8')
+        ->json_is( $result );
+};
 
 done_testing();
 
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")
     }
 }
-
-
