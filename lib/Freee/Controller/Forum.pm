@@ -17,17 +17,34 @@ sub index {
 }
 
 sub listthemes {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'listthemes',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ( $list, $data, $table, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Group id '$$data{'group_id'}'" unless $data;
+
+        # проверка существования роута указанной группы
+        unless (@mess) {
+            if ( $self->_exists_in_table('forum_groups', 'id', $$data{'group_id'}) ) {
+                # список тем указанной группы
+                $list = $self->_list_themes( $$data{'group_id'} );
+                push @mess, "Could not get list Themes for group '$$data{'group_id'}'" unless $list;
+            }
+            else {
+                push @mess, "Themes for Group id '$$data{'group_id'}' is not exists";
+            }
         }
-    );
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
+
+    $self->render( 'json' => $resp );
 }
 
 sub theme {
