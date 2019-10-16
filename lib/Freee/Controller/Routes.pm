@@ -32,9 +32,10 @@ sub index {
 
         # проверка существования роута указанной группы
         unless (@mess) {
-            if ( $self->_exists_in_table('routes', 'parent', $$data{'parent'}) ) {
+            if ( $self->_exists_in_table('group', 'parent', $$data{'parent'}) ) {
                 # список роутов указанной группы
                 $list = $self->_routes_list( $$data{'parent'} );
+warn Dumper($list);
                 push @mess, "Could not get list Routes for group '$$data{'parent'}'" unless $list;
 
                 # данные для таблицы

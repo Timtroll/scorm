@@ -25,13 +25,27 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 #  Вводим группу родителя
+diag "Add Group" ;
 my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    last;
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200 ) {
+    diag "Can't connect";
+    exit;
 }
 $t->content_type_is('application/json;charset=UTF-8');
+diag "";
+
+# получаем список роутов, чтобы произошло автоматическое заполнение доступных роутов в добаленной группе
+diag "Add Routes" ;
+$data = {'parent' =>  1};
+$t->post_ok( $host.'/groups/' => form => $data );
+
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag "Can't connect";
+    exit;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
 
 my $test_data = {
     # положительные тесты
@@ -250,6 +264,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
+    diag "";
 };
 
 done_testing();
@@ -261,6 +276,6 @@ sub clear_db {
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
     }
     else {
-        warn("Turn on 'test' option in config")
+        warn "Turn on 'test' option in config";
     }
 }

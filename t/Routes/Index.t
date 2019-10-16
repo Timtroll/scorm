@@ -33,6 +33,15 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 $t->content_type_is('application/json;charset=UTF-8');
 
+# получаем список роутов, чтобы произошло автоматическое заполнение доступных роутов в добаленной группе
+$data = {'parent' =>  1};
+$t->post_ok( $host.'/routes/' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+
 my $test_data = {
     # положительные тесты
     1 => {
