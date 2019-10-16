@@ -11,7 +11,8 @@
 use Test::More;
 use Test::Mojo;
 use FindBin;
-
+use Data::Dumper;
+use Mojo::JSON qw(decode_json encode_json);
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
@@ -60,7 +61,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 }
 
 
-# index
+# Проверка ввода в Groups
 my $result = {
     'list' => [
         {
@@ -90,9 +91,22 @@ my $result = {
 diag ("\n All groups: ");
 $t->post_ok( $host.'/groups/' )
     ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
+    ->content_type_is('application/json;charset=UTF-8');
 
+my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8');
+
+my $json =  $answer->{tx}->{res}->{content}->{asset}->{content} ;
+$json = decode_json $json;
+
+my @labels;
+my $poss = '/groups';
+foreach my $tmp ( @{$json->{'list'}->{'body'}} ) {
+    # diag Dumper ( $tmp->{'label'} );
+    push @labels, $tmp->{'label'};
+}
+ok( grep( $poss, @labels ) );
 done_testing();
 
 # очистка тестовой таблицы

@@ -1,6 +1,8 @@
-# включение/выключение роута
-#  "id"     => 1 - id изменяемого элемента ( > 0 )
-#  элементу присваивается "status" = 1
+# изменение поля на 1/0
+# my $true = $self->toggle();
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
 use Mojo::Base -strict;
 
 use Test::More;
@@ -35,13 +37,13 @@ my $test_data = {
         'data' => {
             'id'        => 1,
             'fieldname' => 'status',
-            'value'    => 1
+            'value'     => 1
         },
         'result' => {
             'status'    => 'ok',
             'id'        => 1
         },
-        'comment' => '1. All right:' 
+        'comment' => 'All right:' 
     },
 
     # отрицательные тесты
@@ -54,7 +56,7 @@ my $test_data = {
             'message'   => "Validation error for 'value'. Field is empty or not exists",
             'status'    => 'fail'
         },
-        'comment' => '2. No value:'
+        'comment' => 'No value:'
     },
     3 => {
         'data' => {
@@ -65,31 +67,44 @@ my $test_data = {
             'message'   => "Validation error for 'id'. Field is empty or not exists",
             'status'    => 'fail'
         },
-        'comment' => '3. No id:' 
+        'comment' => 'No id:' 
     },
     4 => {
         'data' => {
             'id'        => 1,
-            'value'    => 1,
+            'value'     => 1,
         },
         'result' => {
             'message'   => "Validation error for 'fieldname'. Field is empty or not exists",
             'status'    => 'fail'
         },
-        'comment' => '4. No fieldname:' 
+        'comment' => 'No fieldname:' 
     },
     5 => {
         'data' => {
             'id'        => 404,
             'fieldname' => 'status',
-            'value'    => 1
+            'value'     => 1
         },
         'result' => {
             'message'   => "Could not toggle Group '404'",
             'status'    => 'fail'
         },
-        'comment' => '5. Wrong id:' 
+        'comment' => 'Wrong id:' 
     },
+    6 => {
+        'data' => {
+            'id'        => 0,
+            'fieldname' => 'status',
+            'value'     => 1
+        },
+        'result' => {
+            'message'   => "Could not toggle Group '0'",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong id:' 
+    },
+    
     
 };
 

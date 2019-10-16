@@ -24,6 +24,7 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# Ввод данных для редактирования
 my $test_data = {
     1 => {
         'data' => {
@@ -164,6 +165,7 @@ $test_data = {
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ( $$test_data{$test}{'comment'} );

@@ -222,11 +222,11 @@ sub register {
                 # "parent"        => [ 'required', qr/^\d+$/os ],
                 # "label"         => [ 'required', qr/.*/os, 256 ],
                 # "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
-                "list"          => [ '', qr/^[01]$/os ],
-                "add"           => [ '', qr/^[01]$/os ],
-                "edit"          => [ '', qr/^[01]$/os ],
-                "delete"        => [ '', qr/^[01]$/os ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "list"          => [ 'required', qr/^[01]$/os ],
+                "add"           => [ 'required', qr/^[01]$/os ],
+                "edit"          => [ 'required', qr/^[01]$/os ],
+                "delete"        => [ 'required', qr/^[01]$/os ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
