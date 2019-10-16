@@ -129,6 +129,7 @@ sub register {
     $app->helper( '_param_fields' => sub {
         $vfields = {
             # валидация роутов
+################
             # роуты settings/*
             '/settings/add_folder'  => {
                 "parent"        => [ '', qr/^\d+$/os ],
@@ -188,7 +189,7 @@ sub register {
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
-
+################
             # роуты groups/*
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
@@ -212,7 +213,7 @@ sub register {
                 "fieldname"     => [ 'required', ['status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
-
+################
             # роуты routes/*
             '/routes'  => {
                 "parent"            => [ 'required', qr/^\d+$/os ]
@@ -233,7 +234,7 @@ sub register {
                 "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'] ],
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
-
+################
             # роуты forum/*            
             '/forum/theme'  => {
                 "id"            => [ '', qr/^\d+$/os ]
