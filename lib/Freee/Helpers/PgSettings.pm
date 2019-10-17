@@ -265,7 +265,7 @@ sub register {
         warn $@ if $@;
         return if $@;
 
-        return 1;
+        return $$data{'id'};
     });
 
     # удаление настройки

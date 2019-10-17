@@ -216,13 +216,13 @@ sub register {
 ################
             # роуты routes/*
             '/routes'  => {
-                "parent"            => [ 'required', qr/^\d+$/os ]
+                "parent"        => [ 'required', qr/^\d+$/os ]
+            },
+            '/routes/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os ]
             },
             '/routes/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                # "parent"        => [ 'required', qr/^\d+$/os ],
-                # "label"         => [ 'required', qr/.*/os, 256 ],
-                # "name"          => [ 'required', qr/^[A-Za-z]+$/os, 256 ],
                 "list"          => [ 'required', qr/^[01]$/os ],
                 "add"           => [ 'required', qr/^[01]$/os ],
                 "edit"          => [ 'required', qr/^[01]$/os ],

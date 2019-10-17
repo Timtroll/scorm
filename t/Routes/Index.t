@@ -10,6 +10,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use Mojo::JSON qw(decode_json encode_json);
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -25,37 +26,25 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 #  Вводим группу родителя
+diag "Create group: ";
 my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
+    diag("Can't create group");
     last;
 }
 $t->content_type_is('application/json;charset=UTF-8');
+diag "";
 
-# получаем список роутов, чтобы произошло автоматическое заполнение доступных роутов в добаленной группе
-$data = {'parent' =>  1};
-$t->post_ok( $host.'/routes/' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    last;
-}
-$t->content_type_is('application/json;charset=UTF-8');
+diag "Get list groups and create routes: ";
+$t->post_ok( $host.'/groups/' )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8');
+diag "";
 
 my $test_data = {
-    # положительные тесты
-    1 => {
-        'data' => {
-            'parent'    => 1
-        },
-        'result' => {
-            'result'    => $result,
-            'status'    => 'ok'
-        },
-        'comment' => 'All right:' 
-    },
     # отрицательные тесты
-    2 => {
+    1 => {
         'data' => {
             'parent'    => 404,
         },
@@ -65,7 +54,7 @@ my $test_data = {
         },
         'comment' => 'Wrong parent:' 
     },
-    3 => {
+    2 => {
         'data' => {
             'parent'    => 'mistake',
         },
@@ -75,23 +64,51 @@ my $test_data = {
         },
         'comment' => 'Wrong field type:' 
     },
+    3 => {
+        'result' => {
+            'message'   => "Validation error for 'parent'. Field is empty or not exists",
+            'status'    => 'fail'
+        },
+        'comment' => 'No data:' 
+    },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
+
     diag ( $$test_data{$test}{'comment'} );
     $t->post_ok($host.'/routes/' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
+    diag "";
 };
+
+diag "All right:";
+my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
+    ->status_is(200)
+    ->content_type_is('application/json;charset=UTF-8');
+
+my $json =  $answer->{tx}->{res}->{content}->{asset}->{content} ;
+$json = decode_json $json;
+
+# Проверка наличия реального роута в таблице
+my @labels;
+my $poss = '/routes';
+foreach my $tmp ( @{$json->{'list'}->{'body'}} ) {
+    push @labels, $tmp->{'label'};
+}
+ok( grep( $poss, @labels ) );
+diag "";
 
 done_testing();
 
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
         $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
     }

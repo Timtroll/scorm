@@ -32,10 +32,9 @@ sub index {
 
         # проверка существования роута указанной группы
         unless (@mess) {
-            if ( $self->_exists_in_table('group', 'parent', $$data{'parent'}) ) {
+            if ( $self->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
                 # список роутов указанной группы
                 $list = $self->_routes_list( $$data{'parent'} );
-warn Dumper($list);
                 push @mess, "Could not get list Routes for group '$$data{'parent'}'" unless $list;
 
                 # данные для таблицы
@@ -66,6 +65,33 @@ warn Dumper($list);
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'list'} = $table unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+# получение данных о роуту
+# my $row = $self->edit()
+# 'id' - id роута
+sub edit {
+    my $self = shift;
+
+    my ($id, $data, @mess, $resp);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct Route data '$$data{'id'}'" unless $data;
+
+        if ($data) {
+            $data = $self->_get_route( $$data{'id'} );
+            push @mess, "Could not get Route '".$$data{'id'}."'" unless $data;
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
