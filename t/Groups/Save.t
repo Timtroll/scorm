@@ -49,6 +49,7 @@ my $test_data = {
         }
     }
 };
+diag "Add groups:";
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -56,6 +57,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         exit; 
     }
     $t->json_is( $$test_data{$test}{'result'} );
+    diag "";
 }
 
 $test_data = {
@@ -165,7 +167,6 @@ $test_data = {
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ( $$test_data{$test}{'comment'} );
@@ -173,6 +174,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
+    diag "";
 };
 
 done_testing();

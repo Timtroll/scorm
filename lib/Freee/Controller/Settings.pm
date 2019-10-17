@@ -285,6 +285,15 @@ sub add {
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
+        # корректирование пустых значений
+        unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
+        unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
+        unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
+        unless ( defined $$data{'value'} )       { $$data{'value'}       = 0 };
+        unless ( defined $$data{'selected'} )    { $$data{'selected'}    = 0 };
+        unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
+        unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+
         # проверяем поле name на дубликат
         if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
             push @mess, "Setting named '$$data{'name'}' is exists";
@@ -354,6 +363,15 @@ sub save {
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
+        # корректирование пустых значений
+        unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
+        unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
+        unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
+        unless ( defined $$data{'value'} )       { $$data{'value'}       = 0 };
+        unless ( defined $$data{'selected'} )    { $$data{'selected'}    = 0 };
+        unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
+        unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+        
         # проверяем поле name на дубликат
         unless (@mess) {
             if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {

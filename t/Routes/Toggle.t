@@ -23,6 +23,7 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Импорт доступных групп
+diag "Add Group";
 my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -30,6 +31,19 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     last;
 }
 $t->content_type_is('application/json;charset=UTF-8');
+diag "";
+
+# Импорт доступных роутов
+diag "Add Routes";
+$data = {'parent' =>  1};
+$t->post_ok( $host.'/groups/' => form => $data );
+
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag "Can't connect";
+    exit;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
 
 my $test_data = {
     # положительные тесты
@@ -153,8 +167,6 @@ my $test_data = {
         },
         'comment' => 'status -> 0:' 
     },
-    
-    
 
     # отрицательные тесты
     11 => {
@@ -200,7 +212,7 @@ my $test_data = {
             'message'   => "Could not toggle Group '404'",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong id:' 
+        'comment' => 'Id do not exist:' 
     },
     15 => {
         'data' => {
@@ -234,6 +246,8 @@ done_testing();
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
         $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
     }

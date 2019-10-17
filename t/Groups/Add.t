@@ -122,6 +122,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     }
     $t->content_type_is('application/json;charset=UTF-8');
     $t->json_is( $result );
+    diag "";
 };
 
 done_testing();

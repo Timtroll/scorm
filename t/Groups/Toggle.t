@@ -23,6 +23,7 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Импорт доступных групп
+diag "Add group:";
 my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -30,6 +31,7 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     last;
 }
 $t->content_type_is('application/json;charset=UTF-8');
+diag "";
 
 my $test_data = {
     # положительные тесты
@@ -131,5 +133,3 @@ sub clear_db {
         warn("Turn on 'test' option in config")
     }
 }
-
-

@@ -51,6 +51,7 @@ my $test_data = {
         }
     }
 };
+diag "Create groups:";
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -59,7 +60,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     }
     $t->json_is( $$test_data{$test}{'result'} );
 }
-
+diag "";
 
 # Проверка ввода в Groups
 my $result = {
@@ -88,11 +89,13 @@ my $result = {
     'status' => 'ok'
 };
 
-diag ("\n All groups: ");
+diag "All groups:";
 $t->post_ok( $host.'/groups/' )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
+diag "";
 
+diag "Create routes:";
 my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
@@ -100,18 +103,21 @@ my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
 my $json =  $answer->{tx}->{res}->{content}->{asset}->{content} ;
 $json = decode_json $json;
 
+# Проверка наличия реального роута в таблице
 my @labels;
 my $poss = '/groups';
 foreach my $tmp ( @{$json->{'list'}->{'body'}} ) {
-    # diag Dumper ( $tmp->{'label'} );
     push @labels, $tmp->{'label'};
 }
 ok( grep( $poss, @labels ) );
+
 done_testing();
 
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
         $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
     }
