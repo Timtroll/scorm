@@ -9,7 +9,7 @@ sub new {
     my $class = shift;
 
     if (ref $class && $class->isa(__PACKAGE__)) {
-      @_ == 1 ? $_[0]->{app} = $class->{app} : push @_, app => $class->{app};
+      scalar( @_ ) == 1 ? $_[0]->{app} = $class->{app} : push @_, app => $class->{app};
     }
 
     my $self = $class->SUPER::new(@_);
@@ -20,7 +20,7 @@ sub new {
 
 sub check {
     my ($self, $name, $pass) = @_;
-warn 'Users = check';
+warn 'Model::Users sub check()';
     # Constant
     return int rand 2;
     # return int rand 2;

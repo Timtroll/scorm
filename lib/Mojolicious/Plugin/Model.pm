@@ -45,9 +45,7 @@ sub register {
 sub _load_class {
     my $class = shift;
 
-# warn '_load_class ', Dumper $class;
     my $error = Mojo::Loader->can('new') ? Mojo::Loader->new->load($class) : Mojo::Loader::load_class($class);
-# warn 'error ', Dumper $error;
 
     return 1 unless $error;
     die $error if ref $error;
@@ -59,21 +57,18 @@ sub _load_class_for_name {
 
     return $plugin->{classes_loaded}{$name} if $plugin->{classes_loaded}{$name};
 
-    my $ns   = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
+    my $ns = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
     # my $base = $conf->{base_classes} // [qw(MojoX::Model)];
 
     $name = camelize($name) if $name =~ /^[a-z]/;
 
-# warn 'ns ', Dumper $ns;
     for my $class ( map "${_}::$name", @$ns ) {
-# warn 'class ', Dumper $class;
         next unless _load_class($class);
 
-# warn 'base ', Dumper $base;
-        unless ( any { $class->isa($_) } @$base ) {
-            $app->log->debug(qq[Class "$class" is not a model]);
-            next;
-        }
+        # unless ( any { $class->isa($_) } @$base ) {
+        #     $app->log->debug(qq[Class "$class" is not a model]);
+        #     next;
+        # }
         $plugin->{classes_loaded}{$name} = $class;
         return $class;
     }

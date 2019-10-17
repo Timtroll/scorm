@@ -4,7 +4,7 @@ use Mojo::Base 'Freee::Model::Users';
 
 sub do {
     my ($self) = @_;
-    warn "Client = do";
+    warn "Model::Users::Client sub do()";
 }
 
 1;
