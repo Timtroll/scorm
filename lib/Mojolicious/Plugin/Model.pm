@@ -60,7 +60,7 @@ sub _load_class_for_name {
     return $plugin->{classes_loaded}{$name} if $plugin->{classes_loaded}{$name};
 
     my $ns   = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
-    my $base = $conf->{base_classes} // [qw(MojoX::Model)];
+    # my $base = $conf->{base_classes} // [qw(MojoX::Model)];
 
     $name = camelize($name) if $name =~ /^[a-z]/;
 
