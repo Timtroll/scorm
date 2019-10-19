@@ -1,9 +1,17 @@
 # Сохранение настройки
 # my $id = $self->update({
-#     "id"        => 1            - id обновляемого элемента ( >0 )
-#     "label"     => 'название'   - обязательно (название для отображения)
-#     "name",     => 'name'       - обязательно (системное название, латиница)
-#     "status"    => 0 или 1      - активна ли группа
+# 'id'          => 1,
+# 'parent'      => 1,
+# 'name'        => 'name',
+# 'label'       => 'label',
+# 'placeholder' => 'placeholder',
+# 'type'        => 'type',
+# 'mask'        => 'mask',
+# 'value'       => 'value',
+# 'selected'    => '[]',
+# 'required'    => 0,
+# 'readonly'    => 0,
+# 'status'      => 1
 # });
 use Mojo::Base -strict;
 

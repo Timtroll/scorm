@@ -107,10 +107,8 @@ done_testing();
 # очистка тестовой таблицы
 sub clear_db {
     if ($t->app->config->{test}) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".routes_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".routes RESTART IDENTITY CASCADE');
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".settings_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".settings RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")

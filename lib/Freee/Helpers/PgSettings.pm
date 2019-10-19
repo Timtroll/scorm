@@ -159,7 +159,7 @@ sub register {
     $app->helper( '_get_leafs' => sub {
         my ($self, $id) = @_;
 
-        return unless $id;
+        return unless defined $id;
 
         my $sql = 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id';
         my $list;
@@ -276,14 +276,15 @@ sub register {
 
         return unless $id;
 
+        my $result;
         my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
         eval {
-            $self->pg_dbh->do($sql);
+            $result = $self->pg_dbh->do($sql) + 0;
         };
         warn $@ if $@;
         return if $@;
 
-        return 1;
+        return $result;
     });
 
     # читаем одну настройку

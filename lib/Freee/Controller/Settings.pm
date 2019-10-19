@@ -91,8 +91,6 @@ sub save_folder {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "folder"      => 1,           - это группа настроек
-#     "readonly"    => 0,           - не обязательно, по умолчанию 0
 # }
 sub add_folder {
     my $self = shift;
@@ -110,18 +108,24 @@ sub add_folder {
             push @mess, "Folder item named '$$data{'name'}' is exists";
         }
         else {
-            # устанавляваем обязательные поля для фолдера
-            $$data{'placeholder'} = '';
-            $$data{'type'} = '';
-            $$data{'mask'} = '';
-            $$data{'value'} = '';
-            $$data{'selected'} = '';
-            $$data{'required'} = 0;
-            $$data{'readonly'} = 0;
-            $$data{'status'} = 1;
+            unless ( $$data{'parent'} ) {
+                # устанавляваем обязательные поля для фолдера
+                $$data{'parent'} = 0;
+                $$data{'placeholder'} = '';
+                $$data{'type'} = '';
+                $$data{'mask'} = '';
+                $$data{'value'} = '';
+                $$data{'selected'} = '';
+                $$data{'required'} = 0;
+                $$data{'readonly'} = 0;
+                $$data{'status'} = 1;
 
-            $id = $self->_insert_folder( $data ) unless @mess;
-            push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+                $id = $self->_insert_folder( $data ) unless @mess;
+                push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+            }
+            else {
+                push @mess, "Parent '$$data{'parent'}' is wrong";
+            }
         }
     }
 
@@ -175,27 +179,31 @@ sub get_leafs {
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         if ($data) {
-            $list = $self->_get_leafs( $$data{'id'} );
-            push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
+            if ( ( $$data{'id'} == 0 ) || ( $self->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
+                $list = $self->_get_leafs( $$data{'id'} );
+                push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
 
-            # данные для таблицы
-            $table = {
-                "settings" => {
-                    "massEdit"  => 0,        # групповое редактировани
-                    "editable"  => 1,        # разрешение редактирования
-                    "removable" => 1,        # разрешение удаления
-                    "sort" => {         # сотрировка по
-                        "name"    => "id",
-                        "order"   => "asc"
+                # данные для таблицы
+                $table = {
+                    "settings" => {
+                        "massEdit"  => 0,        # групповое редактировани
+                        "editable"  => 1,        # разрешение редактирования
+                        "removable" => 1,        # разрешение удаления
+                        "sort" => {         # сотрировка по
+                            "name"    => "id",
+                            "order"   => "asc"
+                        },
+                        "page" => {
+                          "current_page"    => 1,
+                          "per_page"        => 100,
+                          "total"           => scalar(@$list)
+                        }
                     },
-                    "page" => {
-                      "current_page"    => 1,
-                      "per_page"        => 100,
-                      "total"           => scalar(@$list)
-                    }
-                },
-                "body" => $list
-            } unless @mess;
+                    "body" => $list
+                } unless @mess;
+            } else {
+                push @mess, "Setting id '$$data{'id'}' not exists";
+            }
         }
     }
 
@@ -289,8 +297,8 @@ sub add {
         unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
         unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
         unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
-        unless ( defined $$data{'value'} )       { $$data{'value'}       = 0 };
-        unless ( defined $$data{'selected'} )    { $$data{'selected'}    = 0 };
+        unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
+        unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
         unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
         unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
 

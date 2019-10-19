@@ -329,6 +329,25 @@ my $test_data = {
         },
         'comment' => 'Wrong parent:'
     },
+    15 => {
+        'data' => {
+            'parent'      => 0,
+            'name'        => 'name123',
+            'label'       => 'label123',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 'mistake',
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Could not create new setting item ''",
+            'status'    => 'fail',
+        },
+        'comment' => 'Folder creation:'
+    },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
