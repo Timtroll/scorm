@@ -106,8 +106,6 @@ my $test_data = {
         },
         'comment' => 'Wrong id:' 
     },
-    
-    
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
