@@ -22,9 +22,7 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <Tree v-if="nav"
-            :nav="nav">
-      </Tree>
+      <Tree :nav="nav"></Tree>
     </template>
 
     <!--bodyRight-->
