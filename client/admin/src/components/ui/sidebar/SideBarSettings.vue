@@ -5,7 +5,7 @@
       <a>
         <icon-setting :spin="true"></icon-setting>
       </a>
-      <div uk-dropdown="mode: click; pos: right-bottom;  animation: uk-animation-slide-right-small; duration: 300">
+      <div :uk-dropdown="dropdownOptions">
         <ul class="uk-nav uk-dropdown-nav pos-sidebar-dropdown-nav">
           <li class="uk-nav-header">Header</li>
           <li class="uk-nav-divider"></li>
@@ -43,17 +43,33 @@
     },
 
     props: {
-      size:  {
+      size:       {
         type:    Number,
         default: 24
       },
-      width: {
+      width:      {
         type:    Number,
         default: 1
+      },
+      innerWidth: {
+        type: Number
       }
     },
 
     computed: {
+
+      dropdownOptions () {
+
+        let position = 'right-bottom'
+
+        if (this.innerWidth <= 768) {
+          position = 'mode: click; pos: top-right;  animation: uk-animation-slide-right-small; duration: 300'
+        } else {
+          position = 'mode: click; pos: right-bottom;  animation: uk-animation-slide-right-small; duration: 300'
+        }
+        return position
+      },
+
       menuSettings () {
         return this.$router.options.routes
                    .filter(item => item.sideSettingsMenuParent)[0]

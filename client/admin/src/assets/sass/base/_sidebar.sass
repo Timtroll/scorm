@@ -11,7 +11,7 @@
   flex-direction: column
 
   @media (max-width: $breakpoint-medium)
-    overflow-y: visible
+    //overflow-y: inherit
     .pos-sidebar--nav
       & > li.uk-active
         & > a
@@ -89,7 +89,7 @@
 
   .pos-sidebar--nav
     //overflow: visible
-    overflow-y: visible
+    //overflow-y: visible
 
     & > li
       &.uk-active
@@ -117,11 +117,11 @@
   list-style: none
   display: flex
   flex-direction: column
-  overflow-y: auto
+  //overflow-y: initial
 
   @media (max-width: $breakpoint-medium)
     flex-direction: row
-    overflow-x: auto
+    //overflow-x: auto
     justify-content: space-between
 
   & > li

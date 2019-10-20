@@ -30,6 +30,7 @@
 
       <!--Settings-->
       <SideBarUserMenu :size="30"
+                       :inner-width="width"
                        :width="1">
       </SideBarUserMenu>
     </div>
