@@ -3,6 +3,8 @@
 SOURCE=`pwd`
 echo $SOURCE
 
+# добавить лоад конфига ?????
+
 echo "-------"
 echo "start mojo daemon:"
 echo "cd $SOURCE"

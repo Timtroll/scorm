@@ -121,6 +121,9 @@ sub register {
         warn $@ if $@;
         return if $@;
 
+        # синхронизация реальных роутов в группах
+        $self->_all_groups();
+
         return $id;
     });
 
@@ -166,6 +169,10 @@ sub register {
 
         return $result;
     });
+
+    sub sync_routes {
+
+    }
 }
 
 1;

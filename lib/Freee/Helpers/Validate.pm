@@ -47,10 +47,12 @@ sub register {
     # my $list = $self->_check('settings');
     # возвращает 1/undef
     $app->helper( '_check' => sub {
+warn Dumper($_[0]->tx->req->params->to_hash);
         return 0 unless $_[1];
 
         my @error = ();
-        # Проверка наличия объекта для валидации
+
+       # Проверка наличия объекта для валидации
         if ( defined $vfields->{$_[1]} ) {
             my $valid = $vfields->{$_[1]};
 
