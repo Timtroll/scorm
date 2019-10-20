@@ -71,7 +71,6 @@ const router = new Router({
             breadcrumb:   'Отзывы'
           }
         },
-
         {
           path:          '/media',
           name:          'Media',
@@ -86,31 +85,49 @@ const router = new Router({
         {
           path:          '/profile',
           name:          'Profile',
-          component:     () => import(/* webpackChunkName: "account" */ './components/profile/Account'),
+          component:     () => import(/* webpackChunkName: "Account" */ './components/profile/Account'),
           showInSideBar: false,
           meta:          {
             authRequired: true,
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Профиль пользователя'
           }
-        },
+        }
+      ]
+    },
+
+    {
+      path:                   '/config',
+      name:                   'config',
+      redirect:               '/Settings',
+      component:              () => import(/* webpackChunkName: "main" */ './views/Main'),
+      showInSideBar:          false,
+      sideSettingsMenuParent: true,
+      meta:                   {
+        authRequired: true,
+        icon:         'img/icons/user_profile.svg',
+        breadcrumb:   'Системные настройки'
+      },
+      children:               [
         {
-          path:          '/settings',
-          name:          'Settings',
-          component:     () => import(/* webpackChunkName: "settings" */ './components/settings/Settings'),
-          showInSideBar: false,
-          meta:          {
+          path:           '/settings',
+          name:           'Settings',
+          component:      () => import(/* webpackChunkName: "Settings" */ './components/settings/Settings'),
+          showInSideBar:  false,
+          showInSettings: true,
+          meta:           {
             authRequired: true,
-            icon:         'img/icons/user_profile.svg',
+            icon:         'img/icons/icon__settings.svg',
             breadcrumb:   'Настройки'
           },
-          children:      [
+          children:       [
             {
-              path:          '/settings/:id',
-              name:          'SettingItem',
-              component:     () => import(/* webpackChunkName: "table" */ './components/ui/cmsTable/Table'),
-              showInSideBar: false,
-              meta:          {
+              path:           '/settings/:id',
+              name:           'SettingItem',
+              component:      () => import(/* webpackChunkName: "Table" */ './components/ui/cmsTable/Table'),
+              showInSideBar:  false,
+              showInSettings: false,
+              meta:           {
                 parentName:   'Settings',
                 authRequired: true,
                 breadcrumb:   'Настройки'
@@ -119,47 +136,49 @@ const router = new Router({
           ]
         },
         {
-          path:          '/users',
-          name:          'Users',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
-          showInSideBar: false,
-          meta:          {
-            authRequired: true,
-            icon:         'img/icons/sidebar_users.svg',
-            breadcrumb:   'Пользователи'
-          }
-        },
-        {
-          path:          '/groups',
-          name:          'Groups',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/groups/Groups'),
-          //component: () => import('./components/groups/Groups'),
-          showInSideBar: false,
-          meta:          {
+          path:           '/groups',
+          name:           'Groups',
+          component:      () => import(/* webpackChunkName: "Groups" */ './components/groups/Groups'),
+          showInSideBar:  false,
+          showInSettings: true,
+          meta:           {
             authRequired: true,
             icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Управление группами пользователей'
           },
-          children:      [
+          children:       [
             {
-              path:          '/groups/:id',
-              name:          'GroupsItem',
-              component:     () => import(/* webpackChunkName: "table" */ './components/ui/cmsTable/Table'),
-              showInSideBar: false,
-              meta:          {
+              path:           '/groups/:id',
+              name:           'GroupsItem',
+              component:      () => import(/* webpackChunkName: "Table" */ './components/ui/cmsTable/Table'),
+              showInSideBar:  false,
+              showInSettings: false,
+              meta:           {
                 parentName:   'Groups',
                 authRequired: true,
                 breadcrumb:   'Настройки'
               }
             }
           ]
+        },
+        {
+          path:           '/users',
+          name:           'Users',
+          component:      () => import(/* webpackChunkName: "DashBoard" */ './components/dashboard/DashBoard'),
+          showInSideBar:  false,
+          showInSettings: true,
+          meta:           {
+            authRequired: true,
+            icon:         'img/icons/sidebar_users.svg',
+            breadcrumb:   'Пользователи'
+          }
         }
       ]
     },
     {
       path:          '/404',
       name:          'pageNotFound',
-      component:     () => import('./views/PageNotFound'),
+      component:     () => import(/* webpackChunkName: "PageNotFound" */ './views/PageNotFound'),
       showInSideBar: false,
       meta:          {
         authRequired: false,

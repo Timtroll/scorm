@@ -65,7 +65,6 @@
     computed: {
 
       tooltipPosition () {
-
         let position = 'right'
         if (this.width <= 768) {
           position = 'top'
@@ -82,6 +81,7 @@
           .children
           .filter(item => item.showInSideBar)
       }
+
     },
 
     //
