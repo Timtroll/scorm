@@ -2,7 +2,6 @@
 @import "../mixins"
 
 .pos-sidebar
-  //height: 100%
   box-sizing: border-box
   width: $navbar-height
   color: $global-inverse-color
@@ -11,7 +10,6 @@
   flex-direction: column
 
   @media (max-width: $breakpoint-medium)
-    //overflow-y: inherit
     .pos-sidebar--nav
       & > li.uk-active
         & > a
@@ -88,9 +86,6 @@
     border-top: none
 
   .pos-sidebar--nav
-    //overflow: visible
-    //overflow-y: visible
-
     & > li
       &.uk-active
         & > a
@@ -117,11 +112,9 @@
   list-style: none
   display: flex
   flex-direction: column
-  //overflow-y: initial
 
   @media (max-width: $breakpoint-medium)
     flex-direction: row
-    //overflow-x: auto
     justify-content: space-between
 
   & > li
@@ -142,7 +135,6 @@
       color: rgba($global-inverse-color, .8)
       position: relative
       box-sizing: border-box
-      //overflow: hidden
 
       @media (max-width: $breakpoint-xlarge)
         line-height: $navbar-small-height * .9
@@ -166,7 +158,6 @@
 .pos-notify-bar-nav
   .pos-sidebar--nav
     height: 100%
-    //overflow: auto
     -webkit-overflow-scrolling: touch
     scrollbar-width: none
     scroll-snap-type: both mandatory
@@ -217,17 +208,12 @@
 
 @media (max-width: $breakpoint-medium)
   .pos-sidebar-middle
-    //overflow: auto
-
     .pos-sidebar--nav
       //scroll-snap-type: x proximity
       //overflow: visible
 
       & > li
-
         & > a
-          //overflow: visible
-
           & > *
             transition: transform .3s ease-in-out
 
@@ -241,7 +227,6 @@
             height: $navbar-height * .75
             left: 50%
             right: auto
-        //z-index: 1
 
         &::after
           transition: transform .3s ease .3s
