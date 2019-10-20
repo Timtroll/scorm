@@ -16,7 +16,7 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <router-view/>
+        <router-view></router-view>
       </transition>
 
     </template>
@@ -51,6 +51,7 @@
 
   // import VUEX module groups
   import settings from '@/store/modules/settings'
+  import {clone} from '../../store/methods'
 
   export default {
 
@@ -99,6 +100,9 @@
 
     async created () {
 
+      // Регистрация Vuex модуля settings
+      await this.$store.registerModule('settings', settings)
+
       // // запросы
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
@@ -107,9 +111,6 @@
       //// запись прототипа из json в store
       this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
       this.$store.commit('set_tree_proto', settingsProtoFolder)
-
-      // Регистрация Vuex модуля settings
-      await this.$store.registerModule('settings', settings)
 
       //// Получение дерева с сервера
       await this.$store.dispatch(this.actions.tree.get)
@@ -149,7 +150,7 @@
         return this.$store.getters.cardRightState
       },
 
-      cardLeft_show  () {
+      cardLeft_show () {
         return this.$store.getters.cardLeftState
       },
 
@@ -235,7 +236,7 @@
           fields: {}
         }
 
-        const arr = JSON.parse(JSON.stringify(data))
+        const arr = clone(data)
         arr.forEach(item => {save.fields[item.name] = item.value})
 
         this.$store.dispatch(this.actions.editPanel.save, save)

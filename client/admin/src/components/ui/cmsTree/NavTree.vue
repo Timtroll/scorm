@@ -15,6 +15,7 @@
   export default {
 
     name:       'NavTree',
+
     components: {NavTreeItem},
 
     props: {

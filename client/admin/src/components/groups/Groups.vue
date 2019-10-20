@@ -97,6 +97,8 @@
 
     async created () {
 
+      await this.$store.registerModule('groups', groups)
+
       // запросы
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
@@ -105,8 +107,6 @@
       //// запись прототипа из json в store
       this.$store.commit('set_editPanel_proto', groupProtoLeaf)
       this.$store.commit('set_tree_proto', groupProtoFolder)
-
-      await this.$store.registerModule('groups', groups)
 
       //// Получение дерева с сервера
       await this.$store.dispatch(this.actions.tree.get)
