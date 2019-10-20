@@ -7,7 +7,7 @@
       </a>
       <div :uk-dropdown="dropdownOptions">
         <ul class="uk-nav uk-dropdown-nav pos-sidebar-dropdown-nav">
-          <li class="uk-nav-header">Header</li>
+          <li class="uk-nav-header" v-text="$t('settings.navLabel')"></li>
           <li class="uk-nav-divider"></li>
           <li v-for="(item, index) in menuSettings"
               :key="index"
