@@ -7,7 +7,7 @@ const getters = {
   cardLeftState:       state => state.card.leftShow,
   cardRightPanelLarge: state => state.card.rightPanelLarge,
   cardRightState:      state => state.card.rightShow,
-  cardLeftClickAction: state => state.card.leftShow,
+  cardLeftClickAction: state => state.card.leftNavClick,
 
   cardActions:         state => state.actions
 

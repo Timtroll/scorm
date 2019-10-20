@@ -270,57 +270,38 @@
 
     async created () {
 
-      if (this.$store.getters) {
-        console.log('created', await this.$store.getters.tree_api, await this.tableId)
-      }
+      //if (this.notEmptyTable === 'error') {
+      //  this.$store.commit('card_right_show', false)
+      //  this.$store.commit('tree_active', this.tableId)
+      //  await this.$store.dispatch(this.table_api.get, this.tableId)
+      //}
+
+    },
+
+    async mounted () {
+
       if (this.notEmptyTable === 'error') {
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
         await this.$store.dispatch(this.table_api.get, this.tableId)
       }
-      this.$nextTick(() => {})
 
     },
-
-    mounted () {
-      console.log('mounted', this.$store.getters.tree_api, this.tableId)
-    },
-    updated () {console.log('updated', this.$store.getters.tree_api, this.tableId)},
 
     beforeDestroy () {
       this.$store.commit('editPanel_show', false)
       this.$store.commit('tree_active', null)
       this.$store.commit('set_editPanel_proto', [])
       this.$store.commit('set_tree_proto', [])
-
-      // выгрузка Vuex модуля settings
-      //this.$store.unregisterModule('settings')
     },
 
     computed: {
 
-      pageComponent () {
-        return this.$route.name
-      },
+      pageComponent () {return this.$route.name},
 
-      table_api () {
+      table_api () {return this.$store.getters.table_api},
 
-        //const api = this.$store.getters.table_api
-        //
-        //if (this.table_api) {
-        //  this.$store.commit('tree_active', this.tableId)
-        //  this.$store.dispatch(this.table_api.get, api)
-        //}
-
-        return this.$store.getters.table_api
-
-      },
-
-      tableNotEmpty () {
-        if (this.tableRows) {
-          return this.tableRows.length > 0
-        }
-      },
+      tableNotEmpty () {if (this.tableRows) {return this.tableRows.length > 0}},
 
       tableId () {return this.$route.params.id},
 
@@ -359,9 +340,7 @@
         }
       },
 
-      tableRowDetail () {
-        return this.$store.getters.pageTableRow
-      },
+      tableRowDetail () {return this.$store.getters.pageTableRow},
 
       // Шапка таблицы
       tableHeader () {
