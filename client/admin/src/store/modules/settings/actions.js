@@ -4,7 +4,6 @@ import store from '../../store'
 import router from '../../../router'
 import {clone, flatTree, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
-//import Settings from '../../../components/settings/Settings'
 
 const actions = {
 
