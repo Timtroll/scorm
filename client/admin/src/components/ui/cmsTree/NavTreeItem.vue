@@ -6,12 +6,12 @@
          :class="{'uk-active': Number(navActiveId) === navItem.id}">
 
       <div class="pos-side-nav-item__icon"
-           @click="toggleChildren"
+           @click.prevent="toggleChildren"
            v-if="navItem.children && navItem.children.length > 0">
-        <img src="/img/icons/icon__minus.svg"
+        <img uk-img="data-src:/img/icons/icon__minus..svg"
              uk-svg
              v-if="opened">
-        <img src="/img/icons/icon__plus.svg"
+        <img uk-img="data-src:/img/icons/icon__plus.svg"
              uk-svg
              v-else>
       </div>
@@ -87,7 +87,7 @@
     name: 'NavTreeItem',
 
     components: {
-      NavTree: () => import(/* webpackChunkName: "nav-tree" */ './NavTree')
+      NavTree: () => import(/* webpackChunkName: "NavTree" */ './NavTree')
     },
 
     props: {
@@ -100,6 +100,7 @@
 
       // open tree if children is active
       if (this.navItem && this.navItem.children) {
+
         const children = clone(this.navItem.children)
 
         if (children && children.length > 0) {
@@ -115,9 +116,7 @@
       }
     },
 
-    beforeDestroy () {
-      this.$store.commit('page_title', '')
-    },
+    beforeDestroy () {this.$store.commit('page_title', '')},
 
     computed: {
 
@@ -161,21 +160,14 @@
 
         // если folder = 1 -
         if (this.navItem.children && this.navItem.children.length > 0) {
+
           this.toggleChildren()
+
         } else {
+
           if (this.navActiveId !== this.navItem.id) {
 
-            this.$store.commit('card_right_show', false)
-            this.$store.commit('tree_active', item.id)
-            this.$store.dispatch(this.table_api.get, item.id)
-
-            this.$router.push({
-              name:   this.tree_api.childComponentName,
-              params: {
-                id:    item.id,
-                title: item.label
-              }
-            })
+            this.showTable(item)
 
           }
 
@@ -201,6 +193,20 @@
         //this.$store.commit('editPanel_group', true)
         //this.$store.commit('cms_show_add_edit_toggle', true)
         //this.$store.commit('editPanel_status_success')
+      },
+
+      showTable (item) {
+        this.$store.commit('card_right_show', false)
+        this.$store.commit('tree_active', item.id)
+        this.$store.dispatch(this.table_api.get, item.id)
+
+        this.$router.push({
+          name:   this.tree_api.childComponentName,
+          params: {
+            id:    item.id,
+            title: item.label
+          }
+        })
       },
 
       // edit children group
@@ -234,7 +240,6 @@
 
       // remove group
       remove (id) {
-
         UIkit
           .modal
           .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})

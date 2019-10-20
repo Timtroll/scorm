@@ -2,6 +2,7 @@
   <Card :header="false"
         :footer="false"
         :body-left="true"
+        :body-left-show="cardLeft_show"
         :body-left-padding="false"
         :body-left-toggle-show="true"
         :body-right="true"
@@ -45,8 +46,8 @@
 <script>
 
   //import прототипа колонок таблицы
-  import settingsProtoLeaf from './../../assets/json/proto/settings/leaf.json'
-  import settingsProtoFolder from './../../assets/json/proto/settings/folder.json'
+  import settingsProtoLeaf from '@/assets/json/proto/settings/leaf.json'
+  import settingsProtoFolder from '@/assets/json/proto/settings/folder.json'
 
   // import VUEX module groups
   import settings from '@/store/modules/settings'
@@ -98,6 +99,15 @@
 
     async created () {
 
+      // // запросы
+      this.$store.commit('table_api', this.actions.table)
+      this.$store.commit('tree_api', this.actions.tree)
+      this.$store.commit('editPanel_api', this.actions.editPanel)
+
+      //// запись прототипа из json в store
+      this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
+      this.$store.commit('set_tree_proto', settingsProtoFolder)
+
       // Регистрация Vuex модуля settings
       await this.$store.registerModule('settings', settings)
 
@@ -111,18 +121,7 @@
 
       //// Размер панели редактирования
       await this.$store.commit('editPanel_size', false)
-
-      // // запросы
-      await this.$store.commit('table_api', this.actions.table)
-      await this.$store.commit('tree_api', this.actions.tree)
-      await this.$store.commit('editPanel_api', this.actions.editPanel)
-    },
-
-    mounted () {
-
-      //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
-      this.$store.commit('set_tree_proto', settingsProtoFolder)
+      this.$store.commit('card_right_show', false)
 
     },
 
@@ -148,6 +147,10 @@
 
       editPanel_show () {
         return this.$store.getters.cardRightState
+      },
+
+      cardLeft_show  () {
+        return this.$store.getters.cardLeftState
       },
 
       editPanel_add () {

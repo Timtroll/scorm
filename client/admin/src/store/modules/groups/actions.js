@@ -43,7 +43,6 @@ const actions = {
             store.commit('set_tree_flat', flattenTree)
           } else {
             store.commit('set_tree', [])
-            store.commit('tree_status_success')
             store.commit('table_status_error')
             notify('В дереве пусто', 'warning')
           }
@@ -206,6 +205,9 @@ const actions = {
           const table = resp.list
           await store.commit('set_table', table)
           //await store.commit('table_status_success')
+        } else {
+          store.commit('table_status_error') // статус - ошибка
+          notify(resp.message, 'danger') // уведомление об ошибке
         }
       }
 

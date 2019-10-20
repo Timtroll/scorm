@@ -2,7 +2,6 @@
 @import "../mixins"
 
 .pos-sidebar
-  //height: 100%
   box-sizing: border-box
   width: $navbar-height
   color: $global-inverse-color
@@ -11,7 +10,6 @@
   flex-direction: column
 
   @media (max-width: $breakpoint-medium)
-    overflow-y: visible
     .pos-sidebar--nav
       & > li.uk-active
         & > a
@@ -114,11 +112,10 @@
   list-style: none
   display: flex
   flex-direction: column
-  overflow-y: auto
 
   @media (max-width: $breakpoint-medium)
     flex-direction: row
-    overflow-x: auto
+    justify-content: space-between
 
   & > li
     flex: none
@@ -138,7 +135,6 @@
       color: rgba($global-inverse-color, .8)
       position: relative
       box-sizing: border-box
-      //overflow: hidden
 
       @media (max-width: $breakpoint-xlarge)
         line-height: $navbar-small-height * .9
@@ -162,7 +158,6 @@
 .pos-notify-bar-nav
   .pos-sidebar--nav
     height: 100%
-    //overflow: auto
     -webkit-overflow-scrolling: touch
     scrollbar-width: none
     scroll-snap-type: both mandatory
@@ -213,17 +208,12 @@
 
 @media (max-width: $breakpoint-medium)
   .pos-sidebar-middle
-    //overflow: auto
-
     .pos-sidebar--nav
       //scroll-snap-type: x proximity
       //overflow: visible
 
       & > li
-
         & > a
-          //overflow: visible
-
           & > *
             transition: transform .3s ease-in-out
 
@@ -237,7 +227,6 @@
             height: $navbar-height * .75
             left: 50%
             right: auto
-        //z-index: 1
 
         &::after
           transition: transform .3s ease .3s
@@ -280,3 +269,25 @@
             bottom: 5px
             transform: translateX(-50%) scaleX(1)
 
+.pos-sidebar-dropdown-nav
+  & > li
+
+    & > .pos-sidebar-dropdown-nav--link
+      display: flex
+
+.pos-sidebar-dropdown-nav--icon
+  margin-right: $global-small-margin
+  flex: none
+
+.pos-sidebar-dropdown-nav--label
+  flex: 1
+  min-width: 1px
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+
+.pos-sidebar-dropdown-nav > li > a:hover,
+.pos-sidebar-dropdown-nav > li > a:focus,
+.pos-sidebar-dropdown-nav > li.uk-active > a
+  color: $global-primary-background

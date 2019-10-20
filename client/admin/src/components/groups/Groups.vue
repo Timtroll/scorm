@@ -104,6 +104,10 @@
       this.$store.commit('tree_api', this.actions.tree)
       this.$store.commit('editPanel_api', this.actions.editPanel)
 
+      //// запись прототипа из json в store
+      this.$store.commit('set_editPanel_proto', groupProtoLeaf)
+      this.$store.commit('set_tree_proto', groupProtoFolder)
+
       await this.$store.registerModule('groups', groups)
 
       //// Получение дерева с сервера
@@ -116,14 +120,8 @@
 
       //// Размер панели редактирования
       await this.$store.commit('editPanel_size', false)
+      this.$store.commit('card_right_show', false)
 
-    },
-
-    mounted () {
-
-      //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', groupProtoLeaf)
-      this.$store.commit('set_tree_proto', groupProtoFolder)
     },
 
     beforeDestroy () {

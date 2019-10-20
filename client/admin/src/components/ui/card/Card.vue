@@ -268,6 +268,8 @@
 
       cardLeftClickAction () {
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
+
+          console.log(this.bodyWidth)
           this.$store.commit('card_left_show', false)
         }
       }
@@ -277,7 +279,7 @@
 
       RightToggleState () {
         setTimeout(() => {this.handleResize()}, 300)
-        return this.$store.getters.pageTableRowShow
+        return this.$store.getters.cardRightState
       },
 
       rightPanelSize () {
