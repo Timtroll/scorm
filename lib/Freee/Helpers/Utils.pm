@@ -152,6 +152,25 @@ sub register {
 
         return \@tree;
     });
+
+    # получение значения поля folder по id
+    # my $true = folder_check( <id> );
+    # возвращается 1/0
+    $app->helper('_folder_check' => sub {
+        # my $id = shift;
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'SELECT folder FROM "public"."settings" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->selectrow_array($sql);
+        };
+        warn $@ if $@;
+
+        return $result + 0;
+    });
 }
 
 1;

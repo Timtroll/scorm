@@ -46,7 +46,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'    => 2
+            'id'        => 2
         },
         'result' => {
             'id'        => 2,
@@ -83,6 +83,17 @@ my $test_data = {
         },
         'comment' => 'Wrong id validation:' 
     },
+    5 => {
+        'data' => {
+            'id'        => 1
+        },
+        'result' => {
+            'message'   => "Could not delete '1'",
+            'status'    => 'fail'
+        },
+        'comment' => 'That is a folder:' 
+    },
+    
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

@@ -398,6 +398,7 @@ $test_data = {
     },
     16 => {
         'data' => {
+            'id'          => 3,
             'parent'      => 2,
             'name'        => 'name',
             'label'       => 'label',
@@ -410,10 +411,30 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "Could not update setting item '3'",
             'status'    => 'fail',
         },
-        'comment' => 'Wrong parent:'
+        'comment' => 'Parent not a folder:'
+    },
+    17 => {
+        'data' => {
+            'id'          => 1,
+            'parent'      => 2,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 'mistake',
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Could not update setting item '1'",
+            'status'    => 'fail',
+        },
+        'comment' => 'Not a leaf:'
     },
 };
 

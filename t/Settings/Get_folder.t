@@ -119,6 +119,17 @@ my $test_data = {
         },
         'comment' => 'Wrong id validation:' 
     },
+    6 => {
+        'data' => {
+            'id'        => 2
+        },
+        'result' => {
+            'message'   => "Validation error for 'id'. Field has wrong type",
+            'status'    => 'fail'
+        },
+        'comment' => 'Get a leaf:' 
+    },
+    
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

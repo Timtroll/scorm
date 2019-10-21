@@ -119,6 +119,7 @@ sub add_folder {
                 $$data{'required'} = 0;
                 $$data{'readonly'} = 0;
                 $$data{'status'} = 1;
+                $$data{'folder'} = 1;
 
                 $id = $self->_insert_folder( $data ) unless @mess;
                 push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
@@ -294,6 +295,7 @@ sub add {
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
 
         # корректирование пустых значений
+        $$data{'folder'} = 0;
         unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
         unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
         unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
@@ -439,6 +441,10 @@ sub toggle {
         # проверка данных
         $data = $self->_check_fields();
         push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+
+#         if ( $self->_folder_check( $data('id') ) ) {
+# print "????????????";
+#         }
 
         $$data{'table'} = 'settings';
         $toggle = $self->_toggle( $data ) unless @mess;
