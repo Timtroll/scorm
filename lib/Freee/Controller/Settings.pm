@@ -24,7 +24,7 @@ sub get_folder {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct folder item data, watch log" unless $data;
 
         if ($data) {
             $data = $self->_get_folder( $self->param('id') );
@@ -63,7 +63,7 @@ sub save_folder {
     unless (@mess) {
         # проверка данных
         my $data = $self->_check_fields();
-        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct folder item data, watch log" unless $data;
         # устанавляваем неиспользуемые для фолдера поля
         $$data{'placeholder'} = '';
         $$data{'type'} = '';
@@ -75,7 +75,7 @@ sub save_folder {
         $$data{'status'} = $self->param('status') // 0;
 
         $id = $self->_save_folder( $data ) unless @mess;
-        push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
+        push @mess, "Could not save folder item '$$data{'id'}'" unless ( $id || @mess );
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -101,7 +101,7 @@ sub add_folder {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct folder item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct folder item data, watch log" unless $data;
 
         # проверяем поле name на дубликат
         if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
@@ -122,7 +122,7 @@ sub add_folder {
                 $$data{'folder'} = 1;
 
                 $id = $self->_insert_folder( $data ) unless @mess;
-                push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+                push @mess, "Could not create new folder item '$$data{'id'}'" unless ( $id || @mess );
             }
             else {
                 push @mess, "Parent '$$data{'parent'}' is wrong";
@@ -147,7 +147,7 @@ sub delete_folder {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         if ($data) {
             $id = $self->_delete_folder( $$data{'id'} );
@@ -177,7 +177,7 @@ sub get_leafs {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         if ($data) {
             if ( ( $$data{'id'} == 0 ) || ( $self->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
@@ -292,7 +292,7 @@ sub add {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         # корректирование пустых значений
         $$data{'folder'} = 0;
@@ -333,7 +333,7 @@ sub edit {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         if ($data) {
             $data = $self->_get_setting( $$data{'id'} );
@@ -371,7 +371,7 @@ sub save {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         # корректирование пустых значений
         unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
@@ -413,10 +413,10 @@ sub delete {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
         $del = $self->_delete_setting( $$data{'id'} ) unless @mess;
-        push @mess, "Could not delete '$$data{'id'}'" unless $del;
+        push @mess, "Could not delete '$$data{'id'}'" unless ( $del || @mess );
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -440,7 +440,7 @@ sub toggle {
     unless (@mess) {
         # проверка данных
         $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'id'}'" unless $data;
+        push @mess, "Not correct setting item data, watch log" unless $data;
 
 #         if ( $self->_folder_check( $data('id') ) ) {
 # print "????????????";
@@ -448,7 +448,7 @@ sub toggle {
 
         $$data{'table'} = 'settings';
         $toggle = $self->_toggle( $data ) unless @mess;
-        push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+        push @mess, "Could not toggle '$$data{'id'}'" unless ( $toggle || @mess );
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;

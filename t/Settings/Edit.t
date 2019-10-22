@@ -61,7 +61,8 @@ my $test_data = {
                 'selected'    => [],
                 'required'    => 0,
                 'readonly'    => 0,
-                'status'      => 1
+                'status'      => 1,
+                'folder'      => 0
             },
             'status'    => 'ok'
         },
@@ -74,7 +75,7 @@ my $test_data = {
             'id'    => 1
         },
         'result' => {
-            'message'   => "'1' is a folder",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Edit folder:'

@@ -159,7 +159,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not save folder item '404'",
+            'message'   => "Not correct folder item data, watch log",
             'status'    => 'fail',
         },
         'comment' => 'Id do not exist:'
@@ -172,7 +172,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not save folder item '2'",
+            'message'   => "Not correct folder item data, watch log",
             'status'    => 'fail',
         },
         'comment' => 'Not a folder:'

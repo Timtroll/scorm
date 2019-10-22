@@ -197,7 +197,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Readonly for folder:' 
@@ -209,10 +209,10 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
-        'comment' => 'Required for folder:' 
+        'comment' => 'Required for folder:'
     }
 };
 

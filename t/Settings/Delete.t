@@ -88,7 +88,7 @@ my $test_data = {
             'id'        => 1
         },
         'result' => {
-            'message'   => "Could not delete '1'",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'That is a folder:' 

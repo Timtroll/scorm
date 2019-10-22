@@ -431,7 +431,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not update setting item '1'",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail',
         },
         'comment' => 'Not a leaf:'

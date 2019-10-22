@@ -122,20 +122,18 @@ warn Dumper($_[0]->tx->req->params->to_hash);
             }
         }
 
-        # @_ = $self->url_for;
-        # if ( ( "m/settings/" ) && ( $data{'id'} ) ) {
-        if ( ( ( $self->url_for = ~/'settings'/ ) ) && ( $data{'id'} ) ) {
-            if ( "m/folder/" ) {
+        my $route = $self->url_for;
+        if ( ( ( $route =~ /settings/ ) ) && ( $data{'id'} ) ) {
+            if ( $route =~ /folder/ ) {
                 unless ( $self->_folder_check( $data{'id'} ) ) {
                     warn "$data{'id'} is not a folder";
-                    print @_;
                     return;
                 }
             }
             else {
-                if ( "m/toggle/" ) {
+                if ( $route =~ /toggle/ ) {        
                     if ( $self->_folder_check( $data{'id'} ) ) {
-                        if ( ( $data{'fieldname'} == 'readonly' ) || ( $data{'fieldname'} == 'required' ) ){
+                        if ( ( $data{'fieldname'} =~ /readonly/ ) || ( $data{'fieldname'} =~ /required/ ) ){
                             warn "wrong fields for folder $data{'id'}";
                             return;
                         }

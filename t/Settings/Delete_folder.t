@@ -49,7 +49,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not delete folder '404'",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -76,7 +76,7 @@ my $test_data = {
             'id'        => 2
         },
         'result' => {
-            'message'   => "Could not delete folder '2'",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Not a folder:'
