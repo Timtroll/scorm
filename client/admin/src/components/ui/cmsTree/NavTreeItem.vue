@@ -23,12 +23,12 @@
          @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label">
         <span class="pos-side-nav-item__label-text"
-              v-text="navItem.label"></span>
+              v-text="navItem.label"/>
 
         <!--количество элементов в таблице-->
         <span class="uk-badge pos-side-nav-item__label-badge"
               v-if="navItem.children && navItem.children.length > 0"
-              v-text="navItem.children.length"></span>
+              v-text="navItem.children.length"/>
       </a>
 
       <!--actions-->

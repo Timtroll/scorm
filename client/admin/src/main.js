@@ -5,9 +5,8 @@ import store from './store/store'
 import VueMeta from 'vue-meta'
 import UIkit from 'uikit/dist/js/uikit.min'
 import './registerServiceWorker'
-
-import './assets/sass/styles.sass'
 import i18n from './i18n'
+import './assets/sass/styles.sass'
 
 Vue.use(VueMeta, {
   refreshOnceOnNavigation: true

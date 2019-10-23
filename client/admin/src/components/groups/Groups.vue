@@ -22,7 +22,7 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <Tree :nav="nav"></Tree>
+      <Tree :nav="nav"/>
     </template>
 
     <!--bodyRight-->
@@ -34,7 +34,7 @@
             :folder="editPanel_folder"
             :parent="tableId"
             v-on:save="save($event)"
-            v-on:close="closeAddGroup"></List>
+            v-on:close="closeAddGroup"/>
     </template>
 
   </Card>
