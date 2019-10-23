@@ -16,7 +16,7 @@
     "core-js": "3.3.3",
     "lodash": "^4.17.15",
     "register-service-worker": "^1.6.2",
-    "uikit": "^3.2.1",
+    "uikit": "^3.2.2",
     "v-mask": "^2.0.2",
     "vue": "^2.6.10",
     "vue-ckeditor5": "^0.4.1",
