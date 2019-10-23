@@ -32,6 +32,10 @@ echo "rm -rf $SOURCE/client/admin/dist"
 rm -rf $SOURCE/client/admin/dist
 
 echo "-------"
+echo "npm install"
+npm install
+
+echo "-------"
 echo "yarn run build"
 yarn run build
 
