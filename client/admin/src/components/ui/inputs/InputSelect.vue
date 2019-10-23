@@ -3,7 +3,7 @@
     <div>
       <label v-text="label"
              class="uk-form-label uk-text-truncate"
-             v-if="label"></label>
+             v-if="label"/>
 
       <div class="uk-form-controls">
         <div class="uk-grid-small"
@@ -32,7 +32,7 @@
                     :disabled="readonly === 1 || editValues"
                     type="button"
                     tabindex="-1">
-              <span></span>
+              <span/>
               <img src="/img/icons/icon_arrow__down.svg"
                    uk-svg
                    width="14"
