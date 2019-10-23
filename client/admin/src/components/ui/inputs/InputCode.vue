@@ -199,39 +199,39 @@
       editorInit: () => {
 
         //language extension prerequsite...
-        import('brace/ext/language_tools')
-        import('brace/ext/beautify')
+        require('brace/ext/language_tools')
+        require('brace/ext/beautify')
         require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
 
-        import('brace/ext/error_marker')
-        import('brace/ext/searchbox')
-        import('brace/ext/whitespace')
-        import('brace/ext/statusbar')
+        require('brace/ext/error_marker')
+        require('brace/ext/searchbox')
+        require('brace/ext/whitespace')
+        require('brace/ext/statusbar')
 
         //language
-        import('brace/mode/html')
-        import('brace/mode/javascript')
-        import('brace/mode/sass')
-        import('brace/mode/scss')
-        import('brace/mode/less')
-        import('brace/mode/css')
-        import('brace/mode/perl')
-        import('brace/mode/php')
-        import('brace/mode/pig')
-        import('brace/mode/latex')
-        import('brace/mode/xml')
-        import('brace/mode/handlebars')
-        import('brace/mode/jade')
-        import('brace/mode/json')
-        import('brace/mode/markdown')
-        import('brace/mode/smarty')
-        import('brace/mode/yaml')
+        require('brace/mode/html')
+        require('brace/mode/javascript')
+        require('brace/mode/sass')
+        require('brace/mode/scss')
+        require('brace/mode/less')
+        require('brace/mode/css')
+        require('brace/mode/perl')
+        require('brace/mode/php')
+        require('brace/mode/pig')
+        require('brace/mode/latex')
+        require('brace/mode/xml')
+        require('brace/mode/handlebars')
+        require('brace/mode/jade')
+        require('brace/mode/json')
+        require('brace/mode/markdown')
+        require('brace/mode/smarty')
+        require('brace/mode/yaml')
 
         //theme
-        //import('brace/theme/dracula')
+        require('brace/theme/dracula')
 
         //snippet
-        import('brace/snippets/javascript')
+        require('brace/snippets/javascript')
         //require(['emmet/emmet'], (data) => {
         //  window.emmet = data.emmet
         //})
