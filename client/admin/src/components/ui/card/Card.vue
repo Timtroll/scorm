@@ -1,6 +1,5 @@
 <template>
-  <div class="pos-card"
-       v-touch:swipe="swipe">
+  <div class="pos-card">
 
     <!--header-->
     <div class="pos-card-header"
@@ -15,18 +14,18 @@
       <!--headerLeft-->
       <div class="pos-card-header-item"
            v-if="headerLeft">
-        <slot name="headerLeft"></slot>
+        <slot name="headerLeft"/>
       </div>
 
       <!--header settings-->
       <div class="pos-card-header--content">
-        <slot name="header"></slot>
+        <slot name="header"/>
       </div>
 
       <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="headerRight">
-        <slot name="headerRight"></slot>
+        <slot name="headerRight"/>
       </div>
 
       <!-- toggle right body panel-->
@@ -43,14 +42,15 @@
     </div>
 
     <!--Body-->
-    <div class="pos-card-body">
+    <div class="pos-card-body"
+         v-touch:swipe="swipe">
 
       <!--body-middle-->
       <div class="pos-card-body-middle"
            ref="body"
            :class="{'pos-padding': bodyPadding}">
 
-        <slot name="body"></slot>
+        <slot name="body"/>
 
       </div>
 
@@ -60,7 +60,7 @@
              ref="bodyLeft"
              v-show="bodyLeft && leftToggleState"
              :class="{'pos-padding': bodyLeftPadding}">
-          <slot name="bodyLeft"></slot>
+          <slot name="bodyLeft"/>
         </div>
       </transition>
 
@@ -74,19 +74,19 @@
       <div class="pos-card-header-item"
            v-if="footerLeft">
 
-        <slot name="footerLeft"></slot>
+        <slot name="footerLeft"/>
       </div>
 
       <!--header settings-->
       <div class="pos-card-header--content">
-        <slot name="footer"></slot>
+        <slot name="footer"/>
       </div>
 
       <!--footer Right-->
       <div class="pos-card-header-item"
            v-if="footerRight">
 
-        <slot name="footerRight"></slot>
+        <slot name="footerRight"/>
       </div>
     </div>
 
@@ -96,7 +96,7 @@
            v-if="bodyRightShow"
            :class="{'large' : rightPanelSize}">
 
-        <slot name="bodyRight"></slot>
+        <slot name="bodyRight"/>
 
       </div>
     </transition>
@@ -107,7 +107,7 @@
            v-if="loader === 'loading'">
         <div>
           <Loader :width="40"
-                  :height="40"></Loader>
+                  :height="40"/>
           <div class="uk-margin-small-top"
                v-text="$t('actions.loading')"></div>
         </div>
@@ -118,7 +118,7 @@
            v-else-if="loader === 'error'">
         <div>
           <IconBug :width="60"
-                   :height="60"></IconBug>
+                   :height="60"/>
           <div class="uk-margin-small-top"
                v-html="$t('actions.requestError')"></div>
         </div>
@@ -307,6 +307,7 @@
     methods: {
 
       swipe (direction) {
+        console.log('card swipe - ' + direction)
         if (direction === 'left') {
           //this.$store.commit('card_left_show', false)
         } else if (direction === 'right') {

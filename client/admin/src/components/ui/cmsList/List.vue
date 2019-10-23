@@ -1,6 +1,6 @@
 <template>
   <div class="pos-card"
-       v-touch:swipe="closeTouch">
+       v-touch:swipe="swipeRight">
 
     <!--header-->
     <div class="pos-card-header">
@@ -300,11 +300,11 @@
         this.$store.commit('editPanel_size', !this.editPanel_large)
       },
 
-      closeTouch (direction) {
+      swipeRight (direction) {
+        console.log('list swipe - ' + direction)
         if (direction === 'right') {
           this.close()
         }
-
       },
 
       close () {

@@ -1,6 +1,6 @@
 <template>
   <div class="uk-flex uk-height-1-1 uk-flex-column uk-position-relative"
-       v-touch:swipe="close">
+       v-touch:swipe="swipeLeft">
 
     <!--Nav tree header-->
     <div class="pos-border-bottom">
@@ -166,7 +166,8 @@
         this.searchInput = null
       },
 
-      close (direction) {
+      swipeLeft (direction) {
+        console.log('tree swipe - ' + direction)
         if (direction === 'left') {
           this.$store.commit('card_left_show', false)
         }
