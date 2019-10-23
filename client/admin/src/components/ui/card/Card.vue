@@ -1,5 +1,6 @@
 <template>
-  <div class="pos-card">
+  <div class="pos-card"
+       v-touch:swipe="swipe">
 
     <!--header-->
     <div class="pos-card-header"
@@ -304,6 +305,14 @@
     },
 
     methods: {
+
+      swipe (direction) {
+        if (direction === 'left') {
+          //this.$store.commit('card_left_show', false)
+        } else if (direction === 'right') {
+          this.$store.commit('card_left_show', true)
+        }
+      },
 
       handleResize () {
         setTimeout(() => {this.bodyWidth = this.$refs.body.offsetWidth}, 300)

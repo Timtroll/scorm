@@ -1,5 +1,6 @@
 <template>
-  <div class="uk-flex uk-height-1-1 uk-flex-column uk-position-relative">
+  <div class="uk-flex uk-height-1-1 uk-flex-column uk-position-relative"
+       v-touch:swipe="close">
 
     <!--Nav tree header-->
     <div class="pos-border-bottom">
@@ -52,13 +53,13 @@
     <!--Nav tree-->
     <div class="pos-side-nav-container">
       <NavTree :nav="filterSearch"
-               v-if="filterSearch.length > 0"></NavTree>
+               v-if="filterSearch.length > 0"/>
       <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
         <div>
           <IconBug :size="60"
-                   :spin="true"></IconBug>
-          <p v-html="$t('actions.searchError')"></p>
+                   :spin="true"/>
+          <p v-html="$t('actions.searchError')"/>
         </div>
       </div>
     </div>
@@ -93,6 +94,10 @@
     },
 
     computed: {
+
+      //cardLeft_show () {
+      //  return this.$store.getters.cardLeftState
+      //},
 
       tree_api () {
         return this.$store.getters.tree_api
@@ -159,6 +164,13 @@
       // Очистка поля поиска
       clearSearchVal () {
         this.searchInput = null
+      },
+
+      close (direction) {
+        if (direction === 'left') {
+          this.$store.commit('card_left_show', false)
+        }
+
       }
     }
   }

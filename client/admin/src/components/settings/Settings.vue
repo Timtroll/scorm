@@ -23,6 +23,7 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
+
       <Tree v-if="nav"
             :nav="nav">
       </Tree>
@@ -37,7 +38,7 @@
             :folder="editPanel_folder"
             :parent="tableId"
             v-on:save="save($event)"
-            v-on:close="closeAddGroup"></List>
+            v-on:close="closeAddGroup"/>
     </template>
 
   </Card>
@@ -242,6 +243,7 @@
         this.$store.dispatch(this.actions.editPanel.save, save)
 
       }
+
     }
 
   }

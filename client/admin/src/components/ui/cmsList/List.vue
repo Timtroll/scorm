@@ -1,5 +1,6 @@
 <template>
-  <div class="pos-card">
+  <div class="pos-card"
+       v-touch:swipe="closeTouch">
 
     <!--header-->
     <div class="pos-card-header">
@@ -297,6 +298,13 @@
 
       toggleSize () {
         this.$store.commit('editPanel_size', !this.editPanel_large)
+      },
+
+      closeTouch (direction) {
+        if (direction === 'right') {
+          this.close()
+        }
+
       },
 
       close () {
