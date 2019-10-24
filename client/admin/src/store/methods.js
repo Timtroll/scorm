@@ -74,19 +74,21 @@ function clone (obj, hash = new WeakMap()) {
 }
 
 /**
- * mergeObject
- * @param arr
- * @param object
+ *
+ * @param message
+ * @param ok
+ * @param cancel
+ * @returns {PromiseFn|PromiseFn|boolean}
  */
-//function mergeObject (arr, object) {
-//  if (arr && object) {
-//    console.log('arr', arr, 'object', object)
-//  }
-//
-//}
+function confirm (message, ok, cancel) {
+  return UIkit.modal.confirm(message, {
+    labels: {ok: ok, cancel: cancel}
+  })
+}
 
 export {
   notify,
+  confirm,
   flatTree,
   clone
   //mergeObject

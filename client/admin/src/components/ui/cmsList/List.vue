@@ -112,6 +112,8 @@
 
 <script>
 
+  import {confirm} from '../../../store/methods'
+
   export default {
 
     name: 'List',
@@ -308,8 +310,17 @@
       },
 
       close () {
-        this.$emit('close')
-        this.$store.commit('card_right_show', false)
+        if (this.dataIsChanged) {
+          confirm(this.$t('messages.dataIsChanged'), 'Да', 'Нет')
+            .then(() => {
+              this.$emit('close')
+              this.$store.commit('card_right_show', false)
+            })
+        } else {
+          this.$emit('close')
+          this.$store.commit('card_right_show', false)
+        }
+
       },
 
       changeType (event) {
