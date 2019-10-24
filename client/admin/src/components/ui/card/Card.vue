@@ -58,7 +58,7 @@
       <transition name="slide-left">
         <div class="pos-card-body-left"
              ref="bodyLeft"
-             v-show="bodyLeft && leftToggleState"
+             v-show="bodyLeft && cardLeftState"
              :class="{'pos-padding': bodyLeftPadding}">
           <slot name="bodyLeft"/>
         </div>
@@ -251,7 +251,7 @@
 
         window.addEventListener('resize', this.handleResize)
 
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
+        if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
           this.$store.commit('card_right_show', false)
         }
       }
@@ -260,18 +260,33 @@
     watch: {
 
       //
-      RightToggleState () {
+      cardRightState () {
 
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('card_right_show', false)
+        if (this.cardRightState) {
+          if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
+            this.$store.commit('card_left_show', false)
+            //this.$store.commit('card_right_show', false)
+          }
         }
+
       },
+
+      //cardLeftState () {
+      //
+      //  if (this.cardRightState) {
+      //    if (this.bodyWidth <= bodyMinSize && this.cardRightState) {
+      //      //this.$store.commit('card_left_show', false)
+      //      this.$store.commit('card_right_show', false)
+      //    }
+      //  }
+      //
+      //},
 
       cardLeftClickAction () {
         if (this.bodyWidth <= bodyMinSize) {
           console.log(this.bodyWidth)
-          if (this.leftToggleState) {
-            console.log('leftToggleState', this.leftToggleState)
+          if (this.cardLeftState) {
+            console.log('cardLeftState', this.cardLeftState)
             this.$store.commit('card_left_show', false)
           }
 
@@ -281,7 +296,7 @@
 
     computed: {
 
-      RightToggleState () {
+      cardRightState () {
         setTimeout(() => {this.handleResize()}, 300)
         return this.$store.getters.cardRightState
       },
@@ -290,7 +305,7 @@
         return this.$store.getters.editPanel_large
       },
 
-      leftToggleState () {
+      cardLeftState () {
         setTimeout(() => {
           this.handleResize()
         }, 300)

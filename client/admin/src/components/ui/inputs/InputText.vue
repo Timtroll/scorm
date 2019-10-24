@@ -3,7 +3,7 @@
     <div>
       <label v-text="label"
              class="uk-form-label uk-text-truncate"
-             v-if="label"></label>
+             v-if="label"/>
 
       <div class="uk-form-controls">
         <div class="uk-inline uk-width-1-1">

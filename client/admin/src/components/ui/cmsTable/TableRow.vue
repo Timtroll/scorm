@@ -69,6 +69,7 @@
 
 <script>
   import UIkit from 'uikit/dist/js/uikit.min'
+  import {clone} from '../../../store/methods'
 
   export default {
     name: 'TableRow',
@@ -177,7 +178,7 @@
         } else {
           if (inline === 1) { // если у колонки inline === 1 изменяем значение
 
-            const data = {...this.fullData}
+            const data = clone(this.fullData)
 
             const sendData = {
               parent: data.parent,
