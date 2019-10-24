@@ -79,8 +79,7 @@
 </template>
 
 <script>
-  import UIkit from 'uikit/dist/js/uikit.min'
-  import {clone} from '../../../store/methods'
+  import {clone, confirm} from '../../../store/methods'
 
   export default {
 
@@ -166,12 +165,9 @@
         } else {
 
           if (this.navActiveId !== this.navItem.id) {
-
             this.showTable(item)
-
+            this.$store.commit('card_left_nav_click')
           }
-
-          this.$store.commit('card_left_nav_click', !this.cardLeftClickAction)
 
         }
 
@@ -240,9 +236,8 @@
 
       // remove group
       remove (id) {
-        UIkit
-          .modal
-          .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
+
+        confirm(this.$t('actions.remove'), 'Да', 'Нет')
           .then(() => this.$store.dispatch(this.tree_api.remove, id), () => {})
 
       }

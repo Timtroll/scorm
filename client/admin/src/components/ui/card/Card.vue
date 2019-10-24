@@ -252,7 +252,7 @@
         window.addEventListener('resize', this.handleResize)
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('editPanel_show', false)
+          this.$store.commit('card_right_show', false)
         }
       }
     },
@@ -263,15 +263,18 @@
       RightToggleState () {
 
         if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('editPanel_show', false)
+          this.$store.commit('card_right_show', false)
         }
       },
 
       cardLeftClickAction () {
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-
+        if (this.bodyWidth <= bodyMinSize) {
           console.log(this.bodyWidth)
-          this.$store.commit('card_left_show', false)
+          if (this.leftToggleState) {
+            console.log('leftToggleState', this.leftToggleState)
+            this.$store.commit('card_left_show', false)
+          }
+
         }
       }
     },
@@ -288,7 +291,9 @@
       },
 
       leftToggleState () {
-        setTimeout(() => {this.handleResize()}, 300)
+        setTimeout(() => {
+          this.handleResize()
+        }, 300)
         return this.$store.getters.cardLeftState
       },
 
@@ -307,7 +312,6 @@
     methods: {
 
       swipe (direction) {
-        console.log('card swipe - ' + direction)
         if (direction === 'left') {
           //this.$store.commit('card_left_show', false)
         } else if (direction === 'right') {
@@ -316,7 +320,9 @@
       },
 
       handleResize () {
-        setTimeout(() => {this.bodyWidth = this.$refs.body.offsetWidth}, 300)
+        setTimeout(() => {
+          this.bodyWidth = this.$refs.body.offsetWidth
+        }, 300)
       }
     }
   }
