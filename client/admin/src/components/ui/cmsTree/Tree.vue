@@ -146,19 +146,22 @@
 
         const proto = await clone(this.protoFolder)
 
-        proto.forEach(item => {
+        await proto.forEach(item => {
           if (item.name === 'parent') {
             item.value = parent
           }
         })
 
-        this.$store.commit('editPanel_status_request')
-        this.$store.commit('editPanel_add', true)
-        this.$store.commit('editPanel_folder', true)
-        this.$store.commit('card_right_show', true)
+        await this.$store.commit('card_right_show', false)
+        await this.$store.commit('editPanel_data', [])
+        await this.$store.commit('editPanel_status_request')
+        await this.$store.commit('editPanel_add', true)
+        await this.$store.commit('editPanel_folder', true)
 
-        this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        this.$store.commit('editPanel_status_success') // статус - успех
+        await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+
+        await this.$store.commit('card_right_show', true)
+        await this.$store.commit('editPanel_status_success') // статус - успех
       },
 
       // Очистка поля поиска

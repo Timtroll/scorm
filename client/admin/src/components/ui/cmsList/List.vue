@@ -24,12 +24,10 @@
       </a>
 
       <!--header settings-->
-      <!--<div class="pos-card-header&#45;&#45;content"></div>-->
       <div class="pos-card-header--content"
            v-text="title"></div>
 
       <!--headerRight-->
-
       <a class="pos-card-header-item uk-text-danger link"
          @click.prevent="close">
         <img src="/img/icons/icon__close.svg"
@@ -60,8 +58,7 @@
                        :placeholder="item.placeholder"
                        @value="dataNew[index].value = $event"
                        @change="dataChanged[index].changed = $event"
-                       @changeType="changeType($event)">
-            </component>
+                       @changeType="changeType($event)"/>
 
           </li>
         </ul>
@@ -98,10 +95,10 @@
 
           <span class="uk-margin-small-left"
                 v-text="$t('actions.add')"
-                v-if="add"></span>
+                v-if="add"/>
           <span class="uk-margin-small-left"
                 v-text="$t('actions.save')"
-                v-else></span>
+                v-else/>
         </button>
       </div>
 
@@ -112,7 +109,7 @@
 
 <script>
 
-  import {confirm} from '../../../store/methods'
+  import {clone, confirm} from '../../../store/methods'
 
   export default {
 
@@ -172,10 +169,10 @@
     created () {
       if (this.add) {
         this.dataAdd     = this.data.filter(item => item.add === true)
-        this.dataNew     = JSON.parse(JSON.stringify(this.dataAdd))
+        this.dataNew     = clone(this.dataAdd)
         this.dataChanged = this.createDataChanged(this.dataAdd)
       } else {
-        this.dataNew     = JSON.parse(JSON.stringify(this.data))
+        this.dataNew     = clone(this.data)
         this.dataChanged = this.createDataChanged(this.data)
       }
     },
@@ -198,7 +195,7 @@
       data () {
 
         if (this.data && !this.add) {
-          this.dataNew     = JSON.parse(JSON.stringify(this.data))
+          this.dataNew     = clone(this.data)
           this.dataChanged = this.createDataChanged(this.data)
         }
 
@@ -303,10 +300,7 @@
       },
 
       swipeRight (direction) {
-        console.log('list swipe - ' + direction)
-        if (direction === 'right') {
-          this.close()
-        }
+        if (direction === 'right') this.close()
       },
 
       close () {

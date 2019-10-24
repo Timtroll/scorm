@@ -48,6 +48,7 @@
 
   // import VUEX module groups
   import groups from '@/store/modules/groups'
+  import {clone} from '../../store/methods'
 
   export default {
 
@@ -198,7 +199,7 @@
             fields: {}
           }
 
-          const arr = JSON.parse(JSON.stringify(data))
+          const arr = clone(data)
           arr.forEach(item => {save.fields[item.name] = item.value})
 
           this.$store.dispatch(this.actions.tree.add, save)
@@ -209,7 +210,7 @@
             fields: {}
           }
 
-          const arr = JSON.parse(JSON.stringify(data))
+          const arr = clone(data)
           arr.forEach(item => {save.fields[item.name] = item.value})
 
           this.$store.dispatch(this.actions.tree.save, save)
@@ -228,7 +229,7 @@
           fields: {}
         }
 
-        const arr = JSON.parse(JSON.stringify(data))
+        const arr = clone(data)
         arr.forEach(item => {save.fields[item.name] = item.value})
 
         this.$store.dispatch(this.actions.editPanel.save, save)

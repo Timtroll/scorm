@@ -78,7 +78,7 @@ const actions = {
           await dispatch('_updateFolder')
 
           notify(resp.status, 'success') // уведомление об ошибке
-
+          console.log(resp)
           await dispatch('getTree', resp.id)
           await store.commit('tree_active', resp.id)
           await router.push({

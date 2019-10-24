@@ -270,21 +270,21 @@
 
     async created () {
 
-      //if (this.notEmptyTable === 'error') {
-      //  this.$store.commit('card_right_show', false)
-      //  this.$store.commit('tree_active', this.tableId)
-      //  await this.$store.dispatch(this.table_api.get, this.tableId)
-      //}
-
-    },
-
-    async mounted () {
-
       if (this.notEmptyTable === 'error') {
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
         await this.$store.dispatch(this.table_api.get, this.tableId)
       }
+
+    },
+
+    async mounted () {
+
+      //if (this.notEmptyTable === 'error') {
+      //  this.$store.commit('card_right_show', false)
+      //  this.$store.commit('tree_active', this.tableId)
+      //  await this.$store.dispatch(this.table_api.get, this.tableId)
+      //}
 
     },
 
@@ -424,13 +424,15 @@
           }
         })
 
+        await this.$store.commit('card_right_show', false)
+        await this.$store.commit('editPanel_data', [])
         await this.$store.commit('editPanel_status_request')
         await this.$store.commit('editPanel_add', true)
         await this.$store.commit('editPanel_folder', false)
-        await this.$store.commit('card_right_show', true)
-        await this.$store.commit('editPanel_data', [])
 
         await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+
+        await this.$store.commit('card_right_show', true)
         await this.$store.commit('editPanel_status_success') // статус - успех
 
       },

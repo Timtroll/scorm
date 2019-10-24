@@ -47,7 +47,7 @@
         </a>
 
         <!--Редактировать раздел-->
-        <a @click.prevent="editGroup(navItem)"
+        <a @click.prevent="editFolder(navItem)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
            class="pos-side-nav-item-actions__edit">
           <img src="/img/icons/icon__edit.svg"
@@ -58,7 +58,7 @@
         </a>
 
         <!--Удалить раздел-->
-        <a @click.prevent="remove(navItem.id)"
+        <a @click.prevent="removeFolder(navItem.id)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
            class="pos-side-nav-item-actions__remove">
           <img src="/img/icons/icon__trash.svg"
@@ -90,6 +90,7 @@
     },
 
     props: {
+
       navItem: {
         type: Object
       }
@@ -206,7 +207,7 @@
       },
 
       // edit children group
-      async editGroup (folder) {
+      async editFolder (folder) {
 
         //this.$store.dispatch(this.tree_api.save, id)
 
@@ -235,7 +236,7 @@
       },
 
       // remove group
-      remove (id) {
+      removeFolder (id) {
 
         confirm(this.$t('actions.remove'), 'Да', 'Нет')
           .then(() => this.$store.dispatch(this.tree_api.remove, id), () => {})
