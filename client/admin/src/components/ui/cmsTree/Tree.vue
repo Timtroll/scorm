@@ -157,9 +157,7 @@
         await this.$store.commit('editPanel_status_request')
         await this.$store.commit('editPanel_add', true)
         await this.$store.commit('editPanel_folder', true)
-
         await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-
         await this.$store.commit('card_right_show', true)
         await this.$store.commit('editPanel_status_success') // статус - успех
       },
