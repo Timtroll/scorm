@@ -3,7 +3,7 @@
     <div>
       <label v-text="label || placeholder"
              class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+             v-if="label || placeholder"/>
 
       <div class="uk-form-controls uk-form-controls-text uk-text-right">
         <label class="uk-display-block">
