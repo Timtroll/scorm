@@ -42,6 +42,7 @@ warn '=freee=';
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::PgRoutes');
+    $self->plugin('Freee::Helpers::PgForum');
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
@@ -251,20 +252,25 @@ warn '=freee=';
     $auth->post('/accounting/stat')     ->to('accounting#stat');
 
     # форум
-    $auth->any('/forum/')               ->to('forum#index');
-    $auth->post('/forum/listthemes')    ->to('forum#listthemes');
+    $auth->any('/forum/')               ->to('forum#index');        # стартовая страница
+
+    $auth->post('/forum/list_themes')   ->to('forum#list_themes');
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/add_theme')     ->to('forum#add_theme');
     $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
     $auth->post('/forum/del_theme')     ->to('forum#del_theme');
-    $auth->post('/forum/listgroups')    ->to('forum#listgroups');
+
+    $auth->post('/forum/list_groups')   ->to('forum#list_groups');
     $auth->post('/forum/group')         ->to('forum#group');
     $auth->post('/forum/add_group')     ->to('forum#add_group');
     $auth->post('/forum/edit_group')    ->to('forum#edit_group');
-    $auth->post('/forum/del_group')     ->to('forum#del_group');
-    $auth->post('/forum/add')           ->to('forum#add');
-    $auth->post('/forum/edit')          ->to('forum#edit');
-    $auth->post('/forum/delete')        ->to('forum#delete');
+    $auth->post('/forum/del_group')     ->to('forum#del_group');   
+
+    $auth->post('/forum/list_messages') ->to('forum#list_messages'); # список сообщений по теме
+    $auth->post('/forum/add')           ->to('forum#add');           # добавление сообщения
+    $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
+    $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id
+    $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
     $auth->post('/forum/toggle')        ->to('forum#toggle');        # param('themes') изменение status темы, иначе меняем status сообщения
 
     $r->any('/*')->to('index#index');

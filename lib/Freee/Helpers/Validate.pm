@@ -122,6 +122,32 @@ warn Dumper($_[0]->tx->req->params->to_hash);
             }
         }
 
+        my $route = $self->url_for;
+        if ( ( ( $route =~ /settings/ ) ) && ( $data{'id'} ) ) {
+            if ( $route =~ /folder/ ) {
+                unless ( $self->_folder_check( $data{'id'} ) ) {
+                    warn "$data{'id'} is not a folder";
+                    return;
+                }
+            }
+            else {
+                if ( $route =~ /toggle/ ) {        
+                    if ( $self->_folder_check( $data{'id'} ) ) {
+                        if ( ( $data{'fieldname'} =~ /readonly/ ) || ( $data{'fieldname'} =~ /required/ ) ){
+                            warn "wrong fields for folder $data{'id'}";
+                            return;
+                        }
+                    }
+                }
+                else {
+                    if ( $self->_folder_check( $self->param('id') ) ) {
+                        warn "$data{'id'} is a folder";
+                        return;
+                    }
+                }
+            }
+        }
+
         return \%data;
     });
 
@@ -146,6 +172,7 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "parent"        => [ '', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ '', qr/.*/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
@@ -237,7 +264,7 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 ################
-            # роуты forum/*            
+            # роуты forum/*
             '/forum/theme'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
@@ -298,7 +325,12 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "date_created"  => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/.*/os, 10000 ],
                 "rate"          => [ '', qr/^\d+$/os ]
-            }
+            },
+            '/forum/toggle'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "value"         => [ '', qr/^[01]$/os ]
+            },
         };
 
         return $vfields;

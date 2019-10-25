@@ -49,7 +49,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not delete '404'",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -76,7 +76,7 @@ my $test_data = {
             'id'        => 2
         },
         'result' => {
-            'message'   => "Setting '2' is not a folder",
+            'message'   => "Not correct setting item data, watch log",
             'status'    => 'fail'
         },
         'comment' => 'Not a folder:'
@@ -102,17 +102,17 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->post_ok($host.'/settings/delete_folder' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
-        ->json_is( {$result} );
+        ->json_is( $result );
     diag "";
 };
 
 # проверка удаления потомка
-diag "Child check:";
-$t->post_ok( $host.'/settings/delete' => form => { "id" => 2 })
-    ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( { 'status'    => 'fail',  'message'   => "Could not delete '2'" } );
-diag "";
+# diag "Child check:";
+# $t->post_ok( $host.'/settings/delete' => form => { "id" => 2 })
+#     ->status_is(200)
+#     ->content_type_is('application/json;charset=UTF-8')
+#     ->json_is( { 'status'    => 'fail',  'message'   => "Could not delete '2'" } );
+# diag "";
 
 done_testing();
 

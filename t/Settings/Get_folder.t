@@ -61,46 +61,34 @@ my $test_data = {
                 'selected'    => '',
                 'required'    => 0,
                 'readonly'    => 0,
-                'status'      => 1
+                'status'      => 1,
+                'folder'      => 1
             },
             'status'    => 'ok'
         },
         'comment' => 'Edit folder:'
     },
+
+    # отрицательные тесты
     2 => {
         'data' => {
             'id'    => 2
         },
         'result' => {
-            'data'      => {
-                'id'          => 2,
-                'parent'      => 1,
-                'name'        => 'name',
-                'label'       => 'label',
-                'placeholder' => '',
-                'type'        => '',
-                'mask'        => '',
-                'value'       => '',
-                'selected'    => '',
-                'required'    => 0,
-                'readonly'    => 0,
-                'status'      => 1
-            },
-            'status'    => 'ok'
+            'message'   => "Not correct folder item data, watch log",
+            'status'    => 'fail'
         },
-        'comment' => 'All right:'
+        'comment' => 'Get leaf:'
     },
-
-    # отрицательные тесты
     3 => {
         'data' => {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not get '404'",
+            'message'   => "Not correct folder item data, watch log",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong id:' 
+        'comment' => 'No id:' 
     },
     4 => {
         'result' => {
@@ -118,7 +106,7 @@ my $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
-    },
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

@@ -133,7 +133,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Setting named 'name' is exists",
+            'message'   => "Could not save folder item '1'",
             'status'    => 'fail',
         },
         'comment' => 'Same name:'
@@ -159,7 +159,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "Not correct folder item data, watch log",
             'status'    => 'fail',
         },
         'comment' => 'Id do not exist:'
@@ -172,7 +172,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "Not correct folder item data, watch log",
             'status'    => 'fail',
         },
         'comment' => 'Not a folder:'

@@ -123,6 +123,11 @@ sub register {
 
         return unless $$data{'id'};
 
+        # unless ( $self->_folder_check( $$data{'id'} ) ) {
+        #     warn "'$$data{'id'}' is not a folder";
+        #     return;
+        # }
+
         my $fields = join( ', ', map {
             $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
         } keys %$data );
@@ -143,6 +148,11 @@ sub register {
         my ($self, $id) = @_;
 
         return unless $id;
+
+        # unless ( $self->_folder_check( $id ) ) {
+        #     warn "$id is a not folder";
+        #     return;
+        # }
 
         my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
         eval {
@@ -245,6 +255,11 @@ sub register {
         return unless $data;
         return unless $$data{'id'};
 
+        # if ( $self->_folder_check( $$data{'id'} ) ) {
+        #     warn "'$$data{'id'}' is a folder";
+        #     return;
+        # }
+
         # сериализуем поля vaue и selected
         if (defined $$data{'value'} ) {
             $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
@@ -273,8 +288,12 @@ sub register {
     # возвращается true/false
     $app->helper( '_delete_setting' => sub {
         my ($self, $id) = @_;
-
         return unless $id;
+
+        # if ( $self->_folder_check( $id ) ) {
+        #     warn "$id is a folder";
+        #     return;
+        # }
 
         my $result;
         my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;

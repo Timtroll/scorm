@@ -56,7 +56,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'required -> 0:' 
+        'comment' => 'Required -> 0:' 
     },
     2 => {
         'data' => {
@@ -68,7 +68,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'required -> 1:' 
+        'comment' => 'Required -> 1:' 
     },
     3 => {
         'data' => {
@@ -80,7 +80,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'readonly -> 0:' 
+        'comment' => 'Readonly -> 0:' 
     },
     4 => {
         'data' => {
@@ -92,7 +92,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'readonly -> 1:' 
+        'comment' => 'Readonly -> 1:' 
     },
     5 => {
         'data' => {
@@ -104,7 +104,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'status -> 0:' 
+        'comment' => 'Status -> 0:' 
     },
     6 => {
         'data' => {
@@ -116,7 +116,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 2
         },
-        'comment' => 'status -> 1:' 
+        'comment' => 'Status -> 1:' 
     },
     7 => {
         'data' => {
@@ -128,7 +128,7 @@ my $test_data = {
             'status'    => 'ok',
             'id'        => 1
         },
-        'comment' => 'toggle folder:' 
+        'comment' => 'Status for folder:' 
     },
     
 
@@ -189,6 +189,30 @@ my $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'Validation mistake:' 
+    },
+    13 => {
+        'data' => {
+            'id'        => 1,
+            'fieldname' => 'readonly',
+            'value'     => 1
+        },
+        'result' => {
+            'message'   => "Not correct setting item data, watch log",
+            'status'    => 'fail'
+        },
+        'comment' => 'Readonly for folder:' 
+    },
+    14 => {
+        'data' => {
+            'id'        => 1,
+            'fieldname' => 'required',
+            'value'     => 1
+        },
+        'result' => {
+            'message'   => "Not correct setting item data, watch log",
+            'status'    => 'fail'
+        },
+        'comment' => 'Required for folder:'
     }
 };
 

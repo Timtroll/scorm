@@ -17,7 +17,8 @@ CREATE TABLE "public"."settings" (
 "selected" text COLLATE "default",
 "required" int4 DEFAULT 1,
 "readonly" int4 DEFAULT 0,
-"status" int2 DEFAULT 1 NOT NULL
+"status" int2 DEFAULT 1 NOT NULL,
+"folder" int2 NOT NULL
 )
 WITH (OIDS=FALSE);
 

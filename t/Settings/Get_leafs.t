@@ -65,7 +65,8 @@ my $test_data = {
                         'status' => 1,
                         'value' => '',
                         'type' => '',
-                        'label' => 'test'
+                        'label' => 'test',
+                        'folder' => 1,
                     }
                 ],
                 'settings' => {
@@ -87,47 +88,6 @@ my $test_data = {
         'comment' => 'Root folder:'
     },
     2 => {
-        'data' => {
-            'id'    => 1
-        },
-        'result' => {
-            'list' => {
-                'settings' => {
-                    'page' => {
-                        'per_page' => 100,
-                        'total' => 1,
-                        'current_page' => 1
-                    },
-                    'editable' => 1,
-                    'massEdit' => 0,
-                    'sort' => {
-                        'order' => 'asc',
-                        'name' => 'id'
-                    },
-                    'removable' => 1
-                },
-                'body' => [
-                    {
-                    'selected' => '',
-                    'name' => 'name',
-                    'placeholder' => '',
-                    'parent' => 1,
-                    'id' => 2,
-                    'value' => '',
-                    'label' => 'label',
-                    'type' => '',
-                    'mask' => '',
-                    'readonly' => 0,
-                    'status' => 1,
-                    'required' => 0
-                    }
-                ]
-            },
-            'status' => 'ok'
-        },
-        'comment' => 'Folder:'
-    },
-    3 => {
         'data' => {
             'id'    => 2
         },
@@ -156,6 +116,16 @@ my $test_data = {
     },
     
     # отрицательные тесты
+    3 => {
+        'data' => {
+            'id'    => 1
+       },
+        'result' => {
+            'message'   => "Not correct setting item data, watch log",
+            'status'    => 'fail'
+        },
+        'comment' => 'Folder:'
+    },
     4 => {
         'data' => {
             'id'    => 404,

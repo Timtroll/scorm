@@ -1,4 +1,6 @@
 <!doctype html>
+% use Data::Dumper;
+%= Dumper( $list );
 <head>
     <title><%= $title %></title>
     <style type="text/css">
@@ -40,6 +42,15 @@ body {
     width: 700px;
     height: 400px;
 }
+#message {
+    position: absolute;
+    left: 310px;
+    top: 454px;
+    background: #FFA07A;
+    float: right;
+    width: 700px;
+    height: 348px;
+}
  
 #clear {
     clear:both;
@@ -61,11 +72,12 @@ body {
          
     <div id="menu">
     	<h2>Меню</h2>
+% foreach my $t( @$list ) {
+        <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"><%= $$t{'title'} %> </a></h3>
+% }
     </div>
          
     <div id="content">
-		<h3><a class="title" href="https://m.ren.tv/novosti/2019-08-20/ekspertiza-irkutskaya-chinovnica-nazvala-zhertv-pavodka-bydlom-i-bichami" rel="nofollow" target="_blank">Иркутская чиновница назвала жертв паводка быдлом и бичами</a></h3>
-		<div class="entry">
 		    <h3><a class="title" href="https://m.ren.tv/novosti/2019-08-20/ekspertiza-irkutskaya-chinovnica-nazvala-zhertv-pavodka-bydlom-i-bichami" rel="nofollow" target="_blank">Иркутская чиновница назвала жертв паводка быдлом и бичами</a></h3>
 		    <div class="spam_warning" id="entry_554115_notice">
 		    </div>
@@ -81,11 +93,20 @@ body {
 		    </div>
 		</div>
     </div>
-         
+
+    <div id="message">
+         <form method="post" action="http://freee/forum/add">
+        <BR>Message: 
+        <BR><textarea name="msg" rows=5 cols=40/>
+        </textarea>
+        <BR><input type="submit" value="Enter"/>
+</form>
+    </div>  
+
     <div id="clear">
-         
+
     </div>
-               
+
     <div id="footer">
         <h2>Подвал сайта</h2>
     </div>
