@@ -1,45 +1,41 @@
 package Freee::Controller::Forum;
 
 use utf8;
+use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
+use common;
+
 
 sub index {
     my ($self);
     $self = shift;
+my $list = $self->_list_themes();
+
+print Dumper $list;
+    foreach my $t( @$list ) {
+print"\n";
+print"$$t{'title'}";
+print"\n";
+    }
 
     $self->render(
         'template'    => 'forum',
-        'title'       => 'Форум'
+        'title'       => 'Форум',
+        list => $list
     );
 }
 
 sub listthemes {
     my $self = shift;
 
-    my ( $list, $data, $table, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $list, $resp, @mess );
 
-    unless (@mess) {
-        # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct Group id '$$data{'group_id'}'" unless $data;
-
-        # проверка существования роута указанной группы
-        unless (@mess) {
-            if ( $self->_exists_in_table('forum_groups', 'id', $$data{'group_id'}) ) {
-                # список тем указанной группы
-                $list = $self->_list_themes( $$data{'group_id'} );
-                push @mess, "Could not get list Themes for group '$$data{'group_id'}'" unless $list;
-            }
-            else {
-                push @mess, "Themes for Group id '$$data{'group_id'}' is not exists";
-            }
-        }
-    }
-
+    $list = $self->_list_themes();
+    push @mess, "Could not get list Themes" unless $list;
+    
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'list'} = $list unless @mess;
@@ -173,18 +169,53 @@ sub del_group {
     );
 }
 
+# новое сообщение форума
+# my $id = $self->_insert_message();
+# "theme id"
+# "user id"
+# "anounce"
+# "date_created"
+# "msg"
+# "rate"
+# "status"
 sub add {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'add',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ($id, $data, @mess, $resp);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    # устанавляваем поля по умолчанию
+    # $self->param('theme_id') = 1;
+    # $self->param('user_id') = 1;
+    # $self->param('anounce') = '';
+    # $self->param('date_created') = localtime;
+    # $self->param('rate') = 0;
+    # $self->param('status') = 1;    $$data{'theme id'} = 1;
+
+    unless (@mess) {
+        # проверка данных
+        $data = $self->_check_fields();
+        push @mess, "Not correct message item" unless $data;
+
+        $$data{'user_id'} = 1;
+        $$data{'theme_id'} = 1;
+        $$data{'anounce'} = '';
+        $$data{'date_created'} = 25102019;
+        # $$data{'date_created'} = localtime;
+        $$data{'rate'} = 0;
+        $$data{'status'} = 1;
+
+        if ($data) {
+            $id = $self->_insert_message( $data );
+            push @mess, "Could not insert data" unless $id;
         }
-    );
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->redirect_to( '/forum/' );
 }
 
 sub edit {

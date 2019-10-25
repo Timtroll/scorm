@@ -7,6 +7,8 @@ use utf8;
 
 use base 'Mojolicious::Plugin';
 
+use DBD::Pg;
+
 use Data::Dumper;
 use common;
 
@@ -14,18 +16,16 @@ sub register {
     my ($self, $app) = @_;
 
     #################################
-    # Helper for Routes
+    # Helper for Forum
 
-    # получение списка рутов из базы в массив хэшей
-    # my $forum = $self->_forum_values();
+    # получение списка тем из базы в массив хэшей
     $app->helper( '_list_themes' => sub {
-        my ($self, $parent) = @_;
+        my ($self) = @_;
 
         my $list;
         eval {
-            # $list = $self->pg_dbh->selectall_hashref('SELECT * FROM "public"."forum" WHERE "parent" = '.$parent, 'id');
-            my $sql = 'SELECT * FROM "public"."forum" WHERE "parent" = '.$parent;
-            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+            my $sql = 'SELECT * FROM "public"."forum_themes"';
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
         return if $@;
@@ -96,6 +96,32 @@ sub register {
         eval{
             if ( $self->pg_dbh->do('INSERT INTO "public"."forum" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
                 $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum', undef, { sequence => 'forum_id_seq' } );
+            };
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $id;
+    });
+
+    # новое сообщение форума
+    # my $id = $self->_insert_message();
+    # "theme id"
+    # "user id"
+    # "anounce"
+    # "date_created"
+    # "msg"
+    # "rate"
+    # "status"
+    $app->helper( '_insert_message' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        my $id;
+        eval{
+            if ( $self->pg_dbh->do('INSERT INTO "public"."forum_messages" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum_messages', undef, { sequence => 'forum_messages_id_seq' } );
             };
         };
         warn $@ if $@;

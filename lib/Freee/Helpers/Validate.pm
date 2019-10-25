@@ -264,7 +264,7 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "value"         => [ 'required', qr/^[01]$/os ]
             },
 ################
-            # роуты forum/*            
+            # роуты forum/*
             '/forum/theme'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
@@ -325,7 +325,12 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "date_created"  => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/.*/os, 10000 ],
                 "rate"          => [ '', qr/^\d+$/os ]
-            }
+            },
+            '/forum/toggle'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "value"         => [ '', qr/^[01]$/os ]
+            },
         };
 
         return $vfields;
