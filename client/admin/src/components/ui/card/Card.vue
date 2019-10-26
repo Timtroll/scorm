@@ -254,7 +254,19 @@
         if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
           this.$store.commit('card_right_show', false)
         }
+        if (this.$route.meta.root) {
+          this.$store.commit('card_left_show', true)
+        }
       }
+    },
+
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if (vm.$route.meta.root) {
+          console.log('next')
+          vm.$store.commit('card_left_show', true)
+        }
+      })
     },
 
     watch: {
@@ -264,8 +276,10 @@
 
         if (this.cardRightState) {
           if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
-            this.$store.commit('card_left_show', false)
-            //this.$store.commit('card_right_show', false)
+            if (!this.$route.meta.root) {
+              this.$store.commit('card_left_show', false)
+              //this.$store.commit('card_right_show', false)
+            }
           }
         }
 
@@ -284,9 +298,7 @@
 
       cardLeftClickAction () {
         if (this.bodyWidth <= bodyMinSize) {
-          console.log(this.bodyWidth)
           if (this.cardLeftState) {
-            console.log('cardLeftState', this.cardLeftState)
             this.$store.commit('card_left_show', false)
           }
 
@@ -327,9 +339,7 @@
     methods: {
 
       swipe (direction) {
-        if (direction === 'left') {
-          //this.$store.commit('card_left_show', false)
-        } else if (direction === 'right') {
+        if (direction === 'right') {
           this.$store.commit('card_left_show', true)
         }
       },
