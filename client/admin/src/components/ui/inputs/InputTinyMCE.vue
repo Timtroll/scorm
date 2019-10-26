@@ -23,7 +23,6 @@
 <script>
 
   import Editor from '@tinymce/tinymce-vue'
-  const wiris = () => import('@wiris/mathtype-tinymce4/plugin.min')
 
   export default {
     name: 'InputTinyMCE',
@@ -67,7 +66,7 @@
           ],
 
           external_plugins: {
-            tiny_mce_wiris: '../node_modules/@wiris/mathtype-tinymce4/plugin.min.js'
+            tiny_mce_wiris: 'https://freee.su/vendors/mathtype-tinymce4/plugin.min.js'
             //tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js'
           },
 
