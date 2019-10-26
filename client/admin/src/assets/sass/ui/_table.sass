@@ -8,7 +8,6 @@ $table-inline-min-width: 45px
 $table-inline-max-width: 100px
 
 .pos-table-container
-
   overflow: auto
   position: relative
   height: 100%
@@ -75,6 +74,13 @@ $table-inline-max-width: 100px
 
   .pos-checkbox-switch
     transform: translateY(2px)
+
+  tr
+    &.status
+      text-decoration: line-through
+      color: $global-muted-color
+      font-style: italic
+
 
 .pos-table-row
   min-width: $table-min-width
