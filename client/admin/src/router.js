@@ -44,6 +44,7 @@ const router = new Router({
 
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_pages.svg',
             breadcrumb:   'Контент'
@@ -55,6 +56,7 @@ const router = new Router({
           component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_courses.svg',
             breadcrumb:   'Курсы'
@@ -66,6 +68,7 @@ const router = new Router({
           component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_review.svg',
             breadcrumb:   'Отзывы'
@@ -77,6 +80,7 @@ const router = new Router({
           component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_media.svg',
             breadcrumb:   'Медиа хранилище'
@@ -88,6 +92,7 @@ const router = new Router({
           component:     () => import(/* webpackChunkName: "Account" */ './components/profile/Account'),
           showInSideBar: false,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Профиль пользователя'
@@ -104,6 +109,7 @@ const router = new Router({
       showInSideBar:          false,
       sideSettingsMenuParent: true,
       meta:                   {
+        root:         true,
         authRequired: true,
         icon:         'img/icons/user_profile.svg',
         breadcrumb:   'Системные настройки'
@@ -116,6 +122,7 @@ const router = new Router({
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/icon__settings.svg',
             breadcrumb:   'Настройки'
@@ -128,6 +135,7 @@ const router = new Router({
               showInSideBar:  false,
               showInSettings: false,
               meta:           {
+                root:         false,
                 parentName:   'Settings',
                 authRequired: true,
                 breadcrumb:   'Настройки'
@@ -142,6 +150,7 @@ const router = new Router({
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Управление группами пользователей'
@@ -154,6 +163,7 @@ const router = new Router({
               showInSideBar:  false,
               showInSettings: false,
               meta:           {
+                root:         false,
                 parentName:   'Groups',
                 authRequired: true,
                 breadcrumb:   'Настройки'
@@ -168,6 +178,7 @@ const router = new Router({
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_users.svg',
             breadcrumb:   'Пользователи'

@@ -167,6 +167,7 @@
 
           if (this.navActiveId !== this.navItem.id) {
             this.showTable(item)
+
             this.$store.commit('card_left_nav_click')
           }
 

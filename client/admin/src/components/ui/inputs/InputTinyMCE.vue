@@ -52,7 +52,8 @@
         editorDisabled: false,
         editorInit:     {
 
-          plugins: 'print preview fullpage paste  importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount  imagetools textpattern noneditable help  charmap quickbars emoticons',
+          plugins:
+            'print preview fullpage paste importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount  imagetools textpattern noneditable help  charmap quickbars emoticons',
 
           external_plugins: {
             tiny_mce_wiris: 'https://freee.su/vendors/mathtype-tinymce4/plugin.min.js'
@@ -72,17 +73,16 @@
           //menubar:                     false,
           menubar: 'edit view insert table',
           toolbar: 'undo redo | ' +
-                     'bold italic underline strikethrough | ' +
-                     'formatselect | ' +
-                     'alignleft aligncenter alignright alignjustify | ' +
-                     'outdent indent | ' +
-                     'numlist bullist | ' +
-                     'removeformat | ' +
-                     'pagebreak | ' +
-                     'charmap emoticons | ' +
-                     'fullscreen  preview  | ' +
-                     'insertfile image media template link anchor codesample | ' +
-                     'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry',
+                   'bold italic underline strikethrough | ' +
+                   'formatselect | ' +
+                   'outdent indent | ' +
+                   'numlist bullist | ' +
+                   'removeformat | ' +
+                   'pagebreak | ' +
+                   'charmap emoticons | ' +
+                   'fullscreen  preview code | ' +
+                   'insertfile image media template link anchor codesample | ' +
+                   'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry',
 
           quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable fullscreen code',
 
