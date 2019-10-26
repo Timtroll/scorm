@@ -85,7 +85,7 @@ sub edit {
 
         if ($data) {
             $data = $self->_get_route( $$data{'id'} );
-            push @mess, "Could not get Route '".$$data{'id'}."'" unless $data;
+            push @mess, "Could not get Route '$$data{'id'}'" unless $data;
         }
     }
 

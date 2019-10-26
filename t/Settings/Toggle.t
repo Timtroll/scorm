@@ -24,7 +24,12 @@ my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
 diag "Add folder:";
-my $data = {name => 'test', label => 'test', parent => 0};
+my $data = {
+    'name'    => 'test',
+    'label'   => 'test',
+    'parent'  => 0,
+    'status'  => 1
+};
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -35,7 +40,12 @@ diag "";
 
 # Ввод настройки
 diag "Add setting:";
-$data = {name => 'name', label => 'label', status => 1, parent => 1};
+$data = {
+    'name'      => 'name',
+    'label'     => 'label',
+    'status'    => 1,
+    'parent'    => 1
+};
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";

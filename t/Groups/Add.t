@@ -74,7 +74,7 @@ my $test_data = {
         },
         'comment' => 'No name:' 
     },
-   5 => {
+    5 => {
         'data' => {
             'name'      => 'name5',
             'label'     => 'label5'
@@ -87,7 +87,7 @@ my $test_data = {
     },
     6 => {
         'data' => {
-            'name'      => 'label*',
+            'name'      => 'label 6',
             'label'     => 'label6',
             'status'    => 1
         },
@@ -115,6 +115,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
+
     $t->post_ok( $host.'/groups/add' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");

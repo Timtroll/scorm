@@ -23,7 +23,12 @@ my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
 diag "Add folder:";
-my $data = {name => 'test', label => 'test', parent => 0};
+my $data = {
+    'name'      => 'test',
+    'label'     => 'test',
+    'parent'    => 0,
+    'status'    => 1
+};
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -34,7 +39,12 @@ diag "";
 
 # Ввод настройки
 diag "Add setting:";
-$data = {name => 'name', label => 'label', status => 1, parent => 1};
+$data = {
+    'name'      => 'name',
+    'label'     => 'label',
+    'status'    => 1,
+    'parent'    => 1
+};
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -54,32 +64,32 @@ my $test_data = {
            'list' => {
                 'body' => [
                     {
-                        'placeholder' => '',
-                        'parent' => 0,
-                        'id' => 1,
-                        'selected' => '',
-                        'name' => 'test',
-                        'readonly' => 0,
-                        'mask' => '',
-                        'required' => 0,
-                        'status' => 1,
-                        'value' => '',
-                        'type' => '',
-                        'label' => 'test',
-                        'folder' => 1,
+                        'placeholder'   => '',
+                        'parent'        => 0,
+                        'id'            => 1,
+                        'selected'      => '',
+                        'name'          => 'test',
+                        'readonly'      => 0,
+                        'mask'          => '',
+                        'required'      => 0,
+                        'status'        => 1,
+                        'value'         => '',
+                        'type'          => '',
+                        'label'         => 'test',
+                        'folder'        => 1
                     }
                 ],
                 'settings' => {
                     'removable' => 1,
                     'sort' => {
-                        'order' => 'asc',
-                        'name' => 'id'
+                        'order'         => 'asc',
+                        'name'          => 'id'
                     },
                     'massEdit' => 0,
                     'page' => {
-                        'per_page' => 100,
-                        'total' => 1,
-                        'current_page' => 1
+                        'per_page'      => 100,
+                        'total'         => 1,
+                        'current_page'  => 1
                     },
                     'editable' => 1
                 }
@@ -96,15 +106,15 @@ my $test_data = {
                 'body' => [],
                 'settings' => {
                     'sort' => {
-                        'order' => 'asc',
-                        'name' => 'id'
+                        'order'     => 'asc',
+                        'name'      => 'id'
                     },
                     'removable' => 1,
-                    'editable' => 1,
+                    'editable'  => 1,
                     'page' => {
-                        'current_page' => 1,
-                        'per_page' => 100,
-                        'total' => 0
+                        'current_page'  => 1,
+                        'per_page'      => 100,
+                        'total'         => 0
                     },
                     'massEdit' => 0
                 }

@@ -31,7 +31,8 @@ my $test_data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'parent'    => 0
+            'parent'    => 0,
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
@@ -42,7 +43,8 @@ my $test_data = {
     2 => {
         'data' => {
             'name'      => 'name2',
-            'label'     => 'label2'
+            'label'     => 'label2',
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
@@ -56,7 +58,8 @@ my $test_data = {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'parent'    => 1
+            'parent'    => 1,
+            'status'    => 1
         },
         'result' => {
             'message'   => "Parent '1' is wrong",
@@ -67,7 +70,8 @@ my $test_data = {
     4 => {
         'data' => {
             'name'      => 'name4',
-            'parent'    => 0
+            'parent'    => 0,
+            'status'    => 1
         },
         'result' => {
             'message'   => "Validation error for 'label'. Field is empty or not exists",
@@ -78,7 +82,8 @@ my $test_data = {
     5 => {
         'data' => {
             'label'     => 'label5',
-            'parent'    => 0
+            'parent'    => 0,
+            'status'    => 1
         },
         'result' => {
             'message'   => "Validation error for 'name'. Field is empty or not exists",
@@ -90,7 +95,8 @@ my $test_data = {
         'data' => {
             'name'      => 'label*',
             'label'     => 'label6',
-            'parent'    => 0
+            'parent'    => 0,
+            'status'    => 1
         },
         'result' => {
             'message'   => "Validation error for 'name'. Field has wrong type",
@@ -100,25 +106,27 @@ my $test_data = {
     },
     7 => {
         'data' => {
-            'name'       => 'name1',
-            'label'      => 'label7',
-            'parent'    => 0
+            'name'      => 'name1',
+            'label'     => 'label7',
+            'parent'    => 0,
+            'status'    => 1
         },
         'result' => {
-            'message'    => "Folder item named 'name1' is exists",
-            'status'     => 'fail'
+            'message'   => "Folder item named 'name1' is exists",
+            'status'    => 'fail'
         },
         'comment' => 'Same name:' 
     },
     8 => {
         'data' => {
-            'name'       => 'name8',
-            'label'      => 'label8',
-            'parent'    => 404
+            'name'      => 'name8',
+            'label'     => 'label8',
+            'parent'    => 404,
+            'status'    => 1
         },
         'result' => {
-            'message'    => "Parent '404' is wrong",
-            'status'     => 'fail'
+            'message'   => "Parent '404' is wrong",
+            'status'    => 'fail'
         },
         'comment' => 'Parent dont exist:' 
     },

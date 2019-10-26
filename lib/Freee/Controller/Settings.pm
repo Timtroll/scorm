@@ -227,32 +227,34 @@ sub load_default {
     foreach my $folder ( @{$settings->{'settings'}} ) {
         $sub = {
             "name"          => $$folder{'name'},
-            "placeholder"   => $$folder{'placeholder'} || '',
+            "placeholder"   => $$folder{'placeholder'} // '',
             "label"         => $$folder{'label'},
-            "mask"          => $$folder{'mask'} || '',
-            "type"          => $$folder{'type'} || '',
-            "value"         => $$folder{'value'} || '',
-            "selected"      => $$folder{'selected'} || '',
-            "required"      => $$folder{'required'} || 0,
+            "mask"          => $$folder{'mask'} // '',
+            "type"          => $$folder{'type'} // '',
+            "value"         => $$folder{'value'} // '',
+            "selected"      => $$folder{'selected'} // '',
+            "required"      => $$folder{'required'} // 0,
             "readonly"      => 0,
             "status"        => 1,
+            "folder"        => 1,
             "parent"        => 0
         };
-        $id = $self->_insert_setting($sub, []);
+        $id = $self->_insert_folder($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         if (@{$$folder{'children'}}) {
             foreach my $children ( @{$$folder{'children'}} ) {
                 $sub = {
                     "name"          => $$children{'name'},
-                    "placeholder"   => $$children{'placeholder'} || '',
+                    "placeholder"   => $$children{'placeholder'} // '',
                     "label"         => $$children{'label'},
-                    "mask"          => $$children{'mask'} || '',
-                    "type"          => $$children{'type'} || '',
-                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : '',
+                    "mask"          => $$children{'mask'} // '',
+                    "type"          => $$children{'type'} // '',
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : $$children{'value'},
                     "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
-                    "required"      => $$children{'required'} || 0,
+                    "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
+                    "folder"        => 1,
                     "status"        => 1,
                     "parent"        => $id  # указываем родительский id
                 };

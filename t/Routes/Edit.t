@@ -22,18 +22,36 @@ my $host = $t->app->config->{'host'};
 
 # Ввод данных для вывода
 diag "Add group:";
-my $data = {name => 'test', label => 'test', status => 1};
-$t->post_ok( $host.'/groups/add' => form => $data );
+my $group = {
+    'data' => {
+        'name'      => 'test',
+        'label'     => 'first test',
+        'status'    => 1
+    },
+    'result' => {
+        'id'        => '1',
+        'status'    => 'ok'
+    },
+    'comment' => 'New group' 
+};
+$t->post_ok( $host.'/groups/add' => form => $group->{'data'} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
 }
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
 $t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $group->{'result'} );
 diag "";
 
 # получаем список роутов, чтобы произошло автоматическое заполнение доступных роутов в добаленной группе
 diag "Add routes" ;
-$data = {'parent' =>  1};
+$data = {
+    'parent' =>  1
+};
 $t->post_ok( $host.'/groups/' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -44,7 +62,9 @@ diag "";
 
 # Получаю роуты
 diag "Check Routes" ;
-$data = {'parent' =>  1};
+$data = {
+    'parent' =>  1
+};
 my $answer = $t->post_ok( $host.'/routes/' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";

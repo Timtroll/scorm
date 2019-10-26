@@ -92,19 +92,31 @@ sub register {
 
         return unless $data;
 
-        # пустые поля для value и selected
-        $$data{'value'} = $$data{'selected'} = '';
+        if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
+            warn 'Id and Parent is equal.';
+            return;
+        }
 
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map {
+                # $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    ($$data{$_} + 0)
+                }
+                else {
+                    $$data{$_} ? $self->pg_dbh->quote( $$data{$_} ) : "''";
+                }
+            } keys %$data ).
             ') RETURNING "id"';
+
         eval {
             $self->pg_dbh->do($sql);
         };
         warn $@ if $@;
         return if $@;
+
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -122,14 +134,18 @@ sub register {
         my ($self, $data) = @_;
 
         return unless $$data{'id'};
-
-        # unless ( $self->_folder_check( $$data{'id'} ) ) {
-        #     warn "'$$data{'id'}' is not a folder";
-        #     return;
-        # }
+        if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
+            warn 'Id and Parent is equal.';
+            return;
+        }
 
         my $fields = join( ', ', map {
-            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    '"'.$_.'"='.($$data{$_} + 0);
+                }
+                else {
+                    $$data{$_} ? '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} ) : '"'.$_."\"=''";
+                }
         } keys %$data );
 
         eval {
@@ -215,8 +231,17 @@ sub register {
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map {
+                # $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    ($$data{$_} + 0)
+                }
+                else {
+                    $$data{$_} ? $self->pg_dbh->quote( $$data{$_} ) : "''";
+                }
+            } keys %$data ).
             ') RETURNING "id"';
+
         eval {
             $self->pg_dbh->do($sql);
         };

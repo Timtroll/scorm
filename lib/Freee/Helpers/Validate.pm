@@ -47,7 +47,7 @@ sub register {
     # my $list = $self->_check('settings');
     # возвращает 1/undef
     $app->helper( '_check' => sub {
-warn Dumper($_[0]->tx->req->params->to_hash);
+# warn Dumper($_[0]->tx->req->params->to_hash);
         return 0 unless $_[1];
 
         my @error = ();
@@ -115,7 +115,6 @@ warn Dumper($_[0]->tx->req->params->to_hash);
 
         my %data = ();
         foreach (keys %{$$vfields{$self->url_for}}) {
-            # $data{$_} = undef;
             $data{$_} = $self->param($_);
             if ( defined $self->param($_) && ($$vfields{$self->url_for}{$_}[0] eq 'required') ) {
                 $data{$_} = $self->param($_) // 0;
@@ -163,15 +162,16 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "parent"        => [ '', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
             '/settings/save_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ '', qr/^\d+$/os ],
+                "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "label"         => [ '', qr/.*/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
                 "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_leafs'  => {

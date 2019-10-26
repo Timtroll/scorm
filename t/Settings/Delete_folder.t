@@ -22,7 +22,12 @@ my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
 diag "Add folder:";
-my $data = {name => 'test', label => 'test', parent => 0};
+my $data = {
+    'name'      => 'folder',
+    'label'     => 'test folder',
+    'parent'    => 0,
+    'status'    => 0
+};
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -33,7 +38,12 @@ diag "";
 
 # Ввод настройки
 diag "Add setting:";
-$data = {name => 'name', label => 'label', status => 1, parent => 1};
+$data = {
+    'name' => 'setting', 
+    'label' => 'setting item',
+    'status' => 1,
+    'parent' => 0
+};
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -63,7 +73,7 @@ my $test_data = {
     },
     3 => {
         'data' => {
-            'id'        => - 404
+            'id'        => -404
         },
         'result' => {
             'message'   => "Validation error for 'id'. Field has wrong type",

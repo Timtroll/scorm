@@ -40,6 +40,7 @@ $t->post_ok( $host.'/settings/add_folder' => form => {
     "parent"        => 0,
     "name"          => 'test',
     "label"         => 'first test',
+    'status'    => 1
 });
 diag "";
 
