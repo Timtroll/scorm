@@ -6,16 +6,10 @@
              v-if="label || placeholder"/>
 
       <div class="uk-form-controls">
-        <!--<textarea class="uk-textarea pos-textarea"-->
-        <!--          rows="3"-->
-        <!--          :disabled="!editable"-->
-        <!--          :class="validate"-->
-        <!--          v-model="valueInput"-->
-        <!--          @change="update"-->
-        <!--          :placeholder="placeholder"></textarea>-->
 
         <vue-ckeditor type="classic"
                       v-model="valueInput"
+                      :disabled="editorDisabled"
                       :config="editorConfig"
                       :editors="editors"/>
 
@@ -31,11 +25,18 @@
   import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
   import VueCkeditor from 'vue-ckeditor5'
 
-  //import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-  //import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-  //import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-  //import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-  //import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+  // custom
+  //import CKEditor from '@ckeditor/ckeditor5-vue';
+  //import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
+  //import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials'
+  //import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold'
+  //import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic'
+  //import LinkPlugin from '@ckeditor/ckeditor5-link/src/link'
+  //import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph'
+
+  //import '@ckeditor/ckeditor5-build-classic/build/translations/ru'
+
+  //import VueCkeditor from 'vue-ckeditor5'
 
   export default {
     name: 'InputCKEditor',
@@ -57,6 +58,12 @@
     components: {
       'vue-ckeditor': VueCkeditor.component
     },
+
+    //components: {
+    //  // Use the <ckeditor> component in this view.
+    //  ckeditor: CKEditor.component
+    //},
+
     data () {
       return {
         valueInput: this.value,
@@ -65,20 +72,67 @@
           classic: ClassicEditor
         },
 
-        editorConfig: {
-          readonly: false,
+        editorDisabled: true,
 
+        //editorConfig: {
+        //  plugins: [
+        //    EssentialsPlugin,
+        //    BoldPlugin,
+        //    ItalicPlugin,
+        //    //LinkPlugin,
+        //    ParagraphPlugin
+        //  ],
+        //
+        //  toolbar: {
+        //    items: [
+        //      'bold',
+        //      'italic',
+        //      'link',
+        //      'undo',
+        //      'redo'
+        //    ]
+        //  }
+        //}
+
+        editorConfig: {
+          readonly:    false,
+          placeholder: 'Начинайте вводить текст здесь...',
           //plugins: [
-            //EssentialsPlugin,
-            //BoldPlugin,
-            //ItalicPlugin,
-            //LinkPlugin,
-            //ParagraphPlugin
+          //EssentialsPlugin,
+          //BoldPlugin,
+          //ItalicPlugin,
+          //LinkPlugin,
+          //ParagraphPlugin
           //],
 
           // Run the editor with the German UI.
           language: 'ru',
-          toolbar:  ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|'],
+          //toolbar:  [
+          //  'heading', '|',
+          //  'undo', 'redo', '|',
+          //  'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+          //  'imageUpload'
+          //],
+          //
+          //image:   {
+          //  toolbar: [
+          //    'imageStyle:full',
+          //    'imageStyle:side',
+          //    '|',
+          //    'imageTextAlternative'
+          //  ]
+          //},
+
+          simpleUpload: {
+            // The URL that the images are uploaded to.
+            uploadUrl: 'https://drive.smartcheque.ru/up.php',
+
+            // Headers sent along with the XMLHttpRequest to the upload server.
+            headers: {
+              //'X-CSRF-TOKEN': 'CSFR-Token',
+              //Authorization: 'Bearer <JSON Web Token>'
+            }
+          },
 
           heading: {
             options: [
@@ -93,6 +147,10 @@
 
         }
       }
+    },
+
+    mounted () {
+      console.log(ClassicEditor.builtinPlugins.map(plugin => plugin.pluginName))
     },
 
     watch: {

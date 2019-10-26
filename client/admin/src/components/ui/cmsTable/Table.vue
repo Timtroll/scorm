@@ -118,7 +118,8 @@
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
-          <thead class="pos-table-header">
+          <thead class="pos-table-header"
+                 v-if="tableHeader.length > 0">
           <tr>
             <!--expand Row-->
             <th class="pos-table-expand uk-table-shrink uk-text-center">
@@ -259,7 +260,7 @@
           const headerLocal = localStorage.getItem(this.pageComponent + '_header_' + this.tableId)
 
           if (headerLocal) {
-            this.header = clone(headerLocal)
+            this.header = JSON.parse(headerLocal)
           } else {
             this.header = clone(this.protoLeaf)
           }
@@ -344,7 +345,7 @@
 
       // Шапка таблицы
       tableHeader () {
-        if (this.header) {
+        if (this.header && this.header.length > 0) {
           return this.header.filter(item => item.show === 1)
         }
       },

@@ -32,6 +32,9 @@ const state = {
       value: 'InputCKEditor',
       label: 'Текстовый редактор - CKEditor'
     }, {
+      value: 'InputTinyMCE',
+      label: 'Текстовый редактор - TinyMCE'
+    }, {
       value: 'InputBoolean',
       label: 'Чекбокс'
     }, {

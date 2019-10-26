@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr :class="{'status': fullData.status === 0}">
     <td class="pos-table-expand">
 
       <!--remove Row-->
