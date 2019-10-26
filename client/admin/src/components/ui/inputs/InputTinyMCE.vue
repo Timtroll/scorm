@@ -51,23 +51,11 @@
 
         editorDisabled: false,
         editorInit:     {
-          plugins: [
-            'wordcount',
-            'autolink',
-            'autoresize',
-            'codesample',
-            'fullscreen',
-            'image',
-            'insertdatetime',
-            'link',
-            'linkchecker',
-            'powerpaste',
-            'searchreplace'
-          ],
+
+          plugins: 'print preview fullpage paste  importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount  imagetools textpattern noneditable help  charmap quickbars emoticons',
 
           external_plugins: {
             tiny_mce_wiris: 'https://freee.su/vendors/mathtype-tinymce4/plugin.min.js'
-            //tiny_mce_wiris: 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js'
           },
 
           images_upload_url: 'https://drive.smartcheque.ru/up.php',
@@ -81,18 +69,47 @@
           //wirisimageidentcolor:   '#000000',
           //wirisformulaeditorlang: 'ru',
 
-          //menubar:             'insert',
-          //toolbar:             'link',
-          //toolbar: ['fullscreen', 'link', 'searchreplace'],
-          toolbar: ['fullscreen', 'link', 'searchreplace', 'tiny_mce_wiris_formulaEditor,tiny_mce_wiris_formulaEditorChemistry'],
+          //menubar:                     false,
+          menubar: 'edit view insert table',
+          toolbar: 'undo redo | ' +
+                     'bold italic underline strikethrough | ' +
+                     'formatselect | ' +
+                     'alignleft aligncenter alignright alignjustify | ' +
+                     'outdent indent | ' +
+                     'numlist bullist | ' +
+                     'removeformat | ' +
+                     'pagebreak | ' +
+                     'charmap emoticons | ' +
+                     'fullscreen  preview  | ' +
+                     'insertfile image media template link anchor codesample | ' +
+                     'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry',
 
+          quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable fullscreen code',
+
+          toolbar_drawer:         'sliding',
+          contextmenu:            'link image imagetools table configurepermanentpen',
           default_link_target:    '_blank',
           insertdatetime_formats: ['%H:%M:%S', '%Y-%m-%d', '%I:%M:%S %p', '%D'],
           autoresize_on_init:     true,
 
           branding: false,
           height:   400,
-          encoding: 'xml'
+          encoding: 'xml',
+
+          templates: [
+            {
+              title:       'Таблица',
+              description: 'Создать новую таблицу',
+              content:
+                           '<div class="mceTmpl"><table class="uk-table uk-table-divider uk-table-small uk-table-striped"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
+            },
+            {title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...'},
+            {
+              title:       'New list with dates',
+              description: 'New List with dates',
+              content:     '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
+            }
+          ]
         }
 
       }
@@ -142,3 +159,12 @@
     }
   }
 </script>
+<style>
+  .pos-card-body-right .tox-fullscreen {
+    position: absolute;
+  }
+  .pos-card-body-right .tox-fullscreen .tox.tox-tinymce.tox-fullscreen {
+    z-index: 10;
+  }
+  .tox-notifications-container {display: none !important;}
+</style>
