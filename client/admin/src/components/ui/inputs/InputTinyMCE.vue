@@ -84,7 +84,7 @@
           //menubar:             'insert',
           //toolbar:             'link',
           //toolbar: ['fullscreen', 'link', 'searchreplace'],
-          //toolbar: 'tiny_mce_wiris_formulaEditor,tiny_mce_wiris_formulaEditorChemistry',
+          toolbar: ['fullscreen', 'link', 'searchreplace', 'tiny_mce_wiris_formulaEditor,tiny_mce_wiris_formulaEditorChemistry'],
 
           default_link_target:    '_blank',
           insertdatetime_formats: ['%H:%M:%S', '%Y-%m-%d', '%I:%M:%S %p', '%D'],
