@@ -2,15 +2,16 @@
   <div class="">
     <div>
       <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
+             class="uk-form-label uk-text-bold uk-text-truncate"
              v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
+      <div class="uk-form-controls uk-margin-small-top">
 
         <vue-ckeditor type="classic"
                       v-model="valueInput"
                       :disabled="editorDisabled"
                       :config="editorConfig"
+                      @input="update"
                       :editors="editors"/>
 
       </div>
