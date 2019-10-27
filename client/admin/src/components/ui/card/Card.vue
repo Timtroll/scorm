@@ -28,17 +28,6 @@
         <slot name="headerRight"/>
       </div>
 
-      <!-- toggle right body panel-->
-      <a class="pos-card-header-item link"
-         v-if="bodyRightToggleShow"
-         :class="{'uk-text-danger' : bodyRightShow}"
-         @click.prevent="bodyRightToggle">
-
-        <img src="/img/icons/icon__info.svg"
-             uk-svg
-             width="20"
-             height="20">
-      </a>
     </div>
 
     <!--Body-->

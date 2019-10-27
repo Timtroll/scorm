@@ -17,6 +17,7 @@
 
         <!--Add Row-->
         <button type="button"
+                v-if="allowAddChildren"
                 class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                 @click.prevent="add_row">
           <img src="/img/icons/icon__plus.svg"
@@ -24,7 +25,7 @@
                height="16"
                uk-svg>
           <span class="uk-margin-small-left uk-visible@m"
-                v-text="$t('actions.add')"></span>
+                v-text="$t('actions.add')"/>
         </button>
 
         <!--Remove Row-->
@@ -36,7 +37,7 @@
                width="12"
                height="12">
           <span class="uk-margin-small-left uk-visible@s"
-                v-text="$t('actions.remove')"></span>
+                v-text="$t('actions.remove')"/>
         </button>
 
       </div>
@@ -302,7 +303,11 @@
 
       table_api () {return this.$store.getters.table_api},
 
-      tableNotEmpty () {if (this.tableRows) {return this.tableRows.length > 0}},
+      tableNotEmpty () {
+        if (this.tableRows) {
+          return this.tableRows.length > 0
+        }
+      },
 
       tableId () {return this.$route.params.id},
 
@@ -313,6 +318,8 @@
       notEmptyTable () {return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'},
 
       table () {return this.$store.getters.table_items},
+
+      allowAddChildren () {return this.$store.state.table.table.addChildren},
 
       massEdit () {
 
@@ -350,9 +357,15 @@
         }
       },
 
+      //async tableHeaderName () {
+      //  if (this.tableHeader && this.tableHeader.length > 0) {
+      //    return await this.tableHeader.map(item => item.name)
+      //  }
+      //},
+
       //Тело таблицы
       tableRows () {
-        if (this.filterSearch) {
+        if (this.filterSearch && this.tableHeader) {
           const table        = this.filterSearch,
                 displayTable = [],
                 flatHeader   = this.tableHeader.map(item => item.name)
