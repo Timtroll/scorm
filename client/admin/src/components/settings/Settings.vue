@@ -125,6 +125,9 @@
       await this.$store.commit('editPanel_size', false)
       this.$store.commit('card_right_show', false)
 
+      // показать кнопку Добавить
+      this.$store.commit('table_addChildren', true)
+
     },
 
     beforeDestroy () {

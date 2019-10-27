@@ -6,6 +6,8 @@ const mutations = {
   table_names (state, data) {state.table.tableNames = data},
   table_current (state, data) {state.table.current = data},
 
+  table_addChildren (state, data) {state.table.addChildren = data},
+
   // статус
   table_status_request (state) {state.table.status = 'loading'},
   table_status_success (state, data) {state.table.status = 'success'},
