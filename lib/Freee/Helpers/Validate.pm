@@ -138,12 +138,12 @@ sub register {
                         }
                     }
                 }
-                else {
-                    if ( $self->_folder_check( $self->param('id') ) ) {
-                        warn "$data{'id'} is a folder";
-                        return;
-                    }
-                }
+                # else {
+                #     if ( $self->_folder_check( $self->param('id') ) ) {
+                #         warn "$data{'id'} is a folder";
+                #         return;
+                #     }
+                # }
             }
         }
 
