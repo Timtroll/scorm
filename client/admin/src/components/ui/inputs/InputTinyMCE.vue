@@ -12,7 +12,6 @@
                         :init="editorInit"
                         @onChange="update"
                         :disabled="editorDisabled"/>
-
       </div>
 
     </div>
@@ -22,7 +21,6 @@
 <script>
 
   import Editor from '@tinymce/tinymce-vue'
-  import {clone} from '../../../store/methods'
 
   export default {
     name: 'InputTinyMCE',
