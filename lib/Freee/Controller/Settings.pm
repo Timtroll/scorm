@@ -254,7 +254,7 @@ sub load_default {
                     "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
                     "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
-                    "folder"        => 1,
+                    "folder"        => 0,
                     "status"        => 1,
                     "parent"        => $id  # указываем родительский id
                 };
