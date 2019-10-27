@@ -23,6 +23,7 @@
 <script>
 
   import Editor from '@tinymce/tinymce-vue'
+  import {clone} from '../../../store/methods'
 
   export default {
     name: 'InputTinyMCE',
@@ -47,13 +48,45 @@
 
     data () {
       return {
-        valueInput: this.value,
-
+        valueInput:     this.value,
         editorDisabled: false,
         editorInit:     {
 
           plugins:
-            'print preview fullpage paste importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount  imagetools textpattern noneditable help  charmap quickbars emoticons',
+            'print ' +
+            'preview ' +
+            'paste ' +
+            'importcss ' +
+            'searchreplace ' +
+            'autolink ' +
+            'directionality ' +
+            'visualblocks ' +
+            'visualchars ' +
+            'fullscreen ' +
+            'image ' +
+            'link ' +
+            'media ' +
+            'template ' +
+            'code ' +
+            'codesample ' +
+            'table ' +
+            'charmap ' +
+            'hr ' +
+            'pagebreak ' +
+            'nonbreaking ' +
+            'anchor ' +
+            'toc ' +
+            'insertdatetime ' +
+            'advlist ' +
+            'lists ' +
+            'wordcount  ' +
+            'imagetools ' +
+            'textpattern ' +
+            'noneditable ' +
+            'help ' +
+            'charmap ' +
+            'quickbars ' +
+            'emoticons',
 
           external_plugins: {
             tiny_mce_wiris: 'https://freee.su/vendors/mathtype-tinymce4/plugin.min.js'
@@ -62,29 +95,23 @@
           images_upload_url: 'https://drive.smartcheque.ru/up.php',
           automatic_uploads: true,
 
-          //wirisimagebgcolor:      '#ffffff',
-          //wirisimagesymbolcolor:  '#000000',
-          //wiristransparency:      'true',
-          //wirisimagefontsize:     '16',
-          //wirisimagenumbercolor:  '#000000',
-          //wirisimageidentcolor:   '#000000',
-          //wirisformulaeditorlang: 'ru',
+          menubar: 'edit ' +
+                   'view ' +
+                   'insert ' +
+                   'table',
+          toolbar: 'fullscreen  preview code | ' +
+                     'undo redo | ' +
+                     'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry' +
+                     'bold italic underline strikethrough | ' +
+                     'formatselect | ' +
+                     'outdent indent | ' +
+                     'numlist bullist | ' +
+                     'removeformat | ' +
+                     'pagebreak | ' +
+                     'charmap emoticons | ' +
+                     'insertfile image media template link anchor codesample | ',
 
-          //menubar:                     false,
-          menubar: 'edit view insert table',
-          toolbar: 'undo redo | ' +
-                   'bold italic underline strikethrough | ' +
-                   'formatselect | ' +
-                   'outdent indent | ' +
-                   'numlist bullist | ' +
-                   'removeformat | ' +
-                   'pagebreak | ' +
-                   'charmap emoticons | ' +
-                   'fullscreen  preview code | ' +
-                   'insertfile image media template link anchor codesample | ' +
-                   'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry',
-
-          quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable fullscreen code',
+          quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage',
 
           toolbar_drawer:         'sliding',
           contextmenu:            'link image imagetools table configurepermanentpen',
@@ -94,7 +121,7 @@
 
           branding: false,
           height:   400,
-          encoding: 'xml',
+          //encoding: 'xml',
 
           templates: [
             {
@@ -122,14 +149,16 @@
     watch: {
 
       valueInput () {
-        this.$emit('value', this.valueInput)
+        if (this.mask) {
+          this.valueInput = this.valueInput.replace(this.mask, '')
+        }
       }
     },
 
     computed: {
 
       isChanged () {
-        return JSON.stringify(this.valueInput) !== JSON.stringify(this.value)
+        return this.valueInput !== this.value
       },
 
       validate () {
@@ -154,7 +183,7 @@
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('value', JSON.stringify(this.valueInput))
+        this.$emit('value', this.valueInput)
       }
     }
   }
