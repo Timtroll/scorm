@@ -1,21 +1,17 @@
 <template>
-  <div class="">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-bold uk-text-truncate"
-             v-if="label || placeholder"/>
+  <li>
+    <label v-text="label || placeholder"
+           class="uk-form-label uk-text-bold uk-text-truncate"
+           v-if="label || placeholder"/>
 
-      <div class="uk-form-controls uk-margin-small-top">
-
-        <tinymce-editor api-key="j2ynfnyyenyzjjso1khgj2fq4w75rqhmf3gcwbc7lpx6l1lf"
-                        v-model="valueInput"
-                        :init="editorInit"
-                        @onChange="update"
-                        :disabled="editorDisabled"/>
-      </div>
-
+    <div class="uk-form-controls uk-margin-small-top">
+      <tinymce-editor api-key="j2ynfnyyenyzjjso1khgj2fq4w75rqhmf3gcwbc7lpx6l1lf"
+                      v-model="valueInput"
+                      :init="editorInit"
+                      @onChange="update"
+                      :disabled="editorDisabled"/>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>

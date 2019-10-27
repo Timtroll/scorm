@@ -1,42 +1,44 @@
 <template>
-  <div class="uk-form-horizontal">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+  <li>
+    <div class="uk-form-horizontal">
+      <div>
+        <label v-text="label || placeholder"
+               class="uk-form-label uk-text-truncate"
+               v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
-        <div class="uk-inline uk-width-1-1">
-          <DatePick v-model="valueInput"
-                    :format="'YYYY-MM-DD HH:mm'"
-                    :displayFormat="'DD.MM.YYYY HH:mm'"
-                    :selectableYearRange="5"
-                    :mobileBreakpointWidth="480"
-                    :inputAttributes="{class: 'uk-input uk-width-1-1', readonly: true}"
-                    :pickTime="true"
-                    :disabled="!editable"
-                    :pickMinutes="true"
-                    :months="$t('calendar.months')"
-                    :weekdays="$t('calendar.weekdays')"
-                    :setTimeCaption="$t('calendar.setTimeCaption')"
-                    :prevMonthCaption="$t('calendar.prevMonthCaption')"
-                    :nextMonthCaption="$t('calendar.nextMonthCaption')"
-                    @input="update">
-            <!--:parseDate="parseDate"-->
-            <!--:formatDate="formatDate">-->
-          </DatePick>
-          <div class="uk-form-icon uk-form-icon-flip">
-            <img src="/img/icons/icon__input_calendar.svg"
-                 uk-svg
-                 width="18"
-                 height="18">
+        <div class="uk-form-controls">
+          <div class="uk-inline uk-width-1-1">
+            <DatePick v-model="valueInput"
+                      :format="'YYYY-MM-DD HH:mm'"
+                      :displayFormat="'DD.MM.YYYY HH:mm'"
+                      :selectableYearRange="5"
+                      :mobileBreakpointWidth="480"
+                      :inputAttributes="{class: 'uk-input uk-width-1-1', readonly: true}"
+                      :pickTime="true"
+                      :disabled="!editable"
+                      :pickMinutes="true"
+                      :months="$t('calendar.months')"
+                      :weekdays="$t('calendar.weekdays')"
+                      :setTimeCaption="$t('calendar.setTimeCaption')"
+                      :prevMonthCaption="$t('calendar.prevMonthCaption')"
+                      :nextMonthCaption="$t('calendar.nextMonthCaption')"
+                      @input="update">
+              <!--:parseDate="parseDate"-->
+              <!--:formatDate="formatDate">-->
+            </DatePick>
+            <div class="uk-form-icon uk-form-icon-flip">
+              <img src="/img/icons/icon__input_calendar.svg"
+                   uk-svg
+                   width="18"
+                   height="18">
+
+            </div>
 
           </div>
-
         </div>
       </div>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>

@@ -1,23 +1,25 @@
 <template>
-  <div class="uk-form-horizontal not-stacked">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"/>
+  <li>
+    <div class="uk-form-horizontal not-stacked">
+      <div>
+        <label v-text="label || placeholder"
+               class="uk-form-label uk-text-truncate"
+               v-if="label || placeholder"/>
 
-      <div class="uk-form-controls uk-form-controls-text uk-text-right">
-        <label class="uk-display-block">
-          <input class="pos-checkbox-switch"
-                 :disabled="!editable"
-                 v-model.number="valueInputBoolean"
-                 :true-value="1"
-                 :false-value="0"
-                 @change="update"
-                 type="checkbox">
-        </label>
+        <div class="uk-form-controls uk-form-controls-text uk-text-right">
+          <label class="uk-display-block">
+            <input class="pos-checkbox-switch"
+                   :disabled="!editable"
+                   v-model.number="valueInputBoolean"
+                   :true-value="1"
+                   :false-value="0"
+                   @change="update"
+                   type="checkbox">
+          </label>
+        </div>
       </div>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>

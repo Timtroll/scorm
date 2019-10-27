@@ -1,21 +1,23 @@
 <template>
-  <div class="uk-form-horizontal">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+  <li>
+    <div class="uk-form-horizontal">
+      <div>
+        <label v-text="label || placeholder"
+               class="uk-form-label uk-text-truncate"
+               v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
+        <div class="uk-form-controls">
         <textarea class="uk-textarea pos-textarea"
                   rows="3"
                   :disabled="!editable"
                   :class="validate"
                   v-model="valueInput"
                   @change="update"
-                  :placeholder="placeholder"></textarea>
+                  :placeholder="placeholder"/>
+        </div>
       </div>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>
@@ -26,7 +28,7 @@
       value:       {
         default: ''
       },
-      label: {
+      label:       {
         default: '',
         type:    String
       },

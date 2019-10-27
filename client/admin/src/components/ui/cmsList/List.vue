@@ -44,23 +44,22 @@
 
         <ul class="pos-list">
 
-          <li v-for="(item, index) in dataNew"
-              :key="index">
-            <component v-bind:is="item.type"
-                       :value="item.value"
-                       :name="item.name"
-                       :selected="item.selected"
-                       :readonly="item.readonly"
-                       :add="item.add"
-                       :required="item.required"
-                       :mask="item.mask"
-                       :label="item.label"
-                       :placeholder="item.placeholder"
-                       @value="dataNew[index].value = $event"
-                       @change="dataChanged[index].changed = $event"
-                       @changeType="changeType($event)"/>
+          <component v-bind:is="item.type"
+                     v-for="(item, index) in dataNew"
+                     :key="index"
+                     :value="item.value"
+                     :name="item.name"
+                     :selected="valueSelected"
+                     :readonly="item.readonly"
+                     :add="item.add"
+                     :required="item.required"
+                     :mask="item.mask"
+                     :label="item.label"
+                     :placeholder="item.placeholder"
+                     @value="dataNew[index].value = $event"
+                     @change="dataChanged[index].changed = $event"
+                     @changeType="changeType($event)"/>
 
-          </li>
         </ul>
 
         <!--loading-->
@@ -122,6 +121,7 @@
       InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
       InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
       InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
+      InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
       InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
       InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
       InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
@@ -185,9 +185,10 @@
 
     data () {
       return {
-        dataNew:     [],
-        dataChanged: [],
-        dataAdd:     []
+        dataNew:        [],
+        dataChanged:    [],
+        dataAdd:        [],
+        showSelectedOn: ['InputSelect', 'InputRadio']
       }
     },
 
@@ -253,6 +254,14 @@
       // список компонентов для ввода
       inputComponents () {
         return this.$store.getters.inputComponents
+      },
+
+      valueSelected () {
+        const selected = clone(this.dataNew).find(item => item.type === 'InputSelected')
+        if (selected && selected.value) {
+          return selected.value
+        }
+
       },
 
       findVariableTypeField () {

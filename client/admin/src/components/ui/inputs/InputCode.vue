@@ -1,77 +1,76 @@
 <template>
-  <div class="">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"/>
+  <li>
+    <label v-text="label || placeholder"
+           class="uk-form-label uk-text-truncate"
+           v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
-        <div :class="{'uk-position-cover': fullSize}"
-             class="uk-background-default uk-flex uk-flex-column"
-             style="z-index: 10">
-          <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom uk-flex uk-flex-between uk-flex-middle">
+    <div class="uk-form-controls">
+      <div :class="{'uk-position-cover': fullSize}"
+           class="uk-background-default uk-flex uk-flex-column"
+           style="z-index: 10">
+        <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom uk-flex uk-flex-between uk-flex-middle">
 
-            <!--Выбор языка-->
-            <select v-model="lang"
-                    class="">
-              <option v-for="item in langSelect"
-                      :value="item">{{item}}
-              </option>
-            </select>
+          <!--Выбор языка-->
+          <select v-model="lang"
+                  class="">
+            <option v-for="item in langSelect"
+                    :value="item">{{item}}
+            </option>
+          </select>
 
-            <!--<div uk-form-custom="target: > * > span:first-child"-->
-            <!--     class="uk-margin-small-right">-->
+          <!--<div uk-form-custom="target: > * > span:first-child"-->
+          <!--     class="uk-margin-small-right">-->
 
-            <!--  <select v-model="lang"-->
-            <!--          class="uk-select uk-button-small">-->
-            <!--    <option v-for="item in langSelect"-->
-            <!--            :value="item">{{item}}-->
-            <!--    </option>-->
-            <!--  </select>-->
+          <!--  <select v-model="lang"-->
+          <!--          class="uk-select uk-button-small">-->
+          <!--    <option v-for="item in langSelect"-->
+          <!--            :value="item">{{item}}-->
+          <!--    </option>-->
+          <!--  </select>-->
 
-            <!--  <button class="uk-button-small uk-button uk-button-default"-->
-            <!--          type="button"-->
-            <!--          tabindex="-1">-->
+          <!--  <button class="uk-button-small uk-button uk-button-default"-->
+          <!--          type="button"-->
+          <!--          tabindex="-1">-->
 
-            <!--    <span class="uk-margin-small-right"/>-->
-            <!--    <img src="/img/icons/icon_arrow__down.svg"-->
-            <!--         uk-svg-->
-            <!--         width="12"-->
-            <!--         height="12">-->
-            <!--  </button>-->
-            <!--</div>-->
+          <!--    <span class="uk-margin-small-right"/>-->
+          <!--    <img src="/img/icons/icon_arrow__down.svg"-->
+          <!--         uk-svg-->
+          <!--         width="12"-->
+          <!--         height="12">-->
+          <!--  </button>-->
+          <!--</div>-->
 
-            <!--размер окна-->
-            <a class="pos-card-header-item link"
-               :class="{'uk-text-danger' : fullSize}"
-               @click.prevent="fullSize = !fullSize">
+          <!--размер окна-->
+          <a class="pos-card-header-item link"
+             :class="{'uk-text-danger' : fullSize}"
+             @click.prevent="fullSize = !fullSize">
 
-              <img src="/img/icons/icon__expand.svg"
-                   uk-svg
-                   width="20"
-                   height="20"
-                   v-if="!fullSize">
+            <img src="/img/icons/icon__expand.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-if="!fullSize">
 
-              <img src="/img/icons/icon__collapse.svg"
-                   uk-svg
-                   width="20"
-                   height="20"
-                   v-else>
-            </a>
-          </div>
-          <div class="uk-flex-1">
-            <editor v-model="valueInput"
-                    ref='codeEditor'
-                    @init="editorInit"
-                    :lang="lang"
-                    :options="editorOptions"
-                    width="100%"
-                    :height="editorHeight"/>
-          </div>
+            <img src="/img/icons/icon__collapse.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-else>
+          </a>
+        </div>
+        <div class="uk-flex-1">
+          <editor v-model="valueInput"
+                  ref='codeEditor'
+                  @init="editorInit"
+                  :lang="lang"
+                  :options="editorOptions"
+                  width="100%"
+                  :height="editorHeight"/>
         </div>
       </div>
     </div>
-  </div>
+  </li>
+
 </template>
 
 <script>

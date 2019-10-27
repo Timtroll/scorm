@@ -243,6 +243,14 @@
         const arr = clone(data)
         arr.forEach(item => {save.fields[item.name] = item.value})
 
+        // преобразование в JSON поля selected
+        save.fields.selected = JSON.stringify(save.fields.selected)
+
+        // преобразование в JSON поля value, если тип поля InputDoubleList
+        if (save.fields.type === 'InputDoubleList') {
+          save.fields.value = JSON.stringify(save.fields.value)
+        }
+
         this.$store.dispatch(this.actions.editPanel.save, save)
 
       }

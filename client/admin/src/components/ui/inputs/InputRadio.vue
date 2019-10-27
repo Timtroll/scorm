@@ -1,133 +1,135 @@
 <template>
-  <div class="uk-form-horizontal uk-overflow-hidden">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+  <li>
+    <div class="uk-form-horizontal uk-overflow-hidden">
+      <div>
+        <label v-text="label || placeholder"
+               class="uk-form-label uk-text-truncate"
+               v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
+        <div class="uk-form-controls">
 
-        <!--Value-->
-        <div class="uk-grid-small"
-             uk-grid>
+          <!--Value-->
+          <div class="uk-grid-small"
+               uk-grid>
 
-          <div class="uk-width-expand">
-            <label class="uk-width-1-1 uk-form-controls-text uk-flex uk-flex-middle uk-grid-collapse"
-                   uk-grid=""
-                   v-for="(radio, index) in valuesInput">
-              <input
-                  class="pos-checkbox-switch"
-                  :disabled="!editable || editValues"
-                  :value="valuesInput[index]"
-                  v-model="valueInput"
-                  :checked="valueInput"
-                  @change="update"
-                  type="radio">
-              <div class="uk-width-expand uk-margin-small-left">
+            <div class="uk-width-expand">
+              <label class="uk-width-1-1 uk-form-controls-text uk-flex uk-flex-middle uk-grid-collapse"
+                     uk-grid=""
+                     v-for="(radio, index) in valuesInput">
+                <input
+                    class="pos-checkbox-switch"
+                    :disabled="!editable || editValues"
+                    :value="valuesInput[index]"
+                    v-model="valueInput"
+                    :checked="valueInput"
+                    @change="update"
+                    type="radio">
+                <div class="uk-width-expand uk-margin-small-left">
               <span class="uk-text-truncate"
-                    v-text="radio"></span>
-              </div>
-            </label>
+                    v-text="radio"/>
+                </div>
+              </label>
 
+            </div>
+
+            <!--toggle edit Values-->
+            <div class="uk-width-auto"
+                 v-if="editable">
+              <button type="button"
+                      class="uk-button"
+                      :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
+                      @click.prevent="editValues = !editValues">
+                <img src="/img/icons/icon__edit.svg"
+                     width="16"
+                     height="16"
+                     uk-svg
+                     v-if="!editValues">
+                <img src="/img/icons/icon__save.svg"
+                     width="16"
+                     height="16"
+                     uk-svg
+                     v-else>
+              </button>
+            </div>
           </div>
 
-          <!--toggle edit Values-->
-          <div class="uk-width-auto"
-               v-if="editable">
-            <button type="button"
-                    class="uk-button"
-                    :class="{'uk-button-primary' : !editValues, 'uk-button-success' : editValues}"
-                    @click.prevent="editValues = !editValues">
-              <img src="/img/icons/icon__edit.svg"
-                   width="16"
-                   height="16"
-                   uk-svg
-                   v-if="!editValues">
-              <img src="/img/icons/icon__save.svg"
-                   width="16"
-                   height="16"
-                   uk-svg
-                   v-else>
-            </button>
-          </div>
-        </div>
+          <!--editValues-->
+          <transition name="slide-bottom">
+            <div class="pos-placeholder"
+                 v-if="editValues">
+              <div class="uk-grid-collapse uk-flex-middle"
+                   uk-grid>
 
-        <!--editValues-->
-        <transition name="slide-bottom">
-          <div class="pos-placeholder"
-               v-if="editValues">
-            <div class="uk-grid-collapse uk-flex-middle"
-                 uk-grid>
+                <!--Title-->
+                <div class="uk-width-expand uk-text-bold"
+                     v-text="$t('actions.edit_fields')"></div>
 
-              <!--Title-->
-              <div class="uk-width-expand uk-text-bold"
-                   v-text="$t('actions.edit_fields')"></div>
+                <!--Add value-->
+                <div class="uk-width-auto">
+                  <a @click.prevent="addItem">
+                    <img src="/img/icons/icon__plus-circle.svg"
+                         width="22"
+                         height="22"
+                         uk-svg>
+                  </a>
+                </div>
 
-              <!--Add value-->
-              <div class="uk-width-auto">
-                <a @click.prevent="addItem">
-                  <img src="/img/icons/icon__plus-circle.svg"
-                       width="22"
-                       height="22"
-                       uk-svg>
-                </a>
-              </div>
+                <!--Values-->
+                <div class="uk-width-1-1 uk-margin-top">
+                  <div class=""
+                       v-for="(item, index) in valuesInput"
+                       :key="index">
 
-              <!--Values-->
-              <div class="uk-width-1-1 uk-margin-top">
-                <div class=""
-                     v-for="(item, index) in valuesInput"
-                     :key="index">
+                    <div class="uk-grid-small uk-flex-middle"
+                         uk-grid>
 
-                  <div class="uk-grid-small uk-flex-middle"
-                       uk-grid>
+                      <!--index-->
+                      <div class="uk-width-auto"
+                           style="width: 30px"
+                           v-text="index"></div>
 
-                    <!--index-->
-                    <div class="uk-width-auto"
-                         style="width: 30px"
-                         v-text="index"></div>
-
-                    <!--value-->
-                    <div class="uk-inline uk-width-expand">
-                      <div class="uk-form-icon uk-form-icon-flip">
-                        <img src="/img/icons/icon__input_text.svg"
-                             uk-svg
-                             width="14"
-                             height="14">
+                      <!--value-->
+                      <div class="uk-inline uk-width-expand">
+                        <div class="uk-form-icon uk-form-icon-flip">
+                          <img src="/img/icons/icon__input_text.svg"
+                               uk-svg
+                               width="14"
+                               height="14">
+                        </div>
+                        <input class="uk-input uk-form-small"
+                               v-model="valuesInput[index]"
+                               :key="index"
+                               v-focus
+                               @keyup.enter="addItem"
+                               type="text">
                       </div>
-                      <input class="uk-input uk-form-small"
-                             v-model="valuesInput[index]"
-                             :key="index"
-                             v-focus
-                             @keyup.enter="addItem"
-                             type="text">
-                    </div>
 
-                    <!--remove value-->
-                    <div class="uk-width-auto">
-                      <a class="pos-link-danger"
-                         style="transform: translateY(-3px)"
-                         @click.prevent="removeItem(index)">
-                        <img src="/img/icons/icon__trash.svg"
-                             width="14"
-                             height="14"
-                             uk-svg>
-                      </a>
-                    </div>
+                      <!--remove value-->
+                      <div class="uk-width-auto">
+                        <a class="pos-link-danger"
+                           style="transform: translateY(-3px)"
+                           @click.prevent="removeItem(index)">
+                          <img src="/img/icons/icon__trash.svg"
+                               width="14"
+                               height="14"
+                               uk-svg>
+                        </a>
+                      </div>
 
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </transition>
+          </transition>
+        </div>
       </div>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>
-  import UIkit from 'uikit/dist/js/uikit.min'
+  import {confirm} from '../../../store/methods'
 
   export default {
     name: 'InputRadio',
@@ -229,14 +231,10 @@
 
       removeItem (index) {
 
-        UIkit.modal.confirm(this.$t('dialog.remove'), {
-          labels: {
-            ok:     this.$t('actions.ok'),
-            cancel: this.$t('actions.cancel')
-          }
-        }).then(() => {
-          this.valuesInput.splice(index, 1)
-        })
+        confirm(this.$t('dialog.remove'), this.$t('actions.ok'), this.$t('actions.cancel'))
+          .then(() => {
+            this.valuesInput.splice(index, 1)
+          })
 
       },
 

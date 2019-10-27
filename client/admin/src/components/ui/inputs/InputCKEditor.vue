@@ -1,24 +1,19 @@
 <template>
-  <div class="">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-bold uk-text-truncate"
-             v-if="label || placeholder"/>
+  <li>
+    <label v-text="label || placeholder"
+           class="uk-form-label uk-text-bold uk-text-truncate"
+           v-if="label || placeholder"/>
 
-      <div class="uk-form-controls uk-margin-small-top">
+    <div class="uk-form-controls uk-margin-small-top">
 
-        <vue-ckeditor type="classic"
-                      v-model="valueInput"
-                      :disabled="editorDisabled"
-                      :config="editorConfig"
-                      @input="update"
-                      :editors="editors"/>
-
-      </div>
-      <!--<div class="uk-margin-top"-->
-      <!--     v-html="valueInput"></div>-->
+      <vue-ckeditor type="classic"
+                    v-model="valueInput"
+                    :disabled="editorDisabled"
+                    :config="editorConfig"
+                    @input="update"
+                    :editors="editors"/>
     </div>
-  </div>
+  </li>
 </template>
 
 <script>
