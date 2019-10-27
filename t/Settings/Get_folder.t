@@ -85,7 +85,7 @@ my $test_data = {
             'id'    => 2
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '2' is not allowed for '/settings/get_folder'",
             'status'    => 'fail'
         },
         'comment' => 'Get leaf:'
@@ -95,7 +95,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '404' is not allowed for '/settings/get_folder'",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 

@@ -8,6 +8,8 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 
+use Data::Dumper;
+
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
@@ -120,22 +122,53 @@ my $test_data = {
                 }
             },
             'status' => 'ok'
-
         },
-        'comment' => 'Setting:'
+        'comment' => 'Folder without leafs:'
     },
-    
-    # отрицательные тесты
     3 => {
         'data' => {
             'id'    => 1
        },
         'result' => {
-            'message'   => "Not correct setting item data, watch log",
-            'status'    => 'fail'
+            'list' => {
+                'settings' => {
+                    'editable' => 1,
+                    'page' => {
+                          'current_page' => 1,
+                          'total' => 1,
+                          'per_page' => 100
+                    },
+                    'massEdit' => 0,
+                    'removable' => 1,
+                    'sort' => {
+                        'name' => 'id',
+                        'order' => 'asc'
+                    }
+                },
+                'body' => [
+                    {
+                        'readonly' => 0,
+                        'label' => 'label',
+                        'id' => 2,
+                        'folder' => 0,
+                        'parent' => 1,
+                        'name' => 'name',
+                        'type' => '',
+                        'required' => 0,
+                        'placeholder' => '',
+                        'mask' => '',
+                        'value' => '',
+                        'selected' => '',
+                        'status' => 1
+                    }
+                ]
+            },
+            'status' => 'ok'
         },
-        'comment' => 'Folder:'
+        'comment' => 'Folder with leaf:'
     },
+    
+    # отрицательные тесты
     4 => {
         'data' => {
             'id'    => 404,

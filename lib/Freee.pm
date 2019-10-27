@@ -70,21 +70,22 @@ warn '=freee=';
 
     $auth = $r->under()->to('auth#check_token');
 
-    # левая менюха (дерево без листочков)
+    # левая менюха (дерево без листочков) - обязательная проверка на фолдер
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');        # Все дерево без листочков
     $auth->post('/settings/get_folder')   ->to('settings#get_folder');      # получить данные фолдера настроек
     $auth->post('/settings/add_folder')   ->to('settings#add_folder');      # добавление фолдера
     $auth->post('/settings/save_folder')  ->to('settings#save_folder');     # сохранение фолдера
-    $auth->post('/settings/delete_folder')->to('settings#delete_folder');   # удаление фолдера
 
-    # строки настроек
-    $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
-    $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
+    # строки настроек - обязательная проверка на фолдер
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
-    $auth->post('/settings/delete')       ->to('settings#delete');          # удаление настройки
+
+    # проверка на фолдер не нужна
+    $auth->post('/settings/get_leafs')    ->to('settings#get_leafs');       # список листочков узла дерева
+    $auth->post('/settings/load_default') ->to('settings#load_default');    # загрузка дефолтных настроек
     $auth->post('/settings/toggle')       ->to('settings#toggle');          # включение/отключение поля в строке настройки
+    $auth->post('/settings/delete')       ->to('settings#delete');          # удаление фолдера или настройки
 
     # управление контентом
     $auth->post('/cms/article')           ->to('cmsarticle#index');

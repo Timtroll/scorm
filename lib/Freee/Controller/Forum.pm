@@ -181,7 +181,7 @@ sub del_group {
 sub add {
     my $self = shift;
 
-    my ($id, $data, @mess, $resp);
+    my ($id, $data, $error, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     # устанавляваем поля по умолчанию
@@ -194,13 +194,14 @@ sub add {
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct message item" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
 
         $$data{'user_id'} = 1;
         $$data{'theme_id'} = 1;
         $$data{'anounce'} = '';
-        $$data{'date_created'} = 25102019;
+        $$data{'date_created'} = time;
         # $$data{'date_created'} = localtime;
         $$data{'rate'} = 0;
         $$data{'status'} = 1;
@@ -254,13 +255,13 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, @mess);
+    my ($toggle, $resp, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
         $toggle = $self->_toggle( $data ) unless @mess;

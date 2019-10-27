@@ -85,7 +85,7 @@ my $test_data = {
             'id'    => 1
         },
         'result' => {
-            'message'   => "Not correct setting item data, watch log",
+            'message'   => "_check_fields: Action is not allowed for '/settings/edit'",
             'status'    => 'fail'
         },
         'comment' => 'Edit folder:'
@@ -124,6 +124,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
+
     $t->post_ok($host.'/settings/edit' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

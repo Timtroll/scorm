@@ -11,6 +11,8 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 
+use Data::Dumper;
+
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
@@ -156,7 +158,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '404' is not allowed for '/settings/save_folder'",
             'status'    => 'fail',
         },
         'comment' => 'Id do not exist:'
@@ -170,7 +172,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '2' is not allowed for '/settings/save_folder'",
             'status'    => 'fail',
         },
         'comment' => 'Not exists folder:'

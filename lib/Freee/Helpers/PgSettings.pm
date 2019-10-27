@@ -158,29 +158,6 @@ sub register {
         return 1;
     });
 
-    # удаление фолдера
-    # my $true = $self->_delete_folder( <id> );
-    # возвращается true/false
-    $app->helper( '_delete_folder' => sub {
-        my ($self, $id) = @_;
-
-        return unless $id;
-
-        # unless ( $self->_folder_check( $id ) ) {
-        #     warn "$id is a not folder";
-        #     return;
-        # }
-
-        my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
-        eval {
-            $self->pg_dbh->do($sql);
-        };
-        warn $@ if $@;
-        return if $@;
-
-        return 1;
-    });
-
     # выбираем листья ветки дерева по id парента
     # my $true = $self->_get_leafs( <id> );
     $app->helper( '_get_leafs' => sub {
@@ -281,11 +258,6 @@ sub register {
         return unless $data;
         return unless $$data{'id'};
 
-        # if ( $self->_folder_check( $$data{'id'} ) ) {
-        #     warn "'$$data{'id'}' is a folder";
-        #     return;
-        # }
-
         # сериализуем поля vaue и selected
         if (defined $$data{'value'} ) {
             $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
@@ -309,17 +281,35 @@ sub register {
         return $$data{'id'};
     });
 
+    # удаление фолдера
+    # my $true = $self->_delete_folder( <id> );
+    # возвращается true/false
+    # $app->helper( '_delete_folder' => sub {
+    #     my ($self, $id) = @_;
+
+    #     return unless $id;
+
+    #     # unless ( $self->_folder_check( $id ) ) {
+    #     #     warn "$id is a not folder";
+    #     #     return;
+    #     # }
+
+    #     my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
+    #     eval {
+    #         $self->pg_dbh->do($sql);
+    #     };
+    #     warn $@ if $@;
+    #     return if $@;
+
+    #     return 1;
+    # });
+
     # удаление настройки
     # my $true = $self->_delete_setting( <id> );
     # возвращается true/false
     $app->helper( '_delete_setting' => sub {
         my ($self, $id) = @_;
         return unless $id;
-
-        # if ( $self->_folder_check( $id ) ) {
-        #     warn "$id is a folder";
-        #     return;
-        # }
 
         my $result;
         my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
