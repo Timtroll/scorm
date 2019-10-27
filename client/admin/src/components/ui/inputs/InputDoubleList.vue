@@ -110,6 +110,7 @@
 <script>
 
   import UIkit from 'uikit/dist/js/uikit.min'
+  import {clone} from '../../../store/methods'
 
   export default {
     name: 'InputDoubleList',
@@ -138,7 +139,7 @@
     data () {
 
       return {
-        valuesInput: JSON.parse(JSON.stringify(this.value)) || [['']],
+        valuesInput: clone(this.value) || [['']],
         editValues:  false,
         doubleCell:  false
       }
@@ -153,9 +154,9 @@
 
     watch: {
 
-      isChanged () {
-        this.update()
-      }
+      //isChanged () {
+      //  this.update()
+      //}
     },
 
     computed: {

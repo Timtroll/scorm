@@ -177,7 +177,7 @@
       },
 
       isChanged () {
-        return this.valueInput !== this.value || JSON.stringify(this.notEmptyEditValues) !== JSON.stringify(this.values)
+        return JSON.stringify(this.notEmptyEditValues) !== JSON.stringify(this.values)
       },
 
       notEmptyEditValues () {
