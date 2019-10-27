@@ -101,7 +101,7 @@
                    'table',
           toolbar: 'fullscreen  preview code | ' +
                      'undo redo | ' +
-                     'tiny_mce_wiris_formulaEditor, tiny_mce_wiris_formulaEditorChemistry' +
+                     'tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry | ' +
                      'bold italic underline strikethrough | ' +
                      'formatselect | ' +
                      'outdent indent | ' +
