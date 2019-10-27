@@ -2,17 +2,16 @@
   <div class="">
     <div>
       <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
+             class="uk-form-label uk-text-bold uk-text-truncate"
              v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
+      <div class="uk-form-controls uk-margin-small-top">
 
         <tinymce-editor api-key="j2ynfnyyenyzjjso1khgj2fq4w75rqhmf3gcwbc7lpx6l1lf"
                         v-model="valueInput"
                         :init="editorInit"
+                        @onChange="update"
                         :disabled="editorDisabled"/>
-        <!--:init="editorInit"-->
-        <!--api-key="j2ynfnyyenyzjjso1khgj2fq4w75rqhmf3gcwbc7lpx6l1lf"-->
 
       </div>
 
@@ -96,9 +95,9 @@
           automatic_uploads: true,
 
           menubar: 'edit ' +
-                   'view ' +
-                   'insert ' +
-                   'table',
+                     'view ' +
+                     'insert ' +
+                     'table',
           toolbar: 'fullscreen  preview code | ' +
                      'undo redo | ' +
                      'tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry | ' +
@@ -138,7 +137,6 @@
             }
           ]
         }
-
       }
     },
 
