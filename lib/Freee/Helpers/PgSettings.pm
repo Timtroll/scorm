@@ -74,6 +74,7 @@ sub register {
             $$row{'type'}       = '';
             $$row{'value'}      = '';
             $$row{'selected'}   = '';
+            $$row{'folder'}     = $$row{'folder'} // 0;
             $$row{'status'}     = $$row{'status'} // 0;
         }
         
