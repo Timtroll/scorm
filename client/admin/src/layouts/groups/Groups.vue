@@ -2,7 +2,6 @@
   <Card :header="false"
         :footer="false"
         :body-left="true"
-        :body-left-show="cardLeft_show"
         :body-left-padding="false"
         :body-left-toggle-show="true"
         :body-right="true"
@@ -16,17 +15,14 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <router-view></router-view>
+        <router-view/>
       </transition>
 
     </template>
 
     <!--bodyLeft-->
     <template #bodyLeft>
-
-      <Tree v-if="nav"
-            :nav="nav">
-      </Tree>
+      <Tree :nav="nav"/>
     </template>
 
     <!--bodyRight-->
@@ -47,24 +43,24 @@
 <script>
 
   //import прототипа колонок таблицы
-  import settingsProtoLeaf from '@/assets/json/proto/settings/leaf.json'
-  import settingsProtoFolder from '@/assets/json/proto/settings/folder.json'
+  import groupProtoLeaf from '@/assets/json/proto/groups/leaf.json'
+  import groupProtoFolder from '@/assets/json/proto/groups/folder.json'
 
   // import VUEX module groups
-  import settings from '@/store/modules/settings'
+  import groups from '@/store/modules/groups'
   import {clone} from '../../store/methods'
 
   export default {
 
-    name: 'Settings',
+    name: 'Groups',
 
     components: {
-      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../ui/icons/IconBug'),
-      Tree:    () => import(/* webpackChunkName: "Tree" */ '../ui/cmsTree/Tree'),
-      NavTree: () => import(/* webpackChunkName: "NavTree" */ '../ui/cmsTree/NavTree'),
-      Card:    () => import(/* webpackChunkName: "Card" */ '../ui/card/Card'),
-      Loader:  () => import(/* webpackChunkName: "Loader" */ '../ui/icons/Loader'),
-      List:    () => import(/* webpackChunkName: "List" */ '../ui/cmsList/List')
+      IconBug: () => import(/* webpackChunkName: "IconBug" */ '@/components/ui/icons/IconBug'),
+      Tree:    () => import(/* webpackChunkName: "Tree" */ '@/components/ui/cmsTree/Tree'),
+      NavTree: () => import(/* webpackChunkName: "NavTree" */ '@/components/ui/cmsTree/NavTree'),
+      Card:    () => import(/* webpackChunkName: "Card" */ '@/components/ui/card/Card'),
+      Loader:  () => import(/* webpackChunkName: "Loader" */ '@/components/ui/icons/Loader'),
+      List:    () => import(/* webpackChunkName: "List" */ '@/components/ui/cmsList/List')
     },
 
     data () {
@@ -75,24 +71,25 @@
         actions: {
 
           tree: {
-            get:                'settings/getTree',
-            add:                'settings/addFolder',
-            save:               'settings/saveFolder',
-            remove:             'settings/removeFolder',
-            childComponentName: 'SettingItem'
+            get:                'groups/getTree',
+            add:                'groups/addFolder',
+            save:               'groups/saveFolder',
+            remove:             'groups/removeFolder',
+            childComponentName: 'GroupsItem'
           },
 
           table: {
-            get:       'settings/getTable',
-            save:      'settings/leafSave',
-            saveField: 'settings/leafSaveField',
-            remove:    'settings/removeLeaf'
+            get:       'groups/getTable',
+            save:      'groups/leafSave',
+            saveField: 'groups/leafSaveField',
+            remove:    'groups/removeLeaf'
 
           },
 
           editPanel: {
-            get:  'settings/leafEdit',
-            save: 'settings/leafSave'
+            get:  '',
+            save: ''
+
           }
         }
 
@@ -101,17 +98,16 @@
 
     async created () {
 
-      // Регистрация Vuex модуля settings
-      await this.$store.registerModule('settings', settings)
+      await this.$store.registerModule('groups', groups)
 
-      // // запросы
+      // запросы
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
       this.$store.commit('editPanel_api', this.actions.editPanel)
 
       //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
-      this.$store.commit('set_tree_proto', settingsProtoFolder)
+      this.$store.commit('set_editPanel_proto', groupProtoLeaf)
+      this.$store.commit('set_tree_proto', groupProtoFolder)
 
       //// Получение дерева с сервера
       await this.$store.dispatch(this.actions.tree.get)
@@ -126,7 +122,7 @@
       this.$store.commit('card_right_show', false)
 
       // показать кнопку Добавить
-      this.$store.commit('table_addChildren', true)
+      this.$store.commit('table_addChildren', false)
 
     },
 
@@ -137,7 +133,7 @@
       this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
-      this.$store.unregisterModule('settings')
+      this.$store.unregisterModule('groups')
     },
 
     computed: {
@@ -152,10 +148,6 @@
 
       editPanel_show () {
         return this.$store.getters.cardRightState
-      },
-
-      cardLeft_show () {
-        return this.$store.getters.cardLeftState
       },
 
       editPanel_add () {
@@ -210,7 +202,7 @@
             fields: {}
           }
 
-          const arr = JSON.parse(JSON.stringify(data))
+          const arr = clone(data)
           arr.forEach(item => {save.fields[item.name] = item.value})
 
           this.$store.dispatch(this.actions.tree.add, save)
@@ -221,7 +213,7 @@
             fields: {}
           }
 
-          const arr = JSON.parse(JSON.stringify(data))
+          const arr = clone(data)
           arr.forEach(item => {save.fields[item.name] = item.value})
 
           this.$store.dispatch(this.actions.tree.save, save)
@@ -243,18 +235,9 @@
         const arr = clone(data)
         arr.forEach(item => {save.fields[item.name] = item.value})
 
-        // преобразование в JSON поля selected
-        save.fields.selected = JSON.stringify(save.fields.selected)
-
-        // преобразование в JSON поля value, если тип поля InputDoubleList
-        if (save.fields.type === 'InputDoubleList') {
-          save.fields.value = JSON.stringify(save.fields.value)
-        }
-
         this.$store.dispatch(this.actions.editPanel.save, save)
 
       }
-
     }
 
   }
