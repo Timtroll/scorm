@@ -73,7 +73,7 @@ body {
     <div id="menu">
     	<h2>Меню</h2>
 % foreach my $t( @$list ) {
-        <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"><%= $$t{'title'} %> </a></h3>
+        <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"><%= $$t{'msg'} %> </a></h3>
 % }
     </div>
          

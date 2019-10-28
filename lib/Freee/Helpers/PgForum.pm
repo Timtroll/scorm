@@ -33,6 +33,36 @@ sub register {
         return $list;
     });
 
+    # получение списка сообщений из базы в массив хэшей
+    $app->helper( '_list_messages' => sub {
+        my ($self) = @_;
+
+        my $list;
+        eval {
+            my $sql = 'SELECT * FROM "public"."forum_messages"';
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $list;
+    });
+
+    # получение списка групп из базы в массив хэшей
+    $app->helper( '_list_groups' => sub {
+        my ($self) = @_;
+
+        my $list;
+        eval {
+            my $sql = 'SELECT * FROM "public"."forum_groups"';
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $list;
+    });
+    
     # читаем один роут
     # my $row = $self->_get_route( 99 );
     # возвращается строка в виде объекта

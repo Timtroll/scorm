@@ -12,15 +12,7 @@ use common;
 sub index {
     my ($self);
     $self = shift;
-my $list = $self->_list_themes();
-
-print Dumper $list;
-    foreach my $t( @$list ) {
-print"\n";
-print"$$t{'title'}";
-print"\n";
-    }
-
+    my $list = $self->_list_messages();
     $self->render(
         'template'    => 'forum',
         'title'       => 'Форум',
@@ -28,13 +20,49 @@ print"\n";
     );
 }
 
-sub listthemes {
+# получение списка тем из базы в массив хэшей
+sub list_themes {
     my $self = shift;
-
+my $now_string = localtime;
+print "$now_string";
+$now_string = strftime "%a %b %e %H:%M:%S %Y", localtime;
+print "$now_string";
     my ( $list, $resp, @mess );
 
     $list = $self->_list_themes();
     push @mess, "Could not get list Themes" unless $list;
+    
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+# получение списка сообщений из базы в массив хэшей
+sub list_messages {
+    my $self = shift;
+
+    my ( $list, $resp, @mess );
+
+    $list = $self->_list_messages();
+    push @mess, "Could not get list Messages" unless $list;
+    
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+# получение списка групп из базы в массив хэшей
+sub list_groups {
+    my $self = shift;
+
+    my ( $list, $resp, @mess );
+
+    $list = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list;
     
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -93,20 +121,6 @@ sub del_theme {
         'json'    => {
             'controller'    => 'forum',
             'route'         => 'del_theme',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
-    );
-}
-
-sub listgroups {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'listgroups',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
@@ -183,14 +197,6 @@ sub add {
 
     my ($id, $data, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
-
-    # устанавляваем поля по умолчанию
-    # $self->param('theme_id') = 1;
-    # $self->param('user_id') = 1;
-    # $self->param('anounce') = '';
-    # $self->param('date_created') = localtime;
-    # $self->param('rate') = 0;
-    # $self->param('status') = 1;    $$data{'theme id'} = 1;
 
     unless (@mess) {
         # проверка данных
