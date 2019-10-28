@@ -74,6 +74,7 @@ sub register {
             $$row{'type'}       = '';
             $$row{'value'}      = '';
             $$row{'selected'}   = '';
+            $$row{'folder'}     = $$row{'folder'} // 0;
             $$row{'status'}     = $$row{'status'} // 0;
         }
         
@@ -92,19 +93,31 @@ sub register {
 
         return unless $data;
 
-        # пустые поля для value и selected
-        $$data{'value'} = $$data{'selected'} = '';
+        if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
+            warn 'Id and Parent is equal.';
+            return;
+        }
 
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map {
+                # $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    ($$data{$_} + 0)
+                }
+                else {
+                    $$data{$_} ? $self->pg_dbh->quote( $$data{$_} ) : "''";
+                }
+            } keys %$data ).
             ') RETURNING "id"';
+
         eval {
             $self->pg_dbh->do($sql);
         };
         warn $@ if $@;
         return if $@;
+
 
         my $id = $self->pg_dbh->last_insert_id(undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' });
 
@@ -122,41 +135,22 @@ sub register {
         my ($self, $data) = @_;
 
         return unless $$data{'id'};
-
-        # unless ( $self->_folder_check( $$data{'id'} ) ) {
-        #     warn "'$$data{'id'}' is not a folder";
-        #     return;
-        # }
+        if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
+            warn 'Id and Parent is equal.';
+            return;
+        }
 
         my $fields = join( ', ', map {
-            $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    '"'.$_.'"='.($$data{$_} + 0);
+                }
+                else {
+                    $$data{$_} ? '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} ) : '"'.$_."\"=''";
+                }
         } keys %$data );
 
         eval {
             $self->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
-        };
-        warn $@ if $@;
-        return if $@;
-
-        return 1;
-    });
-
-    # удаление фолдера
-    # my $true = $self->_delete_folder( <id> );
-    # возвращается true/false
-    $app->helper( '_delete_folder' => sub {
-        my ($self, $id) = @_;
-
-        return unless $id;
-
-        # unless ( $self->_folder_check( $id ) ) {
-        #     warn "$id is a not folder";
-        #     return;
-        # }
-
-        my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
-        eval {
-            $self->pg_dbh->do($sql);
         };
         warn $@ if $@;
         return if $@;
@@ -215,8 +209,17 @@ sub register {
         my $sql ='INSERT INTO "public"."settings" ('.
             join( ',', map { '"'.$_.'"' } keys %$data ).
             ') VALUES ('.
-            join( ',', map { $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).
+            join( ',', map {
+                # $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    ($$data{$_} + 0)
+                }
+                else {
+                    $$data{$_} ? $self->pg_dbh->quote( $$data{$_} ) : "''";
+                }
+            } keys %$data ).
             ') RETURNING "id"';
+
         eval {
             $self->pg_dbh->do($sql);
         };
@@ -255,11 +258,6 @@ sub register {
         return unless $data;
         return unless $$data{'id'};
 
-        # if ( $self->_folder_check( $$data{'id'} ) ) {
-        #     warn "'$$data{'id'}' is a folder";
-        #     return;
-        # }
-
         # сериализуем поля vaue и selected
         if (defined $$data{'value'} ) {
             $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
@@ -289,11 +287,6 @@ sub register {
     $app->helper( '_delete_setting' => sub {
         my ($self, $id) = @_;
         return unless $id;
-
-        # if ( $self->_folder_check( $id ) ) {
-        #     warn "$id is a folder";
-        #     return;
-        # }
 
         my $result;
         my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
@@ -333,7 +326,12 @@ sub register {
             $$row{'readonly'}   = $$row{'readonly'} // 0;
             $$row{'required'}   = $$row{'required'} // 0;
             $$row{'type'}       = $$row{'type'} ? $$row{'type'} : '';
-            $$row{'value'}      = ($$row{'value'} && $$row{'value'} =~ /^\[/) ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : '';
+            if ($$row{'value'}) {
+                $$row{'value'} = $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'};
+            }
+            else {
+                $$row{'value'} = '';
+            }
             $$row{'selected'}   = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
             $$row{'status'}     = $$row{'status'} // 0;
         }

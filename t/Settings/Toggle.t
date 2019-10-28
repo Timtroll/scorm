@@ -24,7 +24,12 @@ my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
 diag "Add folder:";
-my $data = {name => 'test', label => 'test', parent => 0};
+my $data = {
+    'name'    => 'test',
+    'label'   => 'test',
+    'parent'  => 0,
+    'status'  => 1
+};
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -35,7 +40,12 @@ diag "";
 
 # Ввод настройки
 diag "Add setting:";
-$data = {name => 'name', label => 'label', status => 1, parent => 1};
+$data = {
+    'name'      => 'name',
+    'label'     => 'label',
+    'status'    => 1,
+    'parent'    => 1
+};
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -62,7 +72,7 @@ my $test_data = {
         'data' => {
             'id'        => 2,
             'fieldname' => 'required',
-            'value'     => 0
+            'value'     => 1
         },
         'result' => {
             'status'    => 'ok',
@@ -130,10 +140,33 @@ my $test_data = {
         },
         'comment' => 'Status for folder:' 
     },
-    
+    8 => {
+        'data' => {
+            'id'        => 1,
+            'fieldname' => 'readonly',
+            'value'     => 1
+        },
+        'result' => {
+            'id'        => 1,
+            'status'    => 'ok'
+        },
+        'comment' => 'Readonly for folder:' 
+    },
+    9 => {
+        'data' => {
+            'id'        => 1,
+            'fieldname' => 'required',
+            'value'     => 1
+        },
+        'result' => {
+            'id'        => 1,
+            'status'    => 'ok'
+        },
+        'comment' => 'Required for folder:'
+    },
 
     # отрицательные тесты
-    8 => {
+    10 => {
         'data' => {
             'id'        => 2,
             'fieldname' => 'status'
@@ -144,7 +177,7 @@ my $test_data = {
         },
         'comment' => 'No value:'
     },
-    9 => {
+    11 => {
         'data' => {
             'fieldname' => 'status',
             'value'    => 1,
@@ -155,7 +188,7 @@ my $test_data = {
         },
         'comment' => 'No id:' 
     },
-    10 => {
+    12 => {
         'data' => {
             'id'        => 2,
             'value'     => 1,
@@ -166,7 +199,7 @@ my $test_data = {
         },
         'comment' => 'No fieldname:' 
     },
-    11 => {
+    13 => {
         'data' => {
             'id'        => 404,
             'fieldname' => 'status',
@@ -178,7 +211,7 @@ my $test_data = {
         },
         'comment' => 'Id do not exist:' 
     },
-    12 => {
+    14 => {
         'data' => {
             'id'        => 'mistake',
             'fieldname' => 'status',
@@ -189,37 +222,14 @@ my $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'Validation mistake:' 
-    },
-    13 => {
-        'data' => {
-            'id'        => 1,
-            'fieldname' => 'readonly',
-            'value'     => 1
-        },
-        'result' => {
-            'message'   => "Not correct setting item data, watch log",
-            'status'    => 'fail'
-        },
-        'comment' => 'Readonly for folder:' 
-    },
-    14 => {
-        'data' => {
-            'id'        => 1,
-            'fieldname' => 'required',
-            'value'     => 1
-        },
-        'result' => {
-            'message'   => "Not correct setting item data, watch log",
-            'status'    => 'fail'
-        },
-        'comment' => 'Required for folder:'
     }
 };
-
+use Data::Dumper;
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
+
     $t->post_ok($host.'/settings/toggle' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

@@ -62,13 +62,13 @@ sub index {
 sub add {
     my $self = shift;
 
-    my ($id, $data, @mess, $resp);
+    my ($id, $data, $error, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct setting item data '$$data{'name'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         if ($data) {
             $id = $self->_insert_group( $data );
@@ -89,13 +89,13 @@ sub add {
 sub edit {
     my $self = shift;
 
-    my ($id, $data, @mess, $resp);
+    my ($id, $data, $error, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct Group data '$$data{'id'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         if ($data) {
             $data = $self->_get_group( $$data{'id'} );
@@ -119,13 +119,13 @@ sub edit {
 sub save {
     my ($self) = shift;
 
-    my ( $id, $parent, $data, $resp, @mess );
+    my ( $id, $parent, $data, $error, $resp, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct Group data '$$data{'name'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         # проверка существования обновляемой строки
         unless (@mess) {
@@ -152,13 +152,13 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my ($del, $resp, $data, @mess);
+    my ($del, $resp, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         $del = $self->_delete_group( $$data{'id'} ) unless @mess;
         push @mess, "Could not delete Group '$$data{'id'}'" unless $del;
@@ -179,15 +179,13 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, @mess);
+    my ($toggle, $resp, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # проверка данных
-        $data = $self->_check_fields();
-print Dumper ($data);
-print "\n";
-        push @mess, "Not correct Group '$$data{'id'}'" unless $data;
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
         $$data{'table'} = 'groups';
         $toggle = $self->_toggle( $data ) unless @mess;

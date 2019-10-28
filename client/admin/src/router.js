@@ -29,7 +29,7 @@ const router = new Router({
         {
           path:          '/dashboard',
           name:          'Dashboard',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -40,10 +40,11 @@ const router = new Router({
         {
           path:      '/pages',
           name:      'Pages',
-          component: () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component: () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
 
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_pages.svg',
             breadcrumb:   'Контент'
@@ -52,9 +53,10 @@ const router = new Router({
         {
           path:          '/courses',
           name:          'Courses',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_courses.svg',
             breadcrumb:   'Курсы'
@@ -63,9 +65,10 @@ const router = new Router({
         {
           path:          '/review',
           name:          'Review',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_review.svg',
             breadcrumb:   'Отзывы'
@@ -74,9 +77,10 @@ const router = new Router({
         {
           path:          '/media',
           name:          'Media',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './components/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_media.svg',
             breadcrumb:   'Медиа хранилище'
@@ -85,9 +89,10 @@ const router = new Router({
         {
           path:          '/profile',
           name:          'Profile',
-          component:     () => import(/* webpackChunkName: "Account" */ './components/profile/Account'),
+          component:     () => import(/* webpackChunkName: "Account" */ './layouts/profile/Account'),
           showInSideBar: false,
           meta:          {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/user_profile.svg',
             breadcrumb:   'Профиль пользователя'
@@ -104,6 +109,7 @@ const router = new Router({
       showInSideBar:          false,
       sideSettingsMenuParent: true,
       meta:                   {
+        root:         true,
         authRequired: true,
         icon:         'img/icons/user_profile.svg',
         breadcrumb:   'Системные настройки'
@@ -112,10 +118,11 @@ const router = new Router({
         {
           path:           '/settings',
           name:           'Settings',
-          component:      () => import(/* webpackChunkName: "Settings" */ './components/settings/Settings'),
+          component:      () => import(/* webpackChunkName: "Settings" */ './layouts/settings/Settings'),
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/icon__settings.svg',
             breadcrumb:   'Настройки'
@@ -128,6 +135,7 @@ const router = new Router({
               showInSideBar:  false,
               showInSettings: false,
               meta:           {
+                root:         false,
                 parentName:   'Settings',
                 authRequired: true,
                 breadcrumb:   'Настройки'
@@ -138,10 +146,11 @@ const router = new Router({
         {
           path:           '/groups',
           name:           'Groups',
-          component:      () => import(/* webpackChunkName: "Groups" */ './components/groups/Groups'),
+          component:      () => import(/* webpackChunkName: "Groups" */ './layouts/groups/Groups'),
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_roles.svg',
             breadcrumb:   'Управление группами пользователей'
@@ -154,6 +163,7 @@ const router = new Router({
               showInSideBar:  false,
               showInSettings: false,
               meta:           {
+                root:         false,
                 parentName:   'Groups',
                 authRequired: true,
                 breadcrumb:   'Настройки'
@@ -164,10 +174,11 @@ const router = new Router({
         {
           path:           '/users',
           name:           'Users',
-          component:      () => import(/* webpackChunkName: "DashBoard" */ './components/dashboard/DashBoard'),
+          component:      () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard/DashBoard'),
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
+            root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_users.svg',
             breadcrumb:   'Пользователи'

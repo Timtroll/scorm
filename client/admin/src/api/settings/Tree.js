@@ -31,7 +31,7 @@ export default {
   // удаление
   delete_folder (id) {
     return Api()({
-      url:    'settings/delete_folder',
+      url:    'settings/delete',
       method: 'post',
       params: id
     })

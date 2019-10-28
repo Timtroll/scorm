@@ -23,12 +23,12 @@
          @click.prevent="click(navItem)"
          :uk-tooltip="'pos: top-left; delay: 1000; title:' + navItem.label">
         <span class="pos-side-nav-item__label-text"
-              v-text="navItem.label"></span>
+              v-text="navItem.label"/>
 
         <!--количество элементов в таблице-->
         <span class="uk-badge pos-side-nav-item__label-badge"
               v-if="navItem.children && navItem.children.length > 0"
-              v-text="navItem.children.length"></span>
+              v-text="navItem.children.length"/>
       </a>
 
       <!--actions-->
@@ -47,7 +47,7 @@
         </a>
 
         <!--Редактировать раздел-->
-        <a @click.prevent="editGroup(navItem)"
+        <a @click.prevent="editFolder(navItem)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
            class="pos-side-nav-item-actions__edit">
           <img src="/img/icons/icon__edit.svg"
@@ -58,7 +58,7 @@
         </a>
 
         <!--Удалить раздел-->
-        <a @click.prevent="remove(navItem.id)"
+        <a @click.prevent="removeFolder(navItem.id)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
            class="pos-side-nav-item-actions__remove">
           <img src="/img/icons/icon__trash.svg"
@@ -79,8 +79,7 @@
 </template>
 
 <script>
-  import UIkit from 'uikit/dist/js/uikit.min'
-  import {clone} from '../../../store/methods'
+  import {clone, confirm} from '../../../store/methods'
 
   export default {
 
@@ -91,6 +90,7 @@
     },
 
     props: {
+
       navItem: {
         type: Object
       }
@@ -166,12 +166,10 @@
         } else {
 
           if (this.navActiveId !== this.navItem.id) {
-
             this.showTable(item)
 
+            this.$store.commit('card_left_nav_click')
           }
-
-          this.$store.commit('card_left_nav_click', !this.cardLeftClickAction)
 
         }
 
@@ -210,7 +208,7 @@
       },
 
       // edit children group
-      async editGroup (folder) {
+      async editFolder (folder) {
 
         //this.$store.dispatch(this.tree_api.save, id)
 
@@ -239,10 +237,9 @@
       },
 
       // remove group
-      remove (id) {
-        UIkit
-          .modal
-          .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
+      removeFolder (id) {
+
+        confirm(this.$t('actions.remove'), 'Да', 'Нет')
           .then(() => this.$store.dispatch(this.tree_api.remove, id), () => {})
 
       }

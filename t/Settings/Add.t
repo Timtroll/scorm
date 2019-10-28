@@ -34,12 +34,27 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # добавляем тестовый раздел настроек
-diag "Add folder:";
-$t->post_ok( $host.'/settings/add_folder' => form => {
-    "parent"        => 0,
-    "name"          => 'test',
-    "label"         => 'first test',
-});
+diag "Add new folder:";
+my $folder = {
+    'data' => {
+        'name'      => 'test',
+        'label'     => 'first test',
+        'parent'    => 0,
+        'status'    => 1
+    },
+    'result' => {
+        'id'        => '1',
+        'status'    => 'ok'
+    },
+    'comment' => 'New folder' 
+};
+$t->post_ok( $host.'/settings/add_folder' => form => $folder->{'data'} );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $folder->{'result'} );
 diag "";
 
 my $test_data = {
@@ -56,6 +71,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -75,6 +91,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -94,6 +111,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -113,6 +131,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -132,6 +151,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -151,6 +171,7 @@ my $test_data = {
             'value'       => 'value',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -162,6 +183,27 @@ my $test_data = {
     7 => {
         'data' => {
             'parent'      => 1,
+            'name'        => 'name77',
+            'label'       => 'label77',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => '',
+            'selected'    => '[[1,2]]',
+            'required'    => 0,
+            'readonly'    => 0,
+            'folder'      => 0,
+            'status'      => 1
+        },
+        'result' => {
+            'id'        => '8',
+            'status'    => 'ok'
+        },
+        'comment' => 'Selected is array of arrrays:' 
+    },
+    8 => {
+        'data' => {
+            'parent'      => 1,
             'name'        => 'name8',
             'label'       => 'label8',
             'placeholder' => 'placeholder',
@@ -170,16 +212,16 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
-            'id'        => '8',
+            'id'        => '9',
             'status'    => 'ok'
         },
         'comment' => 'No required:' 
     },
-    
-    8 => {
+    9 => {
         'data' => {
             'parent'      => 1,
             'name'        => 'name9',
@@ -190,17 +232,18 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'required'    => 0,
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
-            'id'        => '9',
+            'id'        => '10',
             'status'    => 'ok'
         },
         'comment' => 'No readonly:' 
     },
 
     # отрицательные тесты
-    9 => {
+    10 => {
         'data' => {
             'name'        => 'name',
             'label'       => 'label',
@@ -210,6 +253,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -218,7 +262,7 @@ my $test_data = {
         },
         'comment' => 'No parent:' 
     },
-    10 => {
+    11 => {
         'data' => {
             'parent'      => 1,
             'label'       => 'label',
@@ -228,6 +272,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -236,7 +281,7 @@ my $test_data = {
         },
         'comment' => 'No name:' 
     },
-    11 => {
+    12 => {
         'data' => {
             'parent'      => 1,
             'name'        => 'name',
@@ -246,6 +291,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -254,7 +300,7 @@ my $test_data = {
         },
         'comment' => 'No label:' 
     },
-    12 => {
+    13 => {
         'data' => {
             'parent'      => 1,
             'name'        => 'name',
@@ -264,6 +310,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
+            'folder'      => 0,
             'readonly'    => 0
         },
         'result' => {
@@ -272,7 +319,7 @@ my $test_data = {
         },
         'comment' => 'No status:' 
     },
-    13 => {
+    14 => {
         'data' => {
             'parent'      => 1,
             'name'        => 'name3',
@@ -283,6 +330,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -291,7 +339,7 @@ my $test_data = {
         },
         'comment' => 'Same name:'
     },
-    14 => {
+    15 => {
         'data' => {
             'parent'      => 1,
             'name'        => 'name',
@@ -302,6 +350,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 'mistake',
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -310,7 +359,7 @@ my $test_data = {
         },
         'comment' => 'Wrong field type:'
     },
-    15 => {
+    16 => {
         'data' => {
             'parent'      => 2,
             'name'        => 'name',
@@ -321,6 +370,7 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 'mistake',
+            'folder'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -329,7 +379,47 @@ my $test_data = {
         },
         'comment' => 'Wrong parent:'
     },
-    15 => {
+    17 => {
+        'data' => {
+            'parent'      => 0,
+            'name'        => 'name123',
+            'label'       => 'label123',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 'mistake',
+            'folder'      => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Could not create new setting item ''",
+            'status'    => 'fail',
+        },
+        'comment' => 'Folder creation:'
+    },
+    18 => {
+        'data' => {
+            'parent'      => 0,
+            'name'        => 'name123',
+            'label'       => 'label123',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 'mistake',
+            'folder'      => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Could not create new setting item ''",
+            'status'    => 'fail',
+        },
+        'comment' => 'Folder creation:'
+    },
+    19 => {
         'data' => {
             'parent'      => 0,
             'name'        => 'name123',
@@ -347,7 +437,7 @@ my $test_data = {
             'status'    => 'fail',
         },
         'comment' => 'Folder creation:'
-    },
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

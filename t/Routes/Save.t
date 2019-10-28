@@ -26,7 +26,11 @@ my $host = $t->app->config->{'host'};
 
 #  Вводим группу родителя
 diag "Add Group" ;
-my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
+my $data = {
+    'name'      => 'test',
+    'label'     => 'test',
+    'status'    => 1
+};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200 ) {
     diag "Can't connect";

@@ -14,42 +14,32 @@
       <!--headerLeft-->
       <div class="pos-card-header-item"
            v-if="headerLeft">
-        <slot name="headerLeft"></slot>
+        <slot name="headerLeft"/>
       </div>
 
       <!--header settings-->
       <div class="pos-card-header--content">
-        <slot name="header"></slot>
+        <slot name="header"/>
       </div>
 
       <!--headerRight-->
       <div class="pos-card-header-item"
            v-if="headerRight">
-        <slot name="headerRight"></slot>
+        <slot name="headerRight"/>
       </div>
 
-      <!-- toggle right body panel-->
-      <a class="pos-card-header-item link"
-         v-if="bodyRightToggleShow"
-         :class="{'uk-text-danger' : bodyRightShow}"
-         @click.prevent="bodyRightToggle">
-
-        <img src="/img/icons/icon__info.svg"
-             uk-svg
-             width="20"
-             height="20">
-      </a>
     </div>
 
     <!--Body-->
-    <div class="pos-card-body">
+    <div class="pos-card-body"
+         v-touch:swipe="swipe">
 
       <!--body-middle-->
       <div class="pos-card-body-middle"
            ref="body"
            :class="{'pos-padding': bodyPadding}">
 
-        <slot name="body"></slot>
+        <slot name="body"/>
 
       </div>
 
@@ -57,9 +47,9 @@
       <transition name="slide-left">
         <div class="pos-card-body-left"
              ref="bodyLeft"
-             v-show="bodyLeft && leftToggleState"
+             v-show="bodyLeft && cardLeftState"
              :class="{'pos-padding': bodyLeftPadding}">
-          <slot name="bodyLeft"></slot>
+          <slot name="bodyLeft"/>
         </div>
       </transition>
 
@@ -73,19 +63,19 @@
       <div class="pos-card-header-item"
            v-if="footerLeft">
 
-        <slot name="footerLeft"></slot>
+        <slot name="footerLeft"/>
       </div>
 
       <!--header settings-->
       <div class="pos-card-header--content">
-        <slot name="footer"></slot>
+        <slot name="footer"/>
       </div>
 
       <!--footer Right-->
       <div class="pos-card-header-item"
            v-if="footerRight">
 
-        <slot name="footerRight"></slot>
+        <slot name="footerRight"/>
       </div>
     </div>
 
@@ -95,7 +85,7 @@
            v-if="bodyRightShow"
            :class="{'large' : rightPanelSize}">
 
-        <slot name="bodyRight"></slot>
+        <slot name="bodyRight"/>
 
       </div>
     </transition>
@@ -106,7 +96,7 @@
            v-if="loader === 'loading'">
         <div>
           <Loader :width="40"
-                  :height="40"></Loader>
+                  :height="40"/>
           <div class="uk-margin-small-top"
                v-text="$t('actions.loading')"></div>
         </div>
@@ -117,7 +107,7 @@
            v-else-if="loader === 'error'">
         <div>
           <IconBug :width="60"
-                   :height="60"></IconBug>
+                   :height="60"/>
           <div class="uk-margin-small-top"
                v-html="$t('actions.requestError')"></div>
         </div>
@@ -250,34 +240,64 @@
 
         window.addEventListener('resize', this.handleResize)
 
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('editPanel_show', false)
+        if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
+          this.$store.commit('card_right_show', false)
+        }
+        if (this.$route.meta.root) {
+          this.$store.commit('card_left_show', true)
         }
       }
+    },
+
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if (vm.$route.meta.root) {
+          console.log('next')
+          vm.$store.commit('card_left_show', true)
+        }
+      })
     },
 
     watch: {
 
       //
-      RightToggleState () {
+      cardRightState () {
 
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
-          this.$store.commit('editPanel_show', false)
+        if (this.cardRightState) {
+          if (this.bodyWidth <= bodyMinSize && this.cardLeftState) {
+            if (!this.$route.meta.root) {
+              this.$store.commit('card_left_show', false)
+              //this.$store.commit('card_right_show', false)
+            }
+          }
         }
+
       },
 
-      cardLeftClickAction () {
-        if (this.bodyWidth <= bodyMinSize && this.leftToggleState) {
+      //cardLeftState () {
+      //
+      //  if (this.cardRightState) {
+      //    if (this.bodyWidth <= bodyMinSize && this.cardRightState) {
+      //      //this.$store.commit('card_left_show', false)
+      //      this.$store.commit('card_right_show', false)
+      //    }
+      //  }
+      //
+      //},
 
-          console.log(this.bodyWidth)
-          this.$store.commit('card_left_show', false)
+      cardLeftClickAction () {
+        if (this.bodyWidth <= bodyMinSize) {
+          if (this.cardLeftState) {
+            this.$store.commit('card_left_show', false)
+          }
+
         }
       }
     },
 
     computed: {
 
-      RightToggleState () {
+      cardRightState () {
         setTimeout(() => {this.handleResize()}, 300)
         return this.$store.getters.cardRightState
       },
@@ -286,8 +306,10 @@
         return this.$store.getters.editPanel_large
       },
 
-      leftToggleState () {
-        setTimeout(() => {this.handleResize()}, 300)
+      cardLeftState () {
+        setTimeout(() => {
+          this.handleResize()
+        }, 300)
         return this.$store.getters.cardLeftState
       },
 
@@ -305,8 +327,16 @@
 
     methods: {
 
+      swipe (direction) {
+        if (direction === 'right') {
+          this.$store.commit('card_left_show', true)
+        }
+      },
+
       handleResize () {
-        setTimeout(() => {this.bodyWidth = this.$refs.body.offsetWidth}, 300)
+        setTimeout(() => {
+          this.bodyWidth = this.$refs.body.offsetWidth
+        }, 300)
       }
     }
   }

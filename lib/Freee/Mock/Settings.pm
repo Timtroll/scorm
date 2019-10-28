@@ -17,9 +17,10 @@ $settings = {
     {
       "name"        => "core",
       "label"       => "Ядро",
-      "id"          => 101,
       "opened"      => 0,
-      "parent"      => 1,
+      "parent"      => 0,
+      "folder"      => 1,
+      "status"      => 1,
       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
       "children"    => [
           {
@@ -32,8 +33,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 1012,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
 
           {
@@ -44,10 +46,11 @@ $settings = {
             "label"         => "список доступных редакторов редактор по умолчанию не имеет 'названия'",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => ["CKEditor"],
+            "value"         => "CKEditor",
             "selected"      => ["CKEditor", "EditorJs"],
-            "parent"        => 101,
-            "id"            => 1013,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -59,8 +62,9 @@ $settings = {
             "mask"          => "",
             "value"         => [["0"], ["gallery"], ["crop"], ["179"], ["281"]],
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 1014,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -72,8 +76,9 @@ $settings = {
             "mask"          => "",
             "value"         => "rus",
             "selected"      => ["rus", "en", "esp", "ch"],
-            "parent"        => 101,
-            "id"            => 1015,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -85,8 +90,9 @@ $settings = {
             "mask"          => "",
             "value"         => [["1", "Пн"], ["2", "Вт"], ["3", "Ср"], ["4", "Чт"], ["5", "Пт"], ["6", "Сб"], ["0", "Вс"]],
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 1016,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -98,8 +104,9 @@ $settings = {
             "mask"          => "[\\@_-\\.0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 1017,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -111,8 +118,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 1018,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -123,9 +131,10 @@ $settings = {
             "placeholder"   => "15",
             "mask"          => "\\d+",
             "value"         => "",
-            "selected"=>    [],
-            "parent"        => 101,
-            "id"            => 1019,
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -140,8 +149,9 @@ $settings = {
               ["8", "сентября"], ["9", "октября"], ["10", "ноября"], ["11", "декабря"]
             ],
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10110,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -153,8 +163,9 @@ $settings = {
             "mask"          => "",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10111,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -169,8 +180,9 @@ $settings = {
               ["8", "сентябрь"], ["9", "октябрь"], ["10", "ноябрь"], ["11", "декабрь"]
             ],
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10112,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -185,8 +197,9 @@ $settings = {
               ["8", "Сентябрь"], ["9", "Октябрь"], ["10", "Ноябрь"], ["11", "Декабрь"]
             ],
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10113,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -198,8 +211,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10114,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -211,8 +225,9 @@ $settings = {
             "mask"          => "[0..9\:\/-_\\.\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10115,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -223,8 +238,9 @@ $settings = {
             "mask"          => "[0..9\:\/-_\\.\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10116,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -235,18 +251,20 @@ $settings = {
             "mask"          => "[- \\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 101,
-            "id"            => 10117,
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "preferences",
       "label"     => "Настройки",
-      "id"        => 102,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  => "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -258,8 +276,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1021,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -271,8 +290,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1022,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -284,8 +304,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1023,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -297,8 +318,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1024,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -310,8 +332,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1025,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -323,8 +346,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1026,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -336,8 +360,9 @@ $settings = {
             "mask"          => "[\\@_-\\.0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1027,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -349,8 +374,9 @@ $settings = {
             "mask"          => "[\\@_-\\.0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1028,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -362,8 +388,9 @@ $settings = {
             "mask"          => "[\\@_-\\.0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 1029,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -375,8 +402,9 @@ $settings = {
             "mask"          => "[_-\\.0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 10210,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -388,18 +416,20 @@ $settings = {
             "mask"          => "[\\@_-0..9\\w]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 102,
-            "id"            => 10211,
+            "parent"        => 2,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "pages",
       "label"     => "Страницы сайта",
-      "id"        => 103,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  =>  "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -411,8 +441,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1031,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -424,8 +455,9 @@ $settings = {
             "mask"          => "",
             "value"         => [["1", "Меню 'Кто мы'"], ["2", "Меню 'Жизнь клуба'"], ["3", "Меню 'Магазин'"]],
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1032,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -437,8 +469,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1033,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -450,8 +483,9 @@ $settings = {
             "mask"          => "[0..9\\w ]+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1034,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -463,8 +497,9 @@ $settings = {
             "mask"          => "",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1035,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -476,18 +511,20 @@ $settings = {
             "mask"          => "",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 103,
-            "id"            => 1036,
+            "parent"        => 3,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "catalog",
       "label"     => "Каталог",
-      "id"        => 104,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  => "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -499,8 +536,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 104,
-            "id"            => 1041,
+            "parent"        => 4,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -512,8 +550,9 @@ $settings = {
             "mask"          => "",
             "value"         => 12,
             "selected"      => [12, 30, 50],
-            "parent"        => 104,
-            "id"            => 1042,
+            "parent"        => 4,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "type"          => "InputNumber",
@@ -523,18 +562,20 @@ $settings = {
             "mask"          => "",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 104,
-            "id"            => 1043,
+            "parent"        => 4,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "media",
       "label"     => "Медиа",
-      "id"        => 105,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  => "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -546,8 +587,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1051,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -559,8 +601,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1052,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -572,8 +615,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1053,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -585,8 +629,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1054,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -598,8 +643,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1055,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -611,8 +657,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1056,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -624,8 +671,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1057,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -637,8 +685,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1058,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -650,8 +699,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 1059,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -663,8 +713,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 10510,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -676,8 +727,9 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 10511,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           },
           {
             "readonly"      => 0,
@@ -689,18 +741,20 @@ $settings = {
             "mask"          => "\\d+",
             "value"         => "220",
             "selected"      => [],
-            "parent"        => 105,
-            "id"            => 10512,
+            "parent"        => 5,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "news",
       "label"     => "Новости",
-      "id"        => 106,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  => "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -712,18 +766,20 @@ $settings = {
             "mask"          => "",
             "value"         => [["1", "3"], ["2", "3"], ["3", "4"], ["4", "5"], ["5", "8"]],
             "selected"      => [],
-            "parent"        => 106,
-            "id"            => 1061,
+            "parent"        => 6,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },
     {
       "name"      => "tests",
       "label"     => "Тесты",
-      "id"        => 107,
       "opened"    => 0,
-      "parent"    => 1,
+      "parent"    => 0,
       "keywords"  => "",
+      "folder"    => 1,
+      "status"    => 1,
       "children"  => [
         {
           "readonly"      => 0,
@@ -735,8 +791,7 @@ $settings = {
           "mask"          => "",
           "value"         => "",
           "selected"      => [],
-          "parent"        => 107,
-          "id"            => 1071,
+          "parent"        => 7,
           "folder"        => 0
         },
         {
@@ -749,8 +804,7 @@ $settings = {
           "mask"          => "",
           "value"         => "",
           "selected"      => [],
-          "parent"        => 107,
-          "id"            => 1072,
+          "parent"        => 7,
           "folder"        => 0
         }
       ]

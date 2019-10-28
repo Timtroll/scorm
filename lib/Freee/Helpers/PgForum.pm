@@ -64,9 +64,9 @@ sub register {
     });
     
     # читаем один роут
-    # my $row = $self->_get_route( 99 );
+    # my $row = $self->_get_theme( 99 );
     # возвращается строка в виде объекта
-    $app->helper( '_get_route' => sub {
+    $app->helper( '_get_theme' => sub {
         my ($self, $id) = @_;
 
         return unless $id;
@@ -83,7 +83,7 @@ sub register {
     });
 
     # обновление роута
-    # my $id = $self->_update_route({
+    # my $id = $self->_update_theme({
     #      "id"         => 1,           - id обновляемого элемента ( >0 )
     #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
     #     "label"       => 'название',  - обязательно (название для отображения)
@@ -94,7 +94,7 @@ sub register {
     #     "status"      => 0            - по умолчанию 1
     # });
     # возвращается true/false
-    $app->helper( '_update_route' => sub {
+    $app->helper( '_update_theme' => sub {
         my ($self, $data) = @_;
 
         return unless $data;
@@ -110,14 +110,14 @@ sub register {
     });
 
     # добавление роута
-    # my $id = $self->_insert_route({
+    # my $id = $self->_insert_theme({
     #     "label"       => 'название',      - название для отображения
     #     "name",       => 'name',          - системное название, латиница
-    #     "value"       => '{"/route":1}',  - строка или json для записи или '' - для фолдера
+    #     "value"       => '{"/theme":1}',  - строка или json для записи или '' - для фолдера
     #     "status"      => 0                - активность элемента, по умолчанию 1
     # });
     # возвращается id роута
-    $app->helper( '_insert_route' => sub {
+    $app->helper( '_insert_theme' => sub {
         my ($self, $data) = @_;
 
         return unless $data;

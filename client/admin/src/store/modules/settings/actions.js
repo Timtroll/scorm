@@ -273,9 +273,7 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
-
-      store.commit('card_right_show', true)
-      //commit('editPanel_show', true, {root: true}) // открытие правой панели
+      store.commit('card_right_show', true) // открытие правой панели
 
       const response = await Api_EditPanel.list_edit(id)
 

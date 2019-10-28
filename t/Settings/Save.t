@@ -40,6 +40,7 @@ $t->post_ok( $host.'/settings/add_folder' => form => {
     "parent"        => 0,
     "name"          => 'test',
     "label"         => 'first test',
+    'status'    => 1
 });
 diag "";
 
@@ -58,6 +59,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -77,6 +79,7 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
+            'folder'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -431,7 +434,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Not correct setting item data, watch log",
+            'message'   => "_check_fields: Action is not allowed for '/settings/save'",
             'status'    => 'fail',
         },
         'comment' => 'Not a leaf:'

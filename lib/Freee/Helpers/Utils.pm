@@ -169,7 +169,7 @@ sub register {
         };
         warn $@ if $@;
 
-        return $result + 0;
+        return $result ? $result : 0;
     });
 }
 

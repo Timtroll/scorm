@@ -1,114 +1,116 @@
 <template>
-  <div class="uk-form-horizontal uk-overflow-hidden">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+  <li>
+    <div class="uk-form-horizontal uk-overflow-hidden">
+      <div>
+        <label v-text="label || placeholder"
+               class="uk-form-label uk-text-truncate"
+               v-if="label || placeholder"/>
+        <div class="uk-form-controls">
+          <div class="uk-grid-small"
+               uk-grid>
+            <div class="uk-width-expand">
+              <div class="uk-grid-collapse"
+                   v-if="valuesInput"
+                   uk-grid>
 
-      <div class="uk-form-controls">
-        <div class="uk-grid-small"
-             uk-grid>
-          <div class="uk-width-expand">
-            <div class="uk-grid-collapse"
-                 v-if="valuesInput"
-                 uk-grid>
+                <!--Values-->
+                <div class="uk-width-1-1"
+                     v-for="(item, index) in valuesInput"
+                     :key="index">
+                  <div class="uk-grid-small uk-flex-middle"
+                       uk-grid>
 
-              <!--Values-->
-              <div class="uk-width-1-1"
-                   v-for="(item, index) in valuesInput"
-                   :key="index">
-                <div class="uk-grid-small uk-flex-middle"
-                     uk-grid>
+                    <!--index-->
+                    <div class="uk-width-auto uk-text-small uk-text-muted uk-visible@m"
+                         style="width: 25px"
+                         v-text="index"></div>
 
-                  <!--index-->
-                  <div class="uk-width-auto uk-text-small uk-text-muted uk-visible@m"
-                       style="width: 25px"
-                       v-text="index"></div>
+                    <!--value-->
+                    <div class="uk-width-expand">
+                      <div class="uk-grid-small pos-form-split"
+                           uk-grid>
 
-                  <!--value-->
-                  <div class="uk-width-expand">
-                    <div class="uk-grid-small pos-form-split"
-                         uk-grid>
+                        <div class="uk-inline"
+                             :class="{'uk-width-1-3' : idx === 0 && doubleCell, 'uk-width-expand' : idx > 0, 'uk-width-1-1' : !doubleCell}"
+                             v-for="(input, idx) in valuesInput[index]">
 
-                      <div class="uk-inline"
-                           :class="{'uk-width-1-3' : idx === 0 && doubleCell, 'uk-width-expand' : idx > 0, 'uk-width-1-1' : !doubleCell}"
-                           v-for="(input, idx) in valuesInput[index]">
-
-                        <div class="uk-form-icon uk-form-icon-flip">
-                          <img src="/img/icons/icon__input_text.svg"
-                               uk-svg
-                               width="14"
-                               height="14">
+                          <div class="uk-form-icon uk-form-icon-flip">
+                            <img src="/img/icons/icon__input_text.svg"
+                                 uk-svg
+                                 width="14"
+                                 height="14">
+                          </div>
+                          <input class="uk-input uk-form-small"
+                                 v-model="item[idx]"
+                                 :disabled="!editable"
+                                 @input="update"
+                                 :key="idx"
+                                 type="text">
                         </div>
-                        <input class="uk-input uk-form-small"
-                               v-model="item[idx]"
-                               :disabled="!editable"
-                               @input="update"
-                               :key="idx"
-                               type="text">
                       </div>
                     </div>
-                  </div>
 
-                  <!--Toggle cell-->
-                  <div class="uk-width-auto uk-flex uk-flex-middle"
-                       v-if="editable">
-                    <a class=""
-                       style="transform: translateY(-3px)"
-                       @click.prevent="toggleCell">
-                      <img src="/img/icons/icon__minus.svg"
-                           v-if="doubleCell"
-                           width="14"
-                           height="14"
-                           uk-svg>
-                      <img src="/img/icons/icon__plus.svg"
-                           v-else
-                           width="12"
-                           height="12"
-                           uk-svg>
-                    </a>
-                  </div>
+                    <!--Toggle cell-->
+                    <div class="uk-width-auto uk-flex uk-flex-middle"
+                         v-if="editable">
+                      <a class=""
+                         style="transform: translateY(-3px)"
+                         @click.prevent="toggleCell">
+                        <img src="/img/icons/icon__minus.svg"
+                             v-if="doubleCell"
+                             width="14"
+                             height="14"
+                             uk-svg>
+                        <img src="/img/icons/icon__plus.svg"
+                             v-else
+                             width="12"
+                             height="12"
+                             uk-svg>
+                      </a>
+                    </div>
 
-                  <!--remove value-->
-                  <div class="uk-width-auto uk-flex uk-flex-middle"
-                       v-if="editable">
-                    <a class="pos-link-danger"
-                       style="transform: translateY(-3px)"
-                       @click.prevent="removeItem(index)">
-                      <img src="/img/icons/icon__trash.svg"
-                           width="12"
-                           height="12"
-                           uk-svg>
-                    </a>
-                  </div>
+                    <!--remove value-->
+                    <div class="uk-width-auto uk-flex uk-flex-middle"
+                         v-if="editable">
+                      <a class="pos-link-danger"
+                         style="transform: translateY(-3px)"
+                         @click.prevent="removeItem(index)">
+                        <img src="/img/icons/icon__trash.svg"
+                             width="12"
+                             height="12"
+                             uk-svg>
+                      </a>
+                    </div>
 
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!--Add row-->
-          <div class="uk-width-auto"
-               v-if="editable">
-            <a @click.prevent="addItem">
-              <img src="/img/icons/icon__plus-circle.svg"
-                   width="22"
-                   height="22"
-                   uk-svg>
-            </a>
+            <!--Add row-->
+            <div class="uk-width-auto"
+                 v-if="editable">
+              <a @click.prevent="addItem">
+                <img src="/img/icons/icon__plus-circle.svg"
+                     width="22"
+                     height="22"
+                     uk-svg>
+              </a>
+            </div>
+
           </div>
 
         </div>
-
       </div>
-    </div>
 
-  </div>
+    </div>
+  </li>
 </template>
 
 <script>
 
   import UIkit from 'uikit/dist/js/uikit.min'
+  import {clone} from '../../../store/methods'
 
   export default {
     name: 'InputDoubleList',
@@ -137,7 +139,7 @@
     data () {
 
       return {
-        valuesInput: JSON.parse(JSON.stringify(this.value)) || [['']],
+        valuesInput: clone(this.value) || [['']],
         editValues:  false,
         doubleCell:  false
       }
@@ -152,9 +154,9 @@
 
     watch: {
 
-      isChanged () {
-        this.update()
-      }
+      //isChanged () {
+      //  this.update()
+      //}
     },
 
     computed: {

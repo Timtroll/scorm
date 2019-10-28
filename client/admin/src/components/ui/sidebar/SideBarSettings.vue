@@ -3,12 +3,13 @@
 
     <li>
       <a>
-        <icon-setting :spin="true"></icon-setting>
+        <icon-setting :spin="true"/>
       </a>
       <div :uk-dropdown="dropdownOptions">
         <ul class="uk-nav uk-dropdown-nav pos-sidebar-dropdown-nav">
-          <li class="uk-nav-header" v-text="$t('settings.navLabel')"></li>
-          <li class="uk-nav-divider"></li>
+          <li class="uk-nav-header"
+              v-text="$t('settings.navLabel')"/>
+          <li class="uk-nav-divider"/>
           <li v-for="(item, index) in menuSettings"
               :key="index"
               :class="{'uk-active' : activeClass(item.name)}">
@@ -22,7 +23,7 @@
                    width="18"
                    height="18">
               <span class="pos-sidebar-dropdown-nav--label"
-                    v-text="item.meta.breadcrumb"></span>
+                    v-text="item.meta.breadcrumb"/>
             </router-link>
           </li>
         </ul>

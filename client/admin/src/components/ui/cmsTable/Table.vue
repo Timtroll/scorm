@@ -17,6 +17,7 @@
 
         <!--Add Row-->
         <button type="button"
+                v-if="allowAddChildren"
                 class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                 @click.prevent="add_row">
           <img src="/img/icons/icon__plus.svg"
@@ -24,7 +25,7 @@
                height="16"
                uk-svg>
           <span class="uk-margin-small-left uk-visible@m"
-                v-text="$t('actions.add')"></span>
+                v-text="$t('actions.add')"/>
         </button>
 
         <!--Remove Row-->
@@ -36,7 +37,7 @@
                width="12"
                height="12">
           <span class="uk-margin-small-left uk-visible@s"
-                v-text="$t('actions.remove')"></span>
+                v-text="$t('actions.remove')"/>
         </button>
 
       </div>
@@ -118,7 +119,8 @@
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 
           <!--header-->
-          <thead class="pos-table-header">
+          <thead class="pos-table-header"
+                 v-if="tableHeader.length > 0">
           <tr>
             <!--expand Row-->
             <th class="pos-table-expand uk-table-shrink uk-text-center">
@@ -259,7 +261,7 @@
           const headerLocal = localStorage.getItem(this.pageComponent + '_header_' + this.tableId)
 
           if (headerLocal) {
-            this.header = clone(headerLocal)
+            this.header = JSON.parse(headerLocal)
           } else {
             this.header = clone(this.protoLeaf)
           }
@@ -270,21 +272,21 @@
 
     async created () {
 
-      //if (this.notEmptyTable === 'error') {
-      //  this.$store.commit('card_right_show', false)
-      //  this.$store.commit('tree_active', this.tableId)
-      //  await this.$store.dispatch(this.table_api.get, this.tableId)
-      //}
-
-    },
-
-    async mounted () {
-
       if (this.notEmptyTable === 'error') {
         this.$store.commit('card_right_show', false)
         this.$store.commit('tree_active', this.tableId)
         await this.$store.dispatch(this.table_api.get, this.tableId)
       }
+
+    },
+
+    async mounted () {
+
+      //if (this.notEmptyTable === 'error') {
+      //  this.$store.commit('card_right_show', false)
+      //  this.$store.commit('tree_active', this.tableId)
+      //  await this.$store.dispatch(this.table_api.get, this.tableId)
+      //}
 
     },
 
@@ -301,7 +303,11 @@
 
       table_api () {return this.$store.getters.table_api},
 
-      tableNotEmpty () {if (this.tableRows) {return this.tableRows.length > 0}},
+      tableNotEmpty () {
+        if (this.tableRows) {
+          return this.tableRows.length > 0
+        }
+      },
 
       tableId () {return this.$route.params.id},
 
@@ -312,6 +318,8 @@
       notEmptyTable () {return (this.table && Object.keys(this.table).length === 0) ? 'error' : 'success'},
 
       table () {return this.$store.getters.table_items},
+
+      allowAddChildren () {return this.$store.state.table.table.addChildren},
 
       massEdit () {
 
@@ -344,14 +352,20 @@
 
       // Шапка таблицы
       tableHeader () {
-        if (this.header) {
+        if (this.header && this.header.length > 0) {
           return this.header.filter(item => item.show === 1)
         }
       },
 
+      //async tableHeaderName () {
+      //  if (this.tableHeader && this.tableHeader.length > 0) {
+      //    return await this.tableHeader.map(item => item.name)
+      //  }
+      //},
+
       //Тело таблицы
       tableRows () {
-        if (this.filterSearch) {
+        if (this.filterSearch && this.tableHeader) {
           const table        = this.filterSearch,
                 displayTable = [],
                 flatHeader   = this.tableHeader.map(item => item.name)
@@ -424,13 +438,13 @@
           }
         })
 
+        await this.$store.commit('card_right_show', false)
+        await this.$store.commit('editPanel_data', [])
         await this.$store.commit('editPanel_status_request')
         await this.$store.commit('editPanel_add', true)
         await this.$store.commit('editPanel_folder', false)
-        await this.$store.commit('card_right_show', true)
-        await this.$store.commit('editPanel_data', [])
-
         await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        await this.$store.commit('card_right_show', true)
         await this.$store.commit('editPanel_status_success') // статус - успех
 
       },

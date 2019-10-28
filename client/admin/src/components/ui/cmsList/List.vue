@@ -1,5 +1,6 @@
 <template>
-  <div class="pos-card">
+  <div class="pos-card"
+       v-touch:swipe="swipeRight">
 
     <!--header-->
     <div class="pos-card-header">
@@ -23,12 +24,10 @@
       </a>
 
       <!--header settings-->
-      <!--<div class="pos-card-header&#45;&#45;content"></div>-->
       <div class="pos-card-header--content"
            v-text="title"></div>
 
       <!--headerRight-->
-
       <a class="pos-card-header-item uk-text-danger link"
          @click.prevent="close">
         <img src="/img/icons/icon__close.svg"
@@ -45,24 +44,22 @@
 
         <ul class="pos-list">
 
-          <li v-for="(item, index) in dataNew"
-              :key="index">
-            <component v-bind:is="item.type"
-                       :value="item.value"
-                       :name="item.name"
-                       :selected="item.selected"
-                       :readonly="item.readonly"
-                       :add="item.add"
-                       :required="item.required"
-                       :mask="item.mask"
-                       :label="item.label"
-                       :placeholder="item.placeholder"
-                       @value="dataNew[index].value = $event"
-                       @change="dataChanged[index].changed = $event"
-                       @changeType="changeType($event)">
-            </component>
+          <component v-bind:is="item.type"
+                     v-for="(item, index) in dataNew"
+                     :key="index"
+                     :value="item.value"
+                     :name="item.name"
+                     :selected="valueSelected"
+                     :readonly="item.readonly"
+                     :add="item.add"
+                     :required="item.required"
+                     :mask="item.mask"
+                     :label="item.label"
+                     :placeholder="item.placeholder"
+                     @value="dataNew[index].value = $event"
+                     @change="dataChanged[index].changed = $event"
+                     @changeType="changeType($event)"/>
 
-          </li>
         </ul>
 
         <!--loading-->
@@ -97,10 +94,10 @@
 
           <span class="uk-margin-small-left"
                 v-text="$t('actions.add')"
-                v-if="add"></span>
+                v-if="add"/>
           <span class="uk-margin-small-left"
                 v-text="$t('actions.save')"
-                v-else></span>
+                v-else/>
         </button>
       </div>
 
@@ -111,6 +108,8 @@
 
 <script>
 
+  import {clone, confirm} from '../../../store/methods'
+
   export default {
 
     name: 'List',
@@ -120,7 +119,9 @@
       InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
       InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
       InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
+      InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
       InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
+      InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
       InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
       InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
       InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
@@ -169,10 +170,10 @@
     created () {
       if (this.add) {
         this.dataAdd     = this.data.filter(item => item.add === true)
-        this.dataNew     = JSON.parse(JSON.stringify(this.dataAdd))
+        this.dataNew     = clone(this.dataAdd)
         this.dataChanged = this.createDataChanged(this.dataAdd)
       } else {
-        this.dataNew     = JSON.parse(JSON.stringify(this.data))
+        this.dataNew     = clone(this.data)
         this.dataChanged = this.createDataChanged(this.data)
       }
     },
@@ -184,9 +185,10 @@
 
     data () {
       return {
-        dataNew:     [],
-        dataChanged: [],
-        dataAdd:     []
+        dataNew:        [],
+        dataChanged:    [],
+        dataAdd:        [],
+        showSelectedOn: ['InputSelect', 'InputRadio']
       }
     },
 
@@ -195,7 +197,7 @@
       data () {
 
         if (this.data && !this.add) {
-          this.dataNew     = JSON.parse(JSON.stringify(this.data))
+          this.dataNew     = clone(this.data)
           this.dataChanged = this.createDataChanged(this.data)
         }
 
@@ -254,6 +256,14 @@
         return this.$store.getters.inputComponents
       },
 
+      valueSelected () {
+        const selected = clone(this.dataNew).find(item => item.type === 'InputSelected')
+        if (selected && selected.value) {
+          return selected.value
+        }
+
+      },
+
       findVariableTypeField () {
         return this.dataNew.findIndex(item => item.name === this.variableTypeField)
       },
@@ -299,9 +309,22 @@
         this.$store.commit('editPanel_size', !this.editPanel_large)
       },
 
+      swipeRight (direction) {
+        if (direction === 'right') this.close()
+      },
+
       close () {
-        this.$emit('close')
-        this.$store.commit('card_right_show', false)
+        if (this.dataIsChanged) {
+          confirm(this.$t('messages.dataIsChanged'), 'Да', 'Нет')
+            .then(() => {
+              this.$emit('close')
+              this.$store.commit('card_right_show', false)
+            })
+        } else {
+          this.$emit('close')
+          this.$store.commit('card_right_show', false)
+        }
+
       },
 
       changeType (event) {

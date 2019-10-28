@@ -8,6 +8,8 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 
+use Data::Dumper;
+
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
@@ -23,7 +25,12 @@ my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
 diag "Add folder:";
-my $data = {name => 'test', label => 'test', parent => 0};
+my $data = {
+    'name'      => 'test',
+    'label'     => 'test',
+    'parent'    => 0,
+    'status'    => 1
+};
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
@@ -34,7 +41,12 @@ diag "";
 
 # Ввод настройки
 diag "Add setting:";
-$data = {name => 'name', label => 'label', status => 1, parent => 1};
+$data = {
+    'name'      => 'name',
+    'label'     => 'label',
+    'status'    => 1,
+    'parent'    => 1
+};
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -54,32 +66,32 @@ my $test_data = {
            'list' => {
                 'body' => [
                     {
-                        'placeholder' => '',
-                        'parent' => 0,
-                        'id' => 1,
-                        'selected' => '',
-                        'name' => 'test',
-                        'readonly' => 0,
-                        'mask' => '',
-                        'required' => 0,
-                        'status' => 1,
-                        'value' => '',
-                        'type' => '',
-                        'label' => 'test',
-                        'folder' => 1,
+                        'placeholder'   => '',
+                        'parent'        => 0,
+                        'id'            => 1,
+                        'selected'      => '',
+                        'name'          => 'test',
+                        'readonly'      => 0,
+                        'mask'          => '',
+                        'required'      => 0,
+                        'status'        => 1,
+                        'value'         => '',
+                        'type'          => '',
+                        'label'         => 'test',
+                        'folder'        => 1
                     }
                 ],
                 'settings' => {
                     'removable' => 1,
                     'sort' => {
-                        'order' => 'asc',
-                        'name' => 'id'
+                        'order'         => 'asc',
+                        'name'          => 'id'
                     },
                     'massEdit' => 0,
                     'page' => {
-                        'per_page' => 100,
-                        'total' => 1,
-                        'current_page' => 1
+                        'per_page'      => 100,
+                        'total'         => 1,
+                        'current_page'  => 1
                     },
                     'editable' => 1
                 }
@@ -96,36 +108,67 @@ my $test_data = {
                 'body' => [],
                 'settings' => {
                     'sort' => {
-                        'order' => 'asc',
-                        'name' => 'id'
+                        'order'     => 'asc',
+                        'name'      => 'id'
                     },
                     'removable' => 1,
-                    'editable' => 1,
+                    'editable'  => 1,
                     'page' => {
-                        'current_page' => 1,
-                        'per_page' => 100,
-                        'total' => 0
+                        'current_page'  => 1,
+                        'per_page'      => 100,
+                        'total'         => 0
                     },
                     'massEdit' => 0
                 }
             },
             'status' => 'ok'
-
         },
-        'comment' => 'Setting:'
+        'comment' => 'Folder without leafs:'
     },
-    
-    # отрицательные тесты
     3 => {
         'data' => {
             'id'    => 1
        },
         'result' => {
-            'message'   => "Not correct setting item data, watch log",
-            'status'    => 'fail'
+            'list' => {
+                'settings' => {
+                    'editable' => 1,
+                    'page' => {
+                          'current_page' => 1,
+                          'total' => 1,
+                          'per_page' => 100
+                    },
+                    'massEdit' => 0,
+                    'removable' => 1,
+                    'sort' => {
+                        'name' => 'id',
+                        'order' => 'asc'
+                    }
+                },
+                'body' => [
+                    {
+                        'readonly' => 0,
+                        'label' => 'label',
+                        'id' => 2,
+                        'folder' => 0,
+                        'parent' => 1,
+                        'name' => 'name',
+                        'type' => '',
+                        'required' => 0,
+                        'placeholder' => '',
+                        'mask' => '',
+                        'value' => '',
+                        'selected' => '',
+                        'status' => 1
+                    }
+                ]
+            },
+            'status' => 'ok'
         },
-        'comment' => 'Folder:'
+        'comment' => 'Folder with leaf:'
     },
+    
+    # отрицательные тесты
     4 => {
         'data' => {
             'id'    => 404,

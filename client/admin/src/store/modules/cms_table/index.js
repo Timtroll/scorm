@@ -5,12 +5,13 @@ import getters from './getters'
 const state = {
 
   table: {
-    status:     'loading',
-    current:    null,
-    tableFlat:  null,
-    tableNames: null,
-    items:      [],
-    api:        null
+    status:      'loading',
+    current:     null,
+    tableFlat:   null,
+    tableNames:  null,
+    items:       [],
+    api:         null,
+    addChildren: true
   }
 
 }

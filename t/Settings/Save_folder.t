@@ -11,6 +11,8 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 
+use Data::Dumper;
+
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
@@ -29,31 +31,22 @@ my $host = $t->app->config->{'host'};
 # добавляем тестовый раздел настроек
 diag "Add folder:";
 $t->post_ok( $host.'/settings/add_folder' => form => {
-    "parent"        => 0,
-    "name"          => 'test',
-    "label"         => 'test',
+    "name"      => 'test',
+    "label"     => 'test',
+    "parent"    => 0,
+    "status"    => 1
 });
 diag "";
 
-# Ввод настройки
-diag "Add setting:";
-my $test_data = {name => 'name', label => 'label', status => 1, parent => 1};
-$t->post_ok( $host.'/settings/add' => form => $test_data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag "Can't connect";
-    exit;
-}
-$t->content_type_is('application/json;charset=UTF-8');
-diag "";
-
-$test_data = {
+my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
             'id'          => 1,
             'name'        => 'name1',
             'label'       => 'label1',
-            'status'      => 1
+            'parent'      => 0,
+            'status'      => 0
         },
         'result' => {
             'id'        => 1,
@@ -66,6 +59,7 @@ $test_data = {
             'id'          => 1,
             'name'        => 'name2',
             'label'       => 'label2',
+            'parent'      => 0,
             'status'      => 1
         },
         'result' => {
@@ -74,13 +68,13 @@ $test_data = {
         },
         'comment' => 'Status 1:' 
     },
-   
 
     # отрицательные тесты
     3 => {
         'data' => {
             'id'          => 1,
             'label'       => 'label3',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -93,10 +87,11 @@ $test_data = {
         'data' => {
             'id'          => 1,
             'name'        => 'name4',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not save folder item '1'",
+            'message'   => "Validation error for 'label'. Field is empty or not exists",
             'status'    => 'fail',
         },
         'comment' => 'No label:' 
@@ -106,6 +101,7 @@ $test_data = {
             'id'          => 1,
             'name'        => 'name5',
             'label'       => 'label5',
+            'parent'      => 0
         },
         'result' => {
             'message'   => "Validation error for 'status'. Field is empty or not exists",
@@ -117,6 +113,7 @@ $test_data = {
         'data' => {
             'name'        => 'name6',
             'label'       => 'label6',
+            'parent'      => 1,
             'status'      => 0
         },
         'result' => {
@@ -129,11 +126,11 @@ $test_data = {
         'data' => {
             'id'          => 1,
             'name'        => 'name',
-            'label'       => 'label',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not save folder item '1'",
+            'message'   => "Validation error for 'label'. Field is empty or not exists",
             'status'    => 'fail',
         },
         'comment' => 'Same name:'
@@ -143,6 +140,7 @@ $test_data = {
             'id'          => 'mistake',
             'name'        => 'name8',
             'label'       => 'label8',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
@@ -156,10 +154,11 @@ $test_data = {
             'id'          => 404,
             'name'        => 'name9',
             'label'       => 'label9',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '404' is not allowed for '/settings/save_folder'",
             'status'    => 'fail',
         },
         'comment' => 'Id do not exist:'
@@ -169,13 +168,27 @@ $test_data = {
             'id'          => 2,
             'name'        => 'name10',
             'label'       => 'label10',
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Not correct folder item data, watch log",
+            'message'   => "_check_fields: Action for '2' is not allowed for '/settings/save_folder'",
             'status'    => 'fail',
         },
-        'comment' => 'Not a folder:'
+        'comment' => 'Not exists folder:'
+    },
+    11 => {
+        'data' => {
+            'id'          => 2,
+            'name'        => 'name10',
+            'label'       => 'label10',
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Validation error for 'parent'. Field is empty or not exists",
+            'status'    => 'fail',
+        },
+        'comment' => 'Not exists parent:'
     },
 };
 

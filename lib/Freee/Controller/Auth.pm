@@ -88,7 +88,8 @@ print "route = ", $self->url_for, "\n";
     if (defined $$vfields{$self->url_for}) {
         # my ($res, $err) = $self->_check( $$routs{$self->url_for} );
         my ($res, $err) = $self->_check( $self->url_for );
-
+# print "check_token $res, error:\n";
+# print Dumper($err);
         unless ($res) {
             # выводим ошибки, если валидация html данных не прошла
             $self->render( json => { 'status' => 'fail', message => join("\n", @$err) } );

@@ -11,8 +11,8 @@ const mutations = {
     state.card.rightShow = data
   },
 
-  card_left_nav_click (state, data) {
-    state.leftNavClick = data
+  card_left_nav_click (state) {
+    state.card.leftNavClick = !state.card.leftNavClick
   }
 
 }

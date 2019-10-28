@@ -47,7 +47,7 @@ sub register {
     # my $list = $self->_check('settings');
     # возвращает 1/undef
     $app->helper( '_check' => sub {
-warn Dumper($_[0]->tx->req->params->to_hash);
+# warn Dumper($_[0]->tx->req->params->to_hash);
         return 0 unless $_[1];
 
         my @error = ();
@@ -111,11 +111,10 @@ warn Dumper($_[0]->tx->req->params->to_hash);
     $app->helper( '_check_fields' => sub {
         my $self = shift;
 
-        return unless $self->url_for;
+        return 0, '_check_fields: No route' unless $self->url_for;
 
         my %data = ();
         foreach (keys %{$$vfields{$self->url_for}}) {
-            # $data{$_} = undef;
             $data{$_} = $self->param($_);
             if ( defined $self->param($_) && ($$vfields{$self->url_for}{$_}[0] eq 'required') ) {
                 $data{$_} = $self->param($_) // 0;
@@ -123,26 +122,26 @@ warn Dumper($_[0]->tx->req->params->to_hash);
         }
 
         my $route = $self->url_for;
-        if ( ( ( $route =~ /settings/ ) ) && ( $data{'id'} ) ) {
-            if ( $route =~ /folder/ ) {
+        # проверка, указанынй id это фолдер или нет (для роутов с 'settings' и 'folder' в названии)
+        if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
+            if ( $route =~ /folder$/ ) {
                 unless ( $self->_folder_check( $data{'id'} ) ) {
-                    warn "$data{'id'} is not a folder";
-                    return;
+                    return 0, "_check_fields: Action for '$data{'id'}' is not allowed for '$route'";
                 }
             }
             else {
-                if ( $route =~ /toggle/ ) {        
-                    if ( $self->_folder_check( $data{'id'} ) ) {
-                        if ( ( $data{'fieldname'} =~ /readonly/ ) || ( $data{'fieldname'} =~ /required/ ) ){
-                            warn "wrong fields for folder $data{'id'}";
-                            return;
+                # 'toggle' работает для фолдеров и записей
+                if ( $route =~ /toggle$/ ) {
+                    if ( defined $$vfields{$self->url_for}{'fieldname'} ) {
+                        my $value = $data{'fieldname'};
+                        unless ( grep( /^$value$/, @{$$vfields{$self->url_for}{'fieldname'}[1]} ) ) {
+                            return 0, "_check_fields: Action is not allowed to '$route', wrong field '$data{'fieldname'}'";
                         }
                     }
                 }
-                else {
-                    if ( $self->_folder_check( $self->param('id') ) ) {
-                        warn "$data{'id'} is a folder";
-                        return;
+                elsif ($route =~ /(add|edit|save)$/) {
+                    if ( $self->_folder_check( $data{'id'} ) ) {
+                        return 0, "_check_fields: Action is not allowed for '$route'";
                     }
                 }
             }
@@ -163,15 +162,16 @@ warn Dumper($_[0]->tx->req->params->to_hash);
                 "parent"        => [ '', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
             '/settings/save_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ '', qr/^\d+$/os ],
+                "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "label"         => [ '', qr/.*/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
                 "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_leafs'  => {

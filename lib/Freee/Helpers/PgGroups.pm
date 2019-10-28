@@ -113,10 +113,26 @@ sub register {
         return unless $data;
 
         my $id;
+        my $sql = 'INSERT INTO "public"."groups" ('.
+            join( ',', map { "\"$_\""} keys %$data ).
+            ') VALUES ('.join( ',', map {
+                # $self->pg_dbh->quote( $$data{$_} )
+                if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
+                    ($$data{$_} + 0)
+                }
+                else {
+                    $$data{$_} ? $self->pg_dbh->quote( $$data{$_} ) : "''";
+                }
+            } keys %$data ).
+            ') RETURNING "id"';
         eval {
-            if ( $self->pg_dbh->do('INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
-            }
+            $self->pg_dbh->do($sql)
+        };
+        warn $@ if $@;
+        return if $@;
+
+        eval {
+            $id = $self->pg_dbh->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
         };
         warn $@ if $@;
         return if $@;

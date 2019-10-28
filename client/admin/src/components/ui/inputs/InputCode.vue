@@ -1,59 +1,89 @@
 <template>
-  <div class="">
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"></label>
+  <li>
+    <label v-text="label || placeholder"
+           class="uk-form-label uk-text-truncate"
+           v-if="label || placeholder"/>
 
-      <div class="uk-form-controls">
-        <div :class="{'uk-position-cover': fullSize}"
-             class="uk-background-default uk-flex uk-flex-column"
-             style="z-index: 10">
-          <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom">
-            <a class="pos-card-header-item link"
-               :class="{'uk-text-danger' : fullSize}"
-               @click.prevent="fullSize = !fullSize">
+    <div class="uk-form-controls">
+      <div :class="{'uk-position-cover': fullSize}"
+           class="uk-background-default uk-flex uk-flex-column"
+           style="z-index: 10">
+        <div class="uk-flex-none uk-text-right uk-padding-xsmall pos-border-bottom uk-flex uk-flex-between uk-flex-middle">
 
-              <img src="/img/icons/icon__expand.svg"
-                   uk-svg
-                   width="20"
-                   height="20"
-                   v-if="!fullSize">
+          <!--Выбор языка-->
+          <select v-model="lang"
+                  class="">
+            <option v-for="item in langSelect"
+                    :value="item">{{item}}
+            </option>
+          </select>
 
-              <img src="/img/icons/icon__collapse.svg"
-                   uk-svg
-                   width="20"
-                   height="20"
-                   v-else>
-            </a>
-          </div>
-          <div class="uk-flex-1">
-            <!--<editor v-model="valueInput"-->
-            <!--        ref='codeEditor'-->
-            <!--        @init="editorInit"-->
-            <!--        lang="html"-->
-            <!--        :options="editorOptions"-->
-            <!--        theme="dracula"-->
-            <!--        width="100%"-->
-            <!--        :height="editorHeight"></editor>-->
-          </div>
+          <!--<div uk-form-custom="target: > * > span:first-child"-->
+          <!--     class="uk-margin-small-right">-->
+
+          <!--  <select v-model="lang"-->
+          <!--          class="uk-select uk-button-small">-->
+          <!--    <option v-for="item in langSelect"-->
+          <!--            :value="item">{{item}}-->
+          <!--    </option>-->
+          <!--  </select>-->
+
+          <!--  <button class="uk-button-small uk-button uk-button-default"-->
+          <!--          type="button"-->
+          <!--          tabindex="-1">-->
+
+          <!--    <span class="uk-margin-small-right"/>-->
+          <!--    <img src="/img/icons/icon_arrow__down.svg"-->
+          <!--         uk-svg-->
+          <!--         width="12"-->
+          <!--         height="12">-->
+          <!--  </button>-->
+          <!--</div>-->
+
+          <!--размер окна-->
+          <a class="pos-card-header-item link"
+             :class="{'uk-text-danger' : fullSize}"
+             @click.prevent="fullSize = !fullSize">
+
+            <img src="/img/icons/icon__expand.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-if="!fullSize">
+
+            <img src="/img/icons/icon__collapse.svg"
+                 uk-svg
+                 width="20"
+                 height="20"
+                 v-else>
+          </a>
+        </div>
+        <div class="uk-flex-1">
+          <editor v-model="valueInput"
+                  ref='codeEditor'
+                  @init="editorInit"
+                  :lang="lang"
+                  :options="editorOptions"
+                  width="100%"
+                  :height="editorHeight"/>
         </div>
       </div>
     </div>
-  </div>
+  </li>
+
 </template>
 
 <script>
 
   //import brace from 'brace'
-  //import editor from 'vue2-ace-editor'
+  import editor from 'vue2-ace-editor'
 
   export default {
     name: 'InputCode',
 
     components: {
-      editor
-      //editor: require('vue2-ace-editor')
+      //editor
+      editor: () => import(/* webpackChunkName: "vue2-ace-editor" */ 'vue2-ace-editor')
     },
 
     props: {
@@ -77,6 +107,26 @@
 
     data () {
       return {
+        lang:          'html',
+        langSelect:    [
+          'html',
+          'yaml',
+          'jade',
+          'pig',
+          'markdown',
+          'latex',
+          'javascript',
+          'xml',
+          'json',
+          'smarty',
+          'handlebars',
+          'css',
+          'less',
+          'sass',
+          'scss',
+          'perl',
+          'php'
+        ],
         valueInput:    this.value,
         fullSize:      false,
         editorOptions: {
@@ -105,7 +155,9 @@
       },
 
       editable () {
+
         this.editorOptions.readonly = this.editable === 0
+
         if (this.$refs.codeEditor.editor) {
           this.$refs.codeEditor.editor.$readonly = (Boolean(!this.editable))
         }
@@ -146,28 +198,39 @@
       editorInit: () => {
 
         //language extension prerequsite...
-        //import('brace/ext/language_tools')
-        //import('brace/ext/beautify')
-        ////require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
-        //
-        //import('brace/ext/error_marker')
-        //import('brace/ext/searchbox')
-        //import('brace/ext/whitespace')
-        //import('brace/ext/statusbar')
-        //
-        ////language
-        //import('brace/mode/html')
-        //import('brace/mode/javascript')
-        //import('brace/mode/sass')
-        //import('brace/mode/scss')
-        //import('brace/mode/css')
-        //import('brace/mode/perl')
+        require('brace/ext/language_tools')
+        require('brace/ext/beautify')
+        require('brace/ext/emmet') //     "emmet": "git+https://github.com/cloud9ide/emmet-core.git#41973fcc70392864c7a469cf5dcd875b88b93d4a",
 
-        // theme
-        //import('brace/theme/dracula')
+        require('brace/ext/error_marker')
+        require('brace/ext/searchbox')
+        require('brace/ext/whitespace')
+        require('brace/ext/statusbar')
 
-        // snippet
-        //import('brace/snippets/javascript')
+        //language
+        require('brace/mode/html')
+        require('brace/mode/javascript')
+        require('brace/mode/sass')
+        require('brace/mode/scss')
+        require('brace/mode/less')
+        require('brace/mode/css')
+        require('brace/mode/perl')
+        require('brace/mode/php')
+        require('brace/mode/pig')
+        require('brace/mode/latex')
+        require('brace/mode/xml')
+        require('brace/mode/handlebars')
+        require('brace/mode/jade')
+        require('brace/mode/json')
+        require('brace/mode/markdown')
+        require('brace/mode/smarty')
+        require('brace/mode/yaml')
+
+        //theme
+        require('brace/theme/dracula')
+
+        //snippet
+        require('brace/snippets/javascript')
         //require(['emmet/emmet'], (data) => {
         //  window.emmet = data.emmet
         //})

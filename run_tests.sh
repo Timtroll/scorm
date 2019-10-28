@@ -11,6 +11,7 @@ echo "cd $SOURCE"
 cd $SOURCE
 echo "./starting.sh start"
 ./starting.sh start
+sleep 1s
 
 # run tests
 prove t/*/*.t
@@ -21,3 +22,4 @@ echo "cd $SOURCE"
 cd $SOURCE
 echo "./starting.sh stop"
 ./starting.sh stop
+sleep 1s

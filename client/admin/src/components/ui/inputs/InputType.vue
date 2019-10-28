@@ -1,44 +1,46 @@
 <template>
-  <div class="uk-form-horizontal uk-overflow-hidden">
-    <div>
-      <label v-text="label"
-             class="uk-form-label uk-text-truncate"
-             v-if="label"></label>
+  <li>
+    <div class="uk-form-horizontal uk-overflow-hidden">
+      <div>
+        <label v-text="label"
+               class="uk-form-label uk-text-bold uk-text-danger uk-text-truncate"
+               v-if="label"/>
 
-      <div class="uk-form-controls">
-        <div class="uk-grid-small"
-             uk-grid>
-          <div class="uk-width-expand"
-               uk-form-custom="target: > * > span:first-child">
+        <div class="uk-form-controls">
+          <div class="uk-grid-small"
+               uk-grid>
+            <div class="uk-width-expand"
+                 uk-form-custom="target: > * > span:first-child">
 
-            <select v-model="valueInput"
-                    :disabled="readonly === 1"
-                    @change="update">
+              <select v-model="valueInput"
+                      :disabled="readonly === 1"
+                      @change="update">
 
-              <option v-for="item in inputTypes"
-                      :value="item.value">{{item.label}}
-              </option>
-            </select>
+                <option v-for="item in inputTypes"
+                        :value="item.value">{{item.label}}
+                </option>
+              </select>
 
-            <button class="uk-button pos-button-select"
-                    :class="validate"
-                    :disabled="readonly === 1"
-                    type="button"
-                    tabindex="-1">
-              <span></span>
-              <img src="/img/icons/icon_arrow__down.svg"
-                   uk-svg
-                   width="14"
-                   height="14">
-            </button>
+              <button class="uk-button pos-button-select uk-text-bold "
+                      :class="validate"
+                      :disabled="readonly === 1"
+                      type="button"
+                      tabindex="-1">
+                <span/>
+                <img src="/img/icons/icon_arrow__down.svg"
+                     uk-svg
+                     width="14"
+                     height="14">
+              </button>
+            </div>
+
           </div>
 
         </div>
-
       </div>
-    </div>
 
-  </div>
+    </div>
+  </li>
 </template>
 
 <script>
