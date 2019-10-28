@@ -281,29 +281,6 @@ sub register {
         return $$data{'id'};
     });
 
-    # удаление фолдера
-    # my $true = $self->_delete_folder( <id> );
-    # возвращается true/false
-    # $app->helper( '_delete_folder' => sub {
-    #     my ($self, $id) = @_;
-
-    #     return unless $id;
-
-    #     # unless ( $self->_folder_check( $id ) ) {
-    #     #     warn "$id is a not folder";
-    #     #     return;
-    #     # }
-
-    #     my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
-    #     eval {
-    #         $self->pg_dbh->do($sql);
-    #     };
-    #     warn $@ if $@;
-    #     return if $@;
-
-    #     return 1;
-    # });
-
     # удаление настройки
     # my $true = $self->_delete_setting( <id> );
     # возвращается true/false
