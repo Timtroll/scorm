@@ -307,15 +307,17 @@ sub register {
                 "rate"          => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
+            '/forum/save'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "msg"           => [ '', qr/^.*$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            
+            '/forum/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os ]
+            },
             '/forum/edit'  => {
                 "id"            => [ '', qr/^\d+$/os ],
-                "theme_id"      => [ '', qr/^\d+$/os ],
-                "user_id"       => [ '', qr/^\d+$/os ],
-                "anounce"       => [ '', qr/^.*$/os, 256 ],
-                "date_created"  => [ '', qr/^\d+$/os ],
-                "msg"           => [ '', qr/^.*$/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
-                "status"        => [ '', qr/^[01]$/os ]
             },
             'forum_rates'  => {
                 "id"            => [ '', qr/^\d+$/os ],

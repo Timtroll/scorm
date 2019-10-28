@@ -159,6 +159,71 @@ sub register {
 
         return $id;
     });
+
+    # обновление сообщения
+    # my $id = $self->_update_message({
+    # "theme id"
+    # "user id"
+    # "anounce"
+    # "date_created"
+    # "msg"
+    # "rate"
+    # "status"
+    # });
+    # возвращается true/false
+    $app->helper( '_update_theme' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        my $db_result;
+        eval {
+            $db_result = $self->pg_dbh->do('UPDATE "public"."forum_messages" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $db_result;
+    });
+
+    # удаление сообщения
+    # my $true = $self->_delete_message( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_message' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'DELETE FROM "public"."forum_messages" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->do($sql) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+
+    # читаем одно сообщение
+    # my $row = $self->_get_message( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_message' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT id, msg, status FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $row;
+    });
 }
 
 1;

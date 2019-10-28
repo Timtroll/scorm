@@ -72,16 +72,10 @@ body {
          
     <div id="menu">
     	<h2>Меню</h2>
-% foreach my $t( @$list ) {
-        <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"><%= $$t{'msg'} %> </a></h3>
-        <form method="post" action="http://freee/forum/delete">
-            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
-            <input type="submit" value="delete"/>
-        </form>
-        <form method="post" action="http://freee/forum/edit">
-            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
-            <input type="submit" value="edit"/>
-        </form>
+% foreach my $t (keys %$list ) {
+<h3><a class="title" href="<%= $t %>" rel="nofollow" target="_blank"><%= $$list{$t} %></a></h3>
+            <div class="spam_warning" id="entry_554115_notice">
+            </div>
 % }
     </div>
          
