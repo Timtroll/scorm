@@ -2,9 +2,9 @@
   <li>
     <div class="uk-form-horizontal uk-overflow-hidden">
       <div>
-        <label v-text="label"
-               class="uk-form-label uk-text-truncate"
-               v-if="label"/>
+        <label class="uk-form-label uk-text-truncate"
+               v-if="label"
+               v-text="label"/>
 
         <div class="uk-form-controls">
           <div class="uk-grid-small"
@@ -78,43 +78,14 @@
     data () {
 
       return {
-        valueInput:  this.value,
-        valuesInput: this.inputTypes,
-        editValues:  false
-      }
-    },
-
-    watch: {
-
-      valuesInput () {
-
-        // Проверка на наличие Value in Values
-        const value         = this.valueInput,
-              values        = this.valuesInput,
-              valueInValues = values.includes(value)
-
-        if (!valueInValues) {
-          this.valueInput = ''
-        }
-
-        this.update()
+        valueInput: this.value
       }
     },
 
     computed: {
 
-      inputTypes () {
-        return this.$store.getters.inputComponents
-      },
-
       isChanged () {
-        return this.valueInput !== this.value || JSON.stringify(this.valuesInput) !== JSON.stringify(this.values)
-      },
-
-      notEmptyEditValues () {
-        const des       = this.valuesInput || []
-        const defFilter = [...new Set(des)]
-        return defFilter.filter(Boolean).sort()
+        return this.valueInput !== this.value
       }
 
     },
