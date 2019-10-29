@@ -142,28 +142,23 @@
         return validClass
       },
 
-      clearValue () {
-
-        const types = this.clearValueOn
-        console.log('clearValue', this.valueInput, this.clearValueOn.includes(this.valueInput))
-        return false
+      sendChanges () {
+        this.$emit('change', this.isChanged)
+        this.$emit('changeType', this.valueInput)
+        this.$emit('value', this.valueInput)
       },
 
       update () {
-
         if (this.clearValueOn.includes(this.valueInput)) {
+
           confirm(this.$t('messages.clearValue'), this.$t('actions.ok'), this.$t('actions.cancel'))
             .then(() => {
               this.$emit('clear')
-              this.$emit('change', this.isChanged)
-              this.$emit('changeType', this.valueInput)
-              this.$emit('value', this.valueInput)
+              this.sendChanges()
             })
-        } else {
 
-          this.$emit('change', this.isChanged)
-          this.$emit('changeType', this.valueInput)
-          this.$emit('value', this.valueInput)
+        } else {
+          this.sendChanges()
         }
 
       }
