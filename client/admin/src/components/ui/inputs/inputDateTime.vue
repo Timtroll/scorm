@@ -10,13 +10,14 @@
           <div class="uk-inline uk-width-1-1">
             <DatePick v-model="valueInput"
                       :format="'YYYY-MM-DD HH:mm'"
-                      :displayFormat="'DD.MM.YYYY HH:mm'"
+                      :displayFormat="'DD.MM.YYYY в HH:mm'"
                       :selectableYearRange="5"
                       :mobileBreakpointWidth="480"
                       :inputAttributes="{class: 'uk-input uk-width-1-1', readonly: true}"
                       :pickTime="true"
-                      :disabled="!editable"
+                      :disabled="readonly === 1"
                       :pickMinutes="true"
+                      :parseDate="parseDate"
                       :months="$t('calendar.months')"
                       :weekdays="$t('calendar.weekdays')"
                       :setTimeCaption="$t('calendar.setTimeCaption')"
@@ -43,11 +44,9 @@
 
 <script>
 
-  //import DatePick from './../datePick/DatePick'
-
   export default {
     components: {
-      DatePick: () => import(/* webpackChunkName: "NavTree" */  './../datePick/DatePick')
+      DatePick: () => import(/* webpackChunkName: "DatePick" */  './../datePick/DatePick')
 
     },
 
@@ -69,19 +68,28 @@
         type:    String
       },
 
-      editable: {default: 1},
+      readonly: {default: 0, type: Number},
+      required: {default: 0, type: Number},
 
       mask: {
-        type: String
-      },
+        type: RegExp
+      }
 
-      required: {}
     },
 
     data () {
       return {
         valueInput: this.value,
         valid:      true
+      }
+    },
+
+    watch: {
+
+      valueInput () {
+        if (this.mask) {
+          this.valueInput = this.valueInput.replace(this.mask, '')
+        }
       }
     },
 
@@ -111,16 +119,17 @@
 
     methods: {
 
-      parseDate (dateString, format) {
-        //return fecha.parse(dateString, format);
+      dateToSeconds (date) {
+        return Date.parse(date) / 1000
       },
-      formatDate (dateObj, format) {
-        //return fecha.format(dateObj, format);
+
+      parseDate () {
+        return new Date(Number(this.value) * 1000)
       },
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('value', this.valueInput)
+        this.$emit('value', this.dateToSeconds(this.valueInput))
       }
     }
   }
