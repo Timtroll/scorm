@@ -221,12 +221,12 @@ sub add {
     $self->redirect_to( '/forum/' );
 }
 
-# сохранение группы
+# сохранение сообщения
 # my $id = $self->save();
 # "id"        => 1            - id обновляемого элемента ( >0 )
 # "label"     => 'название'   - обязательно (название для отображения)
 # "name",     => 'name'       - обязательно (системное название, латиница)
-# "status"    => 0 или 1      - активна ли группа
+# "status"    => 0 или 1      - активно ли сообщение
 sub save {
     my ($self) = shift;
 
@@ -234,19 +234,28 @@ sub save {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
+        # $self->param('status')       = 1 if $self->param('status') = 'on';
+        # $self->param('status')       = 0 if $self->param('status') = 'of';
         # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('groups', 'id', $$data{'id'}) ) {
+            if ( $self->_exists_in_table('forum_messages', 'id', $$data{'id'}) ) {
+
+                $$data{'user_id'}      = 1;
+                $$data{'theme_id'}     = 1;
+                $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
+                $$data{'date_created'} = time;
+                $$data{'rate'}         = 0;
+
                 # обновление данных группы
                 $id = $self->_update_message( $data );
-                push @mess, "Could not update Group named '$$data{'name'}'" unless $id;
+                push @mess, "Could not update message" unless $id;
             }
             else {
-                push @mess, "Group named '$$data{'name'}' is not exists";
+                push @mess, "Message is not exists";
             }
         }
     }
@@ -255,7 +264,7 @@ sub save {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/' );
 }
 
 # вывод  данных о сообщении
@@ -263,7 +272,7 @@ sub save {
 sub edit {
     my $self = shift;
 
-    my ($id, $data, $error, @mess, $resp);
+    my ($id, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -277,15 +286,13 @@ sub edit {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
-
-    $self->render(
-        'template'    => 'edit',
-        'title'       => 'edit',
-        'list'        => $data
-    );
+    unless  (@mess) {
+        $self->render(
+            'template'    => 'edit',
+            'title'       => 'edit',
+            'list'        => $data
+        );
+    };
 }
 
 # удалениe сообщения 
@@ -330,15 +337,14 @@ sub toggle {
 
         $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
         $toggle = $self->_toggle( $data ) unless @mess;
-        push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
+        push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $toggle;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/' );
 }
-
 
 1;

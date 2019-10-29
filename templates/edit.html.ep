@@ -21,27 +21,6 @@ body {
     align-content: top;
 }
 
- 
-#navigation {
-    background: #FF9999;
-    width: 100%;
-    height: 40px;
-}
- 
-#menu {
-    background: #99CC99;
-    float: left;
-    width: 200px;
-    height: 400px;
-}
- 
-#content {
-    background: #d2d0d2;
-    float: right;
- 
-    width: 700px;
-    height: 400px;
-}
 #message {
     position: absolute;
     left: 310px;
@@ -52,65 +31,22 @@ body {
     height: 348px;
 }
  
-#clear {
-    clear:both;
-}
- 
-#footer {
-    background: #0066FF;
-    height: 80px;
-    width: 100%;
-}
     </style>
 </head>
 <body>
 
 <div id="container">
-    <div id="navigation">
-        <h2>Блок навигации</h2>
-    </div>
-         
-    <div id="menu">
-    	<h2>Меню</h2>
-% foreach my $t (keys %$list ) {
-<h3><a class="title" href="<%= $t %>" rel="nofollow" target="_blank"><%= $$list{$t} %></a></h3>
-            <div class="spam_warning" id="entry_554115_notice">
-            </div>
-% }
-    </div>
-         
-    <div id="content">
-		    <h3><a class="title" href="https://m.ren.tv/novosti/2019-08-20/ekspertiza-irkutskaya-chinovnica-nazvala-zhertv-pavodka-bydlom-i-bichami" rel="nofollow" target="_blank">Иркутская чиновница назвала жертв паводка быдлом и бичами</a></h3>
-		    <div class="spam_warning" id="entry_554115_notice">
-		    </div>
-		    <div class="info">
-		        <i>m.ren.tv</i> — Экспертиза доказала принадлежность голоса главе пресс-службы губернатора Иркутской области Сергея Левченко Ирине Алашкевич.
-		        Само высказывание: <a href=" https://vott.ru/entry/554106" target="_blank" rel="nofollow"> https://vott.ru/entry/554106</a>
-		        <a href="/entries/search?query=%23%D0%92%D1%8B%D1%80%D0%B2%D0%B0%D0%BD%D0%BE_%D0%B8%D0%B7_%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0">#Вырвано_из_контекста</a> <a href="/entries/search?query=%23%D0%9C%D0%B5%D0%BD%D1%8F_%D0%BD%D0%B5_%D1%82%D0%B0%D0%BA_%D0%BF%D0%BE%D0%BD%D1%8F%D0%BB%D0%B8">#Меня_не_так_поняли</a>
-		    </div>
-		    <div class="info2">
-		        <span class="comments_link"><a href="/entry/554115">12 комментариев</a></span> |
-		        <span>Новости, Политика</span> | <span><a class="" href="/user/ShuGro" target="_self">ShuGro</a></span> <span> 2 ч 56 мин назад</span>
-		        <span></span>
-		    </div>
-		</div>
-    </div>
 
     <div id="message">
-        <form method="post" action="http://freee/forum/add">
+        <form method="post" action="http://freee/forum/save">
             <BR>Message:
-            <BR><textarea name="msg" rows=5 cols=40/></textarea>
-            <BR><input type="submit" value="Enter"/>
+            <BR><input type="text" name='msg' value = "<%= $$list{'msg'} %>" >
+            <BR><input type="checkbox" name="status" checked >Status active
+            <BR><BR><input type="submit" value="Save"/>
+            <input type="hidden" name="id"  value= "<%= $$list{'id'} %>"/>
         </form>
     </div>
 
-    <div id="clear">
-
-    </div>
-
-    <div id="footer">
-        <h2>Подвал сайта</h2>
-    </div>
 </div>
 
 </body>

@@ -82,6 +82,10 @@ body {
             <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
             <input type="submit" value="edit"/>
         </form>
+        <form method="post" action="http://freee/forum/toggle">
+            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="submit" value="toggle"/>
+        </form>
 % }
     </div>
          
