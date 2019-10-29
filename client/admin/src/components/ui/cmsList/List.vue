@@ -344,9 +344,8 @@
         this.$emit('save', this.dataNew)
       },
 
+      // Очистка поля Value при изменении типа поля
       clearValue () {
-        console.log('emit - clearValue')
-
         const value = this.dataNew.find(item => item.name === 'value')
         if (value && 'value' in value) {
           value.value = ''
