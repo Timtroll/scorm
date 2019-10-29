@@ -44,6 +44,7 @@
 </template>
 
 <script>
+  import {confirm} from '../../../store/methods'
 
   export default {
     name: 'InputType',
@@ -62,6 +63,8 @@
         type:    String
       },
 
+      clear: {},
+
       placeholder: {
         default: '',
         type:    String
@@ -78,9 +81,10 @@
     data () {
 
       return {
-        valueInput:  this.value,
-        valuesInput: this.inputTypes,
-        editValues:  false
+        valueInput:   this.value,
+        valuesInput:  this.inputTypes,
+        editValues:   false,
+        clearValueOn: ['InputNumber', 'InputBoolean', 'InputDoubleList', 'inputDateTime', 'InputCode']
       }
     },
 
@@ -138,10 +142,30 @@
         return validClass
       },
 
+      clearValue () {
+
+        const types = this.clearValueOn
+        console.log('clearValue', this.valueInput, this.clearValueOn.includes(this.valueInput))
+        return false
+      },
+
       update () {
-        this.$emit('change', this.isChanged)
-        this.$emit('changeType', this.valueInput)
-        this.$emit('value', this.valueInput)
+
+        if (this.clearValueOn.includes(this.valueInput)) {
+          confirm(this.$t('messages.clearValue'), this.$t('actions.ok'), this.$t('actions.cancel'))
+            .then(() => {
+              this.$emit('clear')
+              this.$emit('change', this.isChanged)
+              this.$emit('changeType', this.valueInput)
+              this.$emit('value', this.valueInput)
+            })
+        } else {
+
+          this.$emit('change', this.isChanged)
+          this.$emit('changeType', this.valueInput)
+          this.$emit('value', this.valueInput)
+        }
+
       }
 
     }

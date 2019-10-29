@@ -82,7 +82,7 @@ function clone (obj, hash = new WeakMap()) {
  */
 function confirm (message, ok, cancel) {
   return UIkit.modal.confirm(message, {
-    labels: {ok: ok, cancel: cancel}
+    labels: {ok: ok || 'Да', cancel: cancel || 'Отмена'}
   })
 }
 

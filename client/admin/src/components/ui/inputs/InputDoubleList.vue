@@ -42,7 +42,7 @@
                           </div>
                           <input class="uk-input uk-form-small"
                                  v-model="item[idx]"
-                                 :disabled="!editable"
+                                 :disabled="readonly === 1"
                                  @input="update"
                                  :key="idx"
                                  type="text">
@@ -52,7 +52,7 @@
 
                     <!--Toggle cell-->
                     <div class="uk-width-auto uk-flex uk-flex-middle"
-                         v-if="editable">
+                         v-if="readonly !== 1">
                       <a class=""
                          style="transform: translateY(-3px)"
                          @click.prevent="toggleCell">
@@ -71,7 +71,7 @@
 
                     <!--remove value-->
                     <div class="uk-width-auto uk-flex uk-flex-middle"
-                         v-if="editable">
+                         v-if="readonly !== 1">
                       <a class="pos-link-danger"
                          style="transform: translateY(-3px)"
                          @click.prevent="removeItem(index)">
@@ -89,7 +89,7 @@
 
             <!--Add row-->
             <div class="uk-width-auto"
-                 v-if="editable">
+                 v-if="readonly !== 1">
               <a @click.prevent="addItem">
                 <img src="/img/icons/icon__plus-circle.svg"
                      width="22"
@@ -109,8 +109,7 @@
 
 <script>
 
-  import UIkit from 'uikit/dist/js/uikit.min'
-  import {clone} from '../../../store/methods'
+  import {clone, confirm} from '../../../store/methods'
 
   export default {
     name: 'InputDoubleList',
@@ -133,7 +132,8 @@
         default: '',
         type:    String
       },
-      editable:    {default: 1}
+      readonly:    {default: 0, type: Number},
+      required:    {default: 0, type: Number}
     },
 
     data () {
@@ -150,13 +150,6 @@
       if (this.value[0]) {
         this.arrayLength(this.value[0])
       }
-    },
-
-    watch: {
-
-      //isChanged () {
-      //  this.update()
-      //}
     },
 
     computed: {
@@ -182,14 +175,10 @@
 
       removeItem (index) {
 
-        UIkit.modal.confirm(this.$t('dialog.remove'), {
-          labels: {
-            ok:     this.$t('actions.ok'),
-            cancel: this.$t('actions.cancel')
-          }
-        }).then(() => {
-          this.valuesInput.splice(index, 1)
-        })
+        confirm(this.$t('dialog.remove'), this.$t('actions.ok'), this.$t('actions.cancel'))
+          .then(() => {
+            this.valuesInput.splice(index, 1)
+          })
 
       },
 
@@ -207,19 +196,14 @@
 
         if (this.doubleCell) {
 
-          UIkit.modal.confirm(this.$t('dialog.removeLast'), {
-            labels: {
-              ok:     this.$t('actions.ok'),
-              cancel: this.$t('actions.cancel')
-            }
-          }).then(() => {
+          confirm(this.$t('dialog.removeLast'), this.$t('actions.ok'), this.$t('actions.cancel'))
+            .then(() => {
 
-            // delete last input
-            cells.forEach((cell) => {
-              cell.splice(1, 1)
+              cells.forEach((cell) => {
+                cell.splice(1, 1)
+              })
+              this.doubleCell = false
             })
-            this.doubleCell = false
-          })
 
         } else {
 

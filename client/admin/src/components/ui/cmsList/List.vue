@@ -59,6 +59,7 @@
                      :placeholder="item.placeholder"
                      @value="dataNew[index].value = $event"
                      @change="dataChanged[index].changed = $event"
+                     @clear="clearValue"
                      @changeType="changeType($event)"/>
 
         </ul>
@@ -216,7 +217,6 @@
 
       disabled () {
         const disabled = this.dataNew.find(item => item.name === 'readonly')
-        console.log(typeof disabled, disabled.value)
         if (disabled && 'value' in disabled) {
           return Number(disabled.value)
         }
@@ -324,7 +324,7 @@
 
       close () {
         if (this.dataIsChanged) {
-          confirm(this.$t('messages.dataIsChanged'), 'Да', 'Нет')
+          confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
             .then(() => {
               this.$emit('close')
               this.$store.commit('card_right_show', false)
@@ -342,6 +342,16 @@
 
       save () {
         this.$emit('save', this.dataNew)
+      },
+
+      clearValue () {
+        console.log('emit - clearValue')
+
+        const value = this.dataNew.find(item => item.name === 'value')
+        if (value && 'value' in value) {
+          value.value = ''
+        }
+
       }
 
     }

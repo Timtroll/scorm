@@ -53,7 +53,7 @@
 
       disabled () {
         if (this.name !== 'readonly') {
-          return this.readonly
+          return !this.readonly
         }
       },
 
