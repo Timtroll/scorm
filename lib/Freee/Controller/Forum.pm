@@ -10,31 +10,41 @@ use common;
 
 
 sub index {
-    my ($self);
-    $self = shift;
-my $list = $self->_list_themes();
+    my $self = shift;
 
-print Dumper $list;
-    foreach my $t( @$list ) {
-print"\n";
-print"$$t{'title'}";
-print"\n";
-    }
+    my $list = $self->_list_messages();
 
     $self->render(
         'template'    => 'forum',
         'title'       => 'Форум',
-        list => $list
+        'list'        => $list
     );
 }
 
-sub listthemes {
+# получение списка тем из базы в массив хэшей
+sub list_themes {
     my $self = shift;
 
     my ( $list, $resp, @mess );
 
     $list = $self->_list_themes();
     push @mess, "Could not get list Themes" unless $list;
+    
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+# получение списка групп из базы в массив хэшей
+sub list_groups {
+    my $self = shift;
+
+    my ( $list, $resp, @mess );
+
+    $list = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list;
     
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -99,20 +109,6 @@ sub del_theme {
     );
 }
 
-sub listgroups {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'listgroups',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
-    );
-}
-
 sub group {
     my ($self);
     $self = shift;
@@ -169,6 +165,22 @@ sub del_group {
     );
 }
 
+# получение списка сообщений из базы в массив хэшей
+sub list_messages {
+    my $self = shift;
+
+    my ( $list, $resp, @mess );
+
+    $list = $self->_list_messages();
+    push @mess, "Could not get list Messages" unless $list;
+    
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
 # новое сообщение форума
 # my $id = $self->_insert_message();
 # "theme id"
@@ -184,27 +196,17 @@ sub add {
     my ($id, $data, $error, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    # устанавляваем поля по умолчанию
-    # $self->param('theme_id') = 1;
-    # $self->param('user_id') = 1;
-    # $self->param('anounce') = '';
-    # $self->param('date_created') = localtime;
-    # $self->param('rate') = 0;
-    # $self->param('status') = 1;    $$data{'theme id'} = 1;
-
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-
-        $$data{'user_id'} = 1;
-        $$data{'theme_id'} = 1;
-        $$data{'anounce'} = '';
+        $$data{'user_id'}      = 1;
+        $$data{'theme_id'}     = 1;
+        $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
         $$data{'date_created'} = time;
-        # $$data{'date_created'} = localtime;
-        $$data{'rate'} = 0;
-        $$data{'status'} = 1;
+        $$data{'rate'}         = 0;
+        $$data{'status'}       = 1;
 
         if ($data) {
             $id = $self->_insert_message( $data );
@@ -219,32 +221,102 @@ sub add {
     $self->redirect_to( '/forum/' );
 }
 
-sub edit {
-    my ($self);
-    $self = shift;
+# сохранение сообщения
+# my $id = $self->save();
+# "id"        => 1            - id обновляемого элемента ( >0 )
+# "label"     => 'название'   - обязательно (название для отображения)
+# "name",     => 'name'       - обязательно (системное название, латиница)
+# "status"    => 0 или 1      - активно ли сообщение
+sub save {
+    my ($self) = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'edit',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ( $id, $parent, $data, $error, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # $self->param('status')       = 1 if $self->param('status') = 'on';
+        # $self->param('status')       = 0 if $self->param('status') = 'of';
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        # проверка существования обновляемой строки
+        unless (@mess) {
+            if ( $self->_exists_in_table('forum_messages', 'id', $$data{'id'}) ) {
+
+                $$data{'user_id'}      = 1;
+                $$data{'theme_id'}     = 1;
+                $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
+                $$data{'date_created'} = time;
+                $$data{'rate'}         = 0;
+
+                # обновление данных группы
+                $id = $self->_update_message( $data );
+                push @mess, "Could not update message" unless $id;
+            }
+            else {
+                push @mess, "Message is not exists";
+            }
         }
-    );
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->redirect_to( '/forum/' );
 }
 
-sub delete {
-    my ($self);
-    $self = shift;
+# вывод  данных о сообщении
+# "id" => 1 - id выводимого элемента ( >0 )
+sub edit {
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'delete',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ($id, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        if ($data) {
+            $data = $self->_get_message( $$data{'id'} );
+            push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
         }
-    );
+    }
+
+    unless  (@mess) {
+        $self->render(
+            'template'    => 'edit',
+            'title'       => 'edit',
+            'list'        => $data
+        );
+    };
+}
+
+# удалениe сообщения 
+# "id" => 1 - id удаляемого элемента ( >0 )
+sub delete {
+    my $self = shift;
+
+    my ($del, $resp, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        $del = $self->_delete_message( $$data{'id'} ) unless @mess;
+        push @mess, "Could not delete message '$$data{'id'}'" unless $del;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $del;
+
+    $self->redirect_to( '/forum/' );
 }
 
 # изменение поля на 1/0
@@ -265,15 +337,14 @@ sub toggle {
 
         $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
         $toggle = $self->_toggle( $data ) unless @mess;
-        push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
+        push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $toggle;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/' );
 }
-
 
 1;

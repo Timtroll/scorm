@@ -33,6 +33,36 @@ sub register {
         return $list;
     });
 
+    # получение списка сообщений из базы в массив хэшей
+    $app->helper( '_list_messages' => sub {
+        my ($self) = @_;
+
+        my $list;
+        eval {
+            my $sql = 'SELECT * FROM "public"."forum_messages"';
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $list;
+    });
+
+    # получение списка групп из базы в массив хэшей
+    $app->helper( '_list_groups' => sub {
+        my ($self) = @_;
+
+        my $list;
+        eval {
+            my $sql = 'SELECT * FROM "public"."forum_groups"';
+            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $list;
+    });
+    
     # читаем один роут
     # my $row = $self->_get_theme( 99 );
     # возвращается строка в виде объекта
@@ -128,6 +158,73 @@ sub register {
         return if $@;
 
         return $id;
+    });
+
+    # обновление сообщения
+    # my $id = $self->_update_message({
+    # "theme id"
+    # "user id"
+    # "anounce"
+    # "date_created"
+    # "msg"
+    # "rate"
+    # "status"
+    # });
+    # возвращается true/false
+    $app->helper( '_update_message' => sub {
+        my ($self, $data) = @_;
+
+        return unless $$data{id};
+
+        my $result;
+        my $sql = 'UPDATE "public"."forum_messages" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"";
+        eval {
+            $result = $self->pg_dbh->do( $sql ) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+
+    # удаление сообщения
+    # my $true = $self->_delete_message( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_message' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'DELETE FROM "public"."forum_messages" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->do( $sql ) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+
+    # читаем одно сообщение
+    # my $row = $self->_get_message( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_message' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT id, msg, status FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $row;
     });
 }
 
