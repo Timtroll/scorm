@@ -46,7 +46,7 @@
 
           <!--editValues-->
           <div class="pos-placeholder"
-               v-if="editValues && valuesEditable && readonly === 0">
+               v-if="editValues && valuesEditable && readonly !== 1">
             <div class="uk-grid-collapse uk-flex-middle"
                  uk-grid>
 

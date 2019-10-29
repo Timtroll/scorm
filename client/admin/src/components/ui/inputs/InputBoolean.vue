@@ -9,7 +9,7 @@
         <div class="uk-form-controls uk-form-controls-text uk-text-right">
           <label class="uk-display-block">
             <input class="pos-checkbox-switch"
-                   :disabled="!editable"
+                   :disabled="disabled"
                    v-model.number="valueInputBoolean"
                    :true-value="1"
                    :false-value="0"
@@ -28,6 +28,7 @@
 
     props: {
       value:       {default: 1},
+      name:        '',
       label:       {
         default: '',
         type:    String
@@ -36,7 +37,8 @@
         default: '',
         type:    String
       },
-      editable:    {default: 1}
+      readonly:    {default: 0, type: Number},
+      required:    {default: 0, type: Number}
     },
 
     data () {
@@ -48,6 +50,12 @@
     },
 
     computed: {
+
+      disabled () {
+        if (this.name !== 'readonly') {
+          return this.readonly
+        }
+      },
 
       valueInput () {
         return Number(this.valueInputBoolean)
@@ -61,7 +69,6 @@
     methods: {
 
       update () {
-        //this.valueInputBoolean = !this.valueInputBoolean
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
       }

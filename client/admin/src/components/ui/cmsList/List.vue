@@ -48,9 +48,10 @@
                      v-for="(item, index) in dataNew"
                      :key="index"
                      :value="item.value"
+                     :type="item.type"
                      :name="item.name"
                      :selected="valueSelected"
-                     :readonly="item.readonly"
+                     :readonly="disabled"
                      :add="item.add"
                      :required="item.required"
                      :mask="item.mask"
@@ -200,7 +201,6 @@
           this.dataNew     = clone(this.data)
           this.dataChanged = this.createDataChanged(this.data)
         }
-
       },
 
       // установка типа поля VALUE при загрузке
@@ -213,6 +213,15 @@
     },
 
     computed: {
+
+      disabled () {
+        const disabled = this.dataNew.find(item => item.name === 'readonly')
+        console.log(typeof disabled, disabled.value)
+        if (disabled && 'value' in disabled) {
+          return Number(disabled.value)
+        }
+
+      },
 
       title () {
         if (this.add) {
