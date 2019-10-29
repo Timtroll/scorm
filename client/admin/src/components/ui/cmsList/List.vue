@@ -51,7 +51,7 @@
                      :type="item.type"
                      :name="item.name"
                      :selected="valueSelected"
-                     :readonly="disabled"
+                     :readonly="notEditable(item.readonly)"
                      :add="item.add"
                      :required="item.required"
                      :mask="item.mask"
@@ -351,6 +351,14 @@
           value.value = ''
         }
 
+      },
+
+      notEditable (mode) {
+        if (mode || this.disabled) {
+          return 1
+        } else {
+          return 0
+        }
       }
 
     }
