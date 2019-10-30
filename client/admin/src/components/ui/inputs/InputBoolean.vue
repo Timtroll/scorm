@@ -9,7 +9,7 @@
         <div class="uk-form-controls uk-form-controls-text uk-text-right">
           <label class="uk-display-block">
             <input class="pos-checkbox-switch"
-                   :disabled="disabled"
+                   :disabled="disabled === 1"
                    v-model.number="valueInputBoolean"
                    :true-value="1"
                    :false-value="0"
@@ -27,8 +27,11 @@
     name: 'InputBoolean',
 
     props: {
-      value:       {default: 1},
-      name:        '',
+      value:       {},
+      name:        {
+        default: '',
+        type:    String
+      },
       label:       {
         default: '',
         type:    String
@@ -44,7 +47,6 @@
     data () {
       return {
         valueInputBoolean: this.value,
-        //valueInputBoolean: Number(this.value),
         valid:             true
       }
     },
@@ -53,7 +55,7 @@
 
       disabled () {
         if (this.name !== 'readonly') {
-          return !this.readonly
+          return this.readonly
         }
       },
 

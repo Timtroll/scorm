@@ -95,6 +95,7 @@
     methods: {
 
       update () {
+
         this.$emit('change', this.isChanged)
         this.$emit('value', this.valueInput)
       }
