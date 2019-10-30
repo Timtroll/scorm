@@ -86,12 +86,21 @@ function confirm (message, ok, cancel) {
   })
 }
 
+function dropHide (ref) {
+  UIkit.dropdown(ref).hide()
+}
+
+function dropShow (ref) {
+  UIkit.dropdown(ref).hide()
+}
+
 export {
   notify,
   confirm,
   flatTree,
-  clone
-  //mergeObject
+  clone,
+  dropHide,
+  dropShow
 }
 
 

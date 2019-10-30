@@ -5,14 +5,16 @@
       <a>
         <icon-setting :spin="true"/>
       </a>
-      <div :uk-dropdown="dropdownOptions">
+      <div :uk-dropdown="dropdownOptions"
+           ref="settings">
         <ul class="uk-nav uk-dropdown-nav pos-sidebar-dropdown-nav">
           <li class="uk-nav-header"
               v-text="$t('settings.navLabel')"/>
           <li class="uk-nav-divider"/>
           <li v-for="(item, index) in menuSettings"
               :key="index"
-              :class="{'uk-active' : activeClass(item.name)}">
+              :class="{'uk-active' : activeClass(item.name)}"
+              @click.prevent="close">
             <router-link exact
                          class="pos-sidebar-dropdown-nav--link"
                          :to="item.path"
@@ -34,6 +36,8 @@
   </ul>
 </template>
 <script>
+
+  import {dropHide} from '../../../store/methods'
 
   export default {
 
@@ -79,7 +83,11 @@
       }
     },
     methods:  {
-      activeClass (name) {return this.$route.name === name || this.$route.meta.parentName === name }
+      activeClass (name) {return this.$route.name === name || this.$route.meta.parentName === name },
+
+      close () {
+        dropHide(this.$refs.settings)
+      }
     }
   }
 </script>
