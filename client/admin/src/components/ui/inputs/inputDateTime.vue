@@ -43,6 +43,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
 
   export default {
     components: {
@@ -120,11 +121,11 @@
     methods: {
 
       dateToSeconds (date) {
-        return Date.parse(date) / 1000
+        return moment(date).unix()
       },
 
       parseDate () {
-        return new Date(Number(this.value) * 1000)
+        return new Date(this.value * 1000)
       },
 
       update () {
