@@ -11,35 +11,35 @@ use Data::Dumper;
 our $VERSION = '0.11';
 
 sub register {
-    my ($plugin, $app, $conf) = @_;
+    my ($plugin, $eav, $conf) = @_;
 
-    $app->helper( 'model' => sub {
+    $eav->helper( 'model' => sub {
         my ($self, $name) = @_;
 
         $name //= $conf->{default};
         my $model;
         return $model if $model = $plugin->{models}{$name};
 
-        my $class = _load_class_for_name($plugin, $app, $conf, $name) or return undef;
+        my $class = _load_class_for_name($plugin, $eav, $conf, $name) or return undef;
 
         my $params = $conf->{params}{$name};
-        $model = $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
+        $model = $class->new(ref $params eq 'HASH' ? %$params : (), eav => $eav);
         $plugin->{models}{$name} = $model;
 
         return $model;
     });
 
-    $app->helper( 'entity' => sub {
-        my ($self, $name) = @_;
+    # $eav->helper( 'entity' => sub {
+    #     my ($self, $name) = @_;
 
-        $name //= $conf->{default};
+    #     $name //= $conf->{default};
 
-        my $class = _load_class_for_name($plugin, $app, $conf, $name) or return undef;
+    #     my $class = _load_class_for_name($plugin, $eav, $conf, $name) or return undef;
 
-        my $params = $conf->{params}{$name};
+    #     my $params = $conf->{params}{$name};
 
-        return $class->new(ref $params eq 'HASH' ? %$params : (), app => $app);
-    });
+    #     return $class->new(ref $params eq 'HASH' ? %$params : (), eav => $eav);
+    # });
 }
 
 sub _load_class {
@@ -49,30 +49,31 @@ sub _load_class {
 
     return 1 unless $error;
     die $error if ref $error;
+
     return;
 }
 
 sub _load_class_for_name {
-    my ($plugin, $app, $conf, $name) = @_;
+    my ($plugin, $eav, $conf, $name) = @_;
 
     return $plugin->{classes_loaded}{$name} if $plugin->{classes_loaded}{$name};
 
-    my $ns = $conf->{namespaces}   // [camelize($app->moniker) . '::Model'];
-    # my $base = $conf->{base_classes} // [qw(MojoX::Model)];
+    my $ns = $conf->{namespaces} // [camelize($eav->moniker) . '::Model'];
+    my $base = $conf->{base_classes} // [qw(Freee::Model::EAV)];
 
     $name = camelize($name) if $name =~ /^[a-z]/;
 
     for my $class ( map "${_}::$name", @$ns ) {
         next unless _load_class($class);
 
-        # unless ( any { $class->isa($_) } @$base ) {
-        #     $app->log->debug(qq[Class "$class" is not a model]);
-        #     next;
-        # }
+        unless ( any { $class->isa($_) } @$base ) {
+            $eav->log->debug(qq[Class "$class" is not a model]);
+            next;
+        }
         $plugin->{classes_loaded}{$name} = $class;
         return $class;
     }
-    $app->log->debug(qq[Model "$name" does not exist]);
+    $eav->log->debug(qq[Model "$name" does not exist]);
 
     return undef;
 };
@@ -85,13 +86,13 @@ __END__
 
 =head1 NAME
 
-Mojolicious::Plugin::Model - Model for Mojolicious applications
+Mojolicious::Plugin::Model - Model for Mojolicious eavlications
 
 =head1 SYNOPSIS
 
 Model Users
 
-package MyApp::Model::Users;
+package Myeav::Model::Users;
 use Mojo::Base 'MojoX::Model';
 
 sub check {
@@ -101,18 +102,18 @@ sub check {
     return int rand 2;
 
     # Or Mojo::Pg
-    return $self->app->pg->db->query('...')->array->[0];
+    return $self->eav->pg->db->query('...')->array->[0];
 
     # Or HTTP check
-    return $self->app->ua->post($url => json => {user => $name, pass => $pass})->res->tx->json('/result');
+    return $self->eav->ua->post($url => json => {user => $name, pass => $pass})->res->tx->json('/result');
 }
 
 1;
 
 Model Users-Client
 
-package MyApp::Model::Users::Client;
-use Mojo::Base 'MyApp::Model::User';
+package Myeav::Model::Users::Client;
+use Mojo::Base 'Myeav::Model::User';
 
 sub do {
     my ($self) = @_;
@@ -120,7 +121,7 @@ sub do {
 
 1;
 
-Mojolicious::Lite application
+Mojolicious::Lite eavlication
 
 #!/usr/bin/env perl
 use Mojolicious::Lite;
@@ -144,7 +145,7 @@ any '/' => sub {
     $c->render(text => 'Wrong username or password.');
 };
 
-app->start;
+eav->start;
 
 All available options
 
@@ -152,16 +153,16 @@ All available options
 use Mojolicious::Lite;
 
 plugin Model => {
-    namespaces   => ['MyApp::Model', 'MyApp::CLI::Model'],
-    base_classes => ['MyApp::Model'],
-    default      => 'MyApp::Model::Pg',
+    namespaces   => ['Myeav::Model', 'Myeav::CLI::Model'],
+    base_classes => ['Myeav::Model'],
+    default      => 'Myeav::Model::Pg',
     params => {Pg => {uri => 'postgresql://user@/mydb'}}
 };
 
 =head1 DESCRIPTION
 
-L<Mojolicious::Plugin::Model> is a Model (M in MVC architecture) for Mojolicious applications. Each
-model has an C<app> attribute.
+L<Mojolicious::Plugin::Model> is a Model (M in MVC architecture) for Mojolicious eavlications. Each
+model has an C<eav> attribute.
 
 =head1 OPTIONS
 
@@ -170,14 +171,14 @@ L<Mojolicious::Plugin::Model> supports the following options.
 =head2 namespaces
 
 # Mojolicious::Lite
-plugin Model => {namespaces => ['MyApp::Model']};
+plugin Model => {namespaces => ['Myeav::Model']};
 
 Namespace to load models from, defaults to C<$moniker::Model>.
 
 =head2 base_classes
 
 # Mojolicious::Lite
-plugin Model => {base_classes => ['MyApp::Model']};
+plugin Model => {base_classes => ['Myeav::Model']};
 
 Base classes used to identify models, defaults to L<MojoX::Model>.
 
@@ -230,7 +231,7 @@ L<Mojolicious::Plugin> and implements the following new ones.
 
 $plugin->register(Mojolicious->new);
 
-Register plugin in L<Mojolicious> application.
+Register plugin in L<Mojolicious> eavlication.
 
 =head1 SEE ALSO
 
