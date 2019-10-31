@@ -226,6 +226,25 @@ sub register {
 
         return $row;
     });
+
+    # получение значения поля status по id
+    # my $true = folder_check( <id> );
+    # возвращается 1/0
+    $app->helper('_status_check' => sub {
+        # my $id = shift;
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'SELECT status FROM "public"."forum_messages" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->selectrow_array($sql);
+        };
+        warn $@ if $@;
+        
+        return $result;
+    });
 }
 
 1;

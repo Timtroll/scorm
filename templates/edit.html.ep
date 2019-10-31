@@ -41,7 +41,8 @@ body {
         <form method="post" action="http://freee/forum/save">
             <BR>Message:
             <BR><input type="text" name='msg' value = "<%= $$list{'msg'} %>" >
-            <BR><input type="checkbox" name="status" checked >Status active
+            <BR><input type="radio" name="status" value=1 >Status active
+            <BR><input type="radio" name="status" value=0 >Status unactive
             <BR><BR><input type="submit" value="Save"/>
             <input type="hidden" name="id"  value= "<%= $$list{'id'} %>"/>
         </form>

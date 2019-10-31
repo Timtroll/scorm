@@ -26,6 +26,7 @@ CREATE TABLE "public"."forum_messages" (
 "user_id" int4 NOT NULL,
 "anounce" varchar(255) COLLATE "default" NOT NULL,
 "date_created" int4 NOT NULL,
+"date_edited" int4 NOT NULL,
 "msg" varchar(255) COLLATE "default" NOT NULL,
 "rate" int4 NOT NULL,
 "status" int2 DEFAULT 1 NOT NULL,
