@@ -169,16 +169,17 @@ sub del_group {
 sub list_messages {
     my $self = shift;
 
-    my ( $list, $resp, @mess );
+    my ( $list_messages, $list_themes );
 
-    $list = $self->_list_messages();
-    push @mess, "Could not get list Messages" unless $list;
-    
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @mess;
+    $list_messages = $self->_list_messages();
+    $list_themes  = $self->_list_themes();
 
-    $self->render( 'json' => $resp );
+    $self->render(
+        'template'      => 'forum',
+        'title'         => 'Список сообщений',
+        'list_messages' => $list_messages,
+        'list_themes'   => $list_themes
+    );
 }
 
 # новое сообщение форума
@@ -218,7 +219,7 @@ sub add {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->redirect_to( '/forum/' );
+    $self->redirect_to( '/forum/list_messages' ) unless @mess;
 }
 
 # сохранение сообщения
@@ -234,8 +235,6 @@ sub save {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        # $self->param('status')       = 1 if $self->param('status') = 'on';
-        # $self->param('status')       = 0 if $self->param('status') = 'of';
         # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
@@ -264,7 +263,7 @@ sub save {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->redirect_to( '/forum/' );
+    $self->redirect_to( '/forum/list_messages' );
 }
 
 # вывод  данных о сообщении
@@ -316,7 +315,7 @@ sub delete {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
-    $self->redirect_to( '/forum/' );
+    $self->redirect_to( '/forum/list_messages' );
 }
 
 # изменение поля на 1/0
@@ -327,7 +326,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess);
+    my ($toggle, $resp, $data, $error, @mess, $current_value);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -335,16 +334,22 @@ sub toggle {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
+        $current_value = $self->_status_check( $$data{'id'} ) unless @mess;
+        if ( $current_value ) {
+            $$data{'value'} = 0;
+        }
+        else { 
+            $$data{'value'} = 1;
+        }
+        # $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
+        $$data{'table'} = 'forum_messages';
+        $$data{'fieldname'} = 'status';
+
         $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} if $toggle;
-
-    $self->redirect_to( '/forum/' );
+    $self->redirect_to( '/forum/list_messages' ) unless @mess;
 }
 
 1;
