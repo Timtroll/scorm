@@ -8,6 +8,7 @@ CREATE TABLE "public"."forum_groups" (
 "name" varchar(255) COLLATE "default" NOT NULL,
 "title" varchar(255) COLLATE "default" NOT NULL,
 "date_created" int4 NOT NULL,
+"date_edited" int4 NOT NULL,
 "status" int2 DEFAULT 1 NOT NULL,
 CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
 )
@@ -62,6 +63,7 @@ CREATE TABLE "public"."forum_themes" (
 "url" varchar(255) COLLATE "default" NOT NULL,
 "rate" int4 NOT NULL,
 "date_created" int4 NOT NULL,
+"date_edited" int4 NOT NULL,
 "status" int2 DEFAULT 1 NOT NULL,
 CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 )

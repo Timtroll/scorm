@@ -303,6 +303,7 @@ sub register {
                 "user_id"       => [ '', qr/^\d+$/os ],
                 "anounce"       => [ '', qr/^.*$/os, 256 ],
                 "date_created"  => [ '', qr/^\d+$/os ],
+                "date_edited"   => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "rate"          => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]

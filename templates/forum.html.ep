@@ -72,11 +72,14 @@ html, body {
          
     <div id="menu">
     	<h2>Темы</h2>
-            % foreach my $t( @$list_themes ) {
-                <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"> 
-                %= $$t{'title'}
+%           foreach my $t( @$list_themes ) {
+                <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank">
+%                my $theme = $$t{'title'};
+%                $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
+%                $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
+%=               $theme;
                 </a></h3>
-            % }
+%           }
     </div>
 
     <div id="content">
@@ -86,8 +89,13 @@ html, body {
             <BR><input type="submit" value="Enter"/>
         </form>
         <h2>Сообщения</h2>
-        % foreach my $t( @$list_messages ) {
-            <div class="msg"><h3><a class="title" ><%= $$t{'msg'} %> </a></h3></div>
+%       foreach my $t( @$list_messages ) {
+            <div class="msg"><h3><a class="title" >
+%                my $message = $$t{'msg'};
+%                $message = "(edited)".$message unless $$t{'date_edited'} == $$t{'date_created'};
+%                $message = "(hidden)".$message unless $$t{'status'}      == 1;
+%=               $message;
+            </a></h3></div>
             <div class="msg">
                 <form method="post" action="http://freee/forum/delete" class="control">
                     <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
@@ -102,7 +110,7 @@ html, body {
                     <input type="submit" value="toggle"/>
                 </form>
             </div>
-        % }
+%       }
 		</div>
     </div>
 

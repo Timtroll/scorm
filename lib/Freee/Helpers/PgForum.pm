@@ -24,7 +24,7 @@ sub register {
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_themes"';
+            my $sql = 'SELECT * FROM "public"."forum_themes" ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
@@ -35,11 +35,15 @@ sub register {
 
     # получение списка сообщений из базы в массив хэшей
     $app->helper( '_list_messages' => sub {
-        my ($self) = @_;
+        my ($self, $id) = @_;
+print "\n";
+print $id;
+print "\n";
+        return unless $id;
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_messages"';
+            my $sql = 'SELECT * FROM "public"."forum_messages" WHERE "theme_id"='.$id.' ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;

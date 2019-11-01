@@ -14,6 +14,7 @@ sub index {
 
     my $list = $self->_list_messages();
 
+    # $self->redirect_to( '/forum/list_messages' );
     $self->render(
         'template'    => 'forum',
         'title'       => 'Форум',
@@ -170,15 +171,16 @@ sub list_messages {
     my $self = shift;
 
     my ( $list_messages, $list_themes );
-
-    $list_messages = $self->_list_messages();
-    $list_themes  = $self->_list_themes();
+    my $id = $self->param('id');
+    $list_messages = $self->_list_messages( $id );
+    $list_themes   = $self->_list_themes();
 
     $self->render(
         'template'      => 'forum',
         'title'         => 'Список сообщений',
         'list_messages' => $list_messages,
-        'list_themes'   => $list_themes
+        'list_themes'   => $list_themes,
+        'theme_id'      => $id
     );
 }
 
@@ -203,9 +205,9 @@ sub add {
         push @mess, $error unless $data;
 
         $$data{'user_id'}      = 1;
-        $$data{'theme_id'}     = 1;
         $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
         $$data{'date_created'} = time;
+        $$data{'date_edited'}  = time;
         $$data{'rate'}         = 0;
         $$data{'status'}       = 1;
 
@@ -219,7 +221,7 @@ sub add {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->redirect_to( '/forum/list_messages' ) unless @mess;
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 # сохранение сообщения
@@ -246,7 +248,7 @@ sub save {
                 $$data{'user_id'}      = 1;
                 $$data{'theme_id'}     = 1;
                 $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
-                $$data{'date_created'} = time;
+                $$data{'date_edited'}  = time;
                 $$data{'rate'}         = 0;
 
                 # обновление данных группы
@@ -263,7 +265,7 @@ sub save {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->redirect_to( '/forum/list_messages' );
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 # вывод  данных о сообщении
@@ -311,11 +313,7 @@ sub delete {
         push @mess, "Could not delete message '$$data{'id'}'" unless $del;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} if $del;
-
-    $self->redirect_to( '/forum/list_messages' );
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 # изменение поля на 1/0
@@ -326,7 +324,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess, $current_value);
+    my ($toggle, $resp, $data, $data_time, $error, @mess, $current_value);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -342,14 +340,20 @@ sub toggle {
             $$data{'value'} = 1;
         }
         # $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
-        $$data{'table'} = 'forum_messages';
-        $$data{'fieldname'} = 'status';
+        $$data{'table'}        = 'forum_messages';
+        $$data{'fieldname'}    = 'status';
 
         $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
+
+        $$data_time{'id'}           = $$data{'id'};
+        $$data_time{'date_edited'}  = time;
+
+        my $id = $self->_update_message( $data_time );
+        push @mess, "Could not update message" unless $id;
     }
 
-    $self->redirect_to( '/forum/list_messages' ) unless @mess;
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 1;
