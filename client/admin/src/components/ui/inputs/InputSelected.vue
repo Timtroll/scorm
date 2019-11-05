@@ -76,7 +76,7 @@
                     <!--index-->
                     <div class="uk-width-auto"
                          style="width: 30px"
-                         v-text="index"></div>
+                         v-text="index + 1"></div>
 
                     <!--value-->
                     <div class="uk-inline uk-width-expand">
