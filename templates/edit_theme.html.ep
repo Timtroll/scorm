@@ -38,12 +38,11 @@ body {
 <div id="container">
 
     <div id="message">
-        <form method="post" action="http://freee/forum/save">
+        <form method="post" action="http://freee/forum/save_theme">
 
-            <input type="hidden" name="theme_id"  value= "<%= $$list{'theme_id'} %>"/>
             <input type="hidden" name="id"  value= "<%= $$list{'id'} %>"/>
-            <BR>Message:
-            <BR><textarea name="msg" rows=5 cols=40/><%= $$list{'msg'} %></textarea>
+            <BR>Theme:
+            <BR><textarea name="title" rows=5 cols=40/><%= $$list{'title'} %></textarea>
             <BR><input type="radio" name="status" value=1 >Status active
             <BR><input type="radio" name="status" value=0 >Status unactive
             <BR><BR><input type="submit" value="Save"/>

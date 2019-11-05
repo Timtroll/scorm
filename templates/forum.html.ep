@@ -2,6 +2,7 @@
 % use Data::Dumper;
 %= Dumper( $list_messages );
 %= Dumper( $list_themes );
+%= $theme_id;
 <head>
     <title><%= $title %></title>
     <style type="text/css">
@@ -21,6 +22,11 @@ html, body {
     height: 30px;
 }
 
+.themes {
+    margin-left: 20px;
+    padding-left: 15px;
+}
+
 #container {
 	position: absolute;
 	left: 0;
@@ -38,17 +44,17 @@ html, body {
     height: 5%;
 }
  
-#menu {
+#groups {
     background: #99CC99;
     float: left;
     width: 20%;
     height: 400px;
 }
- 
+
 #content {
     background: #d2d0d2;
     float: right;
-    width: 80%;
+    width: 70%;
     min-height: 95%;
 }
  
@@ -62,28 +68,64 @@ html, body {
     width: 100%;
 }
     </style>
-</head>
-<body>
+</head> 
 
+<body>
 <div id="container">
     <div id="navigation">
         <h2>Блок навигации</h2>
     </div>
-         
-    <div id="menu">
-    	<h2>Темы</h2>
-%           foreach my $t( @$list_themes ) {
-                <h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank">
-%                my $theme = $$t{'title'};
-%                $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
-%                $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
-%=               $theme;
-                </a></h3>
-%           }
+
+    <div id="groups">
+        <h2>Группы</h2>
+%       foreach my $t( @$list_groups ) {
+            <h3><a class="title" >
+%           my $group = $$t{'title'};
+%           $group = "(edited)".$group unless $$t{'date_edited'} == $$t{'date_created'};
+%           $group = "(hidden)".$group unless $$t{'status'}      == 1;
+%=          $group;
+            </a></h3>
+
+            <div> <h2>Темы</h2>
+                <div class="title">
+                    <form method="post" action="http://freee/forum/theme">
+                        <input type="submit" value="add"/>
+                    </form>
+                </div>
+    %           foreach my $t( @$list_themes ) {
+                    <h3><a class="themes" href= "<%= "http://freee/forum/list_messages?id=".$$t{'id'} %>" >
+    %                my $theme = $$t{'title'};
+    %                $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
+    %                $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
+    %=               $theme;
+                    </a></h3>
+                    <div class="themes">
+                        <form method="post" action="http://freee/forum/del_theme" class="control">
+                            <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
+                            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+                            <input type="submit" value="delete"/>
+                        </form>
+                        <form method="post" action="http://freee/forum/edit_theme" class="control">
+                            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+                            <input type="submit" value="edit"/>
+                        </form>
+                        <form method="post" action="http://freee/forum/toggle_theme" class="control">
+                            <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
+                            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+                            <input type="submit" value="toggle"/>
+                        </form>
+                    </div>
+                    <br>
+                    <br>
+    %           }
+            </div>
+            <br>
+%       }
     </div>
 
     <div id="content">
         <form method="post" action="http://freee/forum/add">
+            <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
             <BR>Message:
             <BR><textarea name="msg" rows=5 cols=40/></textarea>
             <BR><input type="submit" value="Enter"/>
@@ -98,6 +140,7 @@ html, body {
             </a></h3></div>
             <div class="msg">
                 <form method="post" action="http://freee/forum/delete" class="control">
+                    <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
                     <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
                     <input type="submit" value="delete"/>
                 </form>
@@ -106,6 +149,7 @@ html, body {
                     <input type="submit" value="edit"/>
                 </form>
                 <form method="post" action="http://freee/forum/toggle" class="control">
+                    <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
                     <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
                     <input type="submit" value="toggle"/>
                 </form>

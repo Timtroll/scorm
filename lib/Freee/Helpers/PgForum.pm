@@ -36,9 +36,7 @@ sub register {
     # получение списка сообщений из базы в массив хэшей
     $app->helper( '_list_messages' => sub {
         my ($self, $id) = @_;
-print "\n";
-print $id;
-print "\n";
+
         return unless $id;
 
         my $list;
@@ -58,7 +56,7 @@ print "\n";
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_groups"';
+            my $sql = 'SELECT * FROM "public"."forum_groups" ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
@@ -75,7 +73,7 @@ print "\n";
 
         return unless $id;
 
-        my $sql = 'SELECT * FROM "public"."forum" WHERE "id"='.$id;
+        my $sql = 'SELECT * FROM "public"."forum_themes" WHERE "id"='.$id;
         my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
@@ -105,7 +103,7 @@ print "\n";
 
         my $db_result;
         eval {
-            $db_result = $self->pg_dbh->do('UPDATE "public"."forum" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+            $db_result = $self->pg_dbh->do('UPDATE "public"."forum_themes" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
         };
         warn $@ if $@;
         return if $@;
@@ -128,8 +126,8 @@ print "\n";
 
         my $id;
         eval{
-            if ( $self->pg_dbh->do('INSERT INTO "public"."forum" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum', undef, { sequence => 'forum_id_seq' } );
+            if ( $self->pg_dbh->do('INSERT INTO "public"."forum_themes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum_themes', undef, { sequence => 'forum_themes_id_seq' } );
             };
         };
         warn $@ if $@;
@@ -212,6 +210,27 @@ print "\n";
         return $result;
     });
 
+    # удаление темы
+    # my $true = $self->_delete_theme( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_theme' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'DELETE FROM "public"."forum_themes" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->do( $sql ) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+    
+
     # читаем одно сообщение
     # my $row = $self->_get_message( 99 );
     # возвращается строка в виде объекта
@@ -220,7 +239,7 @@ print "\n";
 
         return unless $id;
 
-        my $sql = 'SELECT id, msg, status FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $sql = 'SELECT id, msg, status, theme_id FROM "public"."forum_messages" WHERE "id"='.$id;
         my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
@@ -235,7 +254,6 @@ print "\n";
     # my $true = folder_check( <id> );
     # возвращается 1/0
     $app->helper('_status_check' => sub {
-        # my $id = shift;
         my ($self, $id) = @_;
 
         return unless $id;
@@ -249,6 +267,25 @@ print "\n";
         
         return $result;
     });
+
+    # получение значения поля status по id
+    # my $true = folder_check( <id> );
+    # возвращается 1/0
+    $app->helper('_status_check_theme' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'SELECT status FROM "public"."forum_themes" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->selectrow_array($sql);
+        };
+        warn $@ if $@;
+        
+        return $result;
+    });
+    
 }
 
 1;

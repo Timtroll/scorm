@@ -277,11 +277,24 @@ sub register {
                 "date_created"  => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
+            '/forum/save_theme' => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
             '/forum/edit_theme'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/del_theme'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
+            },
+            '/forum/toggle_theme'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os ],
+                "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "value"         => [ '', qr/^[01]$/os ]
             },
             '/forum/group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
@@ -309,16 +322,19 @@ sub register {
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/forum/save'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             
             '/forum/delete'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
             '/forum/edit'  => {
-                "id"            => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os ]
             },
             'forum_rates'  => {
                 "id"            => [ '', qr/^\d+$/os ],
@@ -330,6 +346,7 @@ sub register {
                 "rate"          => [ '', qr/^\d+$/os ]
             },
             '/forum/toggle'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
                 "value"         => [ '', qr/^[01]$/os ]

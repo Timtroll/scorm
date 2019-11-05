@@ -258,12 +258,15 @@ warn '=freee=';
     $auth->post('/forum/list_themes')   ->to('forum#list_themes');
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/add_theme')     ->to('forum#add_theme');
+    $auth->post('/forum/save_theme')    ->to('forum#save_theme');
     $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
     $auth->post('/forum/del_theme')     ->to('forum#del_theme');
+    $auth->post('/forum/toggle_theme')  ->to('forum#toggle_theme'); # изменение статуса темы
 
     $auth->post('/forum/list_groups')   ->to('forum#list_groups');
     $auth->post('/forum/group')         ->to('forum#group');
     $auth->post('/forum/add_group')     ->to('forum#add_group');
+    $auth->post('/forum/save_group')    ->to('forum#save_group');
     $auth->post('/forum/edit_group')    ->to('forum#edit_group');
     $auth->post('/forum/del_group')     ->to('forum#del_group');   
 
@@ -272,7 +275,7 @@ warn '=freee=';
     $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
     $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id
     $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
-    $auth->post('/forum/toggle')        ->to('forum#toggle');        # param('themes') изменение status темы, иначе меняем status сообщения
+    $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса сообщения
 
     $r->any('/*')->to('index#index');
 
