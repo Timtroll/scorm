@@ -261,7 +261,6 @@ warn '=freee=';
     $auth->post('/forum/save_theme')    ->to('forum#save_theme');
     $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
     $auth->post('/forum/del_theme')     ->to('forum#del_theme');
-    $auth->post('/forum/toggle_theme')  ->to('forum#toggle_theme'); # изменение статуса темы
 
     $auth->post('/forum/list_groups')   ->to('forum#list_groups');
     $auth->post('/forum/group')         ->to('forum#group');

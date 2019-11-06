@@ -302,7 +302,12 @@ sub register {
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "date_created"  => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/save_group'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "name"          => [ '', qr/^.*$/os, 256 ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/forum/edit_group'  => {
@@ -349,6 +354,7 @@ sub register {
                 "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],
                 "value"         => [ '', qr/^[01]$/os ]
             },
         };

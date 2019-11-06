@@ -7,7 +7,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 use common;
-
+no warnings 'experimental';
 
 sub index {
     my $self = shift;
@@ -59,7 +59,8 @@ sub theme {
 
     $self->render(
         'template'    => 'add_theme',
-        'title'       => 'add_theme'
+        'title'       => 'add_theme',
+        'group_id'    => $self->param( 'group_id' )
     );
 }
 
@@ -74,12 +75,10 @@ sub add_theme {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        $$data{'group_id'}     = 1;
         $$data{'user_id'}      = 1;
-        $$data{'date_created'} = time;
-        $$data{'date_edited'}  = time;
+        $$data{'date_created'} = time();
+        $$data{'date_edited'}  = time();
         $$data{'rate'}         = 0;
-        $$data{'status'}       = 1;
 
         if ($data) {
             $id = $self->_insert_theme( $data );
@@ -106,9 +105,8 @@ sub save_theme {
             if ( $self->_exists_in_table('forum_themes', 'id', $$data{'id'}) ) {
 
                 $$data{'group_id'}     = 1;
-                $$data{'url'}          = '';
                 $$data{'user_id'}      = 1;
-                $$data{'date_edited'}  = time;
+                $$data{'date_edited'}  = time();
                 $$data{'rate'}         = 0;
 
                 # обновление данных
@@ -198,7 +196,7 @@ sub toggle_theme {
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
 
         $$data_time{'id'}           = $$data{'id'};
-        $$data_time{'date_edited'}  = time;
+        $$data_time{'date_edited'}  = time();
 
         my $id = $self->_update_theme( $data_time );
         push @mess, "Could not update message" unless $id;
@@ -206,60 +204,115 @@ sub toggle_theme {
 
     $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
+
 sub group {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
     $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'group',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
+        'template'    => 'add_group',
+        'title'       => 'add_group'
     );
 }
 
 sub add_group {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'add_group',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ($id, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        $$data{'date_created'} = time();
+        $$data{'date_edited'}  = time();
+
+        if ($data) {
+            $id = $self->_insert_group( $data );
+            push @mess, "Could not insert data" unless $id;
         }
-    );
+    }
+
+    $self->redirect_to( '/forum/list_messages?id='.$id );
 }
 
+sub save_group {
+    my ($self) = shift;
+
+    my ( $id, $parent, $data, $error, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        # проверка существования обновляемой строки
+        unless (@mess) {
+            if ( $self->_exists_in_table('forum_groups', 'id', $$data{'id'}) ) {
+
+                $$data{'date_edited'}  = time();
+
+                # обновление данных
+                $id = $self->_update_group( $data );
+                push @mess, "Could not update group" unless $id;
+            }
+            else {
+                push @mess, "Group does not exist";
+            }
+        }
+    }
+
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'id'} );
+}
+
+# вывод  данных о сообщении
+# "id" => 1 - id выводимого элемента ( >0 )
 sub edit_group {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'edit_group',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ($id, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        if ($data) {
+            $data = $self->_get_group( $$data{'id'} );
+            push @mess, "Could not get group '".$$data{'id'}."'" unless $data;
         }
-    );
+    }
+
+    unless  (@mess) {
+        $self->render(
+            'template'    => 'edit_group',
+            'title'       => 'edit_group',
+            'list'        => $data
+        );
+    };
 }
 
+# удалениe темы 
+# "id" => 1 - id удаляемого элемента ( >0 )
 sub del_group {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'forum',
-            'route'         => 'del_group',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
-    );
+    my ($del, $resp, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        $del = $self->_delete_group( $$data{'id'} ) unless @mess;
+        push @mess, "Could not delete group '$$data{'id'}'" unless $del;
+    }
+
+    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 # получение списка сообщений из базы в массив хэшей
@@ -304,8 +357,8 @@ sub add {
 
         $$data{'user_id'}      = 1;
         $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
-        $$data{'date_created'} = time;
-        $$data{'date_edited'}  = time;
+        $$data{'date_created'} = time();
+        $$data{'date_edited'}  = time();
         $$data{'rate'}         = 0;
         $$data{'status'}       = 1;
 
@@ -341,7 +394,7 @@ sub save {
 
                 $$data{'user_id'}      = 1;
                 $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
-                $$data{'date_edited'}  = time;
+                $$data{'date_edited'}  = time();
                 $$data{'rate'}         = 0;
 
                 # обновление данных
@@ -413,7 +466,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $data_time, $error, @mess, $current_value);
+    my ($toggle, $id, $data, $data_time, $error, @mess, $current_value);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -421,23 +474,31 @@ sub toggle {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        $current_value = $self->_status_check( $$data{'id'} ) unless @mess;
-
-        $$data{'value'} = $current_value ? '0' : '1';
-        $$data{'table'}        = 'forum_messages';
-        $$data{'fieldname'}    = 'status';
+        $$data{'value'}     = $$data{'value'} ? '0' : '1';
+        $$data{'fieldname'} = 'status';
 
         $toggle = $self->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
 
         $$data_time{'id'}           = $$data{'id'};
-        $$data_time{'date_edited'}  = time;
+        $$data_time{'date_edited'}  = time();
 
-        my $id = $self->_update_message( $data_time );
-        push @mess, "Could not update message" unless $id;
+        # матрица состояний
+        my %hash = (
+            'forum_messages' => $self->_update_message( $data_time ),
+            'forum_themes'   => $self->_update_theme( $data_time ),
+            'forum_groups'   => $self->_update_group( $data_time )
+        );
+        if ( defined $$data{'table'} ) {
+            $id = $hash{ $$data{'table'} };
+            push @mess, "Could not update message" unless $id;
+        }
+
+        $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+    } 
+    else {
+        $self->redirect_to( '/forum/list_messages' );  #????????????????????????????????????????????????????????? 
     }
-
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
 }
 
 1;
