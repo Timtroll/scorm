@@ -10,7 +10,8 @@
     "type":        "InputNumber",
     "value":       "",
     "inline":      0,
-    "show":        1
+    "show":        1,
+    "width":       2
   },
   {
     "label":       "Родитель",
@@ -22,7 +23,8 @@
     "type":        "InputNumber",
     "value":       "",
     "inline":      0,
-    "show":        0
+    "show":        0,
+    "width":       2
   },
   {
     "label":       "Системное имя",
@@ -35,7 +37,8 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        1
+    "show":        1,
+    "width":       2
   },
   {
     "label":       "Расшифровка",
@@ -48,7 +51,8 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        1
+    "show":        1,
+    "width":       2
   },
   {
     "label":       "Подсказка",
@@ -61,7 +65,8 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        0
+    "show":        0,
+    "width":       2
   },
   {
     "label":       "Тип поля Значение",
@@ -74,7 +79,8 @@
     "type":        "InputType",
     "value":       "InputText",
     "inline":      0,
-    "show":        0
+    "show":        0,
+    "width":       2
   },
   {
     "label":       "Список значений",
@@ -87,7 +93,8 @@
     "type":        "InputSelected",
     "value":       [],
     "inline":      0,
-    "show":        0
+    "show":        0,
+    "width":       1
   },
   {
     "label":       "Значение",
@@ -100,7 +107,8 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        1
+    "show":        1,
+    "width":       1
   },
   {
     "label":       "Статус",
@@ -113,7 +121,8 @@
     "type":        "InputBoolean",
     "value":       1,
     "inline":      1,
-    "show":        1
+    "show":        1,
+    "width":       3
   },
   {
     "label":       "Только для чтения",
@@ -126,7 +135,8 @@
     "type":        "InputBoolean",
     "value":       0,
     "inline":      1,
-    "show":        0
+    "show":        0,
+    "width":       3
   },
   {
     "label":       "Обязательное поле",
@@ -139,6 +149,7 @@
     "type":        "InputBoolean",
     "value":       1,
     "inline":      1,
-    "show":        0
+    "show":        0,
+    "width":       3
   }
 ]
