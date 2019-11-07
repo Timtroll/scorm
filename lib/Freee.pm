@@ -255,14 +255,14 @@ warn '=freee=';
     # форум
     $auth->any('/forum/')               ->to('forum#index');        # стартовая страница
 
-    $auth->post('/forum/list_themes')   ->to('forum#list_themes');
+    $auth->any('/forum/list_themes')    ->to('forum#list_themes');
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/add_theme')     ->to('forum#add_theme');
     $auth->post('/forum/save_theme')    ->to('forum#save_theme');
     $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
     $auth->post('/forum/del_theme')     ->to('forum#del_theme');
 
-    $auth->post('/forum/list_groups')   ->to('forum#list_groups');
+    $auth->any('/forum/list_groups')    ->to('forum#list_groups');
     $auth->post('/forum/group')         ->to('forum#group');
     $auth->post('/forum/add_group')     ->to('forum#add_group');
     $auth->post('/forum/save_group')    ->to('forum#save_group');

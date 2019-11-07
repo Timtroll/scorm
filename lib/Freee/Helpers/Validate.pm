@@ -290,12 +290,6 @@ sub register {
                 "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
-            '/forum/toggle_theme'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ],
-                "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
-                "value"         => [ '', qr/^[01]$/os ]
-            },
             '/forum/group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
@@ -352,6 +346,7 @@ sub register {
             },
             '/forum/toggle'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
                 "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],

@@ -7,7 +7,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 use common;
-no warnings 'experimental';
 
 sub index {
     my $self = shift;
@@ -22,36 +21,68 @@ sub index {
     );
 }
 
+# получение списка сообщений из базы в массив хэшей
+sub list_messages {
+    my $self = shift;
+
+    my ( $list_messages, $theme, $group, @mess);
+
+    my $theme_id = $self->param('theme_id');
+    if ( $theme_id ) {
+        $theme = $self->_get_theme( $theme_id );
+        push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+    }
+
+    $group = $self->_get_group( $$theme{ 'group_id'} );
+    $list_messages = $self->_list_messages( $theme_id );
+
+    $self->render(
+        'template'      => 'list_messages',
+        'title'         => 'Список сообщений',
+        'list_messages' => $list_messages,
+        't'             => $theme,
+        'g'             => $group,
+        'theme_id'      => $theme_id
+    );
+}
+
 # получение списка тем из базы в массив хэшей
 sub list_themes {
     my $self = shift;
 
-    my ( $list, $resp, @mess );
+    my ( $list, @mess, $data, $group );
+
+    my $group_id = $self->param('group_id');
+    if ( $group_id ) {
+        $group = $self->_get_group( $group_id );
+        push @mess, "Could not get group '".$$group{'id'}."'" unless $group;
+    }
 
     $list = $self->_list_themes();
     push @mess, "Could not get list Themes" unless $list;
     
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @mess;
-
-    $self->render( 'json' => $resp );
+    $self->render(
+        'template'    => 'list_themes',
+        'title'       => 'list_themes',
+        'list_themes' => $list,
+        'g'           => $group
+    );
 }
 
 # получение списка групп из базы в массив хэшей
 sub list_groups {
     my $self = shift;
 
-    my ( $list, $resp, @mess );
+    my ( $list, @mess );
 
     $list = $self->_list_groups();
     push @mess, "Could not get list Groups" unless $list;
-    
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @mess;
 
-    $self->render( 'json' => $resp );
+    $self->render(
+        'template'    => 'forum',
+        'title'       => 'list_groups',
+        'list_groups' => $list
+    );
 }
 
 sub theme {
@@ -86,7 +117,7 @@ sub add_theme {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$id );
+    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
 }
 
 sub save_theme {
@@ -119,7 +150,7 @@ sub save_theme {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'id'} );
+    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
 }
 
 # вывод  данных о сообщении
@@ -167,42 +198,7 @@ sub del_theme {
         push @mess, "Could not delete theme '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
-}
-
-# изменение поля на 1/0
-# my $true = $self->toggle();
-# 'id'    - id записи 
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
-sub toggle_theme {
-    my $self = shift;
-
-    my ($toggle, $resp, $data, $data_time, $error, @mess, $current_value);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
-
-    unless (@mess) {
-        # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
-
-        $$data{'table'}        = 'forum_themes';
-        $$data{'fieldname'}    = 'status';
-
-        $current_value = $self->_status_check_theme( $$data{'id'} ) unless @mess;
-        $$data{'value'} = $current_value ? '0' : '1';
-
-        $toggle = $self->_toggle( $data ) unless @mess;
-        push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
-
-        $$data_time{'id'}           = $$data{'id'};
-        $$data_time{'date_edited'}  = time();
-
-        my $id = $self->_update_theme( $data_time );
-        push @mess, "Could not update message" unless $id;
-    }
-
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
 }
 
 sub group {
@@ -234,7 +230,7 @@ sub add_group {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$id );
+    $self->redirect_to( '/forum/list_groups' );
 }
 
 sub save_group {
@@ -264,7 +260,7 @@ sub save_group {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'id'} );
+    $self->redirect_to( '/forum/list_groups' );
 }
 
 # вывод  данных о сообщении
@@ -312,27 +308,7 @@ sub del_group {
         push @mess, "Could not delete group '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
-}
-
-# получение списка сообщений из базы в массив хэшей
-sub list_messages {
-    my $self = shift;
-
-    my ( $list_messages, $list_themes, $list_groups );
-    my $id = $self->param('id');
-    $list_messages = $self->_list_messages( $id );
-    $list_themes   = $self->_list_themes();
-    $list_groups   = $self->_list_groups();
-
-    $self->render(
-        'template'      => 'forum',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes,
-        'list_groups'   => $list_groups,
-        'theme_id'      => $id
-    );
+    $self->redirect_to( '/forum/list_groups' );
 }
 
 # новое сообщение форума
@@ -368,7 +344,7 @@ sub add {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
 }
 
 # сохранение сообщения
@@ -407,7 +383,7 @@ sub save {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
 }
 
 # вывод  данных о сообщении
@@ -455,7 +431,7 @@ sub delete {
         push @mess, "Could not delete message '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
 }
 
 # изменение поля на 1/0
@@ -483,18 +459,38 @@ sub toggle {
         $$data_time{'id'}           = $$data{'id'};
         $$data_time{'date_edited'}  = time();
 
-        # матрица состояний
-        my %hash = (
-            'forum_messages' => $self->_update_message( $data_time ),
-            'forum_themes'   => $self->_update_theme( $data_time ),
-            'forum_groups'   => $self->_update_group( $data_time )
-        );
         if ( defined $$data{'table'} ) {
-            $id = $hash{ $$data{'table'} };
-            push @mess, "Could not update message" unless $id;
+            if ( $$data{'table'} eq 'forum_messages' ) {
+                $id = $self->_update_message( $data_time );
+                push @mess, "Could not update message" unless $id;
+                $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
+            }
+            else {
+                if ( $$data{'table'} eq 'forum_themes' ) {
+                    $id = $self->_update_theme( $data_time );
+                    push @mess, "Could not update theme" unless $id;
+                    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
+                }
+                else {
+                    if ( $$data{'table'} eq 'forum_groups' ) {
+                        $id = $self->_update_group( $data_time );
+                        push @mess, "Could not update group" unless $id;
+                        $self->redirect_to( '/forum/list_groups' );
+                    }
+                }
+            }
         }
-
-        $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
+        # # матрица состояний
+        # my %hash = (
+        #     'forum_messages' => $self->_update_message( $data_time ),
+        #     'forum_themes'   => $self->_update_theme( $data_time ),
+        #     'forum_groups'   => $self->_update_group( $data_time )
+        # );
+        # if ( defined $$data{'table'} ) {
+        #     $id = $hash{ $$data{'table'} };
+        #     push @mess, "Could not update message" unless $id;
+        # }
+        # $self->redirect_to( '/forum/list_messages?id='.$$data{'theme_id'} );
     } 
     else {
         $self->redirect_to( '/forum/list_messages' );  #????????????????????????????????????????????????????????? 
