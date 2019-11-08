@@ -24,11 +24,11 @@
     "@wiris/mathtype-tinymce4": "^7.17.0",
     "axios": "^0.19.0",
     "brace": "^0.11.1",
-    "core-js": "3.3.5",
+    "core-js": "3.4.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "register-service-worker": "^1.6.2",
-    "uikit": "^3.2.2",
+    "uikit": "^3.2.3",
     "v-mask": "^2.0.2",
     "vue": "^2.6.10",
     "vue-ckeditor5": "^0.4.1",
@@ -39,20 +39,20 @@
     "vue2-ace-editor": "^0.0.15",
     "vue2-touch-events": "^2.0.0",
     "vuex": "^3.1.1",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
     "@kazupon/vue-i18n-loader": "^0.4.1",
     "@vue/cli-plugin-babel": "^4.0.5",
     "@vue/cli-plugin-pwa": "^4.0.5",
     "@vue/cli-service": "^4.0.5",
-    "sass": "^1.23.1",
+    "sass": "^1.23.3",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-i18n": "^0.6.0",
     "vue-cli-plugin-meta": "^0.1.1",
     "vue-cli-plugin-moment": "^0.1.1",
     "vue-template-compiler": "^2.6.10",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.10"
   },
   "postcss": {
     "plugins": {
