@@ -1,0 +1,134 @@
+<!doctype html>
+% use Data::Dumper;
+%= Dumper( $list_themes );
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+html, body {
+    height: 100%;
+    font-size: 12px;
+}
+
+.control {
+    float: left;
+    padding-right: 10px;
+    height: 30px;
+}
+
+.msg {
+    width: 100%;
+    height: 30px;
+}
+
+.themes {
+    margin-left: 60px;
+    padding-left: 15px;
+}
+
+.groups {
+    background: #99CC99;
+    float: left;
+    width: 20%;
+    height: 400px;
+}
+
+#container {
+	position: absolute;
+	left: 0;
+	top: 0;
+    background:#99CC99;
+    width: 100%;
+    min-height: 95%;
+    align-content: top;
+}
+
+ 
+#navigation {
+    background: #FF9999;
+    width: 100%;
+    height: 5%;
+}
+
+#content {
+    background: #d2d0d2;
+    float: right;
+    width: 70%;
+    min-height: 95%;
+}
+ 
+#clear {
+    clear:both;
+}
+ 
+#footer {
+    background: #0066FF;
+    height: 5%;
+    width: 100%;
+}
+    </style>
+</head> 
+
+<body>
+<div id="container">
+    <div id="navigation">
+        <h2><a href="http://freee/forum/list_groups">Groups</a> 
+    </div>
+
+    <div class="groups">
+        <h2>Группы</h2>
+        <div class="title">
+%=          include 'forum/add', parent_id => undef, action => 'group'
+        </div>
+            <h3><a class="title" >
+%           my $group = $$g{'title'};
+%           $group = "(edited)".$group unless $$g{'date_edited'} == $$g{'date_created'};
+%           $group = "(hidden)".$group unless $$g{'status'}      == 1;
+%=          $group;
+            </a></h3>
+            <div>
+%=              include 'forum/delete', parent_id => undef, id => $$g{'id'}, action => '_group'
+%=              include 'forum/edit', id => $$g{'id'}, action => '_group'
+%=              include 'forum/toggle', parent_id => undef, value => $$g{'status'}, table => 'forum_groups', id => $$g{'id'}
+            </div>
+            <br>
+            <br>
+
+            <div class="themes"> 
+                <h2>Темы</h2>
+                <div class="title">
+                    <form method="post" action="http://freee/forum/theme">
+%=          include 'forum/add', parent_id => $$g{'id'}, action => 'theme'
+                    </form>
+                </div>
+%               foreach my $t( @$list_themes ) {
+%               if ( $$t{'group_id'} == $$g{'id'} ) {
+                    <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
+%                       my $theme = $$t{'title'};
+%                       $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
+%                       $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
+%=                      $theme;
+                    </a></h3>
+                    <div>
+%=                      include 'forum/delete', parent_id => $$g{'id'}, id => $$t{'id'}, action => '_theme'
+%=                      include 'forum/edit', id => $$t{'id'}, action => '_theme'
+%=                      include 'forum/toggle', parent_id => $$g{'id'}, value => $$t{'status'}, table => 'forum_themes', id => $$t{'id'}
+                    </div>
+                    <br>
+                    <br>
+%                   }
+%            }
+            </div>
+            <br>
+    </div>
+
+    <div id="clear">
+
+    </div>
+
+    <div id="footer">
+        <h2>Подвал сайта</h2>
+    </div>
+</div>
+
+</body>
+</html>

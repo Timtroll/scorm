@@ -15,7 +15,7 @@ sub index {
 
     # $self->redirect_to( '/forum/list_messages' );
     $self->render(
-        'template'    => 'forum',
+        'template'    => 'forum/forum',
         'title'       => 'Форум',
         'list'        => $list
     );
@@ -37,7 +37,7 @@ sub list_messages {
     $list_messages = $self->_list_messages( $theme_id );
 
     $self->render(
-        'template'      => 'list_messages',
+        'template'      => 'forum/list_messages',
         'title'         => 'Список сообщений',
         'list_messages' => $list_messages,
         't'             => $theme,
@@ -62,7 +62,7 @@ sub list_themes {
     push @mess, "Could not get list Themes" unless $list;
     
     $self->render(
-        'template'    => 'list_themes',
+        'template'    => 'forum/list_themes',
         'title'       => 'list_themes',
         'list_themes' => $list,
         'g'           => $group
@@ -79,7 +79,7 @@ sub list_groups {
     push @mess, "Could not get list Groups" unless $list;
 
     $self->render(
-        'template'    => 'forum',
+        'template'    => 'forum/list_groups',
         'title'       => 'list_groups',
         'list_groups' => $list
     );
@@ -89,9 +89,9 @@ sub theme {
     my $self = shift;
 
     $self->render(
-        'template'    => 'add_theme',
+        'template'    => 'forum/add_theme',
         'title'       => 'add_theme',
-        'group_id'    => $self->param( 'group_id' )
+        'group_id'    => $self->param( 'parent_id' )
     );
 }
 
@@ -135,7 +135,6 @@ sub save_theme {
         unless (@mess) {
             if ( $self->_exists_in_table('forum_themes', 'id', $$data{'id'}) ) {
 
-                $$data{'group_id'}     = 1;
                 $$data{'user_id'}      = 1;
                 $$data{'date_edited'}  = time();
                 $$data{'rate'}         = 0;
@@ -174,7 +173,7 @@ sub edit_theme {
 
     unless  (@mess) {
         $self->render(
-            'template'    => 'edit_theme',
+            'template'    => 'forum/edit_theme',
             'title'       => 'edit_theme',
             'list'        => $data
         );
@@ -198,14 +197,14 @@ sub del_theme {
         push @mess, "Could not delete theme '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
+    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'parent_id'} );
 }
 
 sub group {
     my $self = shift;
 
     $self->render(
-        'template'    => 'add_group',
+        'template'    => 'forum/add_group',
         'title'       => 'add_group'
     );
 }
@@ -284,7 +283,7 @@ sub edit_group {
 
     unless  (@mess) {
         $self->render(
-            'template'    => 'edit_group',
+            'template'    => 'forum/edit_group',
             'title'       => 'edit_group',
             'list'        => $data
         );
@@ -407,8 +406,8 @@ sub edit {
 
     unless  (@mess) {
         $self->render(
-            'template'    => 'edit',
-            'title'       => 'edit',
+            'template'    => 'forum/edit_message',
+            'title'       => 'edit_message',
             'list'        => $data
         );
     };
@@ -431,7 +430,7 @@ sub delete {
         push @mess, "Could not delete message '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
+    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'parent_id'} );
 }
 
 # изменение поля на 1/0
@@ -463,13 +462,13 @@ sub toggle {
             if ( $$data{'table'} eq 'forum_messages' ) {
                 $id = $self->_update_message( $data_time );
                 push @mess, "Could not update message" unless $id;
-                $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
+                $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'parent_id'} );
             }
             else {
                 if ( $$data{'table'} eq 'forum_themes' ) {
                     $id = $self->_update_theme( $data_time );
                     push @mess, "Could not update theme" unless $id;
-                    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
+                    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'parent_id'} );
                 }
                 else {
                     if ( $$data{'table'} eq 'forum_groups' ) {

@@ -1,0 +1,30 @@
+<!doctype html>
+% use Data::Dumper;
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+html, body {
+    height: 100%;
+    font-size: 12px;
+}
+
+.control {
+    float: left;
+    padding-right: 10px;
+    height: 30px;
+}
+
+    </style>
+</head> 
+
+<body>
+
+        <form method="post" action="<%= 'http://freee/forum/'.$action %>" class="control">
+%           if ( $parent_id ) {
+                <input type="hidden" name="parent_id"  value= "<%= $parent_id %>"/>
+%           }
+            <input type="submit" value="add"/>
+        </form>
+
+</body>
+</html>
