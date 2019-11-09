@@ -120,6 +120,7 @@
       Loader:          () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
       InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
       InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
+      InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
       InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
       InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
       InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),

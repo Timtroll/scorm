@@ -23,7 +23,7 @@
                     <!--index-->
                     <div class="uk-width-auto uk-text-small uk-text-muted uk-visible@m"
                          style="width: 25px"
-                         v-text="index"></div>
+                         v-text="index + 1"></div>
 
                     <!--value-->
                     <div class="uk-width-expand">
