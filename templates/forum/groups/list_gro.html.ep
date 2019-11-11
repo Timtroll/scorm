@@ -1,0 +1,12 @@
+%   foreach my $g( @$list_groups ) {
+        <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$g{'id'} %>" >
+%=          include 'forum/show', o => $g
+        </a></h3>
+        <div>
+%=          include 'forum/delete', parent_id => undef, id => $$g{'id'}, action => '_group'
+%=          include 'forum/edit', id => $$g{'id'}, action => '_group'
+%=          include 'forum/toggle', parent_id => undef, value => $$g{'status'}, table => 'forum_groups', id => $$g{'id'}
+        </div>
+        <br>
+        <br>
+%   }

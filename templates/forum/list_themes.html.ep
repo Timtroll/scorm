@@ -71,7 +71,7 @@ html, body {
 <body>
 <div id="container">
     <div id="navigation">
-        <h2><a href="http://freee/forum/list_groups">Groups</a> 
+%=      include 'forum/navigation', group => $$g{'id'}, theme => undef
     </div>
 
     <div class="groups">
@@ -80,10 +80,7 @@ html, body {
 %=          include 'forum/add', parent_id => undef, action => 'group'
         </div>
             <h3><a class="title" >
-%           my $group = $$g{'title'};
-%           $group = "(edited)".$group unless $$g{'date_edited'} == $$g{'date_created'};
-%           $group = "(hidden)".$group unless $$g{'status'}      == 1;
-%=          $group;
+%=              include 'forum/show', o => $g
             </a></h3>
             <div>
 %=              include 'forum/delete', parent_id => undef, id => $$g{'id'}, action => '_group'
@@ -93,30 +90,12 @@ html, body {
             <br>
             <br>
 
-            <div class="themes"> 
-                <h2>Темы</h2>
-                <div class="title">
-                    <form method="post" action="http://freee/forum/theme">
-%=          include 'forum/add', parent_id => $$g{'id'}, action => 'theme'
-                    </form>
-                </div>
-%               foreach my $t( @$list_themes ) {
-%               if ( $$t{'group_id'} == $$g{'id'} ) {
-                    <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
-%                       my $theme = $$t{'title'};
-%                       $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
-%                       $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
-%=                      $theme;
-                    </a></h3>
-                    <div>
-%=                      include 'forum/delete', parent_id => $$g{'id'}, id => $$t{'id'}, action => '_theme'
-%=                      include 'forum/edit', id => $$t{'id'}, action => '_theme'
-%=                      include 'forum/toggle', parent_id => $$g{'id'}, value => $$t{'status'}, table => 'forum_themes', id => $$t{'id'}
-                    </div>
-                    <br>
-                    <br>
-%                   }
-%            }
+            <div class="themes">
+                <h2>Темы
+                    <div class="title">
+%=                      include 'forum/add', parent_id => $$g{'id'}, action => 'theme'
+                    </div></h2>
+%=              include 'forum/themes/list_the', list_themes => $list_themes
             </div>
             <br>
     </div>

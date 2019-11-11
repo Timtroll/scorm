@@ -1,0 +1,14 @@
+%   foreach my $t( @$list_themes ) {
+%       if ( $$t{'group_id'} == $$g{'id'} ) {
+            <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
+%=              include 'forum/show', o => $t
+            </a></h3>
+            <div>
+%=              include 'forum/delete', parent_id => $$g{'id'}, id => $$t{'id'}, action => '_theme'
+%=              include 'forum/edit', id => $$t{'id'}, action => '_theme'
+%=              include 'forum/toggle', parent_id => $$g{'id'}, value => $$t{'status'}, table => 'forum_themes', id => $$t{'id'}
+            </div>
+            <br>
+            <br>
+%       }
+%   }

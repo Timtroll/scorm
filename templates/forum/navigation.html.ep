@@ -1,0 +1,7 @@
+    <h2><a href="http://freee/forum/list_groups">Groups</a>
+%       if ( $group ) {
+            -> <a href= "<%= "http://freee/forum/list_themes?group_id=".$group %>" >Themes</a>
+%           if ( $theme ) {
+                -> <a href= "<%= "http://freee/forum/list_messages?theme_id=".$theme %>" >Messages</a>
+%           }
+%       }

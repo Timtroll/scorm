@@ -1,0 +1,4 @@
+%           my $object = $$o{'title'};
+%           $object = "(edited)".$object unless $$o{'date_edited'} == $$o{'date_created'};
+%           $object = "(hidden)".$object unless $$o{'status'}      == 1;
+%=          $object;

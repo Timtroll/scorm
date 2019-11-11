@@ -274,6 +274,7 @@ warn '=freee=';
     $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
     $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id
     $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
+
     $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса сообщения
 
     $r->any('/*')->to('index#index');

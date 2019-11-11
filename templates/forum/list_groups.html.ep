@@ -1,5 +1,6 @@
 <!doctype html>
 % use Data::Dumper;
+%= Dumper ( $list_groups );
 <head>
     <title><%= $title %></title>
     <style type="text/css">
@@ -69,33 +70,39 @@ html, body {
 
 <body>
 <div id="container">
-
+    <div id="navigation">
+%=      include 'forum/navigation', group => undef, theme => undef
+    </div>
     <div class="groups">
         <h2>Группы</h2>
         <div class="title">
 %=          include 'forum/add', parent_id => undef, action => 'group'
         </div>
 %       if ( $list_groups ) {
-%           foreach my $g( @$list_groups ) {
-                <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$g{'id'} %>" >
-%               my $group = $$g{'title'};
-%               $group = "(edited)".$group unless $$g{'date_edited'} == $$g{'date_created'};
-%               $group = "(hidden)".$group unless $$g{'status'}      == 1;
-%=              $group;
-                </a></h3>
-                <div>
-%=                  include 'forum/delete', parent_id => undef, id => $$g{'id'}, action => '_group'
-%=                  include 'forum/edit', id => $$g{'id'}, action => '_group'
-%=                  include 'forum/toggle', parent_id => undef, value => $$g{'status'}, table => 'forum_groups', id => $$g{'id'}
-                </div>
-                <br>
-                <br>
-
-%           }
+%=          include 'forum/groups/list_gro', list_groups => $list_groups
 %       }
 %       else {
             <h2>no groups yet</h2>    
 %       }
+    </div>
+
+%   if ( $add ) {
+        <div id="content">
+%=          include 'forum/groups/add_group'
+        </div>
+%   }
+%   else {
+%       if ( $edit ) {
+%           foreach my $g( @$list_groups ) {
+%               if ( $$g{'id'} == $edit ) {
+                    <div id="content">
+%=                      include 'forum/groups/edit_group', list => $g
+                    </div>
+%               }
+%           }
+%       }
+%   }
+
     </div>
 
     <div id="clear">

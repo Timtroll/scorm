@@ -81,6 +81,8 @@ sub list_groups {
     $self->render(
         'template'    => 'forum/list_groups',
         'title'       => 'list_groups',
+        'add'         => undef,
+        'edit'        => undef,
         'list_groups' => $list
     );
 }
@@ -89,7 +91,7 @@ sub theme {
     my $self = shift;
 
     $self->render(
-        'template'    => 'forum/add_theme',
+        'template'    => 'forum/themes/add_theme',
         'title'       => 'add_theme',
         'group_id'    => $self->param( 'parent_id' )
     );
@@ -203,11 +205,20 @@ sub del_theme {
 sub group {
     my $self = shift;
 
+    my ( $list, @mess );
+
+    $list = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list;
+
     $self->render(
-        'template'    => 'forum/add_group',
-        'title'       => 'add_group'
+        'template'    => 'forum/list_groups',
+        'title'       => 'list_groups',
+        'add'         => 1,
+        'edit'        => undef,
+        'list_groups' => $list
     );
 }
+
 
 sub add_group {
     my $self = shift;
@@ -267,27 +278,19 @@ sub save_group {
 sub edit_group {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my $edit = $self->param('edit');
+    my @mess;
 
-    unless (@mess) {
-        # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+    my $list = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list;
 
-        if ($data) {
-            $data = $self->_get_group( $$data{'id'} );
-            push @mess, "Could not get group '".$$data{'id'}."'" unless $data;
-        }
-    }
-
-    unless  (@mess) {
-        $self->render(
-            'template'    => 'forum/edit_group',
-            'title'       => 'edit_group',
-            'list'        => $data
-        );
-    };
+    $self->render(
+        'template'    => 'forum/list_groups',
+        'title'       => 'list_groups',
+        'add'         => undef,
+        'edit'        => $edit,
+        'list_groups' => $list
+    );
 }
 
 # удалениe темы 

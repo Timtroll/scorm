@@ -1,0 +1,10 @@
+%   foreach my $m( @$list_messages ) {
+        <div class="msg"><h3><a class="title" >
+%=          include 'forum/show', o => $m
+        </a></h3></div>
+        <div class="msg">
+%=          include 'forum/delete', parent_id => $theme_id, id => $$m{'id'}, action => 'ete'
+%=          include 'forum/edit', id => $$m{'id'}, action => ''
+%=          include 'forum/toggle', parent_id => $theme_id, value => $$m{'status'}, table => 'forum_messages', id => $$m{'id'}
+        </div>
+%   }

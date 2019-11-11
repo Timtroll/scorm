@@ -25,7 +25,7 @@ html, body {
 <body>
 
         <form method="post" action="<%= 'http://freee/forum/edit'.$action %>" class="control">
-            <input type="hidden" name="id"  value= "<%= $id %>"/>
+            <input type="hidden" name="edit"  value= "<%= $id %>"/>
             <input type="submit" value="edit"/>
         </form>
 
