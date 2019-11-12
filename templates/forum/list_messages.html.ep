@@ -70,7 +70,7 @@ html, body {
 <body>
 <div id="container">
     <div id="navigation">
-%=      include 'forum/navigation', group => $$g{'id'}, theme => $$t{'id'}
+%=      include 'forum/messages/navigation_message', group => $$g{'id'}, theme => $$t{'id'}
     </div>
 
     <div class="groups">

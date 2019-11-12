@@ -70,25 +70,14 @@ html, body {
 
 <body>
 <div id="container">
+
     <div id="navigation">
-%=      include 'forum/navigation', group => $$g{'id'}, theme => undef
+%=      include 'forum/themes/navigation_theme', group => $$g{'id'}
     </div>
 
     <div class="groups">
-        <h2>Группы</h2>
-        <div class="title">
-%=          include 'forum/add', parent_id => undef, action => 'group'
-        </div>
-            <h3><a class="title" >
-%=              include 'forum/show', o => $g
-            </a></h3>
-            <div>
-%=              include 'forum/delete', parent_id => undef, id => $$g{'id'}, action => '_group'
-%=              include 'forum/edit', id => $$g{'id'}, action => '_group'
-%=              include 'forum/toggle', parent_id => undef, value => $$g{'status'}, table => 'forum_groups', id => $$g{'id'}
-            </div>
-            <br>
-            <br>
+%=      include 'forum/themes/themes_groups'
+
 
             <div class="themes">
                 <h2>Темы

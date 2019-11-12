@@ -70,21 +70,25 @@ html, body {
 
 <body>
 <div id="container">
+
     <div id="navigation">
-%=      include 'forum/navigation', group => undef, theme => undef
+%=      include 'forum/groups/navigation_group'
     </div>
+
     <div class="groups">
+
         <h2>Группы</h2>
         <div class="title">
-%=          include 'forum/add', parent_id => undef, action => 'group'
+%=          include 'forum/groups/group'
         </div>
-%       if ( $list_groups ) {
+
+        <div class="title">
 %=          include 'forum/groups/list_gro', list_groups => $list_groups
-%       }
-%       else {
-            <h2>no groups yet</h2>    
-%       }
+        </div>
+
     </div>
+
+
 
 %   if ( $add ) {
         <div id="content">
@@ -102,6 +106,9 @@ html, body {
 %           }
 %       }
 %   }
+
+
+
 
     </div>
 
