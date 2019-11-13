@@ -270,6 +270,7 @@ warn '=freee=';
     $auth->post('/forum/del_group')     ->to('forum#del_group');   
 
     $auth->any('/forum/list_messages')  ->to('forum#list_messages'); # список сообщений по теме
+    $auth->post('/forum/message')       ->to('forum#message');
     $auth->post('/forum/add')           ->to('forum#add');           # добавление сообщения
     $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
     $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id

@@ -311,6 +311,9 @@ sub register {
             '/forum/del_group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
+            '/forum/message'  => {
+                "parent_id"     => [ '', qr/^\d+$/os ]
+            },
             '/forum/add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
                 "user_id"       => [ '', qr/^\d+$/os ],

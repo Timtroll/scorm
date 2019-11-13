@@ -33,9 +33,9 @@ html, body {
 }
 
 #container {
-	position: absolute;
-	left: 0;
-	top: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
     background:#99CC99;
     width: 100%;
     min-height: 95%;
@@ -70,32 +70,45 @@ html, body {
 
 <body>
 <div id="container">
-
     <div id="navigation">
-%=      include 'forum/themes/navigation_theme', group => $$g{'id'}
+%=      include 'forum/themes/navigation_theme', group => $group_id
     </div>
 
     <div class="groups">
-%=      include 'forum/themes/themes_groups'
+        <h2>Группы</h2>
 
+        <div class="title">
+%=          include 'forum/groups/group'
+        </div>
 
-            <div class="themes">
-                <h2>Темы
+%       foreach my $g( @$list_groups ) {
+%=          include 'forum/groups/list_gro', g => $g
+%           if ( $$g{'id'} == $group_id ) {
+                <br>
+                <br>
+                <div class="themes"> 
+                    <h2>Темы</h2>
                     <div class="title">
-%=                      include 'forum/add', parent_id => $$g{'id'}, action => 'theme'
-                    </div></h2>
-%=              include 'forum/themes/list_the', list_themes => $list_themes
-            </div>
-            <br>
+%=                      include 'forum/themes/theme', g => $g
+                    </div>
+
+%                   foreach my $t( @$list_themes ) {
+%                       if ( $$t{'group_id'} == $group_id ) {
+%=                         include 'forum/themes/list_the', t => $t, g => $g 
+%                       }
+%                   }
+                </div>
+%           }
+%       }
     </div>
 
     <div id="clear">
 
     </div>
 
-    <div id="footer">
+<!--     <div id="footer">
         <h2>Подвал сайта</h2>
-    </div>
+    </div> -->
 </div>
 
 </body>

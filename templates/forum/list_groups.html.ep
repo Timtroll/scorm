@@ -83,7 +83,14 @@ html, body {
         </div>
 
         <div class="title">
-%=          include 'forum/groups/list_gro', list_groups => $list_groups
+%           if ( $list_groups ) {
+%               foreach my $g( @$list_groups ) {
+%=                  include 'forum/groups/list_gro', g => $g
+%               }
+%           }
+%           else {
+                <h2>no groups yet</h2>    
+%           }
         </div>
 
     </div>

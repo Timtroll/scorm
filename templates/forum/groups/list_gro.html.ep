@@ -1,5 +1,3 @@
-%if ( $list_groups ) {
-%   foreach my $g( @$list_groups ) {
         <br>
         <br>
         <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$g{'id'} %>" >
@@ -8,7 +6,7 @@
 %           $group = "(hidden)".$group unless $$g{'status'}      == 1;
 %=          $group;        
         </a></h3>
-        <form method="post" action="http://freee/forum/del_group" class="control">
+        <form method="post" action="http://freee/forum/del_group" onsubmit='return confirm("Вы действительно хотите удалить эту группу?")' class="control">
             <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
             <input type="submit" value="delete"/>
         </form>
@@ -21,9 +19,4 @@
             <input type="hidden" name="table"  value= 'forum_groups'/>
             <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
             <input type="submit" value="toggle"/>
-        </form>     
-%   }
-%}
-%else {
-    <h2>no groups yet</h2>    
-%}
+        </form>

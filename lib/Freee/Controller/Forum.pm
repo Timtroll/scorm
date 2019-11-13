@@ -25,24 +25,28 @@ sub index {
 sub list_messages {
     my $self = shift;
 
-    my ( $list_messages, $theme, $group, @mess);
+    my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $theme, $group, @mess);
 
-    my $theme_id = $self->param('theme_id');
+    $theme_id = $self->param('theme_id');
+
     if ( $theme_id ) {
         $theme = $self->_get_theme( $theme_id );
         push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+        $group_id = $$theme{ 'group_id' };
     }
 
-    $group = $self->_get_group( $$theme{ 'group_id'} );
     $list_messages = $self->_list_messages( $theme_id );
+    $list_themes = $self->_list_themes();
+    $list_groups = $self->_list_groups();
 
     $self->render(
         'template'      => 'forum/list_messages',
         'title'         => 'Список сообщений',
         'list_messages' => $list_messages,
-        't'             => $theme,
-        'g'             => $group,
-        'theme_id'      => $theme_id
+        'list_themes'   => $list_themes,
+        'list_groups'   => $list_groups,
+        'theme_id'      => $theme_id,
+        'group_id'      => $group_id
     );
 }
 
@@ -50,22 +54,22 @@ sub list_messages {
 sub list_themes {
     my $self = shift;
 
-    my ( $list, @mess, $data, $group );
+    my ( $group_id, $list_themes, $list_groups, @mess, $data, $group );
 
-    my $group_id = $self->param('group_id');
-    if ( $group_id ) {
-        $group = $self->_get_group( $group_id );
-        push @mess, "Could not get group '".$$group{'id'}."'" unless $group;
-    }
+    $group_id = $self->param( 'group_id' );
 
-    $list = $self->_list_themes();
-    push @mess, "Could not get list Themes" unless $list;
+    $list_themes = $self->_list_themes();
+    push @mess, "Could not get list Themes" unless $list_themes;
     
+    $list_groups = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list_groups;
+
     $self->render(
         'template'    => 'forum/list_themes',
         'title'       => 'list_themes',
-        'list_themes' => $list,
-        'g'           => $group
+        'list_themes' => $list_themes,
+        'list_groups' => $list_groups,
+        'group_id'    => $group_id
     );
 }
 
@@ -311,6 +315,16 @@ sub del_group {
     }
 
     $self->redirect_to( '/forum/list_groups' );
+}
+
+sub message {
+    my $self = shift;
+
+    $self->render(
+        'template'    => 'forum/themes/add_message',
+        'title'       => 'add_message',
+        'theme_id'    => $self->param( 'parent_id' )
+    );
 }
 
 # новое сообщение форума

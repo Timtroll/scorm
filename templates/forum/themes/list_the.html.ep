@@ -1,14 +1,26 @@
-%   foreach my $t( @$list_themes ) {
-%       if ( $$t{'group_id'} == $$g{'id'} ) {
-            <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
-%=              include 'forum/show', o => $t
-            </a></h3>
-            <div>
-%=              include 'forum/delete', parent_id => $$g{'id'}, id => $$t{'id'}, action => '_theme'
-%=              include 'forum/edit', id => $$t{'id'}, action => '_theme'
-%=              include 'forum/toggle', parent_id => $$g{'id'}, value => $$t{'status'}, table => 'forum_themes', id => $$t{'id'}
-            </div>
-            <br>
-            <br>
-%       }
-%   }
+    <br>
+    <br>
+    <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
+%       my $theme = $$t{'title'};
+%       $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
+%       $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
+%=      $theme;
+    </a></h3>
+    <div>
+        <form method="post" action="http://freee/forum/del_theme" onsubmit='return confirm("Вы действительно хотите удалить эту тему?")' class="control">
+            <input type="hidden" name="parent_id"  value= "<%= $$t{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="submit" value="delete"/>
+        </form>
+        <form method="post" action="http://freee/forum/edit_theme" class="control">
+            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="submit" value="edit"/>
+        </form>
+        <form method="post" action="http://freee/forum/toggle" class="control">
+            <input type="hidden" name="parent_id"  value= "<%= $$g{'id'} %>"/>
+            <input type="hidden" name="value"  value= "<%= $$t{'status'} %>"/>
+            <input type="hidden" name="table"  value= 'forum_themes'/>
+            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="submit" value="toggle"/>
+        </form>
+    </div>
