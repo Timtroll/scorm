@@ -85,7 +85,7 @@ html, body {
         <div class="title">
 %           if ( $list_groups ) {
 %               foreach my $group( @$list_groups ) {
-%=                  include 'forum/groups/list_gro', g => $group
+%=                  include 'forum/groups/list_gro', group => $group
 %               }
 %           }
 %           else {

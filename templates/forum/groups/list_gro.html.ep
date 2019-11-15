@@ -1,22 +1,22 @@
         <br>
         <br>
-        <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$g{'id'} %>" >
-%           my $group = $$g{'title'};
-%           $group = "(edited)".$group unless $$g{'date_edited'} == $$g{'date_created'};
-%           $group = "(hidden)".$group unless $$g{'status'}      == 1;
-%=          $group;        
+        <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$group{'id'} %>" >
+%           my $group_title = $$group{'title'};
+%           $group_title = "(edited)".$group_title unless $$group{'date_edited'} == $$group{'date_created'};
+%           $group_title = "(hidden)".$group_title unless $$group{'status'}      == 1;
+%=          $group_title;        
         </a></h3>
         <form method="post" action="http://freee/forum/del_group" onsubmit='return confirm("Вы действительно хотите удалить эту группу?")' class="control">
-            <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$group{'id'} %>"/>
             <input type="submit" value="delete"/>
         </form>
         <form method="post" action="http://freee/forum/edit_group" class="control">
-            <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$group{'id'} %>"/>
             <input type="submit" value="edit"/>
         </form>
         <form method="post" action="http://freee/forum/toggle" class="control">
-            <input type="hidden" name="value"  value= "<%= $$g{'status'} %>"/>
+            <input type="hidden" name="value"  value= "<%= $$group{'status'} %>"/>
             <input type="hidden" name="table"  value= 'forum_groups'/>
-            <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$group{'id'} %>"/>
             <input type="submit" value="toggle"/>
         </form>

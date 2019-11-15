@@ -415,7 +415,6 @@ sub save_add {
         $$data{'date_created'} = time();
         $$data{'date_edited'}  = time();
         $$data{'rate'}         = 0;
-        $$data{'status'}       = 1;
 
         if ($data) {
             $id = $self->_insert_message( $data );

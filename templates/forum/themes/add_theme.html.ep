@@ -4,7 +4,7 @@
     <BR><textarea name="title" rows=5 cols=40/></textarea>
     <BR>
     <BR>Url:
-    <BR><textarea name="url" rows=5 cols=40/></textarea>
+    <BR><input type="text" name="url"/>
     <BR><input type="radio" name="status" value=1 >Status active
     <BR><input type="radio" name="status" value=0 >Status unactive
     <BR><input type="submit" value="Enter"/>

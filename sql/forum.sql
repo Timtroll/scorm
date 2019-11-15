@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS "public"."forum_groups";
 DROP SEQUENCE IF EXISTS "public".forum_groups_id_seq; 
+DROP TRIGGER IF EXISTS "groups_ad" ON "public"."forum_groups" CASCADE;
 
 CREATE SEQUENCE "public".forum_groups_id_seq;
 
@@ -14,6 +15,21 @@ CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_groups" OWNER TO "troll";
+
+---функция (рекурсивное удаление тем группы)
+CREATE OR REPLACE FUNCTION "public"."groups_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$
+BEGIN
+DELETE FROM "public"."forum_themes" WHERE "group_id" = OLD.id;
+
+RETURN OLD;
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+---триггер
+CREATE TRIGGER "groups_ad" AFTER DELETE ON "public"."forum_groups"
+FOR EACH ROW
+EXECUTE PROCEDURE "groups_trigger_ad"();
 ---------------------
 
 DROP TABLE IF EXISTS "public"."forum_messages";

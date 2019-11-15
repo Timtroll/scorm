@@ -1,26 +1,26 @@
     <br>
     <br>
-    <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$t{'id'} %>" >
-%       my $theme = $$t{'title'};
-%       $theme = "(edited)".$theme unless $$t{'date_edited'} == $$t{'date_created'};
-%       $theme = "(hidden)".$theme unless $$t{'status'}      == 1;
-%=      $theme;
+    <h3><a href= "<%= "http://freee/forum/list_messages?theme_id=".$$theme{'id'} %>" >
+%       my $theme_title = $$theme{'title'};
+%       $theme_title = "(edited)".$theme_title unless $$theme{'date_edited'} == $$theme{'date_created'};
+%       $theme_title = "(hidden)".$theme_title unless $$theme{'status'}      == 1;
+%=      $theme_title;
     </a></h3>
     <div>
         <form method="post" action="http://freee/forum/del_theme" onsubmit='return confirm("Вы действительно хотите удалить эту тему?")' class="control">
-            <input type="hidden" name="parent_id"  value= "<%= $$t{'id'} %>"/>
-            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="hidden" name="parent_id"  value= "<%= $$theme{'group_id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$theme{'id'} %>"/>
             <input type="submit" value="delete"/>
         </form>
         <form method="post" action="http://freee/forum/edit_theme" class="control">
-            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$theme{'id'} %>"/>
             <input type="submit" value="edit"/>
         </form>
         <form method="post" action="http://freee/forum/toggle" class="control">
-            <input type="hidden" name="parent_id"  value= "<%= $$g{'id'} %>"/>
-            <input type="hidden" name="value"  value= "<%= $$t{'status'} %>"/>
+            <input type="hidden" name="parent_id"  value= "<%= $$theme{'group_id'} %>"/>
+            <input type="hidden" name="value"  value= "<%= $$theme{'status'} %>"/>
             <input type="hidden" name="table"  value= 'forum_themes'/>
-            <input type="hidden" name="id"  value= "<%= $$t{'id'} %>"/>
+            <input type="hidden" name="id"  value= "<%= $$theme{'id'} %>"/>
             <input type="submit" value="toggle"/>
         </form>
     </div>

@@ -82,7 +82,7 @@ html, body {
         </div>
 
 %       foreach my $group( @$list_groups ) {
-%=          include 'forum/groups/list_gro', g => $group
+%=          include 'forum/groups/list_gro', group => $group
 %           if ( $$group{'id'} == $group_id ) {
                 <br>
                 <br>
@@ -94,7 +94,7 @@ html, body {
 
 %                   foreach my $theme( @$list_themes ) {
 %                       if ( $$theme{'group_id'} == $group_id ) {
-%=                         include 'forum/themes/list_the', t => $theme, g => $group
+%=                         include 'forum/themes/list_the', theme => $theme
 %                       }
 %                   }
                 </div>
