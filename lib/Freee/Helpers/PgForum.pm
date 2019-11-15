@@ -168,7 +168,6 @@ sub register {
     # возвращается id роута
     $app->helper( '_insert_group' => sub {
         my ($self, $data) = @_;
-
         return unless $data;
 
         my $id;

@@ -1,4 +1,0 @@
-<form method="post" action="http://freee/forum/message">
-    <input type="hidden" name="theme_id"  value= "<%= $$t{'id'} %>"/>
-    <input type="submit" value="add"/>
-</form>

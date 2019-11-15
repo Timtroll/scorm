@@ -1,4 +1,0 @@
-<form method="post" action="http://freee/forum/theme">
-    <input type="hidden" name="group_id"  value= "<%= $$g{'id'} %>"/>
-    <input type="submit" value="add"/>
-</form>

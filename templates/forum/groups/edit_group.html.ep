@@ -1,11 +1,11 @@
 <div id="message">
-    <form method="post" action="http://freee/forum/save_group">
-        <input type="hidden" name="id"  value= "<%= $$list{'id'} %>"/>
+    <form method="post" action="http://freee/forum/save_edit_group">
+        <input type="hidden" name="id"  value= "<%= $$group{'id'} %>"/>
         <BR>Title:
-        <BR><textarea name="title" rows=5 cols=40/><%= $$list{'title'} %></textarea>
+        <BR><textarea name="title" rows=5 cols=40/><%= $$group{'title'} %></textarea>
         <BR>
         <BR>Name:
-        <BR><textarea name="name" rows=5 cols=40/><%= $$list{'name'} %></textarea>
+        <BR><textarea name="name" rows=5 cols=40/><%= $$group{'name'} %></textarea>
         <BR><input type="radio" name="status" value=1 >Status active
         <BR><input type="radio" name="status" value=0 >Status unactive
         <BR><BR><input type="submit" value="Save"/>

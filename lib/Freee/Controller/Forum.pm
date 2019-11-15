@@ -21,35 +21,7 @@ sub index {
     );
 }
 
-# получение списка сообщений из базы в массив хэшей
-sub list_messages {
-    my $self = shift;
-
-    my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $theme, $group, @mess);
-
-    $theme_id = $self->param('theme_id');
-
-    if ( $theme_id ) {
-        $theme = $self->_get_theme( $theme_id );
-        push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
-        $group_id = $$theme{ 'group_id' };
-    }
-
-    $list_messages = $self->_list_messages( $theme_id );
-    $list_themes = $self->_list_themes();
-    $list_groups = $self->_list_groups();
-
-    $self->render(
-        'template'      => 'forum/list_messages',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes,
-        'list_groups'   => $list_groups,
-        'theme_id'      => $theme_id,
-        'group_id'      => $group_id
-    );
-}
-
+#########################################################################
 # получение списка тем из базы в массив хэшей
 sub list_themes {
     my $self = shift;
@@ -67,41 +39,50 @@ sub list_themes {
     $self->render(
         'template'    => 'forum/list_themes',
         'title'       => 'list_themes',
+        'add'         => undef,
+        'edit'        => undef,
         'list_themes' => $list_themes,
         'list_groups' => $list_groups,
         'group_id'    => $group_id
     );
 }
 
-# получение списка групп из базы в массив хэшей
-sub list_groups {
-    my $self = shift;
-
-    my ( $list, @mess );
-
-    $list = $self->_list_groups();
-    push @mess, "Could not get list Groups" unless $list;
-
-    $self->render(
-        'template'    => 'forum/list_groups',
-        'title'       => 'list_groups',
-        'add'         => undef,
-        'edit'        => undef,
-        'list_groups' => $list
-    );
-}
-
-sub theme {
-    my $self = shift;
-
-    $self->render(
-        'template'    => 'forum/themes/add_theme',
-        'title'       => 'add_theme',
-        'group_id'    => $self->param( 'parent_id' )
-    );
-}
-
+# вывод формы для добавления темы
 sub add_theme {
+    my $self = shift;
+
+    my ($id, $group_id, $data, $list_themes, $list_groups, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        $list_themes = $self->_list_themes();
+        push @mess, "Could not get list_themes" unless $list_themes;
+
+        $list_groups = $self->_list_groups();
+        push @mess, "Could not get list Groups" unless $list_groups;
+
+        $group_id = $$data{'group_id'};
+    }
+
+    unless  (@mess) {
+        $self->render(
+            'template'    => 'forum/list_themes',
+            'title'       => 'add_theme',
+            'add'         => 1,
+            'edit'        => undef,
+            'list_themes' => $list_themes,
+            'list_groups' => $list_groups,
+            'group_id'    => $group_id
+        );
+    };
+}
+
+# сохранение данных из формы после добавления новой темы
+sub save_add_theme {
     my $self = shift;
 
     my ($id, $data, $error, @mess);
@@ -126,7 +107,8 @@ sub add_theme {
     $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
 }
 
-sub save_theme {
+# сохранение данных из формы, после редактирования существующей темы
+sub save_edit_theme {
     my ($self) = shift;
 
     my ( $id, $parent, $data, $error, @mess );
@@ -158,12 +140,12 @@ sub save_theme {
     $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
 }
 
-# вывод  данных о сообщении
+# выводит форму с данными существующей темы
 # "id" => 1 - id выводимого элемента ( >0 )
 sub edit_theme {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
+    my ($id, $group_id, $data, $list_themes, $list_groups, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -171,22 +153,32 @@ sub edit_theme {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        if ($data) {
-            $data = $self->_get_theme( $$data{'id'} );
-            push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
-        }
+        $data = $self->_get_theme( $$data{'id'} );
+        push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
+
+        $list_themes = $self->_list_themes();
+        push @mess, "Could not get list_themes" unless $list_themes;
+
+        $list_groups = $self->_list_groups();
+        push @mess, "Could not get list Groups" unless $list_groups;
+
+        $group_id = $$data{'group_id'};
     }
 
     unless  (@mess) {
         $self->render(
-            'template'    => 'forum/edit_theme',
+            'template'    => 'forum/list_themes',
             'title'       => 'edit_theme',
-            'list'        => $data
+            'add'         => undef,
+            'edit'        => $data,
+            'list_themes' => $list_themes,
+            'list_groups' => $list_groups,
+            'group_id'    => $group_id
         );
     };
 }
 
-# удалениe темы 
+# удаляет тему по id 
 # "id" => 1 - id удаляемого элемента ( >0 )
 sub del_theme {
     my $self = shift;
@@ -206,7 +198,27 @@ sub del_theme {
     $self->redirect_to( '/forum/list_themes?group_id='.$$data{'parent_id'} );
 }
 
-sub group {
+################################################################################
+# получение списка групп из базы в массив хэшей
+sub list_groups {
+    my $self = shift;
+
+    my ( $list, @mess );
+
+    $list = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list;
+
+    $self->render(
+        'template'    => 'forum/list_groups',
+        'title'       => 'list_groups',
+        'add'         => undef,
+        'edit'        => undef,
+        'list_groups' => $list
+    );
+}
+
+# вывод формы для добавления группы
+sub add_group {
     my $self = shift;
 
     my ( $list, @mess );
@@ -223,8 +235,8 @@ sub group {
     );
 }
 
-
-sub add_group {
+# сохранение данных из формы после добавления новой группы
+sub save_add_group {
     my $self = shift;
 
     my ($id, $data, $error, @mess);
@@ -247,7 +259,8 @@ sub add_group {
     $self->redirect_to( '/forum/list_groups' );
 }
 
-sub save_group {
+# сохранение данных из формы, после редактирования существующей группы
+sub save_edit_group {
     my ($self) = shift;
 
     my ( $id, $parent, $data, $error, @mess );
@@ -277,13 +290,14 @@ sub save_group {
     $self->redirect_to( '/forum/list_groups' );
 }
 
-# вывод  данных о сообщении
+# выводит форму с данными о существующей группе
 # "id" => 1 - id выводимого элемента ( >0 )
 sub edit_group {
     my $self = shift;
 
-    my $edit = $self->param('edit');
     my @mess;
+
+    my $edit = $self->_get_group( $self->param('id') );
 
     my $list = $self->_list_groups();
     push @mess, "Could not get list Groups" unless $list;
@@ -297,7 +311,7 @@ sub edit_group {
     );
 }
 
-# удалениe темы 
+# удаляет группу по id 
 # "id" => 1 - id удаляемого элемента ( >0 )
 sub del_group {
     my $self = shift;
@@ -317,26 +331,75 @@ sub del_group {
     $self->redirect_to( '/forum/list_groups' );
 }
 
-sub message {
+#########################################################################################
+# получение списка сообщений из базы в массив хэшей
+sub list_messages {
     my $self = shift;
 
+    my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $group, @mess);
+
+    $theme_id = $self->param('theme_id');
+
+    if ( $theme_id ) {
+        $theme = $self->_get_theme( $theme_id );
+        push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+        $group_id = $$theme{ 'group_id' };
+    }
+
+    $list_messages = $self->_list_messages( $theme_id );
+    $list_themes = $self->_list_themes();
+    $list_groups = $self->_list_groups();
+
     $self->render(
-        'template'    => 'forum/themes/add_message',
-        'title'       => 'add_message',
-        'theme_id'    => $self->param( 'parent_id' )
+        'template'      => 'forum/list_messages',
+        'title'         => 'Список сообщений',
+        'list_messages' => $list_messages,
+        'list_themes'   => $list_themes,
+        'list_groups'   => $list_groups,
+        'theme_id'      => $theme_id,
+        'group_id'      => $group_id,
+        'add'           => undef,
+        'edit'          => undef
     );
 }
 
-# новое сообщение форума
-# my $id = $self->_insert_message();
-# "theme id"
-# "user id"
-# "anounce"
-# "date_created"
-# "msg"
-# "rate"
-# "status"
+# вывод формы для добавления сообщения
 sub add {
+    my $self = shift;
+
+    my ($id, $list_messages, $list_themes, $list_groups, $theme, $group_id, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+print $$data{'theme_id'};
+        if ( $$data{'theme_id'} ) {
+            $theme = $self->_get_theme( $$data{'theme_id'} );
+            push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+            $group_id = $$theme{ 'group_id' };
+        }
+        $list_messages = $self->_list_messages( $$data{'theme_id'} );
+        $list_themes = $self->_list_themes();
+        $list_groups = $self->_list_groups();
+    }
+
+    $self->render(
+        'template'      => 'forum/list_messages',
+        'title'         => 'Список сообщений',
+        'list_messages' => $list_messages,
+        'list_themes'   => $list_themes,
+        'list_groups'   => $list_groups,
+        'theme_id'      => $$data{'theme_id'},
+        'group_id'      => $group_id,
+        'add'           => 1,
+        'edit'          => undef
+    );
+}
+
+# сохранение данных из формы после добавления нового сообщения
+sub save_add {
     my $self = shift;
 
     my ($id, $data, $error, @mess);
@@ -363,13 +426,8 @@ sub add {
     $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
 }
 
-# сохранение сообщения
-# my $id = $self->save();
-# "id"        => 1            - id обновляемого элемента ( >0 )
-# "label"     => 'название'   - обязательно (название для отображения)
-# "name",     => 'name'       - обязательно (системное название, латиница)
-# "status"    => 0 или 1      - активно ли сообщение
-sub save {
+# сохранение данных из формы, после редактирования существующего сообщения
+sub save_edit {
     my ($self) = shift;
 
     my ( $id, $parent, $data, $error, @mess );
@@ -402,12 +460,12 @@ sub save {
     $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
 }
 
-# вывод  данных о сообщении
+# выводит форму с данными о существующем сообщении
 # "id" => 1 - id выводимого элемента ( >0 )
 sub edit {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
+    my ($id, $list_messages, $list_themes, $list_groups, $theme, $group_id, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -419,15 +477,28 @@ sub edit {
             $data = $self->_get_message( $$data{'id'} );
             push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
         }
+
+        if ( $$data{'theme_id'} ) {
+            $theme = $self->_get_theme( $$data{'theme_id'} );
+            push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+            $group_id = $$theme{ 'group_id' };
+        }
+        $list_messages = $self->_list_messages( $$data{'theme_id'} );
+        $list_themes = $self->_list_themes();
+        $list_groups = $self->_list_groups();
     }
 
-    unless  (@mess) {
-        $self->render(
-            'template'    => 'forum/edit_message',
-            'title'       => 'edit_message',
-            'list'        => $data
-        );
-    };
+    $self->render(
+        'template'      => 'forum/list_messages',
+        'title'         => 'Список сообщений',
+        'list_messages' => $list_messages,
+        'list_themes'   => $list_themes,
+        'list_groups'   => $list_groups,
+        'theme_id'      => $$data{'theme_id'},
+        'group_id'      => $group_id,
+        'add'           => undef,
+        'edit'          => $data
+    );
 }
 
 # удалениe сообщения 
@@ -449,6 +520,7 @@ sub delete {
 
     $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'parent_id'} );
 }
+
 
 # изменение поля на 1/0
 # my $true = $self->toggle();

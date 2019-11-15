@@ -253,30 +253,30 @@ warn '=freee=';
     $auth->post('/accounting/stat')     ->to('accounting#stat');
 
     # форум
-    $auth->any('/forum/')               ->to('forum#index');        # стартовая страница
+    $auth->any('/forum/')               ->to('forum#index');         # стартовая страница
 
-    $auth->any('/forum/list_themes')    ->to('forum#list_themes');
-    $auth->post('/forum/theme')         ->to('forum#theme');
-    $auth->post('/forum/add_theme')     ->to('forum#add_theme');
-    $auth->post('/forum/save_theme')    ->to('forum#save_theme');
-    $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');
-    $auth->post('/forum/del_theme')     ->to('forum#del_theme');
+    $auth->any('/forum/list_themes')    ->to('forum#list_themes');   # список тем
+    $auth->post('/forum/add_theme')     ->to('forum#add_theme');     # вывод формы для добавления темы
+    $auth->post('/forum/save_edit_theme')->to('forum#save_edit_theme');# сохранение данных из формы, после редактирования существующей темы
+    $auth->post('/forum/save_add_theme')->to('forum#save_add_theme');# сохранение данных из формы после добавления новой темы
+    $auth->post('/forum/edit_theme')    ->to('forum#edit_theme');    # выводит форму с данными существующей темы
+    $auth->post('/forum/del_theme')     ->to('forum#del_theme');     # удаляет тему по id
 
-    $auth->any('/forum/list_groups')    ->to('forum#list_groups');
-    $auth->post('/forum/group')         ->to('forum#group');
-    $auth->post('/forum/add_group')     ->to('forum#add_group');
-    $auth->post('/forum/save_group')    ->to('forum#save_group');
-    $auth->post('/forum/edit_group')    ->to('forum#edit_group');
-    $auth->post('/forum/del_group')     ->to('forum#del_group');   
+    $auth->any('/forum/list_groups')    ->to('forum#list_groups');   # выводит список групп
+    $auth->post('/forum/add_group')     ->to('forum#add_group');     # вывод формы для добавления группы
+    $auth->post('/forum/save_add_group')->to('forum#save_add_group');# сохранение данных из формы после добавления новой группы
+    $auth->post('/forum/save_edit_group')->to('forum#save_edit_group');# сохранение данных из формы, после редактирования существующей группы
+    $auth->post('/forum/edit_group')    ->to('forum#edit_group');    # выводит форму с данными о существующей группе
+    $auth->post('/forum/del_group')     ->to('forum#del_group');     # удаляет группу по id
 
     $auth->any('/forum/list_messages')  ->to('forum#list_messages'); # список сообщений по теме
-    $auth->post('/forum/message')       ->to('forum#message');
-    $auth->post('/forum/add')           ->to('forum#add');           # добавление сообщения
-    $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
-    $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id
+    $auth->post('/forum/add')           ->to('forum#add');           # вывод формы для добавления сообщения
+    $auth->post('/forum/save_add')      ->to('forum#save_add');      # сохранение данных из формы после добавления нового сообщения
+    $auth->post('/forum/save_edit')     ->to('forum#save_edit');     # сохранение данных из формы, после редактирования существующего сообщения
+    $auth->post('/forum/edit')          ->to('forum#edit');          # выводит форму с данными о существующем сообщении
     $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
 
-    $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса сообщения
+    $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса
 
     $r->any('/*')->to('index#index');
 

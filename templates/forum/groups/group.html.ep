@@ -1,3 +1,0 @@
-        <form method="post" action="<%= 'http://freee/forum/group' %>" class="control">
-            <input type="submit" value="add"/>
-        </form>

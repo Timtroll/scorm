@@ -1,5 +1,5 @@
 <div id="message">
-    <form method="post" action="http://freee/forum/add_group">
+    <form method="post" action="http://freee/forum/save_add_group">
         <BR>Title:
         <BR><textarea name="title" rows=5 cols=40/></textarea>
         <BR>

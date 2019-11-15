@@ -269,18 +269,19 @@ sub register {
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/add_theme'  => {
-                "user_id"       => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os ]
+            },
+            '/forum/save_add_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
-                "date_created"  => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            '/forum/save_theme' => {
+            '/forum/save_edit_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
+                "url"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/forum/edit_theme'  => {
@@ -291,46 +292,43 @@ sub register {
                 "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
-            '/forum/group'  => {
-                "id"            => [ '', qr/^\d+$/os ]
-            },
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            '/forum/save_group'  => {
+            '/forum/save_add_group'  => {
+                "name"          => [ '', qr/^.*$/os, 256 ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/save_edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os ],
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
+            
             '/forum/edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/del_group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
-            '/forum/message'  => {
-                "parent_id"     => [ '', qr/^\d+$/os ]
-            },
             '/forum/add'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ]
+            },
+            '/forum/save_add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
-                "user_id"       => [ '', qr/^\d+$/os ],
-                "anounce"       => [ '', qr/^.*$/os, 256 ],
-                "date_created"  => [ '', qr/^\d+$/os ],
-                "date_edited"   => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            '/forum/save'  => {
+            '/forum/save_edit'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            
             '/forum/delete'  => {
                 "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ 'required', qr/^\d+$/os ]

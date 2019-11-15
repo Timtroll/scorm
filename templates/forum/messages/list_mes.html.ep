@@ -1,24 +1,27 @@
-            <div class="msg"><h3><a class="title" >
-%                my $message = $$m{'msg'};
-%                $message = "(edited)".$message unless $$m{'date_edited'} == $$m{'date_created'};
-%                $message = "(hidden)".$message unless $$m{'status'}      == 1;
-%=               $message;
-            </a></h3></div>
-            <div class="msg">
-                <form method="post" action="http://freee/forum/delete" onsubmit='return confirm("Вы действительно хотите удалить это сообщение?")' class="control">
-                    <input type="hidden" name="parent_id"  value= "<%= $$t{'id'} %>"/>
-                    <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
-                    <input type="submit" value="delete"/>
-                </form>
-                <form method="post" action="http://freee/forum/edit" class="control">
-                    <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
-                    <input type="submit" value="edit"/>
-                </form>
-                <form method="post" action="http://freee/forum/toggle" class="control">
-                    <input type="hidden" name="parent_id"  value= "<%= $$t{'id'} %>"/>
-                    <input type="hidden" name="value"  value= "<%= $$m{'status'} %>"/>
-                    <input type="hidden" name="table"  value= 'forum_messages'/>
-                    <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
-                    <input type="submit" value="toggle"/>
-                </form>
-            </div>
+<br>
+<br>
+<div class="messages"><h3><a class="title" >
+%   my $message = $$m{'msg'};
+%   $message = "(edited)".$message unless $$m{'date_edited'} == $$m{'date_created'};
+%   $message = "(hidden)".$message unless $$m{'status'}      == 1;
+%=  $message;
+</a></h3></div>
+<div class="messages">
+    <form method="post" action="http://freee/forum/delete" onsubmit='return confirm("Вы действительно хотите удалить это сообщение?")' class="control">
+        <input type="hidden" name="parent_id"  value= "<%= $theme_id %>"/>
+        <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
+        <input type="submit" value="delete"/>
+    </form>
+    <form method="post" action="http://freee/forum/edit" class="control">
+        <input type="hidden" name="theme_id"  value= "<%= $theme_id %>"/>
+        <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
+        <input type="submit" value="edit"/>
+    </form>
+    <form method="post" action="http://freee/forum/toggle" class="control">
+        <input type="hidden" name="parent_id"  value= "<%= $theme_id %>"/>
+        <input type="hidden" name="value"  value= "<%= $$m{'status'} %>"/>
+        <input type="hidden" name="table"  value= 'forum_messages'/>
+        <input type="hidden" name="id"  value= "<%= $$m{'id'} %>"/>
+        <input type="submit" value="toggle"/>
+    </form>
+</div>

@@ -79,13 +79,13 @@ html, body {
 
         <h2>Группы</h2>
         <div class="title">
-%=          include 'forum/groups/group'
+%=          include 'forum/groups/group_add_button'
         </div>
 
         <div class="title">
 %           if ( $list_groups ) {
-%               foreach my $g( @$list_groups ) {
-%=                  include 'forum/groups/list_gro', g => $g
+%               foreach my $group( @$list_groups ) {
+%=                  include 'forum/groups/list_gro', g => $group
 %               }
 %           }
 %           else {
@@ -95,8 +95,6 @@ html, body {
 
     </div>
 
-
-
 %   if ( $add ) {
         <div id="content">
 %=          include 'forum/groups/add_group'
@@ -104,20 +102,11 @@ html, body {
 %   }
 %   else {
 %       if ( $edit ) {
-%           foreach my $g( @$list_groups ) {
-%               if ( $$g{'id'} == $edit ) {
-                    <div id="content">
-%=                      include 'forum/groups/edit_group', list => $g
-                    </div>
-%               }
-%           }
+            <div id="content">
+%=               include 'forum/groups/edit_group', group => $edit
+            </div>
 %       }
 %   }
-
-
-
-
-    </div>
 
     <div id="clear">
 
