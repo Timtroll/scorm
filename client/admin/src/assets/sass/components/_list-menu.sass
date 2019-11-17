@@ -1,0 +1,59 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$pos-list-menu-max-width: 120px
+$pos-list-menu-active-height: 3px
+$pos-list-menu-border-width: 94%
+
+
+.pos-list-menu
+  width: 100%
+  display: flex
+  flex-direction: row
+  list-style: none
+  margin: 0
+  padding: 0
+
+.pos-list-menu-item
+  max-width: $pos-list-menu-max-width
+  padding: 0 $global-small-margin
+  position: relative
+
+  &:before
+    content: ""
+    display: block
+    position: absolute
+    bottom: 3px
+    right: 50%
+    width: 0
+    border-radius: 500px
+    transform: translateX(50%)
+    height: $pos-list-menu-active-height
+    background-color: $global-success-background
+    @include transition-param(width)
+
+  & > a
+    display: block
+
+  & > a,
+  & > a:hover
+    color: $global-color
+
+  &:hover,
+  &:focus
+    &:before
+      width: $pos-list-menu-border-width
+
+    & > a
+      color: $global-success-background
+      text-decoration: none
+
+
+  &.active
+    &:before
+      width: $pos-list-menu-border-width
+      background-color: $global-danger-background
+
+    & > a
+      color: $global-danger-background
+      text-decoration: none

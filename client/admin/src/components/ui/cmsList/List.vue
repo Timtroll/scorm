@@ -24,8 +24,15 @@
       </a>
 
       <!--header settings-->
-      <div class="pos-card-header--content"
-           v-text="title"></div>
+      <div class="pos-card-header--content uk-padding-remove"
+           ref="listMenu">
+        <ListMenu :nav="listMenu"
+                  v-if="loader  === 'success'"
+                  :active="listMenuActiveId"
+                  :resize="editPanel_large"/>
+      </div>
+      <!--<div class="pos-card-header&#45;&#45;content"-->
+      <!--     v-text="title"></div>-->
 
       <!--headerRight-->
       <a class="pos-card-header-item uk-text-danger link"
@@ -117,7 +124,10 @@
     name: 'List',
 
     components: {
-      Loader:          () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
+      Loader:   () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
+      ListMenu: () => import(/* webpackChunkName: "ListMenu" */ './ListMenu'),
+
+      // inputs
       InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
       InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
       InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
@@ -143,6 +153,11 @@
           this.close()
         }
       }
+
+      //// ширина меню панели редактирования
+      //if (this.$refs.listMenu) {
+      //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
+      //}
 
     },
 
@@ -188,10 +203,23 @@
 
     data () {
       return {
-        dataNew:        [],
-        dataChanged:    [],
-        dataAdd:        [],
-        showSelectedOn: ['InputSelect', 'InputRadio']
+        listMenuActiveId: 1,
+        listMenu:         [
+          {id: 1, label: 'Основные'},
+          {id: 2, label: 'Категории'},
+          {id: 3, label: 'Характеристики'},
+          {id: 4, label: 'Опции'},
+          {id: 5, label: 'Файлы'},
+          {id: 6, label: 'Связи'},
+          {id: 7, label: 'Цены'},
+          {id: 8, label: 'Связи'},
+          {id: 9, label: 'Связи2'}
+        ],
+        //listMenuWidth:    null,
+        dataNew:          [],
+        dataChanged:      [],
+        dataAdd:          [],
+        showSelectedOn:   ['InputSelect', 'InputRadio']
       }
     },
 
@@ -316,7 +344,9 @@
       },
 
       toggleSize () {
+
         this.$store.commit('editPanel_size', !this.editPanel_large)
+
       },
 
       swipeRight (direction) {
@@ -351,7 +381,6 @@
         if (value && 'value' in value) {
           value.value = ''
         }
-
       },
 
       notEditable (mode) {
