@@ -14,7 +14,7 @@
                    width="18"
                    height="18">
             </div>
-            <span class=""
+            <span class="uk-input-text"
                   v-text="value"></span>
 
           </div>
