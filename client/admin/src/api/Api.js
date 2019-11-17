@@ -15,14 +15,29 @@ if (Vue.config.productionTip) {
 const apiUrl = apiProxy + '/'
 
 export default () => {
-  return axios.create({
-    baseURL:         apiUrl,
-    crossDomain:     true,
-    withCredentials: false,
-    headers:         {
-      'Accept':       'application/json',
-      'Content-type': 'application/x-www-form-urlencoded',
-      'Content-Type': 'application/json'
-    }
-  })
+
+  if (Vue.config.productionTip) {
+    return axios.create({
+      baseURL:         apiUrl,
+      crossDomain:     true,
+      withCredentials: true,
+      headers:         {
+        'Accept':       'application/json',
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json'
+      }
+    })
+  } else {
+    return axios.create({
+      baseURL:         apiUrl,
+      crossDomain:     true,
+      withCredentials: false,
+      headers:         {
+        'Accept':       'application/json',
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
 }
