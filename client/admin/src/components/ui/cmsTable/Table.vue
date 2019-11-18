@@ -329,7 +329,7 @@
 
       tableNotEmpty () {
         if (this.table.body) {
-          return (this.table.body.length > 0)
+          return this.table.body.length > 0
         }
       },
 
@@ -443,6 +443,7 @@
               || item.name.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
               || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
           })
+          //this.$store.commit('table_status_success')
         }
       }
 
