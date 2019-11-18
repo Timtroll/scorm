@@ -1,0 +1,11 @@
+<form method="post" action="http://freee/forum/save_add_theme">
+    <input type="hidden" name="group_id"  value= "<%= $group_id %>"/>
+    <BR>Theme:
+    <BR><textarea name="title" rows=5 cols=40/></textarea>
+    <BR>
+    <BR>Url:
+    <BR><input type="text" name="url"/>
+    <BR><input type="radio" name="status" value=1 >Status active
+    <BR><input type="radio" name="status" value=0 >Status unactive
+    <BR><input type="submit" value="Enter"/>
+</form>

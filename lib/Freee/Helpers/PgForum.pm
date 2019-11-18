@@ -24,7 +24,7 @@ sub register {
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_themes"';
+            my $sql = 'SELECT * FROM "public"."forum_themes" ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
@@ -35,11 +35,13 @@ sub register {
 
     # получение списка сообщений из базы в массив хэшей
     $app->helper( '_list_messages' => sub {
-        my ($self) = @_;
+        my ($self, $id) = @_;
+
+        return unless $id;
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_messages"';
+            my $sql = 'SELECT * FROM "public"."forum_messages" WHERE "theme_id"='.$id.' ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
@@ -54,7 +56,7 @@ sub register {
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_groups"';
+            my $sql = 'SELECT * FROM "public"."forum_groups" ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;
@@ -71,7 +73,7 @@ sub register {
 
         return unless $id;
 
-        my $sql = 'SELECT * FROM "public"."forum" WHERE "id"='.$id;
+        my $sql = 'SELECT * FROM "public"."forum_themes" WHERE "id"='.$id;
         my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
@@ -82,6 +84,25 @@ sub register {
         return $row;
     });
 
+    # читаем одну группу
+    # my $row = $self->_get_theme( 99 );
+    # возвращается строка в виде объекта
+    $app->helper( '_get_group' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $sql = 'SELECT * FROM "public"."forum_groups" WHERE "id"='.$id;
+        my $row;
+        eval {
+            $row = $self->pg_dbh->selectrow_hashref($sql);
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $row;
+    });
+    
     # обновление роута
     # my $id = $self->_update_theme({
     #      "id"         => 1,           - id обновляемого элемента ( >0 )
@@ -101,12 +122,64 @@ sub register {
 
         my $db_result;
         eval {
-            $db_result = $self->pg_dbh->do('UPDATE "public"."forum" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+            $db_result = $self->pg_dbh->do('UPDATE "public"."forum_themes" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
         };
         warn $@ if $@;
         return if $@;
 
         return $db_result;
+    });
+
+    # обновление роута
+    # my $id = $self->_update_theme({
+    #      "id"         => 1,           - id обновляемого элемента ( >0 )
+    #     "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
+    #     "label"       => 'название',  - обязательно (название для отображения)
+    #     "name",       => 'name'       - обязательно (системное название, латиница)
+    #     "readonly"    => 0,           - не обязательно, по умолчанию 0
+    #     "value"       => "",          - строка или json
+    #     "required"    => 0,           - не обязательно, по умолчанию 0
+    #     "status"      => 0            - по умолчанию 1
+    # });
+    # возвращается true/false
+    $app->helper( '_update_group' => sub {
+        my ($self, $data) = @_;
+
+        return unless $data;
+
+        my $db_result;
+        eval {
+            $db_result = $self->pg_dbh->do('UPDATE "public"."forum_groups" SET '.join( ', ', map { "\"$_\"=".$self->pg_dbh->quote( $$data{$_} ) } keys %$data )." WHERE \"id\"=".$self->pg_dbh->quote( $$data{id} )." RETURNING \"id\"") if $$data{id};
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $db_result;
+    });
+    
+
+    # добавление роута
+    # my $id = $self->_insert_group({
+    #     "label"       => 'название',      - название для отображения
+    #     "name",       => 'name',          - системное название, латиница
+    #     "value"       => '{"/theme":1}',  - строка или json для записи или '' - для фолдера
+    #     "status"      => 0                - активность элемента, по умолчанию 1
+    # });
+    # возвращается id роута
+    $app->helper( '_insert_group' => sub {
+        my ($self, $data) = @_;
+        return unless $data;
+
+        my $id;
+        eval{
+            if ( $self->pg_dbh->do('INSERT INTO "public"."forum_groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum_groups', undef, { sequence => 'forum_groups_id_seq' } );
+            };
+        };
+        warn $@ if $@;
+        return if $@;
+
+        return $id;
     });
 
     # добавление роута
@@ -124,8 +197,8 @@ sub register {
 
         my $id;
         eval{
-            if ( $self->pg_dbh->do('INSERT INTO "public"."forum" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
-                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum', undef, { sequence => 'forum_id_seq' } );
+            if ( $self->pg_dbh->do('INSERT INTO "public"."forum_themes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).') RETURNING "id"') ) {
+                $id = $self->pg_dbh->last_insert_id( undef, 'public', 'forum_themes', undef, { sequence => 'forum_themes_id_seq' } );
             };
         };
         warn $@ if $@;
@@ -133,6 +206,7 @@ sub register {
 
         return $id;
     });
+    
 
     # новое сообщение форума
     # my $id = $self->_insert_message();
@@ -208,6 +282,47 @@ sub register {
         return $result;
     });
 
+    # удаление темы
+    # my $true = $self->_delete_theme( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_theme' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'DELETE FROM "public"."forum_themes" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->do( $sql ) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+
+    # удаление группы
+    # my $true = $self->_delete_theme( 99 );
+    # возвращается true/false
+    $app->helper( '_delete_group' => sub {
+        my ($self, $id) = @_;
+
+        return unless $id;
+
+        my $result;
+        my $sql = 'DELETE FROM "public"."forum_groups" WHERE "id"='.$id;
+        eval {
+            $result = $self->pg_dbh->do( $sql ) + 0;
+        };
+
+        warn $@ if $@;
+        return if $@;
+
+        return $result;
+    });
+    
+
     # читаем одно сообщение
     # my $row = $self->_get_message( 99 );
     # возвращается строка в виде объекта
@@ -216,7 +331,7 @@ sub register {
 
         return unless $id;
 
-        my $sql = 'SELECT id, msg, status FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $sql = 'SELECT id, msg, status, theme_id FROM "public"."forum_messages" WHERE "id"='.$id;
         my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
@@ -225,7 +340,7 @@ sub register {
         return if $@;
 
         return $row;
-    });
+    });  
 }
 
 1;

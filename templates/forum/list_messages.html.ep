@@ -1,0 +1,140 @@
+<!doctype html>
+% use Data::Dumper;
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+html, body {
+    height: 100%;
+    font-size: 12px;
+}
+
+.control {
+    float: left;
+    padding-right: 10px;
+    height: 30px;
+}
+
+.messages {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.themes {
+    margin-left: 60px;
+    padding-left: 15px;
+}
+
+.groups {
+    background: #99CC99;
+    float: left;
+    width: 20%;
+    height: 400px;
+}
+
+#container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background:#99CC99;
+    width: 100%;
+    min-height: 95%;
+    align-content: top;
+}
+
+ 
+#navigation {
+    background: #FF9999;
+    width: 100%;
+    height: 5%;
+}
+
+#content {
+    background: #d2d0d2;
+    float: right;
+    width: 50%;
+    min-height: 95%;
+}
+ 
+#clear {
+    clear:both;
+}
+ 
+#footer {
+    background: #0066FF;
+    height: 5%;
+    width: 100%;
+}
+    </style>
+</head> 
+
+<body>
+<div id="container">
+    <div id="navigation">
+%=      include 'forum/messages/navigation_message', group => $group_id, theme => $theme_id
+    </div>
+
+    <div class="groups">
+        <h2>Группы</h2>
+
+        <div class="title">
+%=          include 'forum/groups/group_add_button'
+        </div>
+
+%       foreach my $group( @$list_groups ) {
+%=          include 'forum/groups/list_gro', group => $group
+%           if ( $$group{'id'} == $group_id ) {
+                <br>
+                <br>
+                <div class="themes"> 
+                    <h2>Темы</h2>
+                    <div class="title">
+%=                      include 'forum/themes/theme_add_button', group_id => $$group{'id'}
+                    </div>
+
+%                   foreach my $theme( @$list_themes ) {
+%                       if ( $$theme{'group_id'} == $group_id ) {
+%=                         include 'forum/themes/list_the', theme => $theme
+%                       }
+%                   }
+                </div>
+%           }
+%       }
+    </div>
+
+    <div id="content">
+%       if ( $add ) {
+            <div id="content">
+%=              include 'forum/messages/add_message', theme_id => $theme_id
+            </div>
+%       }
+%       else {
+%           if ( $edit ) {
+                <div id="content">
+%=                  include 'forum/messages/edit_message', message => $edit
+                </div>
+%           }
+%       }
+
+        <div class="messages"> 
+            <h2>Сообщения</h2>
+            <div class="title">
+%=              include 'forum/messages/message_add_button', theme_id => $theme_id
+            </div>
+%           foreach my $message( @$list_messages ) {
+%=              include 'forum/messages/list_mes', message => $message
+%           }
+        </div>
+
+    </div>
+
+    <div id="clear">
+
+    </div>
+
+<!--     <div id="footer">
+        <h2>Подвал сайта</h2>
+    </div> -->
+</div>
+
+</body>
+</html>

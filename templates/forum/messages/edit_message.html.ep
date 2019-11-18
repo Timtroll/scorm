@@ -1,0 +1,9 @@
+<form method="post" action="http://freee/forum/save_edit">
+    <input type="hidden" name="theme_id"  value= "<%= $$message{'theme_id'} %>"/>
+    <input type="hidden" name="id"  value= "<%= $$message{'id'} %>"/>
+    <BR>Message:
+    <BR><textarea name="msg" rows=5 cols=40/><%= $$message{'msg'} %></textarea>
+    <BR><input type="radio" name="status" value=1 >Status active
+    <BR><input type="radio" name="status" value=0 >Status unactive
+    <BR><BR><input type="submit" value="Save"/>
+</form>

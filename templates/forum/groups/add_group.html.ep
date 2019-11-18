@@ -1,0 +1,13 @@
+<div id="message">
+    <form method="post" action="http://freee/forum/save_add_group">
+        <BR>Title:
+        <BR><textarea name="title" rows=5 cols=40/></textarea>
+        <BR>
+        <BR>Name:
+        <BR><textarea name="name" rows=5 cols=40/></textarea>
+        <BR><input type="radio" name="status" value=1 >Status active
+        <BR><input type="radio" name="status" value=0 >Status unactive
+        <BR>
+        <BR><input type="submit" value="Enter"/>
+    </form>
+</div>

@@ -1,0 +1,121 @@
+<!doctype html>
+% use Data::Dumper;
+%= Dumper ( $list_groups );
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+html, body {
+    height: 100%;
+    font-size: 12px;
+}
+
+.control {
+    float: left;
+    padding-right: 10px;
+    height: 30px;
+}
+
+.msg {
+    width: 100%;
+    height: 30px;
+}
+
+.themes {
+    margin-left: 60px;
+    padding-left: 15px;
+}
+
+.groups {
+    background: #99CC99;
+    float: left;
+    width: 20%;
+    height: 400px;
+}
+
+#container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background:#99CC99;
+    width: 100%;
+    min-height: 95%;
+    align-content: top;
+}
+
+ 
+#navigation {
+    background: #FF9999;
+    width: 100%;
+    height: 5%;
+}
+
+#content {
+    background: #d2d0d2;
+    float: right;
+    width: 70%;
+    min-height: 95%;
+}
+ 
+#clear {
+    clear:both;
+}
+ 
+#footer {
+    background: #0066FF;
+    height: 5%;
+    width: 100%;
+}
+    </style>
+</head> 
+
+<body>
+<div id="container">
+
+    <div id="navigation">
+%=      include 'forum/groups/navigation_group'
+    </div>
+
+    <div class="groups">
+
+        <h2>Группы</h2>
+        <div class="title">
+%=          include 'forum/groups/group_add_button'
+        </div>
+
+        <div class="title">
+%           if ( $list_groups ) {
+%               foreach my $group( @$list_groups ) {
+%=                  include 'forum/groups/list_gro', group => $group
+%               }
+%           }
+%           else {
+                <h2>no groups yet</h2>    
+%           }
+        </div>
+
+    </div>
+
+%   if ( $add ) {
+        <div id="content">
+%=          include 'forum/groups/add_group'
+        </div>
+%   }
+%   else {
+%       if ( $edit ) {
+            <div id="content">
+%=               include 'forum/groups/edit_group', group => $edit
+            </div>
+%       }
+%   }
+
+    <div id="clear">
+
+    </div>
+
+    <div id="footer">
+        <h2>Подвал сайта</h2>
+    </div>
+</div>
+
+</body>
+</html>

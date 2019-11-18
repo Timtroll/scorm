@@ -269,29 +269,46 @@ sub register {
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/add_theme'  => {
-                "user_id"       => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os ]
+            },
+            '/forum/save_add_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
-                "date_created"  => [ '', qr/^\d+$/os ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/save_edit_theme' => {
+                "group_id"      => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "url"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
             '/forum/edit_theme'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/del_theme'  => {
-                "id"            => [ '', qr/^\d+$/os ]
-            },
-            '/forum/group'  => {
+                "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "date_created"  => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
+            '/forum/save_add_group'  => {
+                "name"          => [ '', qr/^.*$/os, 256 ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            '/forum/save_edit_group'  => {
+                "id"            => [ '', qr/^\d+$/os ],
+                "name"          => [ '', qr/^.*$/os, 256 ],
+                "title"         => [ '', qr/^.*$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os ]
+            },
+            
             '/forum/edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os ]
             },
@@ -299,25 +316,26 @@ sub register {
                 "id"            => [ '', qr/^\d+$/os ]
             },
             '/forum/add'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ]
+            },
+            '/forum/save_add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os ],
-                "user_id"       => [ '', qr/^\d+$/os ],
-                "anounce"       => [ '', qr/^.*$/os, 256 ],
-                "date_created"  => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "rate"          => [ '', qr/^\d+$/os ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            '/forum/save'  => {
+            '/forum/save_edit'  => {
+                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            
             '/forum/delete'  => {
+                "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
             '/forum/edit'  => {
-                "id"            => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os ]
             },
             'forum_rates'  => {
                 "id"            => [ '', qr/^\d+$/os ],
@@ -329,8 +347,10 @@ sub register {
                 "rate"          => [ '', qr/^\d+$/os ]
             },
             '/forum/toggle'  => {
+                "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
-                "fieldname"     => [ '', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "fieldname"     => [ '', ['status'] ],
+                "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],
                 "value"         => [ '', qr/^[01]$/os ]
             },
         };

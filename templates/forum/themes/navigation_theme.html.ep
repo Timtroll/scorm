@@ -1,0 +1,2 @@
+    <h2><a href="http://freee/forum/list_groups">Groups</a>
+    -> <a href= "<%= "http://freee/forum/list_themes?group_id=".$group %>" >Themes</a>
