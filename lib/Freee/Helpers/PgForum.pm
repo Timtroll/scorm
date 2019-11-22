@@ -20,11 +20,13 @@ sub register {
 
     # получение списка тем из базы в массив хэшей
     $app->helper( '_list_themes' => sub {
-        my ($self) = @_;
+        my ($self, $id) = @_;
+
+        return unless $id;
 
         my $list;
         eval {
-            my $sql = 'SELECT * FROM "public"."forum_themes" ORDER BY date_created DESC';
+            my $sql = 'SELECT * FROM "public"."forum_themes" WHERE "group_id"='.$id.' ORDER BY date_created DESC';
             $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
         };
         warn $@ if $@;

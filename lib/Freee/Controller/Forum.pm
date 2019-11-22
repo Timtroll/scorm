@@ -16,8 +16,7 @@ sub index {
     # $self->redirect_to( '/forum/list_messages' );
     $self->render(
         'template'    => 'forum/forum',
-        'title'       => 'Форум',
-        'list'        => $list
+        'title'       => 'Форум'
     );
 }
 
@@ -26,25 +25,18 @@ sub index {
 sub list_themes {
     my $self = shift;
 
-    my ( $group_id, $list_themes, $list_groups, @mess, $data, $group );
+    my ( $group_id, $list_themes, $resp, @mess);
 
     $group_id = $self->param( 'group_id' );
 
-    $list_themes = $self->_list_themes();
+    $list_themes = $self->_list_themes( $group_id );
     push @mess, "Could not get list Themes" unless $list_themes;
-    
-    $list_groups = $self->_list_groups();
-    push @mess, "Could not get list Groups" unless $list_groups;
 
-    $self->render(
-        'template'    => 'forum/list_themes',
-        'title'       => 'list_themes',
-        'add'         => undef,
-        'edit'        => undef,
-        'list_themes' => $list_themes,
-        'list_groups' => $list_groups,
-        'group_id'    => $group_id
-    );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list_themes unless @mess;
+
+    $self->render( 'json' => $resp );
 }
 
 # вывод формы для добавления темы
@@ -203,18 +195,16 @@ sub del_theme {
 sub list_groups {
     my $self = shift;
 
-    my ( $list, @mess );
+    my ( $list_groups, $resp, @mess );
 
-    $list = $self->_list_groups();
-    push @mess, "Could not get list Groups" unless $list;
+    $list_groups = $self->_list_groups();
+    push @mess, "Could not get list Groups" unless $list_groups;
 
-    $self->render(
-        'template'    => 'forum/list_groups',
-        'title'       => 'list_groups',
-        'add'         => undef,
-        'edit'        => undef,
-        'list_groups' => $list
-    );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list_groups unless @mess;
+
+    $self->render( 'json' => $resp );
 }
 
 # вывод формы для добавления группы
@@ -333,34 +323,49 @@ sub del_group {
 
 #########################################################################################
 # получение списка сообщений из базы в массив хэшей
+# sub list_messages {
+#     my $self = shift;
+
+#     my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $group, @mess);
+
+#     $theme_id = $self->param('theme_id');
+
+#     if ( $theme_id ) {
+#         $theme = $self->_get_theme( $theme_id );
+#         push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
+#         $group_id = $$theme{ 'group_id' };
+#     }
+
+#     $list_messages = $self->_list_messages( $theme_id );
+#     $list_themes = $self->_list_themes();
+#     $list_groups = $self->_list_groups();
+
+#     $self->render(
+#         'template'      => 'forum/list_messages',
+#         'title'         => 'Список сообщений',
+#         'list_messages' => $list_messages,
+#         'list_themes'   => $list_themes,
+#         'list_groups'   => $list_groups,
+#         'theme_id'      => $theme_id,
+#         'group_id'      => $group_id,
+#         'add'           => undef,
+#         'edit'          => undef
+#     );
+# }
 sub list_messages {
     my $self = shift;
 
-    my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $group, @mess);
+    my ( $theme_id, $resp, $list_messages, @mess, @messages );
 
     $theme_id = $self->param('theme_id');
 
-    if ( $theme_id ) {
-        $theme = $self->_get_theme( $theme_id );
-        push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
-        $group_id = $$theme{ 'group_id' };
-    }
-
     $list_messages = $self->_list_messages( $theme_id );
-    $list_themes = $self->_list_themes();
-    $list_groups = $self->_list_groups();
 
-    $self->render(
-        'template'      => 'forum/list_messages',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes,
-        'list_groups'   => $list_groups,
-        'theme_id'      => $theme_id,
-        'group_id'      => $group_id,
-        'add'           => undef,
-        'edit'          => undef
-    );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list_messages unless @mess;
+
+    $self->render( 'json' => $resp );
 }
 
 # вывод формы для добавления сообщения

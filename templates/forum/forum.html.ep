@@ -1,58 +1,100 @@
 <!doctype html>
-% use Data::Dumper;
 <head>
     <title><%= $title %></title>
     <style type="text/css">
+* {
+    margin: 0;
+    padding: 0;
+}
 html, body {
     height: 100%;
     font-size: 12px;
 }
 
-.control {
-    float: left;
-    padding-right: 10px;
-    height: 30px;
+dd {
+    padding-left: 20px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+li {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .msg {
     width: 100%;
     height: 30px;
 }
-
-.themes {
-    margin-left: 60px;
-    padding-left: 15px;
+.btn {
+    float: right;
 }
 
-.groups {
-    background: #99CC99;
+.link {
+    cursor: pointer;
+}
+.link:hover {
+    text-decoration: underline;
+}
+/*------------*/
+.entry_summary {
+    margin-bottom: 5px;
+    min-height: 30px;
+    clear: both;
+}
+.vote_wrapper {
     float: left;
-    width: 20%;
-    height: 400px;
+    padding: 2px;
+    margin: 0;
+    text-align: center;
 }
+.vote {
+    width: 34px;
+    height: 18px;
+    border: 0 solid #c3d6b3;
+    background-color: #fea;
+    padding: 7px;
+    margin-bottom: 2px;
+    text-align: center;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.thin_title {
+    font-weight: 400;
+    text-decoration: underline;
+    line-height: 13pt;
+}
+.entry {
+    text-align: center;
+    padding: 0;
+    margin-left: 65px;
+    min-height: 30px;
+}
+/*------------*/
 
 #container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    background:#99CC99;
+    display: table;
     width: 100%;
-    min-height: 95%;
-    align-content: top;
+    height: 100%;
 }
 
- 
 #navigation {
-    background: #FF9999;
-    width: 100%;
+    display: table-row;
     height: 5%;
 }
-
+ 
+#menu {
+    display: table-cell;
+    width: 30%;
+    height: 100%;
+}
+ 
 #content {
-    background: #d2d0d2;
-    float: right;
+    display: table-cell;
     width: 70%;
-    min-height: 95%;
+    height: 100%;
 }
  
 #clear {
@@ -60,59 +102,43 @@ html, body {
 }
  
 #footer {
-    background: #0066FF;
+    display: table-row;
     height: 5%;
-    width: 100%;
 }
-    </style>
-</head> 
+</style>
+<script src="../js/list_messages.js"></script>
+<link rel="icon" href="../favicon.ico">
+</head>
 
 <body>
+
 <div id="container">
-
-    <div class="groups">
-        <h2>Группы</h2>
-        <div class="title">
-            <form method="post" action="http://freee/forum/group">
-                <input type="submit" value="add"/>
-            </form>
-        </div>
-%       if ( $list_groups ) {
-%           foreach my $g( @$list_groups ) {
-                <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$g{'id'} %>" >
-%               my $group = $$g{'title'};
-%               $group = "(edited)".$group unless $$g{'date_edited'} == $$g{'date_created'};
-%               $group = "(hidden)".$group unless $$g{'status'}      == 1;
-%=              $group;
-                </a></h3>
-                <div>
-                    <form method="post" action="http://freee/forum/del_group" class="control">
-                        <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
-                        <input type="submit" value="delete"/>
-                    </form>
-                    <form method="post" action="http://freee/forum/edit_group" class="control">
-                        <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
-                        <input type="submit" value="edit"/>
-                    </form>
-                    <form method="post" action="http://freee/forum/toggle" class="control">
-                        <input type="hidden" name="value"  value= "<%= $$g{'status'} %>"/>
-                        <input type="hidden" name="table"  value= 'forum_groups'/>
-                        <input type="hidden" name="id"  value= "<%= $$g{'id'} %>"/>
-                        <input type="submit" value="toggle"/>
-                    </form>
-                </div>
-                <br>
-                <br>
-
-%           }
-%       }
-%       else {
-            <h2>no groups yet</h2>    
-%       }
+    <div id="navigation">
+        <h2>Блок навигации</h2>
     </div>
 
-    <div id="clear">
+    <div id="menu">
+        <h2>Группы</h2>
+        <div id="groups"></div>
+    </div>
 
+    <div id="content">
+        <h2 id="add" class="link">Добавить сообщение</h2>
+            <input type="hidden" name="theme_id" id="theme_id" value="">
+            <input type="hidden" name="id" id="id">
+            <BR>Message:
+            <BR><textarea name="msg" id="msg" rows=5 cols=40/></textarea>
+            <BR><label><input type="checkbox" name="status" id="status" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
+        <div id="messages"></div>
+
+        <div id="list_button">
+            <h2 id="list_messages" data-id="3" class="link">
+                list:
+            </h2>
+        </div>
+
+        <div id="list_messages_output"></div>
+        
     </div>
 
     <div id="footer">
