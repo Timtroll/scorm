@@ -1,7 +1,7 @@
 <template>
   <li>
     <label v-text="label || placeholder"
-           class="uk-form-label uk-text-truncate"
+           class="uk-form-label uk-text-bold uk-text-truncate"
            v-if="label || placeholder"/>
 
     <div class="uk-form-controls">
