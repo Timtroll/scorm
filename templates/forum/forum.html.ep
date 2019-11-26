@@ -1,6 +1,7 @@
 <!doctype html>
 <head>
     <title><%= $title %></title>
+    <link rel="stylesheet" type="text/css" href="../css/all.css">
     <style type="text/css">
 * {
     margin: 0;
@@ -131,14 +132,13 @@ li {
             <BR><label><input type="checkbox" name="status" id="status" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
         <div id="messages"></div>
 
-        <div id="list_button">
-            <h2 id="list_messages" data-id="3" class="link">
-                list:
-            </h2>
-        </div>
-
+        <h2>Сообщения</h2>
         <div id="list_messages_output"></div>
-        
+
+<!--         <i class="fas fa-trash"></i>
+        <i class="fas fa-eye"></i>
+        <i class="fas fa-eye-slash"></i>
+ -->
     </div>
 
     <div id="footer">

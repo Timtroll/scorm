@@ -347,9 +347,9 @@ sub register {
                 "rate"          => [ '', qr/^\d+$/os ]
             },
             '/forum/toggle'  => {
-                "parent_id"     => [ '', qr/^\d+$/os ],
+                # "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ],
-                "fieldname"     => [ '', ['status'] ],
+                # "fieldname"     => [ '', ['status'] ],
                 "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],
                 "value"         => [ '', qr/^[01]$/os ]
             },

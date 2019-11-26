@@ -101,24 +101,6 @@ console.log(res.msg);
 // console.log('edit', id);
     }
 
-    function ListMessages() {
-        var data_id = this.getAttribute('data-id');
-        postAjax('http://freee/forum/list_messages', { theme_id: data_id }, function( list ){
-            var res = JSON.parse( list );
-            const messages = [];
-
-            var newUl = document.createElement("ul");
-            var list_tag = document.getElementById('list_messages_output');
-            list_tag.appendChild( newUl );
-
-            res.list.forEach( function( item ) {
-                var newLi = document.createElement("li");
-                    newLi.innerHTML = item.msg;
-                newUl.appendChild( newLi );
-            });                                
-        });
-    }
-
     function ListGroups() {
         postAjax('http://freee/forum/list_groups', {}, function( list ){
             var res = JSON.parse( list );
@@ -138,16 +120,38 @@ console.log(res.msg);
                 groupLi.innerHTML = item.name;
                 // обработчик события клик на группы
                 groupLi.addEventListener('click',function(){ 
-                    DeleteThemeList( list, groupUl ); 
+                    DeleteThemeList( groupUl ); 
                     ListThemes( item.id, groupLi, groupUl );
                 }, false);
                 // li вставляется в ul
                 groupUl.appendChild( groupLi );
+
+                var newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-trash');
+                groupLi.appendChild( newTag );
+                newTag.addEventListener('click',function(){
+                    postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_groups', value: 0 }, function(){}), false;
+                });
+
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye');
+                groupUl.appendChild( newTag );
+                newTag.addEventListener('click',function(){
+                    postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_groups', value: 1 }, function(){}), false;
+                });
+
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye-slash');
+                groupUl.appendChild( newTag );
+                newTag.addEventListener('click',function(){
+                    postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_groups', value: 0 }, function(){}), false;
+                });
+
             });                                
         });
     }
 
-    function DeleteThemeList( list, groupUl ) {
+    function DeleteThemeList( groupUl ) {
         var themeDiv = document.querySelectorAll('.themes');
         for (var i = 0; i < themeDiv.length; i++) {        
             themeDiv[i].parentNode.removeChild( themeDiv[i] );
@@ -165,9 +169,80 @@ console.log(res.msg);
                 var themeLi = document.createElement("dd");
                 themeDiv.appendChild( themeLi );
                 themeLi.innerHTML = item.title;
+                themeLi.addEventListener('click',function(){ 
+                    DeleteMessageList(); 
+                    ListMessages( item.id );
+                }, false);
                 groupUl.insertBefore( themeDiv, groupLi.nextSibling);
+
+                var newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-trash');
+                themeLi.appendChild( newTag );
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye');
+                themeLi.appendChild( newTag );
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye-slash');
+                themeLi.appendChild( newTag );
             });                                
         });
+    }
+
+    function DeleteMessageList() {
+        var container = document.getElementById('list_messages_output');
+
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+    }
+
+    function ListMessages( themeId ) {
+        postAjax('http://freee/forum/list_messages', { theme_id: themeId }, function( list ){
+            var res = JSON.parse( list );
+            const messages = [];
+
+            var newUl = document.createElement("ul");
+            var list_tag = document.getElementById('list_messages_output');
+            list_tag.appendChild( newUl );
+
+            res.list.forEach( function( item ) {
+                var newLi = document.createElement("li");
+                newLi.innerHTML = item.msg;
+                newUl.appendChild( newLi );
+
+                var newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-trash');
+                newLi.appendChild( newTag );
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye');
+                newLi.appendChild( newTag );
+                newTag = document.createElement('i');
+                newTag.setAttribute('class', 'fas fa-eye-slash');
+                newLi.appendChild( newTag );
+            });                                
+        });
+    }
+
+    function CreateButtons() {
+        // add delete action
+        // classname = document.getElementsByClassName('fas fa-trash');
+        // for (var i = 0; i < classname.length; i++) {
+        //     classname[i].addEventListener('click',function(){
+        //     }, false);
+        // }
+        // // add toggle action
+        // classname = document.getElementsByClassName('fas fa-eye');
+        // for (var i = 0; i < classname.length; i++) {
+        //     classname[i].addEventListener('click',function(){
+        //     }, false);
+        // }
+        // add toggle action
+        classname = document.getElementsByClassName('fas fa-eye-slash');
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('click',function(){
+                postAjax('http://freee/forum/toggle', { id: 3, table: 'forum_messages', value: 0}, function(){}), false;
+            });
+        }
     }
 
     function Edit(data) {
@@ -184,9 +259,11 @@ console.log(res.msg);
         });
 // console.log('edit', id);
     }
+
     function Delete(data) {
 console.log('delete');
     }
+
     function Toggle(data) {
 console.log('toggle');
     }
@@ -194,12 +271,10 @@ console.log('toggle');
     document.getElementById('add').addEventListener('click', Add, false);
     document.getElementById('btn').addEventListener('click', Save, false);
 
-    document.getElementById('list_messages').addEventListener('click', ListMessages, false);
 
     var id = 1;
 
     ListGroups();
-
     // postAjax('http://freee/forum/list_themes', { id: id }, function(data){ Draw(data, 'menu'); },  Error );
 
     // postAjax('http://freee/forum/list_messages', { {id: id }, function(data){ Draw(data, 'messages'); }, Error );
