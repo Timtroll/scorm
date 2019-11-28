@@ -187,7 +187,11 @@ sub del_theme {
         push @mess, "Could not delete theme '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'parent_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $del;
+
+    $self->render( 'json' => $resp );
 }
 
 ################################################################################
@@ -318,7 +322,11 @@ sub del_group {
         push @mess, "Could not delete group '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_groups' );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $del;
+
+    $self->render( 'json' => $resp );
 }
 
 #########################################################################################
@@ -522,7 +530,11 @@ sub delete {
         push @mess, "Could not delete message '$$data{'id'}'" unless $del;
     }
 
-    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'parent_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} if $del;
+
+    $self->render( 'json' => $resp );
 }
 
 
