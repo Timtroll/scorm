@@ -19,6 +19,7 @@
     <div id="menu">
         <h2>Группы</h2>
         <div id="groups"></div>
+        <div id="current_path"></div>
     </div>
 
     <div id="content">
