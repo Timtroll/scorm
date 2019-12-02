@@ -101,8 +101,11 @@ console.log(res.msg);
 // console.log('edit', id);
     }
 
-    function ShowGroupList() {
+    // рисование листа групп
+    function DrawGroupList() {
+        // запрос для получения листа групп
         postAjax('http://freee/forum/list_groups', {}, function( list ){
+            // раскодирование json
             var res = JSON.parse( list );
             const groups = [];
             // создаётся тэг ul
@@ -121,12 +124,14 @@ console.log(res.msg);
 
                 var groupSpan = document.createElement('span');
                 groupSpan.innerHTML = item.name;
-                groupSpan.setAttribute('class', 'showThemeList');
+                groupSpan.setAttribute('class', 'groupName');
                 groupLi.appendChild( groupSpan );
+                // рисование листа тем
+                DrawThemeList (item.id, groupLi, groupDiv );
+                // отображение тем этой группы
                 groupSpan.addEventListener('click',function(){
-                    DeleteThemeList();
-                    DeleteMessageList();
-                    ShowThemeList( item.id, groupLi, groupDiv );
+                    HideThemes();
+                    ShowThemes( groupLi );
                 }, false);
 
                 var newTag = document.createElement('i');
@@ -143,7 +148,7 @@ console.log(res.msg);
                     newTag.addEventListener('click',function(){
                         postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_groups', value: 1 }, function( list ){
                             DeleteGroupList();
-                            ShowGroupList();
+                            DrawGroupList();
                         }), false;
                     });
                 } 
@@ -154,7 +159,7 @@ console.log(res.msg);
                     newTag.addEventListener('click',function(){
                         postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_groups', value: 0 }, function( list ){
                             DeleteGroupList();
-                            ShowGroupList();
+                            DrawGroupList();
                         }), false;
                     });
                 }
@@ -175,7 +180,7 @@ console.log(res.msg);
         var res = JSON.parse( list );
         if ( res.status == 'ok' ) {
             DeleteGroupList();
-            ShowGroupList();
+            DrawGroupList();
             DeleteThemeList();
             var pathArray = document.getElementById('current_path').innerHTML.split( ':' );
             if ( res.id == Number( pathArray[0] ) ) {
@@ -183,7 +188,7 @@ console.log(res.msg);
             }
             else {
                 // нужен li открытой группы
-                ShowThemeList( Number( pathArray[0] ), groupLi, groupDiv );
+                DrawThemeList( Number( pathArray[0] ), groupLi, groupDiv );
             }
         }
         else {
@@ -206,7 +211,7 @@ console.log(res.msg);
         }
     }
 
-    function ShowThemeList( groupId, groupLi, groupDiv ) {
+    function DrawThemeList( groupId, groupLi, groupDiv ) {
         var pathDiv = document.getElementById('current_path');
         pathDiv.innerHTML = groupId.toString() + ':';
 
@@ -217,7 +222,7 @@ console.log(res.msg);
 
                 var themeLi = document.createElement('li');
                 themeLi.setAttribute('class', 'themes');
-                groupDiv.insertBefore( themeLi, groupLi.nextSibling);
+                groupLi.appendChild( themeLi );
 
                 var themeSpan = document.createElement('span');
                 themeSpan.innerHTML = item.title;
@@ -241,7 +246,7 @@ console.log(res.msg);
                     newTag.addEventListener('click',function(){
                         postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 1 }, function( list ){
                             DeleteThemeList(); 
-                            ShowThemeList( groupId, groupLi, groupDiv );
+                            DrawThemeList( groupId, groupLi, groupDiv );
                         }), false;
                     });
                 } 
@@ -252,7 +257,7 @@ console.log(res.msg);
                     newTag.addEventListener('click',function(){
                         postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 0 }, function( list ){
                             DeleteThemeList(); 
-                            ShowThemeList( groupId, groupLi, groupDiv );
+                            DrawThemeList( groupId, groupLi, groupDiv );
                         }), false;
                     });
                 }
@@ -262,28 +267,60 @@ console.log(res.msg);
                 themeLi.appendChild( newTag );
                 newTag.addEventListener('click',function(){
                     postAjax('http://freee/forum/del_theme', { id: item.id }, function( list ){
-                        ReDrawTheme( list, groupId, groupLi, groupDiv );
+                        ShowThemes( list, groupId, groupLi, groupDiv );
                     }), false;
                 });
+
+                themeLi.style.display = "none";
             });
         });
     }
 
-    function ReDrawTheme( list, groupId, groupLi, groupDiv ) {
-        var res = JSON.parse( list );
-        if ( res.status == 'ok' ) {
-            var pathArray = document.getElementById('current_path').innerHTML.split( ':' );
-            if ( res.id == Number( pathArray[1] ) ) {
-                DeleteMessageList(); 
-            }
-            DeleteThemeList(); 
-            ShowThemeList( groupId, groupLi, groupDiv );
-        }
-        else {
-            var errorDiv = document.getElementById('error');
-            errorDiv.innerHTML = res.message;
+    function HideThemes( themeId ) {
+        // скрыть все темы
+        var themeList = document.querySelectorAll('.themes');
+        for (var i = 0; i < themeList.length; i++) {        
+            themeList[i].style.display = "none";
         }
     }
+
+    function ShowThemes( groupLi ) {
+        // показать темы текущей группы
+        var nodes = groupLi.childNodes;
+        for (var i = 0; i < nodes.length; i++) {
+            if ( nodes[i].classList.contains( 'themes' ) ){
+                nodes[i].style.display = "block";
+            }
+        }
+    }
+    // function ShowThemess( themeId ) {
+    //     // скрыть все темы
+    //     var themeList = document.querySelectorAll('.themes');
+    //     for (var i = 0; i < themeList.length; i++) {        
+    //         themeList[i].style.display = "none";
+    //     }
+    //     // показать темы текущей группы
+    //     var themeList = document.querySelectorAll("[id=themeId]");
+    //     for (var i = 0; i < themeList.length; i++) {        
+    //         themeList[i].style.display = "block";
+    //     }
+    // }
+
+    // function ReDrawTheme( list, groupId, groupLi, groupDiv ) {
+    //     var res = JSON.parse( list );
+    //     if ( res.status == 'ok' ) {
+    //         var pathArray = document.getElementById('current_path').innerHTML.split( ':' );
+    //         if ( res.id == Number( pathArray[1] ) ) {
+    //             DeleteMessageList(); 
+    //         }
+    //         DeleteThemeList(); 
+    //         DrawThemeList( groupId, groupLi, groupDiv );
+    //     }
+    //     else {
+    //         var errorDiv = document.getElementById('error');
+    //         errorDiv.innerHTML = res.message;
+    //     }
+    // }
 
     function DeleteMessageList() {
         var container = document.getElementById('list_messages_output');
@@ -420,7 +457,7 @@ console.log('toggle');
 
     var id = 1;
 
-    ShowGroupList();
+    DrawGroupList();
     // postAjax('http://freee/forum/list_themes', { id: id }, function(data){ Draw(data, 'menu'); },  Error );
 
     // postAjax('http://freee/forum/list_messages', { {id: id }, function(data){ Draw(data, 'messages'); }, Error );
