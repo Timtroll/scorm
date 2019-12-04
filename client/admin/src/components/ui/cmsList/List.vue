@@ -38,6 +38,7 @@
       <a class="pos-card-header-item uk-text-danger link"
          @click.prevent="close">
         <img src="/img/icons/icon__close.svg"
+             class="uk-button-icon-fix"
              uk-svg
              width="16"
              height="16">
@@ -77,7 +78,7 @@
                v-if="loader === 'loading'">
             <div>
               <loader :width="40"
-                      :height="40"></Loader>
+                      :height="40"/>
               <div class="uk-margin-small-top"
                    v-text="$t('actions.loading')"></div>
             </div>
