@@ -35,6 +35,7 @@
 </template>
 
 <script>
+  import ResizeObserver from 'resize-observer-polyfill'
   import {clone} from '../../../store/methods'
 
   export default {
@@ -78,7 +79,16 @@
         })
       }
       this.mainNav = clone(this.allNav)
-      this.width   = this.$refs.listMenu.clientWidth
+      //this.width   = this.$refs.listMenu.clientWidth
+
+      const observer = new ResizeObserver(entries => {
+        entries.forEach(entry => {
+          const cr   = entry.contentRect
+          this.width = cr.width.toFixed(0)
+        })
+      })
+
+      observer.observe(this.$refs.listMenu)
 
       this.$nextTick(() => { })
 
