@@ -10,27 +10,19 @@
 
 <body>
 
-<div id="error"></div>
-<div id="container">
-    <div id="navigation">
+<div class="error"></div>
+<div class="container">
+    <div class="navigation">
         <h2>Блок навигации</h2>
     </div>
 
-    <div id="menu">
+    <div class="menu">
         <h2>Группы</h2>
         <div id="groups"></div>
-        <div id="current_path"></div>
+        <div class="current_path"></div>
     </div>
 
-    <div id="content">
-        <h2 id="add" class="link">Добавить сообщение</h2>
-            <input type="hidden" name="theme_id" id="theme_id" value="">
-            <input type="hidden" name="id" id="id">
-            <BR>Message:
-            <BR><textarea name="msg" id="msg" rows=5 cols=40/></textarea>
-            <BR><label><input type="checkbox" name="status" id="status" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
-        <div id="messages"></div>
-
+    <div class="content">
         <h2>Сообщения</h2>
         <div id="list_messages_output"></div>
 
@@ -40,7 +32,7 @@
  -->
     </div>
 
-    <div id="footer">
+    <div class="footer">
         <h2>Подвал сайта</h2>
     </div>
 </div>

@@ -9,34 +9,36 @@ html, body {
 
 li {
     list-style-type: none; /* Убираем маркеры */
+    text-align: left;
 }
 li:hover {
     cursor: pointer;
 }
 
 .groupName {
-    width: 200px;
+    width: 395px;
     white-space: nowrap; /* Отменяем перенос текста */
     overflow: hidden; /* Обрезаем содержимое */
     display: block;
     float: left;
-    margin-bottom: 5px;
+    text-overflow: ellipsis;  /*Добавляем многоточие*/ 
+    /*margin-bottom: 5px;*/
+    min-height: 12px;
+    height: 15px;
 }
-.groupName:after {
-    content: ''; /* Выводим элемент */
-    right: 0; top: 0; /* Положение элемента */
-    width: 40px; /* Ширина градиента*/
-    height: 100%; /* Высота родителя */
-    /* Градиент */
-    background: -moz-linear-gradient(left, rgba(255,204,0, 0.2), #fc0 100%);
-    background: -webkit-linear-gradient(left, rgba(255,204,0, 0.2), #fc0 100%);
-    background: -o-linear-gradient(left, rgba(255,204,0, 0.2), #fc0 100%);
-    background: -ms-linear-gradient(left, rgba(255,204,0, 0.2), #fc0 100%);
-    background: linear-gradient(to right, rgba(255,204,0, 0.2), #fc0 100%);
+
+.groupLine{
+    width: 470px;
+    height: 15px;
+    min-height: 15px;
+    display: block;
+    margin-bottom: 10px;
 }
 
 .themes{
     margin-left: 30px;
+    margin-right: 0px;
+    display: block;
 }
 
 .msg {
@@ -91,41 +93,41 @@ li:hover {
 }
 /*------------*/
 
-#error {
+.current_path {
+    display: none;
+}
+
+.error {
     width: 100%;
     text-align: center;
     color:#0000ff;
     font-size: 250%;
 }
 
-#container {
+.container {
     display: table;
     width: 100%;
     height: 100%;
 }
 
-#navigation {
+.navigation {
     display: table-row;
     height: 5%;
 }
  
-#menu {
+.menu {
     display: table-cell;
     width: 30%;
     height: 100%;
 }
  
-#content {
+.content {
     display: table-cell;
     width: 70%;
     height: 100%;
 }
  
-#clear {
-    clear:both;
-}
- 
-#footer {
+.footer {
     display: table-row;
     height: 5%;
 }
