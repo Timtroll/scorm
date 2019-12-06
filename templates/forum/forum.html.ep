@@ -11,18 +11,50 @@
 <body>
 
 <div class="error"></div>
+
 <div class="container">
     <div class="navigation">
         <h2>Блок навигации</h2>
     </div>
 
     <div class="menu">
-        <h2>Группы</h2>
+        <h2 id="menuButton">Группы</h2>
         <div id="groups"></div>
         <div class="current_path"></div>
     </div>
 
     <div class="content">
+        <div>
+            <div id="formGroup" style="display: none;">
+                Добавить новую группу
+                <textarea id="name" name="name" rows="5" cols="40"></textarea>
+                <textarea id="groupTitle" name="title" rows="5" cols="40"></textarea>
+                <label>
+                    <input id="groupStatus" type="checkbox" name="status" checked="checked" value="true">
+                    <button id="formGroupButton" >Добавить</button>
+                </label>
+            </div>
+            <div id="formTheme" style="display: none;">
+                Добавить новую тему
+                <input id="parentGroupId" type="hidden" name="parentId">
+                <textarea id="themeTitle" name="title" rows="5" cols="40"></textarea>
+                <textarea id="url" name="url" rows="5" cols="40"></textarea>
+                <label>
+                    <input id="themeStatus" type="checkbox" name="status" checked="checked" value="true">
+                    <button id="formThemeButton">Добавить</button>
+                </label>
+                <input id="parentThemeId" type="hidden" name="parentId">
+            </div>
+            <div id="formMessage" style="display: none;">
+                Написать новое сообщение
+                <textarea id="msg" name="msg" rows="5" cols="40"></textarea>
+                <label>
+                    <input id="messageStatus" type="checkbox" name="status" checked="checked" value="true">
+                    <button id="formMessageButton">Отправить</button>
+                </label>
+            </div>
+        </div>
+
         <h2>Сообщения</h2>
         <div id="list_messages_output"></div>
     </div>
