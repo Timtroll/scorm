@@ -334,7 +334,6 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
             '/forum/edit'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ],
                 "id"            => [ '', qr/^\d+$/os ]
             },
             'forum_rates'  => {

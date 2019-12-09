@@ -137,7 +137,7 @@ sub save_edit_theme {
 sub edit_theme {
     my $self = shift;
 
-    my ($id, $group_id, $data, $list_themes, $list_groups, $error, @mess);
+    my ($data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -145,29 +145,17 @@ sub edit_theme {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        $data = $self->_get_theme( $$data{'id'} );
-        push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
-
-        $list_themes = $self->_list_themes();
-        push @mess, "Could not get list_themes" unless $list_themes;
-
-        $list_groups = $self->_list_groups();
-        push @mess, "Could not get list Groups" unless $list_groups;
-
-        $group_id = $$data{'group_id'};
+        if ($data) {
+            $data = $self->_get_theme( $$data{'id'} );
+            push @mess, "Could not get theme '".$$data{'id'}."'" unless $data;
+        }
     }
 
-    unless  (@mess) {
-        $self->render(
-            'template'    => 'forum/list_themes',
-            'title'       => 'edit_theme',
-            'add'         => undef,
-            'edit'        => $data,
-            'list_themes' => $list_themes,
-            'list_groups' => $list_groups,
-            'group_id'    => $group_id
-        );
-    };
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'theme'} = $data if $data;
+
+    $self->render( 'json' => $resp );
 }
 
 # удаляет тему по id 
@@ -289,20 +277,23 @@ sub save_edit_group {
 sub edit_group {
     my $self = shift;
 
-    my @mess;
+    my ($data, $edit, $error, $resp, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    my $edit = $self->_get_group( $self->param('id') );
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
 
-    my $list = $self->_list_groups();
-    push @mess, "Could not get list Groups" unless $list;
+        $edit = $self->_get_group( $$data{'id'} );
+        push @mess, "Could not get group '$$data{'id'}'" unless $edit;
+    }
 
-    $self->render(
-        'template'    => 'forum/list_groups',
-        'title'       => 'list_groups',
-        'add'         => undef,
-        'edit'        => $edit,
-        'list_groups' => $list
-    );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'group'} = $edit if $edit;
+
+    $self->render( 'json' => $resp );
 }
 
 # удаляет группу по id 
@@ -329,37 +320,6 @@ sub del_group {
     $self->render( 'json' => $resp );
 }
 
-#########################################################################################
-# получение списка сообщений из базы в массив хэшей
-# sub list_messages {
-#     my $self = shift;
-
-#     my ( $theme_id, $group_id, $theme, $list_messages, $list_themes, $list_groups, $group, @mess);
-
-#     $theme_id = $self->param('theme_id');
-
-#     if ( $theme_id ) {
-#         $theme = $self->_get_theme( $theme_id );
-#         push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
-#         $group_id = $$theme{ 'group_id' };
-#     }
-
-#     $list_messages = $self->_list_messages( $theme_id );
-#     $list_themes = $self->_list_themes();
-#     $list_groups = $self->_list_groups();
-
-#     $self->render(
-#         'template'      => 'forum/list_messages',
-#         'title'         => 'Список сообщений',
-#         'list_messages' => $list_messages,
-#         'list_themes'   => $list_themes,
-#         'list_groups'   => $list_groups,
-#         'theme_id'      => $theme_id,
-#         'group_id'      => $group_id,
-#         'add'           => undef,
-#         'edit'          => undef
-#     );
-# }
 sub list_messages {
     my $self = shift;
 
@@ -477,7 +437,7 @@ sub save_edit {
 sub edit {
     my $self = shift;
 
-    my ($id, $list_messages, $list_themes, $list_groups, $theme, $group_id, $data, $error, @mess);
+    my ($data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -489,28 +449,13 @@ sub edit {
             $data = $self->_get_message( $$data{'id'} );
             push @mess, "Could not get message '".$$data{'id'}."'" unless $data;
         }
-
-        if ( $$data{'theme_id'} ) {
-            $theme = $self->_get_theme( $$data{'theme_id'} );
-            push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
-            $group_id = $$theme{ 'group_id' };
-        }
-        $list_messages = $self->_list_messages( $$data{'theme_id'} );
-        $list_themes = $self->_list_themes();
-        $list_groups = $self->_list_groups();
     }
 
-    $self->render(
-        'template'      => 'forum/list_messages',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes,
-        'list_groups'   => $list_groups,
-        'theme_id'      => $$data{'theme_id'},
-        'group_id'      => $group_id,
-        'add'           => undef,
-        'edit'          => $data
-    );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'msg'} = $data if $data;
+
+    $self->render( 'json' => $resp );
 }
 
 # удалениe сообщения 
