@@ -39,45 +39,11 @@ sub list_themes {
     $self->render( 'json' => $resp );
 }
 
-# вывод формы для добавления темы
-sub add_theme {
-    my $self = shift;
-
-    my ($id, $group_id, $data, $list_themes, $list_groups, $error, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
-
-    unless (@mess) {
-        # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
-
-        $list_themes = $self->_list_themes();
-        push @mess, "Could not get list_themes" unless $list_themes;
-
-        $list_groups = $self->_list_groups();
-        push @mess, "Could not get list Groups" unless $list_groups;
-
-        $group_id = $$data{'group_id'};
-    }
-
-    unless  (@mess) {
-        $self->render(
-            'template'    => 'forum/list_themes',
-            'title'       => 'add_theme',
-            'add'         => 1,
-            'edit'        => undef,
-            'list_themes' => $list_themes,
-            'list_groups' => $list_groups,
-            'group_id'    => $group_id
-        );
-    };
-}
-
 # сохранение данных из формы после добавления новой темы
 sub save_add_theme {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
+    my ($id, $data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -96,14 +62,18 @@ sub save_add_theme {
         }
     }
 
-    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # сохранение данных из формы, после редактирования существующей темы
 sub save_edit_theme {
     my ($self) = shift;
 
-    my ( $id, $parent, $data, $error, @mess );
+    my ( $id, $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -129,7 +99,11 @@ sub save_edit_theme {
         }
     }
 
-    $self->redirect_to( '/forum/list_themes?group_id='.$$data{'group_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # выводит форму с данными существующей темы
@@ -199,29 +173,11 @@ sub list_groups {
     $self->render( 'json' => $resp );
 }
 
-# вывод формы для добавления группы
-sub add_group {
-    my $self = shift;
-
-    my ( $list, @mess );
-
-    $list = $self->_list_groups();
-    push @mess, "Could not get list Groups" unless $list;
-
-    $self->render(
-        'template'    => 'forum/list_groups',
-        'title'       => 'list_groups',
-        'add'         => 1,
-        'edit'        => undef,
-        'list_groups' => $list
-    );
-}
-
 # сохранение данных из формы после добавления новой группы
 sub save_add_group {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
+    my ($id, $data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -238,14 +194,18 @@ sub save_add_group {
         }
     }
 
-    $self->redirect_to( '/forum/list_groups' );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # сохранение данных из формы, после редактирования существующей группы
 sub save_edit_group {
     my ($self) = shift;
 
-    my ( $id, $parent, $data, $error, @mess );
+    my ( $id, $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -269,7 +229,11 @@ sub save_edit_group {
         }
     }
 
-    $self->redirect_to( '/forum/list_groups' );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # выводит форму с данными о существующей группе
@@ -336,46 +300,11 @@ sub list_messages {
     $self->render( 'json' => $resp );
 }
 
-# вывод формы для добавления сообщения
-sub add {
-    my $self = shift;
-
-    my ($id, $list_messages, $list_themes, $list_groups, $theme, $group_id, $data, $error, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
-
-    unless (@mess) {
-        # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
-print $$data{'theme_id'};
-        if ( $$data{'theme_id'} ) {
-            $theme = $self->_get_theme( $$data{'theme_id'} );
-            push @mess, "Could not get theme '".$$theme{'id'}."'" unless $theme;
-            $group_id = $$theme{ 'group_id' };
-        }
-        $list_messages = $self->_list_messages( $$data{'theme_id'} );
-        $list_themes = $self->_list_themes();
-        $list_groups = $self->_list_groups();
-    }
-
-    $self->render(
-        'template'      => 'forum/list_messages',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes,
-        'list_groups'   => $list_groups,
-        'theme_id'      => $$data{'theme_id'},
-        'group_id'      => $group_id,
-        'add'           => 1,
-        'edit'          => undef
-    );
-}
-
 # сохранение данных из формы после добавления нового сообщения
 sub save_add {
     my $self = shift;
 
-    my ($id, $data, $error, @mess);
+    my ($id, $data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -395,14 +324,18 @@ sub save_add {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # сохранение данных из формы, после редактирования существующего сообщения
 sub save_edit {
     my ($self) = shift;
 
-    my ( $id, $parent, $data, $error, @mess );
+    my ( $id, $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -429,7 +362,11 @@ sub save_edit {
         }
     }
 
-    $self->redirect_to( '/forum/list_messages?theme_id='.$$data{'theme_id'} );
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id if $id;
+
+    $self->render( 'json' => $resp );
 }
 
 # выводит форму с данными о существующем сообщении

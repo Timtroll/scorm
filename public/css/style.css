@@ -14,6 +14,14 @@ li {
 li:hover {
     cursor: pointer;
 }
+.navigationLine {
+    float: left;
+    cursor: pointer;
+}
+
+.navigationLine:hover {
+    text-decoration: underline;
+}
 
 .groupName {
     width: 380px;

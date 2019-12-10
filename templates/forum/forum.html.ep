@@ -14,54 +14,68 @@
 
 <div class="container">
     <div class="navigation">
-        <h2>Блок навигации</h2>
+        <i class = "navigationLine" id = "navigationGroups" ><h2>Группы</h2></i>
+        <i class = "navigationLine" id = "navigationThemes" ><h2>&nbsp -> &nbsp Темы</h2></i>
+        <i class = "navigationLine" id = "navigationMessages" ><h2>&nbsp -> &nbsp Сообщения</h2></i>
     </div>
 
-    <div class="menu">
-        <h2 id="menuButton">Группы</h2>
-        <div id="groups">
-            <div id="groupDiv"></div>
+    <div class = "menu">
+    <BR>
+        <h2 id = "menuButton">Группы</h2>
+        <div id = "groups">
+            <div id = "groupDiv"></div>
         </div>
-        <div class="current_path"></div>
+        <div class = "current_path"></div>
     </div>
 
-    <div class="content">
+    <div class = "content">
         <div>
-            <div id="formGroup" style="display: none;">
-                <h2 id =groupText></h2>
-                <input id="groupId" type="hidden" name="groupId">
-                <textarea id="name" name="name" rows="5" cols="40"></textarea>
-                <textarea id="groupTitle" name="title" rows="5" cols="40"></textarea>
+            <div id = "formGroup" style = "display: none;">
+                <h2 id = groupText></h2>
+                <input id = "groupId" type = "hidden" name = "groupId">
+                <BR>
+                <h2>Name</h2>
+                <textarea id = "name" name = "name" rows = "1" cols = "40"></textarea>
+                <h2>Title</h2>
+                <textarea id = "groupTitle" name = "title" rows = "1" cols = "40"></textarea>
+                <BR>
                 <label>
-                    <input id="groupStatus" type="checkbox" name="status" checked="checked">
-                    <button id="formGroupButton"></button>
+                    <input id = "groupStatus" type = "checkbox" name = "status" checked = "checked">
+                    <button id = "formGroupButton"></button>
                 </label>
             </div>
 
-            <div id="formTheme" style="display: none;">
+            <div id = "formTheme" style = "display: none;">
                 <h2 id = themeText></h2>
-                <input id="themeId" type="hidden" name="themeId">
-                <textarea id="themeTitle" name="title" rows="5" cols="40"></textarea>
-                <textarea id="url" name="url" rows="5" cols="40"></textarea>
+                <input id = "themeId" type = "hidden" name = "themeId">
+                <BR>
+                <h2>Title</h2>
+                <textarea id = "themeTitle" name = "title" rows = "1" cols = "40"></textarea>
+                <h2>Url</h2>
+                <textarea id = "url" name="url" rows = "1" cols = "40"></textarea>
+                <BR>
                 <label>
-                    <input id="themeStatus" type="checkbox" name="status" checked="checked">
-                    <button id="formThemeButton">Добавить</button>
+                    <input id = "themeStatus" type = "checkbox" name = "status" checked = "checked">
+                    <button id = "formThemeButton">Добавить</button>
                 </label>
-                <input id="parentGroupId" type="hidden" name="parentId">
+                <input id = "parentGroupId" type = "hidden" name = "parentId">
             </div>
 
-            <div id="formMessage" style="display: none;">
+            <div id = "formMessage" style = "display: none;">
                 <h2 id = messageText></h2>
-                <input id="messageId" type="hidden" name="messageId">
-                <textarea id="msg" name="msg" rows="5" cols="40"></textarea>
+                <input id = "messageId" type = "hidden" name = "messageId">
+                <BR>
+                <h2>Message</h2>
+                <textarea id = "msg" name = "msg" rows = "5" cols = "40"></textarea>
+                <BR>
                 <label>
-                    <input id="messageStatus" type="checkbox" name="status" checked="checked">
-                    <button id="formMessageButton"></button>
+                    <input id = "messageStatus" type = "checkbox" name = "status" checked = "checked">
+                    <button id = "formMessageButton"></button>
                 </label>
-                <input id="parentThemeId" type="hidden" name="parentId">
+                <input id = "parentThemeId" type="hidden" name = "parentId">
             </div>
         </div>
-
+        <BR>
         <h2>Сообщения</h2>
         <div id="list_messages_output"></div>
     </div>
