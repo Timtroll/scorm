@@ -4,7 +4,7 @@
       <div>
         <label v-text="label"
                class="uk-form-label uk-text-truncate"
-               v-if="label"/>
+               v-if="label"></label>
 
         <div class="uk-form-controls">
           <div class="uk-input cursor-pointer"
@@ -14,13 +14,13 @@
               <div class="uk-width-expand uk-flex-middle uk-flex"
                    v-if="notEmptyEditValues.length > 0">
               <span class="uk-margin-small-right"
-                    v-text="$t('actions.total')"/>
+                    v-text="$t('actions.total')"></span>
                 <span class="uk-badge uk-label-danger"
-                      v-text="notEmptyEditValues.length"/>
+                      v-text="notEmptyEditValues.length"></span>
               </div>
               <div class="uk-width-expand"
                    v-else
-                   v-text="$t('actions.empty')"/>
+                   v-text="$t('actions.empty')"></div>
 
               <!--edit Options toggle-->
               <div class="uk-width-auto"

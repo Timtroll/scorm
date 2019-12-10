@@ -4,7 +4,7 @@
       <div>
         <label v-text="label"
                class="uk-form-label uk-text-truncate"
-               v-if="label"/>
+               v-if="label"></label>
 
         <div class="uk-form-controls">
           <div class="uk-inline uk-width-1-1">
@@ -14,7 +14,7 @@
                    width="18"
                    height="18">
             </div>
-            <span class=""
+            <span class="uk-input-text"
                   v-text="value"></span>
 
           </div>

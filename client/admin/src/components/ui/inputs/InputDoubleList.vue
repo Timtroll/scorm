@@ -4,7 +4,7 @@
       <div>
         <label v-text="label || placeholder"
                class="uk-form-label uk-text-truncate"
-               v-if="label || placeholder"/>
+               v-if="label || placeholder"></label>
         <div class="uk-form-controls">
           <div class="uk-grid-small"
                uk-grid>

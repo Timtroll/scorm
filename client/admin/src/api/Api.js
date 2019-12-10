@@ -11,18 +11,20 @@ let apiProxy = ''
 if (Vue.config.productionTip) {
   apiProxy = 'https://cors-c.herokuapp.com/https://freee.su/' // для Localhost  https://cors-c.herokuapp.com
 }
+axios.defaults.withCredentials = !Vue.config.productionTip
 
 const apiUrl = apiProxy + '/'
 
 export default () => {
+
   return axios.create({
-    baseURL:         apiUrl,
-    crossDomain:     true,
-    withCredentials: false,
-    headers:         {
+    baseURL:     apiUrl,
+    crossDomain: true,
+    headers:     {
       'Accept':       'application/json',
       'Content-type': 'application/x-www-form-urlencoded',
       'Content-Type': 'application/json'
     }
   })
+
 }

@@ -171,15 +171,15 @@
 
           <tbody>
           <TableRow
-              :row-data="row"
-              :mass-edit="massEdit"
-              :editable="table.settings.editable"
-              :removable="table.settings.removable"
-              :full-data="filterSearch[index]"
-              :checked-all="checked"
-              v-for="(row, index) in tableRows"
-              v-on:check="checkedAll"
-              :key="index">
+                  :row-data="row"
+                  :mass-edit="massEdit"
+                  :editable="table.settings.editable"
+                  :removable="table.settings.removable"
+                  :full-data="filterSearch[index]"
+                  :checked-all="checked"
+                  v-for="(row, index) in tableRows"
+                  v-on:check="checkedAll"
+                  :key="index">
           </TableRow>
           </tbody>
 
@@ -208,6 +208,22 @@
             </button>
           </div>
         </div>
+
+        <!--// empty search result-->
+        <div class="uk-position-cover uk-flex uk-flex-center uk-flex-middle uk-text-muted"
+             v-if="tableEmptySearchResult">
+          <div class="uk-flex-center uk-flex uk-flex-column">
+
+            <img src="/img/icons/icon__search.svg"
+                 class="uk-margin-auto"
+                 width="40"
+                 height="40"
+                 uk-svg>
+            <div class="uk-text-center uk-margin-top" v-html="$t('actions.searchError')"></div>
+
+          </div>
+        </div>
+
       </div>
     </template>
 
@@ -282,12 +298,20 @@
 
     async mounted () {
 
+      this.searchInput = null
+
       //if (this.notEmptyTable === 'error') {
       //  this.$store.commit('card_right_show', false)
       //  this.$store.commit('tree_active', this.tableId)
       //  await this.$store.dispatch(this.table_api.get, this.tableId)
       //}
 
+    },
+
+    beforeRouteUpdate (to, from, next) {
+      // просто используйте `this`
+      this.searchInput = null
+      next()
     },
 
     beforeDestroy () {
@@ -304,8 +328,14 @@
       table_api () {return this.$store.getters.table_api},
 
       tableNotEmpty () {
-        if (this.tableRows) {
-          return this.tableRows.length > 0
+        if (this.table.body) {
+          return this.table.body.length > 0
+        }
+      },
+
+      tableEmptySearchResult () {
+        if (this.searchInput) {
+          return this.filterSearch.length === 0
         }
       },
 
@@ -413,6 +443,7 @@
               || item.name.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
               || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
           })
+          //this.$store.commit('table_status_success')
         }
       }
 
