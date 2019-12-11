@@ -76,7 +76,7 @@
             </div>
         </div>
         <BR>
-        <h2>Сообщения</h2>
+        <h2 id = nameplateMessage>Сообщения</h2>
         <div id="list_messages_output"></div>
     </div>
 
