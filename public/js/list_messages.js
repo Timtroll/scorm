@@ -30,36 +30,29 @@ window.onload = function() {
         return xhr;
     }
 
-    // меню навигации
-    function DrawNavigation() {
-        // группы
-        var navigationGroups = document.getElementById('navigationGroups');
-        navigationGroups.addEventListener('click',function(){
-            DeleteMessageList();
-            HideThemes();
-            document.getElementById('navigationThemes').style.display   = 'none';
-            document.getElementById('navigationMessages').style.display = 'none';
-        });
-
-        // темы
-        var navigationThemes = document.getElementById('navigationThemes');
-        navigationThemes.addEventListener('click',function(){
-            DeleteMessageList();
-            document.getElementById('navigationMessages').style.display = 'none';
-        });
-        navigationThemes.style.display = 'none';
-
-        // сообщения
-        document.getElementById('navigationMessages').style.display = 'none';
+    // скрыть этот элемент
+    function Hide( element ) {
+        if ( element.classList.contains('show') ){
+            element.classList.remove('show');
+        }
+        element.classList.add('hide');
     }
 
-    //рисование формы добавления/редактирования
+    // показать этот элемент
+    function Show( element ) {
+        if ( element.classList.contains('hide') ){
+            element.classList.remove('hide');
+        }
+        element.classList.add('show');
+    }
+
+    //рисование формы добавления или редактирования
     function DrawForm() {
         var formGroupButton = document.getElementById('formGroupButton');
         formGroupButton.addEventListener('click',function(){
             //обработка статуса
             var groupStatus = document.getElementById('groupStatus');
-            if ( groupStatus.checked == true) {
+            if ( groupStatus.checked ) {
                 groupStatus.value = 1;
             }
             else {
@@ -85,7 +78,7 @@ window.onload = function() {
                     status : groupStatus.value,
                 }, function(list ){
                     ReDrawGroup( list );
-                    document.getElementById('formGroup').style.display = 'none';
+                    Hide( document.getElementById('formGroup') );
                 });
             }
         }, false);
@@ -93,7 +86,7 @@ window.onload = function() {
         var formThemeButton = document.getElementById('formThemeButton');
         formThemeButton.addEventListener('click',function(){
             var themeStatus = document.getElementById('themeStatus');
-            if ( themeStatus.checked == true) {
+            if ( themeStatus.checked ) {
                 themeStatus.value = 1;
             } else {
                 themeStatus.value = 0;
@@ -119,7 +112,7 @@ window.onload = function() {
                     status : themeStatus.value,
                 }, function( list ){
                     ReDrawTheme( list );
-                    document.getElementById('formTheme').style.display = 'none';
+                    Hide( document.getElementById('formTheme') );
                 });
             }
         }, false);
@@ -127,10 +120,9 @@ window.onload = function() {
         var formMessageButton = document.getElementById('formMessageButton');
         formMessageButton.addEventListener('click',function(){
             var messageStatus = document.getElementById('messageStatus');
-            if ( messageStatus.checked == true) {
+            messageStatus.value = 0;
+            if ( messageStatus.checked ) {
                 messageStatus.value = 1;
-            } else {
-                messageStatus.value = 0;
             }
             if ( document.getElementById('messageId').value == 'add') {
                 postAjax('http://freee/forum/save_add', {
@@ -162,7 +154,7 @@ window.onload = function() {
                     if ( res.status == 'ok' ) {
                         DeleteMessageList();
                         DrawMessageList( parentThemeId.value );
-                        document.getElementById('formMessage').style.display = 'none';
+                        Hide( document.getElementById('formMessage') );
                     }
                     else {
                         var errorDiv = document.getElementsByClassName('error');
@@ -182,9 +174,10 @@ window.onload = function() {
         document.getElementById('groupStatus').checked       = 'true';
         document.getElementById('groupText').innerHTML       = 'Добавить новую группу';
         document.getElementById('formGroupButton').innerText = 'Добавить';
-        document.getElementById('formGroup').style.display   = 'block';
-        document.getElementById('formTheme').style.display   = 'none';
-        document.getElementById('formMessage').style.display = 'none';
+        Show( document.getElementById('formGroup') );
+        Hide( document.getElementById('formTheme') );
+        Hide( document.getElementById('formMessage') );
+        DeleteMessageList();
     };
 
     // показывание формы редактирования группы
@@ -198,9 +191,10 @@ window.onload = function() {
                 document.getElementById('groupStatus').checked       = res.group.status ? true : false;
                 document.getElementById('groupText').innerHTML       = 'Редактировать группу';
                 document.getElementById('formGroupButton').innerText = 'Сохранить';
-                document.getElementById('formGroup').style.display   = 'block';
-                document.getElementById('formTheme').style.display   = 'none';
-                document.getElementById('formMessage').style.display = 'none';
+                Show( document.getElementById('formGroup') );
+                Hide( document.getElementById('formTheme') );
+                Hide( document.getElementById('formMessage') );
+                DeleteMessageList();
             }
             else {
                 var errorDiv = document.getElementsByClassName('error');
@@ -218,9 +212,10 @@ window.onload = function() {
         document.getElementById('parentGroupId').value         = id;
         document.getElementById('themeText').innerHTML         = 'Добавить тему';
         document.getElementById('formThemeButton').innerText   = 'Добавить';
-        document.getElementById('formGroup').style.display     = 'none';
-        document.getElementById('formTheme').style.display     = 'block';
-        document.getElementById('formMessage').style.display   = 'none';
+        Hide( document.getElementById('formGroup') );
+        Show( document.getElementById('formTheme') );
+        Hide( document.getElementById('formMessage') );
+        DeleteMessageList();
     };
 
     // показывание формы редактирования темы
@@ -235,9 +230,10 @@ window.onload = function() {
                 document.getElementById('parentGroupId').value         = res.theme.group_id;
                 document.getElementById('themeText').innerHTML         = 'Редактировать тему';
                 document.getElementById('formThemeButton').innerText   = 'Сохранить';
-                document.getElementById('formGroup').style.display     = 'none';
-                document.getElementById('formTheme').style.display     = 'block';
-                document.getElementById('formMessage').style.display   = 'none';
+                Hide( document.getElementById('formGroup') );
+                Show( document.getElementById('formTheme') );
+                Hide( document.getElementById('formMessage') );
+                DeleteMessageList();
             }
             else {
                 var errorDiv = document.getElementsByClassName('error');
@@ -254,9 +250,10 @@ window.onload = function() {
         document.getElementById('parentThemeId').value         = id;
         document.getElementById('messageText').innerHTML       = 'Добавить сообщение';
         document.getElementById('formMessageButton').innerText = 'Добавить';
-        document.getElementById('formGroup').style.display     = 'none';
-        document.getElementById('formTheme').style.display     = 'none';
-        document.getElementById('formMessage').style.display   = 'block';
+        Hide( document.getElementById('formGroup') );
+        Hide( document.getElementById('formTheme') );
+        Show( document.getElementById('formMessage') );
+        DeleteMessageList();
     };
 
     // показывание формы редактирования сообщения
@@ -271,9 +268,10 @@ window.onload = function() {
                 document.getElementById('parentThemeId').value         = res.msg.theme_id;
                 document.getElementById('messageText').innerHTML       = 'Редактировать сообщение';
                 document.getElementById('formMessageButton').innerText = 'Сохранить';
-                document.getElementById('formGroup').style.display     = 'none';
-                document.getElementById('formTheme').style.display     = 'none';
-                document.getElementById('formMessage').style.display   = 'block';
+                Hide( document.getElementById('formGroup') );
+                Hide( document.getElementById('formTheme') );
+                Show( document.getElementById('formMessage') );
+                DeleteMessageList();
             }
             else {
                 var errorDiv = document.getElementsByClassName('error');
@@ -281,6 +279,290 @@ window.onload = function() {
             }
         });
     }
+
+    //удаление листа групп
+    function DeleteGroupList() {
+        var groupList = document.querySelectorAll('.groups');
+        for (var i = 0; i < groupList.length; i++) {        
+            groupList[i].parentNode.removeChild( groupList[i] );
+        }
+    }
+
+    //обновление списка групп
+    function ReDrawGroup( list ) {
+        var res = JSON.parse( list );
+        if ( res.status == 'ok' ) {
+            DeleteGroupList();
+            // путь к открытой группе
+            var pathArray = document.getElementsByClassName('current_path')[0].innerHTML.split( ':' );
+            // если обновляется открытая группа
+            if ( res.id == Number( pathArray[0] ) ) {
+                DeleteMessageList();
+                DrawGroupList( 0 );
+            }
+            else {
+                DrawGroupList( pathArray[0] );
+            }
+        }
+        else {
+            var errorDiv = document.getElementsByClassName('error');
+            errorDiv[0].innerHTML = res.message;
+        }
+    }
+
+    // рисование списка тем
+    function DrawThemeList( groupId, id ) {
+        var groupLi = document.getElementById( groupId );
+        postAjax('http://freee/forum/list_themes', { group_id: groupId }, function( list ){
+            var res = JSON.parse( list );
+            if ( res.status == 'ok' ) {
+                res.list.forEach( function( item ) {
+
+                    var themeLi = document.createElement('li');
+                    themeLi.setAttribute('class', 'themes');
+                    groupLi.appendChild( themeLi );
+
+                    var themeSpan = document.createElement('span');
+                    themeSpan.innerHTML = item.title;
+                    themeLi.appendChild( themeSpan );
+                    themeSpan.addEventListener('click',function(){ 
+                        DeleteMessageList(); 
+                        DrawMessageList( item.id );
+                        Hide( document.getElementById('formGroup') );
+                        Hide( document.getElementById('formTheme') );
+                        Hide( document.getElementById('formMessage') );
+                        Show( document.getElementById('navigationMessages') );
+                    }, false);
+
+                    var newTag = document.createElement('i');
+                    newTag.setAttribute('class', 'fas fa-trash');
+                    themeLi.appendChild( newTag );
+                    newTag.addEventListener('click',function(){
+                        postAjax('http://freee/forum/del_theme', { id: item.id }, function( list ){
+                            ReDrawTheme( list );
+                        }), false;
+                    });
+
+                    if ( ! item.status) {
+                        newTag = document.createElement('i');
+                        newTag.setAttribute('class', 'fas fa-eye');
+                        themeLi.appendChild( newTag );
+                        newTag.addEventListener('click',function(){
+                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 1 }, function( list ){
+                                var res = JSON.parse( list );
+                                if ( res.status == 'ok' ) {
+                                    DeleteGroupList();
+                                    DrawGroupList( groupId );
+                                }
+                                else {
+                                    var errorDiv = document.getElementsByClassName('error');
+                                    errorDiv[0].innerHTML = res.message;
+                                }
+                            }), false;
+                        });
+                    }
+                    else {
+                        newTag = document.createElement('i');
+                        newTag.setAttribute('class', 'fas fa-eye-slash');
+                        themeLi.appendChild( newTag );
+                        newTag.addEventListener('click',function(){
+                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 0 }, function( list ){
+                                var res = JSON.parse( list );
+                                if ( res.status == 'ok' ) {
+                                    DeleteGroupList();
+                                    DrawGroupList( groupId );
+                                }
+                                else {
+                                    var errorDiv = document.getElementsByClassName('error');
+                                    errorDiv[0].innerHTML = res.message;
+                                }
+                            }), false;
+                        });
+                    }
+
+                    newTag = document.createElement('i');
+                    newTag.setAttribute('class', 'fas fa-edit');
+                    themeLi.appendChild( newTag );
+                    newTag.addEventListener('click',function(){
+                        GetTheme( item.id );
+                    });
+
+                    newTag = document.createElement('i');
+                    newTag.setAttribute('class', 'fas fa-plus');
+                    themeLi.appendChild( newTag );
+                    newTag.addEventListener('click',function(){
+                        ShowMessagesAdd( item.id );
+                    });
+
+                    if ( id == groupId ){
+                        Show( themeLi );
+                    } 
+                    else {
+                        Hide( themeLi );                    
+                    }
+                });
+            }
+            else {
+                var errorDiv = document.getElementsByClassName('error');
+                errorDiv[0].innerHTML = res.message;
+            }
+        });
+    }
+
+    //удалить все темы
+    function DeleteThemeList() {
+        var themeList = document.querySelectorAll('.themes');
+        for (var i = 0; i < themeList.length; i++) {        
+            themeList[i].parentNode.removeChild( themeList[i] );
+        }
+    }
+
+    //обновление списка тем
+    function ReDrawTheme( list ) {
+        var res = JSON.parse( list );
+        if ( res.status == 'ok' ) {
+            DeleteGroupList();
+            // путь к открытой теме
+            var pathArray = document.getElementsByClassName('current_path')[0].innerHTML.split( ':' );
+            // если обновляется открытая тема
+            if ( res.id == Number( pathArray[1] ) ) {
+                DeleteMessageList();
+            }
+            DrawGroupList( pathArray[0] );
+        }
+        else {
+            var errorDiv = document.getElementsByClassName('error');
+            errorDiv[0].innerHTML = res.message;
+        }
+    }
+
+    // показать темы текущей группы
+    function ShowThemes( groupId ) {
+        var groupLi = document.getElementById( groupId );
+        var nodes = groupLi.childNodes;
+        for (var i = 0; i < nodes.length; i++) {
+            if ( nodes[i].classList.contains( 'themes' ) ){
+                Show( nodes[i] );
+            }
+        }
+    }
+
+    // скрыть все темы
+    function HideThemes( themeId ) {
+        var themeList = document.querySelectorAll('.themes');
+        for (var i = 0; i < themeList.length; i++) {        
+            Hide( themeList[i] );
+        }
+    }
+
+    // рисование списка сообщений
+    function DrawMessageList( themeId ) {
+        var pathDiv = document.getElementsByClassName('current_path');
+        var pathArray = pathDiv[0].innerHTML.split( ':' );
+        pathDiv[0].innerHTML = pathArray[0] + ':' + themeId.toString();
+
+        postAjax('http://freee/forum/list_messages', { theme_id: themeId }, function( list ){
+            var res = JSON.parse( list );
+            if ( res.status == 'ok' ) {
+                var newDiv = document.createElement('div');
+                var list_tag = document.getElementById('list_messages_output');
+                list_tag.appendChild( newDiv );
+
+                res.list.forEach( function( item ) {
+                    var newLi = document.createElement('li');
+                    newLi.innerHTML = item.msg;
+                    newDiv.appendChild( newLi );
+
+                    var newTag = document.createElement('i');
+                    newTag.setAttribute('class', 'fas fa-trash');
+                    newLi.appendChild( newTag );
+                    newTag.addEventListener('click',function(){
+                        postAjax('http://freee/forum/delete', { id: item.id }, function( list ){
+                            ReDrawMessage( list, themeId );
+                        }), false;
+                    });
+
+                    if ( ! item.status) {
+                        newTag = document.createElement('i');
+                        newTag.setAttribute('class', 'fas fa-eye');
+                        newLi.appendChild( newTag );
+                        newTag.addEventListener('click',function(){
+                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_messages', value: 1 }, function( list ){
+                                ReDrawMessage( list, themeId );
+                            }), false;
+                        });
+                    } 
+                    else {
+                        newTag = document.createElement('i');
+                        newTag.setAttribute('class', 'fas fa-eye-slash');
+                        newLi.appendChild( newTag );
+                        newTag.addEventListener('click',function(){
+                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_messages', value: 0 }, function( list ){
+                                ReDrawMessage( list, themeId );
+                            }), false;
+                        });
+                    }
+
+                    newTag = document.createElement('i');
+                    newTag.setAttribute('class', 'fas fa-edit');
+                    newLi.appendChild( newTag );
+                    newTag.addEventListener('click',function(){
+                        GetMessage( item.id );
+                    });
+                });
+                Show( document.getElementById('nameplateMessage') );
+            }
+            else {
+                var errorDiv = document.getElementsByClassName('error');
+                errorDiv[0].innerHTML = res.message;
+            }
+        });
+    }
+
+    //обновление списка сообщений
+    function ReDrawMessage( list, theme_id ) {
+        var res = JSON.parse( list );
+        if ( res.status == 'ok' ) {
+            DeleteMessageList(); 
+            DrawMessageList( theme_id );
+        }
+        else {
+            var errorDiv = document.getElementsByClassName('error');
+            errorDiv[0].innerHTML = res.message;
+        }
+    }
+
+    function DeleteMessageList() {
+        var container = document.getElementById('list_messages_output');
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        Hide(document.getElementById('nameplateMessage') );
+    }
+
+    // рисование меню навигации
+    function DrawNavigation() {
+        // группы
+        var navigationGroups = document.getElementById('navigationGroups');
+        navigationGroups.addEventListener('click',function(){
+            DeleteMessageList();
+            HideThemes();
+            Hide( document.getElementById('navigationThemes') );
+            Hide( document.getElementById('navigationMessages') );
+        });
+
+        // темы
+        var navigationThemes = document.getElementById('navigationThemes');
+        navigationThemes.addEventListener('click',function(){
+            DeleteMessageList();
+            Hide( document.getElementById('navigationMessages') );
+        });
+        Hide( navigationThemes );
+
+        // сообщения
+        Hide( document.getElementById('navigationMessages') );
+    }
+
     // создание кнопки добавления групп
     function DrawGroupsButton(){
         var newTag = document.createElement('i');
@@ -289,7 +571,7 @@ window.onload = function() {
         newTag.addEventListener('click',function(){
             ShowGroupsAdd();
         });
-        document.getElementById('nameplateMessage').style.display = 'none';
+        Hide( document.getElementById('nameplateMessage') );
     }
 
     // рисование листа групп
@@ -327,12 +609,12 @@ window.onload = function() {
                         pathDiv[0].innerHTML = item.id.toString() + ':';
                         HideThemes();
                         ShowThemes( item.id );
-                        document.getElementById('formGroup').style.display   = 'none';
-                        document.getElementById('formTheme').style.display   = 'none';
-                        document.getElementById('formMessage').style.display = 'none';
+                        Hide( document.getElementById('formGroup') );
+                        Hide( document.getElementById('formTheme') );
+                        Hide( document.getElementById('formMessage') );
                         DeleteMessageList();
-                        document.getElementById('navigationThemes').style.display = 'block';
-                        document.getElementById('navigationMessages').style.display = 'none';
+                        Show( document.getElementById('navigationThemes') );
+                        Hide( document.getElementById('navigationMessages') );
                     }, false);
 
                     var newTag = document.createElement('i');
@@ -403,268 +685,17 @@ window.onload = function() {
         });
     }
 
-    //удаление листа групп
-    function DeleteGroupList() {
-        var groupList = document.querySelectorAll('.groups');
-        for (var i = 0; i < groupList.length; i++) {        
-            groupList[i].parentNode.removeChild( groupList[i] );
-        }
+    // инициализация программы
+    function Init () {
+        // рисование меню навигации
+        DrawNavigation();
+        // рисование листа групп без открытых тем
+        DrawGroupList( 0 );
+        //рисование формы добавления или редактирования
+        DrawForm();
+        // создание кнопки добавления групп
+        DrawGroupsButton();
     }
 
-    //обновление списка групп
-    function ReDrawGroup( list ) {
-        var res = JSON.parse( list );
-        if ( res.status == 'ok' ) {
-            DeleteGroupList();
-            // путь к открытой группе
-            var pathArray = document.getElementsByClassName('current_path')[0].innerHTML.split( ':' );
-            // если обновляется открытая группа
-            if ( res.id == Number( pathArray[0] ) ) {
-                DeleteMessageList();
-                DrawGroupList( 0 );
-            }
-            else {
-                DrawGroupList( pathArray[0] );
-            }
-        }
-        else {
-            var errorDiv = document.getElementsByClassName('error');
-            errorDiv[0].innerHTML = res.message;
-        }
-    }
-
-    // рисование списка тем
-    function DrawThemeList( groupId, id ) {
-        var groupLi = document.getElementById( groupId );
-        postAjax('http://freee/forum/list_themes', { group_id: groupId }, function( list ){
-            var res = JSON.parse( list );
-            if ( res.status == 'ok' ) {
-                res.list.forEach( function( item ) {
-
-                    var themeLi = document.createElement('li');
-                    themeLi.setAttribute('class', 'themes');
-                    groupLi.appendChild( themeLi );
-
-                    var themeSpan = document.createElement('span');
-                    themeSpan.innerHTML = item.title;
-                    themeLi.appendChild( themeSpan );
-                    themeSpan.addEventListener('click',function(){ 
-                        DeleteMessageList(); 
-                        DrawMessageList( item.id );
-                        document.getElementById('formGroup').style.display   = 'none';
-                        document.getElementById('formTheme').style.display   = 'none';
-                        document.getElementById('formMessage').style.display = 'none';
-                        document.getElementById('navigationMessages').style.display = 'block';
-                    }, false);
-
-                    var newTag = document.createElement('i');
-                    newTag.setAttribute('class', 'fas fa-trash');
-                    themeLi.appendChild( newTag );
-                    newTag.addEventListener('click',function(){
-                        postAjax('http://freee/forum/del_theme', { id: item.id }, function( list ){
-                            ReDrawTheme( list );
-                        }), false;
-                    });
-
-                    if ( ! item.status) {
-                        newTag = document.createElement('i');
-                        newTag.setAttribute('class', 'fas fa-eye');
-                        themeLi.appendChild( newTag );
-                        newTag.addEventListener('click',function(){
-                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 1 }, function( list ){
-                                var res = JSON.parse( list );
-                                if ( res.status == 'ok' ) {
-                                    DeleteGroupList();
-                                    DrawGroupList( groupId );
-                                }
-                                else {
-                                    var errorDiv = document.getElementsByClassName('error');
-                                    errorDiv[0].innerHTML = res.message;
-                                }
-                            }), false;
-                        });
-                    }
-                    else {
-                        newTag = document.createElement('i');
-                        newTag.setAttribute('class', 'fas fa-eye-slash');
-                        themeLi.appendChild( newTag );
-                        newTag.addEventListener('click',function(){
-                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_themes', value: 0 }, function( list ){
-                                var res = JSON.parse( list );
-                                if ( res.status == 'ok' ) {
-                                    DeleteGroupList();
-                                    DrawGroupList( groupId );
-                                }
-                                else {
-                                    var errorDiv = document.getElementsByClassName('error');
-                                    errorDiv[0].innerHTML = res.message;
-                                }
-                            }), false;
-                        });
-                    }
-
-                    newTag = document.createElement('i');
-                    newTag.setAttribute('class', 'fas fa-edit');
-                    themeLi.appendChild( newTag );
-                    newTag.addEventListener('click',function(){
-                        GetTheme( item.id );
-                    });
-
-                    newTag = document.createElement('i');
-                    newTag.setAttribute('class', 'fas fa-plus');
-                    themeLi.appendChild( newTag );
-                    newTag.addEventListener('click',function(){
-                        ShowMessagesAdd( item.id );
-                    });
-
-                    if ( id == groupId ){
-                        themeLi.style.display = 'block';
-                    } 
-                    else {
-                        themeLi.style.display = 'none';                    
-                    }
-                });
-            }
-            else {
-                var errorDiv = document.getElementsByClassName('error');
-                errorDiv[0].innerHTML = res.message;
-            }
-        });
-    }
-
-    //удалить все темы
-    function DeleteThemeList() {
-        var themeList = document.querySelectorAll('.themes');
-        for (var i = 0; i < themeList.length; i++) {        
-            themeList[i].parentNode.removeChild( themeList[i] );
-        }
-    }
-
-    //обновление списка тем
-    function ReDrawTheme( list ) {
-        var res = JSON.parse( list );
-        if ( res.status == 'ok' ) {
-            DeleteGroupList();
-            // путь к открытой теме
-            var pathArray = document.getElementsByClassName('current_path')[0].innerHTML.split( ':' );
-            // если обновляется открытая тема
-            if ( res.id == Number( pathArray[1] ) ) {
-                DeleteMessageList();
-            }
-            DrawGroupList( pathArray[0] );
-        }
-        else {
-            var errorDiv = document.getElementsByClassName('error');
-            errorDiv[0].innerHTML = res.message;
-        }
-    }
-
-    // показать темы текущей группы
-    function ShowThemes( groupId ) {
-        var groupLi = document.getElementById( groupId );
-        var nodes = groupLi.childNodes;
-        for (var i = 0; i < nodes.length; i++) {
-            if ( nodes[i].classList.contains( 'themes' ) ){
-                nodes[i].style.display = 'block';
-            }
-        }
-    }
-
-    // скрыть все темы
-    function HideThemes( themeId ) {
-        var themeList = document.querySelectorAll('.themes');
-        for (var i = 0; i < themeList.length; i++) {        
-            themeList[i].style.display = "none";
-        }
-    }
-
-    // рисование списка сообщений
-    function DrawMessageList( themeId ) {
-        var pathDiv = document.getElementsByClassName('current_path');
-        var pathArray = pathDiv[0].innerHTML.split( ':' );
-        pathDiv[0].innerHTML = pathArray[0] + ':' + themeId.toString();
-
-        postAjax('http://freee/forum/list_messages', { theme_id: themeId }, function( list ){
-            var res = JSON.parse( list );
-            if ( res.status == 'ok' ) {
-                var newDiv = document.createElement('div');
-                var list_tag = document.getElementById('list_messages_output');
-                list_tag.appendChild( newDiv );
-
-                res.list.forEach( function( item ) {
-                    var newLi = document.createElement('li');
-                    newLi.innerHTML = item.msg;
-                    newDiv.appendChild( newLi );
-
-                    var newTag = document.createElement('i');
-                    newTag.setAttribute('class', 'fas fa-trash');
-                    newLi.appendChild( newTag );
-                    newTag.addEventListener('click',function(){
-                        postAjax('http://freee/forum/delete', { id: item.id }, function( list ){
-                            ReDrawMessage( list, themeId );
-                        }), false;
-                    });
-
-                    if ( ! item.status) {
-                        newTag = document.createElement('i');
-                        newTag.setAttribute('class', 'fas fa-eye');
-                        newLi.appendChild( newTag );
-                        newTag.addEventListener('click',function(){
-                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_messages', value: 1 }, function( list ){
-                                ReDrawMessage( list, themeId );
-                            }), false;
-                        });
-                    } 
-                    else {
-                        newTag = document.createElement('i');
-                        newTag.setAttribute('class', 'fas fa-eye-slash');
-                        newLi.appendChild( newTag );
-                        newTag.addEventListener('click',function(){
-                            postAjax('http://freee/forum/toggle', { id: item.id, table: 'forum_messages', value: 0 }, function( list ){
-                                ReDrawMessage( list, themeId );
-                            }), false;
-                        });
-                    }
-
-                    newTag = document.createElement('i');
-                    newTag.setAttribute('class', 'fas fa-edit');
-                    newLi.appendChild( newTag );
-                    newTag.addEventListener('click',function(){
-                        GetMessage( item.id );
-                    });
-                });
-                document.getElementById('nameplateMessage').style.display = 'block';
-            }
-            else {
-                var errorDiv = document.getElementsByClassName('error');
-                errorDiv[0].innerHTML = res.message;
-            }
-        });
-    }
-
-    //обновление списка сообщений
-    function ReDrawMessage( list, theme_id ) {
-        var res = JSON.parse( list );
-        if ( res.status == 'ok' ) {
-            DeleteMessageList(); 
-            DrawMessageList( theme_id );
-        }
-        else {
-            var errorDiv = document.getElementsByClassName('error');
-            errorDiv[0].innerHTML = res.message;
-        }
-    }
-
-    function DeleteMessageList() {
-        var container = document.getElementById('list_messages_output');
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
-        document.getElementById('nameplateMessage').style.display = 'none';
-    }
-
-    DrawNavigation();
-    DrawGroupList( 0 );
-    DrawForm();
-    DrawGroupsButton();
+    Init();
 };
