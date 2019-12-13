@@ -166,7 +166,7 @@ warn '=freee=';
     $auth->post('/agreement/comment')     ->to('agreement#comment');
     $auth->post('/agreement/delete')      ->to('agreement#delete');     # возможно не нужно ?????????
 
-    # управление темами
+    # управление пользователями
     $auth->post('/user/')                 ->to('user#index');
     $auth->post('/user/list')             ->to('user#list');
     $auth->post('/user/add')              ->to('user#add');
@@ -266,7 +266,7 @@ warn '=freee=';
     $auth->post('/forum/group')         ->to('forum#group');
     $auth->post('/forum/add_group')     ->to('forum#add_group');
     $auth->post('/forum/edit_group')    ->to('forum#edit_group');
-    $auth->post('/forum/del_group')     ->to('forum#del_group');   
+    $auth->post('/forum/del_group')     ->to('forum#del_group');
 
     $auth->post('/forum/list_messages') ->to('forum#list_messages'); # список сообщений по теме
     $auth->post('/forum/add')           ->to('forum#add');           # добавление сообщения
