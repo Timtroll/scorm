@@ -15,9 +15,10 @@ sub index {
     my $list = $self->_list_messages();
 
     $self->render(
-        'template'    => 'forum',
-        'title'       => 'Форум',
-        'list'        => $list
+        'template'      => 'forum',
+        'title'         => 'Форум',
+        'list_messages' => $list,
+        'list_themes'   => []
     );
 }
 
@@ -28,13 +29,18 @@ sub list_themes {
     my ( $list, $resp, @mess );
 
     $list = $self->_list_themes();
-    push @mess, "Could not get list Themes" unless $list;
+    # push @mess, "Could not get list Themes" unless $list;
     
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @mess;
+    $self->render(
+        'template'      => 'list_themes',
+        'list_themes'   => $list
+    );
 
-    $self->render( 'json' => $resp );
+    # $resp->{'message'} = join("\n", @mess) if @mess;
+    # $resp->{'status'} = @mess ? 'fail' : 'ok';
+    # $resp->{'list'} = $list unless @mess;
+
+    # $self->render( 'json' => $resp );
 }
 
 # получение списка групп из базы в массив хэшей
@@ -175,11 +181,15 @@ sub list_messages {
     $list_themes  = $self->_list_themes();
 
     $self->render(
-        'template'      => 'forum',
-        'title'         => 'Список сообщений',
-        'list_messages' => $list_messages,
-        'list_themes'   => $list_themes
+        'template'      => 'list_messages',
+        'list_messages' => $list_messages
     );
+    # $self->render(
+    #     'template'      => 'forum',
+    #     'title'         => 'Список сообщений',
+    #     'list_messages' => $list_messages,
+    #     'list_themes'   => $list_themes
+    # );
 }
 
 # новое сообщение форума
@@ -274,6 +284,7 @@ sub edit {
     my ($id, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
+    $data = {};
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
@@ -285,13 +296,14 @@ sub edit {
         }
     }
 
-    unless  (@mess) {
-        $self->render(
-            'template'    => 'edit',
-            'title'       => 'edit',
-            'list'        => $data
-        );
-    };
+    $self->render( 'json' => $data );
+#     unless  (@mess) {
+#         $self->render(
+#             'template'    => 'edit',
+#             'title'       => 'edit',
+#             'list'        => $data
+#         );
+#     };
 }
 
 # удалениe сообщения 

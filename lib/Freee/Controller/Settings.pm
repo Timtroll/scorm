@@ -327,6 +327,34 @@ sub edit {
         if ($data) {
             $data = $self->_get_setting( $$data{'id'} );
             push @mess, "Could not get '".$$data{'id'}."'" unless $data;
+warn Dumper($data);
+            my $line = {
+                "folder" => $data->{'folder'},
+                "id"     => $data->{'id'},
+                "parent" => $data->{'parent'},
+                "groups" => [
+                    {
+                        "label" => "Основное",
+                        "fields" => [
+                            "name"          => $data->{'name'},
+                            "placeholder"   => $data->{'placeholder'},
+                            "readonly"      => $data->{'readonly'},
+                            "required"      => $data->{'required'},
+                            "status"        => $data->{'status'}
+                        ]
+                    },
+                    {
+                        "label" => 'Дополнительные поля',
+                        "fields" => [
+                            "label"       => "шаг обновления",
+                            "mask"        => $data->{'mask'},
+                            "selected"    => $data->{'selected'},
+                            "type"        => $data->{'type'},
+                            "value"       => $data->{'value'}
+                        ]
+                    }
+                ]
+            };
         }
     }
 

@@ -1,0 +1,7 @@
+<h2>Сообщения</h2>
+% foreach my $t( @$list_messages ) {
+<div class="msg"><h3><a class="title" ><%= $$t{'msg'} %> </a></h3></div>
+<div class="msg">
+    <span class="edit link" data-id="<%= $$t{'id'} %>">Edit</span> <span class="delete link" data-id="<%= $$t{'id'} %>">delete</span> <span class="toggle link" data-id="<%= $$t{'id'} %>">toggle</span>
+</div>
+% }
