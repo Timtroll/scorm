@@ -327,8 +327,7 @@ sub edit {
         if ($data) {
             $data = $self->_get_setting( $$data{'id'} );
             push @mess, "Could not get '".$$data{'id'}."'" unless $data;
-warn Dumper($data);
-            my $line = {
+            $data = {
                 "folder" => $data->{'folder'},
                 "id"     => $data->{'id'},
                 "parent" => $data->{'parent'},
