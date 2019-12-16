@@ -334,23 +334,23 @@ sub edit {
                 "groups" => [
                     {
                         "label" => "Основное",
-                        "fields" => [
+                        "fields" => {
                             "name"          => $data->{'name'},
                             "placeholder"   => $data->{'placeholder'},
                             "readonly"      => $data->{'readonly'},
                             "required"      => $data->{'required'},
                             "status"        => $data->{'status'}
-                        ]
+                        }
                     },
                     {
                         "label" => 'Дополнительные поля',
-                        "fields" => [
+                        "fields" => {
                             "label"       => "шаг обновления",
                             "mask"        => $data->{'mask'},
                             "selected"    => $data->{'selected'},
                             "type"        => $data->{'type'},
                             "value"       => $data->{'value'}
-                        ]
+                        }
                     }
                 ]
             };
