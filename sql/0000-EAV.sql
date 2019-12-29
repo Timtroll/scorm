@@ -216,56 +216,6 @@ DO $$
     END
 $$;
 
-DO $$
-    BEGIN
-        BEGIN
-            ALTER TABLE "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" ADD PRIMARY KEY ("item_id", "service_id", "sla_id", "distance");
-        EXCEPTION
-            WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
-        END;
-    END
-$$;
-
-DO $$
-    BEGIN
-        BEGIN
-            ALTER TABLE "public"."EAV_submodules_subscriptions_counts_with_sla" ADD PRIMARY KEY ("item_id", "sla_id", "distance");
-        EXCEPTION
-            WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
-        END;
-    END
-$$;
-
-DO $$
-    BEGIN
-        BEGIN
-            ALTER TABLE "public"."EAV_submodules_subscriptions_counts_with_service" ADD PRIMARY KEY ("item_id", "service_id", "distance");
-        EXCEPTION
-            WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
-        END;
-    END
-$$;
-
-DO $$
-    BEGIN
-        BEGIN
-            ALTER TABLE "public"."EAV_submodules_subscriptions_counts" ADD PRIMARY KEY ("item_id", "distance");
-        EXCEPTION
-            WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
-        END;
-    END
-$$;
-
-DO $$
-    BEGIN
-        BEGIN
-            ALTER TABLE "public"."EAV_submodules_subscriptions" ADD PRIMARY KEY ("owner_id", "sla_id", "service_id", "distance", "owner_type");
-        EXCEPTION
-            WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
-        END;
-    END
-$$;
-
 CREATE EXTENSION hstore;
 
 CREATE EXTENSION pg_trgm WITH SCHEMA "pg_catalog";
