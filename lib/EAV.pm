@@ -1,14 +1,14 @@
-package Kernel::System::EAV;
+package EAV;
 
 use strict;
 use warnings;
 
-our @ObjectDependencies = (
-    'Kernel::Config',
-    'Kernel::System::Cache',
-    'Kernel::System::DB',
-    'Kernel::System::Log',
-);
+# our @ObjectDependencies = (
+#     'Kernel::Config',
+#     'Kernel::System::Cache',
+#     'Kernel::System::DB',
+#     'Kernel::System::Log',
+# );
 
 sub new {
     my ( $Self, $Type, $Params ) = @_;

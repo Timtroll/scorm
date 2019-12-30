@@ -30,15 +30,21 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
+    $self->plugin('Freee::Helpers::EAV');
+warn "\n";
+warn $self->pg_dbh;
     # подгружаем модель
     $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
-$self->model('methods-client')->do();
-$self->model('methods')->do();
-$self->model('EAV')->check();
+# $self->model('methods-client')->do();
+# $self->model('methods')->do();
+# $self->model('EAV')->check();
+
+
+
 warn '=freee=';
 
     $self->plugin('Freee::Helpers::Utils');
-    $self->plugin('Freee::Helpers::PgGraph');
+    # $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
@@ -50,7 +56,7 @@ warn '=freee=';
     $vfields = $self->_param_fields();
 
     # init Pg connection
-    $self->pg_init();
+#    $self->pg_init();
 
     # init Beanstalk connection
     $self->_beans_init();
