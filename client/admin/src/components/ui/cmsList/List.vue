@@ -76,27 +76,30 @@
               :class="{'uk-hidden': listMenuActiveId !== index}"
               v-for="(group, index) in dataNew.groups">
 
-            <ul class="pos-list"
-                v-if="listMenuActiveId === index">
+            <transition name="slide-right" appear mode="out-in">
+              <ul class="pos-list"
+                  :key="index"
+                  v-show="listMenuActiveId === index">
 
-              <component v-bind:is="item.type"
-                         v-for="(item, index) in group.fields"
-                         :key="index"
-                         :value="item.value"
-                         :type="item.type"
-                         :name="item.name"
-                         :selected="valueSelected"
-                         :readonly="notEditable(item.readonly)"
-                         :add="item.add"
-                         :required="item.required"
-                         :mask="item.mask"
-                         :label="item.label"
-                         :placeholder="item.placeholder"
-                         @value="group.fields[index].value = $event"
-                         @change="dataChanged[index].changed = $event"
-                         @clear="clearValue"
-                         @changeType="changeType($event)"/>
-            </ul>
+                <component v-bind:is="item.type"
+                           v-for="(item, index) in group.fields"
+                           :key="index"
+                           :value="item.value"
+                           :type="item.type"
+                           :name="item.name"
+                           :selected="valueSelected"
+                           :readonly="notEditable(item.readonly)"
+                           :add="item.add"
+                           :required="item.required"
+                           :mask="item.mask"
+                           :label="item.label"
+                           :placeholder="item.placeholder"
+                           @value="group.fields[index].value = $event"
+                           @change="dataChanged[index].changed = $event"
+                           @clear="clearValue"
+                           @changeType="changeType($event)"/>
+              </ul>
+            </transition>
           </li>
         </ul>
 
