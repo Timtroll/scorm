@@ -47,6 +47,143 @@ function flatTree (arr) {
 }
 
 /**
+ *
+ * @param data
+ * @param proto
+ * @returns {{groups: [], main: []}}
+ */
+function groupedFields (data, proto) {
+
+  const groups = {
+    main:   [],
+    groups: []
+  }
+
+  //const data   = data
+
+  if (data && proto) {
+    for (let prop in data) {
+
+      if (data && data.hasOwnProperty(prop)) {
+
+        // Поля не объедененные в группы (видимы всегда)
+        if (prop !== 'groups') {
+
+          // только те поля, которые определены в прототипе
+          const protoKey = proto.filter(item => item.name === prop)
+
+          // установка значений полей
+          for (let item of protoKey) {
+            item.value = data[item.name]
+          }
+
+          if (protoKey.length === 1) {
+            groups.main.push(protoKey[0])
+          }
+
+        }
+
+        // Поля объедененные в группы
+        else if (prop === 'groups') {
+
+          const groupFields = data.groups
+
+          groupFields.forEach(item => {
+
+            const groupItem = {
+              label:  prop.label,
+              fields: []
+            }
+
+            groupItem.label       = item.label
+            const groupItemFields = item.fields
+
+            for (let propGroupField in groupItemFields) {
+
+              // только те поля, которые определены в прототипе
+              const protoKey = proto.filter(item => item.name === propGroupField)
+
+              // установка значений полей
+              for (let item of protoKey) {
+                item.value = groupItemFields[item.name]
+              }
+
+              if (protoKey.length === 1) {
+                groupItem.fields.push(protoKey[0])
+              }
+            }
+
+            groups.groups.push(groupItem)
+          })
+
+        }
+
+      }
+    }
+
+    return groups
+  } else {
+    console.error('groupedFields - no data or proto')
+  }
+
+}
+
+/**
+ *
+ * @param groups
+ * @returns {{}}
+ */
+function unGroupedFields (groups) {
+
+  const keyValues = {}
+
+  _getKeyValue(groups.main)
+
+  if (groups && groups.hasOwnProperty('groups')) {
+    groups.groups.forEach(item => {
+      _getKeyValue(item.fileds)
+    })
+  }
+
+  function _getKeyValue (item) {
+    item.forEach(item => {
+      //console.log(item)
+      keyValues[item.name] = item.value
+    })
+  }
+
+  console.log('keyValues', keyValues)
+
+  return keyValues
+}
+
+/**
+ *
+ * @param groups
+ * @returns {[]}
+ */
+function flatFields (groups) {
+
+  const fields = []
+
+  _getFiled(groups.main)
+
+  if (groups.hasOwnProperty('groups')) {
+    groups.groups.forEach(item => {
+      _getFiled(item.fileds)
+    })
+  }
+
+  function _getFiled (item) {
+    item.forEach(item => {
+      fields.push(item)
+    })
+  }
+
+  return fields
+}
+
+/**
  * клонирование объетов
  * @param obj
  * @param hash
@@ -98,6 +235,9 @@ export {
   notify,
   confirm,
   flatTree,
+  groupedFields,
+  unGroupedFields,
+  flatFields,
   clone,
   dropHide,
   dropShow

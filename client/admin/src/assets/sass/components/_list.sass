@@ -12,6 +12,25 @@
   position: relative
   padding: $global-margin 0
 
+  &.main
+    padding: 0
+    background-color: rgba($global-muted-background, .4)
+    height: auto
+    flex: none
+    border-bottom: $global-border-width solid $global-border
+
+  & + .pos-list
+    flex: 1
+    display: flex
+    flex-direction: column
+
+    & > li
+      &:nth-child(n+2)
+        border-top: none
+
+  .pos-list
+    padding-top: 0
+
   & > li
     padding: 0 $global-small-gutter 0 $global-small-gutter
     min-height: 40px
@@ -38,3 +57,4 @@
   .uk-input,
   .pos-textarea
     transform: translateY(1px)
+

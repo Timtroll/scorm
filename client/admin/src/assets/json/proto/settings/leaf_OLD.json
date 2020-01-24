@@ -27,6 +27,20 @@
     "width":       2
   },
   {
+    "label":       "Системное имя",
+    "name":        "name",
+    "placeholder": "Только латинские буквы без пробелов",
+    "readonly":    0,
+    "required":    1,
+    "mask":        null,
+    "add":         true,
+    "type":        "InputText",
+    "value":       "",
+    "inline":      0,
+    "show":        1,
+    "width":       2
+  },
+  {
     "label":       "Расшифровка",
     "name":        "label",
     "placeholder": "Расшифровка настройки",

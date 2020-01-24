@@ -16,7 +16,7 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <router-view></router-view>
+        <router-view/>
       </transition>
 
     </template>

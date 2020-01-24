@@ -2,7 +2,7 @@ import Api_EditPanel from '../../../api/settings/EditPanel'
 import Api_Tree from '../../../api/settings/Tree'
 import store from '../../store'
 import router from '../../../router'
-import {clone, flatTree, notify} from '../../methods'
+import {clone, flatTree, groupedFields, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
 
 const actions = {
@@ -282,11 +282,10 @@ const actions = {
         const resp  = await response.data
         const proto = clone(store.getters.editPanel_proto)
 
-        for (let item of proto) {
-          item.value = resp.data[item.name]
-        }
+        //const groups =_groupedFields({})
+        const groups = groupedFields(resp.data, proto)
 
-        store.commit('editPanel_data', proto) // запись данных во VUEX
+        store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
       }
     } catch (e) {

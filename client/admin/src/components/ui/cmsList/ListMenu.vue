@@ -8,7 +8,7 @@
         ref="items"
         :class="{'active' : item.id === active}">
       <a @click.prevent="click(item.id)"
-         v-text="item.label"></a>
+         v-text="item.label"/>
     </li>
     <li class="uk-text-right uk-flex-1 "
         v-if="mainNavDrop.length > 0">
@@ -28,7 +28,7 @@
               :class="{'active' : item.id === active}"
               :key="item.id">
             <a @click.prevent="click(item.id)"
-               v-text="item.label"></a>
+               v-text="item.label"/>
           </li>
         </ul>
       </div>
@@ -93,8 +93,6 @@
 
       observer.observe(this.$refs.listMenu)
 
-      this.$nextTick(() => { })
-
       await this.menuWidth()
       await this.menuIsDrop()
 
@@ -112,11 +110,12 @@
     watch: {
 
       clientWidth () {
-        setTimeout(() => this.handleResize(), 500)
+        setTimeout(() => this.handleResize(), 300)
       },
+
       //
       resize () {
-        setTimeout(() => this.handleResize(), 500)
+        setTimeout(() => this.handleResize(), 300)
       }
     },
 
@@ -163,7 +162,7 @@
       },
 
       click (id) {
-        this.$emit('active', id)
+        this.$emit('active-id', id)
       }
     }
   }

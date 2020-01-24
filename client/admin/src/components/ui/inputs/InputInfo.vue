@@ -1,12 +1,12 @@
 <template>
   <li>
-    <div class="uk-form-horizontal">
+    <div class="uk-form-horizontal input-info">
       <div>
         <label v-text="label"
                class="uk-form-label uk-text-truncate"
                v-if="label"></label>
 
-        <div class="uk-form-controls">
+        <div class="uk-form-controls uk-form-controls-text">
           <div class="uk-inline uk-width-1-1">
             <div class="uk-form-icon uk-form-icon-flip">
               <img src="/img/icons/icon__info.svg"

@@ -27,8 +27,9 @@
       <div class="pos-card-header--content uk-padding-remove"
            ref="listMenu">
         <ListMenu :nav="listMenu"
-                  v-if="loader  === 'success'"
+                  v-if="loader  === 'success' && listMenu.length > 0"
                   :active="listMenuActiveId"
+                  @active-id="setActiveMenuItem($event)"
                   :resize="editPanel_large"/>
       </div>
       <!--<div class="pos-card-header&#45;&#45;content"-->
@@ -49,11 +50,11 @@
     <!--Edit FORM-->
     <div class="pos-card-body">
       <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
+        <ul class="pos-list main">
 
-        <ul class="pos-list">
-
+          <!--// MAIN-->
           <component v-bind:is="item.type"
-                     v-for="(item, index) in dataNew"
+                     v-for="(item, index) in dataNew.main"
                      :key="index"
                      :value="item.value"
                      :type="item.type"
@@ -65,11 +66,38 @@
                      :mask="item.mask"
                      :label="item.label"
                      :placeholder="item.placeholder"
-                     @value="dataNew[index].value = $event"
+                     @value="dataNew.main[index].value = $event"
                      @change="dataChanged[index].changed = $event"
                      @clear="clearValue"
                      @changeType="changeType($event)"/>
+        </ul>
+        <ul class="pos-list">
+          <li class="uk-padding-remove uk-flex-1"
+              :class="{'uk-hidden': listMenuActiveId !== index}"
+              v-for="(group, index) in dataNew.groups">
 
+            <ul class="pos-list"
+                v-if="listMenuActiveId === index">
+
+              <component v-bind:is="item.type"
+                         v-for="(item, index) in group.fields"
+                         :key="index"
+                         :value="item.value"
+                         :type="item.type"
+                         :name="item.name"
+                         :selected="valueSelected"
+                         :readonly="notEditable(item.readonly)"
+                         :add="item.add"
+                         :required="item.required"
+                         :mask="item.mask"
+                         :label="item.label"
+                         :placeholder="item.placeholder"
+                         @value="group.fields[index].value = $event"
+                         @change="dataChanged[index].changed = $event"
+                         @clear="clearValue"
+                         @changeType="changeType($event)"/>
+            </ul>
+          </li>
         </ul>
 
         <!--loading-->
@@ -118,7 +146,7 @@
 
 <script>
 
-  import {clone, confirm} from '../../../store/methods'
+  import {clone, confirm, unGroupedFields, flatFields} from '../../../store/methods'
 
   export default {
 
@@ -155,11 +183,6 @@
         }
       }
 
-      //// ширина меню панели редактирования
-      //if (this.$refs.listMenu) {
-      //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
-      //}
-
     },
 
     props: {
@@ -186,15 +209,24 @@
       labels: {}
     },
 
-    created () {
+    async created () {
+
+      //// ширина меню панели редактирования
+      //if (this.$refs.listMenu) {
+      //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
+      //}
+
       if (this.add) {
-        this.dataAdd     = this.data.filter(item => item.add === true)
-        this.dataNew     = clone(this.dataAdd)
-        this.dataChanged = this.createDataChanged(this.dataAdd)
+        this.dataAdd     = await this.data.filter(item => item.add === true)
+        this.dataNew     = await clone(this.dataAdd)
+        this.dataChanged = await this.createDataChanged(this.dataAdd)
+
+        console.log('data', this.data)
       } else {
-        this.dataNew     = clone(this.data)
-        this.dataChanged = this.createDataChanged(this.data)
+        this.dataNew     = await clone(this.data)
+        this.dataChanged = await this.createDataChanged(this.data)
       }
+
     },
 
     beforeDestroy () {
@@ -205,19 +237,10 @@
     data () {
       return {
         listMenuActiveId: 1,
-        listMenu:         [
-          {id: 1, label: 'Основные'},
-          {id: 2, label: 'Категории'},
-          {id: 3, label: 'Характеристики'},
-          {id: 4, label: 'Опции'},
-          {id: 5, label: 'Файлы'},
-          {id: 6, label: 'Связи'},
-          {id: 7, label: 'Цены'},
-          {id: 8, label: 'Связи'},
-          {id: 9, label: 'Связи2'}
-        ],
         //listMenuWidth:    null,
+        //dataGrouped: [],
         dataNew:          [],
+        dataFlat:         [],
         dataChanged:      [],
         dataAdd:          [],
         showSelectedOn:   ['InputSelect', 'InputRadio']
@@ -226,11 +249,10 @@
 
     watch: {
 
-      data () {
-
+      async data () {
         if (this.data && !this.add) {
-          this.dataNew     = clone(this.data)
-          this.dataChanged = this.createDataChanged(this.data)
+          this.dataNew     = await clone(this.data)
+          this.dataChanged = await this.createDataChanged(this.flatGroups(this.data))
         }
       },
 
@@ -245,12 +267,30 @@
 
     computed: {
 
-      disabled () {
-        const disabled = this.dataNew.find(item => item.name === 'readonly')
-        if (disabled && 'value' in disabled) {
-          return Number(disabled.value)
-        }
+      // меню групп
+      listMenu () {
+        const data = clone(this.data)
 
+        if (data && data.hasOwnProperty('groups')) {
+          const dataGroups = clone(this.data.groups)
+          const menu       = []
+
+          dataGroups.map((item, index) => {
+            menu.push({
+              id:    index,
+              label: item.label
+            })
+          })
+
+          return menu
+        }
+      },
+
+      disabled () {
+        const disabled = this.dataNewFlat.find(item => item.name === 'readonly')
+        if (disabled && 'value' in disabled) {
+          return Number(disabled.value) || 0
+        }
       },
 
       title () {
@@ -272,6 +312,12 @@
       //  return this.usedNames.includes(this.editedData.name)
       //},
 
+      // Все поля в один уровень
+      dataNewFlat () {
+        if (this.dataNew) {
+          return this.flatGroups(this.dataNew)
+        }
+      },
       // широкая / узкая панель редактирования
       editPanel_large () {
         return this.$store.getters.editPanel_large
@@ -296,29 +342,76 @@
       },
 
       valueSelected () {
-        const selected = clone(this.dataNew).find(item => item.type === 'InputSelected')
+        const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
         if (selected && selected.value) {
           return selected.value
         }
-
       },
 
       findVariableTypeField () {
-        return this.dataNew.findIndex(item => item.name === this.variableTypeField)
+        return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
       },
 
       findTypeField () {
-        return this.dataNew.find(item => item.name === 'type')
+
+        return this.searchTypeInGroups(this.dataNew)
+        //if (this.dataNew.hasOwnProperty('groups')) {
+        //
+        //  return this.dataNew.find(item => item.name === 'type')
+        //} else {
+        //  return this.dataNew.find(item => item.name === 'type')
+        //}
       },
 
       id () {
-        const idEl = this.dataNew.find(item => item.name === 'id')
+        const idEl = this.dataNewFlat.find(item => item.name === 'id')
         return idEl.value
       }
 
     },
 
     methods: {
+
+      setActiveMenuItem (id) {
+        this.listMenuActiveId = id
+      },
+
+      searchTypeInGroups (array) {
+        if (array.hasOwnProperty('groups')) {
+
+          // массив в один уровень
+          const allFields     = array.groups
+          const allFieldsFlat = allFields.map(item => item.fields)
+
+          // поиск поля тип
+          return allFieldsFlat
+            .flat()
+            .find(item => item.name === 'type')
+
+        } else {
+          return array.find(item => item.name === 'type')
+        }
+      },
+
+      //
+      flatGroups (array) {
+        if (array && array.hasOwnProperty('groups')) {
+
+          // массив в один уровень
+          const allFields   = array.groups
+          let allFieldsFlat = allFields.map(item => item.fields)
+
+          if (array.hasOwnProperty('main')) {
+            allFieldsFlat = allFieldsFlat.concat(array.main)
+          }
+
+          return allFieldsFlat
+            .flat()
+
+        } else {
+          return array
+        }
+      },
 
       createDataChanged (arr) {
 
@@ -344,16 +437,17 @@
         }
       },
 
+      // изменение размеров панели редактирования
       toggleSize () {
-
         this.$store.commit('editPanel_size', !this.editPanel_large)
-
       },
 
+      // Закрыть панель при свайпе
       swipeRight (direction) {
         if (direction === 'right') this.close()
       },
 
+      // закрыть панель
       close () {
         if (this.dataIsChanged) {
           confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
@@ -368,17 +462,19 @@
 
       },
 
+      // смена типа поля Значение
       changeType (event) {
-        this.dataNew[this.findVariableTypeField].type = event
+        this.dataNewFlat[this.findVariableTypeField].type = event
       },
 
+      // сохранение
       save () {
-        this.$emit('save', this.dataNew)
+        this.$emit('save', this.dataNewFlat)
       },
 
       // Очистка поля Value при изменении типа поля
       clearValue () {
-        const value = this.dataNew.find(item => item.name === 'value')
+        const value = this.dataNewFlat.find(item => item.name === 'value')
         if (value && 'value' in value) {
           value.value = ''
         }

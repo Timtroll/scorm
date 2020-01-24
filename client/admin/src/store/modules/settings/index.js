@@ -4,6 +4,20 @@ import getters from './getters'
 
 const state = {
 
+  // Шаблон редактирования с группами
+  groupsEdit: {
+    main:   [],
+    groups: [
+      {
+        label:  'Основное',
+        fields: []
+      },
+      {
+        label:  'Дополнительные поля',
+        fields: []
+      }
+    ]
+  }
 }
 
 export default {
