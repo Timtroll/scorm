@@ -262,7 +262,7 @@
       // установка типа поля VALUE при загрузке
       findTypeField () {
         if (this.findTypeField && this.findTypeField.value) {
-          this.dataNew[this.findVariableTypeField].type = this.findTypeField.value
+          this.dataNewFlat[this.findVariableTypeField].type = this.findTypeField.value
         }
       }
 
@@ -357,7 +357,7 @@
 
       findTypeField () {
 
-        return this.searchTypeInGroups(this.dataNew)
+        return this.searchTypeInGroups(this.dataNewFlat)
         //if (this.dataNew.hasOwnProperty('groups')) {
         //
         //  return this.dataNew.find(item => item.name === 'type')
