@@ -27,7 +27,7 @@
       <div class="pos-card-header--content uk-padding-remove"
            ref="listMenu">
         <ListMenu :nav="listMenu"
-                  v-if="loader  === 'success' && listMenu.length > 0"
+                  v-if="loader  === 'success' || 'error' && listMenu.length > 0"
                   :active="listMenuActiveId"
                   @active-id="setActiveMenuItem($event)"
                   :resize="editPanel_large"/>
@@ -76,7 +76,9 @@
               :class="{'uk-hidden': listMenuActiveId !== index}"
               v-for="(group, index) in dataNew.groups">
 
-            <transition name="slide-right" appear mode="out-in">
+            <transition name="slide-right"
+                        appear
+                        mode="out-in">
               <ul class="pos-list"
                   :key="index"
                   v-show="listMenuActiveId === index">
