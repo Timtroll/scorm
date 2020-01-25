@@ -27,7 +27,7 @@
       <div class="pos-card-header--content uk-padding-remove"
            ref="listMenu">
         <ListMenu :nav="listMenu"
-                  v-if="loader  === 'success' || 'error' && listMenu.length > 0"
+                  v-if="loader  === 'success' || 'error' && listMenu && listMenu.length > 0"
                   :active="listMenuActiveId"
                   @active-id="setActiveMenuItem($event)"
                   :resize="editPanel_large"/>
