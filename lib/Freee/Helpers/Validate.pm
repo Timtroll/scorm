@@ -182,16 +182,16 @@ sub register {
             },
             '/settings/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "label"         => [ 'required', qr/.*/os, 256 ],
-                "placeholder"   => [ '', qr/.*/os, 256 ],
-                "type"          => [ '', qr/\w+/os, 256 ],
-                "mask"          => [ '', qr/.*/os, 256 ],
-                "value"         => [ '', qr/.*/os, 10000 ],
-                "selected"      => [ '', qr/.*/os, 10000 ],
-                "required"      => [ '', qr/^[01]$/os ],
-                "readonly"      => [ '', qr/^[01]$/os ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                # "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                # "label"         => [ 'required', qr/.*/os, 256 ],
+                # "placeholder"   => [ '', qr/.*/os, 256 ],
+                # "type"          => [ '', qr/\w+/os, 256 ],
+                # "mask"          => [ '', qr/.*/os, 256 ],
+                # "value"         => [ '', qr/.*/os, 10000 ],
+                # "selected"      => [ '', qr/.*/os, 10000 ],
+                # "required"      => [ '', qr/^[01]$/os ],
+                # "readonly"      => [ '', qr/^[01]$/os ],
+                # "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
@@ -221,10 +221,9 @@ sub register {
 ################
             # роуты groups/*
             '/groups/add'  => {
-                # "label"         => [ 'required', qr/.*/os, 256 ],
-                # "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                # "status"        => [ 'required', qr/^[01]$/os ]
-                "parent"        => [ 'required', qr/^\d+$/os ]
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/groups/edit'  => {
                  "id"           => [ 'required', qr/^\d+$/os ]
