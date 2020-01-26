@@ -303,7 +303,7 @@ sub add {
         #     }
             $data = {
                 "folder" => 0,
-                "parent" => $data->{'parent'},
+                "parent" => $data->{'parent'} * 1,
                 "groups" => [
                     {
                         "label" => 'Основное',
