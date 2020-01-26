@@ -221,9 +221,10 @@ sub register {
 ################
             # роуты groups/*
             '/groups/add'  => {
-                "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                # "label"         => [ 'required', qr/.*/os, 256 ],
+                # "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                # "status"        => [ 'required', qr/^[01]$/os ]
+                "parent"        => [ 'required', qr/^\d+$/os ]
             },
             '/groups/edit'  => {
                  "id"           => [ 'required', qr/^\d+$/os ]
