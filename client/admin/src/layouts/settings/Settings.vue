@@ -92,7 +92,8 @@
 
           editPanel: {
             get:  'settings/leafEdit',
-            save: 'settings/leafSave'
+            save: 'settings/leafSave',
+            add: 'settings/leafAdd',
           }
         }
 

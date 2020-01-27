@@ -219,7 +219,8 @@
                  width="40"
                  height="40"
                  uk-svg>
-            <div class="uk-text-center uk-margin-top" v-html="$t('actions.searchError')"></div>
+            <div class="uk-text-center uk-margin-top"
+                 v-html="$t('actions.searchError')"></div>
 
           </div>
         </div>
@@ -324,6 +325,10 @@
     computed: {
 
       pageComponent () {return this.$route.name},
+
+      editPanel_api () { // список запросов для правой панели
+        return this.$store.getters.editPanel_api
+      },
 
       table_api () {return this.$store.getters.table_api},
 
@@ -461,22 +466,24 @@
 
       async add_row () {
 
-        const proto = await clone(this.$store.getters.editPanel_proto)
+        await this.$store.dispatch(this.editPanel_api.add, this.$route.params.id)
 
-        await proto.forEach(item => {
-          if (item.name === 'parent') {
-            item.value = this.tableId
-          }
-        })
-
-        await this.$store.commit('card_right_show', false)
-        await this.$store.commit('editPanel_data', [])
-        await this.$store.commit('editPanel_status_request')
-        await this.$store.commit('editPanel_add', true)
-        await this.$store.commit('editPanel_folder', false)
-        await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        await this.$store.commit('card_right_show', true)
-        await this.$store.commit('editPanel_status_success') // статус - успех
+        //const proto = await clone(this.$store.getters.editPanel_proto)
+        //
+        //await proto.forEach(item => {
+        //  if (item.name === 'parent') {
+        //    item.value = this.tableId
+        //  }
+        //})
+        //
+        //await this.$store.commit('card_right_show', false)
+        //await this.$store.commit('editPanel_data', [])
+        //await this.$store.commit('editPanel_status_request')
+        //await this.$store.commit('editPanel_add', true)
+        //await this.$store.commit('editPanel_folder', false)
+        //await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        //await this.$store.commit('card_right_show', true)
+        //await this.$store.commit('editPanel_status_success') // статус - успех
 
       },
 

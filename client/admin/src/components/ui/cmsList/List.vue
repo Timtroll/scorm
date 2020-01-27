@@ -25,9 +25,10 @@
 
       <!--header settings-->
       <div class="pos-card-header--content uk-padding-remove"
+           v-if="loader  === 'success' || 'error'"
            ref="listMenu">
         <ListMenu :nav="listMenu"
-                  v-if="loader  === 'success' || 'error' && listMenu && listMenu.length > 0"
+                  v-if="listMenu && listMenu.length > 0"
                   :active="listMenuActiveId"
                   @active-id="setActiveMenuItem($event)"
                   :resize="editPanel_large"/>
@@ -49,9 +50,22 @@
 
     <!--Edit FORM-->
     <div class="pos-card-body">
-      <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
+      <form class="pos-card-body-middle uk-position-relative uk-width-1-1 uk-flex-column uk-flex">
+
         <ul class="pos-list main">
 
+          <li>
+            <!--title-->
+            <div class="uk-margin-top"
+                 v-if="title">
+              <p class=" uk-h4 uk-margin-remove ">
+            <span v-text="title"
+                  :class="{'uk-text-primary': !add, 'uk-text-danger': add, }"></span>
+              </p>
+            </div>
+          </li>
+
+          <!--form-->
           <!--// MAIN-->
           <component v-bind:is="item.type"
                      v-for="(item, index) in dataNew.main"
@@ -71,7 +85,8 @@
                      @clear="clearValue"
                      @changeType="changeType($event)"/>
         </ul>
-        <ul class="pos-list">
+        <ul class="pos-list"
+            v-if="data">
           <li class="uk-padding-remove uk-flex-1"
               :class="{'uk-hidden': listMenuActiveId !== index}"
               v-for="(group, index) in dataNew.groups">
@@ -84,8 +99,8 @@
                   v-show="listMenuActiveId === index">
 
                 <component v-bind:is="item.type"
-                           v-for="(item, index) in group.fields"
-                           :key="index"
+                           v-for="(item, idx) in group.fields"
+                           :key="idx"
                            :value="item.value"
                            :type="item.type"
                            :name="item.name"
@@ -96,8 +111,8 @@
                            :mask="item.mask"
                            :label="item.label"
                            :placeholder="item.placeholder"
-                           @value="group.fields[index].value = $event"
-                           @change="dataChanged[index].changed = $event"
+                           @value="group.fields[idx].value = $event"
+                           @change="dataChanged[idx].changed = $event"
                            @clear="clearValue"
                            @changeType="changeType($event)"/>
               </ul>
@@ -151,7 +166,7 @@
 
 <script>
 
-  import {clone, confirm, unGroupedFields, flatFields} from '../../../store/methods'
+  import {clone, confirm} from '../../../store/methods'
 
   export default {
 
@@ -176,18 +191,6 @@
       inputDateTime:   () => import(/* webpackChunkName: "inputDateTime" */ '../inputs/inputDateTime'),
       InputCode:       () => import(/* webpackChunkName: "InputCode" */ '../inputs/InputCode'),
       InputType:       () => import(/* webpackChunkName: "InputType" */ '../inputs/InputType')
-    },
-
-    // Закрыть панель при нажатии "ESC"
-    mounted () {
-
-      document.onkeydown = evt => {
-        evt = evt || window.event
-        if (evt.keyCode === 27) {
-          this.close()
-        }
-      }
-
     },
 
     props: {
@@ -220,16 +223,33 @@
       //if (this.$refs.listMenu) {
       //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
       //}
-
       if (this.add) {
-        this.dataAdd     = await this.data.filter(item => item.add === true)
-        this.dataNew     = await clone(this.dataAdd)
-        this.dataChanged = await this.createDataChanged(this.dataAdd)
+        //this.dataAdd     = await this.data.filter(item => item.add === true)
+        //this.dataNew     = await clone(this.dataAdd)
+        //this.dataChanged = await this.createDataChanged(this.dataAdd)
 
         console.log('data', this.data)
       } else {
         this.dataNew     = await clone(this.data)
         this.dataChanged = await this.createDataChanged(this.data)
+      }
+
+    },
+
+    // Закрыть панель при нажатии "ESC"
+    async mounted () {
+      if (this.add) {
+        this.dataAdd     = await this.data.filter(item => item.add === true)
+        this.dataNew     = await clone(this.dataAdd)
+        this.dataChanged = await this.createDataChanged(this.dataAdd)
+
+        console.log('dataAdd', this.dataAdd)
+      }
+      document.onkeydown = evt => {
+        evt = evt || window.event
+        if (evt.keyCode === 27) {
+          this.close()
+        }
       }
 
     },
@@ -347,14 +367,18 @@
       },
 
       valueSelected () {
-        const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
-        if (selected && selected.value) {
-          return selected.value
+        if (this.dataNewFlat) {
+          const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
+          if (selected && selected.value) {
+            return selected.value
+          }
         }
       },
 
       findVariableTypeField () {
-        return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
+        if (this.dataNewFlat) {
+          return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
+        }
       },
 
       findTypeField () {
@@ -474,7 +498,11 @@
 
       // сохранение
       save () {
-        this.$emit('save', this.dataNewFlat)
+        if (this.add) {
+          this.$emit('add', this.dataNewFlat)
+        } else {
+          this.$emit('save', this.dataNewFlat)
+        }
       },
 
       // Очистка поля Value при изменении типа поля

@@ -296,6 +296,37 @@ const actions = {
     }
   },
 
+  async leafAdd ({commit, state, getters}, parentId) {
+
+    try {
+      store.commit('card_right_show', false)
+      store.commit('editPanel_folder', false)
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+      store.commit('card_right_show', true) // открытие правой панели
+
+      const response = await Api_EditPanel.list_proto(parentId)
+
+      if (response.status === 200) {
+
+        const resp  = await response.data
+        const proto = clone(store.getters.editPanel_proto)
+
+        //const groups =_groupedFields({})
+        const groups = groupedFields(resp.data, proto)
+
+        store.commit('editPanel_data', groups) // запись данных во VUEX
+        store.commit('editPanel_status_success') // статус - успех
+      }
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('card_right_show', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+
   /**
    * Сохранить Листочек настроек
    * @param commit
@@ -342,6 +373,15 @@ const actions = {
     }
   },
 
+  /**
+   * Сохранить поле
+   * @param commit
+   * @param state
+   * @param getters
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
   async leafSaveField ({commit, state, getters, dispatch}, item) {
 
     const parentId = item.parent

@@ -30,6 +30,16 @@ export default {
     })
   },
 
+  // получить прототип нового элемента
+  list_proto (parent) {
+    return Api()({
+      url:    'settings/add',
+      method: 'post',
+      params: {
+        parent: parent
+      }
+    })
+  },
 
   // добавление настройки
   list_add (data) {
