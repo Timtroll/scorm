@@ -91,9 +91,10 @@
           },
 
           editPanel: {
-            get:  'settings/leafEdit',
-            save: 'settings/leafSave',
-            add: 'settings/leafAdd',
+            get:      'settings/leafEdit',
+            save:     'settings/leafSave',
+            addProto: 'settings/leafProto',
+            add:      'settings/leafAdd'
           }
         }
 
@@ -233,8 +234,6 @@
       // сохранение Листочка
       saveLeaf (data) {
 
-        if (this.editPanel_add) {}
-
         const save = {
           add:    this.editPanel_add,
           folder: false,
@@ -252,7 +251,8 @@
           save.fields.value = JSON.stringify(save.fields.value)
         }
 
-        this.$store.dispatch(this.actions.editPanel.save, save)
+          this.$store.dispatch(this.actions.editPanel.save, save)
+
 
       }
 

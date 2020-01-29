@@ -466,8 +466,8 @@
 
       async add_row () {
 
-        await this.$store.dispatch(this.editPanel_api.add, this.$route.params.id)
-
+        this.$store.commit('editPanel_add', true)
+        await this.$store.dispatch(this.editPanel_api.addProto, this.$route.params.id)
         //const proto = await clone(this.$store.getters.editPanel_proto)
         //
         //await proto.forEach(item => {

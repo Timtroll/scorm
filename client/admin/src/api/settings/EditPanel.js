@@ -33,7 +33,7 @@ export default {
   // получить прототип нового элемента
   list_proto (parent) {
     return Api()({
-      url:    'settings/add',
+      url:    'settings/proto_leaf',
       method: 'post',
       params: {
         parent: parent

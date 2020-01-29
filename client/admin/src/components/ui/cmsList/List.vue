@@ -219,37 +219,26 @@
 
     async created () {
 
-      //// ширина меню панели редактирования
-      //if (this.$refs.listMenu) {
-      //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
-      //}
-      if (this.add) {
-        //this.dataAdd     = await this.data.filter(item => item.add === true)
-        //this.dataNew     = await clone(this.dataAdd)
-        //this.dataChanged = await this.createDataChanged(this.dataAdd)
-
-        console.log('data', this.data)
-      } else {
-        this.dataNew     = await clone(this.data)
-        this.dataChanged = await this.createDataChanged(this.data)
-      }
+      this.dataNew     = await clone(this.data)
+      this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
 
     },
 
     // Закрыть панель при нажатии "ESC"
     async mounted () {
-      if (this.add) {
-        this.dataAdd     = await this.data.filter(item => item.add === true)
-        this.dataNew     = await clone(this.dataAdd)
-        this.dataChanged = await this.createDataChanged(this.dataAdd)
 
-        console.log('dataAdd', this.dataAdd)
-      }
       document.onkeydown = evt => {
         evt = evt || window.event
         if (evt.keyCode === 27) {
           this.close()
         }
+      }
+
+      // если добавление, то активная вкладка = 1
+      if (this.add) {
+        this.listMenuActiveId = 0
+      } else {
+        this.listMenuActiveId = 1
       }
 
     },
@@ -277,7 +266,7 @@
       async data () {
         if (this.data && !this.add) {
           this.dataNew     = await clone(this.data)
-          this.dataChanged = await this.createDataChanged(this.flatGroups(this.data))
+          this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
         }
       },
 
@@ -326,23 +315,13 @@
         }
       },
 
-      // Проверка на уникальность поля 'name' в таблице
-      //tableNames () {
-      //
-      //  if (!this.add) {
-      //    const index = this.usedNames.indexOf(this.currentName)
-      //    if (index !== -1) this.usedNames.splice(index, 1)
-      //  }
-      //
-      //  return this.usedNames.includes(this.editedData.name)
-      //},
-
       // Все поля в один уровень
       dataNewFlat () {
         if (this.dataNew) {
           return this.flatGroups(this.dataNew)
         }
       },
+
       // широкая / узкая панель редактирования
       editPanel_large () {
         return this.$store.getters.editPanel_large
@@ -393,8 +372,10 @@
       },
 
       id () {
-        const idEl = this.dataNewFlat.find(item => item.name === 'id')
-        return idEl.value
+        if (!this.add) {
+          const idEl = this.dataNewFlat.find(item => item.name === 'id')
+          return idEl.value
+        }
       }
 
     },
@@ -444,17 +425,20 @@
 
       createDataChanged (arr) {
 
+        console.log(arr)
         const newArr = []
+        if (arr) {
+          arr.forEach(item => {
+            const newItem = {
+              name:    item.name,
+              changed: false
+            }
+            newArr.push(newItem)
+          })
 
-        arr.forEach(item => {
-          const newItem = {
-            name:    item.name,
-            changed: false
-          }
-          newArr.push(newItem)
-        })
+          return newArr
+        }
 
-        return newArr
       },
 
       variableType (type) {
@@ -498,11 +482,8 @@
 
       // сохранение
       save () {
-        if (this.add) {
-          this.$emit('add', this.dataNewFlat)
-        } else {
-          this.$emit('save', this.dataNewFlat)
-        }
+
+        this.$emit('save', this.dataNewFlat)
       },
 
       // Очистка поля Value при изменении типа поля

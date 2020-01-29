@@ -273,7 +273,7 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
-      store.commit('card_right_show', true) // открытие правой панели
+      store.commit('card_right_show', false) // открытие правой панели
 
       const response = await Api_EditPanel.list_edit(id)
 
@@ -287,23 +287,24 @@ const actions = {
 
         store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
+        store.commit('card_right_show', true) // открытие правой панели
       }
     } catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
-      store.commit('card_right_show', false)
+      store.commit('editPanel_add', true)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
   },
 
-  async leafAdd ({commit, state, getters}, parentId) {
+  async leafProto ({commit, state, getters}, parentId) {
 
     try {
+      store.commit('card_right_show', false)
       store.commit('card_right_show', false)
       store.commit('editPanel_folder', false)
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
-      store.commit('card_right_show', true) // открытие правой панели
 
       const response = await Api_EditPanel.list_proto(parentId)
 
@@ -317,7 +318,10 @@ const actions = {
 
         store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
+
+        store.commit('card_right_show', true) // открытие правой панели
       }
+
     } catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('card_right_show', false)
