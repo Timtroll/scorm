@@ -79,6 +79,7 @@ warn '=freee=';
 
     # строки настроек - обязательная проверка на фолдер
     $auth->post('/settings/add')          ->to('settings#add');             # добавление настройки
+    $auth->post('/settings/proto_leaf')   ->to('settings#proto_leaf');      # прототип настройки
     $auth->post('/settings/edit')         ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');            # добавление/сохранение настройки
 

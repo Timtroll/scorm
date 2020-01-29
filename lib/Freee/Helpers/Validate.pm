@@ -180,18 +180,20 @@ sub register {
             '/settings/delete_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
+            '/settings/proto_leaf'  => {
+                "parent"        => [ 'required', qr/^\d+$/os ]
+            },
             '/settings/add'  => {
-                "parent"        => [ 'required', qr/^\d+$/os ],
-                # "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                # "label"         => [ 'required', qr/.*/os, 256 ],
-                # "placeholder"   => [ '', qr/.*/os, 256 ],
-                # "type"          => [ '', qr/\w+/os, 256 ],
-                # "mask"          => [ '', qr/.*/os, 256 ],
-                # "value"         => [ '', qr/.*/os, 10000 ],
-                # "selected"      => [ '', qr/.*/os, 10000 ],
-                # "required"      => [ '', qr/^[01]$/os ],
-                # "readonly"      => [ '', qr/^[01]$/os ],
-                # "status"        => [ 'required', qr/^[01]$/os ]
+                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "placeholder"   => [ '', qr/.*/os, 256 ],
+                "type"          => [ '', qr/\w+/os, 256 ],
+                "mask"          => [ '', qr/.*/os, 256 ],
+                "value"         => [ '', qr/.*/os, 10000 ],
+                "selected"      => [ '', qr/.*/os, 10000 ],
+                "required"      => [ '', qr/^[01]$/os ],
+                "readonly"      => [ '', qr/^[01]$/os ],
+                "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],

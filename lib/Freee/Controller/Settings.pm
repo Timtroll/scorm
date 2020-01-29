@@ -257,12 +257,12 @@ sub load_default {
 
 # создание настройки
 # my $id = $self->add();
-# "folder"      => 0,           - это запись настроек
-# "parent"      => 0,           - обязательно (должно быть натуральным числом)
-# "label"       => 'название',  - обязательно (название для отображения)
-# "name",       => 'name'       - обязательно (системное название, латиница)
-# "status",     => 0/1          - обязательно (системное название, латиница)
-# "readonly"    => 0,           - не обязательно, по умолчанию 0
+# "folder"      => 0,             - это запись настроек
+# "parent"      => 0,             - обязательно (должно быть натуральным числом)
+# "label"       => 'название',    - обязательно (название для отображения)
+# "name",       => 'name'         - обязательно (системное название, латиница)
+# "status",     => 0/1            - обязательно (системное название, латиница)
+# "readonly"    => 0,             - не обязательно, по умолчанию 0
 # "value"       => "",            - строка или json
 # "type"        => "InputNumber", - тип поля из конфига
 # "placeholder" => 'это название',- название для отображения в форме
@@ -282,25 +282,52 @@ sub add {
         # push @mess, $error unless $data;
 
         unless (@mess) {
-        #     # корректирование пустых значений
-        #     $$data{'folder'} = 0;
-        #     unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
-        #     unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
-        #     unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
-        #     unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
-        #     unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
-        #     unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
-        #     unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-        #     unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
+            # корректирование пустых значений
+            $$data{'folder'} = 0;
+            unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
+            unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
+            unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
+            unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
+            unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
+            unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
+            unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+            unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
 
-        #     # проверяем поле name на дубликат
-        #     if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
-        #         push @mess, "Setting named '$$data{'name'}' is exists";
-        #     }
-        #     else {
-        #         $id = $self->_insert_setting( $data, [] );
-        #         push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
-        #     }
+            # проверяем поле name на дубликат
+            if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
+                push @mess, "Setting named '$$data{'name'}' is exists";
+            }
+            else {
+                $id = $self->_insert_setting( $data, [] );
+                push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
+            }
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
+}
+
+# прототип настройки
+# my $id = $self->proto_leaf();
+# "parent" => 1, - обязательно (должно быть натуральным числом)
+sub proto_leaf {
+    my $self = shift;
+
+    # read params
+    my ($id, $data, $error, $resp, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        unless (@mess) {
+            # прототип настройки
             $data = {
                 "folder" => 0,
                 "parent" => $data->{'parent'} * 1,
