@@ -168,14 +168,14 @@ warn '=freee=';
     $auth->post('/agreement/delete')      ->to('agreement#delete');     # возможно не нужно ?????????
 
     # управление пользователями
-    $auth->post('/user/')                 ->to('user#index');
-    $auth->post('/user/list')             ->to('user#list');
-    $auth->post('/user/add')              ->to('user#add');
-    $auth->post('/user/edit')             ->to('user#edit');
-    $auth->post('/user/save')             ->to('user#save');
-    $auth->post('/user/activate')         ->to('user#activate');
-    $auth->post('/user/hide')             ->to('user#hide');
-    $auth->post('/user/delete')           ->to('user#index');
+    $auth->post('/user/')                 ->to('user#index');        # список юзеров (все)
+    $auth->post('/user/list')             ->to('user#list');         # список юзеров по группам (обязательно id ггруппы)
+    $auth->post('/user/add')              ->to('user#add');          # добавление юзера
+    $auth->post('/user/edit')             ->to('user#edit');         # редактирование юзера
+    $auth->post('/user/save')             ->to('user#save');         # обновление данных юзера
+    $auth->post('/user/activate')         ->to('user#activate');     # включение юзера
+    $auth->post('/user/hide')             ->to('user#hide');         # отключение юзера
+    $auth->post('/user/delete')           ->to('user#delete');       # удаление юзера
 
     # управление группами пользователей
     $auth->post('/groups/')             ->to('groups#index');        # список групп
