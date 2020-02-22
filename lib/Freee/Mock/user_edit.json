@@ -23,7 +23,7 @@
     "folder": 0,
     "id": 1,
     "parent": 3,
-    "groups": [
+    "tabs": [ // Вкладки 
       {
         "label": "Основные",
         "fields": [
