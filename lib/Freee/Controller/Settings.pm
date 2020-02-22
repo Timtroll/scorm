@@ -331,7 +331,7 @@ sub proto_leaf {
             $data = {
                 "folder" => 0,
                 "parent" => $data->{'parent'} * 1,
-                "groups" => [
+                "tabs" => [
                     {
                         "label" => 'Основное',
                         "fields" => {
@@ -385,7 +385,7 @@ sub edit {
                 "folder" => $data->{'folder'},
                 "id"     => $data->{'id'},
                 "parent" => $data->{'parent'},
-                "groups" => [
+                "tabs" => [
                     {
                         "label" => "Основное",
                         "fields" => {
