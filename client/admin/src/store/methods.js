@@ -56,7 +56,7 @@ function groupedFields (data, proto) {
 
   const groups = {
     main:   [],
-    groups: []
+    tabs: []
   }
 
   //const data   = data
@@ -67,7 +67,7 @@ function groupedFields (data, proto) {
       if (data && data.hasOwnProperty(prop)) {
 
         // Поля не объедененные в группы (видимы всегда)
-        if (prop !== 'groups') {
+        if (prop !== 'tabs') {
 
           // только те поля, которые определены в прототипе
           const protoKey = proto.filter(item => item.name === prop)
@@ -84,9 +84,9 @@ function groupedFields (data, proto) {
         }
 
         // Поля объедененные в группы
-        else if (prop === 'groups') {
+        else if (prop === 'tabs') {
 
-          const groupFields = data.groups
+          const groupFields = data.tabs
 
           groupFields.forEach(item => {
 
@@ -113,7 +113,7 @@ function groupedFields (data, proto) {
               }
             }
 
-            groups.groups.push(groupItem)
+            groups.tabs.push(groupItem)
           })
 
         }
@@ -139,8 +139,8 @@ function unGroupedFields (groups) {
 
   _getKeyValue(groups.main)
 
-  if (groups && groups.hasOwnProperty('groups')) {
-    groups.groups.forEach(item => {
+  if (groups && groups.hasOwnProperty('tabs')) {
+    groups.tabs.forEach(item => {
       _getKeyValue(item.fileds)
     })
   }
@@ -168,8 +168,8 @@ function flatFields (groups) {
 
   _getFiled(groups.main)
 
-  if (groups.hasOwnProperty('groups')) {
-    groups.groups.forEach(item => {
+  if (groups.hasOwnProperty('tabs')) {
+    groups.tabs.forEach(item => {
       _getFiled(item.fileds)
     })
   }

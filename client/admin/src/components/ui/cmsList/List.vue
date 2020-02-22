@@ -89,7 +89,7 @@
             v-if="data">
           <li class="uk-padding-remove uk-flex-1"
               :class="{'uk-hidden': listMenuActiveId !== index}"
-              v-for="(group, index) in dataNew.groups">
+              v-for="(group, index) in dataNew.tabs">
 
             <transition name="slide-right"
                         appear
@@ -285,8 +285,8 @@
       listMenu () {
         const data = clone(this.data)
 
-        if (data && data.hasOwnProperty('groups')) {
-          const dataGroups = clone(this.data.groups)
+        if (data && data.hasOwnProperty('tabs')) {
+          const dataGroups = clone(this.data.tabs)
           const menu       = []
 
           dataGroups.map((item, index) => {
@@ -363,7 +363,7 @@
       findTypeField () {
 
         return this.searchTypeInGroups(this.dataNewFlat)
-        //if (this.dataNew.hasOwnProperty('groups')) {
+        //if (this.dataNew.hasOwnProperty('tabs')) {
         //
         //  return this.dataNew.find(item => item.name === 'type')
         //} else {
@@ -387,10 +387,10 @@
       },
 
       searchTypeInGroups (array) {
-        if (array.hasOwnProperty('groups')) {
+        if (array.hasOwnProperty('tabs')) {
 
           // массив в один уровень
-          const allFields     = array.groups
+          const allFields     = array.tabs
           const allFieldsFlat = allFields.map(item => item.fields)
 
           // поиск поля тип
@@ -405,10 +405,10 @@
 
       //
       flatGroups (array) {
-        if (array && array.hasOwnProperty('groups')) {
+        if (array && array.hasOwnProperty('tabs')) {
 
           // массив в один уровень
-          const allFields   = array.groups
+          const allFields   = array.tabs
           let allFieldsFlat = allFields.map(item => item.fields)
 
           if (array.hasOwnProperty('main')) {
