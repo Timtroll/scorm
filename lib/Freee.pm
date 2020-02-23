@@ -167,10 +167,10 @@ warn '=freee=';
     $auth->post('/agreement/reject')    ->to('agreement#reject');
     $auth->post('/agreement/approve')   ->to('agreement#approve');
     $auth->post('/agreement/comment')   ->to('agreement#comment');
-    $auth->post('/agreement/delete')    ->to('agreement#delete');  # возможно не нужно ?????????
+    $auth->post('/agreement/delete')    ->to('agreement#delete'); # возможно не нужно ?????????
 
     # управление пользователями
-    $auth->post('/user/')                  ->to('user#index');      # список юзеров по группам (обязательно id группы)
+    $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # добавление юзера
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера

@@ -3,12 +3,21 @@
 SOURCE=`pwd`
 echo $SOURCE
 
-# echo "-------"
-# echo "stop mojo daemon:"
-# echo "cd $SOURCE"
-# cd $SOURCE
-# echo "./starting.sh stop"
-# ./starting.sh stop
+echo "Check lock file"
+if [ ! -f $SOURCE/log/deploy.lock ]
+then
+    touch $SOURCE/log/deploy.lock
+else 
+    echo "ERROR: Exists lock file."
+    exit 2
+fi
+
+echo "-------"
+echo "stop mojo daemon:"
+echo "cd $SOURCE"
+cd $SOURCE
+echo "./starting.sh stop"
+./starting.sh stop
 
 echo "-------"
 echo "git checkout master:"
@@ -37,7 +46,7 @@ npm install
 
 echo "-------"
 echo "vue-cli-service build --modern"
-yarn run build
+vue-cli-service build --modern
 
 echo "-------"
 echo "delete content of public (exclude dir 'forum'):"
@@ -56,17 +65,15 @@ rm $SOURCE/log/deploy.lock
 
 echo "Finish"
 
-# echo "-------"
-# echo "restart mojo daemon:"
-# echo "cd $SOURCE"
-# cd $SOURCE
-# echo "./starting.sh restart"
-# ./starting.sh start
+echo "-------"
+echo "Start mojo daemon:"
+echo "cd $SOURCE"
+cd $SOURCE
+echo "./starting.sh start"
+./starting.sh start
 
-
-
-# if [ "$?" != "0" ] ; then
-#     echo
-#     echo "ERROR: Execution failed."
-#     exit 2
-# fi
+if [ "$?" != "0" ] ; then
+    echo
+    echo "ERROR: Execution failed."
+    exit 2
+fi
