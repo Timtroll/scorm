@@ -36,7 +36,7 @@ echo "npm install"
 npm install
 
 echo "-------"
-echo "yarn run build"
+echo "vue-cli-service build --modern"
 yarn run build
 
 echo "-------"
