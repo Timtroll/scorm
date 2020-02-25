@@ -10,7 +10,6 @@ use Mojo::Log;
 
 use common;
 use Data::Dumper;
-# use EAV;
 
 $| = 1;
 
@@ -43,12 +42,12 @@ sub startup {
     $self->plugin('Freee::Helpers::Validate');
     $vfields = $self->_param_fields();
 
-    # init Pg connection
-    warn $self->eav( 'Location', { id => 1 } );
-
-
     # init Beanstalk connection
     $self->_beans_init();
+
+    # init Pg connection
+    my $loc = $self->eav( 'Location', { id => 1 } );
+print $loc;
 
     # подгружаем модель
     # $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
