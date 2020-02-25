@@ -62,94 +62,96 @@ sub GetSubscriptions {
 
     # делаем дистинкт по сервисам.
     # докидываем информацию по сервису
-    my $Tmp = {};
-    my $ServiceObj = $Kernel::OM->Get('Kernel::System::Service');
+    # my $Tmp = {};
+    # my $ServiceObj = $Kernel::OM->Get('Kernel::System::Service');
 
-    $Result = [
-        map {
-            my $s       = $_;
-            my %Service = $ServiceObj->ServiceGet(
-                ServiceID => $s->{service_id},
-                UserID    => 1
-            );
-            $s->{Service} = \%Service if (%Service);
-            $s
-        } grep {
-            !exists( $Tmp->{ $_->{service_id} } )
-                && ( $Tmp->{ $_->{service_id} } = 1 )
-            } @$Result
-    ];
+    # $Result = [
+    #     map {
+    #         my $s       = $_;
+    #         my %Service = $ServiceObj->ServiceGet(
+    #             ServiceID => $s->{service_id},
+    #             UserID    => 1
+    #         );
+    #         $s->{Service} = \%Service if (%Service);
+    #         $s
+    #     } grep {
+    #         !exists( $Tmp->{ $_->{service_id} } )
+    #             && ( $Tmp->{ $_->{service_id} } = 1 )
+    #         } @$Result
+    # ];
 
     return $Result;
 }
 
 
-=head2 SLAGet( %Param )
+# =head2 SLAGet( %Param )
 
-Метод возвращает SLA на основе подписки
+# Метод возвращает SLA на основе подписки
 
-my @Subscription = $EAVObject->GetSubscription(
-    Priority        => '3 высокий', #Приоритет - необязательно
-    PriorityID      => '3',         #ID приоритета - необязательно
-    TicketType      => 'Инцидент'   #Тип тикета - TicketType или TicketTypeID - обязательно
-    TicketTypeID    => '2'          #ID типа тикета - TicketType или TicketTypeID - обязательно
-);
+# my @Subscription = $EAVObject->GetSubscription(
+#     Priority        => '3 высокий', #Приоритет - необязательно
+#     PriorityID      => '3',         #ID приоритета - необязательно
+#     TicketType      => 'Инцидент'   #Тип тикета - TicketType или TicketTypeID - обязательно
+#     TicketTypeID    => '2'          #ID типа тикета - TicketType или TicketTypeID - обязательно
+# );
 
-Метод возвращает Hash: SLAID => SLAName
-=cut
+# Метод возвращает Hash: SLAID => SLAName
+# =cut
 
-sub SLAGet{
-    my ( $Self, %Param ) = @_;
+# sub SLAGet{
+#     my ( $Self, %Param ) = @_;
 
-    unless ( defined( $Param{ServiceID} ) && ( defined( $Param{TicketType} ) || defined( $Param{TicketTypeID} ) ) ){
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority    => 'error',
-            Message     => 'Mandatory parameters is missing'
-        );
-        return;
-    }
+#     unless ( defined( $Param{ServiceID} ) && ( defined( $Param{TicketType} ) || defined( $Param{TicketTypeID} ) ) ){
+#         # $Kernel::OM->Get('Kernel::System::Log')->Log(
+#         #     Priority    => 'error',
+#         #     Message     => 'Mandatory parameters is missing'
+#         # );
+# warn 'Mandatory parameters is missing':
+#         return;
+#     }
 
-    my $Subscriptions = $Self->GetSubscriptions();
+#     my $Subscriptions = $Self->GetSubscriptions();
 
-    unless( $Subscriptions && ref( $Subscriptions ) eq 'ARRAY' && @$Subscriptions ){
-        $Kernel::OM->Get('Kernel::System::Log')->Log(
-            Priority    => 'error',
-            Message     => 'Can\'t find subscriptions!'
-        );
-        return;
-    }
+#     unless( $Subscriptions && ref( $Subscriptions ) eq 'ARRAY' && @$Subscriptions ){
+#         # $Kernel::OM->Get('Kernel::System::Log')->Log(
+#         #     Priority    => 'error',
+#         #     Message     => 'Can\'t find subscriptions!'
+#         # );
+# warn 'Can\'t find subscriptions!':
+#         return;
+#     }
 
-    my $SLAGroupObject = $Kernel::OM->Get('Kernel::System::SLAGroup');
-    my $SLAObject = $Kernel::OM->Get('Kernel::System::SLA');
+#     my $SLAGroupObject = $Kernel::OM->Get('Kernel::System::SLAGroup');
+#     my $SLAObject = $Kernel::OM->Get('Kernel::System::SLA');
 
-    my $Result;
-    for my $Item( @$Subscriptions ){
-        next if( $Item->{service_id} != $Param{ServiceID} );
-        my $SLAID = $SLAGroupObject->SLAGet(
-            SLAGroupID   => $Item->{sla_id},
-            %Param
-        );
-        next if( !defined($SLAID) );
+#     my $Result;
+#     for my $Item( @$Subscriptions ){
+#         next if( $Item->{service_id} != $Param{ServiceID} );
+#         my $SLAID = $SLAGroupObject->SLAGet(
+#             SLAGroupID   => $Item->{sla_id},
+#             %Param
+#         );
+#         next if( !defined($SLAID) );
 
-        my %SLA = $SLAObject->SLAGet(
-            SLAID   => $SLAID,
-            UserID  => 1
-        );
-        if( %SLA ){
-            return { SLAID => $SLAID, SLAName => $SLA{Name} };
-        }
-    }
+#         my %SLA = $SLAObject->SLAGet(
+#             SLAID   => $SLAID,
+#             UserID  => 1
+#         );
+#         if( %SLA ){
+#             return { SLAID => $SLAID, SLAName => $SLA{Name} };
+#         }
+#     }
 
-    $Kernel::OM->Get('Kernel::System::Log')->Log(
-        Priority    => 'error',
-        Message     => 'PANIC!!! It\'s seems like we have subscription that leads to SLA-Group with wrong rules'
-    );
-    $Kernel::OM->Get('Kernel::System::Log')->Dumper({
-        Subscription    => $Subscriptions,
-        Params          => \%Param
-    });
+#     $Kernel::OM->Get('Kernel::System::Log')->Log(
+#         Priority    => 'error',
+#         Message     => 'PANIC!!! It\'s seems like we have subscription that leads to SLA-Group with wrong rules'
+#     );
+#     $Kernel::OM->Get('Kernel::System::Log')->Dumper({
+#         Subscription    => $Subscriptions,
+#         Params          => \%Param
+#     });
 
-    return;
-}
+#     return;
+# }
 
 1;

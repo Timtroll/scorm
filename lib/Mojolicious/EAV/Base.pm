@@ -18,6 +18,7 @@ sub new {
         $Self = bless {}, __PACKAGE__;
         $Self->{dbh} = $dbh;
         $Self->_init();
+
         return $Self if ( !defined( $Class ) );
     }
 
@@ -40,10 +41,12 @@ sub AUTOLOAD {
     if ( exists( $self->{Fields}->{ $self->{Type} }->{ $method } ) || exists( $self->{ItemFields}->{ $method } ) || ( exists( $self->{_item} ) && exists( $self->{_item}->{ $method } ) ) || exists( $self->{Fields}->{ 'Default' }->{ $method } ) ) {
         if ( scalar( @_ ) ) {
             return $self->_store( $method, @_ );
-        } elsif ( exists( $self->{_item} ) ) {
+        }
+        elsif ( exists( $self->{_item} ) ) {
             return $self->{_item}->{ $method } if exists( $self->{_item}->{ $method } );
             return $self->_get_field( $method );
-        } else {
+        }
+        else {
             return undef();
         }
     } else {
@@ -69,10 +72,10 @@ sub _init {
     $Self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'type', 'import_type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
 
     $Self->{DataTables} = {
-        int => [ '"public"."EAV_data_int4"', '"EAV_data_int4_pkey"' ],
-        string => [ '"public"."EAV_data_string"', '"EAV_data_string_pkey"' ],
-        boolean => [ '"public"."EAV_data_boolean"', '"EAV_data_boolean_pkey"' ],
-        datetime => [ '"public"."EAV_data_datetime"', '"EAV_data_datetime_pkey"' ]
+        int         => [ '"public"."EAV_data_int4"',    '"EAV_data_int4_pkey"' ],
+        string      => [ '"public"."EAV_data_string"',  '"EAV_data_string_pkey"' ],
+        boolean     => [ '"public"."EAV_data_boolean"', '"EAV_data_boolean_pkey"' ],
+        datetime    => [ '"public"."EAV_data_datetime"', '"EAV_data_datetime_pkey"' ]
     };
 
     $sth = $Self->{dbh}->prepare( 'SELECT i.* FROM "public"."EAV_links" AS l INNER JOIN "public"."EAV_items" AS i ON i."id" = l."id" WHERE l."parent" = 0 AND l."distance" = 0' );
@@ -87,7 +90,7 @@ sub _init {
     foreach my $Type ( keys %{ $Self->{Fields} } ) {
         my $T = ucfirst($Type);
         my $Class = $Base.'::'.$T;
-        if( !defined($Loaded{$Type}) ){
+        if ( !defined($Loaded{$Type}) ) {
             $Kernel::OM->Get('Kernel::System::Main')->Require( $Class );
             $Loaded{$Type} = 1;
         }
@@ -95,11 +98,13 @@ sub _init {
         if ( !defined( $id ) ) {
             if ( $Type eq 'Default' ) {
                  $Self->{Roots}->{ $Type } =  undef();
-            } else {
+            }
+            else {
                  my $obj = $Class->new({ Type => $Type, parent => 0, publish => \1, import_id => undef(), title => $T });
                  $Self->{Roots}->{ $Type } = $obj;
             }
-        } else {
+        }
+        else {
             my $obj = $Class->new( { Type => $Type } );
             $obj->{_item} = $obj->_get( $id );
             $Self->{Roots}->{ $Type } = $obj;
@@ -111,15 +116,16 @@ sub _init {
     $Self->{CacheType}   = "EAV";
     $Self->{CacheTTL}    = 60 * 60 * 24 * 30;
 
-    $Self->{LogObject}    = $Kernel::OM->Get('Kernel::System::Log');
-    $Self->{Debug}        = $Kernel::OM->Get('Kernel::Config')->Get('EAV::Debug') || 0;
+    $Self->{LogObject}   = $Kernel::OM->Get('Kernel::System::Log');
+    $Self->{Debug}       = $Kernel::OM->Get('Kernel::Config')->Get('EAV::Debug') || 0;
 }
 
 sub _init_copy {
     my ( $Self, $Target, $Params ) = @_;
+
     my $fields = [
-        'dbh',        'DBObject', 'FieldsAsArray', 'Fields',    'FieldsById', 'ItemFields',
-        'DataTables', 'Roots',    'CacheType', 'CacheTTL', 'LogObject', 'Debug'
+        'dbh',        'DBObject', 'FieldsAsArray',  'Fields',   'FieldsById',   'ItemFields',
+        'DataTables', 'Roots',    'CacheType',      'CacheTTL', 'LogObject',    'Debug'
     ];
 
     $Target->{$_} = $Self->{$_} foreach (@$fields);
@@ -141,7 +147,7 @@ sub _InitThisItem {
     elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
         $Self->{_item} = $Self->_create( $Params );
         my $Type = '\''.$$Params{Type}.'\'';
-        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ){
+        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ) {
             $Self->_MultiStore( $Params->{data} );
         }
         elsif ( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ) {
@@ -159,7 +165,9 @@ sub _get {
 
     my $sql = $import_id_flag_and_type ? 'SELECT * FROM "public"."EAV_items" WHERE "import_id" = '.$id.' AND "import_type" = '.$Self->{dbh}->quote( $import_id_flag_and_type ) : 'SELECT * FROM "public"."EAV_items" WHERE "id" = '.$id;
     my $item = $Self->{dbh}->selectrow_hashref( $sql );
+
     return undef() unless defined( $item );
+
     #!!FIXIT
     $$item{Type} = $$item{type} = $$item{import_type};
     delete( $$item{import_type} );
@@ -208,8 +216,10 @@ sub _get_field {
     my ( $Self, $FieldName ) = @_ ;
 
     return undef() unless exists( $Self->{_item} );
+
     my $t = $Self->{Type};
     $t = 'Default' if exists( $Self->{Fields}->{ 'Default' }->{ $FieldName } );
+
     return undef() unless exists( $Self->{Fields}->{ $t }->{ $FieldName } );
 
     my $Field = $Self->{Fields}->{ $t }->{ $FieldName };
@@ -220,6 +230,7 @@ sub _get_field {
 
 sub _get_childs {
     my $Self = shift;
+
     return undef() unless exists( $Self->{_item} );
 
     my $id = int( $Self->{_item}->{id} );
@@ -317,6 +328,7 @@ sub RefreshView{
 
 sub _create {
     my ( $Self, $Item ) = @_;
+
     $Item->{Type} = $Self->{Type} unless exists( $Item->{Type} );
     die unless exists( $$Item{Type} ) && exists( $Self->{Fields}->{ $$Item{Type} } );
     die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
@@ -377,9 +389,10 @@ sub _delete {
 
 sub _MoveChilds {
     my ( $Self, $Params ) = @_ ;
-    return undef() unless exists( $Params->{NewParent} );
-    my $id = int( $Self->{_item}->{id} );
 
+    return undef() unless exists( $Params->{NewParent} );
+
+    my $id = int( $Self->{_item}->{id} );
     my $Childs = $Self->_get_childs();
 
     #move childs to parent of this node inside it's graph.
@@ -427,9 +440,7 @@ sub _RealDelete {
     return undef() if !$id;#use truncates..
 
     my $Params = $_[0];
-
     my $items = [ $id ];
-
     my $Childs = $Self->_get_childs();
 
     if ( !exists( $Params->{SaveChilds} ) || !$Params->{SaveChilds} ) {
@@ -439,9 +450,11 @@ sub _RealDelete {
         my $dParent = $Self->{dbh}->selectrow_array( 'SELECT "parent" FROM "public"."EAV_links" WHERE "id" = '.$id.' AND distance = 0' );
         $Self->_MoveChilds( { NewParent => $dParent } );
     }
+
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "id" IN ('.join( ',', @$items ).') ' );
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" IN ('.join( ',', @$items ).') ' );
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_items" WHERE "id" IN ('.join( ',', @$items ).')' );
+
     foreach my $tbl ( map { $Self->{DataTables}->{ $_ }->[0] } keys %{ $Self->{DataTables} } ) {
         $Self->{dbh}->do( 'DELETE FROM '.$tbl.' WHERE "id" IN ('.join( ',', @$items ).')' );
     }
@@ -767,7 +780,7 @@ sub BreadCrumbsArray {
     my $CacheType = $Self->{CacheType} . '_BreadCrumbs';
     my $CacheKey  = "EAVBreadCrumbs::".$Type."::".$Self->id();
 
-    if( $CacheObject ){
+    if ( $CacheObject ) {
         my $Data = $CacheObject->Get(
             Type => $CacheType,
             Key  => $CacheKey,
@@ -802,7 +815,7 @@ sub BreadCrumbsArray {
         }
     } @Crumbs;
 
-    if( $CacheObject and ( @Crumbs ) ){
+    if ( $CacheObject and ( @Crumbs ) ) {
         $CacheObject->Set(
             Type => $CacheType,
             Key  => $CacheKey,

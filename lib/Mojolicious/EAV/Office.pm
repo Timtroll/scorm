@@ -4,7 +4,7 @@ use parent 'Mojolicious::EAV::Base';
 use strict;
 use warnings;
 
-sub RefreshView{
+sub RefreshView {
     my ( $Self ) = @_;
 
     $Self->{dbh}->do("SELECT refresh_pbd_company_view()");

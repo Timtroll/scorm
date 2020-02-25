@@ -68,8 +68,8 @@ sub GetTree {
         for my $key ( @$keys ) {
             $Parents->{ $$n{ $key } } = 1 if defined( $$n{ $key } ) && !exists( $Parents->{ $$n{ $key } } );
             $ParentsByKeys->{ $key }->{ $$n{ $key } } = 1 if defined( $$n{ $key } );
-        };
-    };
+        }
+    }
 
     my $MixedTreeSQL =
         'SELECT DISTINCT(info."id"), info.* FROM "public"."EAV_submodules_locations" AS info '.
@@ -95,11 +95,11 @@ sub GetTree {
             $RESULT->{ $region }->{childs}->{ $city }->{childs} = $Self->_GetTree( $MixedTreeAsHash, $city );
             for my $street ( grep { exists( $RESULT->{ $region }->{childs}->{ $city }->{childs}->{ $_ } ) } keys %{ $ParentsByKeys->{street} } ) {
                 $RESULT->{ $region }->{childs}->{ $city }->{childs}->{$street}->{childs} = $Self->_GetTree( $MixedTreeAsHash, $street );
-            };
-        };
-    };
+            }
+        }
+    }
     return $RESULT;
-};
+}
 
 sub _GetTree {
     my ( $Self, $Tree, $id ) = @_;
@@ -112,11 +112,11 @@ sub _GetTree {
 
         $RESULT->{ $Item->{id} } = $Item;
         $RESULT->{ $Item->{id} }->{childs} = $Self->_GetTree( $Tree, $Item->{id} );
-    };
+    }
     return undef() unless scalar( keys %$RESULT );
 
     return $RESULT;
-};
+}
 
 sub GetTitle {
     my $Self = shift;
@@ -125,7 +125,7 @@ sub GetTitle {
     return $Self->{_submodules_locations_cache}->{clean_address} if defined( $Self->{_submodules_locations_cache} );
 
     return $Self->{_item}->{title};
-};
+}
 
 =encoding utf8
 
