@@ -1,10 +1,13 @@
 package Freee::Model::Methods;
 
 use Mojo::Base 'Freee::Model::EAV';
+use common;
 
 sub do {
     my ($self) = @_;
-    warn "Model::Methods sub do()";
+    warn "Freee::Model::Methods sub do()";
+use DDP;
+    warn p $dbh;
 }
 
 1;

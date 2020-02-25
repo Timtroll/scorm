@@ -10,6 +10,7 @@ use Mojo::Log;
 
 use common;
 use Data::Dumper;
+# use EAV;
 
 $| = 1;
 
@@ -30,13 +31,6 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    # подгружаем модель
-    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
-$self->model('methods-client')->do();
-$self->model('methods')->do();
-$self->model('EAV')->check();
-warn '=freee=';
-
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
@@ -50,10 +44,20 @@ warn '=freee=';
     $vfields = $self->_param_fields();
 
     # init Pg connection
-    $self->pg_init();
+    warn $self->eav( 'Location', { id => 1 } );
+
 
     # init Beanstalk connection
     $self->_beans_init();
+
+    # подгружаем модель
+    # $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
+# $self->model('methods-client')->do();
+# $self->model('methods')->do();
+# $self->model('EAV')->check();
+# warn '=freee=';
+
+
 
     # Router
     $r = $self->routes;

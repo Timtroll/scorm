@@ -1,28 +1,22 @@
-package Kernel::System::EAV::Base;
-## no critic
+package Mojolicious::EAV::Base;
 
+# Базовый класс EAV
 use strict;
 use warnings;
 use Data::Dumper;
 use DDP;
 our @EXPORT_OK = qw( AUTOLOAD );
 
-use Kernel::Language qw(Translatable);
-
-our @ObjectDependencies = (
-    'Kernel::Config',
-    'Kernel::System::Cache',
-    'Kernel::System::DB',
-    'Kernel::System::Log',
-);
 use feature 'state';
 
 sub new {
     state $Self;
+    my $dbh = shift;
     my $Class = shift;
 
     if ( !defined( $Self ) ) {
         $Self = bless {}, __PACKAGE__;
+        $Self->{dbh} = $dbh;
         $Self->_init();
         return $Self if ( !defined( $Class ) );
     }
@@ -59,9 +53,9 @@ sub AUTOLOAD {
 sub _init {
     my $Self = shift;
 
-    $Self->{DBObject} = $Kernel::OM->Get('Kernel::System::DB');
-    $Self->{DBObject}->Connect() unless $Self->{DBObject}->{dbh};
-    $Self->{dbh} = $Self->{DBObject}->{dbh};
+    # $Self->{DBObject} = $Kernel::OM->Get('Kernel::System::DB');
+    # $Self->{DBObject}->Connect() unless $Self->{DBObject}->{dbh};
+    # $Self->{dbh} = $Self->{DBObject}->{dbh};
 
     my $sth = $Self->{dbh}->prepare( 'SELECT * FROM "public"."EAV_fields"' );
     $sth->execute();
@@ -147,7 +141,12 @@ sub _InitThisItem {
         return undef unless defined( $Self->{_item} );
     } elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
         $Self->{_item} = $Self->_create( $Params );
-        $Self->_MultiStore( $Params->{data} ) if exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH';
+        my $Type = '\''.$$Params{Type}.'\'';
+        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ){
+            $Self->_MultiStore( $Params->{data} );
+        }elsif( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ){
+            $Self->_MultiStore( { $$Params{Type} => $Params->{$Type} } );
+        }
     };
 
     return 1;
@@ -269,6 +268,8 @@ sub _store {
 
     if ( $$val{type} eq 'boolean' ) {
         $data = $Self->_boolean_by_input( $data );
+    } elsif ( $$val{type} eq 'datetime' && !$data) {
+        $data = 'NULL';
     } else {
         $data = $Self->{dbh}->quote( $data );
     };
@@ -313,10 +314,14 @@ sub _create {
     die unless exists( $$Item{Type} ) && exists( $Self->{Fields}->{ $$Item{Type} } );
     die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
 
-    my $data = { 'publish' => 'false', 'import_type' => $Self->{dbh}->quote( $$Item{Type} ) };
+    my $data = {
+        'publish' => 'false',
+        'import_type' => $Self->{dbh}->quote( $$Item{Type} )
+    };
     $$data{publish} = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
     $$data{import_id} = $Self->{dbh}->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
     $$data{title} = $Self->{dbh}->quote( $$Item{title} );
+    $$data{import_source} = $Self->{dbh}->quote( $$Item{import_source} ) if exists( $$Item{import_source} ) && defined( $$Item{import_source} );
 
     $Self->{dbh}->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
     my $id = $$data{id} = $Self->{dbh}->last_insert_id( undef, 'public', 'EAV_items', undef, { sequence => 'eav_items_id_seq' } );
@@ -508,14 +513,15 @@ sub _list {
 
         my ( $set, $field ) = ( split /\./, $sort_field );
         my $is_sys_field = 0;
-        $is_sys_field = 1 if $set eq 'items';
-        next if !$is_sys_field || !defined( $set ) || !defined( $field ) || !exists( $Self->{Fields}->{ $set }->{ $field } );
+        $is_sys_field = 1 if $set eq 'items' || $set =~ /^links\d+$/;
+
+        next if !$is_sys_field && ( !defined( $set ) || !defined( $field ) || !exists( $Self->{Fields}->{ $set }->{ $field } ) );
 
         my $sort_order = $pair->{ $sort_field };
         $sort_order =~ uc( $sort_order );
         $sort_order = 'ASC' unless $sort_order =~ /^(?:ASC|DESC)$/;
 
-        my $sql = '"'.$sort_field.'" '.$sort_order;
+        my $sql = ( $is_sys_field ? '' : '"' ).$sort_field.( $is_sys_field ? '' : '"' ).' '.$sort_order;
 
         if ( defined( $nulls ) ) {
             my $nulls_v = $pair->{nulls_v};
@@ -524,7 +530,7 @@ sub _list {
             $sql = ' NULLS '.$nulls_v;
         };
 
-        $order_sql .= $sql;
+        $order_sql .= ( defined( $order_sql ) && length( $order_sql ) ? ', ' : '' ). $sql;
 
         if ( !$is_sys_field ) {
             $Params->{Fields} = [] if !exists( $Params->{Fields} ) || !defined( $Params->{Fields} ) || !ref( $Params->{Fields} ) || ref( $Params->{Fields} ) ne 'ARRAY';
