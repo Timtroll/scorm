@@ -183,6 +183,9 @@ sub register {
             '/settings/proto_leaf'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ]
             },
+            '/settings/proto_folder'  => {
+                "parent"        => [ 'required', qr/^\d+$/os ]
+            },
             '/settings/add'  => {
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
@@ -314,7 +317,7 @@ sub register {
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
-            
+
             '/forum/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os ]
             },
