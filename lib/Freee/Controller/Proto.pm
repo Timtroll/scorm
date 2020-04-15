@@ -14,11 +14,11 @@ use common;
 sub index {
     my $self = shift;
 
-    { 'category' => 'settings', 'type' => 'folder', 'action' => 'add' }
-    { 'category' => 'settings', 'type' => 'leaf',   'action' => 'add' }
-    { 'category' => 'groups',   'type' => 'folder', 'action' => 'add' }
-    { 'category' => 'groups',   'type' => 'leaf',   'action' => 'add' }
-    { 'category' => 'user',     'type' => 'leaf',   'action' => 'add' }
+    # { 'category' => 'settings', 'type' => 'folder', 'action' => 'add' }
+    # { 'category' => 'settings', 'type' => 'leaf',   'action' => 'add' }
+    # { 'category' => 'groups',   'type' => 'folder', 'action' => 'add' }
+    # { 'category' => 'groups',   'type' => 'leaf',   'action' => 'add' }
+    # { 'category' => 'user',     'type' => 'leaf',   'action' => 'add' }
 }
 
 # прототип настройки
