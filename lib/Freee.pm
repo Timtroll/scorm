@@ -75,14 +75,15 @@ sub startup {
     $auth = $r->under()->to('auth#check_token');
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
-    $auth->post('/settings/get_tree')   ->to('settings#get_tree');        # Все дерево без листочков
-    $auth->post('/settings/get_folder') ->to('settings#get_folder');      # получить данные фолдера настроек
-    $auth->post('/settings/add_folder') ->to('settings#add_folder');      # добавление фолдера
-    $auth->post('/settings/save_folder')->to('settings#save_folder');     # сохранение фолдера
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');        # Все дерево без листочков
+    $auth->post('/settings/get_folder')   ->to('settings#get_folder');      # получить данные фолдера настроек
+    $auth->post('/settings/add_folder')   ->to('settings#add_folder');      # добавление фолдера
+    $auth->post('/settings/save_folder')  ->to('settings#save_folder');     # сохранение фолдера
+    $auth->post('/settings/proto_folder') ->to('proto#proto_folder');       # прототип настройки
 
     # строки настроек - обязательная проверка на фолдер
     $auth->post('/settings/add')        ->to('settings#add');             # добавление настройки
-    $auth->post('/settings/proto_leaf') ->to('settings#proto_leaf');      # прототип настройки
+    $auth->post('/settings/proto_leaf') ->to('proto#proto_leaf');         # прототип настройки
     $auth->post('/settings/edit')       ->to('settings#edit');            # загрузка одной настройки
     $auth->post('/settings/save')       ->to('settings#save');            # добавление/сохранение настройки
 
