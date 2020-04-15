@@ -97,6 +97,12 @@ sub proto_folder {
             };
         }
     }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
 }
 
 1;
