@@ -7,7 +7,7 @@ echo "Check lock file"
 if [ ! -f $SOURCE/log/deploy.lock ]
 then
     touch $SOURCE/log/deploy.lock
-else 
+else
     echo "ERROR: Exists lock file."
     exit 2
 fi
@@ -45,8 +45,8 @@ echo "npm install"
 npm install
 
 echo "-------"
-echo "vue-cli-service build --modern"
-vue-cli-service build --modern
+echo "npm run build"
+npm run build
 
 echo "-------"
 echo "delete content of public (exclude dir 'forum'):"
