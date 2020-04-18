@@ -33,6 +33,7 @@
       NavBar:  () => import(/* webpackChunkName: "NavBar" */ '../components/ui/navbar/NavBar'),
       SideBar: () => import(/* webpackChunkName: "SideBar" */ '../components/ui/sidebar/SideBar')
     },
+
     async beforeCreate () {
       // Регистрация Vuex модулей
       await this.$store.registerModule('main', main)
