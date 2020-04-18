@@ -30,10 +30,21 @@ export default {
     })
   },
 
-  // получить прототип нового элемента
+  // получить прототип нового элемента Leaf
   list_proto (parent) {
     return Api()({
       url:    'settings/proto_leaf',
+      method: 'post',
+      params: {
+        parent: parent
+      }
+    })
+  },
+
+  // получить прототип нового элемента Foldr
+  folder_proto (parent) {
+    return Api()({
+      url:    'settings/proto_folder',
       method: 'post',
       params: {
         parent: parent

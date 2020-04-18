@@ -482,7 +482,6 @@
 
       // сохранение
       save () {
-
         this.$emit('save', this.dataNewFlat)
       },
 

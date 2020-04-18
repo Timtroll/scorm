@@ -91,10 +91,11 @@
           },
 
           editPanel: {
-            get:      'settings/leafEdit',
-            save:     'settings/leafSave',
-            addProto: 'settings/leafProto',
-            add:      'settings/leafAdd'
+            get:            'settings/leafEdit',
+            save:           'settings/leafSave',
+            addProto:       'settings/leafProto',
+            addFolderProto: 'settings/folderProto',
+            add:            'settings/leafAdd'
           }
         }
 
@@ -217,6 +218,7 @@
 
           this.$store.dispatch(this.actions.tree.add, save)
         } else {
+
           const save = {
             add:    this.editPanel_add,
             folder: true,
@@ -251,8 +253,7 @@
           save.fields.value = JSON.stringify(save.fields.value)
         }
 
-          this.$store.dispatch(this.actions.editPanel.save, save)
-
+        this.$store.dispatch(this.actions.editPanel.save, save)
 
       }
 

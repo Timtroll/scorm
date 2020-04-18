@@ -308,19 +308,18 @@ const actions = {
 
       const response = await Api_EditPanel.list_proto(parentId)
 
-      if (response.status === 200) {
+      if (response.status !== 200) return
 
-        const resp  = await response.data
-        const proto = clone(store.getters.editPanel_proto)
+      const resp  = await response.data
+      const proto = clone(store.getters.editPanel_proto)
 
-        //const groups =_groupedFields({})
-        const groups = groupedFields(resp.data, proto)
+      //const groups =_groupedFields({})
+      const groups = groupedFields(resp.data, proto)
 
-        store.commit('editPanel_data', groups) // запись данных во VUEX
-        store.commit('editPanel_status_success') // статус - успех
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
 
-        store.commit('card_right_show', true) // открытие правой панели
-      }
+      store.commit('card_right_show', true) // открытие правой панели
 
     } catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
@@ -330,6 +329,37 @@ const actions = {
     }
   },
 
+  async folderProto ({commit, state, getters}, parentId) {
+
+    try {
+      store.commit('card_right_show', false)
+      store.commit('card_right_show', false)
+      store.commit('editPanel_folder', false)
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+
+      const response = await Api_EditPanel.folder_proto(parentId)
+
+      if (response.status !== 200) return
+
+      const resp  = await response.data
+      const proto = clone(store.getters.editPanel_proto)
+
+      //const groups =_groupedFields({})
+      const groups = groupedFields(resp.data, proto)
+
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
+
+      store.commit('card_right_show', true) // открытие правой панели
+
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('card_right_show', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
 
   /**
    * Сохранить Листочек настроек

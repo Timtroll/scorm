@@ -467,6 +467,7 @@
       async add_row () {
         this.$store.commit('editPanel_add', true)
         await this.$store.dispatch(this.editPanel_api.addProto, this.$route.params.id)
+        this.$store.commit('editPanel_add', true)
       },
 
       // отмена выделения всех строк

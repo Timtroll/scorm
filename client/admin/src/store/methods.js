@@ -50,12 +50,12 @@ function flatTree (arr) {
  *
  * @param data
  * @param proto
- * @returns {{groups: [], main: []}}
+ * @returns {{tabs: [], main: []}}
  */
 function groupedFields (data, proto) {
 
   const groups = {
-    main:   [],
+    main: [],
     tabs: []
   }
 
@@ -151,8 +151,6 @@ function unGroupedFields (groups) {
       keyValues[item.name] = item.value
     })
   }
-
-  console.log('keyValues', keyValues)
 
   return keyValues
 }
