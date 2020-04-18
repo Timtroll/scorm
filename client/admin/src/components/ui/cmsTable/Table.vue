@@ -465,26 +465,8 @@
       },
 
       async add_row () {
-
         this.$store.commit('editPanel_add', true)
         await this.$store.dispatch(this.editPanel_api.addProto, this.$route.params.id)
-        //const proto = await clone(this.$store.getters.editPanel_proto)
-        //
-        //await proto.forEach(item => {
-        //  if (item.name === 'parent') {
-        //    item.value = this.tableId
-        //  }
-        //})
-        //
-        //await this.$store.commit('card_right_show', false)
-        //await this.$store.commit('editPanel_data', [])
-        //await this.$store.commit('editPanel_status_request')
-        //await this.$store.commit('editPanel_add', true)
-        //await this.$store.commit('editPanel_folder', false)
-        //await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        //await this.$store.commit('card_right_show', true)
-        //await this.$store.commit('editPanel_status_success') // статус - успех
-
       },
 
       // отмена выделения всех строк
