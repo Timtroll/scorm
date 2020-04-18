@@ -237,12 +237,14 @@
 
       const observer = new ResizeObserver(entries => {
         entries.forEach(entry => {
-          const cr   = entry.contentRect
+          const cr       = entry.contentRect
           this.bodyWidth = Number(cr.width.toFixed(0))
         })
       })
 
-      observer.observe(this.$refs.body)
+      if (this.$refs.body) {
+        observer.observe(this.$refs.body)
+      }
 
       if (this.bodyRight || this.bodyLeft) {
 
