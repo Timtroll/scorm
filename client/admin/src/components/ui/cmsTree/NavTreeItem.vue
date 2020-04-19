@@ -210,29 +210,34 @@
       // edit children group
       async editFolder (folder) {
 
-        //this.$store.dispatch(this.tree_api.save, id)
-
         if (this.cardRightState) { // если правая панель открыта - закрываем
           this.$store.commit('card_right_show', !this.cardRightState)
         } else {
 
-          const proto = await clone(this.protoFolder)
-          //const proto = await JSON.parse(JSON.stringify(this.protoFolder))
-
-          for (let item of proto) {
-            console.log('item', item)
-            item.value = folder[item.name]
-          }
-
-          this.$store.commit('editPanel_status_request')
-          this.$store.commit('editPanel_add', false)
-          this.$store.commit('editPanel_folder', true)
-          this.$store.commit('card_right_show', true)
-
-          this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-          this.$store.commit('editPanel_status_success') // статус - успех
-
+          await this.$store.dispatch(this.tree_api.edit, this.navItem)
         }
+
+        //if (this.cardRightState) { // если правая панель открыта - закрываем
+        //  this.$store.commit('card_right_show', !this.cardRightState)
+        //} else {
+        //
+        //  const proto = await clone(this.protoFolder)
+        //  //const proto = await JSON.parse(JSON.stringify(this.protoFolder))
+        //
+        //  for (let item of proto) {
+        //    console.log('item', item)
+        //    item.value = folder[item.name]
+        //  }
+        //
+        //  this.$store.commit('editPanel_status_request')
+        //  this.$store.commit('editPanel_add', false)
+        //  this.$store.commit('editPanel_folder', true)
+        //  this.$store.commit('card_right_show', true)
+        //
+        //  this.$store.commit('editPanel_data', proto) // запись данных во VUEX
+        //  this.$store.commit('editPanel_status_success') // статус - успех
+        //
+        //}
 
       },
 

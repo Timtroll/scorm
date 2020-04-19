@@ -297,6 +297,30 @@ const actions = {
     }
   },
 
+  async folderEdit ({commit, state, getters}, item) {
+
+    try {
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+      store.commit('card_right_show', false) // открытие правой панели
+      store.commit('editPanel_add', false)
+      store.commit('editPanel_folder', true)
+
+      const proto  = clone(store.getters.editPanel_proto)
+      const groups = groupedFields(item, proto)
+
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
+      store.commit('card_right_show', true) // открытие правой панели
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('editPanel_add', false)
+      store.commit('editPanel_folder', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
   async leafProto ({commit, state, getters}, parentId) {
 
     try {
@@ -333,8 +357,7 @@ const actions = {
 
     try {
       store.commit('card_right_show', false)
-      store.commit('card_right_show', false)
-      store.commit('editPanel_folder', false)
+      store.commit('editPanel_folder', true)
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
 

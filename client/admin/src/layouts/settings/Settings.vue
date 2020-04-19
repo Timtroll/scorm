@@ -76,6 +76,7 @@
 
           tree: {
             get:                'settings/getTree',
+            edit:               'settings/folderEdit',
             add:                'settings/addFolder',
             save:               'settings/saveFolder',
             remove:             'settings/removeFolder',
