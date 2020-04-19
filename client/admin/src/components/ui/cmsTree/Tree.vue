@@ -95,8 +95,6 @@
 
     computed: {
 
-
-
       editPanel_api () { // список запросов для правой панели
         return this.$store.getters.editPanel_api
       },
@@ -145,27 +143,11 @@
     methods: {
 
       async addFolder (parent) {
-
         this.$store.commit('editPanel_add', true)
         await this.$store.dispatch(this.editPanel_api.addFolderProto, parent)
         this.$store.commit('editPanel_add', true)
+        await this.$store.commit('editPanel_folder', true)
 
-        //const proto = await clone(this.protoFolder)
-        //
-        //await proto.forEach(item => {
-        //  if (item.name === 'parent') {
-        //    item.value = parent
-        //  }
-        //})
-        //
-        //await this.$store.commit('card_right_show', false)
-        //await this.$store.commit('editPanel_data', [])
-        //await this.$store.commit('editPanel_status_request')
-        //await this.$store.commit('editPanel_add', true)
-        //await this.$store.commit('editPanel_folder', true)
-        //await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        //await this.$store.commit('card_right_show', true)
-        //await this.$store.commit('editPanel_status_success') // статус - успех
       },
 
       // Очистка поля поиска
