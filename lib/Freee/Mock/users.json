@@ -1,0 +1,24 @@
+
+[
+  {
+    "folder": 0,
+    "id": 1,
+    "parent": 3,
+    "surname": "Фамилия",
+    "name": "Имя",
+    "patronymic": "Отчество",
+    "city": "Санкт-Петербург",
+    "country": "Россия",
+    "timezone": "+3",
+    "birthday": 123132131,
+    "status": 1,
+    "groups": [1, 2, 3],
+    "password": "khasdf",
+    "avatar": "https://thispersondoesnotexist.com/image",
+    "type": 3,
+    "email": "username@ya.ru",
+    "emailconfirmed": 1,
+    "phone": 79312445646,
+    "phoneconfirmed": 1
+  }
+]
