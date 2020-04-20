@@ -15,8 +15,10 @@ sub index {
 
     # $self->redirect_to( '/forum/list_messages' );
     $self->render(
-        'template'    => 'forum/forum',
-        'title'       => 'Форум'
+        'template'      => 'forum',
+        'title'         => 'Форум',
+        'list_messages' => $list,
+        'list_themes'   => []
     );
 }
 
@@ -32,11 +34,19 @@ sub list_themes {
     $list_themes = $self->_list_themes( $group_id );
     push @mess, "Could not get list Themes" unless $list_themes;
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list_themes unless @mess;
+    $list = $self->_list_themes();
+    # push @mess, "Could not get list Themes" unless $list;
+    
+    $self->render(
+        'template'      => 'list_themes',
+        'list_themes'   => $list
+    );
 
-    $self->render( 'json' => $resp );
+    # $resp->{'message'} = join("\n", @mess) if @mess;
+    # $resp->{'status'} = @mess ? 'fail' : 'ok';
+    # $resp->{'list'} = $list unless @mess;
+
+    # $self->render( 'json' => $resp );
 }
 
 # сохранение данных из формы после добавления новой темы
@@ -287,17 +297,21 @@ sub del_group {
 sub list_messages {
     my $self = shift;
 
-    my ( $theme_id, $resp, $list_messages, @mess, @messages );
+    my ( $list_messages, $list_themes );
 
-    $theme_id = $self->param('theme_id');
+    $list_messages = $self->_list_messages();
+    $list_themes  = $self->_list_themes();
 
-    $list_messages = $self->_list_messages( $theme_id );
-
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list_messages unless @mess;
-
-    $self->render( 'json' => $resp );
+    $self->render(
+        'template'      => 'list_messages',
+        'list_messages' => $list_messages
+    );
+    # $self->render(
+    #     'template'      => 'forum',
+    #     'title'         => 'Список сообщений',
+    #     'list_messages' => $list_messages,
+    #     'list_themes'   => $list_themes
+    # );
 }
 
 # сохранение данных из формы после добавления нового сообщения
@@ -328,7 +342,7 @@ sub save_add {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/list_messages' ) unless @mess;
 }
 
 # сохранение данных из формы, после редактирования существующего сообщения
@@ -366,7 +380,7 @@ sub save_edit {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/list_messages' );
 }
 
 # выводит форму с данными о существующем сообщении
@@ -377,6 +391,7 @@ sub edit {
     my ($data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
+    $data = {};
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
@@ -388,11 +403,14 @@ sub edit {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'msg'} = $data if $data;
-
-    $self->render( 'json' => $resp );
+    $self->render( 'json' => $data );
+#     unless  (@mess) {
+#         $self->render(
+#             'template'    => 'edit',
+#             'title'       => 'edit',
+#             'list'        => $data
+#         );
+#     };
 }
 
 # удалениe сообщения 
@@ -416,7 +434,7 @@ sub delete {
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/list_messages' );
 }
 
 
@@ -428,7 +446,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $id, $data, $data_time, $error, $resp, @mess);
+    my ($toggle, $resp, $data, $error, @mess, $current_value);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -436,6 +454,16 @@ sub toggle {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
+
+        $current_value = $self->_status_check( $$data{'id'} ) unless @mess;
+        if ( $current_value ) {
+            $$data{'value'} = 0;
+        }
+        else { 
+            $$data{'value'} = 1;
+        }
+        # $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
+        $$data{'table'} = 'forum_messages';
         $$data{'fieldname'} = 'status';
 
         $toggle = $self->_toggle( $data ) unless @mess;
@@ -475,10 +503,7 @@ sub toggle {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-
-    $self->render( 'json' => $resp );
+    $self->redirect_to( '/forum/list_messages' ) unless @mess;
 }
 
 1;

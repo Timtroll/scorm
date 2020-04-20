@@ -49,4 +49,5 @@ $home->detect;
 
 sub rel_file { $home->rel_file(shift); }
 
+# connect to db
 1;

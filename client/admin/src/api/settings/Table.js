@@ -13,14 +13,6 @@ export default {
     })
   },
 
-  // получить прототип нового элемента
-  get_proto_leaf () {
-    return Api()({
-      url:    'settings/proto_leaf',
-      method: 'post'
-    })
-  },
-
   // Обновление / добавление
   leafs_save (params) {
     return Api()({

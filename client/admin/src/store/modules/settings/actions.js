@@ -2,7 +2,7 @@ import Api_EditPanel from '../../../api/settings/EditPanel'
 import Api_Tree from '../../../api/settings/Tree'
 import store from '../../store'
 import router from '../../../router'
-import {clone, flatTree, notify} from '../../methods'
+import {clone, flatTree, groupedFields, notify} from '../../methods'
 import Api from '../../../api/settings/Table'
 
 const actions = {
@@ -273,7 +273,7 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
-      store.commit('card_right_show', true) // открытие правой панели
+      store.commit('card_right_show', false) // открытие правой панели
 
       const response = await Api_EditPanel.list_edit(id)
 
@@ -282,13 +282,100 @@ const actions = {
         const resp  = await response.data
         const proto = clone(store.getters.editPanel_proto)
 
-        for (let item of proto) {
-          item.value = resp.data[item.name]
-        }
+        //const groups =_groupedFields({})
+        const groups = groupedFields(resp.data, proto)
 
-        store.commit('editPanel_data', proto) // запись данных во VUEX
+        store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
+        store.commit('card_right_show', true) // открытие правой панели
       }
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('editPanel_add', true)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  async folderEdit ({commit, state, getters}, item) {
+
+    try {
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+      store.commit('card_right_show', false) // открытие правой панели
+      store.commit('editPanel_add', false)
+      store.commit('editPanel_folder', true)
+
+      const proto  = clone(store.getters.editPanel_proto)
+      const groups = groupedFields(item, proto)
+
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
+      store.commit('card_right_show', true) // открытие правой панели
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('editPanel_add', false)
+      store.commit('editPanel_folder', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  async leafProto ({commit, state, getters}, parentId) {
+
+    try {
+      store.commit('card_right_show', false)
+      store.commit('card_right_show', false)
+      store.commit('editPanel_folder', false)
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+
+      const response = await Api_EditPanel.list_proto(parentId)
+
+      if (response.status !== 200) return
+
+      const resp  = await response.data
+      const proto = clone(store.getters.editPanel_proto)
+
+      //const groups =_groupedFields({})
+      const groups = groupedFields(resp.data, proto)
+
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
+
+      store.commit('card_right_show', true) // открытие правой панели
+
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('card_right_show', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  async folderProto ({commit, state, getters}, parentId) {
+
+    try {
+      store.commit('card_right_show', false)
+      store.commit('editPanel_folder', true)
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+
+      const response = await Api_EditPanel.folder_proto(parentId)
+
+      if (response.status !== 200) return
+
+      const resp  = await response.data
+      const proto = clone(store.getters.editPanel_proto)
+
+      //const groups =_groupedFields({})
+      const groups = groupedFields(resp.data, proto)
+
+      store.commit('editPanel_data', groups) // запись данных во VUEX
+      store.commit('editPanel_status_success') // статус - успех
+
+      store.commit('card_right_show', true) // открытие правой панели
+
     } catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('card_right_show', false)
@@ -343,6 +430,15 @@ const actions = {
     }
   },
 
+  /**
+   * Сохранить поле
+   * @param commit
+   * @param state
+   * @param getters
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
   async leafSaveField ({commit, state, getters, dispatch}, item) {
 
     const parentId = item.parent

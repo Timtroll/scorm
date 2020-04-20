@@ -16,7 +16,7 @@
       <transition name="slide-right"
                   mode="out-in"
                   appear>
-        <router-view></router-view>
+        <router-view/>
       </transition>
 
     </template>
@@ -76,6 +76,7 @@
 
           tree: {
             get:                'settings/getTree',
+            edit:               'settings/folderEdit',
             add:                'settings/addFolder',
             save:               'settings/saveFolder',
             remove:             'settings/removeFolder',
@@ -91,8 +92,11 @@
           },
 
           editPanel: {
-            get:  'settings/leafEdit',
-            save: 'settings/leafSave'
+            get:            'settings/leafEdit',
+            save:           'settings/leafSave',
+            addProto:       'settings/leafProto',
+            addFolderProto: 'settings/folderProto',
+            add:            'settings/leafAdd'
           }
         }
 
@@ -215,6 +219,7 @@
 
           this.$store.dispatch(this.actions.tree.add, save)
         } else {
+
           const save = {
             add:    this.editPanel_add,
             folder: true,
@@ -231,8 +236,6 @@
 
       // сохранение Листочка
       saveLeaf (data) {
-
-        if (this.editPanel_add) {}
 
         const save = {
           add:    this.editPanel_add,

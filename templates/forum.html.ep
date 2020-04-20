@@ -1,0 +1,240 @@
+<!doctype html>
+<head>
+    <title><%= $title %></title>
+    <style type="text/css">
+* {
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100%;
+    font-size: 12px;
+}
+
+.msg {
+    width: 100%;
+    height: 30px;
+}
+.btn {
+    float: right;
+}
+
+.link {
+    cursor: pointer;
+}
+.link:hover {
+    text-decoration: underline;
+}
+/*------------*/
+.entry_summary {
+    margin-bottom: 5px;
+    min-height: 30px;
+    clear: both;
+}
+.vote_wrapper {
+    float: left;
+    padding: 2px;
+    margin: 0;
+    text-align: center;
+}
+.vote {
+    width: 34px;
+    height: 18px;
+    border: 0 solid #c3d6b3;
+    background-color: #fea;
+    padding: 7px;
+    margin-bottom: 2px;
+    text-align: center;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.thin_title {
+    font-weight: 400;
+    text-decoration: underline;
+    line-height: 13pt;
+}
+.entry {
+    text-align: center;
+    padding: 0;
+    margin-left: 65px;
+    min-height: 30px;
+}
+/*------------*/
+
+#container {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+#navigation {
+    display: table-row;
+    height: 5%;
+}
+ 
+#menu {
+    display: table-cell;
+    width: 20%;
+    height: 100%;
+}
+ 
+#content {
+    display: table-cell;
+    width: 80%;
+    height: 100%;
+}
+ 
+#clear {
+    clear:both;
+}
+ 
+#footer {
+    display: table-row;
+    height: 5%;
+}
+    </style>
+</head>
+<script type="text/javascript">
+    window.onload = function() {
+
+        function postAjax(url, data, success, error) {
+            var params = typeof data == 'string' ? data : Object.keys(data).map(
+                    function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+                ).join('&');
+
+            var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+            xhr.open('POST', url);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState > 3 && xhr.status == 200) { success(xhr.responseText); }
+                else if (xhr.readyState > 3 && xhr.status != 200) { error(xhr); }
+            };
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send(params);
+
+            return xhr;
+        }
+
+        function Draw(data, id) {
+    console.log(id);
+            var elem = document.getElementById(id);
+            elem.insertAdjacentHTML( 'afterbegin', data );
+
+            if (id == 'messages') {
+                // add edit action
+                var classname = document.getElementsByClassName('edit');
+                for (var i = 0; i < classname.length; i++) {
+                    classname[i].addEventListener('click', Edit, false);
+                }
+                // add delete action
+                classname = document.getElementsByClassName('delete');
+                for (var i = 0; i < classname.length; i++) {
+                    classname[i].addEventListener('click', Delete, false);
+                }
+                // add toggle action
+                classname = document.getElementsByClassName('toggle');
+                for (var i = 0; i < classname.length; i++) {
+                    classname[i].addEventListener('click', Toggle, false);
+                }
+            }
+        }
+
+        // события для управления сообщениями
+        function Save(data) {
+            var id = this.getAttribute('data-id');
+            postAjax('http://freee/forum/save', {
+                msg : document.getElementById('msg').value,
+                id : document.getElementById('id').value,
+                theme_id : document.getElementById('theme_id').value,
+                status : document.getElementById('status').value,
+            }, function(data){
+                var res = JSON.parse(data);
+                if (res.status == 'ok') {
+                    document.getElementById('msg').value = '';
+                    document.getElementById('id').value = '';
+// >????????
+                    document.getElementById('status').checked   =  res.status ? true : false;
+                    document.getElementById('btn').innerHTML = 'Добавить';
+    console.log(res.id);
+    console.log(res.msg);
+                }
+                else {
+
+                }
+            });
+    // console.log('edit', id);
+        }
+
+        function Add(data) {
+            var id = this.getAttribute('data-id');
+            // postAjax('http://freee/forum/edit', { id: id }, function(data){
+            //     var res = JSON.parse(data);
+                document.getElementById('msg').value        = '';
+                document.getElementById('id').value         = '';
+                document.getElementById('status').checked = true;
+                document.getElementById('btn').innerHTML    = 'Добавить';
+    // console.log(res.id);
+    // console.log(res.msg);
+            // });
+    // console.log('edit', id);
+        }
+
+        function Edit(data) {
+            var id = this.getAttribute('data-id');
+            postAjax('http://freee/forum/edit', { id: id }, function(data){
+                var res = JSON.parse(data);
+                document.getElementById('msg').value        = res.msg;
+                document.getElementById('id').value         = res.id;
+                document.getElementById('theme_id').value   = res.theme_id;
+                document.getElementById('status').checked   =  res.status ? true : false;
+                document.getElementById('btn').innerHTML    = 'Сохранить';
+    console.log(res.id);
+    console.log(res.msg);
+            });
+    // console.log('edit', id);
+        }
+        function Delete(data) {
+    console.log('delete');
+        }
+        function Toggle(data) {
+    console.log('toggle');
+        }
+
+        document.getElementById('add').addEventListener('click', Add, false);
+        document.getElementById('btn').addEventListener('click', Save, false);
+
+        var id = 1;
+        postAjax('http://freee/forum/list_themes', { id: id }, function(data){ Draw(data, 'menu'); },  Error );
+
+        postAjax('http://freee/forum/list_messages', { id: id }, function(data){ Draw(data, 'messages'); }, Error );
+    };
+</script>
+<body>
+
+<div id="container">
+    <div id="navigation">
+        <h2>Блок навигации</h2>
+    </div>
+         
+    <div id="content">
+        <h2 id="add" class="link">Добавить сообщение</h2>
+            <input type="hidden" name="theme_id" id="theme_id" value="">
+            <input type="hidden" name="id" id="id">
+            <BR>Message:
+            <BR><textarea name="msg" id="msg" rows=5 cols=40/></textarea>
+            <BR><label><input type="checkbox" name="status" id="status" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
+        <div id="messages"></div>
+        <% include ()listt %>
+    </div>
+
+    <div id="menu"></div>
+
+    <div id="footer">
+        <h2>Подвал сайта</h2>
+    </div>
+</div>
+
+</body>
+</html>

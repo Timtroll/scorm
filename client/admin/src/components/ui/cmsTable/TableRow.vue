@@ -205,7 +205,8 @@
         UIkit
           .modal
           .confirm('Удалить', {labels: {ok: 'Да', cancel: 'Отмена'}})
-          .then(() => this.$store.dispatch(this.table_api.remove, item), () => {})
+          .then(() => this.$store.dispatch(this.table_api.remove, item),
+            () => {})
       }
 
     }

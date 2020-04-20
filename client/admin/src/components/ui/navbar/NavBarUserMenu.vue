@@ -15,6 +15,16 @@
           Профиль пользователя</a>
       </router-link>
       <li>
+        <a @click.prevent="clearCache">
+          <img src="img/icons/icon__trash.svg"
+               uk-svg
+               width="16"
+               height="16"
+               class="uk-margin-small-right">
+          Обновить приложение
+        </a>
+      </li>
+      <li>
         <a @click.prevent="signOut">
           <img src="../../../../public/img/icons/user_logout.svg"
                uk-svg
@@ -50,8 +60,33 @@
 
     methods: {
 
-      signOut () {
+      clearCache () {
+        caches.keys()
+              .then(cacheNames => {
+                return Promise.all(
+                  cacheNames.filter(cacheName => {
+                    // Return true if you want to remove this cache,
+                    // but remember that caches are shared across
+                    // the whole origin
+                  }).map(cacheName => {
+                    return caches.delete(cacheName)
+                  })
+                )
+              })
 
+        navigator.serviceWorker.getRegistrations()
+                 .then(registrations => {
+                   registrations.forEach(registration => {
+                     registration.unregister()
+                   })
+                 })
+
+        setTimeout(() => {
+          location.reload(!0)
+        }, 300)
+      },
+
+      signOut () {
         UIkit.modal.confirm('Выйти из системы!', {
           labels: {ok: 'Выйти', cancel: 'Остаться в системе'}
         }).then(() => {this.$store.dispatch('logout')})

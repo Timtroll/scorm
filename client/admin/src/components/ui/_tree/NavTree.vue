@@ -21,15 +21,6 @@
       nav: {
         type: Array
       }
-    },
-
-    computed: {
-
-    },
-
-    methods: {
-
-
     }
 
   }

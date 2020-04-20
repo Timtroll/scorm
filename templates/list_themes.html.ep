@@ -1,0 +1,17 @@
+<h2>Темы</h2>
+% foreach my $t( @$list_themes ) {
+    <!--<h3><a class="title" href= "<%= $$t{'url'} %>" rel="nofollow" target="_blank"><%= $$t{'title'} %></a></h3>-->
+    <h3 class="list link" data-id="<%= $$t{'id'} %>"><%= $$t{'title'} %></h3>
+% }
+
+% foreach my $t( @$list_themes ) {
+<div class="entry_summary">
+    <div class="vote_wrapper">
+        <div class="vote"><a href="https://vott.ru/entry/392669"><%= $$t{'rate'} %></a></div>
+    </div>
+    <div class="entry">
+        <a class="thin_title" href="https://vott.ru/blog/entry/392669"><%= $$t{'title'} %></a>
+        <div class="info_small"><%= $$t{'sum'} %></div>
+    </div>
+</div>
+% }

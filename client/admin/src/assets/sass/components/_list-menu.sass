@@ -1,8 +1,8 @@
 @import "../uikit/variables"
 @import "../mixins"
 
-$pos-list-menu-max-width: 120px
-$pos-list-menu-active-height: 3px
+$pos-list-menu-max-width: 200px
+$pos-list-menu-active-height: 2px
 $pos-list-menu-border-width: 94%
 
 
@@ -15,7 +15,6 @@ $pos-list-menu-border-width: 94%
   padding: 0
 
 .pos-list-menu-item
-  max-width: $pos-list-menu-max-width
   padding: 0 $global-small-margin
   position: relative
 
@@ -23,7 +22,7 @@ $pos-list-menu-border-width: 94%
     content: ""
     display: block
     position: absolute
-    bottom: 3px
+    bottom: 0
     right: 50%
     width: 0
     border-radius: 500px
@@ -33,7 +32,13 @@ $pos-list-menu-border-width: 94%
     @include transition-param(width)
 
   & > a
+    @include transition-param(color)
     display: block
+    max-width: $pos-list-menu-max-width
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    font-size: .875rem
 
   & > a,
   & > a:hover
@@ -50,6 +55,8 @@ $pos-list-menu-border-width: 94%
 
 
   &.active
+    background-color: rgba($global-color, .06)
+
     &:before
       width: $pos-list-menu-border-width
       background-color: $global-danger-background

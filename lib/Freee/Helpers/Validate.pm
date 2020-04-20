@@ -180,8 +180,13 @@ sub register {
             '/settings/delete_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os ],
             },
+            '/settings/proto_leaf'  => {
+                "parent"        => [ 'required', qr/^\d+$/os ]
+            },
+            '/settings/proto_folder'  => {
+                "parent"        => [ 'required', qr/^\d+$/os ]
+            },
             '/settings/add'  => {
-                "parent"        => [ 'required', qr/^\d+$/os ],
                 "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
@@ -329,6 +334,7 @@ sub register {
                 "msg"           => [ '', qr/^.*$/os, 256 ],
                 "status"        => [ '', qr/^[01]$/os ]
             },
+
             '/forum/delete'  => {
                 "parent_id"     => [ '', qr/^\d+$/os ],
                 "id"            => [ 'required', qr/^\d+$/os ]

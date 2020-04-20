@@ -12,15 +12,39 @@
   position: relative
   padding: $global-margin 0
 
+  &.main
+    padding: 0
+    background-color: rgba($global-muted-background, .4)
+    height: auto
+    flex: none
+    border-bottom: $global-border-width solid $global-border
+
+  & + .pos-list
+    flex: 1
+    display: flex
+    flex-direction: column
+
+    & > li
+      &:nth-child(n+2)
+        border-top: none
+
+  .pos-list
+    padding-top: 0
+
   & > li
-    padding: $global-xsmall-margin $global-small-gutter 0 $global-small-gutter
+    padding: 0 $global-small-gutter
+    min-height: 40px
     @media(max-width: $breakpoint-small)
-      padding: $global-small-margin $global-small-margin 0 $global-small-margin
+      padding: 0 $global-small-margin 0 $global-small-margin
 
   & > li:nth-child(n+2)
-    margin-top: $global-xsmall-margin
+    //margin-top: $global-xsmall-margin
     border-top: $global-border-width solid $global-border
     border-radius: 0
+
+  .uk-form-label
+    margin-top: 9px
+    display: block
 
   .uk-input
     border-radius: 0
@@ -28,3 +52,9 @@
 
   .uk-input-text
     padding: 0 $global-small-margin
+
+  .pos-button-select,
+  .uk-input,
+  .pos-textarea
+    transform: translateY(1px)
+

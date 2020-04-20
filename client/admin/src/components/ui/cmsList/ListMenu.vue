@@ -8,25 +8,28 @@
         ref="items"
         :class="{'active' : item.id === active}">
       <a @click.prevent="click(item.id)"
-         v-text="item.label"></a>
+         v-text="item.label"/>
     </li>
-    <li class="uk-flex-1 uk-text-right"
+    <li class="uk-text-right uk-flex-1 "
         v-if="mainNavDrop.length > 0">
       <button class="uk-button uk-button-link"
               type="button"
               :style="{width: dropIconWidth}">
-        <img src="/img/icons/icon__nav.svg"
+        <img src="/img/icons/icon__dots-v.svg"
              uk-svg
+             class="uk-button-icon-fix"
              width="16"
              height="16">
       </button>
+
       <div uk-dropdown="mode: click; pos: bottom-right">
         <ul class="uk-nav uk-dropdown-nav">
           <li v-for="(item, index) in mainNavDrop"
               :class="{'active' : item.id === active}"
               :key="item.id">
             <a @click.prevent="click(item.id)"
-               v-text="item.label"></a></li>
+               v-text="item.label"/>
+          </li>
         </ul>
       </div>
     </li>
@@ -35,6 +38,7 @@
 </template>
 
 <script>
+  import ResizeObserver from 'resize-observer-polyfill'
   import {clone} from '../../../store/methods'
 
   export default {
@@ -78,9 +82,16 @@
         })
       }
       this.mainNav = clone(this.allNav)
-      this.width   = this.$refs.listMenu.clientWidth
+      //this.width   = this.$refs.listMenu.clientWidth
 
-      this.$nextTick(() => { })
+      const observer = new ResizeObserver(entries => {
+        entries.forEach(entry => {
+          const cr   = entry.contentRect
+          this.width = cr.width.toFixed(0)
+        })
+      })
+
+      observer.observe(this.$refs.listMenu)
 
       await this.menuWidth()
       await this.menuIsDrop()
@@ -99,11 +110,12 @@
     watch: {
 
       clientWidth () {
-        setTimeout(() => this.handleResize(), 500)
+        setTimeout(() => this.handleResize(), 300)
       },
+
       //
       resize () {
-        setTimeout(() => this.handleResize(), 500)
+        setTimeout(() => this.handleResize(), 300)
       }
     },
 
@@ -114,7 +126,7 @@
           if (window.innerWidth) {
             this.clientWidth = window.innerWidth
           }
-          this.width = this.$refs.listMenu.clientWidth
+          //this.width = this.$refs.listMenu.clientWidth
           this.menuIsDrop()
         })
       },
@@ -150,7 +162,7 @@
       },
 
       click (id) {
-        this.$emit('active', id)
+        this.$emit('active-id', id)
       }
     }
   }

@@ -120,6 +120,8 @@
 <script>
   const bodyMinSize = 960
 
+  import ResizeObserver from 'resize-observer-polyfill'
+
   export default {
 
     name: 'Card',
@@ -233,9 +235,20 @@
     // Отслеживание изменния ширины экрана
     mounted () {
 
+      const observer = new ResizeObserver(entries => {
+        entries.forEach(entry => {
+          const cr       = entry.contentRect
+          this.bodyWidth = Number(cr.width.toFixed(0))
+        })
+      })
+
+      if (this.$refs.body) {
+        observer.observe(this.$refs.body)
+      }
+
       if (this.bodyRight || this.bodyLeft) {
 
-        this.bodyWidth     = this.$refs.body.offsetWidth
+        //this.bodyWidth     = this.$refs.body.offsetWidth
         this.bodyLeftWidth = this.$refs.bodyLeft.offsetWidth
 
         window.addEventListener('resize', this.handleResize)
@@ -320,9 +333,9 @@
     },
 
     beforeDestroy: function () {
-      if (this.bodyRight || this.bodyLeft) {
-        window.removeEventListener('resize', this.handleResize)
-      }
+
+      window.removeEventListener('resize', this.handleResize)
+      //if (this.bodyRight || this.bodyLeft) {}
     },
 
     methods: {

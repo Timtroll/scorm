@@ -257,11 +257,12 @@ sub load_default {
 
 # создание настройки
 # my $id = $self->add();
-# "folder"      => 0,           - это запись настроек
-# "parent"      => 0,           - обязательно (должно быть натуральным числом)
-# "label"       => 'название',  - обязательно (название для отображения)
-# "name",       => 'name'       - обязательно (системное название, латиница)
-# "readonly"    => 0,           - не обязательно, по умолчанию 0
+# "folder"      => 0,             - это запись настроек
+# "parent"      => 0,             - обязательно (должно быть натуральным числом)
+# "label"       => 'название',    - обязательно (название для отображения)
+# "name",       => 'name'         - обязательно (системное название, латиница)
+# "status",     => 0/1            - обязательно (системное название, латиница)
+# "readonly"    => 0,             - не обязательно, по умолчанию 0
 # "value"       => "",            - строка или json
 # "type"        => "InputNumber", - тип поля из конфига
 # "placeholder" => 'это название',- название для отображения в форме
@@ -276,9 +277,9 @@ sub add {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        # проверка данных
+        # # проверка данных
         ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        # push @mess, $error unless $data;
 
         unless (@mess) {
             # корректирование пустых значений
@@ -305,7 +306,60 @@ sub add {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
+    $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
+}
+
+# прототип настройки
+# my $id = $self->proto_leaf();
+# "parent" => 1, - обязательно (должно быть натуральным числом)
+sub proto_leaf {
+    my $self = shift;
+
+    # read params
+    my ($id, $data, $error, $resp, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        unless (@mess) {
+            # прототип настройки
+            $data = {
+                "folder" => 0,
+                "parent" => $data->{'parent'} * 1,
+                "tabs" => [
+                    {
+                        "label" => 'Основное',
+                        "fields" => {
+                            "name"          => '',
+                            "placeholder"   => '',
+                            "readonly"      => 0,
+                            "required"      => 0,
+                            "status"        => 1
+                        }
+                    },
+                    {
+                        "label" => 'Дополнительные поля',
+                        "fields" => {
+                            "label"       => '',
+                            "mask"        => '',
+                            "selected"    => [],
+                            "type"        => 'InputText',
+                            "value"       => ''
+                        }
+                    }
+                ]
+            };
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
@@ -327,6 +381,33 @@ sub edit {
         if ($data) {
             $data = $self->_get_setting( $$data{'id'} );
             push @mess, "Could not get '".$$data{'id'}."'" unless $data;
+            $data = {
+                "folder" => $data->{'folder'},
+                "id"     => $data->{'id'},
+                "parent" => $data->{'parent'},
+                "tabs" => [
+                    {
+                        "label" => "Основное",
+                        "fields" => {
+                            "name"          => $data->{'name'},
+                            "placeholder"   => $data->{'placeholder'},
+                            "readonly"      => $data->{'readonly'},
+                            "required"      => $data->{'required'},
+                            "status"        => $data->{'status'}
+                        }
+                    },
+                    {
+                        "label" => 'Дополнительные поля',
+                        "fields" => {
+                            "label"       => "шаг обновления",
+                            "mask"        => $data->{'mask'},
+                            "selected"    => $data->{'selected'},
+                            "type"        => $data->{'type'},
+                            "value"       => $data->{'value'}
+                        }
+                    }
+                ]
+            };
         }
     }
 

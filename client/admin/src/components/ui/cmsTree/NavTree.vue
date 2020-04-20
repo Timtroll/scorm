@@ -3,7 +3,10 @@
     <ul class="pos-side-nav">
       <li v-for="item in nav"
           :key="item.id">
-        <NavTreeItem :nav-item="item"></NavTreeItem>
+        <NavTreeItem :nav-item="item"
+                     :remove-item="remove"
+                     :editable="editable"
+                     :add-children-item="addChildren"></NavTreeItem>
       </li>
     </ul>
   </div>
@@ -14,12 +17,26 @@
 
   export default {
 
-    name:       'NavTree',
+    name: 'NavTree',
 
     components: {NavTreeItem},
 
     props: {
-      nav: {
+
+      addChildren: {
+        type:    Boolean,
+        default: true
+      },
+
+      editable: {
+        type:    Boolean,
+        default: true
+      },
+      remove:   {
+        type:    Boolean,
+        default: true
+      },
+      nav:      {
         type: Array
       }
     }

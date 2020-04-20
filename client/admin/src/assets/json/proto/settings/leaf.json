@@ -34,11 +34,11 @@
     "required":    1,
     "mask":        null,
     "add":         true,
+    "selected":    [],
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        1,
-    "width":       2
+    "show":        1
   },
   {
     "label":       "Расшифровка",

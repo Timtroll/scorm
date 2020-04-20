@@ -8,7 +8,8 @@
            uk-grid>
 
         <!--Add Tree root el -->
-        <div class="uk-width-auto">
+        <div class="uk-width-auto"
+             v-if="add">
           <button type="button"
                   class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                   @click.prevent="addFolder(0)">
@@ -53,7 +54,11 @@
     <!--Nav tree-->
     <div class="pos-side-nav-container">
       <NavTree :nav="filterSearch"
+               :remove="remove"
+               :editable="editable"
+               :add-children="addChildren"
                v-if="filterSearch.length > 0"/>
+
       <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
         <div>
@@ -82,7 +87,24 @@
     name: 'Tree',
 
     props: {
-      nav: {
+      add: {
+        type:    Boolean,
+        default: true
+      },
+
+      addChildren: {
+        type:    Boolean,
+        default: true
+      },
+      editable:    {
+        type:    Boolean,
+        default: true
+      },
+      remove:      {
+        type:    Boolean,
+        default: true
+      },
+      nav:         {
         type: Array
       }
     },
@@ -95,9 +117,9 @@
 
     computed: {
 
-      //cardLeft_show () {
-      //  return this.$store.getters.cardLeftState
-      //},
+      editPanel_api () { // список запросов для правой панели
+        return this.$store.getters.editPanel_api
+      },
 
       tree_api () {
         return this.$store.getters.tree_api
@@ -112,9 +134,7 @@
       // преобразование дерева навигации в один уровень для вывода результатов поиска
       flattenNav () {
         if (this.searchInput) {
-
-          return flatTree([...this.nav])
-
+          return flatTree(clone(this.nav))
         } else {
           return this.nav
         }
@@ -124,42 +144,34 @@
       // Поиск по полю label && keywords
       filterSearch () {
 
-        if (this.flattenNav) {
-          return this.flattenNav
-                     .filter(item => {
-                       return !this.searchInput
-                         || item.name
-                                .toLowerCase()
-                                .indexOf(this.searchInput.toLowerCase()) > -1
-                         || item.keywords
-                                .toLowerCase()
-                                .indexOf(this.searchInput.toLowerCase()) > -1
-                     })
-        }
+        if (!this.flattenNav) return
 
+        return this.flattenNav
+                   .filter(item =>
+                     !this.searchInput
+                     || this.filterProp(item.name)
+                     || this.filterProp(item.label)
+                     || this.filterProp(item.keywords)
+                   )
       }
+
     },
 
     methods: {
 
+      filterProp (prop) {
+        if (!prop) return
+        return prop
+          .toLowerCase()
+          .indexOf(this.searchInput.toLowerCase()) > -1
+      },
+
       async addFolder (parent) {
-
-        const proto = await clone(this.protoFolder)
-
-        await proto.forEach(item => {
-          if (item.name === 'parent') {
-            item.value = parent
-          }
-        })
-
-        await this.$store.commit('card_right_show', false)
-        await this.$store.commit('editPanel_data', [])
-        await this.$store.commit('editPanel_status_request')
-        await this.$store.commit('editPanel_add', true)
+        this.$store.commit('editPanel_add', true)
+        await this.$store.dispatch(this.editPanel_api.addFolderProto, parent)
+        this.$store.commit('editPanel_add', true)
         await this.$store.commit('editPanel_folder', true)
-        await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        await this.$store.commit('card_right_show', true)
-        await this.$store.commit('editPanel_status_success') // статус - успех
+
       },
 
       // Очистка поля поиска

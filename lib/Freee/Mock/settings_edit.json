@@ -1,0 +1,27 @@
+{
+    "folder": 0,
+    "id": 20,
+    "parent": 18,
+    "groups": [
+      {
+        "label": "Основные",
+        "fields": [
+          "label": "шаг обновления",
+          "mask": "[0..9\\w ]+",
+          "name": "import_step",
+          "placeholder": "",
+          "selected": [],
+          "type": "InputNumber",
+          "value": "",
+        ]
+      },
+      {
+        "label": "Статус",
+        "fields": [
+          "readonly": 0,
+          "required": 1,
+          "selected": []
+        ]
+      }
+    ]
+}

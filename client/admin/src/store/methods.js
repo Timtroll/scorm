@@ -30,6 +30,7 @@ function flatTree (arr) {
         folder:   item.folder,
         id:       item.id,
         name:     item.name,
+        label:    item.label,
         keywords: item.keywords,
         parent:   item.parent
       }
@@ -44,6 +45,141 @@ function flatTree (arr) {
 
   _flatTree(arr)
   return tree
+}
+
+/**
+ *
+ * @param data
+ * @param proto
+ * @returns {{tabs: [], main: []}}
+ */
+function groupedFields (data, proto) {
+
+  const groups = {
+    main: [],
+    tabs: []
+  }
+
+  //const data   = data
+
+  if (data && proto) {
+    for (let prop in data) {
+
+      if (data && data.hasOwnProperty(prop)) {
+
+        // Поля не объедененные в группы (видимы всегда)
+        if (prop !== 'tabs') {
+
+          // только те поля, которые определены в прототипе
+          const protoKey = proto.filter(item => item.name === prop)
+
+          // установка значений полей
+          for (let item of protoKey) {
+            item.value = data[item.name]
+          }
+
+          if (protoKey.length === 1) {
+            groups.main.push(protoKey[0])
+          }
+
+        }
+
+        // Поля объедененные в группы
+        else if (prop === 'tabs') {
+
+          const groupFields = data.tabs
+
+          groupFields.forEach(item => {
+
+            const groupItem = {
+              label:  prop.label,
+              fields: []
+            }
+
+            groupItem.label       = item.label
+            const groupItemFields = item.fields
+
+            for (let propGroupField in groupItemFields) {
+
+              // только те поля, которые определены в прототипе
+              const protoKey = proto.filter(item => item.name === propGroupField)
+
+              // установка значений полей
+              for (let item of protoKey) {
+                item.value = groupItemFields[item.name]
+              }
+
+              if (protoKey.length === 1) {
+                groupItem.fields.push(protoKey[0])
+              }
+            }
+
+            groups.tabs.push(groupItem)
+          })
+
+        }
+
+      }
+    }
+
+    return groups
+  } else {
+    console.error('groupedFields - no data or proto')
+  }
+
+}
+
+/**
+ *
+ * @param groups
+ * @returns {{}}
+ */
+function unGroupedFields (groups) {
+
+  const keyValues = {}
+
+  _getKeyValue(groups.main)
+
+  if (groups && groups.hasOwnProperty('tabs')) {
+    groups.tabs.forEach(item => {
+      _getKeyValue(item.fileds)
+    })
+  }
+
+  function _getKeyValue (item) {
+    item.forEach(item => {
+      //console.log(item)
+      keyValues[item.name] = item.value
+    })
+  }
+
+  return keyValues
+}
+
+/**
+ *
+ * @param groups
+ * @returns {[]}
+ */
+function flatFields (groups) {
+
+  const fields = []
+
+  _getFiled(groups.main)
+
+  if (groups.hasOwnProperty('tabs')) {
+    groups.tabs.forEach(item => {
+      _getFiled(item.fileds)
+    })
+  }
+
+  function _getFiled (item) {
+    item.forEach(item => {
+      fields.push(item)
+    })
+  }
+
+  return fields
 }
 
 /**
@@ -98,6 +234,9 @@ export {
   notify,
   confirm,
   flatTree,
+  groupedFields,
+  unGroupedFields,
+  flatFields,
   clone,
   dropHide,
   dropShow

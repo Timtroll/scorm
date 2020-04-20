@@ -25,10 +25,12 @@
 
       <!--header settings-->
       <div class="pos-card-header--content uk-padding-remove"
+           v-if="loader  === 'success' || 'error'"
            ref="listMenu">
         <ListMenu :nav="listMenu"
-                  v-if="loader  === 'success'"
+                  v-if="listMenu && listMenu.length > 0"
                   :active="listMenuActiveId"
+                  @active-id="setActiveMenuItem($event)"
                   :resize="editPanel_large"/>
       </div>
       <!--<div class="pos-card-header&#45;&#45;content"-->
@@ -38,6 +40,7 @@
       <a class="pos-card-header-item uk-text-danger link"
          @click.prevent="close">
         <img src="/img/icons/icon__close.svg"
+             class="uk-button-icon-fix"
              uk-svg
              width="16"
              height="16">
@@ -47,12 +50,25 @@
 
     <!--Edit FORM-->
     <div class="pos-card-body">
-      <form class="pos-card-body-middle uk-position-relative uk-width-1-1">
+      <form class="pos-card-body-middle uk-position-relative uk-width-1-1 uk-flex-column uk-flex">
 
-        <ul class="pos-list">
+        <ul class="pos-list main">
 
+          <li>
+            <!--title-->
+            <div class="uk-margin-top"
+                 v-if="title">
+              <p class=" uk-h4 uk-margin-remove ">
+            <span v-text="title"
+                  :class="{'uk-text-primary': !add, 'uk-text-danger': add, }"></span>
+              </p>
+            </div>
+          </li>
+
+          <!--form-->
+          <!--// MAIN-->
           <component v-bind:is="item.type"
-                     v-for="(item, index) in dataNew"
+                     v-for="(item, index) in dataNew.main"
                      :key="index"
                      :value="item.value"
                      :type="item.type"
@@ -64,11 +80,44 @@
                      :mask="item.mask"
                      :label="item.label"
                      :placeholder="item.placeholder"
-                     @value="dataNew[index].value = $event"
+                     @value="dataNew.main[index].value = $event"
                      @change="dataChanged[index].changed = $event"
                      @clear="clearValue"
                      @changeType="changeType($event)"/>
+        </ul>
+        <ul class="pos-list"
+            v-if="data">
+          <li class="uk-padding-remove uk-flex-1"
+              :class="{'uk-hidden': listMenuActiveId !== index}"
+              v-for="(group, index) in dataNew.tabs">
 
+            <transition name="slide-right"
+                        appear
+                        mode="out-in">
+              <ul class="pos-list"
+                  :key="index"
+                  v-show="listMenuActiveId === index">
+
+                <component v-bind:is="item.type"
+                           v-for="(item, idx) in group.fields"
+                           :key="idx"
+                           :value="item.value"
+                           :type="item.type"
+                           :name="item.name"
+                           :selected="valueSelected"
+                           :readonly="notEditable(item.readonly)"
+                           :add="item.add"
+                           :required="item.required"
+                           :mask="item.mask"
+                           :label="item.label"
+                           :placeholder="item.placeholder"
+                           @value="group.fields[idx].value = $event"
+                           @change="dataChanged[idx].changed = $event"
+                           @clear="clearValue"
+                           @changeType="changeType($event)"/>
+              </ul>
+            </transition>
+          </li>
         </ul>
 
         <!--loading-->
@@ -77,7 +126,7 @@
                v-if="loader === 'loading'">
             <div>
               <loader :width="40"
-                      :height="40"></Loader>
+                      :height="40"/>
               <div class="uk-margin-small-top"
                    v-text="$t('actions.loading')"></div>
             </div>
@@ -144,23 +193,6 @@
       InputType:       () => import(/* webpackChunkName: "InputType" */ '../inputs/InputType')
     },
 
-    // Закрыть панель при нажатии "ESC"
-    mounted () {
-
-      document.onkeydown = evt => {
-        evt = evt || window.event
-        if (evt.keyCode === 27) {
-          this.close()
-        }
-      }
-
-      //// ширина меню панели редактирования
-      //if (this.$refs.listMenu) {
-      //  this.listMenuWidth = this.$refs.listMenu.offsetWidth
-      //}
-
-    },
-
     props: {
 
       data: {
@@ -185,15 +217,30 @@
       labels: {}
     },
 
-    created () {
-      if (this.add) {
-        this.dataAdd     = this.data.filter(item => item.add === true)
-        this.dataNew     = clone(this.dataAdd)
-        this.dataChanged = this.createDataChanged(this.dataAdd)
-      } else {
-        this.dataNew     = clone(this.data)
-        this.dataChanged = this.createDataChanged(this.data)
+    async created () {
+
+      this.dataNew     = await clone(this.data)
+      this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
+
+    },
+
+    // Закрыть панель при нажатии "ESC"
+    async mounted () {
+
+      document.onkeydown = evt => {
+        evt = evt || window.event
+        if (evt.keyCode === 27) {
+          this.close()
+        }
       }
+
+      // если добавление, то активная вкладка = 1
+      if (this.add) {
+        this.listMenuActiveId = 0
+      } else {
+        this.listMenuActiveId = 1
+      }
+
     },
 
     beforeDestroy () {
@@ -204,19 +251,10 @@
     data () {
       return {
         listMenuActiveId: 1,
-        listMenu:         [
-          {id: 1, label: 'Основные'},
-          {id: 2, label: 'Категории'},
-          {id: 3, label: 'Характеристики'},
-          {id: 4, label: 'Опции'},
-          {id: 5, label: 'Файлы'},
-          {id: 6, label: 'Связи'},
-          {id: 7, label: 'Цены'},
-          {id: 8, label: 'Связи'},
-          {id: 9, label: 'Связи2'}
-        ],
         //listMenuWidth:    null,
+        //dataGrouped: [],
         dataNew:          [],
+        dataFlat:         [],
         dataChanged:      [],
         dataAdd:          [],
         showSelectedOn:   ['InputSelect', 'InputRadio']
@@ -225,18 +263,17 @@
 
     watch: {
 
-      data () {
-
+      async data () {
         if (this.data && !this.add) {
-          this.dataNew     = clone(this.data)
-          this.dataChanged = this.createDataChanged(this.data)
+          this.dataNew     = await clone(this.data)
+          this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
         }
       },
 
       // установка типа поля VALUE при загрузке
       findTypeField () {
         if (this.findTypeField && this.findTypeField.value) {
-          this.dataNew[this.findVariableTypeField].type = this.findTypeField.value
+          this.dataNewFlat[this.findVariableTypeField].type = this.findTypeField.value
         }
       }
 
@@ -244,12 +281,30 @@
 
     computed: {
 
-      disabled () {
-        const disabled = this.dataNew.find(item => item.name === 'readonly')
-        if (disabled && 'value' in disabled) {
-          return Number(disabled.value)
-        }
+      // меню групп
+      listMenu () {
+        const data = clone(this.data)
 
+        if (data && data.hasOwnProperty('tabs')) {
+          const dataGroups = clone(this.data.tabs)
+          const menu       = []
+
+          dataGroups.map((item, index) => {
+            menu.push({
+              id:    index,
+              label: item.label
+            })
+          })
+
+          return menu
+        }
+      },
+
+      disabled () {
+        const disabled = this.dataNewFlat.find(item => item.name === 'readonly')
+        if (disabled && 'value' in disabled) {
+          return Number(disabled.value) || 0
+        }
       },
 
       title () {
@@ -260,16 +315,12 @@
         }
       },
 
-      // Проверка на уникальность поля 'name' в таблице
-      //tableNames () {
-      //
-      //  if (!this.add) {
-      //    const index = this.usedNames.indexOf(this.currentName)
-      //    if (index !== -1) this.usedNames.splice(index, 1)
-      //  }
-      //
-      //  return this.usedNames.includes(this.editedData.name)
-      //},
+      // Все поля в один уровень
+      dataNewFlat () {
+        if (this.dataNew) {
+          return this.flatGroups(this.dataNew)
+        }
+      },
 
       // широкая / узкая панель редактирования
       editPanel_large () {
@@ -295,43 +346,99 @@
       },
 
       valueSelected () {
-        const selected = clone(this.dataNew).find(item => item.type === 'InputSelected')
-        if (selected && selected.value) {
-          return selected.value
+        if (this.dataNewFlat) {
+          const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
+          if (selected && selected.value) {
+            return selected.value
+          }
         }
-
       },
 
       findVariableTypeField () {
-        return this.dataNew.findIndex(item => item.name === this.variableTypeField)
+        if (this.dataNewFlat) {
+          return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
+        }
       },
 
       findTypeField () {
-        return this.dataNew.find(item => item.name === 'type')
+
+        return this.searchTypeInGroups(this.dataNewFlat)
+        //if (this.dataNew.hasOwnProperty('tabs')) {
+        //
+        //  return this.dataNew.find(item => item.name === 'type')
+        //} else {
+        //  return this.dataNew.find(item => item.name === 'type')
+        //}
       },
 
       id () {
-        const idEl = this.dataNew.find(item => item.name === 'id')
-        return idEl.value
+        if (!this.add) {
+          const idEl = this.dataNewFlat.find(item => item.name === 'id')
+          return idEl.value
+        }
       }
 
     },
 
     methods: {
 
+      setActiveMenuItem (id) {
+        this.listMenuActiveId = id
+      },
+
+      searchTypeInGroups (array) {
+        if (array.hasOwnProperty('tabs')) {
+
+          // массив в один уровень
+          const allFields     = array.tabs
+          const allFieldsFlat = allFields.map(item => item.fields)
+
+          // поиск поля тип
+          return allFieldsFlat
+            .flat()
+            .find(item => item.name === 'type')
+
+        } else {
+          return array.find(item => item.name === 'type')
+        }
+      },
+
+      //
+      flatGroups (array) {
+        if (array && array.hasOwnProperty('tabs')) {
+
+          // массив в один уровень
+          const allFields   = array.tabs
+          let allFieldsFlat = allFields.map(item => item.fields)
+
+          if (array.hasOwnProperty('main')) {
+            allFieldsFlat = allFieldsFlat.concat(array.main)
+          }
+
+          return allFieldsFlat
+            .flat()
+
+        } else {
+          return array
+        }
+      },
+
       createDataChanged (arr) {
 
+        console.log(arr)
         const newArr = []
+        if (arr) {
+          arr.forEach(item => {
+            const newItem = {
+              name:    item.name,
+              changed: false
+            }
+            newArr.push(newItem)
+          })
 
-        arr.forEach(item => {
-          const newItem = {
-            name:    item.name,
-            changed: false
-          }
-          newArr.push(newItem)
-        })
+          return newArr
+        }
 
-        return newArr
       },
 
       variableType (type) {
@@ -343,16 +450,17 @@
         }
       },
 
+      // изменение размеров панели редактирования
       toggleSize () {
-
         this.$store.commit('editPanel_size', !this.editPanel_large)
-
       },
 
+      // Закрыть панель при свайпе
       swipeRight (direction) {
         if (direction === 'right') this.close()
       },
 
+      // закрыть панель
       close () {
         if (this.dataIsChanged) {
           confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
@@ -367,17 +475,19 @@
 
       },
 
+      // смена типа поля Значение
       changeType (event) {
-        this.dataNew[this.findVariableTypeField].type = event
+        this.dataNewFlat[this.findVariableTypeField].type = event
       },
 
+      // сохранение
       save () {
-        this.$emit('save', this.dataNew)
+        this.$emit('save', this.dataNewFlat)
       },
 
       // Очистка поля Value при изменении типа поля
       clearValue () {
-        const value = this.dataNew.find(item => item.name === 'value')
+        const value = this.dataNewFlat.find(item => item.name === 'value')
         if (value && 'value' in value) {
           value.value = ''
         }

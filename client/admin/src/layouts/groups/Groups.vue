@@ -87,8 +87,9 @@
           },
 
           editPanel: {
-            get:  '',
-            save: ''
+            addFolderProto: 'settings/folderProto',
+            get:            '',
+            save:           ''
 
           }
         }

@@ -90,6 +90,7 @@
     components: {
       'NavTree': () => import('./NavTree')
     },
+
     props:      {
 
       navItem: {

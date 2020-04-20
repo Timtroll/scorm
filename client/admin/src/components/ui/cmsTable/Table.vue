@@ -171,15 +171,15 @@
 
           <tbody>
           <TableRow
-              :row-data="row"
-              :mass-edit="massEdit"
-              :editable="table.settings.editable"
-              :removable="table.settings.removable"
-              :full-data="filterSearch[index]"
-              :checked-all="checked"
-              v-for="(row, index) in tableRows"
-              v-on:check="checkedAll"
-              :key="index">
+                  :row-data="row"
+                  :mass-edit="massEdit"
+                  :editable="table.settings.editable"
+                  :removable="table.settings.removable"
+                  :full-data="filterSearch[index]"
+                  :checked-all="checked"
+                  v-for="(row, index) in tableRows"
+                  v-on:check="checkedAll"
+                  :key="index">
           </TableRow>
           </tbody>
 
@@ -208,6 +208,23 @@
             </button>
           </div>
         </div>
+
+        <!--// empty search result-->
+        <div class="uk-position-cover uk-flex uk-flex-center uk-flex-middle uk-text-muted"
+             v-if="tableEmptySearchResult">
+          <div class="uk-flex-center uk-flex uk-flex-column">
+
+            <img src="/img/icons/icon__search.svg"
+                 class="uk-margin-auto"
+                 width="40"
+                 height="40"
+                 uk-svg>
+            <div class="uk-text-center uk-margin-top"
+                 v-html="$t('actions.searchError')"></div>
+
+          </div>
+        </div>
+
       </div>
     </template>
 
@@ -282,12 +299,20 @@
 
     async mounted () {
 
+      this.searchInput = null
+
       //if (this.notEmptyTable === 'error') {
       //  this.$store.commit('card_right_show', false)
       //  this.$store.commit('tree_active', this.tableId)
       //  await this.$store.dispatch(this.table_api.get, this.tableId)
       //}
 
+    },
+
+    beforeRouteUpdate (to, from, next) {
+      // просто используйте `this`
+      this.searchInput = null
+      next()
     },
 
     beforeDestroy () {
@@ -301,11 +326,21 @@
 
       pageComponent () {return this.$route.name},
 
+      editPanel_api () { // список запросов для правой панели
+        return this.$store.getters.editPanel_api
+      },
+
       table_api () {return this.$store.getters.table_api},
 
       tableNotEmpty () {
-        if (this.tableRows) {
-          return this.tableRows.length > 0
+        if (this.table.body) {
+          return this.table.body.length > 0
+        }
+      },
+
+      tableEmptySearchResult () {
+        if (this.searchInput) {
+          return this.filterSearch.length === 0
         }
       },
 
@@ -413,6 +448,7 @@
               || item.name.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
               || item.label.toLowerCase().indexOf(this.searchInput.toLowerCase()) > -1
           })
+          //this.$store.commit('table_status_success')
         }
       }
 
@@ -429,24 +465,9 @@
       },
 
       async add_row () {
-
-        const proto = await clone(this.$store.getters.editPanel_proto)
-
-        await proto.forEach(item => {
-          if (item.name === 'parent') {
-            item.value = this.tableId
-          }
-        })
-
-        await this.$store.commit('card_right_show', false)
-        await this.$store.commit('editPanel_data', [])
-        await this.$store.commit('editPanel_status_request')
-        await this.$store.commit('editPanel_add', true)
-        await this.$store.commit('editPanel_folder', false)
-        await this.$store.commit('editPanel_data', proto) // запись данных во VUEX
-        await this.$store.commit('card_right_show', true)
-        await this.$store.commit('editPanel_status_success') // статус - успех
-
+        this.$store.commit('editPanel_add', true)
+        await this.$store.dispatch(this.editPanel_api.addProto, this.$route.params.id)
+        this.$store.commit('editPanel_add', true)
       },
 
       // отмена выделения всех строк
