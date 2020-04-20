@@ -2,6 +2,7 @@
   <Card :header="false"
         :footer="false"
         :body-left="true"
+        :body-left-show="cardLeft_show"
         :body-left-padding="false"
         :body-left-toggle-show="true"
         :body-right="true"
@@ -22,19 +23,26 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-      <Tree :nav="nav"/>
+
+      <Tree v-if="nav"
+            :add="false"
+            :editable="false"
+            :remove="false"
+            :add-children="false"
+            :nav="nav">
+      </Tree>
     </template>
 
     <!--bodyRight-->
     <template #bodyRight>
-      <List :labels="'Добавить группу настроек'"
-            :data="editPanel_data"
-            :variable-type-tield="'value'"
-            :add="editPanel_add"
-            :folder="editPanel_folder"
-            :parent="tableId"
-            v-on:save="save($event)"
-            v-on:close="closeAddGroup"/>
+      <!--<List :labels="'Добавить группу настроек'"-->
+      <!--      :data="editPanel_data"-->
+      <!--      :variable-type-tield="'value'"-->
+      <!--      :add="editPanel_add"-->
+      <!--      :folder="editPanel_folder"-->
+      <!--      :parent="tableId"-->
+      <!--      v-on:save="save($event)"-->
+      <!--      v-on:close="closeAddGroup"/>-->
     </template>
 
   </Card>
@@ -42,17 +50,13 @@
 
 <script>
 
-  //import прототипа колонок таблицы
-  import groupProtoLeaf from '@/assets/json/proto/groups/leaf.json'
-  import groupProtoFolder from '@/assets/json/proto/groups/folder.json'
-
   // import VUEX module groups
-  import groups from '@/store/modules/groups'
+  import users from '@/store/modules/users'
   import {clone} from '../../store/methods'
 
   export default {
 
-    name: 'Groups',
+    name: 'Users',
 
     components: {
       IconBug: () => import(/* webpackChunkName: "IconBug" */ '@/components/ui/icons/IconBug'),
@@ -71,26 +75,25 @@
         actions: {
 
           tree: {
-            get:                'groups/getTree',
-            add:                'groups/addFolder',
-            save:               'groups/saveFolder',
-            remove:             'groups/removeFolder',
-            childComponentName: 'GroupsItem'
+            get: 'users/getTree',
+
+            childComponentName: 'UserItem'
           },
 
           table: {
-            get:       'groups/getTable',
-            save:      'groups/leafSave',
-            saveField: 'groups/leafSaveField',
-            remove:    'groups/removeLeaf'
+            get:       'settings/getTable',
+            save:      'settings/leafSave',
+            saveField: 'settings/leafSaveField',
+            remove:    'settings/removeLeaf'
 
           },
 
           editPanel: {
+            get:            'settings/leafEdit',
+            save:           'settings/leafSave',
+            addProto:       'settings/leafProto',
             addFolderProto: 'settings/folderProto',
-            get:            '',
-            save:           ''
-
+            add:            'settings/leafAdd'
           }
         }
 
@@ -99,16 +102,17 @@
 
     async created () {
 
-      await this.$store.registerModule('groups', groups)
+      // Регистрация Vuex модуля settings
+      await this.$store.registerModule('users', users)
 
-      // запросы
+      // // запросы
       this.$store.commit('table_api', this.actions.table)
       this.$store.commit('tree_api', this.actions.tree)
       this.$store.commit('editPanel_api', this.actions.editPanel)
 
       //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', groupProtoLeaf)
-      this.$store.commit('set_tree_proto', groupProtoFolder)
+      //this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
+      //this.$store.commit('set_tree_proto', settingsProtoFolder)
 
       //// Получение дерева с сервера
       await this.$store.dispatch(this.actions.tree.get)
@@ -123,7 +127,7 @@
       this.$store.commit('card_right_show', false)
 
       // показать кнопку Добавить
-      this.$store.commit('table_addChildren', false)
+      this.$store.commit('table_addChildren', true)
 
     },
 
@@ -134,7 +138,7 @@
       this.$store.commit('set_tree_proto', [])
 
       // выгрузка Vuex модуля settings
-      this.$store.unregisterModule('groups')
+      this.$store.unregisterModule('users')
     },
 
     computed: {
@@ -149,6 +153,10 @@
 
       editPanel_show () {
         return this.$store.getters.cardRightState
+      },
+
+      cardLeft_show () {
+        return this.$store.getters.cardLeftState
       },
 
       editPanel_add () {
@@ -186,47 +194,6 @@
       },
 
       save (data) {
-        if (this.editPanel_folder) {
-          this.saveFolder(data)
-        } else {
-          this.saveLeaf(data)
-        }
-      },
-
-      // сохранение Folder
-      saveFolder (data) {
-
-        if (this.editPanel_add) {
-          const save = {
-            add:    this.editPanel_add,
-            folder: true,
-            fields: {}
-          }
-
-          const arr = clone(data)
-          arr.forEach(item => {save.fields[item.name] = item.value})
-
-          this.$store.dispatch(this.actions.tree.add, save)
-        } else {
-          const save = {
-            add:    this.editPanel_add,
-            folder: true,
-            fields: {}
-          }
-
-          const arr = clone(data)
-          arr.forEach(item => {save.fields[item.name] = item.value})
-
-          this.$store.dispatch(this.actions.tree.save, save)
-        }
-
-      },
-
-      // сохранение Листочка
-      saveLeaf (data) {
-
-        if (this.editPanel_add) {}
-
         const save = {
           add:    this.editPanel_add,
           folder: false,
@@ -236,9 +203,17 @@
         const arr = clone(data)
         arr.forEach(item => {save.fields[item.name] = item.value})
 
-        this.$store.dispatch(this.actions.editPanel.save, save)
+        // преобразование в JSON поля selected
+        save.fields.selected = JSON.stringify(save.fields.selected)
 
+        // преобразование в JSON поля value, если тип поля InputDoubleList
+        if (save.fields.type === 'InputDoubleList') {
+          save.fields.value = JSON.stringify(save.fields.value)
+        }
+
+        this.$store.dispatch(this.actions.editPanel.save, save)
       }
+
     }
 
   }

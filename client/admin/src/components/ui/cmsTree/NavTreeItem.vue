@@ -37,7 +37,7 @@
         <!--Добавить дочерний раздел-->
         <a @click.prevent="addChildren(navItem.id)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
-           v-if="navItem.folder === 1"
+           v-if="navItem.folder === 1 && addChildrenItem"
            class="pos-side-nav-item-actions__add">
           <img src="/img/icons/icon__plus-doc.svg"
                uk-svg
@@ -49,6 +49,7 @@
         <!--Редактировать раздел-->
         <a @click.prevent="editFolder(navItem)"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
+           v-if="editable"
            class="pos-side-nav-item-actions__edit">
           <img src="/img/icons/icon__edit.svg"
                uk-svg
@@ -59,6 +60,7 @@
 
         <!--Удалить раздел-->
         <a @click.prevent="removeFolder(navItem.id)"
+           v-if="removeItem"
            :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
            class="pos-side-nav-item-actions__remove">
           <img src="/img/icons/icon__trash.svg"
@@ -72,6 +74,9 @@
 
     <!--children nav items-->
     <NavTree v-if="navItem.children && navItem.children.length > 0 && opened"
+             :remove-children="remove"
+             :editable="editable"
+             :add-children="addChildren"
              :nav="navItem.children">
     </NavTree>
 
@@ -93,6 +98,20 @@
 
       navItem: {
         type: Object
+      },
+
+      addChildrenItem: {
+        type:    Boolean,
+        default: true
+      },
+      editable:        {
+        type:    Boolean,
+        default: true
+      },
+
+      removeItem: {
+        type:    Boolean,
+        default: true
       }
     },
 

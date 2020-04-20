@@ -8,7 +8,8 @@
            uk-grid>
 
         <!--Add Tree root el -->
-        <div class="uk-width-auto">
+        <div class="uk-width-auto"
+             v-if="add">
           <button type="button"
                   class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                   @click.prevent="addFolder(0)">
@@ -53,7 +54,11 @@
     <!--Nav tree-->
     <div class="pos-side-nav-container">
       <NavTree :nav="filterSearch"
+               :remove="remove"
+               :editable="editable"
+               :add-children="addChildren"
                v-if="filterSearch.length > 0"/>
+
       <div class="uk-flex uk-height-1-1 uk-flex-center uk-flex-middle uk-text-center"
            v-else>
         <div>
@@ -82,7 +87,24 @@
     name: 'Tree',
 
     props: {
-      nav: {
+      add: {
+        type:    Boolean,
+        default: true
+      },
+
+      addChildren: {
+        type:    Boolean,
+        default: true
+      },
+      editable:    {
+        type:    Boolean,
+        default: true
+      },
+      remove:      {
+        type:    Boolean,
+        default: true
+      },
+      nav:         {
         type: Array
       }
     },

@@ -174,7 +174,7 @@ const router = new Router({
         {
           path:           '/users',
           name:           'Users',
-          component:      () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard/DashBoard'),
+          component:      () => import(/* webpackChunkName: "DashBoard" */ './layouts/users/Users'),
           showInSideBar:  false,
           showInSettings: true,
           meta:           {
