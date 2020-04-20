@@ -134,9 +134,7 @@
       // преобразование дерева навигации в один уровень для вывода результатов поиска
       flattenNav () {
         if (this.searchInput) {
-
-          return flatTree([...this.nav])
-
+          return flatTree(clone(this.nav))
         } else {
           return this.nav
         }
@@ -146,23 +144,27 @@
       // Поиск по полю label && keywords
       filterSearch () {
 
-        if (this.flattenNav) {
-          return this.flattenNav
-                     .filter(item => {
-                       return !this.searchInput
-                         || item.name
-                                .toLowerCase()
-                                .indexOf(this.searchInput.toLowerCase()) > -1
-                         || item.keywords
-                                .toLowerCase()
-                                .indexOf(this.searchInput.toLowerCase()) > -1
-                     })
-        }
+        if (!this.flattenNav) return
 
+        return this.flattenNav
+                   .filter(item =>
+                     !this.searchInput
+                     || this.filterProp(item.name)
+                     || this.filterProp(item.label)
+                     || this.filterProp(item.keywords)
+                   )
       }
+
     },
 
     methods: {
+
+      filterProp (prop) {
+        if (!prop) return
+        return prop
+          .toLowerCase()
+          .indexOf(this.searchInput.toLowerCase()) > -1
+      },
 
       async addFolder (parent) {
         this.$store.commit('editPanel_add', true)

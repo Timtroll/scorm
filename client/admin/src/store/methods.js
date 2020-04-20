@@ -30,6 +30,7 @@ function flatTree (arr) {
         folder:   item.folder,
         id:       item.id,
         name:     item.name,
+        label:    item.label,
         keywords: item.keywords,
         parent:   item.parent
       }
