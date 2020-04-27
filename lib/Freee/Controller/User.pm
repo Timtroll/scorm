@@ -6,7 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Data::Dumper;
 
-sub index {
+sub edit {
     my ($self);
     $self = shift;
 
@@ -103,30 +103,31 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-sub edit {
+sub index {
     my ($self);
     $self = shift;
 
-
     my ($data, $resp, @mess);
-    $data = {
-        'id'                => 1,
-        'surname'           => 'Фамилия',           # Фамилия
-        'name'              => 'Имя',               # Имя
-        'patronymic'        => 'Отчество',          # Отчество
-        'city'              => 'Санкт-Петербург',   # город
-        'country'           => 'Россия',            # страна
-        'timezone'          => '+3',                # часовой пояс
-        'birthday'          => 123132131,           # дата рождения (в секундах)
-        'email'             => 'username@ya.ru',    # email пользователя
-        'emailconfirmed'    => 1,                   # email подтвержден
-        'phone'             => 79312445646,         # номер телефона
-        'phoneconfirmed'    => 1,                   # телефон подтвержден
-        'status'            => 1,                   # активный / не активный пользователь
-        'groups'            => [1, 2, 3],           # список ID групп
-        'password'          => 'khasdf',            # хеш пароля
-        'avatar'            => 'https://thispersondoesnotexist.com/image'
-    };
+    foreach (1..10) {
+        push @$data,         {
+            'id'                => $_,
+            'surname'           => 'Фамилия',           # Фамилия
+            'name'              => 'Имя',               # Имя
+            'patronymic'        => 'Отчество',          # Отчество
+            'city'              => 'Санкт-Петербург',   # город
+            'country'           => 'Россия',            # страна
+            'timezone'          => '+3',                # часовой пояс
+            'birthday'          => 123132131,           # дата рождения (в секундах)
+            'email'             => 'username_'.$_.'@ya.ru',    # email пользователя
+            'emailconfirmed'    => 1,                   # email подтвержден
+            'phone'             => 79312445646,         # номер телефона
+            'phoneconfirmed'    => 1,                   # телефон подтвержден
+            'status'            => 1,                   # активный / не активный пользователь
+            'groups'            => [1, 2, 3],           # список ID групп
+            'password'          => 'khasdf',            # хеш пароля
+            'avatar'            => 'https://thispersondoesnotexist.com/image'
+        };
+    }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
