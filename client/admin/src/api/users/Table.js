@@ -5,10 +5,10 @@ export default {
   // получить дерево
   get_leafs (id) {
     return Api()({
-      url:    'user',
+      url:    'user/',
       method: 'post',
       params: {
-        group: id
+        id: id
       }
     })
   },

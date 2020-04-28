@@ -76,12 +76,11 @@
 
           tree: {
             get: 'users/getTree',
-
-            childComponentName: 'UserItem'
+            childComponentName: 'UsersItem'
           },
 
           table: {
-            get:       'settings/getTable',
+            get:       'users/getTable',
             save:      'settings/leafSave',
             saveField: 'settings/leafSaveField',
             remove:    'settings/removeLeaf'

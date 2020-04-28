@@ -182,7 +182,21 @@ const router = new Router({
             authRequired: true,
             icon:         'img/icons/sidebar_users.svg',
             breadcrumb:   'Пользователи'
-          }
+          }, children:    [
+            {
+              path:           '/users/:id',
+              name:           'UsersItem',
+              component:      () => import(/* webpackChunkName: "Table" */ './components/ui/cmsTable/Table'),
+              showInSideBar:  false,
+              showInSettings: false,
+              meta:           {
+                root:         false,
+                parentName:   'Users',
+                authRequired: true,
+                breadcrumb:   'Пользователи'
+              }
+            }
+          ]
         }
       ]
     },
