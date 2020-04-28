@@ -50,6 +50,7 @@
 
 <script>
 
+  import protoLeaf from '@/assets/json/proto/users/leaf.json'
   // import VUEX module groups
   import users from '@/store/modules/users'
   import {clone} from '../../store/methods'
@@ -110,7 +111,7 @@
       this.$store.commit('editPanel_api', this.actions.editPanel)
 
       //// запись прототипа из json в store
-      //this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
+      this.$store.commit('set_editPanel_proto', protoLeaf)
       //this.$store.commit('set_tree_proto', settingsProtoFolder)
 
       //// Получение дерева с сервера

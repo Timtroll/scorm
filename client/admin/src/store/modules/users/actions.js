@@ -66,6 +66,7 @@ const actions = {
       if (response.status === 200) {
         const resp = await response.data
 
+        console.log(resp)
         if (typeof resp['list'] !== 'undefined') {
           const table = resp.list
           store.commit('set_table', table)
