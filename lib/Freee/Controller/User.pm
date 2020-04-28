@@ -109,21 +109,19 @@ sub index {
 
     my ($data, $resp, @mess);
     $data = {
-        'list' => {
-            'body' => [],
-            'settings' => {
-                'editable' => 1,
-                'massEdit' => 0,
-                'page' => {
-                    'current_page' => 1,
-                    'per_page' => 100,
-                    'total' => 0
-                },
-                'removable' => 1,
-                'sort' => {
-                    'name' => 'id',
-                    'order' => 'asc'
-                }
+        'body' => [],
+        'settings' => {
+            'editable' => 1,
+            'massEdit' => 0,
+            'page' => {
+                'current_page' => 1,
+                'per_page' => 100,
+                'total' => 0
+            },
+            'removable' => 1,
+            'sort' => {
+                'name' => 'id',
+                'order' => 'asc'
             }
         }
     };
@@ -149,12 +147,12 @@ sub index {
             'avatar'            => 'https://thispersondoesnotexist.com/image'
         };
     }
-    $data ->{'list'}->{'body'} = \@data;
-    $data ->{'list'}->{'settings'}->{'page'}->{'total'} = scalar(@data);
+    $data->{'body'} = \@data;
+    $data->{'settings'}->{'page'}->{'total'} = scalar(@data);
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'list'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }
