@@ -108,8 +108,29 @@ sub index {
     $self = shift;
 
     my ($data, $resp, @mess);
+    $data = {
+        'list' => {
+            'body' => [],
+            'settings' => {
+                'editable' => 1,
+                'massEdit' => 0,
+                'page' => {
+                    'current_page' => 1,
+                    'per_page' => 100,
+                    'total' => 0
+                },
+                'removable' => 1,
+                'sort' => {
+                    'name' => 'id',
+                    'order' => 'asc'
+                }
+            }
+        }
+    };
+
+    my @data;
     foreach (1..10) {
-        push @$data,         {
+        push @data, {
             'id'                => $_,
             'surname'           => 'Фамилия',           # Фамилия
             'name'              => 'Имя',               # Имя
@@ -128,6 +149,8 @@ sub index {
             'avatar'            => 'https://thispersondoesnotexist.com/image'
         };
     }
+    $data ->{'list'}->{'body'} = \@data;
+    $data ->{'list'}->{'settings'}->{'page'}->{'total'} = scalar(@data);
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -168,30 +191,32 @@ sub save {
 }
 
 
-sub activate {
-    my ($self);
-    $self = shift;
+# изменение поля на 1/0
+# my $true = $self->toggle();
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
+sub toggle {
+    my $self = shift;
 
-    my ($data, $resp, @mess);
-    $data = {};
+    my ($toggle, $resp, $data, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        unless (@mess) {
+            $$data{'table'} = 'settings';
+            $toggle = $self->_toggle( $data ) unless @mess;
+            push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+        }
+    }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
-
-    $self->render( 'json' => $resp );
-}
-
-sub hide {
-    my ($self);
-    $self = shift;
-
-    my ($data, $resp, @mess);
-    $data = {};
-
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'id'} = $$data{'id'} if $toggle;
 
     $self->render( 'json' => $resp );
 }
