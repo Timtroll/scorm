@@ -112,7 +112,6 @@
 
       //// запись прототипа из json в store
       this.$store.commit('set_editPanel_proto', protoLeaf)
-      //this.$store.commit('set_tree_proto', settingsProtoFolder)
 
       //// Получение дерева с сервера
       await this.$store.dispatch(this.actions.tree.get)
