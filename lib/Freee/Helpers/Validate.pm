@@ -150,35 +150,61 @@ sub register {
         return \%data;
     });
 
-    # загрузка правил валидации html полоей
+    # загрузка правил валидации html полоей, например:
     # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
     $app->helper( '_param_fields' => sub {
         $vfields = {
             # валидация роутов
 ################
+            # роуты user/*
+            '/settings/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os ],
+            },
+            '/settings/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w-]+$/os, 24 ],
+                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w-]+$/os, 24 ],
+                'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w-]+$/os, 32 ],
+                'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w- \,\.№\'\"\/0-9]$/os, 64 ],
+                'country'       => [ 'required', qr/^[\w- ]+$/os, 32 ],
+                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
+                'password'      => [ 'required', qr/^[\w_-0-9~\!№\$\@\^\&\%\*()=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'newpassword'   => [ 'required', qr/^\d+$/os, 32 ],
+                'avatar'        => [ 'required', qr/^(https?|ftp)://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$$/os, 64 ],
+                'type'          => [ 'required', qr/^\d+$/os, 3 ]
+            },
+            '/settings/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+            },
+            '/settings/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+            },
+################
             # роуты settings/*
             '/settings/add_folder'  => {
-                "parent"        => [ '', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "status"        => [ 'required', qr/^[01]$/os ]
             },
             '/settings/get_folder'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
             },
             '/settings/save_folder'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ 'required', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/delete_folder'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
             },
             '/settings/proto_leaf'  => {
                 "parent"        => [ 'required', qr/^\d+$/os ]
@@ -187,115 +213,115 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os ]
             },
             '/settings/add'  => {
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
                 "type"          => [ '', qr/\w+/os, 256 ],
                 "mask"          => [ '', qr/.*/os, 256 ],
                 "value"         => [ '', qr/.*/os, 10000 ],
                 "selected"      => [ '', qr/.*/os, 10000 ],
-                "required"      => [ '', qr/^[01]$/os ],
-                "readonly"      => [ '', qr/^[01]$/os ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "required"      => [ '', qr/^[01]$/os, 1 ],
+                "readonly"      => [ '', qr/^[01]$/os, 1 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
-                "parent"        => [ 'required', qr/^\d+$/os ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],
                 "type"          => [ '', qr/\w+/os, 256 ],
                 "mask"          => [ '', qr/.*/os, 256 ],
                 "value"         => [ '', qr/.*/os, 10000 ],
                 "selected"      => [ '', qr/.*/os, 10000 ],
-                "required"      => [ '', qr/^[01]$/os ],
-                "readonly"      => [ '', qr/^[01]$/os ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "required"      => [ '', qr/^[01]$/os, 1 ],
+                "readonly"      => [ '', qr/^[01]$/os, 1 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/delete'  => {
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/toggle'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
-                "value"         => [ 'required', qr/^[01]$/os ]
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
             # роуты groups/*
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/edit'  => {
-                 "id"           => [ 'required', qr/^\d+$/os ]
+                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/groups/save'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "name"          => [ 'required', qr/^[A-Za-z0-9_]+$/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/delete'  => {
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/groups/toggle'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['status'] ],
-                "value"         => [ 'required', qr/^[01]$/os ]
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
             # роуты routes/*
             '/routes'  => {
-                "parent"        => [ 'required', qr/^\d+$/os ]
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/routes/edit'  => {
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/routes/save'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
-                "list"          => [ 'required', qr/^[01]$/os ],
-                "add"           => [ 'required', qr/^[01]$/os ],
-                "edit"          => [ 'required', qr/^[01]$/os ],
-                "delete"        => [ 'required', qr/^[01]$/os ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "list"          => [ 'required', qr/^[01]$/os, 1 ],
+                "add"           => [ 'required', qr/^[01]$/os, 1 ],
+                "edit"          => [ 'required', qr/^[01]$/os, 1 ],
+                "delete"        => [ 'required', qr/^[01]$/os, 1 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/routes/toggle'  => {
-                "id"            => [ 'required', qr/^\d+$/os ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'] ],
-                "value"         => [ 'required', qr/^[01]$/os ]
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
             # роуты forum/*
             '/forum/theme'  => {
-                "id"            => [ '', qr/^\d+$/os ]
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/add_theme'  => {
-                "group_id"      => [ '', qr/^\d+$/os ]
+                "group_id"      => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/save_add_theme' => {
-                "group_id"      => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_theme' => {
-                "group_id"      => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ],
+                "group_id"      => [ '', qr/^\d+$/os, 9 ],
+                "id"            => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_theme'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ]
+                "theme_id"      => [ '', qr/^\d+$/os, 9 ],
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/del_theme'  => {
-                "parent_id"     => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ]
+                "parent_id"     => [ '', qr/^\d+$/os, 9 ],
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
@@ -305,58 +331,58 @@ sub register {
             '/forum/save_add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_group'  => {
-                "id"            => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os, 9 ],
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             
             '/forum/edit_group'  => {
-                "id"            => [ '', qr/^\d+$/os ]
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/del_group'  => {
-                "id"            => [ '', qr/^\d+$/os ]
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/add'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ]
+                "theme_id"      => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/save_add'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit'  => {
-                "theme_id"      => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ],
+                "theme_id"      => [ '', qr/^\d+$/os, 9 ],
+                "id"            => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
 
             '/forum/delete'  => {
-                "parent_id"     => [ '', qr/^\d+$/os ],
-                "id"            => [ 'required', qr/^\d+$/os ]
+                "parent_id"     => [ '', qr/^\d+$/os, 9 ],
+                "id"            => [ 'required', qr/^\d+$/os, 1 ]
             },
             '/forum/edit'  => {
-                "id"            => [ '', qr/^\d+$/os ]
+                "id"            => [ '', qr/^\d+$/os, 9 ]
             },
             'forum_rates'  => {
-                "id"            => [ '', qr/^\d+$/os ],
-                "theme_id"      => [ '', qr/^\d+$/os ],
-                "user_id"       => [ '', qr/^\d+$/os ],
-                "anounce"       => [ '', qr/^[01]$/os ],
-                "date_created"  => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os, 9 ],
+                "theme_id"      => [ '', qr/^\d+$/os, 9 ],
+                "user_id"       => [ '', qr/^\d+$/os, 9 ],
+                "anounce"       => [ '', qr/^[01]$/os, 1 ],
+                "date_created"  => [ '', qr/^\d+$/os ], 9,
                 "msg"           => [ '', qr/.*/os, 10000 ],
-                "rate"          => [ '', qr/^\d+$/os ]
+                "rate"          => [ '', qr/^\d+$/os, 9 ]
             },
             '/forum/toggle'  => {
                 # "parent_id"     => [ '', qr/^\d+$/os ],
-                "id"            => [ '', qr/^\d+$/os ],
+                "id"            => [ '', qr/^\d+$/os, 9 ],
                 # "fieldname"     => [ '', ['status'] ],
                 "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],
-                "value"         => [ '', qr/^[01]$/os ]
+                "value"         => [ '', qr/^[01]$/os, 1 ]
             },
         };
 

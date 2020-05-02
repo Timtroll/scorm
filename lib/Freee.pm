@@ -97,24 +97,21 @@ sub startup {
     $auth->post('/cms/article_add')     ->to('cmsarticle#add');
     $auth->post('/cms/article_edit')    ->to('cmsarticle#edit');
     $auth->post('/cms/article_save')    ->to('cmsarticle#save');
-    $auth->post('/cms/article_activate')->to('cmsarticle#activate');
-    $auth->post('/cms/article_hide')    ->to('cmsarticle#hide');
+    $auth->post('/cms/article_toggle')  ->to('cmsarticle#toggle');
     $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
 
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/subject_add')     ->to('cmssubject#add');
     $auth->post('/cms/subject_edit')    ->to('cmssubject#edit');
     $auth->post('/cms/subject_save')    ->to('cmssubject#save');
-    $auth->post('/cms/subject_activate')->to('cmssubject#activate');
-    $auth->post('/cms/subject_hide')    ->to('cmssubject#hide');
+    $auth->post('/cms/subject_toggle')  ->to('cmssubject#toggle');
     $auth->post('/cms/subject_delete')  ->to('cmssubject#delete');
 
     $auth->post('/cms/item')            ->to('cmsitems#index');
     $auth->post('/cms/item_add')        ->to('cmsitems#add');
     $auth->post('/cms/item_edit')       ->to('cmsitems#edit');
     $auth->post('/cms/item_save')       ->to('cmsitems#saveitem');
-    $auth->post('/cms/item_activate')   ->to('cmsitems#activate');
-    $auth->post('/cms/item_hide')       ->to('cmsitems#hide');
+    $auth->post('/cms/item_toggle')     ->to('cmsitems#toggle');
     $auth->post('/cms/item_delete')     ->to('cmsitems#delete');
 
     # управление почтовыми сообщениями, рассылками
@@ -122,8 +119,7 @@ sub startup {
     $auth->post('/cms/mail_add')        ->to('cmsmail#add');
     $auth->post('/cms/mail_edit')       ->to('cmsmail#edit');
     $auth->post('/cms/mail_save')       ->to('cmsmail#save');
-    $auth->post('/cms/mail_activate')   ->to('cmsmail#activate');
-    $auth->post('/cms/mail_hide')       ->to('cmsmail#hide');
+    $auth->post('/cms/mail_toggle')     ->to('cmsmail#toggle');
     $auth->post('/cms/mail_delete')     ->to('cmsmail#delete');
 
     # управление библиотекой
@@ -134,8 +130,7 @@ sub startup {
     $auth->post('/library/edit')        ->to('library#edit');
     $auth->post('/library/save')        ->to('library#save');
     $auth->post('/library/upload')      ->to('library#upload');
-    $auth->post('/library/activate')    ->to('library#activate');
-    $auth->post('/library/hide')        ->to('library#hide');
+    $auth->post('/library/toggle')      ->to('library#toggle');
     $auth->post('/library/delete')      ->to('library#delete');
 
     # проверка заданий
@@ -155,8 +150,7 @@ sub startup {
     $auth->post('/scheduler/edit')      ->to('scheduler#edit');
     $auth->post('/scheduler/save')      ->to('scheduler#save');
     $auth->post('/scheduler/move')      ->to('scheduler#move');
-    $auth->post('/scheduler/activate')  ->to('scheduler#activate');
-    $auth->post('/scheduler/hide')      ->to('scheduler#hide');
+    $auth->post('/scheduler/toggle')    ->to('scheduler#toggle');
     $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
@@ -174,10 +168,9 @@ sub startup {
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # добавление юзера
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
-    # $auth->post('/user/proto_leaf')     ->to('user#proto_leaf');    # прототип нового пользователя
+    $auth->post('/user/proto_user')     ->to('proto#proto_user');    # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
-    $auth->post('/user/activate')       ->to('user#activate');      # включение юзера
-    $auth->post('/user/hide')           ->to('user#hide');          # отключение юзера
+    $auth->post('/user/toggle')         ->to('user#toggle');      # включение юзера
     $auth->post('/user/delete')         ->to('user#delete');        # удаление юзера
 
     # управление группами пользователей
@@ -200,8 +193,7 @@ sub startup {
     $auth->post('/subject/add')         ->to('subject#add');
     $auth->post('/subject/edit')        ->to('subject#edit');
     $auth->post('/subject/save')        ->to('subject#save');
-    $auth->post('/subject/activate')    ->to('subject#activate');
-    $auth->post('/subject/hide')        ->to('subject#hide');
+    $auth->post('/subject/toggle')      ->to('subject#toggle');
     $auth->post('/subject/delete')      ->to('subject#delete');
 
     # управление темами
@@ -210,8 +202,7 @@ sub startup {
     $auth->post('/themes/add')          ->to('themes#add');
     $auth->post('/themes/edit')         ->to('themes#edit');
     $auth->post('/themes/save')         ->to('themes#save');
-    $auth->post('/themes/activate')     ->to('themes#activate');
-    $auth->post('/themes/hide')         ->to('themes#hide');
+    $auth->post('/themes/toggle')       ->to('themes#toggle');
     $auth->post('/themes/delete')       ->to('themes#delete');
 
     # управление лекциями
@@ -220,8 +211,7 @@ sub startup {
     $auth->post('/lections/add')        ->to('lections#add');
     $auth->post('/lections/edit')       ->to('lections#edit');
     $auth->post('/lections/save')       ->to('lections#save');
-    $auth->post('/lections/activate')   ->to('lections#activate');
-    $auth->post('/lections/hide')       ->to('lections#hide');
+    $auth->post('/lections/toggle')     ->to('lections#toggle');
     $auth->post('/lections/delete')     ->to('lections#delete');
 
     # управление заданиями
@@ -230,8 +220,7 @@ sub startup {
     $auth->post('/tasks/add')           ->to('tasks#add');
     $auth->post('/tasks/edit')          ->to('tasks#edit');
     $auth->post('/tasks/save')          ->to('tasks#save');
-    $auth->post('/tasks/activate')      ->to('tasks#activate');
-    $auth->post('/tasks/hide')          ->to('tasks#hide');
+    $auth->post('/tasks/toggle')        ->to('tasks#toggle');
     $auth->post('/tasks/delete')        ->to('tasks#delete');
     $auth->post('/tasks/finished')      ->to('tasks#finished');
 
