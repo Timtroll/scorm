@@ -23,7 +23,7 @@
     "folder": 0,
     "id": 1,
     "parent": 3,
-    "tabs": [ // Вкладки 
+    "tabs": [ // Вкладки
       {
         "label": "Основные",
         "fields": [
@@ -35,7 +35,6 @@
           "timezone": "+3", // часовой пояс
           "birthday": 123132131, // дата рождения (в секундах)
           "status": 1, // активный / не активный пользователь
-          "groups": [1, 2, 3], // список ID групп
           "password": "khasdf", // хеш пароля
           "avatar": "https://thispersondoesnotexist.com/image",
           "type": 3 // тип
@@ -48,6 +47,12 @@
           "emailconfirmed": 1, // email подтвержден
           "phone": 79312445646, // номер телефона
           "phoneconfirmed": 1, // телефон подтвержден
+        ]
+      },
+      {
+        "label": "Группы",
+        "fields": [
+            "groups": [1, 2, 3], // список ID групп
         ]
       }
     ]
