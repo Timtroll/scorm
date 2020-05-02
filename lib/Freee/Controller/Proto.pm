@@ -120,11 +120,40 @@ sub proto_user {
         unless (@mess) {
             # прототип настройки
             $data = {
-                "folder"  => 0,
-                "parent"  => $data->{'parent'} * 1,
-                "name"    => '',
-                "label"   => '',
-                "status"  => 1
+                'tabs' => [ # Вкладки 
+                    {
+                        'label'     => 'Основные',
+                        'fields'    => {
+                            'surname'       => '',       # Фамилия
+                            'name'          => '',          # Имя
+                            'patronymic'    => '',    # Отчество
+                            'place'         => '',         # город
+                            'country'       => '',       # страна
+                            'timezone'      => '',      # часовой пояс
+                            'birthday'      => '',      # дата рождения (в секундах)
+                            'status'        => '',        # активный / не активный пользователь
+                            'password'      => '',      # пароль
+                            'newpassword'   => '',   # пароль
+                            'avatar'        => '',
+                            'type'          => ''                        # тип
+                        }
+                    },
+                    {
+                        'label' => 'Контакты',
+                        'fields' => {
+                            'email'           => '',           # email пользователя
+                            'emailconfirmed'  => '',  # email подтвержден
+                            'phone'           => '',           # номер телефона
+                            'phoneconfirmed'  => '',  # телефон подтвержден
+                        }
+                    },
+                    {
+                        "label" => "Группы",
+                        "fields" => {
+                            "groups" => [],  # список ID групп
+                        }
+                    }
+                ]
             };
         }
     }

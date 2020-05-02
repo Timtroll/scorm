@@ -33,9 +33,7 @@ sub edit {
     # Так будет отдаваться на фронт:
     my $groups = [1];
     $data = {
-        'folder'    => 0,
-        'id'        => $$user{'id'},
-        'parent'    => 0,
+        'id' => $$user{'id'},
         'tabs' => [ # Вкладки 
             {
                 'label'     => 'Основные',
