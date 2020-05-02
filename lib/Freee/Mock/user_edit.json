@@ -24,7 +24,7 @@
     "tabs": [ // Вкладки
       {
         "label": "Основные",
-        "fields": [
+        "fields": {
           "surname": "Фамилия", // Фамилия
           "name": "Имя", // Имя
           "patronymic": "Отчество", // Отчество
@@ -37,22 +37,22 @@
           "newpassword" : "", // новый пароль
           "avatar": "https://thispersondoesnotexist.com/image",
           "type": 3 // тип
-        ]
+        }
       },
       {
         "label": "Контакты",
-        "fields": [
+        "fields": {
           "email": "username@ya.ru", // email пользователя
           "emailconfirmed": 1, // email подтвержден
           "phone": 79312445646, // номер телефона
           "phoneconfirmed": 1, // телефон подтвержден
-        ]
+        }
       },
       {
         "label": "Группы",
-        "fields": [
+        "fields": {
             "groups": [1], // список ID групп
-        ]
+        }
       }
     ]
 }

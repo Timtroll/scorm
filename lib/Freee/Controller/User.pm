@@ -31,36 +31,43 @@ sub edit {
     };
 
     # Так будет отдаваться на фронт:
+    my $groups = [1];
     $data = {
         'folder'    => 0,
         'id'        => $$user{'id'},
         'parent'    => 0,
         'tabs' => [ # Вкладки 
             {
-            'label'     => 'Основные',
-            'fields'    => [
-                'surname'       => $$user{'surname'},   # Фамилия
-                'name'          => $$user{'name'},      # Имя
-                'patronymic'    => $$user{'patronymic'},# Отчество
-                'city'          => $$user{'city'},      # город
-                'country'       => $$user{'country'},   # страна
-                'timezone'      => $$user{'timezone'},  # часовой пояс
-                'birthday'      => $$user{'birthday'},  # дата рождения (в секундах)
-                'status'        => $$user{'status'},    # активный / не активный пользователь
-                'groups'        => $$user{'groups'},    # список ID групп
-                'password'      => $$user{'password'},  # хеш пароля
-                'avatar'        => $$user{'avatar'},
-                'type'          => 3                    # тип
-            ]
+                'label'     => 'Основные',
+                'fields'    => {
+                    'surname'       => $$user{'surname'},       # Фамилия
+                    'name'          => $$user{'name'},          # Имя
+                    'patronymic'    => $$user{'patronymic'},    # Отчество
+                    'place'         => $$user{'place'},         # город
+                    'country'       => $$user{'country'},       # страна
+                    'timezone'      => $$user{'timezone'},      # часовой пояс
+                    'birthday'      => $$user{'birthday'},      # дата рождения (в секундах)
+                    'status'        => $$user{'status'},        # активный / не активный пользователь
+                    'password'      => $$user{'password'},      # пароль
+                    'newpassword'   => $$user{'newpassword'},   # пароль
+                    'avatar'        => $$user{'avatar'},
+                    'type'          => 3                        # тип
+                }
             },
             {
                 'label' => 'Контакты',
-                'fields' => [
+                'fields' => {
                     'email'           => $$user{'email'},           # email пользователя
                     'emailconfirmed'  => $$user{'emailconfirmed'},  # email подтвержден
                     'phone'           => $$user{'phone'},           # номер телефона
                     'phoneconfirmed'  => $$user{'phoneconfirmed'},  # телефон подтвержден
-                ]
+                }
+            },
+            {
+                "label": "Группы",
+                "fields": {
+                    "groups": $groups,  # список ID групп
+                }
             }
         ]
     };

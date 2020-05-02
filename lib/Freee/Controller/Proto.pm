@@ -105,5 +105,36 @@ sub proto_folder {
     $self->render( 'json' => $resp );
 }
 
+sub proto_user {
+    my $self = shift;
+
+    # read params
+    my ($id, $data, $error, $resp, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless (@mess) {
+        # # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        unless (@mess) {
+            # прототип настройки
+            $data = {
+                "folder"  => 0,
+                "parent"  => $data->{'parent'} * 1,
+                "name"    => '',
+                "label"   => '',
+                "status"  => 1
+            };
+        }
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
+}
+
 
 1;
