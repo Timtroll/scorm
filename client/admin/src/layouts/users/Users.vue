@@ -35,14 +35,14 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-      <!--<List :labels="'Добавить группу настроек'"-->
-      <!--      :data="editPanel_data"-->
-      <!--      :variable-type-tield="'value'"-->
-      <!--      :add="editPanel_add"-->
-      <!--      :folder="editPanel_folder"-->
-      <!--      :parent="tableId"-->
-      <!--      v-on:save="save($event)"-->
-      <!--      v-on:close="closeAddGroup"/>-->
+      <List :labels="'Добавить пользователя'"
+            :data="editPanel_data"
+            :variable-type-tield="'value'"
+            :add="editPanel_add"
+            :folder="editPanel_folder"
+            :parent="tableId"
+            v-on:save="save($event)"
+            v-on:close="closeAddGroup"/>
     </template>
 
   </Card>

@@ -44,7 +44,7 @@
     name: 'InputCheckboxes',
 
     props: {
-      value:       {default: [], type: Array},
+      value:       {default: []},
       name:        '',
       label:       {default: '', type: String},
       placeholder: {default: '', type: String},

@@ -19,6 +19,7 @@
     "@ckeditor/ckeditor5-theme-lark": "^19.0.0",
     "@ckeditor/ckeditor5-vue": "^1.0.1",
     "@editorjs/editorjs": "^2.17.0",
+    "@riophae/vue-treeselect": "^0.4.0",
     "@tinymce/tinymce-vue": "^3.2.1",
     "@wiris/mathtype-ckeditor4": "^7.20.0",
     "@wiris/mathtype-tinymce4": "^7.20.0",
