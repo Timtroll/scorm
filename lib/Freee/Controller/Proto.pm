@@ -124,7 +124,7 @@ sub proto_user {
                     {
                         'label'     => 'Основные',
                         'fields'    => {
-                            'surname'       => '',       # Фамилия
+                            'surname'       => '', # Фамилия
                             'name'          => '',          # Имя
                             'patronymic'    => '',    # Отчество
                             'place'         => '',         # город
