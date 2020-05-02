@@ -133,7 +133,7 @@
     "add":         true,
     "type":        "InputBoolean",
     "value":       0,
-    "inline":      1,
+    "inline":      0,
     "show":        0,
     "width":       2
   },
@@ -147,7 +147,7 @@
     "add":         true,
     "type":        "InputText",
     "value":       1,
-    "inline":      1,
+    "inline":      0,
     "show":        0,
     "width":       2
   },
@@ -187,9 +187,9 @@
     "required":    0,
     "mask":        null,
     "add":         true,
-    "type":        "InputBoolean",
+    "type":        "InputRadio",
     "value":       [],
-    "inline":      1,
+    "inline":      0,
     "show":        0,
     "selected":    [],
     "width":       3
