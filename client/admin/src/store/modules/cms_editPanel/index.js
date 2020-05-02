@@ -38,6 +38,9 @@ const state = {
       value: 'InputBoolean',
       label: 'Чекбокс'
     }, {
+      value: 'InputCheckboxes',
+      label: 'Чекбоксы'
+    }, {
       value: 'InputRadio',
       label: 'Радио кнопки'
     }, {

@@ -71,6 +71,16 @@
     data () {
       return {
 
+
+      //# управление пользователями
+      // '/user/' # список юзеров по группам (обязательно id группы)
+      // '/user/add' # добавление юзера
+      // '/user/edit' # редактирование юзера
+      // '/user/save' # обновление данных юзера
+      // '/user/activate' # включение юзера
+      // '/user/hide' # отключение юзера
+      // '/user/delete' # удаление юзера
+
         leftNavToggleMobile: false,
 
         actions: {
@@ -82,18 +92,18 @@
 
           table: {
             get:       'users/getTable',
-            save:      'settings/leafSave',
-            saveField: 'settings/leafSaveField',
-            remove:    'settings/removeLeaf'
+            save:      'users/leafSave',
+            saveField: 'users/leafSaveField',
+            remove:    'users/removeLeaf'
 
           },
 
           editPanel: {
-            get:            'settings/leafEdit',
-            save:           'settings/leafSave',
-            addProto:       'settings/leafProto',
-            addFolderProto: 'settings/folderProto',
-            add:            'settings/leafAdd'
+            get:            'users/leafEdit',
+            save:           'users/leafSave',
+            addProto:       'users/leafProto',
+            addFolderProto: 'users/folderProto',
+            add:            'users/leafAdd'
           }
         }
 

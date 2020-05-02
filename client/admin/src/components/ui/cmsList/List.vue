@@ -186,6 +186,7 @@
       InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
       InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
       InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
+      InputCheckboxes: () => import(/* webpackChunkName: "InputCheckboxes" */ '../inputs/InputCheckboxes'),
       InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
       InputDoubleList: () => import(/* webpackChunkName: "InputDoubleList" */ '../inputs/InputDoubleList'),
       inputDateTime:   () => import(/* webpackChunkName: "inputDateTime" */ '../inputs/inputDateTime'),
@@ -198,6 +199,11 @@
       data: {
         //type:     Array,
         required: true
+      },
+
+      parents: {
+        type:    Array,
+        default: () => {}
       },
 
       add: {
