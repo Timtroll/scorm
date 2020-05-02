@@ -14,6 +14,7 @@ sub index {
     $token = $self->req->param('token');
 
     if (!(-e "$FindBin::Bin/../log/deploy.lock") && ($self->config->{secrets}[0] eq $token)) {
+warn "/usr/bin/flock -x -w 120 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log &";
         $responce = `/usr/bin/flock -x -w 120 $FindBin::Bin/../log/deploy.lock -c \"$FindBin::Bin/../deploy.sh\" > $FindBin::Bin/../log/deploy.log &`;
         $status = 'ok';
     }

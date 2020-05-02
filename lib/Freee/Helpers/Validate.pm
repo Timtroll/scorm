@@ -171,9 +171,9 @@ sub register {
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
                 'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
-                'password'      => [ 'required', qr/^[\w_-0-9~\!№\$\@\^\&\%\*()=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'password'      => [ 'required', qr/^[\w_-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ 'required', qr/^\d+$/os, 32 ],
-                'avatar'        => [ 'required', qr/^(https?|ftp)://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$$/os, 64 ],
+                'avatar'        => [ 'required', qr/^(https?|ftp)://(-\.)?\([^\s/?\.\#-]+\.?)+(/[^\s]*)?$$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
             '/settings/toggle'  => {
