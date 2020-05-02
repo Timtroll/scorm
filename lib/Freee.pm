@@ -174,6 +174,7 @@ sub startup {
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # добавление юзера
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
+    # $auth->post('/user/proto_leaf')     ->to('user#proto_leaf');    # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/activate')       ->to('user#activate');      # включение юзера
     $auth->post('/user/hide')           ->to('user#hide');          # отключение юзера
