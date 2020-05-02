@@ -64,9 +64,9 @@ sub edit {
                 }
             },
             {
-                "label": "Группы",
-                "fields": {
-                    "groups": $groups,  # список ID групп
+                "label" => "Группы",
+                "fields" => {
+                    "groups" => $groups,  # список ID групп
                 }
             }
         ]
