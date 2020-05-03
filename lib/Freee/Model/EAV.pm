@@ -7,7 +7,6 @@ use Mojo::Base -base;
 use Scalar::Util 'weaken';
 
 use Data::Dumper;
-use DDP;
 our @EXPORT_OK = qw( AUTOLOAD );
 
 has 'eav';
