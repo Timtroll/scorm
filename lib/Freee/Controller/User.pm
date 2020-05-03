@@ -3,6 +3,7 @@ package Freee::Controller::User;
 use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
+use common;
 
 use Data::Dumper;
 

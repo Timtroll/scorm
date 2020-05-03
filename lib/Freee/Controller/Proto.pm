@@ -141,16 +141,16 @@ sub proto_user {
                     {
                         'label' => 'Контакты',
                         'fields' => {
-                            'email'           => '',           # email пользователя
-                            'emailconfirmed'  => '',  # email подтвержден
-                            'phone'           => '',           # номер телефона
-                            'phoneconfirmed'  => '',  # телефон подтвержден
+                            'email'           => '', # email пользователя
+                            'emailconfirmed'  => '', # email подтвержден
+                            'phone'           => '', # номер телефона
+                            'phoneconfirmed'  => ''  # телефон подтвержден
                         }
                     },
                     {
                         "label" => "Группы",
                         "fields" => {
-                            "groups" => [],  # список ID групп
+                            "groups" => []  # список ID групп
                         }
                     }
                 ]

@@ -31,11 +31,14 @@ sub startup {
     $self->sessions->default_expiration($config->{'expires'});
 
     # подгружаем модель
-    # $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
-    # $self->model('methods-client')->do();
-    # $self->model('methods')->do();
-    # $self->model('EAV')->check();
-    # warn '=freee=';
+    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
+    $self->model('users-client')->do();
+
+    $self->model('EAV')->check();
+    warn '=EAV=';
+    $self->model('Users')->check();
+    warn '=Users=';
+
 
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
