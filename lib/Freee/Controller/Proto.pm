@@ -110,7 +110,7 @@ sub proto_user {
 
     # read params
     my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    # push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
         # # проверка данных

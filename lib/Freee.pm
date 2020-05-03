@@ -38,7 +38,8 @@ sub startup {
     warn '=EAV=';
     $self->model('Users')->check();
     warn '=Users=';
-
+    # warn $self->model('eav');
+# warn Dumper $self;
 
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');

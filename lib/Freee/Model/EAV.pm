@@ -32,6 +32,7 @@ sub new {
 
     if (ref $class && $class->isa(__PACKAGE__)) {
         scalar( @_ ) == 1 ? $_[0]->{eav} = $class->{eav} : push @_, eav => $class->{eav};
+        # scalar( @_ ) == 1 ? $_[0]->{app} = $class->{app} : push @_, app => $class->{app};
     }
 
     my $self = $class->SUPER::new(@_);
