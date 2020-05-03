@@ -80,7 +80,7 @@
 
       update () {
         this.$emit('change', this.isChanged)
-        this.$emit('value', this.valueInput)
+        this.$emit('value', JSON.stringify(this.valueInput))
       }
 
       //validate () {

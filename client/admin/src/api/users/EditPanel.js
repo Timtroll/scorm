@@ -31,13 +31,21 @@ export default {
   },
 
   // получить прототип нового элемента Leaf
-  list_proto (parent) {
+  list_proto (group) {
     return Api()({
       url:    'user/proto_user',
       method: 'post',
       params: {
-        parent: parent
+        group: group
       }
+    })
+  },
+
+  list_toggle (params) {
+    return Api()({
+      url:    'user/toggle',
+      method: 'post',
+      params: params
     })
   },
 

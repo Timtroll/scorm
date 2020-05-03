@@ -122,6 +122,14 @@ const actions = {
     }
   },
 
+  /**
+   *
+   * @param commit
+   * @param state
+   * @param getters
+   * @param parentId
+   * @returns {Promise<void>}
+   */
   async leafProto ({commit, state, getters}, parentId) {
 
     try {
@@ -149,6 +157,92 @@ const actions = {
     } catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('card_right_show', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  /**
+   * Сохранить Листочек
+   * @param commit
+   * @param state
+   * @param getters
+   * @param id
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async leafSave ({commit, state, getters, dispatch}, item) {
+
+    try {
+      store.commit('editPanel_status_request') // статус - запрос
+      let response
+      if (item.add) {
+        response = await Api_EditPanel.list_add(item.fields)
+      } else {
+        response = await Api_EditPanel.list_save(item.fields)
+      }
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          await dispatch('getTable', item.fields.parent)
+          store.commit('card_right_show', false)
+          store.commit('editPanel_data', []) // очистка данных VUEX
+          store.commit('editPanel_status_success') // статус - успех
+          notify(resp.status, 'success') // уведомление об ошибке
+
+        } else if (resp.status === 'fail' && resp.message) {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify(resp.message, 'danger') // уведомление об ошибке
+        } else {
+          store.commit('editPanel_status_error') // статус - ошибка
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
+        }
+      }
+    } catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  /**
+   * Сохранить поле
+   * @param commit
+   * @param state
+   * @param getters
+   * @param dispatch
+   * @param item
+   * @returns {Promise<void>}
+   */
+  async leafSaveField ({commit, state, getters, dispatch}, item) {
+
+    const parentId = item.parent
+
+    try {
+      //store.commit('editPanel_status_request') // статус - запрос
+
+      const response = await Api_EditPanel.list_toggle(item.data)
+
+      if (response.status === 200) {
+
+        const resp = await response.data
+        if (resp.status === 'ok') {
+
+          dispatch('getTable', parentId)
+          if (resp.message) {
+            notify(resp.message, 'success') // уведомление об ошибке
+          }
+
+        } else {
+          dispatch('getTable', parentId)
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
+        }
+      }
+    } catch (e) {
+      dispatch('getTable', parentId)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
