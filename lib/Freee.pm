@@ -79,11 +79,11 @@ sub startup {
     $auth = $r->under()->to('auth#check_token');
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
-    $auth->post('/settings/get_tree')     ->to('settings#get_tree');        # Все дерево без листочков
-    $auth->post('/settings/get_folder')   ->to('settings#get_folder');      # получить данные фолдера настроек
-    $auth->post('/settings/add_folder')   ->to('settings#add_folder');      # добавление фолдера
-    $auth->post('/settings/save_folder')  ->to('settings#save_folder');     # сохранение фолдера
-    $auth->post('/settings/proto_folder') ->to('proto#proto_folder');       # прототип настройки
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');     # Все дерево без листочков
+    $auth->post('/settings/get_folder')   ->to('settings#get_folder');   # получить данные фолдера настроек
+    $auth->post('/settings/add_folder')   ->to('settings#add_folder');   # добавление фолдера
+    $auth->post('/settings/save_folder')  ->to('settings#save_folder');  # сохранение фолдера
+    $auth->post('/settings/proto_folder') ->to('proto#proto_folder');    # прототип настройки
 
     # строки настроек - обязательная проверка на фолдер
     $auth->post('/settings/add')        ->to('settings#add');             # добавление настройки
@@ -145,7 +145,7 @@ sub startup {
     $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
     $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
     $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
-    $auth->post('/mentors/setmark')     ->to('mentors#setmark'); # возможно не нужно ?????????
+    $auth->post('/mentors/setmark')     ->to('mentors#setmark');   # возможно не нужно ?????????
  # возможно еще что-то ?????????
 
     # управление календарями/расписанием
@@ -166,15 +166,15 @@ sub startup {
     $auth->post('/agreement/reject')    ->to('agreement#reject');
     $auth->post('/agreement/approve')   ->to('agreement#approve');
     $auth->post('/agreement/comment')   ->to('agreement#comment');
-    $auth->post('/agreement/delete')    ->to('agreement#delete'); # возможно не нужно ?????????
+    $auth->post('/agreement/delete')    ->to('agreement#delete');   # возможно не нужно ?????????
 
     # управление пользователями
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # добавление юзера
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
-    $auth->post('/user/proto_user')     ->to('proto#proto_user');    # прототип нового пользователя
+    $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
-    $auth->post('/user/toggle')         ->to('user#toggle');      # включение юзера
+    $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/delete')         ->to('user#delete');        # удаление юзера
 
     # управление группами пользователей

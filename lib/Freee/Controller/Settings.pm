@@ -311,59 +311,6 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-# прототип настройки
-# my $id = $self->proto_leaf();
-# "parent" => 1, - обязательно (должно быть натуральным числом)
-sub proto_leaf {
-    my $self = shift;
-
-    # read params
-    my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
-
-    unless (@mess) {
-        # # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
-
-        unless (@mess) {
-            # прототип настройки
-            $data = {
-                "folder" => 0,
-                "parent" => $data->{'parent'} * 1,
-                "tabs" => [
-                    {
-                        "label" => 'Основное',
-                        "fields" => {
-                            "name"          => '',
-                            "placeholder"   => '',
-                            "readonly"      => 0,
-                            "required"      => 0,
-                            "status"        => 1
-                        }
-                    },
-                    {
-                        "label" => 'Дополнительные поля',
-                        "fields" => {
-                            "label"       => '',
-                            "mask"        => '',
-                            "selected"    => [],
-                            "type"        => 'InputText',
-                            "value"       => ''
-                        }
-                    }
-                ]
-            };
-        }
-    }
-
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
-
-    $self->render( 'json' => $resp );
-}
-
 # получение настройки по id
 # my $row = $self->edit()
 # 'id' - id настрокйи
@@ -388,23 +335,23 @@ sub edit {
                 "tabs" => [
                     {
                         "label" => "Основное",
-                        "fields" => {
-                            "name"          => $data->{'name'},
-                            "placeholder"   => $data->{'placeholder'},
-                            "readonly"      => $data->{'readonly'},
-                            "required"      => $data->{'required'},
-                            "status"        => $data->{'status'}
-                        }
+                        "fields" => [
+                            { "name"          => $data->{'name'} },
+                            { "placeholder"   => $data->{'placeholder'} },
+                            { "readonly"      => $data->{'readonly'} },
+                            { "required"      => $data->{'required'} },
+                            { "status"        => $data->{'status'} }
+                        ]
                     },
                     {
                         "label" => 'Дополнительные поля',
-                        "fields" => {
-                            "label"       => "шаг обновления",
-                            "mask"        => $data->{'mask'},
-                            "selected"    => $data->{'selected'},
-                            "type"        => $data->{'type'},
-                            "value"       => $data->{'value'}
-                        }
+                        "fields" => [
+                            { "label"       => "шаг обновления" },
+                            { "mask"        => $data->{'mask'} },
+                            { "selected"    => $data->{'selected'} },
+                            { "type"        => $data->{'type'} },
+                            { "value"       => $data->{'value'} }
+                        ]
                     }
                 ]
             };

@@ -21,9 +21,9 @@ sub index {
     # { 'category' => 'user',     'type' => 'leaf',   'action' => 'add' }
 }
 
-# прототип настройки
-# my $id = $self->proto_leaf();
-# "parent" => 1, - обязательно (должно быть натуральным числом)
+# роут прототип настройки (Settings)
+# $self->proto_leaf();
+# "parent" => 1, - обязательно (должно быть натуральным числом) ???????????
 sub proto_leaf {
     my $self = shift;
 
@@ -32,7 +32,7 @@ sub proto_leaf {
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
-        # проверка данных
+        # # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
@@ -44,23 +44,23 @@ sub proto_leaf {
                 "tabs" => [
                     {
                         "label" => 'Основное',
-                        "fields" => {
-                            "name"          => '',
-                            "placeholder"   => '',
-                            "readonly"      => 0,
-                            "required"      => 0,
-                            "status"        => 1
-                        }
+                        "fields" => [
+                            { "name"          => '' },
+                            { "placeholder"   => '' },
+                            { "readonly"      => 0 },
+                            { "required"      => 0 },
+                            { "status"        => 1 }
+                        ]
                     },
                     {
                         "label" => 'Дополнительные поля',
-                        "fields" => {
-                            "label"       => '',
-                            "mask"        => '',
-                            "selected"    => [],
-                            "type"        => 'InputText',
-                            "value"       => ''
-                        }
+                        "fields" => [
+                            { "label"       => '' },
+                            { "mask"        => '' },
+                            { "selected"    => [] },
+                            { "type"        => 'InputText' },
+                            { "value"       => '' }
+                        ]
                     }
                 ]
             };
@@ -74,6 +74,8 @@ sub proto_leaf {
     $self->render( 'json' => $resp );
 }
 
+# роут прототип папки  (Settings)
+# "parent" => 1, - обязательно (должно быть натуральным числом) ???????????
 sub proto_folder {
     my $self = shift;
 

@@ -38,35 +38,35 @@ sub edit {
         'tabs' => [ # Вкладки 
             {
                 'label'     => 'Основные',
-                'fields'    => {
-                    'surname'       => $$user{'surname'},       # Фамилия
-                    'name'          => $$user{'name'},          # Имя
-                    'patronymic'    => $$user{'patronymic'},    # Отчество
-                    'place'         => $$user{'place'},         # город
-                    'country'       => $$user{'country'},       # страна
-                    'timezone'      => $$user{'timezone'},      # часовой пояс
-                    'birthday'      => $$user{'birthday'},      # дата рождения (в секундах)
-                    'status'        => $$user{'status'},        # активный / не активный пользователь
-                    'password'      => $$user{'password'},      # пароль
-                    'newpassword'   => $$user{'newpassword'},   # пароль
-                    'avatar'        => $$user{'avatar'},
-                    'type'          => 3                        # тип
-                }
+                'fields'    => [
+                    { 'surname'       => $$user{'surname'} },       # Фамилия
+                    { 'name'          => $$user{'name'} },          # Имя
+                    { 'patronymic'    => $$user{'patronymic'} },    # Отчество
+                    { 'place'         => $$user{'place'} },         # город
+                    { 'country'       => $$user{'country'} },       # страна
+                    { 'timezone'      => $$user{'timezone'} },      # часовой пояс
+                    { 'birthday'      => $$user{'birthday'} },      # дата рождения (в секундах)
+                    { 'status'        => $$user{'status'} },        # активный / не активный пользователь
+                    { 'password'      => $$user{'password'} },      # пароль
+                    { 'newpassword'   => $$user{'newpassword'} },   # пароль
+                    { 'avatar'        => $$user{'avatar'} },
+                    { 'type'          => 3 }                        # тип
+                ]
             },
             {
                 'label' => 'Контакты',
-                'fields' => {
-                    'email'           => $$user{'email'},           # email пользователя
-                    'emailconfirmed'  => $$user{'emailconfirmed'},  # email подтвержден
-                    'phone'           => $$user{'phone'},           # номер телефона
-                    'phoneconfirmed'  => $$user{'phoneconfirmed'},  # телефон подтвержден
-                }
+                'fields' => [
+                    { 'email'           => $$user{'email'} },           # email пользователя
+                    { 'emailconfirmed'  => $$user{'emailconfirmed'} },  # email подтвержден
+                    { 'phone'           => $$user{'phone'} },           # номер телефона
+                    { 'phoneconfirmed'  => $$user{'phoneconfirmed'} }   # телефон подтвержден
+                ]
             },
             {
                 "label" => "Группы",
-                "fields" => {
-                    "groups" => $groups,  # список ID групп
-                }
+                "fields" => [
+                    { "groups" => $groups }  # список ID групп
+                ]
             }
         ]
     };
