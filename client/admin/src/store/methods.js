@@ -92,27 +92,45 @@ function groupedFields (data, proto) {
           groupFields.forEach(item => {
 
             const groupItem = {
-              label:  prop.label,
+              label:  item.label,
               fields: []
             }
 
             groupItem.label       = item.label
             const groupItemFields = item.fields
 
-            for (let propGroupField in groupItemFields) {
+            //console.log('groupItem', groupItemFields)
 
-              // только те поля, которые определены в прототипе
-              const protoKey = proto.filter(item => item.name === propGroupField)
+            groupItemFields.forEach(itemField => {
 
-              // установка значений полей
-              for (let item of protoKey) {
-                item.value = groupItemFields[item.name]
+              //console.log(itemField)
+
+              const key       = Object.keys(itemField)[0]
+              const val       = Object.values(itemField)[0]
+              let protoKey    = proto.filter(i => i.name === key)
+              let protoKeyOne = protoKey[0]
+
+              if (protoKeyOne) {
+                protoKeyOne.value = val
+                groupItem.fields.push(protoKeyOne)
               }
 
-              if (protoKey.length === 1) {
-                groupItem.fields.push(protoKey[0])
-              }
-            }
+            })
+
+            //for (let propGroupField in groupItemFields) {
+            //
+            //  // только те поля, которые определены в прототипе
+            //  const protoKey = proto.filter(item => item.name === propGroupField)
+            //
+            //  // установка значений полей
+            //  for (let item of protoKey) {
+            //    item.value = groupItemFields[item.name]
+            //  }
+            //
+            //  if (protoKey.length === 1) {
+            //    groupItem.fields.push(protoKey[0])
+            //  }
+            //}
 
             groups.tabs.push(groupItem)
           })
