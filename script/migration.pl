@@ -1,24 +1,52 @@
 #!/usr/bin/perl -w
 
+# миграция: чтение и запуск sql файлов из scorm/sql
 use strict;
 use warnings;
 use File::Slurp qw(slurp);
 use DBI;
 
-# миграция: чтение и запуск sql файлов из scorm/sql
+my ( $path, $config, $test, $db, $dbh, $pwd, @path, @log_path, @list );
 
-my $filename = '../freee.conf';
-my $dir = '../sql';
+# проверка тестового режима
+if ( @ARGV ) {
+    $test = shift @ARGV;
+}
 
-# чтение конфигурации
-my $config = slurp( $filename, { err_mode => 'carp' } ) or do { 
-    logging( "can't read file $filename: $!" ); 
-    exit; 
-};
+unless ( $test ) {
+    @path = ( './freee.conf', '../freee.conf' );
+    @log_path = ( '../log/migration.log', './log/migration.log' );
+}
+else {
+    @path = ( './freee.conf' );
+    @log_path = ( './log/migration_test.log' );
+}
+
+# поиск и чтение конфигурации 
+foreach $path ( @path ) {
+    if ( -e $path ) {
+        $config = slurp( $path, { err_mode => 'carp' } );
+        unless ( $config ) {
+            logging( "can't read config file from $path" ); 
+            exit; 
+        }
+        last;
+    }
+}
 
 # преобразование текста файла конфигурации в объект
 $config = eval( $config );
-my $db = $config->{'dbs'}->{'databases'}->{'pg_main'};
+unless ( $config->{'dbs'}->{'databases'}->{'pg_main'} ){
+    logging( "wrong format of config" );
+    exit;
+}
+
+unless ( $test ) {
+    $db = $config->{'dbs'}->{'databases'}->{'pg_main'};
+} 
+else {
+    $db = $config->{'dbs'}->{'databases'}->{'pg_main_test'};
+}
 
 # редактирование параметра обработки ошибок
 if (
@@ -30,41 +58,59 @@ if (
 }
 
 # подключение к базе данных
-my $dbh = DBI->connect(
+$dbh = DBI->connect(
     $db->{'dsn'},
     $db->{'username'},
     $db->{'password'},
     $db->{'options'}
 );
 if ( DBI->errstr ) {
-    logging( "connection doesn't work " . DBI->errstr . " in $filename script\n" );
+    logging( "connection to database doesn't work:" . DBI->errstr );
     exit;    
 }
 
+# проверка директории запуска файла
+$pwd = `pwd`;
+chomp $pwd;
+
+if ( $config->{'root'} eq $pwd ) {
+    unless ( $test ){
+        $path = './sql';
+    }
+    else {
+        $path = './t/Migration';
+    }
+} 
+else {
+    $path = '../sql';
+}
+
 # чтение файлов директории скриптов
-my @list = `ls $dir 2>&1`;
-if ( $? ){
-    logging( "can't read directory $dir: @list" ); 
+@list = `ls $path 2>&1`;
+if ( $? ) {
+    logging( "can't read directory $path: @list" ); 
     exit; 
 };
 
 # обработка файлов директории  
-foreach ( @list ){
-    my $filename = $dir . '/' . $_;
+foreach ( @list ) {
+    my ( $filename, $sql, $sth, $res );
+    $filename = $path . '/' . $_;
     chomp ( $filename );
 
     # фильтрация не sql файлов и папок
     next if ( -d $filename || $_ !~ /\.sql$/);
 
     # чтение содержимого файлов
-    my $sql = slurp( $filename ) or do { 
-        logging( "can't read file $filename: $!" ); 
+    $sql = slurp( $filename, { err_mode => 'carp' } );
+    unless ( $sql ) { 
+        logging( "can't read file $filename" ); 
         exit; 
     };
 
     # выполение скриптов
-    my $sth = $dbh->prepare( $sql );
-    my $res = $sth->execute();
+    $sth = $dbh->prepare( $sql );
+    $res = $sth->execute();
     if ( DBI->errstr ) {
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
         exit;    
@@ -75,9 +121,18 @@ foreach ( @list ){
 # logging( "комментарий и текст ошибки" );
 sub logging {
     my $logdata = shift;
-    my $logname = '../log/migration.log';
+    my $log;
 
-    open(my $log, '>>', $logname) or warn "Can't open log file!";
-    print $log "$logdata\n";
-    close $logname;
+    foreach my $path ( @log_path ) {
+        if ( -e $path ) {
+            open( $log, '>>', $path ) or warn "Can't open log file!";
+                print $log "$logdata\n";
+            close( $log );
+        }
+        else {
+            warn "Can't find log file!";
+        }
+    }
+
+    last;
 }
