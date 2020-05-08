@@ -15,7 +15,7 @@ if ( @ARGV ) {
 
 unless ( $test ) {
     @path = ( './freee.conf', '../freee.conf' );
-    @log_path = ( '../log/migration.log', './log/migration.log' );
+    @log_path = ( './log/migration.log', '../log/migration.log' );
 }
 else {
     @path = ( './freee.conf' );
@@ -128,9 +128,6 @@ sub logging {
             open( $log, '>>', $path ) or warn "Can't open log file!";
                 print $log "$logdata\n";
             close( $log );
-        }
-        else {
-            warn "Can't find log file!";
         }
     }
 
