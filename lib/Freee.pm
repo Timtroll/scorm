@@ -7,11 +7,13 @@ use warnings;
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Config;
 use Mojo::Log;
+use Freee::Model; 
 
 use common;
 use Data::Dumper;
 
 $| = 1;
+has 'dbh';
 
 # This method will run once at server start
 sub startup {
@@ -30,17 +32,6 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
-    # подгружаем модель
-    $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
-    $self->model('users-client')->do();
-
-    $self->model('EAV')->check();
-    warn '=EAV=';
-    $self->model('Users')->check();
-    warn '=Users=';
-    # warn $self->model('eav');
-# warn Dumper $self;
-
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
@@ -54,10 +45,45 @@ sub startup {
     $vfields = $self->_param_fields();
 
     # init Pg connection
-    $self->pg_init();
+    $self->{dbh} = $self->pg_dbh();
+    # $self->pg_init();
+use Freee::EAV;
+my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+
+use Freee::EAV::User;
+my $user = Freee::EAV::User->new( { 'title' => 'тестовый юзер', parent => 1 } );
+$user->test( 'qwweq' );
+warn $user->test();
 
     # init Beanstalk connection
     $self->_beans_init();
+
+#     # подгружаем модель и создадим соответствующий хелпер для вызова модели
+#     my $model = Freee::Model->new(
+#         app => $self,
+#         dbh => $self->{dbh}
+#     );
+#     # my $model = Freee::Model->new($self);
+#     $self->helper(
+#         model => sub {
+#             my ($self, $model_name) = @_;
+#             return $model->get_model($model_name);
+#         }
+#     );
+# # warn Dumper $self->model('MyModel')->get_config_data;
+# warn Dumper $self->model('MyModel')->get_;
+
+# warn Dumper $self->dbh;
+
+#     $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
+#     $self->model('EAV')->_init();
+#     $self->model('EAV')->check();
+# warn '=EAV=';
+#     # $self->model('users-client')->do();
+#     # $self->model('Users')->check();
+#     # warn '=Users=';
+#     # warn $self->model('eav');
+# # warn Dumper $self;
 
     # Router
     $r = $self->routes;
@@ -70,6 +96,10 @@ sub startup {
     $r->post('/api/deploy')             ->to('deploy#index');           # deploy после push
     $r->websocket('/api/channel')       ->to('websocket#index');
 
+    # webrtc роуты
+    $r->get('/wschannel/index')         ->to('wschannel#index');
+    $r->websocket('/wschannel/:type')   ->to('wschannel#type');
+
     # ??? требуется переписать так,чтобы можно было использовать безопасно
     $r->get('/settings/load_default')   ->to('settings#load_default');    # загрузка дефолтных настроек
 
@@ -79,22 +109,22 @@ sub startup {
     $auth = $r->under()->to('auth#check_token');
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
-    $auth->post('/settings/get_tree')     ->to('settings#get_tree');     # Все дерево без листочков
-    $auth->post('/settings/get_folder')   ->to('settings#get_folder');   # получить данные фолдера настроек
-    $auth->post('/settings/add_folder')   ->to('settings#add_folder');   # добавление фолдера
-    $auth->post('/settings/save_folder')  ->to('settings#save_folder');  # сохранение фолдера
-    $auth->post('/settings/proto_folder') ->to('proto#proto_folder');    # прототип настройки
+    $auth->post('/settings/get_tree')     ->to('settings#get_tree');    # Все дерево без листочков
+    $auth->post('/settings/get_folder')   ->to('settings#get_folder');  # получить данные фолдера настроек
+    $auth->post('/settings/add_folder')   ->to('settings#add_folder');  # добавление фолдера
+    $auth->post('/settings/save_folder')  ->to('settings#save_folder'); # сохранение фолдера
+    $auth->post('/settings/proto_folder') ->to('proto#proto_folder');   # прототип настройки
 
     # строки настроек - обязательная проверка на фолдер
-    $auth->post('/settings/add')        ->to('settings#add');             # добавление настройки
-    $auth->post('/settings/proto_leaf') ->to('proto#proto_leaf');         # прототип настройки
-    $auth->post('/settings/edit')       ->to('settings#edit');            # загрузка одной настройки
-    $auth->post('/settings/save')       ->to('settings#save');            # добавление/сохранение настройки
+    $auth->post('/settings/add')        ->to('settings#add');           # добавление настройки
+    $auth->post('/settings/proto_leaf') ->to('proto#proto_leaf');       # прототип настройки
+    $auth->post('/settings/edit')       ->to('settings#edit');          # загрузка одной настройки
+    $auth->post('/settings/save')       ->to('settings#save');          # добавление/сохранение настройки
 
     # проверка на фолдер не нужна
-    $auth->post('/settings/get_leafs')  ->to('settings#get_leafs');       # список листочков узла дерева
-    $auth->post('/settings/toggle')     ->to('settings#toggle');          # включение/отключение поля в строке настройки
-    $auth->post('/settings/delete')     ->to('settings#delete');          # удаление фолдера или настройки
+    $auth->post('/settings/get_leafs')  ->to('settings#get_leafs');     # список листочков узла дерева
+    $auth->post('/settings/toggle')     ->to('settings#toggle');        # включение/отключение поля в строке настройки
+    $auth->post('/settings/delete')     ->to('settings#delete');        # удаление фолдера или настройки
 
     # управление контентом
     $auth->post('/cms/article')         ->to('cmsarticle#index');
@@ -145,7 +175,7 @@ sub startup {
     $auth->post('/mentors/viewtask')    ->to('mentors#viewtask');
     $auth->post('/mentors/addcomment')  ->to('mentors#addcomment');
     $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
-    $auth->post('/mentors/setmark')     ->to('mentors#setmark');   # возможно не нужно ?????????
+    $auth->post('/mentors/setmark')     ->to('mentors#setmark');    # возможно не нужно ?????????
  # возможно еще что-то ?????????
 
     # управление календарями/расписанием
@@ -180,7 +210,7 @@ sub startup {
     # управление группами пользователей
     $auth->post('/groups/')             ->to('groups#index');       # список групп
     $auth->post('/groups/add')          ->to('groups#add');         # добавление группы
-    $auth->post('/groups/edit')         ->to('groups#edit');        # загрузка данныъ группы
+    $auth->post('/groups/edit')         ->to('groups#edit');        # загрузка данных группы
     $auth->post('/groups/save')         ->to('groups#save');        # обновление данных группы
     $auth->post('/groups/delete')       ->to('groups#delete');      # удаление группы
     $auth->post('/groups/toggle')       ->to('groups#toggle');      # включение/отключение группы
@@ -241,7 +271,7 @@ sub startup {
     $auth->post('/lesson/video')        ->to('lesson#video');
     $auth->post('/lesson/text')         ->to('lesson#text');
     $auth->post('/lesson/examples')     ->to('lesson#examples');
-    $auth->post('/lesson/tasks')        ->to('lesson#tasks');   # возможно дублирует /tasks/list ?????????
+    $auth->post('/lesson/tasks')        ->to('lesson#tasks');       # возможно дублирует /tasks/list ?????????
     $auth->post('/lesson/finished')     ->to('lesson#finished');
 
     # учет успеваемости

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<script>
+    var isFirefox = !!navigator.mozGetUserMedia;
+    var connection;
+    function appendDIV(data) {
+        var div = document.createElement('div');
+        div.innerHTML = data;
+        var chatOutput = document.getElementById('chat-output');
+        chatOutput.insertBefore(div, chatOutput.firstChild);
+        div.tabIndex = 0;
+        div.focus();
+    }
+    var iceServers = {
+        iceServers: [{
+            url: 'stun:127.0.0.1'
+        }]
+    };
+    var optionalRtpDataChannels = {
+        optional: [{DtlsSrtpKeyAgreement: true}, {RtpDataChannels: true }]
+    };
+    var mediaConstraints = {
+        optional: [],
+        mandatory: {
+            OfferToReceiveAudio: false,
+            OfferToReceiveVideo: false
+        }
+    };
+    var offerer, answerer, answererDataChannel, offererDataChannel;
+    function createOffer() {
+        if (isFirefox) {
+            offerer = new mozRTCPeerConnection(iceServers, optionalRtpDataChannels);
+        }
+        else {
+            offerer = new webkitRTCPeerConnection(iceServers, optionalRtpDataChannels);
+        }
+        offererDataChannel = offerer.createDataChannel('RTCDataChannel', {
+            reliable: true
+        });
+        connection = offererDataChannel;
+        console.log("console: offerer");
+        setChannelEvents(offererDataChannel, 'offerer');
+        offerer.onicecandidate = function (event) {
+            console.log("onicecandidate: offerer");
+            if (event.candidate) sendCandidate(event.candidate);
+            if (!event.candidate) returnSDP();
+        };
+        function sendCandidate() {
+            appendDIV("offerer: send candidate");
+            socket.send({
+                sender: 'offerer',
+                candidate: event.candidate
+            });
+        }
+        function returnSDP() {
+            appendDIV("offerer: send sdp");
+            socket.send({
+                sender: 'offerer',
+                sdp: offerer.localDescription
+            });
+        }
+        offerer.createOffer(function (sessionDescription) {
+            offerer.setLocalDescription(sessionDescription);
+        }, onError, mediaConstraints);
+    }
+    function onError(err) {
+        console.log(err);
+    }
+    function createAnswer(offerSDP) {
+        if (isFirefox) {
+            answerer = new mozRTCPeerConnection(iceServers, optionalRtpDataChannels);
+        }
+        else {
+            answerer = new webkitRTCPeerConnection(iceServers, optionalRtpDataChannels);
+        }
+        answererDataChannel = answerer.createDataChannel('RTCDataChannel', {
+            reliable: true
+        });
+        setChannelEvents(answererDataChannel, 'answerer');
+        connection = answererDataChannel;
+        console.log("console: answer");
+        answerer.onicecandidate = function (event) {
+            console.log("onicecandidate: answerer");
+            if (event.candidate) sendCandidate();
+            if (!event.candidate) returnSDP();
+        };
+        function sendCandidate() {
+            appendDIV("answerer: send candidate");
+            socket.send({
+                sender: 'answerer',
+                candidate: event.candidate
+            });
+        }
+        function returnSDP() {
+            appendDIV("answerer: send sdp");
+            socket.send({
+                sender: 'answerer',
+                sdp: answerer.localDescription
+            });
+        }
+        if (isFirefox) {
+            answerer.setRemoteDescription(new mozRTCSessionDescription(offerSDP), function() {
+                answerer.createAnswer(function (sessionDescription) {
+                    answerer.setLocalDescription(sessionDescription);
+                }, onError, mediaConstraints);
+            });
+        }
+        else {
+            answerer.setRemoteDescription(new RTCSessionDescription(offerSDP), function() {
+                answerer.createAnswer(function (sessionDescription) {
+                    answerer.setLocalDescription(sessionDescription);
+                }, onError, mediaConstraints);
+            }, onError);
+        }
+    }
+    function setChannelEvents(channel, channelNameForConsoleOutput) {
+        channel.onerror = onError;
+        channel.onmessage = function (event) {
+            console.log("channel: onmessage");
+            appendDIV(channelNameForConsoleOutput + 'received a message:' + event.data);
+        };
+        channel.onopen = function () {
+            console.log("channel: onopen");
+            document.getElementById('chat-input').disabled = false;
+        };
+    }
+    function connectSignaler(type) {
+        var url;
+        if ("offerer" == type) {
+            //url = "<%= url_for('/wschannel/offerer')->to_abs->scheme('ws') %>";
+            url = "ws://localhost:4444/wschannel/offerer";
+        }
+        else {
+           // url = "<%= url_for('/wschannel/answerer')->to_abs->scheme('ws') %>";
+            url = "ws://localhost:4444/wschannel/answerer";
+        }
+        console.log("Connecting: " + url);
+        socket = new WebSocket(url);
+        socket.onopen = function () {
+            appendDIV("Connected: " + url);
+        };
+        socket.onmessage = function (e) {
+            var data = JSON.parse(e.data);
+            console.log("onmessage: " + data.sender);
+            if (data.sdp) {
+                if (data.sender == 'offerer') {
+                    appendDIV("recv: sdp: offerer");
+                    createAnswer(data.sdp);
+                }
+                else {
+                    appendDIV("recv: sdp: answerer");
+                    if (isFirefox) {
+                        offerer.setRemoteDescription(new mozRTCSessionDescription(data.sdp));
+                    }
+                    else {
+                        offerer.setRemoteDescription(new RTCSessionDescription(data.sdp));
+                    }
+                }
+            }
+            if ("offerer" === data.sender && data.candidate) {
+                appendDIV("recv: candidate: offerer");
+                if (isFirefox) {
+                    answerer.addIceCandidate(new mozRTCIceCandidate({
+                        sdpMLineIndex: data.candidate.sdpMLineIndex,
+                        candidate: data.candidate.candidate
+                    }));
+                }
+                else {
+                    answerer.addIceCandidate(new RTCIceCandidate({
+                        sdpMLineIndex: data.candidate.sdpMLineIndex,
+                        candidate: data.candidate.candidate
+                    }));
+                }
+            }
+            if ("answerer" === data.sender && data.candidate) {
+                appendDIV("recv: candidate: answerer");
+                if (isFirefox) {
+                    offerer.addIceCandidate(new mozRTCIceCandidate({
+                        sdpMLineIndex: data.candidate.sdpMLineIndex,
+                        candidate: data.candidate.candidate
+                    }));
+                }
+                else {
+                    offerer.addIceCandidate(new RTCIceCandidate({
+                        sdpMLineIndex: data.candidate.sdpMLineIndex,
+                        candidate: data.candidate.candidate
+                    }));
+                }
+            }
+        };
+        socket.push = socket.send;
+        socket.send = function (data) {
+            console.log("send: " + data.sender);
+            socket.push(JSON.stringify(data));
+        };
+    }
+</script>
+Has worked in Chrome.<br />
+Create Offer should be clicked by the "Offerer".<br />
+<button id="connect-offerer">Connect as Offerer</button>
+<button id="connect-answerer">Connect as Answerer</button><br />
+<button id="create-offer">Create Offer</button>
+<input type="text" id="chat-input" style="font-size: 1.2em;" placeholder="chat message" disabled>
+<div id="chat-output"></div>
+<script>
+    document.getElementById('connect-offerer').onclick = function () {
+        this.disabled = true;
+        connectSignaler("offerer");
+    };
+    document.getElementById('connect-answerer').onclick = function () {
+        this.disabled = true;
+        connectSignaler("answerer");
+    };
+    document.getElementById('create-offer').onclick = function () {
+        createOffer();
+    };
+    var chatInput = document.getElementById('chat-input');
+    chatInput.onkeypress = function(e) {
+        if (e.keyCode !== 13 || !this.value) return;
+        appendDIV(this.value);
+        console.log(connection);
+        connection.send(this.value);
+        this.value = '';
+        this.focus();
+    };
+</script>
+
+</body>
+</html>
