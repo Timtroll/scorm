@@ -82,25 +82,60 @@ sub add {
     my ($self);
     $self = shift;
 
-    my ($data, $resp, @mess);
-    $data = {
-        'id'                => '',
-        'surname'           => '',  # Фамилия
-        'name'              => '',  # Имя
-        'patronymic'        => '',  # Отчество
-        'city'              => '',  # город
-        'country'           => '',  # страна
-        'timezone'          => '',  # часовой пояс
-        'birthday'          => 0,   # дата рождения (в секундах)
-        'email'             => '',  # email пользователя
-        'emailconfirmed'    => 0,   # email подтвержден
-        'phone'             => 0,   # номер телефона
-        'phoneconfirmed'    => 0,   # телефон подтвержден
-        'status'            => 0,   # активный / не активный пользователь
-        'groups'            => [],  # список ID групп
-        'password'          => '',  # хеш пароля
-        'avatar'            => ''
-    };
+    my ($data, $resp, $error, @mess);
+
+    unless (@mess) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+
+        unless (@mess) {
+            $user_data = {
+#                 'id'                => '',
+                'email'             => '',  # email пользователя
+                'password'          => '',  # хеш пароля
+                'time_create'       => '',  # время создания
+                'time_access'       => '',  # время последней активности
+                'time_update'       => '',  # время последих изменений
+                'timezone'          => '',  # часовой пояс
+            };
+            $eav_data = {
+#                 'id'                => $$data{'id'},
+                'users_id'          => $$user_data{'id'},
+                'surname'           => $$data{'surname'},       # Фамилия
+                'name'              => $$data{'name'},          # Имя
+                'patronymic'        => $$data{'patronymic'},    # Отчество
+                'city'              => $$data{'city'},          # город
+                'country'           => $$data{'country'},       # страна
+                'birthday'          => $$data{'birthday'},      # дата рождения (в секундах)
+                'emailconfirmed'    => $$data{'emailconfirmed'},# email подтвержден
+                'phone'             => $$data{'phone'},         # номер телефона
+                'phoneconfirmed'    => $$data{'phoneconfirmed'},# телефон подтвержден
+                'status'            => $$data{'status'},        # активный / не активный пользователь
+                'groups'            => [],                      # список ID групп
+                'avatar'            => $$data{'avatar'}
+            };
+
+            $data = {
+                'id'                => 1,
+                'surname'           => 'Фамилия',           # Фамилия
+                'name'              => 'Имя',               # Имя
+                'patronymic'        => 'Отчество',          # Отчество
+                'city'              => 'Санкт-Петербург',   # город
+                'country'           => 'Россия',            # страна
+                'timezone'          => '+3',                # часовой пояс
+                'birthday'          => 123132131,           # дата рождения (в секундах)
+                'email'             => 'username@ya.ru',    # email пользователя
+                'emailconfirmed'    => 1,                   # email подтвержден
+                'phone'             => 79312445646,         # номер телефона
+                'phoneconfirmed'    => 1,                   # телефон подтвержден
+                'status'            => 1,                   # активный / не активный пользователь
+                'groups'            => [1, 2, 3],           # список ID групп
+                'password'          => 'khasdf',            # хеш пароля
+                'avatar'            => 'https://thispersondoesnotexist.com/image'
+            };
+        }
+    }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';

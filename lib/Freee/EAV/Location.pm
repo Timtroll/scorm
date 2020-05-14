@@ -5,9 +5,9 @@ use strict;
 use warnings;
 
 sub GetLocationsByOffice {
-    my ( $Self, $Params ) = @_;
+    my ( $Self, $params ) = @_;
 
-    my $OfficeID = defined( $Params ) ? int( ref( $Params ) && ref( $Params ) eq 'HASH' && exists( $Params->{id} ) ? $Params->{id} : $Params ) : $Self->{Roots}->{Office}->id();
+    my $OfficeID = defined( $params ) ? int( ref( $params ) && ref( $params ) eq 'HASH' && exists( $params->{id} ) ? $params->{id} : $params ) : $Self->{Roots}->{Office}->id();
 
     my $sql =
         'SELECT iL.* FROM '.
@@ -24,9 +24,9 @@ sub GetLocationsByOffice {
 }
 
 sub GetLocationsByUser {
-    my ( $Self, $Params ) = @_;
+    my ( $Self, $params ) = @_;
 
-    if ( !$Params || ref($Params) ne 'HASH' || !defined( $Params->{EAVID} ) ) {
+    if ( !$params || ref($params) ne 'HASH' || !defined( $params->{EAVID} ) ) {
         $Self->{LogObject}->Log(
             Priority => 'error',
             Message  => 'User ID is missing'
@@ -36,7 +36,7 @@ sub GetLocationsByUser {
 
     my $sql = 'SELECT Locations.id FROM "EAV_submodules_locations" AS Locations '
         . 'INNER JOIN "EAV_links" AS Users ON Users."parent" = Locations."id" AND Users."distance" <= 5 '
-        . 'WHERE Users.id = ' . $Params->{EAVID}
+        . 'WHERE Users.id = ' . $params->{EAVID}
         . ' ORDER BY Locations.region, Locations.city NULLS first, Locations.street NULLS FIRST, Locations.distance_from_root';
     return $Self->{dbh}->selectall_array($sql);
 }
@@ -46,11 +46,11 @@ sub _cleanup_prefixes {
 }
 
 sub GetTree {
-    my ( $Self, $Params ) = @_;
+    my ( $Self, $params ) = @_;
 
-    my $title = $Params->{title};
-    $title = '%'.$title.'%' if exists( $Params->{title} ) && defined( $Params->{title} ) && $title !~ /(?:^\%|\%$)/;
-    my $AskedNodesSQL = 'SELECT * FROM "public"."EAV_submodules_locations" WHERE '.( defined( $title ) ? ' "title" '.$Self->_MakeFilterStatement( { prefix => '', value => { ILIKE => $title } } ) : ' "id" = '.$Params->{id} );
+    my $title = $params->{title};
+    $title = '%'.$title.'%' if exists( $params->{title} ) && defined( $params->{title} ) && $title !~ /(?:^\%|\%$)/;
+    my $AskedNodesSQL = 'SELECT * FROM "public"."EAV_submodules_locations" WHERE '.( defined( $title ) ? ' "title" '.$Self->_MakeFilterStatement( { prefix => '', value => { ILIKE => $title } } ) : ' "id" = '.$params->{id} );
 
     my $AskedNodes = {
         map {
@@ -142,8 +142,8 @@ sub GetTitle {
 их нужно передавать в запросе: Term => '%гончарная%'
 
 =item Входные параметры:
-$Self->SearchLocations( $Params<HashRef> )
-$Params:
+$Self->SearchLocations( $params<HashRef> )
+$params:
 Term     - строка поиска (обязательный)
 OfficeID - ID ГУ или регионального филиала, ограничивающий выбор адресов (необязательный)
 Limit    - максимальное количество результатов (необязательный, по умолчанию 50)
@@ -171,15 +171,15 @@ return $Ret = {
 =cut
 
 sub SearchLocations {
-    my ( $Self, $Params ) = @_ ;
+    my ( $Self, $params ) = @_ ;
 
     my $Term;
     my $OfficeID;
     my @Bind;
     my $OrderBy = 'ORDER BY clean_address';
 
-    if ( defined( $Params->{Term} ) ) {
-        $Term = lc( $Self->{dbh}->Quote($Params->{Term}) );
+    if ( defined( $params->{Term} ) ) {
+        $Term = lc( $Self->{dbh}->Quote($params->{Term}) );
     }
     else {
         return undef;
@@ -189,8 +189,8 @@ sub SearchLocations {
 
     my $SQL = 'SELECT * FROM  "public"."EAV_submodules_locations" WHERE lower("clean_address") LIKE ?';
 
-    if ( defined( $Params->{OfficeID} ) ) {
-        $OfficeID = $Params->{OfficeID} ;
+    if ( defined( $params->{OfficeID} ) ) {
+        $OfficeID = $params->{OfficeID} ;
         $SQL =
             'SELECT Locations.* FROM '.
             '"EAV_submodules_locations" AS Locations '.
@@ -208,8 +208,8 @@ sub SearchLocations {
         SQL      => $SQL,
         Bind     => \@Bind,
         Slice    => {},
-        Limit   => $Params->{Limit} || 200,
-        Start    => $Params->{Start} || 0
+        Limit   => $params->{Limit} || 200,
+        Start    => $params->{Start} || 0
     );
 
     return $Ret;

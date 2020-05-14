@@ -1,34 +1,33 @@
 package Freee::EAV::Subscription;
-## no critic
 
 use parent 'Freee::EAV::Base';
 use strict;
 use warnings;
 
 sub new {
-    my ( $Class, $Params ) = @_;
+    my ( $Class, $params ) = @_;
 
-    $Params = { Type => 'subscription' } if !defined( $Params ) || !ref( $Params ) || ref( $Params ) ne 'HASH';
+    $params = { Type => 'subscription' } if !defined( $params ) || !ref( $params ) || ref( $params ) ne 'HASH';
 
-    my $Object = $Class->SUPER::new( $Params );
+    my $Object = $Class->SUPER::new( $params );
     $Object->{CacheObject} = $Kernel::OM->Get('Kernel::System::Cache');
 
-    if ( exists( $Params->{id} ) ) {
-        return $Object->Get( $Params );
+    if ( exists( $params->{id} ) ) {
+        return $Object->Get( $params );
     }
     else {
         my $failed = 0;
         for my $f ( 'OwnerID', 'SLAID', 'ServiceID', 'title' ) {
-            $failed = 1 if !exists( $Params->{ $f } ) || !defined( $Params->{ $f } );
+            $failed = 1 if !exists( $params->{ $f } ) || !defined( $params->{ $f } );
         }
-        return $Object->Create( $Params ) if !$failed;
+        return $Object->Create( $params ) if !$failed;
     }
 
     return $Object;
 }
 
 sub IsExists{
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
     my @Where = ();
     my %Required = (
@@ -38,22 +37,22 @@ sub IsExists{
         'deny'      => 'deny'
     );
     for my $Field ( keys %Required ) {
-        if ( !exists( $Params->{ $Field } ) || !defined( $Params->{ $Field } ) ) {
-            # $Self->{LogObject}->Log(
+        if ( !exists( $params->{ $Field } ) || !defined( $params->{ $Field } ) ) {
+            # $self->{LogObject}->Log(
             #     Priority    => 'error',
             #     Message     => 'Param '.$Field.' required!'
             # );
             return undef;
         }
-        push @Where, $Required{$Field}." = ".$Self->{dbh}->quote( $Params->{ $Field } );
+        push @Where, $Required{$Field}." = ".$self->{dbh}->quote( $params->{ $Field } );
     }
 
     my $SQL = 'SELECT count(*) as exists FROM "public"."EAV_submodules_subscriptions" WHERE '.join(' AND ', @Where);
-    $Self->{Debug} && $Self->{LogObject}->Dumper( $SQL );
+    $self->{Debug} && $self->{LogObject}->Dumper( $SQL );
 
-    my $Result = $Self->{dbh}->selectrow_hashref( $SQL );
-    if ( my $Error = $Self->{dbh}->errstr() ) {
-        # $Self->{LogObject}->Log(
+    my $Result = $self->{dbh}->selectrow_hashref( $SQL );
+    if ( my $Error = $self->{dbh}->errstr() ) {
+        # $self->{LogObject}->Log(
         #     Priority    => 'error',
         #     Message     => 'Can\'t check item. SQL Error: ' . $Error
         # );
@@ -63,58 +62,58 @@ sub IsExists{
 }
 
 sub SubscriptionTitle{
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    return undef() if !defined( $Params ) || !ref( $Params ) || ref( $Params ) ne 'HASH';
+    return undef() if !defined( $params ) || !ref( $params ) || ref( $params ) ne 'HASH';
 
     my $required = [ 'OwnerID', 'SLAID', 'ServiceID' ];
     for my $f ( @$required ) {
-        return undef() if !exists( $Params->{ $f } ) || !defined( $Params->{ $f } );
+        return undef() if !exists( $params->{ $f } ) || !defined( $params->{ $f } );
     }
 
-    return 'Owner'.$Params->{OwnerID}.'SLA'.$Params->{SLAID}.'Service'.$Params->{ServiceID};
+    return 'Owner'.$params->{OwnerID}.'SLA'.$params->{SLAID}.'Service'.$params->{ServiceID};
 }
 
 sub Create {
-    my ( $Self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
-    my $Title = $Self->SubscriptionTitle( $Params );
+    my $Title = $self->SubscriptionTitle( $params );
     return undef if !$Title;
 
-    if ( $Self->IsExists( $Params ) ) {
-        $Self->{LogObject}->Log(
+    if ( $self->IsExists( $params ) ) {
+        $self->{LogObject}->Log(
             Priority    => 'error',
             Message     => "Subscription $Title already exists",
         );
         return;
     }
 
-    my $owner = $Self->_get( $Params->{OwnerID} );
+    my $owner = $self->_get( $params->{OwnerID} );
     return undef if !defined( $owner );
 
-    my $s = $Self->_create( {
-        publish => $Params->{data}->{publish} || 'true',
-        parent => $Self->{Root}->id(),
+    my $s = $self->_create( {
+        publish => $params->{data}->{publish} || 'true',
+        parent => $self->{Root}->id(),
         title => $Title
     } );
-    $Self->{_item} = $s;
-    $Self->_MultiStore( $Params->{data} ) if exists( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH';
-    $Self->{Debug} && $Self->{LogObject}->Dumper($Params);
-    $Self->{dbh}->do(
+    $self->{_item} = $s;
+    $self->_MultiStore( $params->{data} ) if exists( $params->{data} ) && ref( $params->{data} ) && ref( $params->{data} ) eq 'HASH';
+    $self->{Debug} && $self->{LogObject}->Dumper($params);
+    $self->{dbh}->do(
         'INSERT INTO "public"."EAV_submodules_subscriptions" '.
         '( "owner_id", "sla_id", "service_id", "subscription_id", "distance", "owner_type", "deny", "address_id", "publish_alias", "type_subscription_alias" ) VALUES
-        ( ' . int( $Params->{OwnerID} ) . ', ' . int( $Params->{SLAID} ) . ', ' . int( $Params->{ServiceID} ) . ', '.$Self->id() . ', 0, '.$Self->{dbh}->quote( $owner->{type} ).', '.( $Params->{deny} ? 'true' : 'false' ).', '.int( $Params->{AddressID} || 0 ).', '.$Self->_boolean_by_input( $Params->{data}->{publish} ).', '.$Self->_boolean_by_input( $Params->{data}->{subscription}->{type_subscription} ).' ) '.
+        ( ' . int( $params->{OwnerID} ) . ', ' . int( $params->{SLAID} ) . ', ' . int( $params->{ServiceID} ) . ', '.$self->id() . ', 0, '.$self->{dbh}->quote( $owner->{type} ).', '.( $params->{deny} ? 'true' : 'false' ).', '.int( $params->{AddressID} || 0 ).', '.$self->_boolean_by_input( $params->{data}->{publish} ).', '.$self->_boolean_by_input( $params->{data}->{subscription}->{type_subscription} ).' ) '.
         'ON CONFLICT ON CONSTRAINT "EAV_submodules_subscriptions_pkey" DO NOTHING'
     );
 
-    if ( $owner->{type} eq 'location' || $Params->{AddressID} ) {
-        my $LocID = int( $Params->{OwnerID} || $Params->{AddressID} );
+    if ( $owner->{type} eq 'location' || $params->{AddressID} ) {
+        my $LocID = int( $params->{OwnerID} || $params->{AddressID} );
         my $RegionID;
         # check if this is region
-        my $Info = $Self->{dbh}->selectrow_hashref( 'SELECT * FROM "public"."EAV_submodules_locations" WHERE "id" = '.$LocID );
+        my $Info = $self->{dbh}->selectrow_hashref( 'SELECT * FROM "public"."EAV_submodules_locations" WHERE "id" = '.$LocID );
         $RegionID = $LocID if defined( $Info ) && !defined( $$Info{region} );
         if ( !defined( $RegionID ) ) {
-            $RegionID = $Self->{dbh}->selectrow_array(
+            $RegionID = $self->{dbh}->selectrow_array(
                 'SELECT i."id" FROM "public"."EAV_submodules_locations" AS i '.
                 'INNER JOIN "public"."EAV_links" AS l ON l."parent" = i."id" AND l."id" = '.$LocID.
                 'WHERE i."region" IS NULL '
@@ -125,49 +124,49 @@ sub Create {
             my $Region = Kernel::System::EAV->new( 'Location', { id => $RegionID } );
             $Region->GroupLeader( \1 );
         }
-        # $RegionID can not be undefined, but it is possible if owner->{type} ne 'location' and Params->{AddressID} actually not from Locations tree.
+        # $RegionID can not be undefined, but it is possible if owner->{type} ne 'location' and params->{AddressID} actually not from Locations tree.
     }
 
     # reset Service cache
-    # $Self->{CacheObject}->CleanUp(
+    # $self->{CacheObject}->CleanUp(
     #     Type => 'Service',
     # );
 
-    return $Self;
+    return $self;
 }
 
 sub publish {
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    return undef() unless exists( $Self->{_item} ) && $Self->{_item}->{id};
-    return $Self->{_item}->{publish} unless defined( $Params );
+    return undef() unless exists( $self->{_item} ) && $self->{_item}->{id};
+    return $self->{_item}->{publish} unless defined( $params );
 
-    return $Self->{dbh}->do( 'UPDATE "public"."EAV_submodules_subscriptions" SET "publish_alias" = ' . $Self->_boolean_by_input( $Params ) . ' WHERE "subscription_id" = ' . $Self->{_item}->{id} );
+    return $self->{dbh}->do( 'UPDATE "public"."EAV_submodules_subscriptions" SET "publish_alias" = ' . $self->_boolean_by_input( $params ) . ' WHERE "subscription_id" = ' . $self->{_item}->{id} );
 }
 
 sub type_subscription {
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    return undef() unless exists( $Self->{_item} ) && $Self->{_item}->{id};
-    return $Self->_get_field( 'type_subscription' ) unless defined( $Params );
+    return undef() unless exists( $self->{_item} ) && $self->{_item}->{id};
+    return $self->_get_field( 'type_subscription' ) unless defined( $params );
 
-    return $Self->{dbh}->do( 'UPDATE "public"."EAV_submodules_subscriptions" SET "type_subscription_alias" = ' . $Self->_boolean_by_input( $Params ) . ' WHERE "subscription_id" = ' . $Self->{_item}->{id} );
+    return $self->{dbh}->do( 'UPDATE "public"."EAV_submodules_subscriptions" SET "type_subscription_alias" = ' . $self->_boolean_by_input( $params ) . ' WHERE "subscription_id" = ' . $self->{_item}->{id} );
 };
 
 sub Delete {
-    my ($Self) = @_;
+    my ($self) = @_;
 
-    if ( !exists( $Self->{_item} ) ) {
-        $Self->{LogObject}->Log(
+    if ( !exists( $self->{_item} ) ) {
+        $self->{LogObject}->Log(
             Priority => 'error',
             Message  => "No _item element!",
         );
         return undef;
     }
 
-    $Self->{dbh}->do( 'DELETE FROM "public"."EAV_submodules_subscriptions" WHERE "subscription_id" = ' . $Self->id() );
-    if ( my $Error = $Self->{dbh}->errstr() ) {
-        $Self->{LogObject}->Log(
+    $self->{dbh}->do( 'DELETE FROM "public"."EAV_submodules_subscriptions" WHERE "subscription_id" = ' . $self->id() );
+    if ( my $Error = $self->{dbh}->errstr() ) {
+        $self->{LogObject}->Log(
             Priority => 'error',
             Message  => 'Can\'t delete element! SQL error: '.$Error,
         );
@@ -175,50 +174,50 @@ sub Delete {
     }
 
     #!!NB удаление EAV-объекта должно случаться после удаления из EAV_submodules_subscriptions из-за триггера AFTER DELETE. как оно сейчас и есть.
-    return $Self->_RealDelete();
+    return $self->_RealDelete();
 }
 
 sub List {
-    my ( $Self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
-    return undef() if !defined( $Params ) || !ref( $Params ) || ref( $Params ) ne 'HASH';
+    return undef() if !defined( $params ) || !ref( $params ) || ref( $params ) ne 'HASH';
 
     my $call_source = @{[caller(1)]}[3]." from line ".@{[caller(0)]}[2];
-    $Self->{Debug} && $Self->{LogObject}->Dumper( {
+    $self->{Debug} && $self->{LogObject}->Dumper( {
             Caller  => $call_source,
-            Params  => $Params
+            Params  => $params
         } );
 
     my $required = [ 'OwnerID', 'SLAID', 'ServiceID' ];
     my $hasSubscriptionsFilterParams = 0;
     for my $f ( @$required ) {
-        return undef() if !exists( $Params->{ $f } ) || !defined( $Params->{ $f } );
-        $Params->{ $f } = int( $Params->{ $f } || 0 );
-        $hasSubscriptionsFilterParams = 1 if $Params->{ $f };
+        return undef() if !exists( $params->{ $f } ) || !defined( $params->{ $f } );
+        $params->{ $f } = int( $params->{ $f } || 0 );
+        $hasSubscriptionsFilterParams = 1 if $params->{ $f };
     }
 
-    $hasSubscriptionsFilterParams = 1 if exists( $Params->{FilterTitle} ) && defined( $Params->{FilterTitle} ) && length( $Params->{FilterTitle} ) > 3;
-    $hasSubscriptionsFilterParams = 1 if exists( $Params->{Subscriptions}->{deny} ) && defined( $Params->{Subscriptions}->{deny} );
-    $hasSubscriptionsFilterParams = 1 if exists( $Params->{Subscriptions}->{isValid} ) && defined( $Params->{Subscriptions}->{isValid} );
-    $hasSubscriptionsFilterParams = 1 if exists( $Params->{Subscriptions}->{Filter} ) && ref( $Params->{Subscriptions}->{Filter} ) && ref( $Params->{Subscriptions}->{Filter} ) eq 'HASH' && scalar( keys %{ $Params->{Subscriptions}->{Filter} } );
+    $hasSubscriptionsFilterParams = 1 if exists( $params->{FilterTitle} ) && defined( $params->{FilterTitle} ) && length( $params->{FilterTitle} ) > 3;
+    $hasSubscriptionsFilterParams = 1 if exists( $params->{Subscriptions}->{deny} ) && defined( $params->{Subscriptions}->{deny} );
+    $hasSubscriptionsFilterParams = 1 if exists( $params->{Subscriptions}->{isValid} ) && defined( $params->{Subscriptions}->{isValid} );
+    $hasSubscriptionsFilterParams = 1 if exists( $params->{Subscriptions}->{Filter} ) && ref( $params->{Subscriptions}->{Filter} ) && ref( $params->{Subscriptions}->{Filter} ) eq 'HASH' && scalar( keys %{ $params->{Subscriptions}->{Filter} } );
 
-    $Self->{Debug} && $Self->{LogObject}->Dumper( $Params );
+    $self->{Debug} && $self->{LogObject}->Dumper( $params );
 
     my $ListParams = {};
     $ListParams->{Parents} = [ 0 ];
     $ListParams->{Filter} = {};
 
     my $useTitleFilter = 0;
-    if ( exists( $Params->{title} ) && defined( $Params->{title} ) && ref( $Params->{title} ) && ref( $Params->{title} ) eq 'HASH' ) {
+    if ( exists( $params->{title} ) && defined( $params->{title} ) && ref( $params->{title} ) && ref( $params->{title} ) eq 'HASH' ) {
         $useTitleFilter = 1;
     }
 
     my $control;
-    if ( $Params->{OwnerID} > 0 ) {
-        $control = $Self->_get( $Params->{OwnerID} );
+    if ( $params->{OwnerID} > 0 ) {
+        $control = $self->_get( $params->{OwnerID} );
         if ( defined( $control ) ) {
             $ListParams->{Parents} = { $control->{id} => 0 };
-#            $p = [ $p->{id}, @{ $Self->_get_childs( $p->{id} ) } ];
+#            $p = [ $p->{id}, @{ $self->_get_childs( $p->{id} ) } ];
 #            $pFilter = { import_type => [ $p->{Type}, 'user' ] }
         }
     }
@@ -229,17 +228,17 @@ sub List {
     my ( $BitMapMin, $BitMapMax, $bitmap_sql_c0, $bitmap_sql_c1 ) = ( undef(), undef(), '', '' );
     my $BitParams = {
         publish => {
-            value => exists( $Params->{Subscriptions}->{isValid} ) && defined( $Params->{Subscriptions}->{isValid} ) ? $Params->{Subscriptions}->{isValid} : undef(),
+            value => exists( $params->{Subscriptions}->{isValid} ) && defined( $params->{Subscriptions}->{isValid} ) ? $params->{Subscriptions}->{isValid} : undef(),
             true => 2,
             false => 1
         },
         type => {
-            value => exists( $Params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} ) && defined( $Params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} ) ? $Params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} : undef(),
+            value => exists( $params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} ) && defined( $params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} ) ? $params->{Subscriptions}->{Filter}->{'subscription.type_subscription'} : undef(),
             true => 8,
             false => 4
         },
         deny => {
-            value => exists( $Params->{Subscriptions}->{deny} ) && defined( $Params->{Subscriptions}->{deny} ) ? $Params->{Subscriptions}->{deny} : undef(),
+            value => exists( $params->{Subscriptions}->{deny} ) && defined( $params->{Subscriptions}->{deny} ) ? $params->{Subscriptions}->{deny} : undef(),
             true => 32,
             false => 16
         }
@@ -268,46 +267,46 @@ sub List {
         'LEFT JOIN "public"."EAV_submodules_subscriptions_counts" AS c0 ON c0."item_id" = items."id" AND c0."distance" = 0  '.$bitmap_sql_c0.' ';
 #    $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts" AS c1 ON c1."item_id" = items."id" ' if $useTitleFilter;
 
-    if ( exists( $Params->{SLAID} ) && $Params->{SLAID} && exists( $Params->{ServiceID} ) && $Params->{ServiceID} ) {
+    if ( exists( $params->{SLAID} ) && $params->{SLAID} && exists( $params->{ServiceID} ) && $params->{ServiceID} ) {
         $ListParams->{JOIN} = ' '.
-            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $Params->{SLAID} || 0 ).' AND c1."service_id" = '.int( $Params->{ServiceID} || 0 ).'  '.$bitmap_sql_c1.' '.#AND c1."distance" != 0
-            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c0 ON c0."item_id" = items."id" AND c0."sla_id" = '.int( $Params->{SLAID} || 0 ).' AND c0."service_id" = '.int( $Params->{ServiceID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
-#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $Params->{SLAID} || 0 ).' AND c1."service_id" = '.int( $Params->{ServiceID} || 0 ).' ';
+            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $params->{SLAID} || 0 ).' AND c1."service_id" = '.int( $params->{ServiceID} || 0 ).'  '.$bitmap_sql_c1.' '.#AND c1."distance" != 0
+            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c0 ON c0."item_id" = items."id" AND c0."sla_id" = '.int( $params->{SLAID} || 0 ).' AND c0."service_id" = '.int( $params->{ServiceID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
+#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla_and_service" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $params->{SLAID} || 0 ).' AND c1."service_id" = '.int( $params->{ServiceID} || 0 ).' ';
     }
-    elsif ( exists( $Params->{SLAID} ) && $Params->{SLAID} ) {
+    elsif ( exists( $params->{SLAID} ) && $params->{SLAID} ) {
         $ListParams->{JOIN} = ' '.
-            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $Params->{SLAID} || 0 ).' '.$bitmap_sql_c1.' '.
-            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c0 ON c0."item_id" = items."id" AND c0."sla_id" = '.int( $Params->{SLAID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
-#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $Params->{SLAID} || 0 ).' ';
+            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $params->{SLAID} || 0 ).' '.$bitmap_sql_c1.' '.
+            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c0 ON c0."item_id" = items."id" AND c0."sla_id" = '.int( $params->{SLAID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
+#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_sla" AS c1 ON c1."item_id" = items."id" AND c1."sla_id" = '.int( $params->{SLAID} || 0 ).' ';
     }
-    elsif ( exists( $Params->{ServiceID} ) && $Params->{ServiceID} ) {
+    elsif ( exists( $params->{ServiceID} ) && $params->{ServiceID} ) {
         $ListParams->{JOIN} = ' '.
-            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c1 ON c1."item_id" = items."id" AND c1."service_id" = '.int( $Params->{ServiceID} || 0 ).' '.$bitmap_sql_c1.' '.
-            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c0 ON c0."item_id" = items."id" AND c0."service_id" = '.int( $Params->{ServiceID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
-#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c1 ON c1."item_id" = items."id" AND c1."service_id" = '.int( $Params->{ServiceID} || 0 ).' ';
+            'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c1 ON c1."item_id" = items."id" AND c1."service_id" = '.int( $params->{ServiceID} || 0 ).' '.$bitmap_sql_c1.' '.
+            'LEFT JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c0 ON c0."item_id" = items."id" AND c0."service_id" = '.int( $params->{ServiceID} || 0 ).' AND c0."distance" = 0 '.$bitmap_sql_c0.' ';
+#        $ListParams->{JOIN} = 'INNER JOIN "public"."EAV_submodules_subscriptions_counts_with_service" AS c1 ON c1."item_id" = items."id" AND c1."service_id" = '.int( $params->{ServiceID} || 0 ).' ';
     }
     if ( $useTitleFilter ) {
         $ListParams->{JOIN} .= ' '.
             'INNER JOIN "public"."EAV_items" AS iTitleFilter ON '.
                 'iTitleFilter."id" = c1."item_id" AND '.
-                ( exists( $Params->{title}->{type} ) && defined( $Params->{title}->{type} ) ? 'iTitleFilter."import_type" = '.$Self->{dbh}->quote( $Params->{title}->{type} ).' AND ' : '' ).
-                'lower(iTitleFilter."title") '.$Self->_MakeFilterStatement( { value => $Params->{title}, prefix => '' } );
+                ( exists( $params->{title}->{type} ) && defined( $params->{title}->{type} ) ? 'iTitleFilter."import_type" = '.$self->{dbh}->quote( $params->{title}->{type} ).' AND ' : '' ).
+                'lower(iTitleFilter."title") '.$self->_MakeFilterStatement( { value => $params->{title}, prefix => '' } );
     }
 
 #    $ListParams->{FIELDS} = ', INJECTION."Count0", INJECTION."Count" ';
     $ListParams->{FIELDS} = 'items."id", items."import_type", MIN(c0."count") AS "Count0", SUM(c1."count") AS "Count" ';
 #    $ListParams->{INJECTION} = '( SELECT items."id", MIN(c0."count") AS "Count0", SUM(c1."count") AS "Count" FROM "public"."EAV_items" AS items '.$CountersSQL.' WHERE items."publish" = true GROUP BY items."id" ) AS INJECTION INNER JOIN ';
     $ListParams->{GROUP_BY} = 'GROUP BY items."id", items."import_type"';
-    for my $p ( keys %$Params ) {
+    for my $p ( keys %$params ) {
         if ( !exists( $ListParams->{ $p } ) ) {
-            $ListParams->{ $p } = $Params->{ $p };
+            $ListParams->{ $p } = $params->{ $p };
         }
     }
 
-    my $sql = $Self->_list( { %$ListParams, SQLResult => 1 } );
-    $Self->{Debug} && $Self->{LogObject}->Dumper( \$sql );
-    my $items = $Self->_list( $ListParams );
-    $Self->{Debug} && $Self->{LogObject}->Dumper( \$hasSubscriptionsFilterParams );
+    my $sql = $self->_list( { %$ListParams, SQLResult => 1 } );
+    $self->{Debug} && $self->{LogObject}->Dumper( \$sql );
+    my $items = $self->_list( $ListParams );
+    $self->{Debug} && $self->{LogObject}->Dumper( \$hasSubscriptionsFilterParams );
 
     $items = [
         map {
@@ -329,10 +328,10 @@ sub List {
 
     $hasSubscriptionsFilterParams = 1 if !scalar( @$items );
 
-    if ( $hasSubscriptionsFilterParams && ( $Params->{OwnerID} > 0 || $Params->{ServiceID} > 0  ) ) {
+    if ( $hasSubscriptionsFilterParams && ( $params->{OwnerID} > 0 || $params->{ServiceID} > 0  ) ) {
         #подписки от текущей ноды.
         my @ListParams;
-        ( @ListParams ) = ( $Self->_list( { %{ $Params->{Subscriptions} }, SQLResult => 1 } ) ) if exists( $Params->{Subscriptions} ) && ref( $Params->{Subscriptions} ) && ref( $Params->{Subscriptions} ) eq 'HASH';
+        ( @ListParams ) = ( $self->_list( { %{ $params->{Subscriptions} }, SQLResult => 1 } ) ) if exists( $params->{Subscriptions} ) && ref( $params->{Subscriptions} ) && ref( $params->{Subscriptions} ) eq 'HASH';
         my $Addons = {};
         if ( scalar( @ListParams ) ) {
             for my $key ( keys %{ $ListParams[1] } ) {
@@ -345,27 +344,27 @@ sub List {
             'FROM "public"."EAV_submodules_subscriptions" AS s '.
             'INNER JOIN "public"."EAV_items" AS items ON s.subscription_id = items."id" '.
             'LEFT JOIN "public"."EAV_data_string" AS dContract ON dContract."id" = items."id" AND dContract."field_id" = EAV_getFieldID( \'subscription\', \'contract\' ) '.
-#            ( exists( $Params->{Subscriptions}->{AddressID} ) && $Params->{Subscriptions}->{AddressID} ?
+#            ( exists( $params->{Subscriptions}->{AddressID} ) && $params->{Subscriptions}->{AddressID} ?
 #                'INNER JOIN "public"."EAV_links" AS sAddressFilter ON ( sAddressFilter."parent" = s."address_id" ) '
 #            ).
-            ( exists( $Params->{Subscriptions}->{isValid} ) && defined( $Params->{Subscriptions}->{isValid} ) ? ' AND items."publish" = '.( $Params->{Subscriptions}->{isValid} ? 'true': 'false' ) : '' ).' '.
+            ( exists( $params->{Subscriptions}->{isValid} ) && defined( $params->{Subscriptions}->{isValid} ) ? ' AND items."publish" = '.( $params->{Subscriptions}->{isValid} ? 'true': 'false' ) : '' ).' '.
 ####            ( defined( $control ) ? 'LEFT JOIN "public"."EAV_links" AS control_link ON control_link."parent" = '.$control->{id}.' AND control_link."id" = s."owner_id" ' : '' ).
             (
-                exists( $Params->{FilterTitle} ) && defined( $Params->{FilterTitle} ) && length( $Params->{FilterTitle} ) > 3 ?
-                    $Self->_MakeFilterStatement( { value => { ILIKE => '%'.$Params->{FilterTitle}.'%' }, prefix => 'INNER JOIN "public"."EAV_items" AS iC ON s.owner_id = iC."id"  AND iC."title" ' } ) : ''
+                exists( $params->{FilterTitle} ) && defined( $params->{FilterTitle} ) && length( $params->{FilterTitle} ) > 3 ?
+                    $self->_MakeFilterStatement( { value => { ILIKE => '%'.$params->{FilterTitle}.'%' }, prefix => 'INNER JOIN "public"."EAV_items" AS iC ON s.owner_id = iC."id"  AND iC."title" ' } ) : ''
             ).
             ( exists( $$Addons{Data} ) ? $$Addons{Data} : '' ).' '.
             ( exists( $$Addons{Filter} ) ? $$Addons{Filter} : '' ).' '.
             'WHERE 1 = 1 ';
 ####        $sql .= ' AND ( s."owner_id" = '.$control->{id}.' OR control_link."distance" IS NOT NULL ) ' if defined( $control );
         $sql .= ' AND s."owner_id" = '.$control->{id} if defined( $control );
-        $sql .= ' AND s."sla_id" = '.int( $Params->{SLAID} ) if $Params->{SLAID};
-        $sql .= ' AND s."service_id" = '.int( $Params->{ServiceID} ) if $Params->{ServiceID};
-        $sql .= ' AND s."address_id" = '.int( $Params->{AddressID} ) if $Params->{AddressID};
-        $sql .= exists( $Params->{Subscriptions}->{deny} ) && defined( $Params->{Subscriptions}->{deny} ) ? ' AND s.deny = '.( $Params->{Subscriptions}->{deny} ? 'true' : 'false' ) : '';
-        $Self->{Debug} && $Self->{LogObject}->Dumper( $sql );
+        $sql .= ' AND s."sla_id" = '.int( $params->{SLAID} ) if $params->{SLAID};
+        $sql .= ' AND s."service_id" = '.int( $params->{ServiceID} ) if $params->{ServiceID};
+        $sql .= ' AND s."address_id" = '.int( $params->{AddressID} ) if $params->{AddressID};
+        $sql .= exists( $params->{Subscriptions}->{deny} ) && defined( $params->{Subscriptions}->{deny} ) ? ' AND s.deny = '.( $params->{Subscriptions}->{deny} ? 'true' : 'false' ) : '';
+        $self->{Debug} && $self->{LogObject}->Dumper( $sql );
 
-        my $sth = $Self->{dbh}->prepare( $sql );
+        my $sth = $self->{dbh}->prepare( $sql );
         $sth->execute();
         my $subscriptions = $sth->fetchall_arrayref({});
         $sth->finish();
@@ -382,46 +381,46 @@ sub List {
 }
 
 sub Get {
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    return undef() unless defined( $Params );
-    my $id = ref( $Params ) && ref( $Params ) eq 'HASH' ? int( $Params->{id} || 0 ) : int( $Params || 0 );
+    return undef() unless defined( $params );
+    my $id = ref( $params ) && ref( $params ) eq 'HASH' ? int( $params->{id} || 0 ) : int( $params || 0 );
     return undef() unless $id;
 
-    my $try = $Self->_get( $id );
+    my $try = $self->_get( $id );
     if ( defined( $try ) ) {
-        $Self->{_item} = $try;
-        my $r = $Self->{dbh}->selectrow_hashref( 'SELECT * FROM "public"."EAV_submodules_subscriptions" WHERE subscription_id = '.$id );
+        $self->{_item} = $try;
+        my $r = $self->{dbh}->selectrow_hashref( 'SELECT * FROM "public"."EAV_submodules_subscriptions" WHERE subscription_id = '.$id );
         delete( $$r{subscription_id} );
-        $Self->{_item} = { %{ $Self->{_item} }, %$r };
+        $self->{_item} = { %{ $self->{_item} }, %$r };
 
-        return $Self;
+        return $self;
     }
 
     return undef();
 }
 
 sub Store {
-    my ( $Self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    return undef() unless defined( $Params );
+    return undef() unless defined( $params );
 
-    my $owner = $Self->_get( $Self->owner_id() );
+    my $owner = $self->_get( $self->owner_id() );
     return undef() unless defined( $owner );
 
     #!!NB - по-скольку есть триггер на AFTER UPDATE на submodules_subscriptions - update EAV-данных подписки должен идти раньше чем апдейт главной таблицы.
-    $Self->_MultiStore( $Params->{data} );
+    $self->_MultiStore( $params->{data} );
     #!!?? я сейчас не совсем понимаю зачем я здесь требую совпадения первичного ключа, если subscription_id вполне себе уникальный..
     #м.б. я имел в виду что группы этих параметров могут указывать на один и тот же сабскрипшен ? да, но зачем ?
-    $Self->{dbh}->do(
-        'UPDATE "public"."EAV_submodules_subscriptions" SET "deny" = '.( $Params->{deny} ? 'true' : 'false' ).' WHERE '.
-        '"owner_id" = '.$Self->owner_id().' AND "sla_id" = '.$Self->sla_id().' AND "service_id" = '.$Self->service_id().' AND "subscription_id" = '.$Self->id().' AND "distance" = 0 AND "owner_type" = '.$Self->{dbh}->quote( $owner->{type} ).' '
+    $self->{dbh}->do(
+        'UPDATE "public"."EAV_submodules_subscriptions" SET "deny" = '.( $params->{deny} ? 'true' : 'false' ).' WHERE '.
+        '"owner_id" = '.$self->owner_id().' AND "sla_id" = '.$self->sla_id().' AND "service_id" = '.$self->service_id().' AND "subscription_id" = '.$self->id().' AND "distance" = 0 AND "owner_type" = '.$self->{dbh}->quote( $owner->{type} ).' '
     );
     # reset Service cache
-    $Self->{CacheObject}->CleanUp(
+    $self->{CacheObject}->CleanUp(
         Type => 'Service',
     );
-    $Self->{CacheObject}->CleanUp(
+    $self->{CacheObject}->CleanUp(
         Type => 'SubscriptionContracts',
     );
 
@@ -429,10 +428,10 @@ sub Store {
 }
 
 sub ListByServices {
-    my ( $Self, $Params ) = @_ ;
-    return undef() if !defined( $Params ) || !ref( $Params ) || ref( $Params ) ne 'HASH';
-    my $ServiceID = int( $Params->{ServiceID} || 0 );
-    my $TreeID = int( $Params->{OwnerID} || 0 );
+    my ( $self, $params ) = @_ ;
+    return undef() if !defined( $params ) || !ref( $params ) || ref( $params ) ne 'HASH';
+    my $ServiceID = int( $params->{ServiceID} || 0 );
+    my $TreeID = int( $params->{OwnerID} || 0 );
 
     my $sql;
     if ( !$ServiceID ) {
@@ -449,7 +448,7 @@ sub ListByServices {
     }
 
     my $res = [];
-    my $sth = $Self->{dbh}->prepare( $sql );
+    my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
     $res = $sth->fetchall_arrayref({});
     $sth->finish();
@@ -458,29 +457,29 @@ sub ListByServices {
 }
 
 sub GetContrcatBySubscription {
-    my ( $Self, %Param ) = @_;
+    my ( $self, %param ) = @_;
 
-    return if ( !%Param || !$Param{SubscriptionID} );
+    return if ( !%param || !$param{SubscriptionID} );
 
-    # my $Cache = $Self->{CacheObject}->Get(
+    # my $Cache = $self->{CacheObject}->Get(
     #     Type => 'SubscriptionContracts',
     #     Key  => 'All'
     # );
-    # if( $Cache && defined( $Cache->{$Param{SubscriptionID}} ) ){
-    #     return $Cache->{$Param{SubscriptionID}};
+    # if( $Cache && defined( $Cache->{$param{SubscriptionID}} ) ){
+    #     return $Cache->{$param{SubscriptionID}};
     # }
 
     my $Sql = 'SELECT id, data FROM "EAV_data_string" WHERE field_id = EAV_GetFieldID( \'subscription\', \'contract\' )';
-    my $Data = $Self->{dbh}->selectall_arrayref( $Sql, { Slice => {} } );
+    my $Data = $self->{dbh}->selectall_arrayref( $Sql, { Slice => {} } );
 
     if ( $Data && ref( $Data ) eq 'ARRAY' && @$Data ) {
         my %Store = map{ $_->{id} => $_->{data} }@$Data;
-        # $Self->{CacheObject}->Set(
+        # $self->{CacheObject}->Set(
         #     Type    => 'SubscriptionContracts',
         #     Key     => 'All',
         #     Value   => \%Store
         # );
-        return $Store{$Param{SubscriptionID}};
+        return $Store{$param{SubscriptionID}};
     }
 
     return;

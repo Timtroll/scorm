@@ -1,9 +1,10 @@
 #!/usr/bin/perl -w
 
 # миграция: чтение и запуск sql файлов из scorm/sql
+use utf8;
 use strict;
 use warnings;
-use File::Slurp qw(slurp);
+use File::Slurp::Unicode qw(slurp);;
 use DBI;
 
 my ( $path, $config, $test, $db, $dbh, $pwd, @path, @log_path, @list );
@@ -25,7 +26,7 @@ else {
 # поиск и чтение конфигурации 
 foreach $path ( @path ) {
     if ( -e $path ) {
-        $config = slurp( $path, { err_mode => 'carp' } );
+        $config = slurp( $path, encoding => 'utf8' );
         unless ( $config ) {
             logging( "can't read config file from $path" ); 
             exit; 
@@ -91,7 +92,6 @@ if ( $? ) {
     logging( "can't read directory $path: @list" ); 
     exit; 
 };
-
 # обработка файлов директории  
 foreach ( @list ) {
     my ( $filename, $sql, $sth, $res );
@@ -102,7 +102,8 @@ foreach ( @list ) {
     next if ( -d $filename || $_ !~ /\.sql$/);
 
     # чтение содержимого файлов
-    $sql = slurp( $filename, { err_mode => 'carp' } );
+    # $sql = slurp( $filename, { err_mode => 'carp' } );
+    $sql = slurp( $filename, encoding => 'utf8' );
     unless ( $sql ) { 
         logging( "can't read file $filename" ); 
         exit; 
@@ -112,6 +113,7 @@ foreach ( @list ) {
     $sth = $dbh->prepare( $sql );
     $res = $sth->execute();
     if ( DBI->errstr ) {
+        warn "execute doesn't work " . DBI->errstr . " in $filename script";
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
         exit;    
     }
@@ -124,6 +126,7 @@ sub logging {
     my $log;
 
     foreach my $path ( @log_path ) {
+
         if ( -e $path ) {
             open( $log, '>>', $path ) or warn "Can't open log file!";
                 print $log "$logdata\n";
@@ -131,5 +134,4 @@ sub logging {
         }
     }
 
-    last;
 }

@@ -7,6 +7,7 @@ use warnings;
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Config;
 use Mojo::Log;
+use Freee::EAV;
 use Freee::Model; 
 
 use common;
@@ -46,18 +47,42 @@ sub startup {
 
     # init Pg connection
     $self->{dbh} = $self->pg_dbh();
-    # $self->pg_init();
-use Freee::EAV;
-my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
 
-use Freee::EAV::User;
-my $user = Freee::EAV::User->new( { 'title' => 'тестовый юзер', parent => 1 } );
-$user->test( 'qwweq' );
-warn $user->test();
+    # Модель EAV
+    my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+
+    # делаем запись
+    my $user = Freee::EAV->new( 'User', {
+        'publish'       => \1,
+        'parent'        => 1
+    } );
+    $user->store( {
+        'title'         => 'тестовый юзер test',
+        'users_id'      => 1,
+        'surname'       => "Фамилия",
+        'name'          => "Имя",
+        'patronymic'    => "Отчество",
+        'city'          => "город",
+        'country'       => "страна",
+        'birthday'      => "дата рождения",
+        'emailconfirmed'=> "email подтвержден",
+        'phone'         => "номер телефона",
+        'phoneconfirmed'=> "телефон подтвержден",
+        'status'        => "активный/неактивный",
+        'groups'        => "список ID групп",
+        'avatar'        => "фото",
+
+    } );
+    # warn $user->users_id( 3 );
+
+    # читаем запись
+    $user = Freee::EAV->new( 'User', { id => 16 } );
+    warn $user->users_id();
 
     # init Beanstalk connection
     $self->_beans_init();
 
+# Модель по Mojo
 #     # подгружаем модель и создадим соответствующий хелпер для вызова модели
 #     my $model = Freee::Model->new(
 #         app => $self,
@@ -74,16 +99,6 @@ warn $user->test();
 # warn Dumper $self->model('MyModel')->get_;
 
 # warn Dumper $self->dbh;
-
-#     $self->plugin('Mojolicious::Plugin::Model' => { namespaces => ['Freee::Model'], base_classes => ['Freee::Model::EAV'], });
-#     $self->model('EAV')->_init();
-#     $self->model('EAV')->check();
-# warn '=EAV=';
-#     # $self->model('users-client')->do();
-#     # $self->model('Users')->check();
-#     # warn '=Users=';
-#     # warn $self->model('eav');
-# # warn Dumper $self;
 
     # Router
     $r = $self->routes;

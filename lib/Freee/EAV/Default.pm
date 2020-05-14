@@ -5,12 +5,12 @@ use strict;
 use warnings;
 
 sub new {
-    my ( $Class, %Params ) = @_;
+    my ( $class, %params ) = @_;
 
-    $Params{Type} = 'Default';
-    my $Object = $Class->SUPER::new(\%Params);
+    $params{Type} = 'Default';
+    my $object = $class->SUPER::new(\%params);
 
-    return $Object;
+    return $object;
 }
 
 1;

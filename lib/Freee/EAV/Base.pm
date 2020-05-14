@@ -12,21 +12,20 @@ use Data::Dumper;
 
 sub new {
     state $self;
-    my $Class = shift;
+    my $class = shift;
 
     if ( !defined( $self ) ) {
         $self = bless {}, __PACKAGE__;
         $self->{dbh} = $_[0]->{dbh};
         $self->_init();
-        return $self if ( !defined( $Class ) );
+        return $self if ( !defined( $class ) );
     }
 
-warn Dumper $_[0]->{Type};
-    my $Other = bless { Type => $_[0]->{Type} }, $Class;
-    $self->_init_copy( $Other, $_[0] );
+    my $other = bless { Type => $_[0]->{Type} }, $class;
+    $self->_init_copy( $other, $_[0] );
 
-    return $Other if exists( $_[0]->{PreventCreate} ) && $_[0]->{PreventCreate};
-    return defined( $Other->_InitThisItem( $_[0] ) ) ? $Other : undef();
+    return $other if exists( $_[0]->{PreventCreate} ) && $_[0]->{PreventCreate};
+    return defined( $other->_InitThisItem( $_[0] ) ) ? $other : undef();
 }
 
 sub AUTOLOAD {
@@ -35,7 +34,6 @@ sub AUTOLOAD {
 
     return 1 if $method eq 'DESTROY';
 
-# warn Dumper $self->{Type};
     if (
         exists( $self->{Fields}->{ $self->{Type} }->{ $method } ) || exists( $self->{ItemFields}->{ $method } ) ||
         ( exists( $self->{_item} ) && exists( $self->{_item}->{ $method } ) ) ||
@@ -51,7 +49,8 @@ sub AUTOLOAD {
         else {
             return undef();
         }
-    } else {
+    }
+    else {
 #        return $self->$method( @_ );
     }
 }
@@ -86,41 +85,36 @@ sub _init {
     $self->{_roots} = $sth->fetchall_arrayref({});
     $self->{Roots} = {};
 
-    my $Base = __PACKAGE__;
-    $Base =~ s/::Base//;
+    my $base = __PACKAGE__;
+    $base =~ s/::Base//;
     # my %Loaded;
 
-    for my $Type ( keys %{ $self->{Fields} } ) {
-        my $T = ucfirst($Type);
-        my $Class = $Base . '::' . $T;
+    for my $type ( keys %{ $self->{Fields} } ) {
+        my $T = ucfirst($type);
+        my $class = $base . '::' . $T;
 
-warn Dumper $Type;
-warn Dumper $self->{_roots};
-        my ( $id ) = ( map { $_->{id} } grep { $_->{import_type} eq $Type } @{ $self->{_roots} } );
-warn $Class.'////'.$id;
+        my ( $id ) = ( map { $_->{id} } grep { $_->{import_type} eq $type } @{ $self->{_roots} } );
         if ( !defined( $id ) ) {
-            if ( $Type eq 'Default' ) {
-                 $self->{Roots}->{ $Type } =  undef();
+            if ( $type eq 'Default' ) {
+                 $self->{Roots}->{ $type } =  undef();
             }
             else {
                  my $obj;
                  eval '
-                    use ' . $Class . ';
-                    $obj = ' . $Class . '->new( { Type => $Type, parent => 0, publish => \1, import_id => undef(), title => $T, dbh => $self->{dbh}  } );
+                    use ' . $class . ';
+                    $obj = ' . $class . '->new( { Type => $type, parent => 0, publish => \1, import_id => undef(), title => $T, dbh => $self->{dbh}  } );
                 ';
-warn $obj;
-                 $self->{Roots}->{ $Type } = $obj;
+                 $self->{Roots}->{ $type } = $obj;
             }
         }
         else {
             my $obj;
             eval '
-                use ' . $Class . '; 
-                $obj = ' . $Class . '->new( { Type => $Type, dbh => $self->{dbh} } );
+                use ' . $class . '; 
+                $obj = ' . $class . '->new( { Type => $type, dbh => $self->{dbh} } );
             ';
-warn $obj;
             $obj->{_item} = $obj->_get( $id );
-            $self->{Roots}->{ $Type } = $obj;
+            $self->{Roots}->{ $type } = $obj;
         }
     }
     $self->{Root} = $self->{Roots}->{ $self->{Type} } if exists( $self->{Type} );
@@ -128,7 +122,7 @@ warn $obj;
 }
 
 sub _init_copy {
-    my ( $self, $Target, $Params ) = @_;
+    my ( $self, $Target, $params ) = @_;
 
     my $fields = [
         'dbh',        'DBObject', 'FieldsAsArray',  'Fields',   'FieldsById', 'ItemFields',
@@ -141,24 +135,24 @@ sub _init_copy {
 }
 
 sub _InitThisItem {
-    my ( $self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    if ( exists( $$Params{id} ) ) {
-        $self->{_item} = $self->_get( $$Params{id} );
+    if ( exists( $$params{id} ) ) {
+        $self->{_item} = $self->_get( $$params{id} );
         return undef unless defined( $self->{_item} );
     }
-    elsif ( exists( $$Params{import_id} ) && !exists( $$Params{parent} ) ) {
-        $self->{_item} = $self->_get( $$Params{import_id}, $$Params{Type} );
+    elsif ( exists( $$params{import_id} ) && !exists( $$params{parent} ) ) {
+        $self->{_item} = $self->_get( $$params{import_id}, $$params{Type} );
         return undef unless defined( $self->{_item} );
     }
-    elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
-        $self->{_item} = $self->_create( $Params );
-        my $Type = '\'' . $$Params{Type} . '\'';
-        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ) {
-            $self->_MultiStore( $Params->{data} );
+    elsif ( exists( $$params{parent} ) && exists( $$params{Type} ) ) {
+        $self->{_item} = $self->_create( $params );
+        my $type = '\'' . $$params{Type} . '\'';
+        if ( exists( $params->{data} ) && defined( $params->{data} ) && ref( $params->{data} ) && ref( $params->{data} ) eq 'HASH' ) {
+            $self->_MultiStore( $params->{data} );
         }
-        elsif ( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ) {
-            $self->_MultiStore( { $$Params{Type} => $Params->{$Type} } );
+        elsif ( exists( $params->{$Type} ) && defined( $params->{$type} ) && ref( $params->{$type} ) && ref( $params->{$type} ) eq 'HASH' ) {
+            $self->_MultiStore( { $$params{Type} => $params->{$type} } );
         }
     }
 
@@ -228,7 +222,7 @@ sub _get_field {
     return undef() unless exists( $self->{Fields}->{ $t }->{ $FieldName } );
 
     my $Field = $self->{Fields}->{ $t }->{ $FieldName };
-warn $self;
+
     my $sql = 'SELECT "data" FROM ' . $self->{DataTables}->{ $$Field{type} }->[0] . ' WHERE "id" = ' . $self->{_item}->{id} . ' AND "field_id" = ' . $$Field{id};
     my $result = $self->{dbh}->selectrow_array( $sql );
 
@@ -241,15 +235,15 @@ sub _get_childs {
     return undef() unless exists( $self->{_item} );
 
     my $id = int( $self->{_item}->{id} );
-    my $Params = $_[0];
+    my $params = $_[0];
 
-    my $sql = 'SELECT "id", "distance" FROM "public"."EAV_links" WHERE "parent" = ' . $id . ( exists( $Params->{Direct} ) ? ' AND "distance" = 0' : '' );
+    my $sql = 'SELECT "id", "distance" FROM "public"."EAV_links" WHERE "parent" = ' . $id . ( exists( $params->{Direct} ) ? ' AND "distance" = 0' : '' );
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
     my $Childs = $sth->fetchall_arrayref({});
     $sth->finish();
 
-    return [ map { $_->{id} } @{ $Childs } ] if !exists( $Params->{Split} ) || !$Params->{Split};
+    return [ map { $_->{id} } @{ $Childs } ] if !exists( $params->{Split} ) || !$params->{Split};
 
     return {
         Direct => [ map { $_->{id} } grep { !$_->{distance} } @{ $Childs } ],
@@ -384,18 +378,18 @@ sub _create {
 }
 
 sub _MultiStore {
-    my ( $self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
-    for my $key ( keys %$Params ) {
-        next if !defined( $Params->{ $key } ) || !ref( $Params->{ $key } ) || ref( $Params->{ $key } ) ne 'HASH';
+    for my $key ( keys %$params ) {
+        next if !defined( $params->{ $key } ) || !ref( $params->{ $key } ) || ref( $params->{ $key } ) ne 'HASH';
 
-        for my $field ( keys %{ $Params->{ $key } } ) {
+        for my $field ( keys %{ $params->{ $key } } ) {
             if ( exists( $self->{ItemFields}->{ $field } ) ) {
-                $self->_store( $field, $Params->{ $key }->{ $field } );
+                $self->_store( $field, $params->{ $key }->{ $field } );
                 next;
             }
             next if !exists( $self->{Fields}->{ $key }->{ $field } );
-            $self->_store( $field, $Params->{ $key }->{ $field } );
+            $self->_store( $field, $params->{ $key }->{ $field } );
         }
     }
 
@@ -410,9 +404,9 @@ sub _delete {
 }
 
 sub _MoveChilds {
-    my ( $self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
-    return undef() unless exists( $Params->{NewParent} );
+    return undef() unless exists( $params->{NewParent} );
     my $id = int( $self->{_item}->{id} );
 
     my $Childs = $self->_get_childs();
@@ -429,7 +423,7 @@ sub _MoveChilds {
     }
 
     for my $child ( @$Childs ) {
-        my $sql = 'INSERT INTO "public"."EAV_links" ( "id", "parent", "distance" ) VALUES ( ' . $child . ', ' . int( $Params->{NewParent} ) . ', 0 ) ' . 'ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "distance" = 0';
+        my $sql = 'INSERT INTO "public"."EAV_links" ( "id", "parent", "distance" ) VALUES ( ' . $child . ', ' . int( $params->{NewParent} ) . ', 0 ) ' . 'ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "distance" = 0';
         $self->{dbh}->do( $sql );
     }
 
@@ -437,11 +431,11 @@ sub _MoveChilds {
 }
 
 sub _AttachToParent {
-    my ( $self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
     return undef() unless $self->{_item};
-    return undef() unless defined( $Params );
-    my $parent = ref( $Params ) && ref( $Params ) eq 'HASH' && exists( $Params->{parent} ) ? int( $Params->{parent} || 0 ) : int( $Params || 0 );
+    return undef() unless defined( $params );
+    my $parent = ref( $params ) && ref( $params ) eq 'HASH' && exists( $params->{parent} ) ? int( $params->{parent} || 0 ) : int( $params || 0 );
     return undef() unless $parent;
 
     my $sql = 'INSERT INTO "public"."EAV_links" ("id", "parent", "distance") VALUES ( '.int( $self->{_item}->{id} ).', '.$parent.', 0 ) ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO NOTHING';
@@ -458,13 +452,13 @@ sub _RealDelete {
     my $id = int( $self->{_item}->{id} );
     return undef() if !$id; #use truncates..
 
-    my $Params = $_[0];
+    my $params = $_[0];
 
     my $items = [ $id ];
 
     my $Childs = $self->_get_childs();
 
-    if ( !exists( $Params->{SaveChilds} ) || !$Params->{SaveChilds} ) {
+    if ( !exists( $params->{SaveChilds} ) || !$params->{SaveChilds} ) {
         push @$items, @$Childs;
     }
     else {
@@ -484,10 +478,10 @@ sub _RealDelete {
 }
 
 sub _MakeFilterStatement {
-    my ( $self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
-    my $v = $Params->{value};
-    my $prefix = exists( $Params->{prefix} ) && defined( $Params->{prefix} ) ? $Params->{prefix} : '';
+    my $v = $params->{value};
+    my $prefix = exists( $params->{prefix} ) && defined( $params->{prefix} ) ? $params->{prefix} : '';
 
     my $res = '';
     if ( !defined( $v ) ) {
@@ -541,26 +535,26 @@ sub _MakeFilterStatement {
 }
 
 sub _list {
-    my ( $self, $Params ) = @_ ;
+    my ( $self, $params ) = @_ ;
 
     my $call_source = @{[caller(1)]}[3] . " from line " . @{[caller(0)]}[2];
 
     my $sql = 'SELECT items.*';
     my $select_fields = '';
-    if ( exists( $Params->{FIELDS} ) && defined( $Params->{FIELDS} ) ) {
-        $sql = ( $Params->{FIELDS} =~ /^\,/ ? $sql . $Params->{FIELDS} : 'SELECT ' . $Params->{FIELDS} );
-        $select_fields = $Params->{FIELDS};
+    if ( exists( $params->{FIELDS} ) && defined( $params->{FIELDS} ) ) {
+        $sql = ( $params->{FIELDS} =~ /^\,/ ? $sql . $params->{FIELDS} : 'SELECT ' . $params->{FIELDS} );
+        $select_fields = $params->{FIELDS};
     }
     my $data_sql = '';
     #joined ext fields
-    #push order fields into $Params->{Fields}
+    #push order fields into $params->{Fields}
     my $order_sql;
     my $filter_sql = '';
     my $items_filter_sql = '';
-    $Params->{Order} = [] if !exists( $Params->{Order} ) || !defined( $Params->{Order} ) || !ref( $Params->{Order} ) || ref( $Params->{Order} ) ne 'ARRAY';
+    $params->{Order} = [] if !exists( $params->{Order} ) || !defined( $params->{Order} ) || !ref( $params->{Order} ) || ref( $params->{Order} ) ne 'ARRAY';
 
     my $SQLParts = { Order => \$order_sql, Data => \$data_sql, Filter => \$filter_sql, ItemFilter => \$items_filter_sql, SelectFields => \$select_fields };
-    for my $pair ( grep { ref( $_ ) eq 'HASH' } @{ $Params->{Order} } ) {
+    for my $pair ( grep { ref( $_ ) eq 'HASH' } @{ $params->{Order} } ) {
         my ( $nulls ) = ( grep { $_ =~ /^nulls$/i } keys %$pair );
         my ( $sort_field ) = ( grep { $_ !~ /^nulls$/i } keys %$pair );
         next unless defined( $sort_field );
@@ -587,14 +581,14 @@ sub _list {
         $order_sql .= ( defined( $order_sql ) && length( $order_sql ) ? ', ' : '' ) . $sql;
 
         if ( !$is_sys_field ) {
-            $Params->{Fields} = [] if !exists( $Params->{Fields} ) || !defined( $Params->{Fields} ) || !ref( $Params->{Fields} ) || ref( $Params->{Fields} ) ne 'ARRAY';
-            push @{ $Params->{Fields} }, $sort_field unless scalar( grep { $_ eq $sort_field } @{ $Params->{Fields} } );
+            $params->{Fields} = [] if !exists( $params->{Fields} ) || !defined( $params->{Fields} ) || !ref( $params->{Fields} ) || ref( $params->{Fields} ) ne 'ARRAY';
+            push @{ $params->{Fields} }, $sort_field unless scalar( grep { $_ eq $sort_field } @{ $params->{Fields} } );
         }
     }
 
-    if ( exists( $Params->{Fields} ) && ref( $Params->{Fields} ) eq 'ARRAY' ) {
+    if ( exists( $params->{Fields} ) && ref( $params->{Fields} ) eq 'ARRAY' ) {
         my $i = 0;
-        for my $f ( @{ $Params->{Fields} } ) {
+        for my $f ( @{ $params->{Fields} } ) {
             my ( $set, $field ) = ( split /\./, $f );
             next if !defined( $set ) || !defined( $field ) || !exists( $self->{Fields}->{ $set }->{ $field } );
             my $Field = $self->{Fields}->{ $set }->{ $field };
@@ -602,45 +596,45 @@ sub _list {
             $sql .= $select_fields;
             my $tbl = $self->{DataTables}->{ $Field->{type} }->[0];
             $data_sql .= ' INNER JOIN '.$tbl.' AS OutData'.$i.' ON items."id" = OutData'.$i.'."id" AND OutData'.$i.'."field_id" = '.$Field->{id};
-            if ( exists( $Params->{Filter}->{$f} ) ) {
-                $data_sql .= ' AND '.$self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'OutData'.$i.'."data"' } );
+            if ( exists( $params->{Filter}->{$f} ) ) {
+                $data_sql .= ' AND '.$self->_MakeFilterStatement( { value => $params->{Filter}->{$f}, prefix => 'OutData'.$i.'."data"' } );
             }
             $i++;
         }
     }
-    $sql .= ' FROM '.( exists( $Params->{INJECTION} ) ? $Params->{INJECTION} : '' ).' "public"."EAV_items" AS items '.( exists( $Params->{INJECTION} ) ? ' ON items."id" = INJECTION."id" ' : '' ).' ';
+    $sql .= ' FROM '.( exists( $params->{INJECTION} ) ? $params->{INJECTION} : '' ).' "public"."EAV_items" AS items '.( exists( $params->{INJECTION} ) ? ' ON items."id" = INJECTION."id" ' : '' ).' ';
     my $i = 0;
-    if ( exists( $Params->{Parents} ) && defined( $Params->{Parents} ) && ref( $Params->{Parents} ) ) {
-        if ( ref( $Params->{Parents} ) eq 'HASH' ) {
-            for my $p ( keys %{ $Params->{Parents} } ) {
-                if ( !ref( $Params->{Parents}->{ $p } ) ) {
+    if ( exists( $params->{Parents} ) && defined( $params->{Parents} ) && ref( $params->{Parents} ) ) {
+        if ( ref( $params->{Parents} ) eq 'HASH' ) {
+            for my $p ( keys %{ $params->{Parents} } ) {
+                if ( !ref( $params->{Parents}->{ $p } ) ) {
                     $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
-                    $sql .= ' AND links'.$i.'."distance" = '.int( $Params->{Parents}->{ $p } || 0 )
+                    $sql .= ' AND links'.$i.'."distance" = '.int( $params->{Parents}->{ $p } || 0 )
                 }
                 elsif ( ref( $p ) eq 'HASH' ) {
                     $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
-                    $sql .= ' AND links'.$i.'."distance" = '.int( $Params->{Parents}->{ $p }->{distance} );
-#                    if ( exists( $Params->{Parents}->{ $p }->{SelfType} ) && $Params->{Parents}->{ $p }->{SelfType} ) {
+                    $sql .= ' AND links'.$i.'."distance" = '.int( $params->{Parents}->{ $p }->{distance} );
+#                    if ( exists( $params->{Parents}->{ $p }->{SelfType} ) && $params->{Parents}->{ $p }->{SelfType} ) {
 #                        $sql .= ' INNER JOIN '
 #                    };
                 }
             }
         }
-        elsif ( ref( $Params->{Parents} ) eq 'ARRAY' ) {
-            for my $p ( @{ $Params->{Parents} } ) {
+        elsif ( ref( $params->{Parents} ) eq 'ARRAY' ) {
+            for my $p ( @{ $params->{Parents} } ) {
                 $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
             }
         }
         $i++;
     }
     $sql .= $data_sql;
-    if ( exists( $Params->{Filter} ) && ref( $Params->{Filter} ) eq 'HASH' ) {
+    if ( exists( $params->{Filter} ) && ref( $params->{Filter} ) eq 'HASH' ) {
         my $i = 0;
-        for my $f ( keys %{ $Params->{Filter} } ) {
+        for my $f ( keys %{ $params->{Filter} } ) {
             #already joined and filtered in $data_sql
-            next if exists( $Params->{Fields} ) && ref( $Params->{Fields} ) eq 'ARRAY' && scalar( grep { $_ eq $f } @{ $Params->{Fields} } );
+            next if exists( $params->{Fields} ) && ref( $params->{Fields} ) eq 'ARRAY' && scalar( grep { $_ eq $f } @{ $params->{Fields} } );
             if ( exists( $self->{ItemFields}->{ $f } ) ) {
-                $items_filter_sql .= ' AND ' . $self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'items."' . $f . '"' } );
+                $items_filter_sql .= ' AND ' . $self->_MakeFilterStatement( { value => $params->{Filter}->{$f}, prefix => 'items."' . $f . '"' } );
                 next;
             }
 
@@ -650,42 +644,42 @@ sub _list {
 
             my $tbl = $self->{DataTables}->{ $Field->{type} }->[0];
             $filter_sql .= ' INNER JOIN '.$tbl.' AS FilterData'.$i.' ON items."id" = FilterData'.$i.'."id" AND FilterData'.$i.'."field_id" = '.$Field->{id};
-            $filter_sql .= ' AND '.$self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'FilterData'.$i.'."data"' } );
+            $filter_sql .= ' AND '.$self->_MakeFilterStatement( { value => $params->{Filter}->{$f}, prefix => 'FilterData'.$i.'."data"' } );
         }
     }
     $sql .= $filter_sql;
-    $sql .= $Params->{JOIN} if exists( $Params->{JOIN} ) && defined( $Params->{JOIN} );
-    $items_filter_sql .= ' AND has_childs = 0 ' if scalar( grep { $_ =~ /leaves/i } keys %$Params );
-    $sql .= ' WHERE 1 = 1 ' . ( exists( $Params->{Filter}->{Type} ) ? ' AND ' . $self->_MakeFilterStatement( { value => $Params->{Filter}->{Type}, prefix => 'items."import_type"' } ) : '' ) . $items_filter_sql;
+    $sql .= $params->{JOIN} if exists( $params->{JOIN} ) && defined( $params->{JOIN} );
+    $items_filter_sql .= ' AND has_childs = 0 ' if scalar( grep { $_ =~ /leaves/i } keys %$params );
+    $sql .= ' WHERE 1 = 1 ' . ( exists( $params->{Filter}->{Type} ) ? ' AND ' . $self->_MakeFilterStatement( { value => $params->{Filter}->{Type}, prefix => 'items."import_type"' } ) : '' ) . $items_filter_sql;
     #default - show only published items, if we want to look over all - should add ShowHidden => 1, if we want to look hidden only - should add ShowHiddenOnly
-    if ( !scalar( grep { $_ eq 'ShowHidden' && defined( $Params->{$_} ) && $Params->{$_} } keys %$Params ) ) {
+    if ( !scalar( grep { $_ eq 'ShowHidden' && defined( $params->{$_} ) && $params->{$_} } keys %$params ) ) {
         $sql .= ' AND items.publish = true ';
     }
-    elsif ( exists( $Params->{ShowHiddenOnly} ) && $Params->{ShowHiddenOnly} ) {
+    elsif ( exists( $params->{ShowHiddenOnly} ) && $params->{ShowHiddenOnly} ) {
         $sql .= ' AND items.publish = false ';
     }
     #else - ShowHidden exists and it's true - so we are not use "publish" filter.
 
-    $sql .= ' ' . $Params->{GROUP_BY} . ' ' if exists( $Params->{GROUP_BY} );
+    $sql .= ' ' . $params->{GROUP_BY} . ' ' if exists( $params->{GROUP_BY} );
 
     $order_sql = ' items.id DESC ' unless defined( $order_sql );
     $sql .= ' ORDER BY ' . $order_sql;
 
     my $limit = exists( $self->{DefaultLimit} ) && int( $self->{DefaultLimit} || 0 ) ? int( $self->{DefaultLimit} ) : 50;
 
-    if ( exists( $Params->{Limit} ) && defined( $Params->{Limit} ) ) {
-        $limit = 'ALL' if $Params->{Limit} =~ /^all$/i;
-        if ( $Params->{Limit} !~ /^null$/i ) {
-            $limit =  int( $Params->{Limit} ) if int( $Params->{Limit} || 0 );
+    if ( exists( $params->{Limit} ) && defined( $params->{Limit} ) ) {
+        $limit = 'ALL' if $params->{Limit} =~ /^all$/i;
+        if ( $params->{Limit} !~ /^null$/i ) {
+            $limit =  int( $params->{Limit} ) if int( $params->{Limit} || 0 );
             $sql .= ' LIMIT '.$limit;
         }
     }
 
     my $offset = 0;
-    $offset = int( $Params->{Offset} ) if exists( $Params->{Offset} ) && int( $Params->{Offset} || 0 );
+    $offset = int( $params->{Offset} ) if exists( $params->{Offset} ) && int( $params->{Offset} || 0 );
     $sql .= ' OFFSET ' . $offset if $offset;
 
-    return ( wantarray ? ( $sql, $SQLParts ) : $sql ) if exists( $Params->{SQLResult} ) && defined( $Params->{SQLResult} ) && $Params->{SQLResult};
+    return ( wantarray ? ( $sql, $SQLParts ) : $sql ) if exists( $params->{SQLResult} ) && defined( $params->{SQLResult} ) && $params->{SQLResult};
 
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
@@ -702,11 +696,11 @@ sub getIDByImport {
 }
 
 sub getParentsInTree {
-    my ( $self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
     return undef() unless $self->{_item};
-    return undef() unless defined( $Params );
-    my $parent = ref( $Params ) && ref( $Params ) eq 'HASH' && exists( $Params->{parent} ) ? int( $Params->{parent} || 0 ): int( $Params || 0 );
+    return undef() unless defined( $params );
+    my $parent = ref( $params ) && ref( $params ) eq 'HASH' && exists( $params->{parent} ) ? int( $params->{parent} || 0 ): int( $params || 0 );
     return undef() unless $parent;
 
     my $sth = $self->{dbh}->prepare(
@@ -722,16 +716,16 @@ sub getParentsInTree {
 }
 
 sub Search {
-    my ( $self, $Params ) = @_;
+    my ( $self, $params ) = @_;
 
     return undef() unless $self->{Type};
 
     my $Set = $self->{Type};
 
     my $ItemsSubQuery = 'SELECT d."id" FROM ';
-    if ( exists( $Params->{Field} ) ) {
-        my $fields = $Params->{Field};
-        $fields = [ $Params->{Field} ] unless ref( $Params->{Field} ) eq 'ARRAY';
+    if ( exists( $params->{Field} ) ) {
+        my $fields = $params->{Field};
+        $fields = [ $params->{Field} ] unless ref( $params->{Field} ) eq 'ARRAY';
         my $lt = undef();
         my $fields_sql = [];
         for my $f ( map { $self->{Fields}->{ $Set }->{ $_ } } grep { exists( $self->{Fields}->{ $Set }->{ $_ } ) } @$fields ) {
@@ -743,11 +737,11 @@ sub Search {
         $ItemsSubQuery .= '( ' . join( ' OR ', map { 'd."field_id" = ' . $_ } @$fields_sql ) . ' ) AND ';
     }
     else {
-        return undef() unless exists( $Params->{Type} ) && defined( $Params->{Type} );
-        return undef() unless exists( $self->{DataTables}->{ $Params->{Type} } );
-        $ItemsSubQuery .= $self->{DataTables}->{ $Params->{Type} }->[0].' AS d WHERE ';
+        return undef() unless exists( $params->{Type} ) && defined( $params->{Type} );
+        return undef() unless exists( $self->{DataTables}->{ $params->{Type} } );
+        $ItemsSubQuery .= $self->{DataTables}->{ $params->{Type} }->[0].' AS d WHERE ';
     }
-    $ItemsSubQuery .= $self->_MakeFilterStatement( { value => $Params->{Value}, prefix => exists( $Params->{Prefix} ) ? $Params->{Prefix} : 'd."data"' } );
+    $ItemsSubQuery .= $self->_MakeFilterStatement( { value => $params->{Value}, prefix => exists( $params->{Prefix} ) ? $params->{Prefix} : 'd."data"' } );
 
     my $unions = [];
     for my $dt ( keys %{ $self->{DataTables} } ) {
@@ -756,33 +750,33 @@ sub Search {
     }
 
     my $sql = join( ' UNION ', @$unions );
-    return $sql if $Params->{SQLResult};
+    return $sql if $params->{SQLResult};
 
     my $rows = $self->{DBObject}->SelectAllHR( $sql );
 
-    my $Result = [];
+    my $result = [];
     my $lid = 0;
     my $i = -1;
     for my $r ( @$rows ) {
         if ( $$r{id} != $lid ) {
-            push @$Result, { id => $$r{id} };
+            push @$result, { id => $$r{id} };
             $lid = $$r{id};
             $i++;
         }
-        $Result->[ $i ]->{ $self->{FieldsById}->{ $$r{field_id} }->{alias} } = $$r{data};
+        $result->[ $i ]->{ $self->{FieldsById}->{ $$r{field_id} }->{alias} } = $$r{data};
     }
 
-    return $Result;
+    return $result;
 }
 
 sub BreadCrumbsArray {
-    my ( $self, $Type ) = @_;
+    my ( $self, $type ) = @_;
 
     my @Crumbs = ();
     return [] if !$self->id() && !$self->type();
 
-    $Type //= $self->type();
-    $Type = ucfirst($Type);
+    $type //= $self->type();
+    $type = ucfirst($type);
 
     @Crumbs = (
         grep { $_->parent() && $_->type ne 'location' }

@@ -5,10 +5,10 @@ use strict;
 use warnings;
 
 sub RefreshView{
-    my ( $Self ) = @_;
+    my ( $self ) = @_;
 
-    $Self->{dbh}->do("SELECT refresh_pbd_company_view()");
-    $Self->{dbh}->do("select refresh_manual_eav_view()" );
+    $self->{dbh}->do("SELECT refresh_pbd_company_view()");
+    $self->{dbh}->do("select refresh_manual_eav_view()" );
 
     return 1;
 }

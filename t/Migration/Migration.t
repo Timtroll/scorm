@@ -3,7 +3,7 @@
 # миграция: чтение и запуск sql файлов из scorm/sql
 use strict;
 use warnings;
-use File::Slurp qw(slurp);
+use File::Slurp::Unicode qw(slurp);;
 use DBI;
 
 use Mojo::Base -strict;
@@ -16,7 +16,7 @@ my ( $filename, $config, $db, $dbh, $check_db, $sth, $res, $db_test, $dbh_test, 
 $filename = './freee.conf';
 
 # чтение конфигурации
-$config = slurp( $filename, { err_mode => 'carp' } ) or die( "can't read file $filename: $!" );
+$config = slurp( $filename, encoding => 'utf8' ) or die( "can't read file $filename: $!" );
 
 # преобразование текста файла конфигурации в объект
 $config = eval( $config );
@@ -119,7 +119,7 @@ $result = `./script/migration.pl test`;
 
 # проверка результата
 $filename = './log/migration_test.log';
-$res = slurp( $filename, { err_mode => 'carp' } ) or die( "can't read file $filename: $!" );
+$res = slurp( $filename, encoding => 'utf8' ) or die( "can't read file $filename: $!" );
 $res = $res =~ qq(execute doesn't work ERROR:  syntax error at or near "this");
 ok( $res, "sql file syntactic error" );
 
@@ -149,7 +149,7 @@ $result = `./script/migration.pl test`;
 
 # проверка результата
 $filename = './log/migration_test.log';
-$res = slurp( $filename, { err_mode => 'carp' } ) or die( "can't read file $filename: $!" );
+$res = slurp( $filename, encoding => 'utf8' ) or die( "can't read file $filename: $!" );
 $res = $res =~ qq(execute doesn't work ERROR:  relation "groups" already exists);
 ok( $res, "sql file logic error" );
 

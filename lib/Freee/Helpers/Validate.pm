@@ -158,10 +158,24 @@ sub register {
             # валидация роутов
 ################
             # роуты user/*
-            '/settings/edit'  => {
+            '/user/add'  => {
+                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+                'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\- \,\.№\'\"\/0-9]$/os, 64 ],
+                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
+                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
+                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'newpassword'   => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
+                'type'          => [ 'required', qr/^\d+$/os, 3 ]
+            },
+            '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/settings/save'  => {
+            '/user/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -176,10 +190,10 @@ sub register {
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
-            '/settings/toggle'  => {
+            '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/settings/delete'  => {
+            '/user/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
 ################
