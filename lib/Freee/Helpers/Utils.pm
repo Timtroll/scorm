@@ -171,6 +171,30 @@ sub register {
 
         return $result ? $result : 0;
     });
+
+    # установить в маске статус active
+    $app->helper('_activate' => sub {
+        my ($self, $mask, $field) = @_;
+
+        if (exists $self->config->{UsersFlags}->{$field}) {
+            $mask |= $UsersFlags->{$field};
+            return $mask;
+        }
+
+        return;
+    });
+
+    # установить в маске статус suspend
+    $app->helper('_suspend' => sub {
+        my ($self, $mask, $field) = @_;
+
+        if (exists $self->config->{UsersFlags}->{$field}) {
+            $mask &= $UsersFlags->{$field};
+            return $mask;
+        }
+
+        return;
+    });
 }
 
 1;

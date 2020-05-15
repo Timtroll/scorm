@@ -14,7 +14,8 @@ sub new {
 
     my $p = $_[0];
     $p = {} if !ref( $p ) || ref( $p ) ne 'HASH';
-    $p->{Type} = lc( $type );
+    # $p->{Type} = lc( $type );
+    $p->{Type} = $type;
 
     return $class->new( $p );               
 }

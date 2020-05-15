@@ -1,18 +1,12 @@
 DO $$
 BEGIN
-    PERFORM eav_createfield( 'user', 'city', 'город', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'country', 'страна', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'birthday', 'дата рождения', 'datetime', NULL );
-    PERFORM eav_createfield( 'user', 'phone', 'номер телефона', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'avatar', 'фото', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'groups', 'список ID групп', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'patronymic', 'Отчество', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'name', 'Имя', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'emailconfirmed', 'email подтвержден', 'string', NULL );
-    PERFORM eav_createfield( 'user', 'users_id', 'Id users пользователя', 'int', NULL );
-    PERFORM eav_createfield( 'user', 'status', 'активный/неактивный', 'boolean', NULL );
-    PERFORM eav_createfield( 'user', 'phoneconfirmed', 'телефон подтвержден', 'boolean', NULL );
-    PERFORM eav_createfield( 'user', 'surname', 'Фамилия', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'City', 'город', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'Country', 'страна', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'Birthday', 'дата рождения', 'datetime', NULL );
+    PERFORM eav_createfield( 'User', 'Phone', 'номер телефона', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'Patronymic', 'Отчество', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'Name', 'Имя', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'Surname', 'Фамилия', 'string', NULL );
 END;
 $$;
 
@@ -27,4 +21,10 @@ INSERT INTO "public"."EAV_items" (
     title,
     parent,
     has_childs
-) VALUES (TRUE, 0, 'user', NOW(), 'user_root', 0, 0);
+) VALUES (TRUE, 0, 'User', NOW(), 'User_root', 0, 0);
+
+INSERT INTO "public"."EAV_links" (
+    parent,
+    id,
+    distance
+) VALUES (0, 1, 0);

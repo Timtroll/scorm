@@ -70,7 +70,7 @@ sub _init {
         $self->{FieldsById}->{ $$field{id} } = $field;
     }
 
-    $self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'type', 'import_type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
+    $self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'import_type', 'import_source', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
 
     $self->{DataTables} = {
         int      => [ '"public"."EAV_data_int4"', '"EAV_data_int4_pkey"' ],
@@ -92,15 +92,16 @@ sub _init {
     for my $type ( keys %{ $self->{Fields} } ) {
         my $T = ucfirst($type);
         my $class = $base . '::' . $T;
-
-        my ( $id ) = ( map { $_->{id} } grep { $_->{import_type} eq $type } @{ $self->{_roots} } );
+warn Dumper $self->{_roots};
+warn $type;
+        my ( $id ) = ( map { $_->{id}} grep { $_->{import_type} eq $type } @{ $self->{_roots} } );
         if ( !defined( $id ) ) {
             if ( $type eq 'Default' ) {
                  $self->{Roots}->{ $type } =  undef();
             }
             else {
-                 my $obj;
-                 eval '
+                my $obj;
+                eval '
                     use ' . $class . ';
                     $obj = ' . $class . '->new( { Type => $type, parent => 0, publish => \1, import_id => undef(), title => $T, dbh => $self->{dbh}  } );
                 ';
@@ -151,7 +152,7 @@ sub _InitThisItem {
         if ( exists( $params->{data} ) && defined( $params->{data} ) && ref( $params->{data} ) && ref( $params->{data} ) eq 'HASH' ) {
             $self->_MultiStore( $params->{data} );
         }
-        elsif ( exists( $params->{$Type} ) && defined( $params->{$type} ) && ref( $params->{$type} ) && ref( $params->{$type} ) eq 'HASH' ) {
+        elsif ( exists( $params->{$type} ) && defined( $params->{$type} ) && ref( $params->{$type} ) && ref( $params->{$type} ) eq 'HASH' ) {
             $self->_MultiStore( { $$params{Type} => $params->{$type} } );
         }
     }
@@ -338,8 +339,8 @@ sub _create {
     die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
 
     my $data = {
-        'publish'     => 'false',
-        'import_type' => $self->{dbh}->quote( $$Item{Type} )
+        'publish'       => 'false',
+        'import_type'   => $self->{dbh}->quote( $$Item{Type} )
     };
     $$data{publish}       = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
     $$data{import_id}     = $self->{dbh}->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
@@ -394,6 +395,26 @@ sub _MultiStore {
     }
 
     return 1;
+}
+
+sub StoreOblect {
+    my ( $self, $params ) = @_;
+
+    return undef() unless $self->{_item};
+    return undef() unless defined( $params );
+
+    my $dataset = {};
+    foreach my $key ( keys %$params ) {
+        if ( ref( $params->{ $key } ) && ref( $params->{ $key } ) eq 'HASH' ) {
+            $dataset->{ $key } = $params->{ $key }
+        } else {
+            $self->_store( $key, $params->{ $key } );
+        }
+    }
+
+    $self->_MultiStore( $dataset ) if scalar( keys %$dataset );
+
+    return 1
 }
 
 sub _delete {

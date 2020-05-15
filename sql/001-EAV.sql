@@ -1,10 +1,10 @@
 -- должны быть права на создание EXTENSION
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE EXTENSION IF NOT EXISTS btree_gin;
+-- CREATE EXTENSION IF NOT EXISTS pg_trgm;
+-- CREATE EXTENSION IF NOT EXISTS btree_gin;
 
 ---
 
-CREATE SEQUENCE "public".eav_fields_id_seq
+CREATE SEQUENCE IF NOT EXISTS "public".eav_fields_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -29,7 +29,7 @@ CREATE TYPE "public"."EAV_field_type" AS ENUM (
 CREATE TYPE "public"."EAV_object_type" AS ENUM (
     'service',
     'office',
-    'user',
+    'User',
     'subscription',
     'sla',
     'address',

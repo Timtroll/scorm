@@ -56,23 +56,26 @@ sub startup {
         'publish'       => \1,
         'parent'        => 1
     } );
-    $user->store( {
-        'title'         => 'тестовый юзер test',
-        'users_id'      => 1,
-        'surname'       => "Фамилия",
-        'name'          => "Имя",
-        'patronymic'    => "Отчество",
-        'city'          => "город",
-        'country'       => "страна",
-        'birthday'      => "дата рождения",
-        'emailconfirmed'=> "email подтвержден",
-        'phone'         => "номер телефона",
-        'phoneconfirmed'=> "телефон подтвержден",
-        'status'        => "активный/неактивный",
-        'groups'        => "список ID групп",
-        'avatar'        => "фото",
+    $user->StoreOblect( 'User', {
+        'Title'         => 'тестовый юзер test',
+        'UsersId'       => 1,
+# import_source => 'local',
+# import_id => 1
 
-    } );
+        'Surname'       => "Фамилия",
+        'Name'          => "Имя",
+        'Patronymic'    => "Отчество",
+        'City'          => "город",
+        'Country'       => "страна",
+        'Birthday'      => "дата рождения",
+        'EmailConfirmed'=> "email подтвержден",
+        'Phone'         => "номер телефона",
+        'PhoneConfirmed'=> "телефон подтвержден",
+#        'Groups'        => "список ID групп",
+        'Avatar'        => "фото",
+        'Status'        => "активный/неактивный"
+    });
+    my $id = $user->id();
     # warn $user->users_id( 3 );
 
     # читаем запись
