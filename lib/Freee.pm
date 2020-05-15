@@ -47,31 +47,38 @@ sub startup {
     # init Pg connection
     $self->{dbh} = $self->pg_dbh();
     # $self->pg_init();
-use Freee::EAV;
-my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+# use Freee::EAV;
+# my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
 
-use Freee::EAV::User;
-my $user = Freee::EAV::User->new( { 'title' => 'тестовый юзер', parent => 1 } );
-$user->test( 'qwweq' );
-warn $user->test();
+# use Freee::EAV::User;
+# my $user = Freee::EAV::User->new( { 'title' => 'тестовый юзер', parent => 1 } );
+# $user->test( 'qwweq' );
+# warn $user->test();
 
     # init Beanstalk connection
     $self->_beans_init();
 
-#     # подгружаем модель и создадим соответствующий хелпер для вызова модели
-#     my $model = Freee::Model->new(
-#         app => $self,
-#         dbh => $self->{dbh}
-#     );
-#     # my $model = Freee::Model->new($self);
-#     $self->helper(
-#         model => sub {
-#             my ($self, $model_name) = @_;
-#             return $model->get_model($model_name);
-#         }
-#     );
-# # warn Dumper $self->model('MyModel')->get_config_data;
-# warn Dumper $self->model('MyModel')->get_;
+    # подгружаем модель и создадим соответствующий хелпер для вызова модели
+    my $model = Freee::Model->new(
+        app => $self,
+        dbh => $self->{dbh}
+    );
+    # my $model = Freee::Model->new($self);
+    $self->helper(
+        model => sub {
+            my ($self, $model_name) = @_;
+            return $model->get_model($model_name);
+        }
+    );
+# warn Dumper $self->model('MyModel')->get_config_data;
+warn Dumper $self->model('MyModel')->set_(
+    id     => 20,
+    label  => 20,
+    name   => 20,
+    status => 1
+);
+
+warn Dumper $self->model('MyModel')->get_( 20 );
 
 # warn Dumper $self->dbh;
 
