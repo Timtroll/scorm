@@ -178,9 +178,11 @@ sub startup {
     $auth->post('/library/add')         ->to('library#add');
     $auth->post('/library/edit')        ->to('library#edit');
     $auth->post('/library/save')        ->to('library#save');
-    $auth->post('/library/upload')      ->to('library#upload');
     $auth->post('/library/toggle')      ->to('library#toggle');
     $auth->post('/library/delete')      ->to('library#delete');
+
+    # загрузка файлов
+    $auth->post('/upload/')              ->to('upload#index');
 
     # проверка заданий
     $auth->post('/mentors/')            ->to('mentors#index');

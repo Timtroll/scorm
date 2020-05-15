@@ -8,6 +8,7 @@ client/admin/node_modules/
 client/admin/dist
 client/admin/yarn.lock
 client/admin/package-lock.json
+upload/*
 
 # firebase
 *.log
