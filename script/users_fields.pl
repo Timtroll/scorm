@@ -9,6 +9,8 @@ use File::Slurp::Unicode qw(slurp);;
 use Freee::EAV;
 use DBI;
 
+use Data::Dumper;
+
 my ($config, $db, $self);
 
 if ( -e '../freee.conf' ) {
@@ -54,45 +56,29 @@ if ( DBI->errstr ) {
 my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
 
 # делаем запись
-my $user = Freee::EAV->new( 'User', {
-    'publish'   => \1,
-    'parent'    => 1
-} );
-$user->StoreOblect({
-    'title' => 'admin',
-    'User' => {
-        'Surname'       => "Фамилия 111",
-        'Name'          => "Имя",
-        'Patronymic'    => "Отчество",
-        'City'          => "город",
-        'Country'       => "страна",
-        'Birthday'      => "202-04-04 20:00:00",
-        'Phone'         => "номер телефона"
-    }
-});
-
-# 'User', {
-#     'Title'         => 'тестовый юзер test',
-#     'UsersId'      => 1,
-# import_source => 'local',
-# import_id => 1
-
-#     'Surname'       => "Фамилия",
-#     'Name'          => "Имя",
-#     'Patronymic'    => "Отчество",
-#     'City'          => "город",
-#     'Country'       => "страна",
-#     'Birthday'      => "дата рождения",
-#     'EmailConfirmed'=> "email подтвержден",
-#     'Phone'         => "номер телефона",
-#     'PhoneConfirmed'=> "телефон подтвержден",
-# #        'Groups'        => "список ID групп",
-#     'Avatar'        => "фото",
-#     'Status'        => "активный/неактивный",
-#     ''
+# my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
+# $user->StoreUser({
+#     'title' => 'admin',
+#     'User' => {
+#         'Surname'       => "Фамилия 112",
+#         'Name'          => "Имя 2",
+#         'Patronymic'    => "Отчество 3",
+#         'City'          => "город",
+#         'Country'       => "страна",
+#         'Birthday'      => "202-04-04 20:00:00",
+#         'Phone'         => "номер телефона"
+#     }
 # });
 
-my $id = $user->id();
+# читаем запись
+my $user = Freee::EAV->new( 'User', { 'id' => 2 } );
+# warn Dumper $user;
+warn Dumper $user->GetUser(2);
+
+
+# my $id = $user->id();
+
+
 # warn $user->users_id( 3 );
 
 # читаем запись

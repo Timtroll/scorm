@@ -65,7 +65,7 @@ sub _init {
 
     $self->{FieldsAsArray} = $fields;
     $self->{Fields} = {};
-    for my $field ( @$fields ) {
+    foreach my $field ( @$fields ) {
         $self->{Fields}->{ $field->{set} }->{ $field->{alias} } = $field;
         $self->{FieldsById}->{ $$field{id} } = $field;
     }
@@ -89,11 +89,10 @@ sub _init {
     $base =~ s/::Base//;
     # my %Loaded;
 
-    for my $type ( keys %{ $self->{Fields} } ) {
+    foreach my $type ( keys %{ $self->{Fields} } ) {
         my $T = ucfirst($type);
         my $class = $base . '::' . $T;
-warn Dumper $self->{_roots};
-warn $type;
+
         my ( $id ) = ( map { $_->{id}} grep { $_->{import_type} eq $type } @{ $self->{_roots} } );
         if ( !defined( $id ) ) {
             if ( $type eq 'Default' ) {
@@ -170,7 +169,8 @@ sub _get {
     return undef() unless defined( $item );
 
     #!!FIXIT
-    $$item{Type} = $$item{type} = $$item{import_type};
+    # $$item{Type} = $$item{type} = $$item{import_type};
+    $$item{Type} = $$item{import_type};
     delete( $$item{import_type} );
 
     #!!FIXIT
@@ -198,16 +198,15 @@ sub _getAll {
     $self->{_item}->{Childs} = $self->_get_childs( { Split => 1 } );
     my $types = { map { ( $self->{Fields}->{ $self->{Type} }->{ $_ }->{type}, 1 ) } keys %{ $self->{Fields}->{ $self->{Type} } } };
 
-    for my $tbl ( map { $self->{DataTables}->{ $_ }->[0] } grep { exists( $types->{ $_ } ) } keys %{ $self->{DataTables} } ) {
+    foreach my $tbl ( map { $self->{DataTables}->{ $_ }->[0] } grep { exists( $types->{ $_ } ) } keys %{ $self->{DataTables} } ) {
         my $sql = 'SELECT "field_id", "data" FROM ' . $tbl . ' WHERE "id" = ' . int( $self->{_item}->{id} );
         my $sth = $self->{dbh}->prepare( $sql );
         $sth->execute();
         my $rows = $sth->fetchall_arrayref({});
         $sth->finish();
-
-        for my $r ( @$rows ) {
-            my $alias = $self->{FieldsById}->{ $$r{field_id} };
-            $self->{_item}->{ $alias } = $r->{data};
+        foreach my $row ( @$rows ) {
+            my $alias = $self->{FieldsById}->{ $$row{field_id} };
+            $self->{_item}->{ $alias->{alias} } = $$row{data};
         }
     }
 
@@ -352,7 +351,7 @@ sub _create {
 
     my $id = $$data{id} = $self->{dbh}->last_insert_id( undef, 'public', 'EAV_items', undef, { sequence => 'eav_items_id_seq' } );
 
-    for my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
+    foreach my $val ( grep { defined( $_->{default_value} ) } @{ $self->{FieldsAsArray} } ) {
         next if $$val{type} ne $$Item{Type} && $$val{type} ne 'Default';
 
         $sql = 'INSERT INTO ' . $self->{DataTables}->{ $$val{type} }->[0] .
@@ -381,10 +380,10 @@ sub _create {
 sub _MultiStore {
     my ( $self, $params ) = @_;
 
-    for my $key ( keys %$params ) {
+    foreach my $key ( keys %$params ) {
         next if !defined( $params->{ $key } ) || !ref( $params->{ $key } ) || ref( $params->{ $key } ) ne 'HASH';
 
-        for my $field ( keys %{ $params->{ $key } } ) {
+        foreach my $field ( keys %{ $params->{ $key } } ) {
             if ( exists( $self->{ItemFields}->{ $field } ) ) {
                 $self->_store( $field, $params->{ $key }->{ $field } );
                 next;
@@ -397,25 +396,25 @@ sub _MultiStore {
     return 1;
 }
 
-sub StoreOblect {
-    my ( $self, $params ) = @_;
+# sub StoreOblect {
+#     my ( $self, $params ) = @_;
 
-    return undef() unless $self->{_item};
-    return undef() unless defined( $params );
+#     return undef() unless $self->{_item};
+#     return undef() unless defined( $params );
 
-    my $dataset = {};
-    foreach my $key ( keys %$params ) {
-        if ( ref( $params->{ $key } ) && ref( $params->{ $key } ) eq 'HASH' ) {
-            $dataset->{ $key } = $params->{ $key }
-        } else {
-            $self->_store( $key, $params->{ $key } );
-        }
-    }
+#     my $dataset = {};
+#     foreach my $key ( keys %$params ) {
+#         if ( ref( $params->{ $key } ) && ref( $params->{ $key } ) eq 'HASH' ) {
+#             $dataset->{ $key } = $params->{ $key }
+#         } else {
+#             $self->_store( $key, $params->{ $key } );
+#         }
+#     }
 
-    $self->_MultiStore( $dataset ) if scalar( keys %$dataset );
+#     $self->_MultiStore( $dataset ) if scalar( keys %$dataset );
 
-    return 1
-}
+#     return 1
+# }
 
 sub _delete {
     my $self = shift;
@@ -438,12 +437,12 @@ sub _MoveChilds {
     my $parents = $sth->fetchall_arrayref({});
     $sth->finish();
 
-    for my $parent ( @$parents ) {
+    foreach my $parent ( @$parents ) {
         my $sql = 'DELETE FROM "public"."EAV_links" WHERE "parent" = '.$parent->{parent}.' AND "id" IN ('.join( ', ', @$Childs ).')';
         $self->{dbh}->do( $sql );
     }
 
-    for my $child ( @$Childs ) {
+    foreach my $child ( @$Childs ) {
         my $sql = 'INSERT INTO "public"."EAV_links" ( "id", "parent", "distance" ) VALUES ( ' . $child . ', ' . int( $params->{NewParent} ) . ', 0 ) ' . 'ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "distance" = 0';
         $self->{dbh}->do( $sql );
     }
@@ -489,7 +488,7 @@ sub _RealDelete {
     $self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "id" IN (' . join( ',', @$items ) . ') ' );
     $self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" IN (' . join( ',', @$items ) . ') ' );
     $self->{dbh}->do( 'DELETE FROM "public"."EAV_items" WHERE "id" IN (' . join( ',', @$items ) . ')' );
-    for my $tbl ( map { $self->{DataTables}->{ $_ }->[0] } keys %{ $self->{DataTables} } ) {
+    foreach my $tbl ( map { $self->{DataTables}->{ $_ }->[0] } keys %{ $self->{DataTables} } ) {
         $self->{dbh}->do( 'DELETE FROM ' . $tbl . ' WHERE "id" IN (' . join( ',', @$items ) . ')' );
     }
 
@@ -528,7 +527,7 @@ sub _MakeFilterStatement {
     elsif ( ref( $v ) eq 'HASH' ) {
         my $simple_keys = { gt => '>', gte => '>=', lt => '<', lte => '<=', '~*' => '~*' };
         my $v_keys = { map { ( $_, lc( $_ ) ) } keys %$v };
-        for my $k ( grep { exists( $simple_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
+        foreach my $k ( grep { exists( $simple_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
             $res .= $prefix . ' ' . $simple_keys->{ $v_keys->{$k} } . ' ' . $self->{dbh}->quote( $v->{ $k } )
         }
 
@@ -536,7 +535,7 @@ sub _MakeFilterStatement {
         #поэтому lower(field) like 'some%'
         #работает сильно быстрее, чем то-же самое с ilike
         my $like_keys = { like => 'LIKE', ilike => 'ILIKE' };
-        for my $k ( grep { exists( $like_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
+        foreach my $k ( grep { exists( $like_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
             my $value = $v->{ $k };
             my $p_start = ( $value =~ /^\%/ and $value =~ s/^\%// ? 1 : 0 );
             my $p_end = ( $value =~ /\%$/ and $value =~ s/\%$// ? 1 : 0 );
@@ -575,7 +574,7 @@ sub _list {
     $params->{Order} = [] if !exists( $params->{Order} ) || !defined( $params->{Order} ) || !ref( $params->{Order} ) || ref( $params->{Order} ) ne 'ARRAY';
 
     my $SQLParts = { Order => \$order_sql, Data => \$data_sql, Filter => \$filter_sql, ItemFilter => \$items_filter_sql, SelectFields => \$select_fields };
-    for my $pair ( grep { ref( $_ ) eq 'HASH' } @{ $params->{Order} } ) {
+    foreach my $pair ( grep { ref( $_ ) eq 'HASH' } @{ $params->{Order} } ) {
         my ( $nulls ) = ( grep { $_ =~ /^nulls$/i } keys %$pair );
         my ( $sort_field ) = ( grep { $_ !~ /^nulls$/i } keys %$pair );
         next unless defined( $sort_field );
@@ -609,7 +608,7 @@ sub _list {
 
     if ( exists( $params->{Fields} ) && ref( $params->{Fields} ) eq 'ARRAY' ) {
         my $i = 0;
-        for my $f ( @{ $params->{Fields} } ) {
+        foreach my $f ( @{ $params->{Fields} } ) {
             my ( $set, $field ) = ( split /\./, $f );
             next if !defined( $set ) || !defined( $field ) || !exists( $self->{Fields}->{ $set }->{ $field } );
             my $Field = $self->{Fields}->{ $set }->{ $field };
@@ -627,7 +626,7 @@ sub _list {
     my $i = 0;
     if ( exists( $params->{Parents} ) && defined( $params->{Parents} ) && ref( $params->{Parents} ) ) {
         if ( ref( $params->{Parents} ) eq 'HASH' ) {
-            for my $p ( keys %{ $params->{Parents} } ) {
+            foreach my $p ( keys %{ $params->{Parents} } ) {
                 if ( !ref( $params->{Parents}->{ $p } ) ) {
                     $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
                     $sql .= ' AND links'.$i.'."distance" = '.int( $params->{Parents}->{ $p } || 0 )
@@ -642,7 +641,7 @@ sub _list {
             }
         }
         elsif ( ref( $params->{Parents} ) eq 'ARRAY' ) {
-            for my $p ( @{ $params->{Parents} } ) {
+            foreach my $p ( @{ $params->{Parents} } ) {
                 $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
             }
         }
@@ -651,7 +650,7 @@ sub _list {
     $sql .= $data_sql;
     if ( exists( $params->{Filter} ) && ref( $params->{Filter} ) eq 'HASH' ) {
         my $i = 0;
-        for my $f ( keys %{ $params->{Filter} } ) {
+        foreach my $f ( keys %{ $params->{Filter} } ) {
             #already joined and filtered in $data_sql
             next if exists( $params->{Fields} ) && ref( $params->{Fields} ) eq 'ARRAY' && scalar( grep { $_ eq $f } @{ $params->{Fields} } );
             if ( exists( $self->{ItemFields}->{ $f } ) ) {
@@ -749,7 +748,7 @@ sub Search {
         $fields = [ $params->{Field} ] unless ref( $params->{Field} ) eq 'ARRAY';
         my $lt = undef();
         my $fields_sql = [];
-        for my $f ( map { $self->{Fields}->{ $Set }->{ $_ } } grep { exists( $self->{Fields}->{ $Set }->{ $_ } ) } @$fields ) {
+        foreach my $f ( map { $self->{Fields}->{ $Set }->{ $_ } } grep { exists( $self->{Fields}->{ $Set }->{ $_ } ) } @$fields ) {
             return undef() if defined( $lt ) && $lt ne $f->{type};
             $lt = $f->{type};
             push @$fields_sql, $f->{id};
@@ -765,7 +764,7 @@ sub Search {
     $ItemsSubQuery .= $self->_MakeFilterStatement( { value => $params->{Value}, prefix => exists( $params->{Prefix} ) ? $params->{Prefix} : 'd."data"' } );
 
     my $unions = [];
-    for my $dt ( keys %{ $self->{DataTables} } ) {
+    foreach my $dt ( keys %{ $self->{DataTables} } ) {
         my $sql = 'SELECT "id", "field_id", "data"' . ( $dt eq 'string' ? '' : '::varchar(4096)' ) . ' FROM ' . $self->{DataTables}->{ $dt }->[0] . ' WHERE "id" IN ( ' . $ItemsSubQuery . ' ) ';
         push @$unions, $sql;
     }
@@ -778,7 +777,7 @@ sub Search {
     my $result = [];
     my $lid = 0;
     my $i = -1;
-    for my $r ( @$rows ) {
+    foreach my $r ( @$rows ) {
         if ( $$r{id} != $lid ) {
             push @$result, { id => $$r{id} };
             $lid = $$r{id};
@@ -811,7 +810,7 @@ sub BreadCrumbsArray {
 
     # Обрезаем путь на Группирующем Узле
     my $FilterIndex = 0;
-    for my $c ( @Crumbs ) {
+    foreach my $c ( @Crumbs ) {
         last if $c->GroupLeader();
         ++$FilterIndex;
     }

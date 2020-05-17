@@ -51,37 +51,6 @@ sub startup {
     # Модель EAV
     my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
 
-    # делаем запись
-    my $user = Freee::EAV->new( 'User', {
-        'publish'       => \1,
-        'parent'        => 1
-    } );
-    $user->StoreOblect( 'User', {
-        'Title'         => 'тестовый юзер test',
-        'UsersId'       => 1,
-# import_source => 'local',
-# import_id => 1
-
-        'Surname'       => "Фамилия",
-        'Name'          => "Имя",
-        'Patronymic'    => "Отчество",
-        'City'          => "город",
-        'Country'       => "страна",
-        'Birthday'      => "дата рождения",
-        'EmailConfirmed'=> "email подтвержден",
-        'Phone'         => "номер телефона",
-        'PhoneConfirmed'=> "телефон подтвержден",
-#        'Groups'        => "список ID групп",
-        'Avatar'        => "фото",
-        'Status'        => "активный/неактивный"
-    });
-    my $id = $user->id();
-    # warn $user->users_id( 3 );
-
-    # читаем запись
-    $user = Freee::EAV->new( 'User', { id => 16 } );
-    warn $user->users_id();
-
     # init Beanstalk connection
     $self->_beans_init();
 

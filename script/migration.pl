@@ -60,7 +60,7 @@ if (
 
 # подключение к базе данных
 $dbh = DBI->connect(
-    $db->{'dsn'},
+    'dbi:Pg:dbname=postgres;host=localhost;port=5432',
     $db->{'username'},
     $db->{'password'},
     $db->{'options'}
@@ -86,6 +86,42 @@ else {
     $path = '../sql';
 }
 
+my ( $filename, $sql, $sth, $res );
+
+# создание базы и таблицы
+$filename = $path . '/_create_db.sql';
+$sql = slurp( $filename, encoding => 'utf8' );
+$sth = $dbh->prepare( $sql );
+$res = $sth->execute();
+if ( DBI->errstr ) {
+    warn "execute doesn't work " . DBI->errstr . " in $filename script";
+    logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
+    exit;    
+}
+warn 'Db created';
+
+# подключение к базе данных
+$dbh = DBI->connect(
+    $db->{'dsn'},
+    $db->{'username'},
+    $db->{'password'},
+    $db->{'options'}
+);
+if ( DBI->errstr ) {
+    logging( "connection to database doesn't work:" . DBI->errstr );
+    exit;    
+}
+
+$filename = $path . '/_create_extiention.sql';
+$sql = slurp( $filename, encoding => 'utf8' );
+$sth = $dbh->prepare( $sql );
+$res = $sth->execute();
+if ( DBI->errstr ) {
+    warn "execute doesn't work " . DBI->errstr . " in $filename script";
+    logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
+    exit;    
+}
+
 # чтение файлов директории скриптов
 @list = `ls $path 2>&1`;
 if ( $? ) {
@@ -94,15 +130,14 @@ if ( $? ) {
 };
 # обработка файлов директории  
 foreach ( @list ) {
-    my ( $filename, $sql, $sth, $res );
-    $filename = $path . '/' . $_;
-    chomp ( $filename );
-
+    chomp;
     # фильтрация не sql файлов и папок
-    next if ( -d $filename || $_ !~ /\.sql$/);
+    next if ( -d $path . '/' . $_ || /^\_/ || ! /\.sql$/ );
+
+    # my ( $filename, $sql, $sth, $res );
+    $filename = $path . '/' . $_;
 
     # чтение содержимого файлов
-    # $sql = slurp( $filename, { err_mode => 'carp' } );
     $sql = slurp( $filename, encoding => 'utf8' );
     unless ( $sql ) { 
         logging( "can't read file $filename" ); 

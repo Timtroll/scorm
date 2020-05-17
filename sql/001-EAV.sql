@@ -1,9 +1,3 @@
--- должны быть права на создание EXTENSION
--- CREATE EXTENSION IF NOT EXISTS pg_trgm;
--- CREATE EXTENSION IF NOT EXISTS btree_gin;
-
----
-
 CREATE SEQUENCE IF NOT EXISTS "public".eav_fields_id_seq
     START WITH 1
     INCREMENT BY 1

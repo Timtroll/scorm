@@ -177,7 +177,7 @@ sub register {
         my ($self, $mask, $field) = @_;
 
         if (exists $self->config->{UsersFlags}->{$field}) {
-            $mask |= $UsersFlags->{$field};
+            # $mask |= $UsersFlags->{$field};
             return $mask;
         }
 
@@ -189,7 +189,7 @@ sub register {
         my ($self, $mask, $field) = @_;
 
         if (exists $self->config->{UsersFlags}->{$field}) {
-            $mask &= $UsersFlags->{$field};
+            # $mask &= $UsersFlags->{$field};
             return $mask;
         }
 
