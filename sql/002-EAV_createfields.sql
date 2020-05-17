@@ -1,12 +1,12 @@
 DO $$
 BEGIN
-    PERFORM eav_createfield( 'User', 'City', 'город', 'string', NULL );
-    PERFORM eav_createfield( 'User', 'Country', 'страна', 'string', NULL );
-    PERFORM eav_createfield( 'User', 'Birthday', 'дата рождения', 'datetime', NULL );
-    PERFORM eav_createfield( 'User', 'Phone', 'номер телефона', 'string', NULL );
-    PERFORM eav_createfield( 'User', 'Patronymic', 'Отчество', 'string', NULL );
-    PERFORM eav_createfield( 'User', 'Name', 'Имя', 'string', NULL );
-    PERFORM eav_createfield( 'User', 'Surname', 'Фамилия', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'city', 'город', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'country', 'страна', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'birthday', 'дата рождения', 'datetime', NULL );
+    PERFORM eav_createfield( 'User', 'phone', 'номер телефона', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'patronymic', 'Отчество', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'name', 'Имя', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'surname', 'Фамилия', 'string', NULL );
 END;
 $$;
 
@@ -21,7 +21,7 @@ INSERT INTO "public"."EAV_items" (
     title,
     parent,
     has_childs
-) VALUES (TRUE, 0, 'User', NOW(), 'User_root', 0, 0);
+) VALUES (TRUE, 0, 'User', NOW(), 'user_root', 0, 0);
 
 INSERT INTO "public"."EAV_links" (
     parent,
