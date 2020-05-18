@@ -93,6 +93,9 @@ sub startup {
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                  ->to('index#error');
 
+    # загрузка файлов
+    $r->post('/upload/')                ->to('upload#index');       # сохранение загружаемого файла
+
     $auth = $r->under()->to('auth#check_token');
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
@@ -201,6 +204,8 @@ sub startup {
     $auth->post('/groups/save')         ->to('groups#save');        # обновление данных группы
     $auth->post('/groups/delete')       ->to('groups#delete');      # удаление группы
     $auth->post('/groups/toggle')       ->to('groups#toggle');      # включение/отключение группы
+
+
 
     # управление роутами
     $auth->post('/routes/')             ->to('routes#index');       # список роутов конкретной группы
