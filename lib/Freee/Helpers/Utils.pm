@@ -172,6 +172,19 @@ sub register {
         return $result ? $result : 0;
     });
 
+    # генерация строки из случайных букв и цифр
+    # my $string = _random_string( length );
+    # возвращается строка
+    $app->helper('_random_string' => sub {
+        my ($self, $length) = @_;
+
+        return unless $length =~ /^\d+$/;
+
+        my @chars = ( "A".."Z", "a".."z", 0..9 );
+        my $string = join("", @chars[ map { rand @chars } ( 1 .. $length ) ]);
+
+    });
+
     # установить в маске статус active
     $app->helper('_activate' => sub {
         my ($self, $mask, $field) = @_;
