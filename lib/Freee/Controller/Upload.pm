@@ -8,82 +8,92 @@ use Data::Dumper;
 use common;
 
 sub index {
-    my ( $self, $file, $filename, $extension, $path, $coincidence, $new_filename, $name_length, $content, $result, @list );
-    $self = shift;
+    my $self = shift;
 
-    $file = $self->param('upload');
+    my ( $file, $data, $error, $filename, $extension, $path, $local_path, $coincidence, $title, $name_length, $content, $result, $description, @list, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    # валидация?
-    # unless (
-    #     $file &&
-    #     $file->{'headers'} &&
-    #     $file->{'headers'}->{'headers'} &&
-    #     $file->{'headers'}->{'headers'}->{'content-disposition'} &&
-    #     $file->{'headers'}->{'headers'}->{'content-disposition'}->[0]
-    # ) {
-    #     warn'wrong upload file!';
-    #     exit;
-    # }
+    unless (@mess) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+    }
 
-    # получение расширения
-    $extension = $file->{'headers'}->{'headers'}->{'content-disposition'}->[0];
-    $extension =~ s/^.*filename=".*\.//;
-    $extension =~ s/".*$//;
-    $extension = "\L$extension";
+warn Dumper( $data );
+warn Dumper( $error );
+# warn Dumper( $self->{ 'app' }->{ 'config' }->{ 'upload_max_size' } );
+# warn Dumper( @mess );
+# print '++++++++++++';
+# warn Dumper( $self->url_for );
+# print '++++++++++++';
 
-    ############### проверка расширения
+#     # получение загруженного файла
+#     $file = $self->param('upload');
 
-    $path = './upload/';
+# # warn Dumper( $file );
 
-    # чтение файлов директории скриптов
-    @list = `ls $path 2>&1`;
-    if ( $? ) {
-        warn( "can't read directory $path" ); 
-        exit; 
-    };
+#     # получение описания файла
+#     $description = $self->param('description');
 
-    $name_length = 48;
+#     # получение старого имени файла
+#     $title = $file->{'filename'};
 
-    do {
-        $coincidence = 0;
+#     # путь файла
+#     $path = 'local';
 
-        # генерация случайного имени файла
-        $new_filename = $self->_random_string( $name_length );
+#     # валидация?
+#     # unless (
+#     #     $file &&
+#     #     $file->{'headers'} &&
+#     #     $file->{'headers'}->{'headers'} &&
+#     #     $file->{'headers'}->{'headers'}->{'content-disposition'} &&
+#     #     $file->{'headers'}->{'headers'}->{'content-disposition'}->[0]
+#     # ) {
+#     #     warn'wrong upload file!';
+#     #     exit;
+#     # }
 
-        $new_filename = $new_filename . '.' . $extension;
+#     # получение расширения
+#     $extension = $file->{'headers'}->{'headers'}->{'content-disposition'}->[0];
+#     $extension =~ s/^.*filename=".*\.//;
+#     $extension =~ s/".*$//;
+#     $extension = "\L$extension";
 
-        foreach ( @list ){
-            chomp;
-            if ( $_ eq $new_filename ){
-                $coincidence = 1;
-                last;
-            }
-        }
-    } 
-    while ( $coincidence );
+#     ############### проверка расширения
 
-    # while ( !$coincidence  ){
-    #     $coincidence = 1;
+#     $local_path = './upload/';
 
-    #     # генерация случайного имени файла
-    #     $new_filename = $self->_random_string( $name_length );
-    #     $new_filename = $new_filename . '.' . $extension;
+#     # чтение файлов директории скриптов
+#     @list = `ls $local_path 2>&1`;
+#     if ( $? ) {
+#         warn( "can't read directory $local_path" ); 
+#         exit; 
+#     };
 
-    #     foreach ( @list ){
-    #         chomp;
-    #         if ( $_ eq $new_filename ){
-    #             $coincidence = 1;
-    #             exit;
-    #         }
-    #     }
-    # }
-    
+#     $name_length = 48;
 
-    # получение содержимого файла
-    $content = $file->{'asset'}->{'content'};
+#     do {
+#         $coincidence = 0;
 
-    # запись файла
-    $result = write_file( $path . $new_filename, $content) or die( "can't write file $filename: $!" );
+#         # генерация случайного имени файла
+#         $filename = $self->_random_string( $name_length );
+
+#         $filename = $filename . '.' . $extension;
+
+#         foreach ( @list ){
+#             chomp;
+#             if ( $_ eq $filename ){
+#                 $coincidence = 1;
+#                 last;
+#             }
+#         }
+#     } 
+#     while ( $coincidence );
+
+#     # получение содержимого файла
+#     $content = $file->{'asset'}->{'content'};
+
+#     # запись файла
+#     $result = write_file( $local_path . $filename, $content) or die( "can't write file $title: $!" );
 
     $self->render(
         'json'    => {

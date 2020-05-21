@@ -110,14 +110,49 @@ sub register {
     # возвращает ссылку на хэш из $self->param(*)
     $app->helper( '_check_fields' => sub {
         my $self = shift;
-
         return 0, '_check_fields: No route' unless $self->url_for;
 
         my %data = ();
-        foreach (keys %{$$vfields{$self->url_for}}) {
-            $data{$_} = $self->param($_);
-            if ( defined $self->param($_) && ($$vfields{$self->url_for}{$_}[0] eq 'required') ) {
-                $data{$_} = $self->param($_) // 0;
+        foreach ( keys %{ $$vfields{ $self->url_for } } ){
+            $data{ $_ } = $self->param( $_ );
+            if ( defined $self->param( $_ ) ){
+                if    ( $$vfields{ $self->url_for }{ $_ }[0] eq 'required' ){
+                    $data{ $_ } = $self->param( $_ ) // 0;
+                }
+                elsif ( $$vfields{ $self->url_for }{ $_ }[0] eq 'file_required' ) {
+                    # старое имя файла
+                    $data{ 'title' } = $self->param( $_ )->{ 'filename' } // return 0, "_check_fields: can't read file's old name";
+
+                    # содержимое файла
+                    $data{ 'content' } = $self->param( $_ )->{'asset'}->{'content'} // return 0, "_check_fields: can't read content of $data{ 'title' }";
+
+                    # размер файла
+                    $data{ 'size' } = length( $data{ 'content' } );
+                    if( $data{ 'size' } > $self->{ 'app' }->{ 'config' }->{ 'upload_max_size' } ){
+                        return 0, "_check_fields: $data{ 'title' } is too large";
+                    }
+
+                    # новое имя файла
+                    my $extension = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] //return 0, "_check_fields: can't read extension of $data{ 'title' }";
+                    $extension =~ s/^.*filename=".*\.//;
+                    $extension =~ s/".*$//;
+                    $extension = "\L$extension";
+
+                    my @valid_extensions = ('png','jpg','jpeg','svg');
+                    unless ( grep( /^$extension$/, @valid_extensions ) ) {
+                        return 0, "_check_fields: extension $extension is not valid in $data{ 'title' }";
+                    }
+
+                    my $name_length = 48;
+                    do{
+                        $data{ 'filename' } = $self->_random_string( $name_length );
+                        $data{ 'filename' } = $data{ 'filename' } . '.' . $extension;
+                    }
+                    while( -f './upload/'.$data{ 'filename' } );
+
+                    # путь файла
+                    $data{ 'path' } = 'local';
+                }
             }
         }
 
@@ -156,6 +191,12 @@ sub register {
     $app->helper( '_param_fields' => sub {
         $vfields = {
             # валидация роутов
+################
+            # роуты settings/*
+            '/upload'  => {
+                "upload"        => [ 'file_required', qr/^\d+$/os, 9 ],
+                "description"   => [ 'required', qr/^[\w0-9_]+$/os, 256 ]
+            },
 ################
             # роуты user/*
             '/user/add'  => {
