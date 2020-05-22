@@ -185,6 +185,17 @@ sub register {
 
     });
 
+    # проверка на наличие файла в директории
+    # my $true = _exists_in_directory( directory/file.extension );
+    # возвращается true/false
+    $app->helper('_exists_in_directory' => sub {
+        my ($self, $directory) = @_;
+
+        return unless $directory;
+
+        return -f $directory;
+    });
+
     # установить в маске статус active
     $app->helper('_activate' => sub {
         my ($self, $mask, $field) = @_;

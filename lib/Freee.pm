@@ -40,6 +40,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
+    $self->plugin('Freee::Helpers::PgUpdate');
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
