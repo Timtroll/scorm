@@ -40,7 +40,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
-    $self->plugin('Freee::Helpers::PgUpdate');
+    $self->plugin('Freee::Helpers::Upload');
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
@@ -94,10 +94,12 @@ sub startup {
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                  ->to('index#error');
 
-    # загрузка файлов
-    $r->post('/upload/')                ->to('upload#index');       # сохранение загружаемого файла
-
     $auth = $r->under()->to('auth#check_token');
+
+    # загрузка файлов
+    $auth->post('/upload/')                ->to('upload#index');       # сохранение загружаемого файла
+    $auth->post('/upload/search/')         ->to('upload#search');      # поиск загруженного файла
+    $auth->post('/upload/delete/')         ->to('upload#delete');      # удаление загруженного файла
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');    # Все дерево без листочков

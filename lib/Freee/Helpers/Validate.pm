@@ -110,56 +110,92 @@ sub register {
     # возвращает ссылку на хэш из $self->param(*)
     $app->helper( '_check_fields' => sub {
         my $self = shift;
+
         return 0, '_check_fields: No route' unless $self->url_for;
+
         my @error;
         my %data = ();
-        foreach ( keys %{ $$vfields{ $self->url_for } } ){
-            $data{ $_ } = $self->param( $_ );
-            if ( defined $self->param( $_ ) ){
-                if    ( $$vfields{ $self->url_for }{ $_ }[0] eq 'required' ){
-                    $data{ $_ } = $self->param( $_ ) // undef;
+
+        foreach ( keys %{$$vfields{$self->url_for}} ) {
+
+            # проверка статуса
+            if ( ( ( $$vfields{ $self->url_for }{$_}[0] eq 'required' ) || ( $$vfields{ $self->url_for }{$_}[0] eq '' ) ) && ( $self->param($_) ) ) {
+                # проверка длины
+                my $size = length( $self->param($_) );
+                unless ( $vfields->{ $self->url_for }->{$_}->[2] && (  $size <= $vfields->{ $self->url_for }->{$_}->[2] ) ) {
+                    push @error, "_check_fields: wrong size of '$_'";
+                    last;
                 }
-                elsif ( $$vfields{ $self->url_for }{ $_ }[0] eq 'file_required' ) {
-                    # старое имя файла
-                    $data{ 'title' } = $self->param( $_ )->{ 'filename' } // 0;
-                    push @error, "_check_fields: can't read file's old name" unless $data{ 'title' };
 
-                    # содержимое файла
-                    $data{ 'content' } = $self->param( $_ )->{'asset'}->{'content'} // 0;
-                    push @error, "_check_fields: can't read content" unless $data{ 'title' };
+                # проверка соответствия рег выражению
+                my $regular = $vfields->{ $self->url_for }->{$_}->[1];
+                unless ( $regular && ( $self->param( $_ ) =~ /$regular/ ) ) {
+                    push @error, "_check_fields: '$_' don't match regular expression";
+                    last;
+                }
 
-                    # размер файла
-                    $data{ 'size' } = length( $data{ 'content' } );
-                    if( $data{ 'size' } > $self->{ 'app' }->{ 'config' }->{ 'upload_max_size' } ){
-                        push @error, "_check_fields: file is too large";
-                    }
+                # ввод данных в хэш
+                $data{$_} = $self->param($_);
+            }
+            elsif ( ( $$vfields{$self->url_for}{$_}[0] eq 'file_required' ) && ( $self->param($_) ) ) {
+                # старое имя файла
+                $data{'title'} = $self->param($_)->{'filename'} // 0;
+                unless ( $data{'title'} ) {
+                    push @error, "_check_fields: can't read file's old name";
+                    last;
+                }
 
-                    ## новое имя файла
-                    # расширение файла
-                    my $extension = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
-                    push @error, "_check_fields: can't read extension" unless $extension;
-                    $extension =~ s/^.*filename=".*\.//;
-                    $extension =~ s/".*$//;
-                    $extension = "\L$extension";
+                # содержимое файла
+                $data{ 'content' } = $self->param( $_ )->{'asset'}->{'content'} // 0;
+                unless ( $data{ 'title' } ) {
+                    push @error, "_check_fields: can't read content";
+                    last;
+                }
 
-                    # проверка расширения
-                    unless ( exists( $self->{'app'}->{'config'}->{'valid_extensions'}->{ $extension } ) ){
-                        push @error, "_check_fields: extension $extension is not valid";
-                    }
+                # размер файла
+                $data{ 'size' } = length( $data{ 'content' } );
+                if ( $data{ 'size' } > $self->{ 'app' }->{ 'config' }->{ 'upload_max_size' } ) {
+                    push @error, "_check_fields: file is too large";
+                    last;
+                }
 
-                    # генерация случайного имени
-                    my $name_length = $self->{ 'app' }->{ 'config' }->{ 'upload_name_length' };
-                    do{
-                        $data{ 'filename' } = $self->_random_string( $name_length );
-                        $data{ 'filename' } = $data{ 'filename' } . '.' . $extension;
-                    }
-                    while( $self->_exists_in_directory( './upload/'.$data{ 'filename' } ) );
+                ## новое имя файла
+                # расширение файла
+                $data{ 'extension' } = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
+                unless ( $data{ 'extension' } ) {
+                    push @error, "_check_fields: can't read extension";
+                    last;
+                }
 
-                    # путь файла
-                    $data{ 'path' } = 'local';
+                $data{ 'extension' } =~ /^.*filename=\"(.*?)\.(.*?)\"/;
+                $data{ 'extension' } = lc $2;
+
+                # проверка расширения
+                unless ( exists( $self->{'app'}->{'config'}->{'valid_extensions'}->{ $data{ 'extension' } } ) ) {
+                    push @error, "_check_fields: extension $data{ 'extension' } is not valid";
+                    last;
+                }
+
+                # генерация случайного имени
+                my $name_length = $self->{ 'app' }->{ 'config' }->{ 'upload_name_length' };
+                $data{ 'filename' } = $self->_random_string( $name_length );
+                my $fullname = $data{ 'filename' } . '.' . $data{ 'extension' };
+
+                while ( $self->_exists_in_directory( './upload/'.$fullname ) ) {
+                    $data{ 'filename' } = $self->_random_string( $name_length );
+                    $fullname = $data{ 'filename' } . '.' . $data{ 'extension' };
+                }
+                # путь файла
+                $data{ 'path' } = 'local';
+            }
+            else {
+                unless ( $$vfields{ $self->url_for }{$_}[0] eq '' ) {
+                    push @error, "_check_fields: don't have required data";
+                    last;
                 }
             }
         }
+
 
         my $route = $self->url_for;
         # проверка, указанынй id это фолдер или нет (для роутов с 'settings' и 'folder' в названии)
@@ -179,7 +215,7 @@ sub register {
                         }
                     }
                 }
-                elsif ($route =~ /(add|edit|save)$/) {
+                elsif ( $route =~ /(add|edit|save)$/ ) {
                     if ( $self->_folder_check( $data{'id'} ) ) {
                         return 0, "_check_fields: Action is not allowed for '$route'";
                     }
@@ -187,12 +223,12 @@ sub register {
             }
         }
 
-        if ( @error ){
-            return \%data, \@error;
+        my $error;
+        if ( @error ) {
+            $error = join( "\n", @error );
         }
-        else{
-            return \%data;
-        }
+        return \%data, $error;
+
     });
 
     # загрузка правил валидации html полоей, например:
@@ -204,8 +240,15 @@ sub register {
 ################
             # роуты settings/*
             '/upload'  => {
-                "upload"        => [ 'file_required', qr/^\d+$/os, 9 ],
-                "description"   => [ 'required', qr/^[\w0-9_]+$/os, 256 ]
+                "upload"        => [ 'file_required' ],
+                "description"   => [ '', qr/^[\w0-9_]+$/os, 256 ]
+            },
+            '/upload/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/upload/search'  => {
+                "id"            => [ '', qr/^\d+$/os, 9 ],
+                "filename"      => [ '', qr/^[\w0-9_]+$/os, 48 ]
             },
 ################
             # роуты user/*

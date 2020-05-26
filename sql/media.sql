@@ -9,7 +9,8 @@ CREATE SEQUENCE media_id_seq
 CREATE TABLE "public"."media" (
     "id" int4 DEFAULT nextval('media_id_seq'::regclass) NOT NULL,
     "path" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
-    "filename" varchar(32) COLLATE "default" NOT NULL,
+    "filename" varchar(48) COLLATE "default" NOT NULL,
+    "extension" varchar(5) COLLATE "default" NOT NULL,
     "title" varchar(255) COLLATE "default",
     "size" int4,
     "type" varchar(32) COLLATE "default",
