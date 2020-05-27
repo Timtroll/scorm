@@ -113,7 +113,7 @@ sub _init {
                 use ' . $class . '; 
                 $obj = ' . $class . '->new( { Type => $type, dbh => $self->{dbh} } );
             ';
-            $obj->{_item} = $obj->_get( $id );
+            # $obj->{_item} = $obj->_get( $id );
             $self->{Roots}->{ $type } = $obj;
         }
     }

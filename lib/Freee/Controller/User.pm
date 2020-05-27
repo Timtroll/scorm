@@ -87,7 +87,7 @@ sub edit {
     my ($self, );
     $self = shift;
 
-    my ($user, $data, $param, $resp, $error, @mess);
+    my ($user, $data, $param, $resp, $error, $main, $contacts, $groups, @mess);
 
     unless (@mess) {
         # проверка данных
@@ -98,6 +98,28 @@ sub edit {
             # получаем данные пользователя
             $user = Freee::EAV->new( 'User', { 'id' => $param->{'id'} } );
             $user = $user->GetUser($param->{'id'});
+
+            $main = [
+                { 'surname'       => $$user{'surname'} },       # Фамилия
+                { 'name'          => $$user{'name'} },          # Имя
+                { 'patronymic'    => $$user{'patronymic'} },    # Отчество
+                { 'city'          => $$user{'city'} },          # город
+                { 'country'       => $$user{'country'} },       # страна
+#?                        { 'timezone'      => $$user{'timezone'} },    # часовой пояс
+                { 'birthday'      => $$user{'birthday'} },      # дата рождения (в секундах)
+#?                        { 'password'    => $$user{'password'} },      # пароль
+#?                        { 'newpassword' => $$user{'newpassword'} },   # пароль
+#?                        { 'type'          => 3 }                        # тип
+            ];
+            $contacts = [
+                { 'email'           => $$user{'email'} },           # email пользователя
+#?                        { 'emailconfirmed'  => $$user{'emailconfirmed'} },  # email подтвержден
+                { 'phone'           => $$user{'phone'} },           # номер телефона
+#?                        { 'phoneconfirmed'  => $$user{'phoneconfirmed'} }   # телефон подтвержден
+            ];
+            $groups = [
+                { "groups" => 1 }  # список ID групп
+            ];
         }
         else {
             push @mess, "Could not get '".$param->{'id'}."'";
@@ -125,40 +147,20 @@ sub edit {
 
     # Так будет отдаваться на фронт:
     unless (@mess) {
-        my $groups = [1];
         $data = {
             'id' => $$user{'id'},
             'tabs' => [ # Вкладки 
                 {
                     'label' => 'Основные',
-                    'fields'=> [
-                        { 'surname'       => $$user{'Surname'} },       # Фамилия
-                        { 'name'          => $$user{'Name'} },          # Имя
-                        { 'patronymic'    => $$user{'Patronymic'} },    # Отчество
-                        { 'city'          => $$user{'City'} },          # город
-                        { 'country'       => $$user{'Country'} },       # страна
-#?                        { 'timezone'      => $$user{'timezone'} },    # часовой пояс
-                        { 'birthday'      => $$user{'Birthday'} },      # дата рождения (в секундах)
-#?                        { 'status'      => $$user{'Status'} },        # активный / не активный пользователь
-#?                        { 'password'    => $$user{'password'} },      # пароль
-#?                        { 'newpassword' => $$user{'newpassword'} },   # пароль
-#?                        { 'type'          => 3 }                        # тип
-                    ]
+                    'fields'=> $main
                 },
                 {
                     'label' => 'Контакты',
-                    'fields' => [
-                        { 'email'           => $$user{'Phone'} },           # email пользователя
-#?                        { 'emailconfirmed'  => $$user{'emailconfirmed'} },  # email подтвержден
-                        { 'phone'           => $$user{'Phone'} },           # номер телефона
-#?                        { 'phoneconfirmed'  => $$user{'phoneconfirmed'} }   # телефон подтвержден
-                    ]
+                    'fields' => $contacts
                 },
                 {
                     "label" => "Группы",
-                    "fields" => [
-                        { "groups" => $groups }  # список ID групп
-                    ]
+                    "fields" => $groups  # список ID групп
                 }
             ]
         };
@@ -183,8 +185,10 @@ sub add {
         push @mess, $error unless $data;
 
         unless (@mess) {
+            # проверяем, - есть ли такой юзер
+
+            # таблица users
             my $user_data = {
-#                 'id'                => '',
                 'email'             => '',  # email пользователя
                 'password'          => '',  # хеш пароля
                 'time_create'       => '',  # время создания
@@ -192,19 +196,31 @@ sub add {
                 'time_update'       => '',  # время последих изменений
                 'timezone'          => ''  # часовой пояс
             };
+
+            # таблица users_social
+            # my $user_data = {
+            #     "user_id" int4 NOT NULL,
+            #     "social" "public"."social" NOT NULL,
+            #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
+            #     "social_id",     => 123123123,
+            #     "social_profile" => "{}"
+            # };
+
+            # таблица media (аватарка)
+            my $media_data = {
+                "path"      => 'local',
+                "filename"  => 'local',
+                "title"     => 'Название файла',
+                "size"      => 'local',
+#?                "type" varchar(32) COLLATE "default",
+                "mime"      => 'local',
+                "description"      => 'local',
+                "order"      => 'local',
+                "flags"     => 0
+            };
+
+            # таблицы EAV
             my $eav_data = {
-                'surname'           => $$data{'surname'},       # Фамилия
-                'name'              => $$data{'name'},          # Имя
-                'patronymic'        => $$data{'patronymic'},    # Отчество
-                'city'              => $$data{'city'},          # город
-                'country'           => $$data{'country'},       # страна
-                'birthday'          => $$data{'birthday'},      # дата рождения (в секундах)
-                'emailconfirmed'    => $$data{'emailconfirmed'},# email подтвержден
-                'phone'             => $$data{'phone'},         # номер телефона
-                'phoneconfirmed'    => $$data{'phoneconfirmed'},# телефон подтвержден
-                'status'            => $$data{'status'},        # активный / не активный пользователь
-                'groups'            => [],                      # список ID групп
-                'avatar'            => $$data{'avatar'}
             };
 
             # делаем запись в EAV

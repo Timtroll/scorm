@@ -16,6 +16,7 @@ CREATE SEQUENCE users_id_seq
 CREATE TABLE "public"."users" (
     "id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
     "email" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
+    "phone" varchar(16) COLLATE "default" DEFAULT NULL::character varying,
     "password" varchar(32) COLLATE "default" DEFAULT NULL::character varying,
     "eav_id" int4 DEFAULT 0 NOT NULL,
     "time_create" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,

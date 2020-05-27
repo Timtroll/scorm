@@ -56,22 +56,21 @@ if ( DBI->errstr ) {
 my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
 
 # делаем запись
-# my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
-# $user->StoreUser({
-#     'title' => 'admin',
-#     'User' => {
-#         'Surname'       => "Фамилия 112",
-#         'Name'          => "Имя 2",
-#         'Patronymic'    => "Отчество 3",
-#         'City'          => "город",
-#         'Country'       => "страна",
-#         'Birthday'      => "202-04-04 20:00:00",
-#         'Phone'         => "номер телефона"
-#     }
-# });
+my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
+$user->StoreUser({
+    'title' => 'admin',
+    'User' => {
+        'city'          => "город",
+        'country'       => "страна",
+        'birthday'      => "202-04-04 20:00:00",
+        'patronymic'    => "Отчество 3",
+        'name'          => "Имя 2",
+        'surname'       => "Фамилия 112",
+    }
+});
 
 # читаем запись
-my $user = Freee::EAV->new( 'User', { 'id' => 2 } );
+$user = Freee::EAV->new( 'User', { 'id' => 2 } );
 # warn Dumper $user;
 warn Dumper $user->GetUser(2);
 

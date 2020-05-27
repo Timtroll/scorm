@@ -27,13 +27,28 @@ sub StoreUser {
     return 1
 }
 
+# Данные пользователя
+# $user = Freee::EAV->new( 'User', { 'id' => $param->{'id'} } );
+# $user = $user->GetUser($param->{'id'});
 sub GetUser {
     my ( $self, $id ) = @_;
 
     return undef() unless $self->{_item};
     return undef() unless $id || $id != /^\d+$/ ;
 
-    my $data = $self->_getAll( $id );
+    # получаем данные из users
+    my $sql = 'SELECT * FROM "public"."users" WHERE id='. $id;
+    my $users = $self->{dbh}->selectrow_hashref( $sql, { Slice => {} } );
+    return $user unless $users->{'eav_id'};
+
+    # получаем данные из users_social
+    my $sql = 'SELECT * FROM "public"."users_social" WHERE user_id='. $id;
+    my $users_social = $self->{dbh}->selectrow_hashref( $sql, { Slice => {} } );
+
+    # получаем данные из EAV
+    my $data = $self->_getAll( $users->{'id'} );
+
+    # объедняем данные таблиц users + users_social + EAV
 
     return $data;
 }

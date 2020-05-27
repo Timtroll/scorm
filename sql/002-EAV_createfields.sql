@@ -3,7 +3,6 @@ BEGIN
     PERFORM eav_createfield( 'User', 'city', 'город', 'string', NULL );
     PERFORM eav_createfield( 'User', 'country', 'страна', 'string', NULL );
     PERFORM eav_createfield( 'User', 'birthday', 'дата рождения', 'datetime', NULL );
-    PERFORM eav_createfield( 'User', 'phone', 'номер телефона', 'string', NULL );
     PERFORM eav_createfield( 'User', 'patronymic', 'Отчество', 'string', NULL );
     PERFORM eav_createfield( 'User', 'name', 'Имя', 'string', NULL );
     PERFORM eav_createfield( 'User', 'surname', 'Фамилия', 'string', NULL );
