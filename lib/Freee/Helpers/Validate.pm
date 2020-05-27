@@ -225,8 +225,10 @@ sub register {
 
         my $error;
         if ( @error ) {
-            $error = join( "\n", @error );
+            @error = join( "\n", @error );
+            $error = \@error;
         }
+
         return \%data, $error;
 
     });
