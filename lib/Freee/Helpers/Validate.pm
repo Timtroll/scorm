@@ -117,7 +117,6 @@ sub register {
         my %data = ();
 
         foreach ( keys %{$$vfields{$self->url_for}} ) {
-
             # проверка статуса
             if ( ( ( $$vfields{ $self->url_for }{$_}[0] eq 'required' ) || ( $$vfields{ $self->url_for }{$_}[0] eq '' ) ) && ( $self->param($_) ) ) {
                 # проверка длины
@@ -225,8 +224,7 @@ sub register {
 
         my $error;
         if ( @error ) {
-            @error = join( "\n", @error );
-            $error = \@error;
+            $error = join( "\n", @error );
         }
 
         return \%data, $error;

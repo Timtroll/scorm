@@ -18,7 +18,7 @@ sub index {
     unless ( @mess ) {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
-        push @mess, @$error if $error;
+        push @mess, $error if $error;
     }
 
     unless ( @mess ) {
