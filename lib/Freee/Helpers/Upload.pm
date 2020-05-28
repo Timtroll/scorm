@@ -73,11 +73,16 @@ sub register {
             push @mess, "Can not delete record about $$data{'id'} from db" . DBI->errstr unless ( $result );
         }
 
-        return $result, \@mess;
+        my $mess;
+        if ( @mess ) {
+            $mess = join( "\n", @mess );
+        }
+
+        return $result, $mess;
     });
 
     # выводит запись о файле
-    # my $true = $self->_get_media( $id );
+    # my $true = $self->_get_media( $data, [] );
     # возвращает true/false
     $app->helper( '_get_media' => sub {
         my ( $self, $data, $obj ) = @_;
@@ -86,11 +91,15 @@ sub register {
         if ( @$obj ) {
             $str = '"' . join( '","', @$obj ) . '"';
         }
-
         my $sth;
         if ( $$data{'id'} ) {
             $sth = $self->pg_dbh->prepare( 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?' );
             $sth->bind_param( 1, $$data{'id'} );
+        }
+        elsif ( ( $$data{'extension'} ) && ( $$data{'filename'} ) ) {
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ? and "filename" = ?' );
+            $sth->bind_param( 1, $$data{'extension'} );
+            $sth->bind_param( 2, $$data{'filename'} );
         }
         elsif ( $$data{'filename'} ) {
             $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "filename" = ?' );
@@ -98,6 +107,20 @@ sub register {
         }
         $sth->execute();
         my $result = $sth->fetchrow_hashref;
+
+        return $result;
+    });
+
+    # обновляет описание файла
+    # my $true = $self->_update_media( $data );
+    # возвращает true/false
+    $app->helper( '_update_media' => sub {
+        my ( $self, $data ) = @_;
+
+        my $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
+        $sth->bind_param( 1, $$data{'description'} );
+        $sth->bind_param( 2, $$data{'id'} );
+        my $result = $sth->execute();
 
         return $result;
     });

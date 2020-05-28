@@ -188,7 +188,7 @@ sub register {
                 $data{ 'path' } = 'local';
             }
             else {
-                unless ( $$vfields{ $self->url_for }{$_}[0] eq '' ) {
+                unless ( ( $$vfields{ $self->url_for }{$_}[0] eq '' ) || ( $$vfields{$self->url_for}{$_}[0] eq 'filename' ) ) {
                     push @error, "_check_fields: don't have required data";
                     last;
                 }
@@ -235,20 +235,26 @@ sub register {
     # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
     $app->helper( '_param_fields' => sub {
+        # возможные расширения загружаемых файлов
+        my $extension = '.' . join( '|.', keys %{$self->{'app'}->{'config'}->{'valid_extensions'}} );
         $vfields = {
             # валидация роутов
 ################
             # роуты settings/*
             '/upload'  => {
                 "upload"        => [ 'file_required' ],
-                "description"   => [ '', qr/^[\w0-9_]+$/os, 256 ]
+                "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
             '/upload/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/upload/search'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
-                "filename"      => [ '', qr/^[\w0-9_]+$/os, 48 ]
+                "filename"      => [ '', qr/^\w{48}($extension)?/os, 53 ]
+            },
+            '/upload/update'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "description"   => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
 ################
             # роуты user/*

@@ -11,9 +11,7 @@ sub index {
     my $self = shift;
 
     my ( $data, $error, $result, $local_path, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
-
-    $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
 
     unless ( @mess ) {
         # проверка данных
@@ -46,12 +44,12 @@ sub delete {
     unless ( @mess ) {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
-        push @mess, @$error if $error;
+        push @mess, $error if $error;
     }
 
     unless ( @mess ) {
         ( $result, $error ) = $self->_delete_media( $data );
-        push @mess, @$error unless $result;
+        push @mess, $error unless $result;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
@@ -69,7 +67,7 @@ sub search {
     unless ( @mess ) {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
-        push @mess, @$error if $error;
+        push @mess, $error if $error;
     }
 
     unless ( @mess ) {
@@ -79,14 +77,44 @@ sub search {
         }
     }
 
+    if ( ( $$data{'filename'} ) && ( $$data{'filename'} =~ m/\./ ) ){
+        $$data{'filename'} =~ /^(.*?)\.(.*?)$/;
+        $$data{'extension'} = $2;
+        $$data{'filename'} = $1;
+    }
+
     unless ( @mess ) {
         $media = $self->_get_media( $data, [] );
-        push @mess, "Can not get $$data{'id'}" unless $media;
+        push @mess, "Can not get file" unless $media;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'data'} = $media if $media;
+    $self->render( 'json' => $resp );
+}
+
+sub update {
+    my $self = shift;
+
+    my ( $data, $error, $update, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    unless ( @mess ) {
+        $update = $self->_update_media( $data );
+        push @mess, "Can not update file" unless $update;
+        push @mess, "Id doesn't exist" if $update eq '0E0';
+    }
+
+    $resp->{'message'} = join( "\n", @mess ) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+
     $self->render( 'json' => $resp );
 }
 

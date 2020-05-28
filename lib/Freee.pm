@@ -100,6 +100,7 @@ sub startup {
     $auth->post('/upload/')                ->to('upload#index');       # сохранение загружаемого файла
     $auth->post('/upload/search/')         ->to('upload#search');      # поиск загруженного файла
     $auth->post('/upload/delete/')         ->to('upload#delete');      # удаление загруженного файла
+    $auth->post('/upload/update/')         ->to('upload#update');      # обновление описания загруженного файла
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');    # Все дерево без листочков
