@@ -60,7 +60,7 @@ my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
 $user->StoreUser({
     'title' => 'admin',
     'User' => {
-        'city'          => "город",
+        'place'         => "адрес",
         'country'       => "страна",
         'birthday'      => "202-04-04 20:00:00",
         'patronymic'    => "Отчество 3",

@@ -184,7 +184,7 @@ sub add {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        unless (@mess) {
+        unless ( @mess ) {
             # проверяем, - есть ли такой юзер
 
             # таблица users
@@ -263,6 +263,62 @@ sub add {
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'data'} = $data if $data;
+
+    $self->render( 'json' => $resp );
+}
+
+sub add_by_email {
+    my ($self);
+    $self = shift;
+
+    my ($data, $resp, $error, $result, @mess);
+
+    unless ( @mess ) {
+        # проверка данных
+        ($data, $error) = $self->_check_fields();
+        push @mess, $error unless $data;
+    }
+
+    unless ( @mess ) {
+        $$data{'phone'} = '';
+        $$data{'status'} = 1;
+
+        # делаем запись в EAV
+    my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+
+        my $user = Freee::EAV->new( 'User', { 'publish' => $$data{'status'} ? \1 : \0, 'parent' => 1 } );
+        $user->StoreUser({
+            'title' => join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) ),
+            'User' => {
+                'Surname'       => $$data{'surname'},
+                'Name'          => $$data{'name'},
+                'Patronymic'    => $$data{'patronymic'},
+                'City'          => $$data{'city'},
+                'Country'       => $$data{'country'},
+                'Birthday'      => $$data{'birthday'},
+                'Phone'         => $$data{'phone'},
+                'Flags'         => 0,
+            }
+        });
+    }
+
+    unless ( @mess ) {
+        # $$data{'time_create'} = 1;
+        $$data{'time_create'} = time();
+        # $$data{'time_access'} = 1;
+        $$data{'time_access'} = time();
+        # $$data{'time_access'} = 1;
+        $$data{'time_update'} = time();
+        # $$data{'status'} = 1;
+        $$data{'eav_id'} = 123;
+
+        $result = $self->_insert_user( $data );
+        push @mess, "Can not insert $$data{'title'}" unless $result;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $result if $result;
 
     $self->render( 'json' => $resp );
 }

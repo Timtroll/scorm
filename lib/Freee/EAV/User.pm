@@ -10,6 +10,7 @@ sub StoreUser {
     my ( $self, $params ) = @_;
 
     return undef() unless $self->{_item};
+    warn Dumper( $params );
     return undef() unless defined( $params );
 
     my $dataset = {};
@@ -42,7 +43,7 @@ sub GetUser {
     return $user unless $users->{'eav_id'};
 
     # получаем данные из users_social
-    my $sql = 'SELECT * FROM "public"."users_social" WHERE user_id='. $id;
+    $sql = 'SELECT * FROM "public"."users_social" WHERE user_id='. $id;
     my $users_social = $self->{dbh}->selectrow_hashref( $sql, { Slice => {} } );
 
     # получаем данные из EAV

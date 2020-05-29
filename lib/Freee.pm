@@ -41,6 +41,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
     $self->plugin('Freee::Helpers::Upload');
+    $self->plugin('Freee::Helpers::User');
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
@@ -93,6 +94,8 @@ sub startup {
 
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                  ->to('index#error');
+
+    $r->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
 
     $auth = $r->under()->to('auth#check_token');
 
