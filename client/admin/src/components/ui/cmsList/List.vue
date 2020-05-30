@@ -166,348 +166,349 @@
 
 <script>
 
-  import {clone, confirm} from '../../../store/methods'
+import {clone, confirm} from '../../../store/methods'
 
-  export default {
+export default {
 
-    name: 'List',
+  name: 'List',
 
-    components: {
-      Loader:   () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
-      ListMenu: () => import(/* webpackChunkName: "ListMenu" */ './ListMenu'),
+  components: {
+    Loader:   () => import(/* webpackChunkName: "loader" */ '../icons/Loader'),
+    ListMenu: () => import(/* webpackChunkName: "ListMenu" */ './ListMenu'),
 
-      // inputs
-      InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
-      InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
-      InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
-      InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
-      InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
-      InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
-      InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
-      InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
-      InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
-      InputCheckboxes: () => import(/* webpackChunkName: "InputCheckboxes" */ '../inputs/InputCheckboxes'),
-      InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
-      InputDoubleList: () => import(/* webpackChunkName: "InputDoubleList" */ '../inputs/InputDoubleList'),
-      inputDateTime:   () => import(/* webpackChunkName: "inputDateTime" */ '../inputs/inputDateTime'),
-      InputCode:       () => import(/* webpackChunkName: "InputCode" */ '../inputs/InputCode'),
-      InputType:       () => import(/* webpackChunkName: "InputType" */ '../inputs/InputType')
+    // inputs
+    InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
+    InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
+    InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
+    InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
+    InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
+    InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
+    InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
+    InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
+    InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
+    InputCheckboxes: () => import(/* webpackChunkName: "InputCheckboxes" */ '../inputs/InputCheckboxes'),
+    InputRadio:      () => import(/* webpackChunkName: "InputRadio" */ '../inputs/InputRadio'),
+    InputDoubleList: () => import(/* webpackChunkName: "InputDoubleList" */ '../inputs/InputDoubleList'),
+    inputDateTime:   () => import(/* webpackChunkName: "inputDateTime" */ '../inputs/inputDateTime'),
+    InputCode:       () => import(/* webpackChunkName: "InputCode" */ '../inputs/InputCode'),
+    InputType:       () => import(/* webpackChunkName: "InputType" */ '../inputs/InputType'),
+    InputFile:       () => import(/* webpackChunkName: "InputFile" */ '../inputs/InputFile')
+  },
+
+  props: {
+
+    data: {
+      //type:     Array,
+      required: true
     },
 
-    props: {
-
-      data: {
-        //type:     Array,
-        required: true
-      },
-
-      parents: {
-        type:    Array,
-        default: () => {}
-      },
-
-      add: {
-        type:    Boolean,
-        default: false
-      },
-
-      variableTypeField: {
-        type:    String,
-        default: 'value'
-      },
-
-      parent: {
-        type: Number
-      },
-
-      labels: {}
+    parents: {
+      type:    Array,
+      default: () => {}
     },
 
-    async created () {
-
-      this.dataNew     = await clone(this.data)
-      this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
-
+    add: {
+      type:    Boolean,
+      default: false
     },
 
-    // Закрыть панель при нажатии "ESC"
-    async mounted () {
+    variableTypeField: {
+      type:    String,
+      default: 'value'
+    },
 
-      document.onkeydown = evt => {
-        evt = evt || window.event
-        if (evt.keyCode === 27) {
-          this.close()
-        }
+    parent: {
+      type: Number
+    },
+
+    labels: {}
+  },
+
+  async created () {
+
+    this.dataNew     = await clone(this.data)
+    this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
+
+  },
+
+  // Закрыть панель при нажатии "ESC"
+  async mounted () {
+
+    document.onkeydown = evt => {
+      evt = evt || window.event
+      if (evt.keyCode === 27) {
+        this.close()
       }
+    }
 
-      // если добавление, то активная вкладка = 1
-      if (this.add) {
-        this.listMenuActiveId = 0
-      } else {
-        this.listMenuActiveId = 1
+    // если добавление, то активная вкладка = 1
+    if (this.add) {
+      this.listMenuActiveId = 0
+    } else {
+      this.listMenuActiveId = 1
+    }
+
+  },
+
+  beforeDestroy () {
+    this.$store.commit('editPanel_data', null)
+    this.$store.commit('editPanel_add', false)
+  },
+
+  data () {
+    return {
+      listMenuActiveId: 1,
+      //listMenuWidth:    null,
+      //dataGrouped: [],
+      dataNew:          [],
+      dataFlat:         [],
+      dataChanged:      [],
+      dataAdd:          [],
+      showSelectedOn:   ['InputSelect', 'InputRadio']
+    }
+  },
+
+  watch: {
+
+    async data () {
+      if (this.data && !this.add) {
+        this.dataNew     = await clone(this.data)
+        this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
       }
-
     },
 
-    beforeDestroy () {
-      this.$store.commit('editPanel_data', null)
-      this.$store.commit('editPanel_add', false)
-    },
-
-    data () {
-      return {
-        listMenuActiveId: 1,
-        //listMenuWidth:    null,
-        //dataGrouped: [],
-        dataNew:          [],
-        dataFlat:         [],
-        dataChanged:      [],
-        dataAdd:          [],
-        showSelectedOn:   ['InputSelect', 'InputRadio']
+    // установка типа поля VALUE при загрузке
+    findTypeField () {
+      if (this.findTypeField && this.findTypeField.value) {
+        this.dataNewFlat[this.findVariableTypeField].type = this.findTypeField.value
       }
-    },
+    }
 
-    watch: {
+  },
 
-      async data () {
-        if (this.data && !this.add) {
-          this.dataNew     = await clone(this.data)
-          this.dataChanged = await this.createDataChanged(this.flatGroups(this.dataNew))
-        }
-      },
+  computed: {
 
-      // установка типа поля VALUE при загрузке
-      findTypeField () {
-        if (this.findTypeField && this.findTypeField.value) {
-          this.dataNewFlat[this.findVariableTypeField].type = this.findTypeField.value
-        }
-      }
+    // меню групп
+    listMenu () {
+      const data = clone(this.data)
 
-    },
+      if (data && data.hasOwnProperty('tabs')) {
+        const dataGroups = clone(this.data.tabs)
+        const menu       = []
 
-    computed: {
-
-      // меню групп
-      listMenu () {
-        const data = clone(this.data)
-
-        if (data && data.hasOwnProperty('tabs')) {
-          const dataGroups = clone(this.data.tabs)
-          const menu       = []
-
-          dataGroups.map((item, index) => {
-            menu.push({
-              id:    index,
-              label: item.label
-            })
+        dataGroups.map((item, index) => {
+          menu.push({
+            id:    index,
+            label: item.label
           })
+        })
 
-          return menu
-        }
-      },
-
-      disabled () {
-        const disabled = this.dataNewFlat.find(item => item.name === 'readonly')
-        if (disabled && 'value' in disabled) {
-          return Number(disabled.value) || 0
-        }
-      },
-
-      title () {
-        if (this.add) {
-          return this.$t('actions.add')
-        } else {
-          return this.$t('actions.edit')
-        }
-      },
-
-      // Все поля в один уровень
-      dataNewFlat () {
-        if (this.dataNew) {
-          return this.flatGroups(this.dataNew)
-        }
-      },
-
-      // широкая / узкая панель редактирования
-      editPanel_large () {
-        return this.$store.getters.editPanel_large
-      },
-
-      // лоадер
-      loader () {
-        return this.$store.getters.editPanel_status
-      },
-
-      // если данные в форме изменились
-      dataIsChanged () {
-        if (this.dataChanged) {
-          const data = this.dataChanged.map(item => item.changed)
-          return data.includes(true)
-        }
-      },
-
-      // список компонентов для ввода
-      inputComponents () {
-        return this.$store.getters.inputComponents
-      },
-
-      valueSelected () {
-        if (this.dataNewFlat) {
-          const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
-          if (selected && selected.value) {
-            return selected.value
-          }
-        }
-      },
-
-      findVariableTypeField () {
-        if (this.dataNewFlat) {
-          return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
-        }
-      },
-
-      findTypeField () {
-
-        return this.searchTypeInGroups(this.dataNewFlat)
-        //if (this.dataNew.hasOwnProperty('tabs')) {
-        //
-        //  return this.dataNew.find(item => item.name === 'type')
-        //} else {
-        //  return this.dataNew.find(item => item.name === 'type')
-        //}
-      },
-
-      id () {
-        if (!this.add) {
-          const idEl = this.dataNewFlat.find(item => item.name === 'id')
-          return idEl.value
-        }
+        return menu
       }
-
     },
 
-    methods: {
+    disabled () {
+      const disabled = this.dataNewFlat.find(item => item.name === 'readonly')
+      if (disabled && 'value' in disabled) {
+        return Number(disabled.value) || 0
+      }
+    },
 
-      setActiveMenuItem (id) {
-        this.listMenuActiveId = id
-      },
+    title () {
+      if (this.add) {
+        return this.$t('actions.add')
+      } else {
+        return this.$t('actions.edit')
+      }
+    },
 
-      searchTypeInGroups (array) {
-        if (array.hasOwnProperty('tabs')) {
+    // Все поля в один уровень
+    dataNewFlat () {
+      if (this.dataNew) {
+        return this.flatGroups(this.dataNew)
+      }
+    },
 
-          // массив в один уровень
-          const allFields     = array.tabs
-          const allFieldsFlat = allFields.map(item => item.fields)
+    // широкая / узкая панель редактирования
+    editPanel_large () {
+      return this.$store.getters.editPanel_large
+    },
 
-          // поиск поля тип
-          return allFieldsFlat
+    // лоадер
+    loader () {
+      return this.$store.getters.editPanel_status
+    },
+
+    // если данные в форме изменились
+    dataIsChanged () {
+      if (this.dataChanged) {
+        const data = this.dataChanged.map(item => item.changed)
+        return data.includes(true)
+      }
+    },
+
+    // список компонентов для ввода
+    inputComponents () {
+      return this.$store.getters.inputComponents
+    },
+
+    valueSelected () {
+      if (this.dataNewFlat) {
+        const selected = clone(this.dataNewFlat).find(item => item.type === 'InputSelected')
+        if (selected && selected.value) {
+          return selected.value
+        }
+      }
+    },
+
+    findVariableTypeField () {
+      if (this.dataNewFlat) {
+        return this.dataNewFlat.findIndex(item => item.name === this.variableTypeField)
+      }
+    },
+
+    findTypeField () {
+
+      return this.searchTypeInGroups(this.dataNewFlat)
+      //if (this.dataNew.hasOwnProperty('tabs')) {
+      //
+      //  return this.dataNew.find(item => item.name === 'type')
+      //} else {
+      //  return this.dataNew.find(item => item.name === 'type')
+      //}
+    },
+
+    id () {
+      if (!this.add) {
+        const idEl = this.dataNewFlat.find(item => item.name === 'id')
+        return idEl.value
+      }
+    }
+
+  },
+
+  methods: {
+
+    setActiveMenuItem (id) {
+      this.listMenuActiveId = id
+    },
+
+    searchTypeInGroups (array) {
+      if (array.hasOwnProperty('tabs')) {
+
+        // массив в один уровень
+        const allFields     = array.tabs
+        const allFieldsFlat = allFields.map(item => item.fields)
+
+        // поиск поля тип
+        return allFieldsFlat
             .flat()
             .find(item => item.name === 'type')
 
-        } else {
-          return array.find(item => item.name === 'type')
+      } else {
+        return array.find(item => item.name === 'type')
+      }
+    },
+
+    //
+    flatGroups (array) {
+      if (array && array.hasOwnProperty('tabs')) {
+
+        // массив в один уровень
+        const allFields   = array.tabs
+        let allFieldsFlat = allFields.map(item => item.fields)
+
+        if (array.hasOwnProperty('main')) {
+          allFieldsFlat = allFieldsFlat.concat(array.main)
         }
-      },
 
-      //
-      flatGroups (array) {
-        if (array && array.hasOwnProperty('tabs')) {
-
-          // массив в один уровень
-          const allFields   = array.tabs
-          let allFieldsFlat = allFields.map(item => item.fields)
-
-          if (array.hasOwnProperty('main')) {
-            allFieldsFlat = allFieldsFlat.concat(array.main)
-          }
-
-          return allFieldsFlat
+        return allFieldsFlat
             .flat()
 
-        } else {
-          return array
-        }
-      },
+      } else {
+        return array
+      }
+    },
 
-      createDataChanged (arr) {
+    createDataChanged (arr) {
 
-        console.log(arr)
-        const newArr = []
-        if (arr) {
-          arr.forEach(item => {
-            const newItem = {
-              name:    item.name,
-              changed: false
-            }
-            newArr.push(newItem)
-          })
+      console.log(arr)
+      const newArr = []
+      if (arr) {
+        arr.forEach(item => {
+          const newItem = {
+            name:    item.name,
+            changed: false
+          }
+          newArr.push(newItem)
+        })
 
-          return newArr
-        }
+        return newArr
+      }
 
-      },
+    },
 
-      variableType (type) {
+    variableType (type) {
 
-        if (type === this.variableTypeField) {
-          return this.variableTypeField
-        } else {
-          return type
-        }
-      },
+      if (type === this.variableTypeField) {
+        return this.variableTypeField
+      } else {
+        return type
+      }
+    },
 
-      // изменение размеров панели редактирования
-      toggleSize () {
-        this.$store.commit('editPanel_size', !this.editPanel_large)
-      },
+    // изменение размеров панели редактирования
+    toggleSize () {
+      this.$store.commit('editPanel_size', !this.editPanel_large)
+    },
 
-      // Закрыть панель при свайпе
-      swipeRight (direction) {
-        if (direction === 'right') this.close()
-      },
+    // Закрыть панель при свайпе
+    swipeRight (direction) {
+      if (direction === 'right') this.close()
+    },
 
-      // закрыть панель
-      close () {
-        if (this.dataIsChanged) {
-          confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
+    // закрыть панель
+    close () {
+      if (this.dataIsChanged) {
+        confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
             .then(() => {
               this.$emit('close')
               this.$store.commit('card_right_show', false)
             })
-        } else {
-          this.$emit('close')
-          this.$store.commit('card_right_show', false)
-        }
-
-      },
-
-      // смена типа поля Значение
-      changeType (event) {
-        this.dataNewFlat[this.findVariableTypeField].type = event
-      },
-
-      // сохранение
-      save () {
-        this.$emit('save', this.dataNewFlat)
-      },
-
-      // Очистка поля Value при изменении типа поля
-      clearValue () {
-        const value = this.dataNewFlat.find(item => item.name === 'value')
-        if (value && 'value' in value) {
-          value.value = ''
-        }
-      },
-
-      notEditable (mode) {
-        if (mode || this.disabled) {
-          return 1
-        } else {
-          return 0
-        }
+      } else {
+        this.$emit('close')
+        this.$store.commit('card_right_show', false)
       }
 
+    },
+
+    // смена типа поля Значение
+    changeType (event) {
+      this.dataNewFlat[this.findVariableTypeField].type = event
+    },
+
+    // сохранение
+    save () {
+      this.$emit('save', this.dataNewFlat)
+    },
+
+    // Очистка поля Value при изменении типа поля
+    clearValue () {
+      const value = this.dataNewFlat.find(item => item.name === 'value')
+      if (value && 'value' in value) {
+        value.value = ''
+      }
+    },
+
+    notEditable (mode) {
+      if (mode || this.disabled) {
+        return 1
+      } else {
+        return 0
+      }
     }
+
   }
+}
 
 </script>

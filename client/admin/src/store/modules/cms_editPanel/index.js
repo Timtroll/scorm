@@ -52,6 +52,9 @@ const state = {
     }, {
       value: 'InputCode',
       label: 'Редактор кода'
+    }, {
+      value: 'InputFile',
+      label: 'Загрузка файлов'
     }
   ]
 
