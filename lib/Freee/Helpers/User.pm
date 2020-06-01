@@ -25,6 +25,7 @@ sub register {
     # возвращает true/false
     $app->helper( '_insert_user' => sub {
         my ( $self, $data ) = @_;
+        my ( $result, $mess, @mess );
 
 #         # делаем запись в EAV
 #         my $obj = { 
@@ -47,17 +48,34 @@ sub register {
 #             }
 #         });
 
-        # my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."users" ("email", "password", "eav_id", "time_create", "time_access", "time_update", "timezone") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
+
+        my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."users" ("email", "password", "eav_id", "time_create", "time_access", "time_update", "timezone") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
+        $sth->bind_param( 1, $$data{'email'} );
+        $sth->bind_param( 2, $$data{'password'} );
+        $sth->bind_param( 3, 3 );
+        $sth->bind_param( 4, $$data{'time_create'} );
+        $sth->bind_param( 5, $$data{'time_access'} );
+        $sth->bind_param( 6, $$data{'time_update'} );
+        $sth->bind_param( 7, $$data{'timezone'} );
+        $sth->execute();
+        $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
+        push @mess, "Can not insert user info into db" . DBI->errstr unless ( $result );
+
+
+        # my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."users" ("email", "password", "eav_id", "timezone") VALUES (?, ?, ?, ?) RETURNING "id"' );
         # $sth->bind_param( 1, $$data{'email'} );
         # $sth->bind_param( 2, $$data{'password'} );
-        # $sth->bind_param( 3, 1 );
-        # $sth->bind_param( 4, $$data{'time_create'} );
-        # $sth->bind_param( 5, $$data{'time_access'} );
-        # $sth->bind_param( 6, $$data{'time_update'} );
-        # $sth->bind_param( 7, $$data{'timezone'} );
-        # my $result = $sth->execute();
-my $result;
-        return $result;
+        # $sth->bind_param( 3, $$data{'eav_id'} );
+        # $sth->bind_param( 4, $$data{'timezone'} );
+
+        # $result = $sth->execute();
+        # push @mess, "Can not insert user info into db" . DBI->errstr unless ( $result );
+
+        if ( @mess ) {
+            $mess = join( "\n", @mess );
+        }
+
+        return $result, $mess;
     });
 }
 

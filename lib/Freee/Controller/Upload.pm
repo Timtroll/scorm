@@ -31,6 +31,7 @@ sub index {
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $result if $result;
 
     $self->render( 'json' => $resp );
 }

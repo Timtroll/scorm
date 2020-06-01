@@ -25,7 +25,7 @@ sub register {
     $app->helper( '_insert_media' => sub {
         my ( $self, $data ) = @_;
 
-        my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' );
+        my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
         $sth->bind_param( 1, $$data{'path'} );
         $sth->bind_param( 2, $$data{'filename'} );
         $sth->bind_param( 3, $$data{'extension'} );
@@ -36,7 +36,8 @@ sub register {
         $sth->bind_param( 8, $$data{'description'} );
         $sth->bind_param( 9, 0 );
         $sth->bind_param( 10, 0 );
-        my $result = $sth->execute();
+        $sth->execute();
+        my $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
 
         return $result;
     });
