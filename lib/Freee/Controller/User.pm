@@ -5,7 +5,6 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
 use common;
-
 use Data::Dumper;
 
 sub index {
@@ -271,7 +270,7 @@ sub add_by_email {
     my ($self);
     $self = shift;
 
-    my ($data, $resp, $error, $result, @mess);
+    my ($data, $resp, $error, $result, $data_eav, $user, @mess);
 
     unless ( @mess ) {
         # проверка данных
@@ -279,46 +278,46 @@ sub add_by_email {
         push @mess, $error unless $data;
     }
 
-    # unless ( @mess ) {
-    #     $$data{'phone'} = '';
-    #     $$data{'status'} = 1;
-
-    #     # делаем запись в EAV
-    # my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
-
-    #     my $user = Freee::EAV->new( 'User', { 'publish' => $$data{'status'} ? \1 : \0, 'parent' => 1 } );
-    #     $user->StoreUser({
-    #         'title' => join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) ),
-    #         'User' => {
-    #             'Surname'       => $$data{'surname'},
-    #             'Name'          => $$data{'name'},
-    #             'Patronymic'    => $$data{'patronymic'},
-    #             'City'          => $$data{'city'},
-    #             'Country'       => $$data{'country'},
-    #             'Birthday'      => $$data{'birthday'},
-    #             'Phone'         => $$data{'phone'},
-    #             'Flags'         => 0,
-    #         }
-    #     });
-    # }
-
     unless ( @mess ) {
-        # $$data{'time_create'} = 1;
-        # $$data{'time_create'} = time();
-        $$data{'time_create'} = gmtime();
-        # $$data{'time_access'} = 1;
-        $$data{'time_access'} = gmtime();
-        # $$data{'time_access'} = gmtime();
-        # $$data{'time_access'} = 1;
-        $$data{'time_update'} = gmtime();
-        # $$data{'status'} = 1;
-        $$data{'eav_id'} = 123;
-warn Dumper( $$data{'time_create'} );
-warn Dumper( $$data{'time_access'} );
-warn Dumper( $$data{'time_update'} );
-        ( $result, $error ) = $self->_insert_user( $data );
-        push @mess, $error unless $result;
+        $$data{'time_create'} = $self->_get_time();
+        $$data{'time_access'} = $self->_get_time();
+        $$data{'time_update'} = $self->_get_time();
+
+print Dumper( $data );
+
+        $data_eav = {
+            'publish'     => $$data{'status'} ? \1 : \0, 
+            'parent'      => 1,
+            'email'       => $$data{'email'},
+            'password'    => $$data{'password'},
+            'time_create' => $$data{'time_create'},
+            'time_access' => $$data{'time_access'},
+            'time_update' => $$data{'time_update'},
+            'timezone'    => $$data{'timezone'}
+            # 'eav_id'    => 1
+        };
+
+        $user = Freee::EAV::User->new( 'User', $data_eav );
     }
+
+
+#     unless ( @mess ) {
+#         # $$data{'time_create'} = 1;
+#         # $$data{'time_create'} = time();
+#         $$data{'time_create'} = gmtime();
+#         # $$data{'time_access'} = 1;
+#         $$data{'time_access'} = gmtime();
+#         # $$data{'time_access'} = gmtime();
+#         # $$data{'time_access'} = 1;
+#         $$data{'time_update'} = gmtime();
+#         # $$data{'status'} = 1;
+#         $$data{'eav_id'} = 123;
+# warn Dumper( $$data{'time_create'} );
+# warn Dumper( $$data{'time_access'} );
+# warn Dumper( $$data{'time_update'} );
+#         ( $result, $error ) = $self->_insert_user( $data );
+#         push @mess, $error unless $result;
+#     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -402,13 +401,5 @@ sub delete {
 
     $self->render( 'json' => $resp );
 }
-
-# sub getLoggingTime {
-
-#     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
-#     my $nice_timestamp = sprintf ( "%04d%02d%02d %02d:%02d:%02d",
-#                                    $year+1900,$mon+1,$mday,$hour,$min,$sec);
-#     return $nice_timestamp;
-# }
 
 1;
