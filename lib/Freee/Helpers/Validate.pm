@@ -283,7 +283,7 @@ sub register {
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
-                'email'         => [ 'required', qr/^[\w\@]$/os, 100 ]
+                'email'         => [ 'required', qr/^[\w\d\@]+$/os, 100 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

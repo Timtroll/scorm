@@ -283,7 +283,7 @@ sub add_by_email {
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
 
-print Dumper( $data );
+# print Dumper( $data );
 
         $data_eav = {
             'publish'     => $$data{'status'} ? \1 : \0, 
@@ -294,10 +294,10 @@ print Dumper( $data );
             'time_access' => $$data{'time_access'},
             'time_update' => $$data{'time_update'},
             'timezone'    => $$data{'timezone'}
-            # 'eav_id'    => 1
         };
 
         $user = Freee::EAV::User->new( 'User', $data_eav );
+        # $user = Freee::EAV::User->new( $data_eav );
     }
 
 
