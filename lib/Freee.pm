@@ -41,6 +41,7 @@ sub startup {
     $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
     $self->plugin('Freee::Helpers::Upload');
+    $self->plugin('Freee::Helpers::User');
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
@@ -195,6 +196,7 @@ sub startup {
     # управление пользователями
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # регистрация юзера
+    $auth->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
     $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
