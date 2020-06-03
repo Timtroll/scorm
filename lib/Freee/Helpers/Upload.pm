@@ -10,6 +10,9 @@ use base 'Mojolicious::Plugin';
 use DBD::Pg;
 use DBI;
 
+use Mojo::JSON qw( encode_json );
+use File::Slurp;
+
 use Data::Dumper;
 use common;
 
@@ -25,7 +28,11 @@ sub register {
     $app->helper( '_insert_media' => sub {
         my ( $self, $data ) = @_;
 
-        my $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
+        my ( $sth, $result, $local_path, $extension, $json, $write_result, $mess );
+
+#### потом добавить заполнение полей type, mime, order, flags ???????????????????????????????????????????????????????
+        # запись данных в базу
+        $sth = $self->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
         $sth->bind_param( 1, $$data{'path'} );
         $sth->bind_param( 2, $$data{'filename'} );
         $sth->bind_param( 3, $$data{'extension'} );
@@ -37,9 +44,25 @@ sub register {
         $sth->bind_param( 9, 0 );
         $sth->bind_param( 10, 0 );
         $sth->execute();
-        my $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
+        $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
+        $mess = "Can not insert $$data{'title'}" unless $result;
 
-        return $result;
+        # преобразование данныхв json
+        unless ( $mess ) {
+            delete $$data{'content'};
+            $json = encode_json ( $data );
+            $mess = "Can not convert into json $$data{'title'}" unless $json;
+        }
+
+        # создание файла с описанием
+        unless ( $mess ) {
+            $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
+            $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
+            $mess = "Can not write desc of $$data{'title'}" unless $write_result;
+        }
+
+        return $result, $mess;
     });
 
     # удаляет файл и запись о нём
@@ -62,7 +85,18 @@ sub register {
 
             $cmd = `rm $cmd`;
             if ( $? ) {
-                push @mess, "Can not delete $local_path . $filename, $?";
+                push @mess, "Can not delete $filename, $?";
+            };
+        }
+
+        # удаление описания файла
+        unless ( @mess ) {
+            $filename = $$fileinfo{'filename'} . '.' . 'desc';
+            $cmd = $local_path . $filename;
+
+            $cmd = `rm $cmd`;
+            if ( $? ) {
+                push @mess, "Can not delete $filename description, $?";
             };
         }
 
@@ -88,10 +122,13 @@ sub register {
     $app->helper( '_get_media' => sub {
         my ( $self, $data, $obj ) = @_;
 
+        # определение запроса к бд
         my $str = '*';
         if ( @$obj ) {
             $str = '"' . join( '","', @$obj ) . '"';
         }
+
+        # получение запрошенных данных о файле
         my $sth;
         if ( $$data{'id'} ) {
             $sth = $self->pg_dbh->prepare( 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?' );
@@ -118,12 +155,40 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
+        my ( $sth, $result, $media, $local_path, $extension, $rewrite_result, $json, $mess );
+        # обновление описания в бд
+        $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
         $sth->bind_param( 2, $$data{'id'} );
-        my $result = $sth->execute();
+        $result = $sth->execute();
 
-        return $result;
+        # ошибка при отсутствии в бд id
+        if ( $result eq '0E0' ) {
+            $result = 0;
+            $mess = "Id $$data{'id'} doesn't exist";
+        }
+
+        # получение данных о файле
+        unless ( $mess ) {
+            $data = $self->_get_media( $data, [] );
+            $mess = "Can not get file" unless $data;
+        }
+
+        # преобразование данных в json
+        unless ( $mess ) {
+            $json = encode_json ( $data );
+            $mess = "Can not convert into json $$data{'title'}" unless $json;
+        }
+
+        # запись нового файла с описанием
+        unless ( $mess ){
+            $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
+            $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
+            $mess = "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
+        }
+
+        return $result, $mess;
     });
 }
 
