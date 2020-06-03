@@ -53,10 +53,10 @@ sub _Get {
 
     # получаем данные из users
     $EAVObject->{_user} = $EAVObject->{dbh}->selectrow_hashref( 'SELECT * FROM "public"."users" WHERE "id"='.int( $params->{id} || 0 ).' LIMIT 1' );
-    return undef() if !defined( $user ) || !$user->{eav_id};
+    return undef() if !defined( $EAVObject->{_user} ) || !$EAVObject->{_user}->{eav_id};
 
     # получаем данные из users_social
-    $sql = 'SELECT * FROM "public"."users_social" WHERE user_id='. int( $params->{id} || 0 );
+    my $sql = 'SELECT * FROM "public"."users_social" WHERE user_id='. int( $params->{id} || 0 );
     my $sth = $EAVObject->{dbh}->prepare( $sql );
     $sth->execute();
     $EAVObject->{_social} = $sth->fetchall_arrayref({});

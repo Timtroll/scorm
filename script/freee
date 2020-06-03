@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use FindBin;
+use IO::Socket::SSL;
 
 $| = 1;
 

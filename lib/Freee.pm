@@ -98,10 +98,10 @@ sub startup {
     $auth = $r->under()->to('auth#check_token');
 
     # загрузка файлов
-    $auth->post('/upload/')                ->to('upload#index');       # сохранение загружаемого файла
-    $auth->post('/upload/search/')         ->to('upload#search');      # поиск загруженного файла
-    $auth->post('/upload/delete/')         ->to('upload#delete');      # удаление загруженного файла
-    $auth->post('/upload/update/')         ->to('upload#update');      # обновление описания загруженного файла
+    $auth->post('/upload/')               ->to('upload#index');       # сохранение загружаемого файла
+    $auth->post('/upload/search/')        ->to('upload#search');      # поиск загруженного файла
+    $auth->post('/upload/delete/')        ->to('upload#delete');      # удаление загруженного файла
+    $auth->post('/upload/update/')        ->to('upload#update');      # обновление описания загруженного файла
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');    # Все дерево без листочков
@@ -111,10 +111,10 @@ sub startup {
     $auth->post('/settings/proto_folder') ->to('proto#proto_folder');   # прототип настройки
 
     # строки настроек - обязательная проверка на фолдер
-    $auth->post('/settings/add')        ->to('settings#add');           # добавление настройки
-    $auth->post('/settings/proto_leaf') ->to('proto#proto_leaf');       # прототип настройки
-    $auth->post('/settings/edit')       ->to('settings#edit');          # загрузка одной настройки
-    $auth->post('/settings/save')       ->to('settings#save');          # добавление/сохранение настройки
+    $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки
+    $auth->post('/settings/proto_leaf')   ->to('proto#proto_leaf');       # прототип настройки
+    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка одной настройки
+    $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
 
     # проверка на фолдер не нужна
     $auth->post('/settings/get_leafs')  ->to('settings#get_leafs');     # список листочков узла дерева
