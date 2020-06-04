@@ -80,7 +80,7 @@
 
 <script>
 import filesClass from './../../../api/upload/files'
-import {prettyBytes} from '../../../store/methods'
+import {notify, prettyBytes} from '../../../store/methods'
 
 const files = new filesClass
 
@@ -106,11 +106,12 @@ export default {
 
   data () {
     return {
-      valueInput: this.value || [],
-      valid:      true,
-      files:      [],
-      image:      [],
-      preview:    []
+      valueInput:     this.value || [],
+      valid:          true,
+      files:          [],
+      image:          [],
+      preview:        [],
+      maxUploadCount: 10
     }
   },
 
@@ -176,6 +177,8 @@ export default {
           size:        files[i].size,
           description: ''
         }
+        if (i >= 10) notify('Одновременно разрешено загружать не более ' + this.maxUploadCount + '-ти файлов')
+        if (i >= 10) return
         this.preview.push(file)
         this.createImage(files[i], i)
       }
@@ -184,9 +187,7 @@ export default {
     },
 
     createImage (file, index) {
-      let image  = new Image()
       let reader = new FileReader()
-      let preview
 
       reader.onload = (e) => {
         this.preview[index].image = e.target.result
