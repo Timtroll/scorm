@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
-    "@ckeditor/ckeditor5-build-classic": "^19.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^19.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^20.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
     "@ckeditor/ckeditor5-essentials": "^19.0.1",
@@ -18,7 +18,7 @@
     "@ckeditor/ckeditor5-paragraph": "^19.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^19.1.0",
     "@ckeditor/ckeditor5-vue": "^1.0.1",
-    "@editorjs/editorjs": "^2.17.0",
+    "@editorjs/editorjs": "^2.18.0",
     "@riophae/vue-treeselect": "^0.4.0",
     "@tinymce/tinymce-vue": "^3.2.2",
     "@wiris/mathtype-ckeditor4": "^7.20.0",

@@ -1,26 +1,77 @@
 <template>
   <li>
-    <div class="uk-form-horizontal">
-      <div>
-        <label v-text="label"
-               class="uk-form-label uk-text-truncate"
-               v-if="label"/>
+    <div>
 
-        <div class="uk-form-controls">
-          <div class="uk-inline uk-width-1-1">
-            <div class="uk-form-icon uk-form-icon-flip">
-              <img src="/img/icons/icon__input_text.svg"
-                   uk-svg
-                   width="18"
-                   height="18">
+      <label v-text="label"
+             class="uk-form-label uk-text-truncate uk-margin-small-bottom"
+             v-if="label"/>
+
+      <div class="uk-form-controls">
+
+        <!--pos-list-files-->
+        <div class="pos-list-files"
+             v-if="preview.length">
+
+          <!-- pos-list-file-->
+          <div class="pos-list-file"
+               v-for="(file, index) in preview">
+
+            <div class="pos-list-files__image"
+                 :style="filePreview(file)">
+
+              <div class="pos-list-files__meta">
+                <div v-text="file.name"></div>
+                <div v-text="prettyBytes(file.size)"></div>
+              </div>
             </div>
-            <input class="uk-input"
-                   multiple
-                   :class="validate"
-                   type="file"
-                   @change="previewFiles"
-                   :placeholder="placeholder">
+
+            <button type="button"
+                    @click.prevent="removeUploadFile(index)"
+                    class="uk-button uk-button-danger pos-list-files__button uk-button-small">
+
+              <img src="/img/icons/icon__trash.svg"
+                   uk-svg
+                   width="12"
+                   height="12">
+            </button>
+
+            <!--pos-list-files__description-->
+            <div class="pos-list-files__description">
+              <input class="uk-input uk-form-small uk-width-1-1"
+                     placeholder="Описание файла"
+                     v-model="file.description">
+            </div>
+
           </div>
+        </div>
+
+        <div class="uk-grid-small"
+             uk-grid>
+
+          <div class="uk-width-expand"
+               uk-form-custom="target: true">
+            <input class="uk-input"
+                   ref="files"
+                   multiple
+                   type="file"
+                   @change="handleFiles"
+                   :placeholder="placeholder">
+            <input class="uk-input uk-width-1-1"
+                   type="text"
+                   placeholder="Выбрать файл"
+                   disabled>
+          </div>
+          <div class="uk-width-auto">
+            <button class="uk-button uk-button-default"
+                    :disabled="disabledUpload"
+                    @click.prevent="upload">
+              <img src="/img/icons/icon__save.svg"
+                   uk-svg
+                   width="20"
+                   height="20"></button>
+
+          </div>
+
         </div>
       </div>
     </div>
@@ -28,14 +79,17 @@
 </template>
 
 <script>
-import files from '@/api/upload/files'
+import filesClass from './../../../api/upload/files'
+import {prettyBytes} from '../../../store/methods'
+
+const files = new filesClass
 
 export default {
   name: 'InputFile',
 
   props: {
 
-    value:       [],
+    value:       '',
     name:        '',
     label:       {
       default: '',
@@ -52,15 +106,22 @@ export default {
 
   data () {
     return {
-      valueInput: this.value,
+      valueInput: this.value || [],
       valid:      true,
-      files:      []
+      files:      [],
+      image:      [],
+      preview:    []
     }
   },
 
   watch: {},
 
   computed: {
+
+    disabledUpload () {
+      return !this.preview.length
+    },
+
     isChanged () {
       return this.valueInput !== this.value
     }
@@ -68,16 +129,178 @@ export default {
 
   methods: {
 
-    previewFiles (event) {
-      this.files = event.target.files
-      files.upload(event.target.files)
-      console.log(event.target.files)
-      console.log('this.files', this.files)
+    upload (event) {
+      //console.log(event.target.files[0])
+      //
+      //this.files   = event.target.files[0]
+      //let formData = new FormData()
+      //formData.append('file', event.target.files)
+      //console.log(formData)
+      let formData = new FormData()
+      formData.append('file', this.files)
+      files.upload(this.files, 'ter')
+      //
+      //
+
+      //for (let i = 0; i < this.files.length; i++) {
+      //  let formData = new FormData()
+      //  let file     = this.files[i]
+      //  formData.append('file', file)
+      //  console.log('formData', formData)
+      //  //files.upload(formData, 'img')
+      //}
+
+      //console.log(event.target.files)
+      //console.log('this.files', this.files.FileList)
+      //this.files = preview
+      //files.upload(event.target.files)
+
+    },
+
+    removeUploadFile (index) {
+      this.preview.splice(index, 1)
+    },
+
+    handleFiles (event) {
+      const files = event.target.files || event.dataTransfer.files
+      console.log(files)
+      if (!files.length) return
+      this.files = files
+      for (let i = 0; i < files.length; i++) {
+        const file = {
+          file:        files[i],
+          image:       '',
+          isImage:     false,
+          type:        files[i].type,
+          name:        files[i].name,
+          size:        files[i].size,
+          description: ''
+        }
+        this.preview.push(file)
+        this.createImage(files[i], i)
+      }
+
+      //this.createImage(files[0])
+    },
+
+    createImage (file, index) {
+      let image  = new Image()
+      let reader = new FileReader()
+      let preview
+
+      reader.onload = (e) => {
+        this.preview[index].image = e.target.result
+      }
+      reader.readAsDataURL(file)
+
     },
 
     update () {
       this.$emit('change', this.isChanged)
       //this.$emit('value', this.valueInput)
+    },
+
+    filePreview (item) {
+
+      const style = {
+        backgroundImage: 'url(/files-icon/more.svg)',
+        backgroundSize:  '60px 60px' //'cover'
+      }
+      const type  = item.type
+      const image = item.image
+
+      switch (type) {
+        case 'image/jpeg':
+          style.backgroundImage = 'url(' + image + ')'
+          style.backgroundSize  = 'cover'
+          break
+        case 'image/png':
+          style.backgroundImage = 'url(' + image + ')'
+          style.backgroundSize  = 'cover'
+          break
+        case 'image/svg+xml':
+          style.backgroundImage = 'url(' + image + ')'
+          style.backgroundSize  = 'cover'
+          break
+        case 'image/webp':
+          style.backgroundImage = 'url(' + image + ')'
+          style.backgroundSize  = 'cover'
+          break
+        case 'application/zip':
+          style.backgroundImage = 'url(/files-icon/zip.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/pdf':
+          style.backgroundImage = 'url(/files-icon/pdf.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'audio/mp4':
+          style.backgroundImage = 'url(/files-icon/mp3.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'audio/mpeg':
+          style.backgroundImage = 'url(/files-icon/mp3.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'audio/aac':
+          style.backgroundImage = 'url(/files-icon/mp3.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'audio/webm':
+          style.backgroundImage = 'url(/files-icon/mp3.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'video/mpeg':
+          style.backgroundImage = 'url(/files-icon/mov.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'video/mp4':
+          style.backgroundImage = 'url(/files-icon/mov.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'video/quicktime':
+          style.backgroundImage = 'url(/files-icon/mov.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'video/webm':
+          style.backgroundImage = 'url(/files-icon/mov.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/vnd.ms-excel':
+          style.backgroundImage = 'url(/files-icon/xls.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+          style.backgroundImage = 'url(/files-icon/xls.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/vnd.ms-powerpoint':
+          style.backgroundImage = 'url(/files-icon/ppt.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+          style.backgroundImage = 'url(/files-icon/ppt.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/msword':
+          style.backgroundImage = 'url(/files-icon/doc.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+          style.backgroundImage = 'url(/files-icon/doc.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+        case 'text/plain':
+          style.backgroundImage = 'url(/files-icon/documents.svg)'
+          style.backgroundSize  = '60px 60px'
+          break
+
+      }
+      return style
+    },
+
+    prettyBytes (num) {
+      return prettyBytes(num)
     }
   }
 }
