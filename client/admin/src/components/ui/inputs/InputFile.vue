@@ -61,18 +61,21 @@
                    placeholder="Выбрать файл"
                    disabled>
           </div>
+
           <div class="uk-width-auto">
             <button class="uk-button uk-button-default"
                     :disabled="disabledUpload"
                     @click.prevent="upload">
+
               <img src="/img/icons/icon__save.svg"
                    uk-svg
                    width="20"
                    height="20"></button>
-
           </div>
 
         </div>
+
+        <pre>{{uploadedPreview}}</pre>
       </div>
     </div>
   </li>
@@ -106,16 +109,15 @@ export default {
 
   data () {
     return {
-      valueInput:     this.value || [],
-      valid:          true,
-      files:          [],
-      image:          [],
-      preview:        [],
-      maxUploadCount: 10
+      valueInput:      this.value || [],
+      valid:           true,
+      files:           [],
+      image:           [],
+      preview:         [],
+      uploadedPreview: [],
+      maxUploadCount:  10
     }
   },
-
-  watch: {},
 
   computed: {
 
@@ -130,31 +132,39 @@ export default {
 
   methods: {
 
-    upload (event) {
-      //console.log(event.target.files[0])
-      //
-      //this.files   = event.target.files[0]
-      //let formData = new FormData()
-      //formData.append('file', event.target.files)
-      //console.log(formData)
-      let formData = new FormData()
-      formData.append('file', this.files)
-      files.upload(this.files, 'ter')
-      //
-      //
+    async upload () {
 
-      //for (let i = 0; i < this.files.length; i++) {
+      //this.preview.forEach((file, index) => {
       //  let formData = new FormData()
-      //  let file     = this.files[i]
-      //  formData.append('file', file)
-      //  console.log('formData', formData)
-      //  //files.upload(formData, 'img')
-      //}
+      //  formData.append('description', file.description)
+      //  formData.append('upload', file.file)
+      //  this.fileUpload(formData, index)
+      //  this.preview.splice(index, 1)
+      //})
 
-      //console.log(event.target.files)
-      //console.log('this.files', this.files.FileList)
-      //this.files = preview
-      //files.upload(event.target.files)
+      for (const file of this.preview) {
+        let formData = new FormData()
+        formData.append('description', file.description)
+        formData.append('upload', file.file)
+        // upload file
+        await this.fileUpload(formData)
+        // remove preview file
+        this.preview.splice(this.preview.indexOf(file), 1)
+      }
+    },
+
+    async fileUpload (data, index) {
+      const response = await files.upload(data)
+      console.log('response.id', response.id)
+      const id = await response.id
+      this.valueInput.push(id)
+      await this.searchFile(id)
+    },
+
+    async searchFile (id) {
+      const response = await files.search(id)
+      const data     = await response
+      this.uploadedPreview.push(data.data)
 
     },
 
@@ -164,7 +174,6 @@ export default {
 
     handleFiles (event) {
       const files = event.target.files || event.dataTransfer.files
-      console.log(files)
       if (!files.length) return
       this.files = files
       for (let i = 0; i < files.length; i++) {
@@ -182,18 +191,14 @@ export default {
         this.preview.push(file)
         this.createImage(files[i], i)
       }
-
-      //this.createImage(files[0])
     },
 
     createImage (file, index) {
-      let reader = new FileReader()
-
+      let reader    = new FileReader()
       reader.onload = (e) => {
         this.preview[index].image = e.target.result
       }
       reader.readAsDataURL(file)
-
     },
 
     update () {
@@ -202,14 +207,12 @@ export default {
     },
 
     filePreview (item) {
-
       const style = {
         backgroundImage: 'url(/files-icon/more.svg)',
         backgroundSize:  '60px 60px' //'cover'
       }
       const type  = item.type
       const image = item.image
-
       switch (type) {
         case 'image/jpeg':
           style.backgroundImage = 'url(' + image + ')'

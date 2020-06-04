@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {notify} from '../../store/methods'
+
 let apiProxy = ''
 
 if (!Vue.config.productionTip) {
@@ -16,17 +17,13 @@ export default class files {
 
   /**
    * Загрузить файл, добавить запись в таблицу
-   * @param upload
-   * @param description
    * @returns {Promise<[]>}
+   * @param upload
    */
-  async upload (upload, description) {
-    console.log(upload, description)
+  async upload (upload) {
+    console.log('formData -- upload', upload)
 
-    return await this.serverHttp('/', {
-      upload:      upload,
-      description: description
-    })
+    return await this.serverHttp('/', upload)
 
     //Multiply Files
 
@@ -42,14 +39,6 @@ export default class files {
     //  return data
     //}
 
-    //Single Files
-
-    //else {
-    //  return await this.serverHttp('/', {
-    //    upload:      upload,
-    //    description: description
-    //  })
-    //}
   }
 
   /**
@@ -59,11 +48,14 @@ export default class files {
    * @returns {Promise<any>}
    */
   async search (id, filename) {
-    if (id || filename) return
-    return await this.serverHttp('/search/', {
-      id:       id,
-      filename: filename
-    })
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+    }
+    if (filename) {
+      formData.append('filename', filename)
+    }
+    return await this.serverHttp('/search/', formData)
   }
 
   /**
@@ -95,11 +87,9 @@ export default class files {
   async serverHttp (url, params) {
 
     const response = await fetch(this.url + url, {
-      'method':  'POST',
-      'headers': {
-        'Content-Type': 'multipart/form-data'
-      },
-      'body':    JSON.stringify(params)
+      method:   'POST',
+      body:     params,
+      redirect: 'follow'
     })
 
     const result = await response.json()
