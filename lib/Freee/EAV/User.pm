@@ -9,26 +9,31 @@ use Data::Dumper;
 sub new {
     my ( $class, $params ) = @_;
     my $self = {};
+warn "Class:";
+warn Dumper ( $class );
     bless $self;
-
+warn Dumper ( $params );
     if ( defined( $params ) && ref( $params ) && ref( $params ) eq 'HASH' ) {
+warn 2;
         if ( exists( $params->{id} ) ) {
             return $self->_Get( $params );
         }
         else {
+warn 3;
             return $self->_Store( $params );
         }
     }
-
+warn 4;
     return undef();
 }
 
 sub _Store {
     my ( $self, $params ) = @_;
-
+warn 5;
     my $EAVObject = $self->SUPER::new( 'Free::EAV::User', $params );
+warn 6;
     return undef() unless defined( $EAVObject );
-
+warn 7;
     my $fields = [ 'email', 'password', 'eav_id', 'timezone' ];
 
     $params->{eav_id} = $EAVObject->id();

@@ -296,7 +296,7 @@ sub add_by_email {
             'timezone'    => $$data{'timezone'}
         };
 
-        $user = Freee::EAV::User->new( 'User', $data_eav );
+        $user = Freee::EAV::User->new( $data_eav );
         # $user = Freee::EAV::User->new( $data_eav );
     }
 

@@ -6,7 +6,6 @@ use warnings;
 use utf8;
 
 use base 'Mojolicious::Plugin';
-use Freee::EAV;
 
 use DBD::Pg;
 use DBI;
