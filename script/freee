@@ -16,7 +16,7 @@ BEGIN {
     $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = '0';
 
     # лимит на объем принимаемых файлов
-    $ENV{MOJO_MAX_MESSAGE_SIZE} = 2 * 1024 * 1024 * 1024; # 2 GB
+    $ENV{MOJO_MAX_MEMORY_SIZE} = $ENV{MOJO_MAX_MESSAGE_SIZE} = 2 * 1024 * 1024 * 1024; # 2 GB
 
     unshift @INC, "$FindBin::Bin/../lib";
 }

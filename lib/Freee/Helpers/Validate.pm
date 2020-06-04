@@ -61,6 +61,7 @@ sub register {
 
             # проверка для роутов
             foreach my $fld (keys %$valid) {
+
                 # Проверка обязательности поля
                 if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
                     # читаем поле
@@ -69,7 +70,7 @@ sub register {
                     # чистка от html
                     $val = $hs->parse($val) if ($val);
 
-                    # проверяем длинну поля, если указано проверять
+                    # проверяем длинну поля, если указано проверять ??????????????????????????????? дублируется в _check_fields
                     if ( $$valid{$fld}[2] ) {
                         if ( length($val) > $$valid{$fld}[2] ) {
                             push @error, "Validation error for '$fld'. Field has wrong length";
@@ -84,7 +85,7 @@ sub register {
                             push @error, "Validation error for '$fld'. Field has wrong type=";
                         }
                     }
-                    # валидация по регэкспу
+                    # валидация по регэкспу ????????????????????????????? дублируется в _check_fields
                     else {
                         unless ( $val =~ $re ) {
                             push @error, "Validation error for '$fld'. Field has wrong type";
@@ -144,8 +145,19 @@ sub register {
                     last;
                 }
 
+                unless ( exists $self->param( $_ )->{'asset'}->{'content'} ) {
+                    push @error, "_check_fields: file is too large for input limit";
+                    last;
+                }
+
                 # содержимое файла
                 $data{ 'content' } = $self->param( $_ )->{'asset'}->{'content'} // 0;
+                unless ( $data{'content'} ) {
+                    push @error, "_check_fields: no file's content";
+                    last;
+                }
+
+                # имя файла
                 unless ( $data{ 'title' } ) {
                     push @error, "_check_fields: can't read content";
                     last;
@@ -283,7 +295,7 @@ sub register {
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
-                'email'         => [ 'required', qr/^[\w\@]$/os, 100 ]
+                'email'         => [ 'required', qr/^[\w\d\@]+$/os, 100 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -295,7 +307,7 @@ sub register {
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\- \,\.№\'\"\/0-9]$/os, 64 ],
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
-                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
                 'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],

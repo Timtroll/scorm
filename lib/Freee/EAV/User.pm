@@ -14,7 +14,8 @@ sub new {
     if ( defined( $params ) && ref( $params ) && ref( $params ) eq 'HASH' ) {
         if ( exists( $params->{id} ) ) {
             return $self->_Get( $params );
-        } else {
+        }
+        else {
             return $self->_Store( $params );
         }
     }
@@ -37,7 +38,6 @@ sub _Store {
     $EAVObject->import_id( $EAVObject->{_user}->{id} );
 
     # add data into users_social
-
 
     return $EAVObject;
 }
