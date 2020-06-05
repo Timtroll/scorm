@@ -13,22 +13,18 @@ use Data::Dumper;
 sub new {
     state $self;
     my $class = shift;
-warn "1-Base:new\n";
+
     if ( !defined( $self ) ) {
         $self = bless {}, __PACKAGE__;
         $self->{dbh} = $_[0]->{dbh};
         $self->_init();
         return $self if ( !defined( $class ) );
     }
-warn "2-Base:new \n";
-# warn Dumper( $self );
-warn "class:";
-warn Dumper ( $class );
-warn "type:";
-warn $_[0]->{Type};
+
+
     my $other = bless { Type => $_[0]->{Type} }, $class;
     $self->_init_copy( $other, $_[0] );
-warn "3-Base:new\n";
+
     return $other if exists( $_[0]->{PreventCreate} ) && $_[0]->{PreventCreate};
     return defined( $other->_InitThisItem( $_[0] ) ) ? $other : undef();
 }

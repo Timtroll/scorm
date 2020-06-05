@@ -26,6 +26,22 @@ $settings = {
           {
             "readonly"      => 0,
             "required"      => 1,
+            "type"          => "InputDoubleList",
+            "name"          => "socials",
+            "label"         => "социальные сети",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => [
+              ["1", "ВКонтакте"], ["2", "Facebook"], ["3", "Google"], ["4", "Yandex"], ["5", "Twitter"]
+            ],
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
             "type"          => "InputNumber",
             "name"          => "fullDebugMode",
             "label"         => "режим обновления",
