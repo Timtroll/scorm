@@ -16,7 +16,6 @@
         </div>
         <input class="uk-input pos-border-radius-none pos-border-none"
                @keypress.enter="search"
-               @keypress.esc="searchRequest"
                v-model="searchRequest"
                :placeholder="$t('media.searchPlaceholder')">
       </div>
