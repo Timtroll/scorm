@@ -17,7 +17,7 @@
         <slot name="headerLeft"/>
       </div>
 
-      <!--header settings-->
+      <!--header-->
       <div class="pos-card-header--content">
         <slot name="header"/>
       </div>

@@ -108,10 +108,26 @@ $body-right-width: 700px
   &.link
     color: $global-muted-color
     text-decoration: none
+    cursor: pointer
 
     &:hover
       color: $global-emphasis-color
       text-decoration: none
+
+button
+  &.pos-card-header-item
+    cursor: pointer
+    border: none
+    background: transparent
+    color: $global-muted-color
+
+    &:hover,
+    &:focus
+      color: $global-emphasis-color
+
+    &:disabled
+      color: rgba($global-muted-color, .4)
+      cursor: default
 
 
 .pos-card-footer

@@ -77,7 +77,7 @@ const router = new Router({
         {
           path:          '/media',
           name:          'Media',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "Media" */ './layouts/media/Media'),
           showInSideBar: true,
           meta:          {
             root:         true,

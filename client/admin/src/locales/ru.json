@@ -116,5 +116,9 @@
   },
   "settings"    : {
     "navLabel": "Разделы настроек"
+  },
+  "media": {
+    "searchPlaceholder": "Поиск файла по ID, Названию",
+    "upload": "Загрузить файлы"
   }
 }

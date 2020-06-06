@@ -177,6 +177,7 @@ export default {
       if (!files.length) return
       this.files = files
       for (let i = 0; i < files.length; i++) {
+        console.log(files[i])
         const file = {
           file:        files[i],
           image:       '',
