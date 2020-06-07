@@ -19,6 +19,24 @@
             <div class="pos-list-files__image"
                  :style="filePreview(file)">
 
+              <!-- upload-->
+              <transition name="fade"
+                          appear>
+                <div v-if="file.status === 'upload'"
+                     class="pos-list-files__upload">
+                  <div uk-spinner></div>
+                </div>
+              </transition>
+
+              <!-- success-->
+              <transition name="fade"
+                          appear>
+                <div v-if="file.status === 'success'"
+                     class="pos-list-files__upload">
+                  <span uk-icon="icon: check; ratio: 2"></span>
+                </div>
+              </transition>
+
               <div class="pos-list-files__meta">
                 <div v-text="file.name"></div>
                 <div v-text="prettyBytes(file.size)"></div>
@@ -43,6 +61,7 @@
             </div>
 
           </div>
+
         </div>
 
         <div class="uk-grid-small"
@@ -134,20 +153,14 @@ export default {
 
     async upload () {
 
-      //this.preview.forEach((file, index) => {
-      //  let formData = new FormData()
-      //  formData.append('description', file.description)
-      //  formData.append('upload', file.file)
-      //  this.fileUpload(formData, index)
-      //  this.preview.splice(index, 1)
-      //})
-
       for (const file of this.preview) {
+        file.status  = 'upload'
         let formData = new FormData()
         formData.append('description', file.description)
         formData.append('upload', file.file)
         // upload file
         await this.fileUpload(formData)
+        file.status = 'success'
         // remove preview file
         this.preview.splice(this.preview.indexOf(file), 1)
       }
@@ -177,20 +190,26 @@ export default {
       if (!files.length) return
       this.files = files
       for (let i = 0; i < files.length; i++) {
-        console.log(files[i])
+        const isImage = this.fileIsImage(files[i].type)
+        //console.log(files[i])
         const file = {
           file:        files[i],
           image:       '',
-          isImage:     false,
+          isImage:     isImage,
+          status:      'none', // none | upload | success | error
           type:        files[i].type,
           name:        files[i].name,
           size:        files[i].size,
           description: ''
         }
-        if (i >= 10) notify('Одновременно разрешено загружать не более ' + this.maxUploadCount + '-ти файлов')
-        if (i >= 10) return
-        this.preview.push(file)
-        this.createImage(files[i], i)
+
+        if (i <= this.maxUploadCount) {
+          this.preview.push(file)
+          if (!isImage) return
+          this.createImage(files[i], i)
+        } else {
+          notify('Одновременно разрешено загружать не более ' + this.maxUploadCount + '-ти файлов')
+        }
       }
     },
 
@@ -205,6 +224,23 @@ export default {
     update () {
       this.$emit('change', this.isChanged)
       //this.$emit('value', this.valueInput)
+    },
+
+    fileIsImage (type) {
+      switch (type) {
+        case 'image/jpeg':
+          return true
+        case 'image/png':
+          return true
+        case 'image/gif':
+          return true
+        case 'image/svg+xml':
+          return true
+        case 'image/webp':
+          return true
+        default:
+          return false
+      }
     },
 
     filePreview (item) {
@@ -228,6 +264,10 @@ export default {
           style.backgroundSize  = 'cover'
           break
         case 'image/webp':
+          style.backgroundImage = 'url(' + image + ')'
+          style.backgroundSize  = 'cover'
+          break
+        case 'image/gif':
           style.backgroundImage = 'url(' + image + ')'
           style.backgroundSize  = 'cover'
           break
