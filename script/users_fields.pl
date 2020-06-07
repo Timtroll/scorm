@@ -7,6 +7,7 @@ use warnings;
 use lib '../lib';
 use File::Slurp::Unicode qw(slurp);;
 use Freee::EAV;
+use Freee::EAV::User;
 use DBI;
 
 use Data::Dumper;
@@ -53,11 +54,13 @@ if ( DBI->errstr ) {
 # );
 
 # Модель EAV
-my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+my $null = Freee::EAV->new( 'User', { 'dbh' => $self->{dbh} } );
 
 # делаем запись
-my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
-$user->StoreUser({
+my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1, 'title' => 'test' } );
+die 'done';
+print Dumper($user);
+$user->_Store({
     'title' => 'admin',
     'User' => {
         'place'         => "адрес",
@@ -66,6 +69,15 @@ $user->StoreUser({
         'patronymic'    => "Отчество 3",
         'name'          => "Имя 2",
         'surname'       => "Фамилия 112",
+
+        # 'publish'     => $$data{'status'} ? \1 : \0, 
+        # 'parent'      => 1,
+        # 'email'       => $$data{'email'},
+        # 'password'    => $$data{'password'},
+        # 'time_create' => $$data{'time_create'},
+        # 'time_access' => $$data{'time_access'},
+        # 'time_update' => $$data{'time_update'},
+        # 'timezone'    => $$data{'timezone'}
     }
 });
 

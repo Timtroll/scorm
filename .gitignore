@@ -1,10 +1,10 @@
 log
 #sql
 public/*
-upload/*
 freee.conf
 
 .DS_Store
+client/admin/public
 client/admin/node_modules/
 client/admin/dist
 client/admin/yarn.lock
@@ -26,6 +26,7 @@ yarn-error.log*
 .idea
 
 .vscode
+*.ico
 *.suo
 *.ntvs*
 *.njsproj

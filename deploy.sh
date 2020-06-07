@@ -5,7 +5,8 @@ then
     SOURCE=$1
     cd $SOURCE
 else
- exit 0
+    echo "Argument not exists"
+    exit 0
 fi
 
 echo "-------"
