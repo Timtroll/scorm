@@ -4,7 +4,6 @@ public/*
 freee.conf
 
 .DS_Store
-client/admin/public
 client/admin/node_modules/
 client/admin/dist
 client/admin/yarn.lock
