@@ -21,24 +21,7 @@ export default class files {
    * @param upload
    */
   async upload (upload) {
-    console.log('formData -- upload', upload)
-
     return await this.serverHttp('/', upload)
-
-    //Multiply Files
-
-    //if (upload.isArray()) {
-    //  const data = []
-    //  for (const file of upload) {
-    //    const response = await this.serverHttp('/', {
-    //      upload:      file,
-    //      description: description
-    //    })
-    //    response.push(data)
-    //  }
-    //  return data
-    //}
-
   }
 
   /**
@@ -85,7 +68,6 @@ export default class files {
   }
 
   async serverHttp (url, params) {
-
     const response = await fetch(this.url + url, {
       method:   'POST',
       body:     params,
@@ -93,15 +75,16 @@ export default class files {
     })
 
     const result = await response.json()
-    console.log(result.message)
 
     if (result.status === 'ok') {
       return result
     }
 
     if (result.status === 'fail') {
+
       notify('ERROR: ' + result.message, 'danger')
-      throw (result.message)
+      return result
+      //throw (result.message)
     }
 
   }

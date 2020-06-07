@@ -37,8 +37,23 @@
                 <transition name="fade"
                             appear>
                   <div v-if="file.status === 'success'"
-                       class="pos-list-files__upload">
-                    <span uk-icon="icon: check; ratio: 2"></span>
+                       class="pos-list-files__upload success">
+                    <img src="img/icons/icon__check.svg"
+                         width="24"
+                         height="24"
+                         uk-svg>
+                  </div>
+                </transition>
+
+                <!-- error-->
+                <transition name="fade"
+                            appear>
+                  <div v-if="file.status === 'error'"
+                       class="pos-list-files__upload error">
+                    <img src="img/icons/icon__close.svg"
+                         width="24"
+                         height="24"
+                         uk-svg>
                   </div>
                 </transition>
 
@@ -144,13 +159,14 @@ export default {
 
   data () {
     return {
-      valueInput:      this.value || [],
-      valid:           true,
-      files:           [],
-      image:           [],
-      preview:         [],
-      uploadedPreview: [],
-      maxUploadCount:  10
+      valueInput:        this.value || [],
+      valid:             true,
+      files:             [],
+      image:             [],
+      preview:           [],
+      uploadedPreview:   [],
+      maxUploadCount:    10,
+      maxUploadFileSize: 3145728
     }
   },
 
@@ -218,34 +234,47 @@ export default {
 
   methods: {
 
-    async upload () {
+    upload () {
 
       for (const file of this.preview) {
+
         file.status  = 'upload'
         let formData = new FormData()
         formData.append('description', file.description)
         formData.append('upload', file.file)
+
         // upload file
-        await this.fileUpload(formData)
-        file.status = 'success'
-        // remove preview file
-        this.preview.splice(this.preview.indexOf(file), 1)
+        this.fileUpload(formData)
+            .then(response => {
+              // remove preview file
+              if (response && response.status === 'ok') {
+                file.status = 'success'
+                setTimeout(() => {
+                  this.preview.splice(this.preview.indexOf(file), 1)
+                }, 500)
+              } else {
+                file.status = 'error'
+              }
+            })
       }
     },
 
     async fileUpload (data, index) {
       const response = await files.upload(data)
-      console.log('response.id', response.id)
-      const id = await response.id
-      this.valueInput.push(id)
-      await this.searchFile(id)
+      if (response.status === 'ok') {
+        const id = response.id
+        this.valueInput.push(id)
+        await this.searchFile(id)
+        return response
+      } else {
+        return response
+      }
     },
 
     async searchFile (id) {
       const response = await files.search(id)
       const data     = await response
       this.uploadedPreview.push(data.data)
-
     },
 
     removeUploadFile (index) {
