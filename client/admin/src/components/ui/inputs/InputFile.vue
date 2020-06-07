@@ -68,7 +68,6 @@
               <button type="button"
                       @click.prevent="removeUploadFile(index)"
                       class="uk-button uk-button-danger pos-list-files__button uk-button-small">
-
                 <img src="/img/icons/icon__trash.svg"
                      uk-svg
                      width="12"
@@ -81,7 +80,6 @@
                        placeholder="Описание файла"
                        v-model="file.description">
               </div>
-
             </div>
 
           </div>
