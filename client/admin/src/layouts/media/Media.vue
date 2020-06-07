@@ -44,8 +44,6 @@
         </div>
 
         <div class="pos-media-search">
-          <p class="pos-media-title"
-             v-text="$t('media.upload')"></p>
           <ul class="pos-list">
             <InputFile></InputFile>
           </ul>

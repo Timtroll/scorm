@@ -7,94 +7,111 @@
              v-if="label"/>
 
       <div class="uk-form-controls">
+        <div class="pos-upload-files-drop"
+             ref="dropArea">
 
-        <!--pos-list-files-->
-        <div class="pos-list-files"
-             v-if="preview.length">
+          <p class="pos-media-title"
+             v-text="$t('media.upload')"></p>
 
-          <!-- pos-list-file-->
-          <div class="pos-list-file"
-               v-for="(file, index) in preview">
+          <!--pos-list-files-->
+          <div class="pos-list-files"
+               v-if="preview.length">
 
-            <div class="pos-list-files__image"
-                 :style="filePreview(file)">
+            <!-- pos-list-file-->
+            <div class="pos-list-file"
+                 v-for="(file, index) in preview">
 
-              <!-- upload-->
-              <transition name="fade"
-                          appear>
-                <div v-if="file.status === 'upload'"
-                     class="pos-list-files__upload">
-                  <div uk-spinner></div>
+              <div class="pos-list-files__image"
+                   :style="filePreview(file)">
+
+                <!-- upload-->
+                <transition name="fade"
+                            appear>
+                  <div v-if="file.status === 'upload'"
+                       class="pos-list-files__upload">
+                    <div uk-spinner></div>
+                  </div>
+                </transition>
+
+                <!-- success-->
+                <transition name="fade"
+                            appear>
+                  <div v-if="file.status === 'success'"
+                       class="pos-list-files__upload">
+                    <span uk-icon="icon: check; ratio: 2"></span>
+                  </div>
+                </transition>
+
+                <!-- meta-->
+                <div class="pos-list-files__meta">
+                  <div v-text="file.name"></div>
+                  <div v-text="prettyBytes(file.size)"></div>
                 </div>
-              </transition>
-
-              <!-- success-->
-              <transition name="fade"
-                          appear>
-                <div v-if="file.status === 'success'"
-                     class="pos-list-files__upload">
-                  <span uk-icon="icon: check; ratio: 2"></span>
-                </div>
-              </transition>
-
-              <div class="pos-list-files__meta">
-                <div v-text="file.name"></div>
-                <div v-text="prettyBytes(file.size)"></div>
               </div>
+
+              <!--remove-->
+              <button type="button"
+                      @click.prevent="removeUploadFile(index)"
+                      class="uk-button uk-button-danger pos-list-files__button uk-button-small">
+
+                <img src="/img/icons/icon__trash.svg"
+                     uk-svg
+                     width="12"
+                     height="12">
+              </button>
+
+              <!--description-->
+              <div class="pos-list-files__description">
+                <input class="uk-input uk-form-small uk-width-1-1"
+                       placeholder="Описание файла"
+                       v-model="file.description">
+              </div>
+
             </div>
 
-            <button type="button"
-                    @click.prevent="removeUploadFile(index)"
-                    class="uk-button uk-button-danger pos-list-files__button uk-button-small">
+          </div>
 
-              <img src="/img/icons/icon__trash.svg"
-                   uk-svg
-                   width="12"
-                   height="12">
-            </button>
+          <!--upload-->
+          <div class="uk-grid-small uk-margin-bottom"
+               uk-grid>
 
-            <!--pos-list-files__description-->
-            <div class="pos-list-files__description">
-              <input class="uk-input uk-form-small uk-width-1-1"
-                     placeholder="Описание файла"
-                     v-model="file.description">
+            <div class="uk-width-expand"
+                 uk-form-custom>
+              <input class="uk-input"
+                     ref="files"
+                     multiple
+                     type="file"
+                     @change="handleFiles"
+                     :placeholder="placeholder">
+
+              <button class="uk-button uk-button-default uk-width-1-1"
+                      type="button"
+                      tabindex="-1"
+                      v-text="$t('media.select')"></button>
+            </div>
+
+            <div class="uk-width-auto">
+              <button class="uk-button uk-button-default"
+                      :disabled="disabledUpload"
+                      @click.prevent="upload">
+
+                <img src="/img/icons/icon__save.svg"
+                     uk-svg
+                     width="20"
+                     height="20">
+                <span class="uk-margin-small-left uk-visible@s"
+                      v-text="$t('media.submit')"></span>
+              </button>
             </div>
 
           </div>
 
+          <!--uploadedPreview-->
+          <pre class="uk-margin-remove-bottom"
+               v-if="uploadedPreview.length">{{uploadedPreview}}</pre>
+
+          <div class="pos-upload-files-drop__area"></div>
         </div>
-
-        <div class="uk-grid-small"
-             uk-grid>
-
-          <div class="uk-width-expand"
-               uk-form-custom="target: true">
-            <input class="uk-input"
-                   ref="files"
-                   multiple
-                   type="file"
-                   @change="handleFiles"
-                   :placeholder="placeholder">
-            <input class="uk-input uk-width-1-1"
-                   type="text"
-                   placeholder="Выбрать файл"
-                   disabled>
-          </div>
-
-          <div class="uk-width-auto">
-            <button class="uk-button uk-button-default"
-                    :disabled="disabledUpload"
-                    @click.prevent="upload">
-
-              <img src="/img/icons/icon__save.svg"
-                   uk-svg
-                   width="20"
-                   height="20"></button>
-          </div>
-
-        </div>
-
-        <pre>{{uploadedPreview}}</pre>
       </div>
     </div>
   </li>
@@ -110,7 +127,6 @@ export default {
   name: 'InputFile',
 
   props: {
-
     value:       '',
     name:        '',
     label:       {
@@ -146,7 +162,58 @@ export default {
 
     isChanged () {
       return this.valueInput !== this.value
+    },
+
+    fileCount () {
+      return (this.preview.length <= this.maxUploadCount)
     }
+  },
+
+  mounted () {
+    const dropArea = this.$refs.dropArea
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false)
+    })
+
+    function preventDefaults (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    ;['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false)
+    })
+
+    ;['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unHighLight, false)
+    })
+
+    function highlight (e) {
+      setTimeout(() => {
+        dropArea.classList.add('highlight')
+      }, 100)
+
+    }
+
+    function unHighLight (e) {
+      setTimeout(() => {
+        dropArea.classList.remove('highlight')
+      }, 100)
+
+    }
+
+    dropArea.addEventListener('drop', this.handleFiles, false)
+
+    //function handleDrop(e) {
+    //  let dt = e.dataTransfer
+    //  let files = dt.files
+    //
+    //  handleFiles(e)
+    //}
+    //function handleFiles(files) {
+    //  ([...files]).forEach(this.handleFiles(files))
+    //}
+
   },
 
   methods: {
@@ -186,12 +253,19 @@ export default {
     },
 
     handleFiles (event) {
+
       const files = event.target.files || event.dataTransfer.files
+
+      console.log('files', files)
+
       if (!files.length) return
-      this.files = files
+      this.files   = files
+      this.preview = []
+
       for (let i = 0; i < files.length; i++) {
+
         const isImage = this.fileIsImage(files[i].type)
-        //console.log(files[i])
+
         const file = {
           file:        files[i],
           image:       '',
@@ -203,12 +277,14 @@ export default {
           description: ''
         }
 
-        if (i <= this.maxUploadCount) {
+        console.log(this.preview.length)
+        if (this.fileCount) {
           this.preview.push(file)
           if (!isImage) return
           this.createImage(files[i], i)
         } else {
           notify('Одновременно разрешено загружать не более ' + this.maxUploadCount + '-ти файлов')
+          break
         }
       }
     },

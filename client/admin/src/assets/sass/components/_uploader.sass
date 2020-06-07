@@ -77,3 +77,55 @@ $preview-button-size: 24px
     transform: translateY(-2px)
 
 //.pos-list-files__icon
+.pos-media-title
+  font-size: 1.1rem
+  padding: $global-small-margin 0
+  margin: 0
+
+
+.pos-upload-files-drop__area
+  //display: none
+  transform: scale(0)
+  opacity: 0
+  transition: all .1s ease-in-out
+  transform-origin: center center
+
+.pos-upload-files-drop
+  margin-top: $global-margin
+  position: relative
+
+  &.highlight
+    .pos-upload-files-drop__area
+      transform: scale(1)
+      opacity: 1
+      cursor: grabbing
+      display: block
+      content: ""
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      z-index: 10
+      border-radius: $border-rounded-border-radius
+      background-color: rgba($global-success-background, .2)
+      backdrop-filter: blur(3px)
+
+      &:after
+        cursor: grabbing
+        display: inline-block
+        content: "Перетащите сюда файлы"
+        border-radius: $border-rounded-border-radius
+        position: absolute
+        top: $global-small-margin
+        bottom: $global-small-margin
+        left: $global-small-margin
+        right: $global-small-margin
+        z-index: 11
+        color: darken($global-success-background, 10%)
+        text-align: center
+        box-sizing: border-box
+        padding-top: 20px
+        vertical-align: middle
+        border: 1px dashed rgba($global-success-background, .8)
+
