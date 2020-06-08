@@ -75,7 +75,7 @@
               </button>
 
               <!--description-->
-              <div class="pos-list-files__description">
+              <div class="pos-list-files__description" v-if="file.status === 'none'">
                 <input class="uk-input uk-form-small uk-width-1-1"
                        placeholder="Описание файла"
                        v-model="file.description">
