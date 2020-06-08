@@ -118,7 +118,7 @@ sub search {
 sub update {
     my $self = shift;
 
-    my ( $data, $error, $result, $resp, @mess );
+    my ( $data, $error, $url, $resp, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
@@ -129,12 +129,13 @@ sub update {
 
     # обновление записи
     unless ( @mess ) {
-        ( $result, $error ) = $self->_update_media( $data );
-        push @mess, $error unless $result;
+        ( $url, $error ) = $self->_update_media( $data );
+        push @mess, $error unless $url;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'url'} = $url if $url;
 
     $self->render( 'json' => $resp );
 }
