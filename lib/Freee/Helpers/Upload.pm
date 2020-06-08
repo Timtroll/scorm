@@ -212,7 +212,7 @@ sub register {
             $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
         }
 
-        return $url, $mess;
+        return $data, $mess;
     });
 }
 

@@ -45,10 +45,10 @@ sub index {
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $result if $result;
-    $resp->{'url'} = $url if $result;
     $resp->{'mime'} = $$data{ 'mime' } if $result;
+    $resp->{'url'} = $url if $result;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
 
     $self->render( 'json' => $resp );
 }
@@ -129,13 +129,15 @@ sub update {
 
     # обновление записи
     unless ( @mess ) {
-        ( $url, $error ) = $self->_update_media( $data );
-        push @mess, $error unless $url;
+        ( $data, $error ) = $self->_update_media( $data );
+        push @mess, $error if $error;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
+    $resp->{'id'} = $$data{'id'} unless @mess;
+    $resp->{'mime'} = $$data{'mime'} unless @mess;
+    $resp->{'url'} = $$data{'id'} unless @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'url'} = $url if $url;
 
     $self->render( 'json' => $resp );
 }
