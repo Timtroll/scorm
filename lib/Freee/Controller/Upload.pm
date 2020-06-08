@@ -105,7 +105,7 @@ sub search {
 
     # получение записи
     unless ( @mess ) {
-        @media = $self->_get_media( $data, [] );
+        @media = $self->_get_media( $data );
         push @mess, "Can not get file" unless @media;
     }
 

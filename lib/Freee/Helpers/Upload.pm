@@ -71,10 +71,11 @@ sub register {
     $app->helper( '_delete_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess );
+        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess, @get );
 
         # поиск имени и расширения файла по id
-        $fileinfo = $self->_get_media( $data, ['filename','extension'] );
+        @get = $self->_get_media( $data );
+        $fileinfo = shift @get;
         push @mess, "Can not get $$data{'id'}" unless $fileinfo;
 
         # удаление файла
@@ -117,20 +118,14 @@ sub register {
     });
 
     # выводит запись о файле
-    # my $true = $self->_get_media( $data, [] );
+    # my $true = $self->_get_media( $data );
     # возвращает true/false
     $app->helper( '_get_media' => sub {
-        my ( $self, $data, $obj ) = @_;
+        my ( $self, $data ) = @_;
 
-        # определение запроса к бд
-        my $str = '*';
-        if ( @$obj ) {
-            $str = '"' . join( '","', @$obj ) . '"';
-        }
+        my ( $sth, $result, $url, $host, @result );
 
         # получение запрошенных данных о файле
-        my $sth;
-
         if ( $$data{'description'} ) {
             $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "description" like ?' );
             $sth->bind_param( 1, '%' . $$data{'description'} . '%' );
@@ -145,19 +140,19 @@ sub register {
             $sth->bind_param( 1, $$data{'filename'} );
         }
         elsif ( $$data{'id'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?' );
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "id" = ?' );
             $sth->bind_param( 1, $$data{'id'} );
         }
         elsif ( $$data{'extension'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT' . $str . 'FROM "public"."media" WHERE "extension" = ?' );
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ?' );
             $sth->bind_param( 1, $$data{'extension'} );
         }
         $sth->execute();
-        my $result = $sth->fetchall_hashref('id');
-        my @result;
+        $result = $sth->fetchall_hashref('id');
+        @result;
 
-        my $url;
-        my $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
+        $url;
+        $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
         foreach my $row ( values %{$result} ) {
             $url = join( '/', ( $host, 'upload', %$row{ 'filename' } . '.' . %$row{ 'extension' } ) );
             %$row = ( %$row, 'url', $url);
@@ -188,7 +183,7 @@ sub register {
 
         # получение данных о файле
         unless ( $mess ) {
-            @result = $self->_get_media( $data, [] );
+            @result = $self->_get_media( $data );
             $mess = "Can not get file" unless @result;
             $data = shift @result;
         }
