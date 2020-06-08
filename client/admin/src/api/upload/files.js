@@ -1,11 +1,12 @@
 import Vue from 'vue'
+import {notify} from '../../store/methods'
 
 let apiProxy = ''
 
-if (Vue.config.productionTip) {
-  apiProxy = 'https://cors-c.herokuapp.com/https://freee.su/' // для Localhost  https://cors-c.herokuapp.com
+if (!Vue.config.productionTip) {
+  apiProxy = 'https://cors-c.herokuapp.com/https://freee.su' // для Localhost  https://cors-c.herokuapp.com
 }
-const apiUrl = apiProxy + 'upload'
+const apiUrl = apiProxy + '/upload'
 
 export default class files {
 
@@ -16,32 +17,11 @@ export default class files {
 
   /**
    * Загрузить файл, добавить запись в таблицу
-   * @param upload
-   * @param description
    * @returns {Promise<[]>}
+   * @param upload
    */
-  async upload (upload, description) {
-
-    //Multiply Files
-    if (upload.isArray()) {
-      const data = []
-      for (const file of upload) {
-        const response = await this.serverHttp('/', {
-          upload:      file,
-          description: description
-        })
-        response.push(data)
-      }
-      return data
-    }
-
-    //Single Files
-    else {
-      return await this.serverHttp('/', {
-        upload:      upload,
-        description: description
-      })
-    }
+  async upload (upload) {
+    return await this.serverHttp('/', upload)
   }
 
   /**
@@ -51,11 +31,14 @@ export default class files {
    * @returns {Promise<any>}
    */
   async search (id, filename) {
-    if (id || filename) return
-    return await this.serverHttp('/upload/search/', {
-      id:       id,
-      filename: filename
-    })
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+    }
+    if (filename) {
+      formData.append('filename', filename)
+    }
+    return await this.serverHttp('/search/', formData)
   }
 
   /**
@@ -65,7 +48,7 @@ export default class files {
    */
   async delete (id) {
     if (id) return
-    return await this.serverHttp('/upload/delete/', {
+    return await this.serverHttp('/delete/', {
       id: id
     })
   }
@@ -78,17 +61,17 @@ export default class files {
    */
   async update (id, description) {
     if (id && description) return
-    return await this.serverHttp('/upload/update/', {
+    return await this.serverHttp('/update/', {
       id:          id,
       description: description
     })
   }
 
   async serverHttp (url, params) {
-
     const response = await fetch(this.url + url, {
-      method: 'POST',
-      body:   JSON.stringify(params)
+      method:   'POST',
+      body:     params,
+      redirect: 'follow'
     })
 
     const result = await response.json()
@@ -97,8 +80,11 @@ export default class files {
       return result
     }
 
-    if (result.status !== 'fail') {
-      throw (result.message)
+    if (result.status === 'fail') {
+
+      notify('ERROR: ' + result.message, 'danger')
+      return result
+      //throw (result.message)
     }
 
   }

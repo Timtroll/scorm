@@ -262,7 +262,9 @@ sub register {
             },
             '/upload/search'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
-                "filename"      => [ '', qr/^\w{48}($extension)?/os, 53 ]
+                "filename"      => [ '', qr/^\w{48}($extension)?/os, 53 ],
+                "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "extension"     => [ '', qr/^($extension)/os, 5 ]
             },
             '/upload/update'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],

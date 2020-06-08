@@ -14,7 +14,7 @@ use common;
 use Data::Dumper;
 
 $| = 1;
-has 'dbh';
+has 'dbh', 'mime';
 
 # This method will run once at server start
 sub startup {
@@ -47,8 +47,8 @@ sub startup {
     $self->plugin('Freee::Helpers::Validate');
     $vfields = $self->_param_fields();
 
-    # загрузка настроек
-    warn $self->_add_mock();
+    # # загрузка настроек
+    # warn $self->_add_mock();
 
     # init Pg connection
     $self->{dbh} = $self->pg_dbh();

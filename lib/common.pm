@@ -30,7 +30,8 @@ my $log = '';
 
 # for validate input and set errors
 my $clear = {};
-my %mime = ();
+
+our $mime = {};
 
 BEGIN {
     # set not verify ssl connection
@@ -41,7 +42,9 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById %mime );
+
+@EXPORT = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById $mime );
+@EXPORT_OK = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById $mime );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;
@@ -49,7 +52,7 @@ $home->detect;
 
 sub rel_file { $home->rel_file(shift); }
 
-%mime = (     
+$mime = {
     "3ds" => "image/x-3ds",
     "a" => "application/x-archive",
     "abw" => "application/x-abiword",
@@ -429,6 +432,6 @@ sub rel_file { $home->rel_file(shift); }
     "zabw" => "application/x-abiword",
     "zip" => "application/zip",
     "zoo" => "application/x-zoo" 
-);
+};
 
 1;

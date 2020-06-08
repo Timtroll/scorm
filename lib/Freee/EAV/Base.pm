@@ -14,6 +14,10 @@ sub new {
     state $self;
     my $class = shift;
 
+    if ( !ref( $_[0] ) && ref( $class ) ) {
+        $class = shift;
+    }
+
     if ( !defined( $self ) ) {
         $self = bless {}, __PACKAGE__;
         $self->{dbh} = $_[0]->{dbh};
@@ -21,8 +25,9 @@ sub new {
         return $self if ( !defined( $class ) );
     }
 
-
     my $other = bless { Type => $_[0]->{Type} }, $class;
+    warn $other;
+    warn $_[0];
     $self->_init_copy( $other, $_[0] );
 
     return $other if exists( $_[0]->{PreventCreate} ) && $_[0]->{PreventCreate};

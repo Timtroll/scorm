@@ -1,90 +1,90 @@
 {
-  "app"         : {
+  "app":          {
     "description": "AD'миночка обучающего сервиса \"Scorm\"",
-    "title"      : "AD'миночка",
-    "lang"       : "ru"
+    "title":       "AD'миночка",
+    "lang":        "ru"
   },
-  "auth"        : {
+  "auth":         {
     "fields": {
-      "login"   : "Имя пользователя",
+      "login":    "Имя пользователя",
       "password": "Пароль",
-      "submit"  : "Войти"
+      "submit":   "Войти"
     },
-    "title" : "Авторизация в панели управления",
+    "title":  "Авторизация в панели управления",
     "logOut": "Покинуть матрицу"
   },
   "pageNotFound": {
-    "title"  : "Ошибка 404",
+    "title":   "Ошибка 404",
     "content": "Такая страница не существует"
   },
-  "profile"     : {
-    "user"    : {
-      "title"                 : "Настройки моего профиля",
-      "name"                  : "ФИО",
-      "namePlaceholder"       : "Иванов Иван Иванович",
-      "userName"              : "Имя пользователя",
-      "userNamePlaceholder"   : "MyLogin",
-      "email"                 : "Email",
-      "emailPlaceholder"      : "name@provider.com",
-      "phone"                 : "Телефон",
-      "phonePlaceholder"      : "+7 (999) 999-99-99",
-      "city"                  : "Город",
-      "cityPlaceholder"       : "Владивосток",
-      "dateOfBirth"           : "Дата рождения",
+  "profile":      {
+    "user":     {
+      "title":                  "Настройки моего профиля",
+      "name":                   "ФИО",
+      "namePlaceholder":        "Иванов Иван Иванович",
+      "userName":               "Имя пользователя",
+      "userNamePlaceholder":    "MyLogin",
+      "email":                  "Email",
+      "emailPlaceholder":       "name@provider.com",
+      "phone":                  "Телефон",
+      "phonePlaceholder":       "+7 (999) 999-99-99",
+      "city":                   "Город",
+      "cityPlaceholder":        "Владивосток",
+      "dateOfBirth":            "Дата рождения",
       "dateOfBirthPlaceholder": "01.12.1990"
     },
     "password": {
-      "title"                    : "Изменить пароль",
-      "passwordPlaceholder"      : "Введите новый пароль",
+      "title":                     "Изменить пароль",
+      "passwordPlaceholder":       "Введите новый пароль",
       "repeatPasswordPlaceholder": "Повторите новый пароль"
     }
   },
-  "actions"     : {
-    "ok"          : "Да",
-    "no"          : "Нет",
-    "save"        : "Сохранить",
-    "edit"        : "Редактировать",
-    "edit_fields" : "Редактировать поля",
-    "cancel"      : "Отменить",
-    "open"        : "Открыть",
-    "close"       : "Закрыть",
-    "loadMore"    : "Загрузить еще",
-    "loading"     : "Загрузка",
-    "remove"      : "Удалить",
-    "search"      : "Поиск",
-    "add"         : "Добавить",
-    "addRow"      : "Добавить настройку",
-    "searchError" : "Это сложно для меня. <br>Говори проще",
+  "actions":      {
+    "ok":           "Да",
+    "no":           "Нет",
+    "save":         "Сохранить",
+    "edit":         "Редактировать",
+    "edit_fields":  "Редактировать поля",
+    "cancel":       "Отменить",
+    "open":         "Открыть",
+    "close":        "Закрыть",
+    "loadMore":     "Загрузить еще",
+    "loading":      "Загрузка",
+    "remove":       "Удалить",
+    "search":       "Поиск",
+    "add":          "Добавить",
+    "addRow":       "Добавить настройку",
+    "searchError":  "Это сложно для меня. <br>Говори проще",
     "requestError": "Что-то<br> пошло не так",
-    "total"       : "Всего:",
-    "empty"       : "Пусто"
+    "total":        "Всего:",
+    "empty":        "Пусто"
   },
-  "dialog"      : {
-    "remove"    : "Удалить элемент?",
+  "dialog":       {
+    "remove":     "Удалить элемент?",
     "removeLast": "Оставить только одно значение?<br> Последний элемент будет удален, без возможности восставновления"
   },
-  "list"        : {
-    "name"           : "Системное название",
-    "placeholder"    : "Подсказка",
-    "label"          : "Рашифровка",
-    "mask"           : "Маска ввода",
-    "type"           : "Тип поля ввода",
-    "value"          : "Значение",
-    "parent"         : "Родитель",
-    "status"         : "Статус",
-    "selected"       : "Список значений",
-    "required"       : "Обязательно для заполнения",
-    "readonly"       : "Только для чтения",
+  "list":         {
+    "name":            "Системное название",
+    "placeholder":     "Подсказка",
+    "label":           "Рашифровка",
+    "mask":            "Маска ввода",
+    "type":            "Тип поля ввода",
+    "value":           "Значение",
+    "parent":          "Родитель",
+    "status":          "Статус",
+    "selected":        "Список значений",
+    "required":        "Обязательно для заполнения",
+    "readonly":        "Только для чтения",
     "namePlaceholder": "Только латинские буквы"
   },
-  "messages"    : {
-    "dataIsChanged"   : "<h4 class=\"uk-text-danger uk-margin-small-bottom\">Есть не сохраненные данные!</h4> Вы уверены, что хотите закрыть окно? <br> В этом случае эти данные будут утеряны",
-    "clearValue"      : "Изменение типа поля \"Значение\" приведет его очистке",
-    "saved"           : "Данный успешно сохранены",
+  "messages":     {
+    "dataIsChanged":    "<h4 class=\"uk-text-danger uk-margin-small-bottom\">Есть не сохраненные данные!</h4> Вы уверены, что хотите закрыть окно? <br> В этом случае эти данные будут утеряны",
+    "clearValue":       "Изменение типа поля \"Значение\" приведет его очистке",
+    "saved":            "Данный успешно сохранены",
     "sysNameNotUnique": "Поле с таким значением уже существует! Используйте другое значение"
   },
-  "calendar"    : {
-    "months"          : [
+  "calendar":     {
+    "months":           [
       "Январь",
       "Февраль",
       "Март",
@@ -98,7 +98,7 @@
       "Ноябрь",
       "Декабрь"
     ],
-    "weekdays"        : [
+    "weekdays":         [
       "Пн",
       "Вт",
       "Ср",
@@ -107,14 +107,20 @@
       "Сб",
       "Вс"
     ],
-    "setTimeCaption"  : "Установить время:",
+    "setTimeCaption":   "Установить время:",
     "prevMonthCaption": "Пред. месяц",
     "nextMonthCaption": "След. месяц"
   },
-  "table"       : {
+  "table":        {
     "headerItems": "Показать колонки"
   },
-  "settings"    : {
+  "settings":     {
     "navLabel": "Разделы настроек"
+  },
+  "media":        {
+    "searchPlaceholder": "Поиск файла по ID, Названию",
+    "upload":            "Перетащите файлы для загрузки",
+    "submit":            "Загрузить",
+    "select":            "Выбрать файлы"
   }
 }

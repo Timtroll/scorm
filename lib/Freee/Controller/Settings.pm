@@ -204,10 +204,11 @@ sub get_leafs {
 sub load_default {
     my $self = shift;
 
+    my ( $sth, $res, $id, $sub, $resp, $create_script, @mess);
+
     # очистка таблицы и сброс счетчика
     $self->_reset_settings();
 
-    my ($id, $sub, $resp, @mess);
     foreach my $folder ( @{$settings->{'settings'}} ) {
         $sub = {
             "name"          => $$folder{'name'},
@@ -254,6 +255,7 @@ sub load_default {
 
     $self->render( 'json' => $resp );
 }
+
 
 # создание настройки
 # my $id = $self->add();

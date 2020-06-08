@@ -1,0 +1,137 @@
+@import "../uikit/variables"
+@import "../mixins"
+
+$grid-gap: 10px
+$preview-width: 140px
+$preview-button-size: 24px
+
+.pos-list-files
+  display: grid
+  grid-gap: $grid-gap
+  grid-template-columns: repeat(auto-fill, minmax($preview-width, 1fr))
+  margin-bottom: $global-margin
+
+.pos-list-file
+  width: 100%
+  flex: none
+  position: relative
+
+  &:hover
+    z-index: 10
+
+.pos-list-files__image
+  width: 100%
+  padding-top: 100%
+  background: $global-muted-background 50% 50% no-repeat
+  background-size: cover
+  border-radius: $border-rounded-border-radius
+  overflow: hidden
+  transition: transform .3s ease
+  position: relative
+  z-index: 2
+
+  &:hover
+    transform: scale(1.1)
+
+    .pos-list-files__meta
+      transform: translateY(0)
+
+.pos-list-files__upload
+  background-color: rgba($global-primary-background, .6)
+  position: absolute
+  bottom: 0
+  top: 0
+  left: 0
+  right: 0
+  z-index: 3
+  display: flex
+  align-items: center
+  justify-content: center
+  color: $global-inverse-color
+
+  &.success
+    background-color: rgba($global-success-background, .6)
+
+  &.error
+    background-color: rgba($global-danger-background, .6)
+
+.pos-list-files__meta
+  transform: translateY(100%)
+  position: absolute
+  bottom: 0
+  left: 0
+  right: 0
+  padding: $global-small-margin
+  background-color: rgba($global-background, .7)
+  font-size: .7rem
+  transition: transform .3s ease
+
+.pos-list-files__description
+  margin-top: 0
+
+.pos-list-files__button
+  z-index: 3
+  padding: 0
+  width: $preview-button-size
+  height: $preview-button-size
+  line-height: $preview-button-size
+  position: absolute
+  top: $global-small-margin/2
+  right: $global-small-margin/2
+
+  & > *
+    transform: translateY(-2px)
+
+//.pos-list-files__icon
+.pos-media-title
+  font-size: 1.1rem
+  padding: $global-small-margin 0
+  margin: 0
+
+
+.pos-upload-files-drop__area
+  //display: none
+  transform: scale(0)
+  opacity: 0
+  transition: all .1s ease-in-out
+  transform-origin: center center
+
+.pos-upload-files-drop
+  margin-top: $global-margin
+  position: relative
+
+  &.highlight
+    .pos-upload-files-drop__area
+      transform: scale(1)
+      opacity: 1
+      cursor: grabbing
+      display: block
+      content: ""
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      z-index: 10
+      border-radius: $border-rounded-border-radius
+      background-color: rgba($global-success-background, .2)
+      backdrop-filter: blur(3px)
+
+      &:after
+        cursor: grabbing
+        display: inline-block
+        content: "Перетащите сюда файлы"
+        border-radius: $border-rounded-border-radius
+        position: absolute
+        top: $global-small-margin
+        bottom: $global-small-margin
+        left: $global-small-margin
+        right: $global-small-margin
+        z-index: 11
+        color: darken($global-success-background, 10%)
+        text-align: center
+        box-sizing: border-box
+        padding-top: 20px
+        vertical-align: middle
+        border: 1px dashed rgba($global-success-background, .8)
+

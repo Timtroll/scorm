@@ -8,8 +8,12 @@ use Data::Dumper;
 
 sub new {
     my ( $class, $params ) = @_;
-    my $self = {};
-    bless $self;
+    shift;
+use DDP;
+p $params;
+warn $class;
+my $self = {};
+bless $self;
 
     if ( defined( $params ) && ref( $params ) && ref( $params ) eq 'HASH' ) {
         if ( exists( $params->{id} ) ) {
@@ -20,7 +24,7 @@ sub new {
         }
     }
 
-    return undef();
+    return $self;
 }
 
 sub _Store {
@@ -48,7 +52,7 @@ sub _Store {
 sub _Get {
     my ( $self, $params ) = @_;
 
-    my $EAVObject = $self->SUPER::new( 'Free::EAV::User', { import_id => $params->{id} } );
+    my $EAVObject = $self->SUPER::new( { Type => 'User', import_id => $params->{id} } );
     return undef() unless defined( $EAVObject );
 
     # получаем данные из users
