@@ -10,10 +10,11 @@ use common;
 sub index {
     my $self = shift;
 
-    my ( $data, $error, $result, $local_path, $resp, @mess );
+    my ( $data, $error, $result, $local_path, $resp, $url, $host, @mess );
 
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
     $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+    $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
 
     # проверка данных
     unless ( @mess ) {
@@ -25,7 +26,11 @@ sub index {
     unless ( @mess ) {
         $result = write_file( $local_path . $$data{ 'filename' } . '.' . $$data{ 'extension' }, $$data{ 'content' } );
         push @mess, "Can not write $$data{'title'}" unless $result;
+    }
 
+    # получение mime
+    unless ( @mess ) {
+        $$data{ 'mime' } = $$mime{$$data{ 'extension' }} || '';
     }
 
     # ввод данных в таблицу
@@ -34,9 +39,16 @@ sub index {
         push @mess, $error unless $result;
     }
 
+    # получение url
+    unless ( @mess ) {
+        $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
+    }
+
     $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $result if $result;
+    $resp->{'mime'} = $$data{ 'mime' } if $result;
+    $resp->{'url'} = $url if $result;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
 
     $self->render( 'json' => $resp );
 }
@@ -68,7 +80,7 @@ sub delete {
 sub search {
     my $self = shift;
 
-    my ( $data, $error, $media, $resp, @mess );
+    my ( $data, $error, $resp, $url, @mess, @media );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
@@ -79,7 +91,7 @@ sub search {
 
     # проверка данных
     unless ( @mess ) {
-        unless ( $$data{'id'} || $$data{'filename'} ) {
+        unless ( $$data{'id'} || $$data{'filename'} || $$data{'description'} || $$data{'extension'} ) {
             push @mess, 'no data for search!';
         }
     }
@@ -87,26 +99,26 @@ sub search {
     # разделение на имя и расширение файла
     if ( ( $$data{'filename'} ) && ( $$data{'filename'} =~ m/\./ ) ){
         $$data{'filename'} =~ /^(.*?)\.(.*?)$/;
-        $$data{'extension'} = $2;
+        $$data{'filename.extension'} = $2;
         $$data{'filename'} = $1;
     }
 
     # получение записи
     unless ( @mess ) {
-        $media = $self->_get_media( $data, [] );
-        push @mess, "Can not get file" unless $media;
+        @media = $self->_get_media( $data, [] );
+        push @mess, "Can not get file" unless @media;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $media if $media;
+    $resp->{'data'} = \@media if @media;
     $self->render( 'json' => $resp );
 }
 
 sub update {
     my $self = shift;
 
-    my ( $data, $error, $result, $resp, @mess );
+    my ( $data, $error, $url, $resp, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
@@ -117,11 +129,14 @@ sub update {
 
     # обновление записи
     unless ( @mess ) {
-        ( $result, $error ) = $self->_update_media( $data );
-        push @mess, $error unless $result;
+        ( $data, $error ) = $self->_update_media( $data );
+        push @mess, $error if $error;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
+    $resp->{'id'} = $$data{'id'} unless @mess;
+    $resp->{'mime'} = $$data{'mime'} unless @mess;
+    $resp->{'url'} = $$data{'id'} unless @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
 
     $self->render( 'json' => $resp );
