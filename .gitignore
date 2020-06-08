@@ -1,7 +1,6 @@
 log
 #sql
 public/*
-upload/*
 freee.conf
 
 .DS_Store
@@ -26,6 +25,7 @@ yarn-error.log*
 .idea
 
 .vscode
+*.ico
 *.suo
 *.ntvs*
 *.njsproj

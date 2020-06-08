@@ -14,7 +14,7 @@ use common;
 use Data::Dumper;
 
 $| = 1;
-has 'dbh';
+has 'dbh', 'mime';
 
 # This method will run once at server start
 sub startup {

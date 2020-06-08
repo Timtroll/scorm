@@ -39,7 +39,7 @@ sub register {
         $sth->bind_param( 4, $$data{'title'} );
         $sth->bind_param( 5, $$data{'size'} );
         $sth->bind_param( 6, '' );
-        $sth->bind_param( 7, '' );
+        $sth->bind_param( 7, $$data{'mime'} );
         $sth->bind_param( 8, $$data{'description'} );
         $sth->bind_param( 9, 0 );
         $sth->bind_param( 10, 0 );
@@ -71,10 +71,11 @@ sub register {
     $app->helper( '_delete_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess );
+        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess, @get );
 
         # поиск имени и расширения файла по id
-        $fileinfo = $self->_get_media( $data, ['filename','extension'] );
+        @get = $self->_get_media( $data );
+        $fileinfo = shift @get;
         push @mess, "Can not get $$data{'id'}" unless $fileinfo;
 
         # удаление файла
@@ -117,24 +118,19 @@ sub register {
     });
 
     # выводит запись о файле
-    # my $true = $self->_get_media( $data, [] );
+    # my $true = $self->_get_media( $data );
     # возвращает true/false
     $app->helper( '_get_media' => sub {
-        my ( $self, $data, $obj ) = @_;
+        my ( $self, $data ) = @_;
 
-        # определение запроса к бд
-        my $str = '*';
-        if ( @$obj ) {
-            $str = '"' . join( '","', @$obj ) . '"';
-        }
+        my ( $sth, $result, $url, $host, @result );
 
         # получение запрошенных данных о файле
-        my $sth;
-        if ( $$data{'id'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?' );
-            $sth->bind_param( 1, $$data{'id'} );
+        if ( $$data{'description'} ) {
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "description" like ?' );
+            $sth->bind_param( 1, '%' . $$data{'description'} . '%' );
         }
-        elsif ( ( $$data{'extension'} ) && ( $$data{'filename'} ) ) {
+        elsif ( ( $$data{'filename.extension'} ) && ( $$data{'filename'} ) ) {
             $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ? and "filename" = ?' );
             $sth->bind_param( 1, $$data{'extension'} );
             $sth->bind_param( 2, $$data{'filename'} );
@@ -143,10 +139,27 @@ sub register {
             $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "filename" = ?' );
             $sth->bind_param( 1, $$data{'filename'} );
         }
+        elsif ( $$data{'id'} ) {
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "id" = ?' );
+            $sth->bind_param( 1, $$data{'id'} );
+        }
+        elsif ( $$data{'extension'} ) {
+            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ?' );
+            $sth->bind_param( 1, $$data{'extension'} );
+        }
         $sth->execute();
-        my $result = $sth->fetchrow_hashref;
+        $result = $sth->fetchall_hashref('id');
+        @result;
 
-        return $result;
+        $url;
+        $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
+        foreach my $row ( values %{$result} ) {
+            $url = join( '/', ( $host, 'upload', %$row{ 'filename' } . '.' . %$row{ 'extension' } ) );
+            %$row = ( %$row, 'url', $url);
+            push @result, $row;
+        }
+
+        return @result;
     });
 
     # обновляет описание файла
@@ -155,7 +168,7 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $sth, $result, $media, $local_path, $extension, $rewrite_result, $json, $mess );
+        my ( $sth,  $media, $local_path, $extension, $rewrite_result, $json, $mess, $result, $url, $host, @result );
         # обновление описания в бд
         $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
@@ -170,8 +183,9 @@ sub register {
 
         # получение данных о файле
         unless ( $mess ) {
-            $data = $self->_get_media( $data, [] );
-            $mess = "Can not get file" unless $data;
+            @result = $self->_get_media( $data );
+            $mess = "Can not get file" unless @result;
+            $data = shift @result;
         }
 
         # преобразование данных в json
@@ -188,7 +202,12 @@ sub register {
             $mess = "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
-        return $result, $mess;
+        unless ( $mess ){
+            $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
+            $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
+        }
+
+        return $data, $mess;
     });
 }
 

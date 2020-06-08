@@ -24,7 +24,6 @@ sub new {
     return defined( $Other->_InitThisItem( $_[0] ) ) ? $Other : undef();
 }
 
-
 our $AUTOLOAD;
 
 sub AUTOLOAD {

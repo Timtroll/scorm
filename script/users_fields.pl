@@ -7,6 +7,7 @@ use warnings;
 use lib '../lib';
 use File::Slurp::Unicode qw(slurp);;
 use Freee::EAV;
+use Freee::EAV::User;
 use DBI;
 
 use Data::Dumper;
@@ -72,6 +73,15 @@ my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1,
         'patronymic'    => "Отчество 3",
         'name'          => "Имя 2",
         'surname'       => "Фамилия 112",
+
+        # 'publish'     => $$data{'status'} ? \1 : \0, 
+        # 'parent'      => 1,
+        # 'email'       => $$data{'email'},
+        # 'password'    => $$data{'password'},
+        # 'time_create' => $$data{'time_create'},
+        # 'time_access' => $$data{'time_access'},
+        # 'time_update' => $$data{'time_update'},
+        # 'timezone'    => $$data{'timezone'}
     }
 });
 

@@ -2,7 +2,7 @@
 @import "../mixins"
 
 $grid-gap: 10px
-$preview-width: 140px
+$preview-width: 120px
 $preview-button-size: 24px
 
 .pos-list-files
@@ -48,6 +48,12 @@ $preview-button-size: 24px
   align-items: center
   justify-content: center
   color: $global-inverse-color
+
+  &.success
+    background-color: rgba($global-success-background, .6)
+
+  &.error
+    background-color: rgba($global-danger-background, .6)
 
 .pos-list-files__meta
   transform: translateY(100%)
