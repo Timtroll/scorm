@@ -53,11 +53,17 @@ if ( DBI->errstr ) {
 # );
 
 # Модель EAV
-my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+#my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+
+my $UH = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
+use DDP;
+p $UH->{Root};
+die $UH->{Root}->id();
+die;
+
 
 # делаем запись
-my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1 } );
-$user->StoreUser({
+my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1, 
     'title' => 'admin',
     'User' => {
         'place'         => "адрес",

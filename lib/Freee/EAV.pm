@@ -4,19 +4,18 @@ use strict;
 use warnings;
 
 sub new {
-    my $self = shift;
-    my $type = shift;
+    my ( $Self, $Type, $Params ) = @_;
 
-    my $loc   = "Freee/EAV/$type\.pm";
-    my $class = "Freee::EAV::$type";
+    my $Class = __PACKAGE__ . '::' . $Type;
+    my $xClass = $Class.'.pm';
+    $xClass =~ s/\:\:/\//g;
 
-    require $loc;
+    require $xClass;
 
-    my $p = $_[0];
-    $p = {} if !ref( $p ) || ref( $p ) ne 'HASH';
-    $p->{Type} = $type;
+    $Params = {} if !ref($Params) || ref($Params) ne 'HASH';
+    $Params->{Type} = lc( $Type );
 
-    return $class->new( $p );               
+    return $Class->new( $Params );
 }
 
 1;
