@@ -80,7 +80,7 @@ sub delete {
 sub search {
     my $self = shift;
 
-    my ( $data, $error, $resp, $url, @mess, @media );
+    my ( $data, $error, $resp, $url, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
@@ -89,29 +89,15 @@ sub search {
         push @mess, $error if $error;
     }
 
-    # проверка данных
-    unless ( @mess ) {
-        unless ( $$data{'id'} || $$data{'filename'} || $$data{'description'} || $$data{'extension'} ) {
-            push @mess, 'no data for search!';
-        }
-    }
-
-    # разделение на имя и расширение файла
-    if ( ( $$data{'filename'} ) && ( $$data{'filename'} =~ m/\./ ) ){
-        $$data{'filename'} =~ /^(.*?)\.(.*?)$/;
-        $$data{'filename.extension'} = $2;
-        $$data{'filename'} = $1;
-    }
-
     # получение записи
     unless ( @mess ) {
-        @media = $self->_get_media( $data );
-        push @mess, "Can not get file" unless @media;
+        ( $data, $error ) = $self->_get_media( $data, [] );
+        push @mess, $error if $error;
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = \@media if @media;
+    $resp->{'data'} = $data unless @mess;
     $self->render( 'json' => $resp );
 }
 

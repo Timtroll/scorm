@@ -74,7 +74,7 @@ sub register {
         my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess, @get );
 
         # поиск имени и расширения файла по id
-        @get = $self->_get_media( $data );
+        @get = $self->_get_media( $data, ['id', 'filename', 'extension'] );
         $fileinfo = shift @get;
         push @mess, "Can not get $$data{'id'}" unless $fileinfo;
 
@@ -121,45 +121,60 @@ sub register {
     # my $true = $self->_get_media( $data );
     # возвращает true/false
     $app->helper( '_get_media' => sub {
-        my ( $self, $data ) = @_;
+        my ( $self, $data, $obj ) = @_;
 
-        my ( $sth, $result, $url, $host, @result );
+        my ( $str, $sth, $result, $url, $host, $sql, $count, $mess, @bind, @mess, @result );
+
+        unless ( @$obj ) {
+            $obj = [ 'id', 'filename', 'title', 'size', 'mime', 'description', 'extension' ];
+        }
+        $str = '"' . join( '","', @$obj ) . '"';
 
         # получение запрошенных данных о файле
-        if ( $$data{'description'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "description" like ?' );
-            $sth->bind_param( 1, '%' . $$data{'description'} . '%' );
-        }
-        elsif ( ( $$data{'filename.extension'} ) && ( $$data{'filename'} ) ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ? and "filename" = ?' );
-            $sth->bind_param( 1, $$data{'extension'} );
-            $sth->bind_param( 2, $$data{'filename'} );
-        }
-        elsif ( $$data{'filename'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "filename" = ?' );
-            $sth->bind_param( 1, $$data{'filename'} );
-        }
-        elsif ( $$data{'id'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "id" = ?' );
-            $sth->bind_param( 1, $$data{'id'} );
-        }
-        elsif ( $$data{'extension'} ) {
-            $sth = $self->pg_dbh->prepare( 'SELECT * FROM "public"."media" WHERE "extension" = ?' );
-            $sth->bind_param( 1, $$data{'extension'} );
-        }
-        $sth->execute();
-        $result = $sth->fetchall_hashref('id');
-        @result;
-
-        $url;
-        $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
-        foreach my $row ( values %{$result} ) {
-            $url = join( '/', ( $host, 'upload', %$row{ 'filename' } . '.' . %$row{ 'extension' } ) );
-            %$row = ( %$row, 'url', $url);
-            push @result, $row;
+        unless ( $$data{'search'} ) {
+            push @mess, "no data for search";
         }
 
-        return @result;
+        # запрос данных
+        unless ( @mess ) {
+            if ( $$data{'search'} =~ qr/^\d+$/os ) {
+                $sql = 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?';
+                @bind = ( $$data{'search'} );
+            }
+            elsif ( $$data{'search'} =~ qr/^[\w]+$/os ) {
+                $sql = 'SELECT' . $str . 'FROM "public"."media" WHERE "filename" = ?';
+                @bind = ( $$data{'search'} );
+            }
+            else {
+                $sql = 'SELECT' . $str . 'FROM "public"."media" WHERE "title" LIKE ? OR "description" LIKE ?';
+                @bind = ( '%' . $$data{'search'} . '%', '%' . $$data{'search'} . '%');
+            }
+
+            $sth = $self->pg_dbh->prepare( $sql );
+            $count = 1;
+            foreach my $bind ( @bind ) {
+                $sth->bind_param( $count, $bind );
+                $count++;
+            }
+            $sth->execute();
+            $result = $sth->fetchall_hashref('id');
+            push @mess, "can not get data from database" unless %{$result};
+        }
+
+        # добавление данных об url
+        unless ( @mess ) {
+            $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
+            foreach my $row ( values %{$result} ) {
+                $url = join( '/', ( $host, 'upload', %$row{ 'filename' } . '.' . %$row{ 'extension' } ) );
+                %$row = ( %$row, 'url', $url);
+                push @result, $row;
+            }
+        }
+
+        if ( @mess ) {
+            $mess = join( "\n", @mess );
+        }
+        return \@result, $mess;
     });
 
     # обновляет описание файла
@@ -183,7 +198,7 @@ sub register {
 
         # получение данных о файле
         unless ( $mess ) {
-            @result = $self->_get_media( $data );
+            @result = $self->_get_media( $data, [] );
             $mess = "Can not get file" unless @result;
             $data = shift @result;
         }

@@ -247,8 +247,6 @@ sub register {
     # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
     $app->helper( '_param_fields' => sub {
-        # возможные расширения загружаемых файлов
-        my $extension = '.' . join( '|.', keys %{$self->{'app'}->{'config'}->{'valid_extensions'}} );
         $vfields = {
             # валидация роутов
 ################
@@ -261,10 +259,7 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/upload/search'  => {
-                "id"            => [ '', qr/^\d+$/os, 9 ],
-                "filename"      => [ '', qr/^\w{48}($extension)?/os, 53 ],
-                "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                "extension"     => [ '', qr/^($extension)/os, 5 ]
+                "search"        => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
             },
             '/upload/update'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
