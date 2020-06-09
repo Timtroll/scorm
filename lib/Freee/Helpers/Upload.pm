@@ -71,12 +71,17 @@ sub register {
     $app->helper( '_delete_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, @mess, @get );
+        my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, $sql, @mess, @get );
 
         # поиск имени и расширения файла по id
-        @get = $self->_get_media( $data, ['id', 'filename', 'extension'] );
-        $fileinfo = shift @get;
-        push @mess, "Can not get $$data{'id'}" unless $fileinfo;
+        $sql = q( SELECT "filename", "extension" FROM "public"."media" WHERE "id" = ? );
+        unless ( @mess ) {
+            $sth = $self->pg_dbh->prepare( $sql );
+            $sth->bind_param( 1, $$data{'id'} );
+            $sth->execute();
+            $fileinfo = $sth->fetchrow_hashref();
+            push @mess, "Can not get file info" unless ( $fileinfo );
+        }
 
         # удаление файла
         unless ( @mess ) {
