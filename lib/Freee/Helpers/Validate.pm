@@ -165,7 +165,8 @@ sub register {
 
                 # размер файла
                 $data{ 'size' } = length( $data{ 'content' } );
-                if ( $data{ 'size' } > $self->{ 'app' }->{ 'config' }->{ 'upload_max_size' } ) {
+warn Dumper( $self->{ 'app' }->{ 'settings' }->{ 'upload_max_size' } );
+                if ( $data{ 'size' } > $self->{ 'app' }->{ 'settings' }->{ 'upload_max_size' } ) {
                     push @error, "_check_fields: file is too large";
                     last;
                 }
@@ -182,13 +183,13 @@ sub register {
                 $data{ 'extension' } = lc $2;
 
                 # проверка расширения
-                unless ( exists( $self->{'app'}->{'config'}->{'valid_extensions'}->{ $data{ 'extension' } } ) ) {
+                unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{ 'extension' } } ) ) {
                     push @error, "_check_fields: extension $data{ 'extension' } is not valid";
                     last;
                 }
 
                 # генерация случайного имени
-                my $name_length = $self->{ 'app' }->{ 'config' }->{ 'upload_name_length' };
+                my $name_length = $self->{ 'app' }->{ 'settings' }->{ 'upload_name_length' };
                 $data{ 'filename' } = $self->_random_string( $name_length );
                 my $fullname = $data{ 'filename' } . '.' . $data{ 'extension' };
 
