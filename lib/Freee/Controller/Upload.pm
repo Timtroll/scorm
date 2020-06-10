@@ -22,8 +22,11 @@ sub index {
         push @mess, $error if $error;
     }
 
-    # запись файла
     unless ( @mess ) {
+        # присвоение пустого значения вместо null
+        $$data{'description'} = '' unless ( $$data{'description'} );
+
+        # запись файла
         $result = write_file( $local_path . $$data{ 'filename' } . '.' . $$data{ 'extension' }, $$data{ 'content' } );
         push @mess, "Can not write $$data{'title'}" unless $result;
     }
@@ -113,8 +116,11 @@ sub update {
         push @mess, $error if $error;
     }
 
-    # обновление записи
     unless ( @mess ) {
+        # присвоение пустого значения вместо null
+        $$data{'description'} = '' unless ( $$data{'description'} );
+
+        # обновление записи
         ( $data, $error ) = $self->_update_media( $data );
         push @mess, $error if $error;
     }
