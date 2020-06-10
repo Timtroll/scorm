@@ -377,6 +377,25 @@ sub register {
 
         return $list;
     });
-}
 
+    # создание объекта с настройками конфигурации
+    # my ( $object, $error ) = $self->_get_config();
+    $app->helper( '_get_config' => sub {
+        my $self = shift;
+
+        my ( $sql, $sth, $result, $mess, @mess );
+
+        $sql = 'SELECT * FROM "public".settings WHERE "parent" !=0';
+        $sth = $self->pg_dbh->prepare( $sql );
+        $sth->execute();
+        $result = $sth->fetchall_hashref('id');
+# warn Dumper ( $result );
+        push @mess, "can not get data from database" unless %{$result};
+
+        if ( @mess ) {
+            $mess = join( "\n", @mess );
+        }
+        return $result, $mess;
+    });
+}
 1;

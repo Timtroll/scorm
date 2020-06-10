@@ -73,6 +73,11 @@ sub startup {
 # warn Dumper $self->model('MyModel')->get_;
 
 # warn Dumper $self->dbh;
+warn Dumper( $self->{ 'app' } );
+
+    my $conf_object = $self->_get_config();
+
+warn Dumper( $self->_get_config() );
 
     # Router
     $r = $self->routes;
