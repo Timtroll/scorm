@@ -74,8 +74,8 @@ sub register {
         my ( $fileinfo, $filename, $local_path, $cmd, $sth, $result, $sql, @mess, @get );
 
         # поиск имени и расширения файла по id
-        $sql = q( SELECT "filename", "extension" FROM "public"."media" WHERE "id" = ? );
         unless ( @mess ) {
+            $sql = q( SELECT "filename", "extension" FROM "public"."media" WHERE "id" = ? );
             $sth = $self->pg_dbh->prepare( $sql );
             $sth->bind_param( 1, $$data{'id'} );
             $sth->execute();
@@ -188,38 +188,36 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $sth,  $media, $local_path, $extension, $rewrite_result, $json, $mess, $result, $url, $host, @result );
+        my ( $sth,  $media, $local_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
         # обновление описания в бд
         $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
         $sth->bind_param( 2, $$data{'id'} );
         $result = $sth->execute();
-
-        # ошибка при отсутствии в бд id
-        if ( $result eq '0E0' ) {
-            $result = 0;
-            $mess = "Id $$data{'id'} doesn't exist";
-        }
+        push @mess, "Can not update media" unless $result;
 
         # получение данных о файле
-        unless ( $mess ) {
-            @result = $self->_get_media( $data, [] );
-            $mess = "Can not get file" unless @result;
-            $data = shift @result;
+        unless ( @mess ) {
+            $sql = q( SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ? );
+            $sth = $self->pg_dbh->prepare( $sql );
+            $sth->bind_param( 1, $$data{'id'} );
+            $sth->execute();
+            $data = $sth->fetchrow_hashref();
+            push @mess, "Can not get file info" unless ( $data );
         }
 
         # преобразование данных в json
-        unless ( $mess ) {
+        unless ( @mess ) {
             $json = encode_json ( $data );
-            $mess = "Can not convert into json $$data{'title'}" unless $json;
+            push @mess, "Can not convert into json $$data{'title'}" unless $json;
         }
 
         # запись нового файла с описанием
-        unless ( $mess ){
+        unless ( @mess ){
             $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
             $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
             $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
-            $mess = "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
+            push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
         unless ( $mess ){
@@ -227,6 +225,9 @@ sub register {
             $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
         }
 
+        if ( @mess ) {
+            $mess = join( "\n", @mess );
+        }
         return $data, $mess;
     });
 }
