@@ -43,6 +43,7 @@ sub startup {
     $self->plugin('Freee::Helpers::Upload');
     $self->plugin('Freee::Helpers::User');
 
+    # обновление объекта с настройками
     $self->{'settings'} = $self->_get_config();
 
     # загрузка правил валидации
@@ -73,11 +74,6 @@ sub startup {
 #     );
 # # warn Dumper $self->model('MyModel')->get_config_data;
 # warn Dumper $self->model('MyModel')->get_;
-
-# warn Dumper $self->dbh;
-
-    # $self->{'settings'} = $self->_get_config();
-# warn Dumper( $self->{ 'settings' }->{ 'upload_max_size' } );
 
     # Router
     $r = $self->routes;

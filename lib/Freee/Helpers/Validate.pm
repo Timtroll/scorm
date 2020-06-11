@@ -165,7 +165,7 @@ sub register {
 
                 # размер файла
                 $data{ 'size' } = length( $data{ 'content' } );
-warn Dumper( $self->{ 'app' }->{ 'settings' }->{ 'upload_max_size' } );
+
                 if ( $data{ 'size' } > $self->{ 'app' }->{ 'settings' }->{ 'upload_max_size' } ) {
                     push @error, "_check_fields: file is too large";
                     last;

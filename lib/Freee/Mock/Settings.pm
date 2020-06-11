@@ -2,7 +2,7 @@ package Freee::Mock::Settings;
 
 # Только для загрузки в таблицу
 use utf8;
-
+use Encode qw( encode );
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK $settings );
 
@@ -75,7 +75,7 @@ $settings = {
             "label"         => "путь до папки с файлами",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => './public/upload/',
+            "value"         => '/home/simon/Documents/Git/Scorm/scorm/public/storage/',
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
@@ -134,8 +134,8 @@ $settings = {
             "label"         => "список доступных редакторов редактор по умолчанию не имеет 'названия'",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => "CKEditor",
-            "selected"      => ["CKEditor", "EditorJs"],
+            "value"         => ["CKEditor", "EditorJs"],
+            "selected"      => "CKEditor",
             "parent"        => 1,
             "folder"        => 0,
             "status"        => 1
@@ -162,8 +162,8 @@ $settings = {
             "label"         => "включение многоязычной поддержки.",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => "rus",
-            "selected"      => ["rus", "en", "esp", "ch"],
+            "value"         => ["rus", "en", "esp", "ch"],
+            "selected"      => "rus",
             "parent"        => 1,
             "folder"        => 0,
             "status"        => 1
@@ -636,8 +636,8 @@ $settings = {
             "label"         => "количественные варианты деления на страницы",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => 12,
-            "selected"      => [12, 30, 50],
+            "value"         => [12, 30, 50],
+            "selected"      => 12,
             "parent"        => 4,
             "folder"        => 0,
             "status"        => 1

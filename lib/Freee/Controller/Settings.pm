@@ -248,6 +248,8 @@ sub load_default {
             }
         }
     }
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -303,6 +305,8 @@ sub add {
             }
         }
     }
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -414,6 +418,8 @@ sub save {
             }
         }
     }
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok' ;
@@ -439,6 +445,8 @@ sub delete {
         $del = $self->_delete_setting( $$data{'id'} ) unless @mess;
         push @mess, "Could not delete '$$data{'id'}'" unless ( $del || @mess );
     }
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -469,6 +477,8 @@ sub toggle {
             push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
         }
     }
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
