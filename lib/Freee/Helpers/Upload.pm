@@ -146,7 +146,7 @@ sub register {
                 $sql = 'SELECT' . $str . 'FROM "public"."media" WHERE "id" = ?';
                 @bind = ( $$data{'search'} );
             }
-            elsif ( $$data{'search'} =~ qr/^[\w]+$/os ) {
+            elsif ( $$data{'search'} =~ qr/^[\w]+$/os && length( $$data{'search'} ) == 48 ) {
                 $sql = 'SELECT' . $str . 'FROM "public"."media" WHERE "filename" = ?';
                 @bind = ( $$data{'search'} );
             }
