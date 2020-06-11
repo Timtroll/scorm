@@ -9,6 +9,8 @@ use JSON::XS;
 
 use DBD::Pg;
 use DBI;
+use Encode qw( _utf8_off );
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 use common;
@@ -377,6 +379,56 @@ sub register {
 
         return $list;
     });
-}
 
+    # создание объекта с настройками конфигурации
+    # my ( $object, $error ) = $self->_get_config();
+    $app->helper( '_get_config' => sub {
+        my $self = shift;
+
+        my ( $sql, $sth, $result, $settings );
+
+        # получение настроек из бд
+        $sql = 'SELECT "name", "value" FROM "public".settings WHERE "folder" = 0';
+        $sth = $self->pg_dbh->prepare( $sql );
+        $sth->execute();
+        $result = $sth->fetchall_arrayref();
+
+        # создание хэша настроек
+        foreach my $setting ( @$result ) {
+            if ( $$setting[1] && $$setting[1] =~ /^[\[\{].*[\]\}]$/ ) {
+                # выключение флага utf8
+                _utf8_off( $$setting[1] );
+
+                my ( $flag, $val, $value, @tmp, %hash);
+                # преобразование из json
+                $value = decode_json $$setting[ 1 ];
+                map {
+                    # объект является массивом
+                    if ( ref($_) eq 'ARRAY') {
+                        # в массиве больше 1 эл-та
+                        if ( scalar( @$_> 1 ) ) {
+                            $hash{ $$_[1] } = $$_[0]; 
+                            $flag++;
+                        }
+                        else {
+                            push @tmp, $$_[0];
+                        }
+                    }
+                    else {
+                        push @tmp, $_;
+                    }
+                } @$value;
+
+                # присвоение значения
+                $val = \@tmp;
+                $val = \%hash if $flag;
+                $$settings{ $$setting[ 0 ] } = $val;
+            }
+            else {
+                $$settings{ $$setting[ 0 ] } = $$setting[ 1 ];
+            }
+        }
+        $self->{'settings'} = $settings;
+    });
+}
 1;

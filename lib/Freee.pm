@@ -43,6 +43,9 @@ sub startup {
     $self->plugin('Freee::Helpers::Upload');
     $self->plugin('Freee::Helpers::User');
 
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->_get_config();
+
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
     $vfields = $self->_param_fields();
@@ -71,8 +74,6 @@ sub startup {
 #     );
 # # warn Dumper $self->model('MyModel')->get_config_data;
 # warn Dumper $self->model('MyModel')->get_;
-
-# warn Dumper $self->dbh;
 
     # Router
     $r = $self->routes;

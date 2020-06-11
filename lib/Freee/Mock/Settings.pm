@@ -2,7 +2,7 @@ package Freee::Mock::Settings;
 
 # Только для загрузки в таблицу
 use utf8;
-
+use Encode qw( encode );
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK $settings );
 
@@ -26,6 +26,94 @@ $settings = {
           {
             "readonly"      => 0,
             "required"      => 1,
+            "type"          => "InputDoubleList",
+            "name"          => "socials",
+            "label"         => "социальные сети",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => [
+              ["1", "ВКонтакте"], ["2", "Facebook"], ["3", "Google"], ["4", "Yandex"], ["5", "Twitter"]
+            ],
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputNumber",
+            "name"          => "upload_name_length",
+            "label"         => "длина нового имени файла",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => 48,
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputNumber",
+            "name"          => "upload_max_size",
+            "label"         => "максимальный размер файла",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => 1048576,
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputText",
+            "name"          => "upload_local_path",
+            "label"         => "путь до папки с файлами",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => '/home/simon/Documents/Git/Scorm/scorm/public/storage/',
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputText",
+            "name"          => "root",
+            "label"         => "абсолютный путь до проекта",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => '/home/simon/Documents/Git/Scorm/scorm',
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputDoubleList",
+            "name"          => "valid_extensions",
+            "label"         => "разрешённые расширения загружаемых файлов (не включать значение  desc !!!)",
+            "placeholder"   => "",
+            "mask"          => "",
+            "value"         => [
+              ["1", "png"], ["1", "jpg"], ["1", "jpeg"], ["1", "svg"], ["1", "txt"]
+            ],
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
             "type"          => "InputNumber",
             "name"          => "fullDebugMode",
             "label"         => "режим обновления",
@@ -46,8 +134,8 @@ $settings = {
             "label"         => "список доступных редакторов редактор по умолчанию не имеет 'названия'",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => "CKEditor",
-            "selected"      => ["CKEditor", "EditorJs"],
+            "value"         => ["CKEditor", "EditorJs"],
+            "selected"      => "CKEditor",
             "parent"        => 1,
             "folder"        => 0,
             "status"        => 1
@@ -74,8 +162,8 @@ $settings = {
             "label"         => "включение многоязычной поддержки.",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => "rus",
-            "selected"      => ["rus", "en", "esp", "ch"],
+            "value"         => ["rus", "en", "esp", "ch"],
+            "selected"      => "rus",
             "parent"        => 1,
             "folder"        => 0,
             "status"        => 1
@@ -548,8 +636,8 @@ $settings = {
             "label"         => "количественные варианты деления на страницы",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => 12,
-            "selected"      => [12, 30, 50],
+            "value"         => [12, 30, 50],
+            "selected"      => 12,
             "parent"        => 4,
             "folder"        => 0,
             "status"        => 1

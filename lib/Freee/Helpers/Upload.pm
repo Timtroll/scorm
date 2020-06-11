@@ -56,7 +56,7 @@ sub register {
 
         # создание файла с описанием
         unless ( $mess ) {
-            $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
             $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
             $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             $mess = "Can not write desc of $$data{'title'}" unless $write_result;
@@ -86,7 +86,7 @@ sub register {
         # удаление файла
         unless ( @mess ) {
             $filename = $$fileinfo{'filename'} . '.' . $$fileinfo{'extension'};
-            $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
             $cmd = $local_path . $filename;
 
             $cmd = `rm $cmd`;
@@ -214,7 +214,7 @@ sub register {
 
         # запись нового файла с описанием
         unless ( @mess ){
-            $local_path = $self->{ 'app' }->{ 'config' }->{ 'upload_local_path' };
+            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
             $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
             $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
