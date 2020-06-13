@@ -1,9 +1,9 @@
 <template>
   <Card :header="true"
         :header-bgr-default="true"
-        :header-padding-noneone="true"
+        :header-padding-none="true"
         :header-right="true"
-        :body-padding="false">
+        :body-padding="true">
 
     <!-- // header // -->
     <template #header>
@@ -40,7 +40,8 @@
       <div class="pos-media">
 
         <div class="pos-media-result">
-          <pre class="pos-border-none">{{searchResult}}</pre>
+          <FileGrid :data="searchResult"
+                    :allow-actions="true"/>
         </div>
 
         <div class="pos-media-search">
@@ -66,6 +67,7 @@ export default {
 
   name:       'Media',
   components: {
+    FileGrid:  () => import(/* webpackChunkName: "FileGrid" */ '../../components/ui/files/FileGrid'),
     Card:      () => import(/* webpackChunkName: "Card" */ './../../components/ui/card/Card'),
     InputFile: () => import(/* webpackChunkName: "InputFile" */ './../../components/ui/inputs/InputFile')
   },
