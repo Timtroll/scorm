@@ -26,18 +26,15 @@ export default class files {
 
   /**
    * Получить запись о файле по id или по имени файла ( приоритет id), хотя бы одно из полей обязательно
-   * @param id
-   * @param filename
    * @returns {Promise<any>}
+   * @param sting
    */
-  async search (id, filename) {
+  async search (sting) {
     const formData = new FormData()
-    if (id) {
-      formData.append('id', id)
+    if (sting) {
+      formData.append('search', sting)
     }
-    if (filename) {
-      formData.append('filename', filename)
-    }
+
     return await this.serverHttp('/search/', formData)
   }
 
