@@ -188,7 +188,7 @@ warn $_;
                 ## новое имя файла
                 # расширение файла
 use Data::Dumper;
-warn Dumper $self->param( $_ )->{'headers'};
+warn Dumper $self->param( $_ );
                 $data{'extension'} = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
                 unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
