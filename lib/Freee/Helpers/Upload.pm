@@ -168,17 +168,14 @@ sub register {
 
         # добавление данных об url
         unless ( @mess ) {
-            $host = $self->{ 'app' }->{ 'config' }->{ 'host' }; 
+            $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
             foreach my $row ( values %{$result} ) {
-                $url = join( '/', ( $host, 'upload', %$row{ 'filename' } . '.' . %$row{ 'extension' } ) );
-                %$row = ( %$row, 'url', $url);
-                push @result, $row;
+                $url = join( '/', ( $host, 'upload', $$row{ 'filename' } . '.' . $$row{ 'extension' } ) );
+                push @result, { %$row, 'url', $url };
             }
         }
 
-        if ( @mess ) {
-            $mess = join( "\n", @mess );
-        }
+        $mess = join( "\n", @mess ) if @mess;
         return \@result, $mess;
     });
 
