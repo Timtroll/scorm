@@ -27,6 +27,9 @@ sub index {
         # присвоение пустого значения вместо null
         $$data{'description'} = '' unless ( $$data{'description'} );
 
+        # получение mime
+        $$data{'mime'} = $$mime{$$data{'extension'}} || '';
+
         # запись файла
         $result = write_file( $local_path . $$data{'filename'} . '.' . $$data{'extension'}, $$data{'content'} );
         push @mess, "Can not write $$data{'title'}" unless $result;
@@ -36,11 +39,8 @@ sub index {
             ( $result, $error ) = $self->_insert_media( $data );
             push @mess, $error unless $result;
 
-            unless ( @mess ) {
-                # получение mime
-                $$data{'mime'} = $$mime{$$data{'extension'}} || '';
-
                 # получение url
+            unless ( @mess ) {
                 $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
             }
         }

@@ -58,7 +58,7 @@ sub register {
         unless ( $mess ) {
             $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
             $extension = $self->{'app'}->{'settings'}->{'desc_extension'};
-            $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
+            $write_result = write_file( $local_path . $$data{'filename'} . '.' . $extension, $json );
             $mess = "Can not write desc of $$data{'title'}" unless $write_result;
         }
 
@@ -128,10 +128,10 @@ sub register {
     $app->helper( '_get_media' => sub {
         my ( $self, $data, $obj ) = @_;
 
-        my ( $str, $sth, $result, $url, $host, $sql, $count, $mess, @bind, @mess, @result );
+        my ( $str, $sth, $result, $url, $url_path, $host, $sql, $count, $mess, @bind, @mess, @result );
 
         unless ( @$obj ) {
-            $obj = [ 'id', 'filename', 'title', 'size', 'mime', 'description', 'extension' ];
+            $obj = [ 'id', 'filename', 'title', 'size', 'mime', 'description','extension'];
         }
         $str = '"' . join( '","', @$obj ) . '"';
 
@@ -168,9 +168,9 @@ sub register {
 
         # добавление данных об url
         unless ( @mess ) {
-            $host = $self->{'app'}->{'settings'}->{ 'site_url' };
+            $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
             foreach my $row ( values %{$result} ) {
-                $url = join( '/', ( $host, 'upload', $$row{ 'filename' } . '.' . $$row{ 'extension' } ) );
+                $url = $host . $url_path . $$data{'filename'} . '.' . $$data{'extension'};
                 push @result, { %$row, 'url', $url };
             }
         }
@@ -211,17 +211,17 @@ sub register {
         }
 
         # запись нового файла с описанием
-        $host = $self->{'app'}->{'settings'}->{ 'site_url' };
+        $host = $self->{'app'}->{'settings'}->{'site_url'};
         $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
-        $url_path = $self->{'app'}->{'settings'}->{ 'upload_url_path' };
+        $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
         $desc_extension = $self->{'app'}->{'settings'}->{'desc_extension'};
         unless ( @mess ){
-            $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $desc_extension, $json );
+            $rewrite_result = write_file( $local_path . $$data{'filename'} . '.' . $desc_extension, $json );
             push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
         unless ( $mess ){
-            $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
+            $url = $host . $url_path . $$data{'filename'} . '.' . $$data{'extension'};
         }
         else {
             $mess = join( "\n", @mess );
