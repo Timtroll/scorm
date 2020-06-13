@@ -21,7 +21,7 @@ export default class files {
    * @param upload
    */
   async upload (upload) {
-    if (!upload) return null
+    if (!upload) return
     return await this.serverHttp('/', upload)
   }
 
@@ -44,10 +44,12 @@ export default class files {
    * @returns {Promise<any>}
    */
   async delete (id) {
-    if (id) return
-    return await this.serverHttp('/delete/', {
-      id: id
-    })
+    if (!id) return
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+    }
+    return await this.serverHttp('/delete/', formData, true)
   }
 
   /**
@@ -57,14 +59,16 @@ export default class files {
    * @returns {Promise<any>}
    */
   async update (id, description) {
-    if (id && description) return
-    return await this.serverHttp('/update/', {
-      id:          id,
-      description: description
-    })
+    if (!id && !description) return
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+      formData.append('description', description)
+    }
+    return await this.serverHttp('/update/', formData, true)
   }
 
-  async serverHttp (url, params) {
+  async serverHttp (url, params, notifyOk = false) {
     const response = await fetch(this.url + url, {
       method:   'POST',
       body:     params,
@@ -74,6 +78,9 @@ export default class files {
     const result = await response.json()
 
     if (result.status === 'ok') {
+      if (notifyOk) {
+        notify(result.status, 'success')
+      }
       return result
     }
 

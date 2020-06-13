@@ -68,6 +68,7 @@
            v-if="allowActions">
         <input class="uk-input uk-form-small uk-width-1-1"
                placeholder="Описание файла"
+               @change="updateFile(file.id, file.description)"
                v-model="dataNew[index].description">
       </div>
 
@@ -121,13 +122,13 @@ export default {
 
     async deleteFile (id, index) {
       const response = await files.delete(id)
-      console.log(response)
-      return await response
-      //if (response.status === 'ok') {
-      //  return response
-      //} else {
-      //  return response
-      //}
+      if (response.status === 'ok') {
+        this.dataNew.splice(index, 1)
+      }
+    },
+
+    async updateFile (id, description) {
+      await files.update(id, description)
     },
 
     filePreview (item) {
