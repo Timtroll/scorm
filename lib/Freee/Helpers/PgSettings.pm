@@ -10,7 +10,7 @@ use JSON::XS;
 use DBD::Pg;
 use DBI;
 use Encode qw( _utf8_off );
-use Mojo::JSON qw( decode_json );
+use Mojo::JSON; # qw( decode_json );
 
 use Data::Dumper;
 use common;

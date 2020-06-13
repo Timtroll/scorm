@@ -46,9 +46,9 @@ echo "npm run build"
 npm run build
 
 echo "-------"
-echo "delete content of public (exclude dir 'forum'):"
+echo "delete content of public (exclude dir 'upload'):"
 echo "rm -rf $SOURCE/public/*"
-find $SOURCE/public -maxdepth 1 -mindepth 1 -not -name forum -exec rm -rf {} \;
+find $SOURCE/public -maxdepth 1 -mindepth 1 -not -name upload -exec rm -rf {} \;
 
 echo "-------"
 echo "copy dist to public:"

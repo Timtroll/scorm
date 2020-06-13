@@ -21,14 +21,8 @@ CREATE TYPE "public"."EAV_field_type" AS ENUM (
 );
 
 CREATE TYPE "public"."EAV_object_type" AS ENUM (
-    'service',
-    'office',
     'User',
-    'subscription',
-    'sla',
-    'address',
-    'Default',
-    'location'
+    'Default'
 );
 
 CREATE TABLE "public"."EAV_data_boolean" (
