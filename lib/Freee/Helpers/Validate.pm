@@ -57,30 +57,34 @@ sub register {
             my $valid = $vfields->{$_[1]};
 
             # проверка полей
-            my $hs = HTML::Strip->new();
+            my $strip = HTML::Strip->new();
 
             # проверка для роутов
             foreach my $fld (keys %$valid) {
 
+                # читаем и чистим поле от html
+                my $val = $_[0]->param($fld) // 0;
+                $val = $strip->parse($val) if $val;
+
                 # Проверка обязательности поля
                 if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
-                    # читаем поле
-                    my $val = $_[0]->param($fld) // 0;
-
-                    # чистка от html
-                    $val = $hs->parse($val) if ($val);
+                    unless ($val) {
+                       push @error, "Field '$fld' has null length";
+                       next;
+                    }
 
                     # проверяем длинну поля, если указано проверять ??????????????????????????????? дублируется в _check_fields
                     if ( $$valid{$fld}[2] ) {
-                        if ( length($val) > $$valid{$fld}[2] ) {
+                        if ( !$val || length($val) > $$valid{$fld}[2] ) {
                             push @error, "Validation error for '$fld'. Field has wrong length";
                             next;
                         }
                     }
 
                     my $re = $$valid{$fld}[1];
+warn ref($re);
                     # есть ли значение в списке
-                    if (ref($re) eq 'ARRAY') {
+                    if ( ref($re) eq 'ARRAY' ) {
                         unless ( grep {/$val/} @{$$valid{$fld}[1]} ) {
                             push @error, "Validation error for '$fld'. Field has wrong type=";
                         }
@@ -93,6 +97,7 @@ sub register {
                     }
                 }
                 else {
+# ??????????????????
                     if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
                         push @error, "Validation error for '$fld'. Field is empty or not exists";
                     }
@@ -166,36 +171,37 @@ sub register {
                 # размер файла
                 $data{ 'size' } = length( $data{ 'content' } );
 
-                if ( $data{ 'size' } > $self->{ 'app' }->{ 'settings' }->{ 'upload_max_size' } ) {
+                if ( $data{ 'size' } > $self->{'app'}->{'settings'}->{ 'upload_max_size' } ) {
                     push @error, "_check_fields: file is too large";
                     last;
                 }
 
                 ## новое имя файла
                 # расширение файла
-                $data{ 'extension' } = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
-                unless ( $data{ 'extension' } ) {
+warn $self->param( $_ )->{'headers'};
+                $data{'extension'} = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
+                unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
                     last;
                 }
 
-                $data{ 'extension' } =~ /^.*filename=\"(.*?)\.(.*?)\"/;
-                $data{ 'extension' } = lc $2;
+                $data{'extension'} =~ /^.*filename=\"(.*?)\.(.*?)\"/;
+                $data{'extension'} = lc $2;
 
                 # проверка расширения
-                unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{ 'extension' } } ) ) {
-                    push @error, "_check_fields: extension $data{ 'extension' } is not valid";
+                unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
+                    push @error, "_check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
 
                 # генерация случайного имени
-                my $name_length = $self->{ 'app' }->{ 'settings' }->{ 'upload_name_length' };
+                my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
                 $data{ 'filename' } = $self->_random_string( $name_length );
-                my $fullname = $data{ 'filename' } . '.' . $data{ 'extension' };
+                my $fullname = $data{ 'filename' } . '.' . $data{'extension'};
 
                 while ( $self->_exists_in_directory( './upload/'.$fullname ) ) {
                     $data{ 'filename' } = $self->_random_string( $name_length );
-                    $fullname = $data{ 'filename' } . '.' . $data{ 'extension' };
+                    $fullname = $data{ 'filename' } . '.' . $data{'extension'};
                 }
                 # путь файла
                 $data{ 'path' } = 'local';
@@ -210,7 +216,7 @@ sub register {
 
 
         my $route = $self->url_for;
-        # проверка, указанынй id это фолдер или нет (для роутов с 'settings' и 'folder' в названии)
+        # проверка, указанынй id это фолдер или нет (для роутов с'settings'и 'folder' в названии)
         if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
             if ( $route =~ /folder$/ ) {
                 unless ( $self->_folder_check( $data{'id'} ) ) {
@@ -248,12 +254,14 @@ sub register {
     # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
     $app->helper( '_param_fields' => sub {
+warn '_param_fields';
+warn $self->{'app'}->{'upload_max_size'};
         $vfields = {
             # валидация роутов
 ################
             # роуты settings/*
             '/upload'  => {
-                "upload"        => [ 'file_required' ],
+                "upload"        => [ 'file_required', undef, $self->{'app'}->{'upload_max_size'} ],
                 "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
             '/upload/delete'  => {
