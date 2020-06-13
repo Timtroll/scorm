@@ -168,9 +168,10 @@ sub register {
 
         # добавление данных об url
         unless ( @mess ) {
+            $host = $self->{'app'}->{'settings'}->{'site_url'};
             $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
             foreach my $row ( values %{$result} ) {
-                $url = $host . $url_path . $$data{'filename'} . '.' . $$data{'extension'};
+                $url = $host . $url_path . $$row{'filename'} . '.' . $$row{'extension'};
                 push @result, { %$row, 'url', $url };
             }
         }
