@@ -350,7 +350,7 @@ sub edit {
                     {
                         "label" => 'Дополнительные поля',
                         "fields" => [
-                            { "label"       => "шаг обновления" },
+                            { "label"       => $data->{'label'} },
                             { "mask"        => $data->{'mask'} },
                             { "selected"    => $data->{'selected'} },
                             { "type"        => $data->{'type'} },

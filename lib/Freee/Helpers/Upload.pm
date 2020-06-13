@@ -168,7 +168,7 @@ sub register {
 
         # добавление данных об url
         unless ( @mess ) {
-            $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
+            $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
             foreach my $row ( values %{$result} ) {
                 $url = join( '/', ( $host, 'upload', $$row{ 'filename' } . '.' . $$row{ 'extension' } ) );
                 push @result, { %$row, 'url', $url };
@@ -218,7 +218,7 @@ sub register {
         }
 
         unless ( $mess ){
-            $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
+            $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
             $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
         }
 
