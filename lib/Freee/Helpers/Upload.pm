@@ -185,7 +185,7 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $sth,  $media, $local_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
+        my ( $sth,  $media, $local_path, $url_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
         # обновление описания в бд
         $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
