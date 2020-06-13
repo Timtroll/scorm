@@ -45,7 +45,7 @@
 
         <div class="pos-media-search">
           <ul class="pos-list">
-            <InputFile></InputFile>
+            <InputFile/>
           </ul>
         </div>
 

@@ -75,7 +75,8 @@
               </button>
 
               <!--description-->
-              <div class="pos-list-files__description" v-if="file.status === 'none'">
+              <div class="pos-list-files__description"
+                   v-if="file.status === 'none'">
                 <input class="uk-input uk-form-small uk-width-1-1"
                        placeholder="Описание файла"
                        v-model="file.description">
@@ -120,8 +121,10 @@
           </div>
 
           <!--uploadedPreview-->
-          <pre class="uk-margin-remove-bottom"
-               v-if="uploadedPreview.length">{{uploadedPreview}}</pre>
+          <FileGrid :data="uploadedPreview"/>
+
+          <!--          <pre class="uk-margin-remove-bottom"-->
+          <!--               v-if="uploadedPreview.length">{{uploadedPreview}}</pre>-->
 
           <div class="pos-upload-files-drop__area"></div>
         </div>
@@ -137,9 +140,12 @@ import {notify, prettyBytes} from '../../../store/methods'
 const files = new filesClass
 
 export default {
-  name: 'InputFile',
+  name:       'InputFile',
+  components: {
+    FileGrid: () => import(/* webpackChunkName: "FileGrid" */ '../files/FileGrid')
 
-  props: {
+  },
+  props:      {
     value:       '',
     name:        '',
     label:       {
@@ -159,7 +165,7 @@ export default {
     return {
       valueInput:        this.value || [],
       valid:             true,
-      files:             [],
+      files:             null,
       image:             [],
       preview:           [],
       uploadedPreview:   [],
@@ -235,9 +241,8 @@ export default {
     upload () {
 
       for (const file of this.preview) {
-
-        file.status  = 'upload'
-        let formData = new FormData()
+        file.status          = 'upload'
+        let formData         = new FormData()
         formData.append('description', file.description)
         formData.append('upload', file.file)
 
@@ -272,7 +277,7 @@ export default {
     async searchFile (id) {
       const response = await files.search(id)
       const data     = await response
-      this.uploadedPreview.push(data.data)
+      this.uploadedPreview.push(data.data[0])
     },
 
     removeUploadFile (index) {
