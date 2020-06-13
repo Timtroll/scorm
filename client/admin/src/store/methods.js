@@ -274,6 +274,59 @@ function prettyBytes (num) {
   return (neg ? '-' : '') + num + ' ' + unit
 }
 
+function fileType (mime) {
+  switch (mime) {
+    case 'image/jpeg':
+      return 'image'
+    case 'image/png':
+      return 'image'
+    case 'image/svg+xml':
+      return 'image'
+    case 'image/webp':
+      return 'image'
+    case 'image/gif':
+      return 'image'
+    case 'application/zip':
+      return 'none'
+    case 'application/pdf':
+      return 'pdf'
+    case 'audio/mp4':
+      return 'audio'
+    case 'audio/x-m4a':
+      return 'audio'
+    case 'audio/mpeg':
+      return 'audio'
+    case 'audio/aac':
+      return 'audio'
+    case 'audio/webm':
+      return 'audio'
+    case 'video/mpeg':
+      return 'video'
+    case 'video/mp4':
+      return 'video'
+    case 'video/quicktime':
+      return 'video'
+    case 'video/webm':
+      return 'video'
+    case 'application/vnd.ms-excel':
+      return 'table'
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+      return 'table'
+    case 'application/vnd.ms-powerpoint':
+      return 'none'
+    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      return 'none'
+    case 'application/msword':
+      return 'text'
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      return 'text'
+    case 'text/plain':
+      return 'text'
+    default:
+      return 'none'
+  }
+}
+
 export {
   notify,
   confirm,
@@ -284,7 +337,6 @@ export {
   clone,
   dropHide,
   dropShow,
-  prettyBytes
+  prettyBytes,
+  fileType
 }
-
-
