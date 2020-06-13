@@ -10,11 +10,12 @@ use common;
 sub index {
     my $self = shift;
 
-    my ( $data, $error, $result, $local_path, $resp, $url, $host, @mess );
+    my ( $data, $error, $result, $local_path, $url_path, $resp, $url, $host, @mess );
 
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-    $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-    $host = $self->{ 'app' }->{ 'settings' }->{ 'host' };
+    $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
+    $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
+    $host = $self->{'app'}->{'settings'}->{'host'};
 
     # проверка данных
     unless ( @mess ) {
@@ -27,29 +28,27 @@ sub index {
         $$data{'description'} = '' unless ( $$data{'description'} );
 
         # запись файла
-        $result = write_file( $local_path . $$data{ 'filename' } . '.' . $$data{ 'extension' }, $$data{ 'content' } );
+        $result = write_file( $local_path . $$data{'filename'} . '.' . $$data{'extension'}, $$data{'content'} );
         push @mess, "Can not write $$data{'title'}" unless $result;
-    }
 
-    # получение mime
-    unless ( @mess ) {
-        $$data{ 'mime' } = $$mime{$$data{ 'extension' }} || '';
-    }
+        unless ( @mess ) {
+            # ввод данных в таблицу
+            ( $result, $error ) = $self->_insert_media( $data );
+            push @mess, $error unless $result;
 
-    # ввод данных в таблицу
-    unless ( @mess ) {
-        ( $result, $error ) = $self->_insert_media( $data );
-        push @mess, $error unless $result;
-    }
+            unless ( @mess ) {
+                # получение mime
+                $$data{'mime'} = $$mime{$$data{'extension'}} || '';
 
-    # получение url
-    unless ( @mess ) {
-        $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
+                # получение url
+                $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
+            }
+        }
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
     $resp->{'id'} = $result if $result;
-    $resp->{'mime'} = $$data{ 'mime' } if $result;
+    $resp->{'mime'} = $$data{'mime'} if $result;
     $resp->{'url'} = $url if $result;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
 
