@@ -1,6 +1,5 @@
 <template>
   <div class="pos-list-files"
-       uk-lightbox
        v-if="data.length">
 
     <!-- pos-list-file-->
