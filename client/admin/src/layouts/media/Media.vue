@@ -59,7 +59,6 @@
 <script>
 
 import filesClass from './../../api/upload/files'
-import {notify, prettyBytes} from '../../store/methods'
 
 const files = new filesClass
 

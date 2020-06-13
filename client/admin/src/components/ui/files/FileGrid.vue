@@ -4,10 +4,10 @@
 
     <!-- pos-list-file-->
     <div class="pos-list-file"
-         @click="openLightBox(file)"
          v-for="(file, index) in dataNew">
 
       <div class="pos-list-files__image"
+           @click="openLightBox(file)"
            :style="filePreview(file)">
 
         <!-- upload-->
@@ -55,7 +55,7 @@
       <!--remove-->
       <button type="button"
               v-if="allowActions"
-              @click="deleteFile(file.id)"
+              @click="deleteFile(file.id, index)"
               class="uk-button uk-button-danger pos-list-files__button uk-button-small">
         <img src="/img/icons/icon__trash.svg"
              uk-svg
@@ -78,7 +78,9 @@
 
 <script>
 import {fileType, prettyBytes} from '../../../store/methods'
-import files from '../../../api/upload/files'
+import filesClass from '../../../api/upload/files'
+
+const files = new filesClass
 
 export default {
   name: 'FileGrid',
@@ -117,13 +119,15 @@ export default {
       }
     },
 
-    async deleteFile (id) {
+    async deleteFile (id, index) {
       const response = await files.delete(id)
-      if (response.status === 'ok') {
-        return response
-      } else {
-        return response
-      }
+      console.log(response)
+      return await response
+      //if (response.status === 'ok') {
+      //  return response
+      //} else {
+      //  return response
+      //}
     },
 
     filePreview (item) {

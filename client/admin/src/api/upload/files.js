@@ -21,13 +21,8 @@ export default class files {
    * @param upload
    */
   async upload (upload) {
-    try {
-      return await this.serverHttp('/', upload)
-    }
-    catch (e) {
-      console.log('upload error', e)
-    }
-
+    if (!upload) return null
+    return await this.serverHttp('/', upload)
   }
 
   /**
@@ -40,7 +35,6 @@ export default class files {
     if (sting) {
       formData.append('search', sting)
     }
-
     return await this.serverHttp('/search/', formData)
   }
 
