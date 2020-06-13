@@ -14,7 +14,7 @@ sub index {
 
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
     $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-    $host = $self->{ 'app' }->{ 'config' }->{ 'host' };
+    $host = $self->{ 'app' }->{ 'settings' }->{ 'host' };
 
     # проверка данных
     unless ( @mess ) {

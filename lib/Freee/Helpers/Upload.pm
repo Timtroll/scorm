@@ -57,7 +57,7 @@ sub register {
         # создание файла с описанием
         unless ( $mess ) {
             $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
+            $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
             $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             $mess = "Can not write desc of $$data{'title'}" unless $write_result;
         }
@@ -185,7 +185,7 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $sth,  $media, $local_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
+        my ( $sth,  $media, $local_path, $url_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
         # обновление описания в бд
         $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
@@ -210,16 +210,17 @@ sub register {
         }
 
         # запись нового файла с описанием
+        $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
+        $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
+        $url_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_url_path' };
+        $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
         unless ( @mess ){
-            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
             $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
         unless ( $mess ){
-            $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
-            $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
+            $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
         }
 
         if ( @mess ) {
