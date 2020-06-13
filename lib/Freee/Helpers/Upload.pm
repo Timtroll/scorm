@@ -57,7 +57,7 @@ sub register {
         # создание файла с описанием
         unless ( $mess ) {
             $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
+            $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
             $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             $mess = "Can not write desc of $$data{'title'}" unless $write_result;
         }
@@ -210,16 +210,17 @@ sub register {
         }
 
         # запись нового файла с описанием
+        $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
+        $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
+        $url_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_url_path' };
+        $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
         unless ( @mess ){
-            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-            $extension = $self->{ 'app' }->{ 'config' }->{ 'desc_extension' };
             $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
         unless ( $mess ){
-            $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
-            $url = join( '/', ( $host, 'upload', $$data{ 'filename' } . '.' . $$data{ 'extension' } ) );
+            $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
         }
 
         if ( @mess ) {
