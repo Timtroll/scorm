@@ -21,7 +21,13 @@ export default class files {
    * @param upload
    */
   async upload (upload) {
-    return await this.serverHttp('/', upload)
+    try {
+      return await this.serverHttp('/', upload)
+    }
+    catch (e) {
+      console.log('upload error', e)
+    }
+
   }
 
   /**

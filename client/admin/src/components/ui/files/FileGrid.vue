@@ -5,10 +5,43 @@
     <!-- pos-list-file-->
     <div class="pos-list-file"
          @click="openLightBox(file)"
-         v-for="file in data">
+         v-for="(file, index) in dataNew">
 
       <div class="pos-list-files__image"
            :style="filePreview(file)">
+
+        <!-- upload-->
+        <!--        <transition name="fade"-->
+        <!--                    appear>-->
+        <!--          <div v-if="file.status === 'upload'"-->
+        <!--               class="pos-list-files__upload">-->
+        <!--            <div uk-spinner></div>-->
+        <!--          </div>-->
+        <!--        </transition>-->
+
+        <!-- success-->
+        <!--        <transition name="fade"-->
+        <!--                    appear>-->
+        <!--          <div v-if="file.status === 'success'"-->
+        <!--               class="pos-list-files__upload success">-->
+        <!--            <img src="img/icons/icon__check.svg"-->
+        <!--                 width="24"-->
+        <!--                 height="24"-->
+        <!--                 uk-svg>-->
+        <!--          </div>-->
+        <!--        </transition>-->
+
+        <!-- error-->
+        <!--        <transition name="fade"-->
+        <!--                    appear>-->
+        <!--          <div v-if="file.status === 'error'"-->
+        <!--               class="pos-list-files__upload error">-->
+        <!--            <img src="img/icons/icon__close.svg"-->
+        <!--                 width="24"-->
+        <!--                 height="24"-->
+        <!--                 uk-svg>-->
+        <!--          </div>-->
+        <!--        </transition>-->
 
         <!-- meta-->
         <div class="pos-list-files__meta">
@@ -16,6 +49,26 @@
           <div v-text="prettyBytes(file.size)"></div>
           <div v-text="file.mime"></div>
         </div>
+
+        <!--remove-->
+        <button type="button"
+                v-if="allowActions"
+                @click="deleteFile(file.id)"
+                class="uk-button uk-button-danger pos-list-files__button uk-button-small">
+          <img src="/img/icons/icon__trash.svg"
+               uk-svg
+               width="12"
+               height="12">
+        </button>
+
+        <!--description-->
+        <div class="pos-list-files__description"
+             v-if="allowActions">
+          <input class="uk-input uk-form-small uk-width-1-1"
+                 placeholder="Описание файла"
+                 v-model="dataNew[index].description">
+        </div>
+
       </div>
     </div>
 
@@ -24,6 +77,7 @@
 
 <script>
 import {fileType, prettyBytes} from '../../../store/methods'
+import files from '../../../api/upload/files'
 
 export default {
   name: 'FileGrid',
@@ -32,22 +86,43 @@ export default {
     data: {
       type:    Array,
       default: () => {}
+    },
+
+    allowActions: {
+      type:    Boolean,
+      default: false
+    }
+  },
+
+  watch: {
+    data () {
+      this.dataNew = [...this.data]
     }
   },
 
   data () {
-    return {}
+    return {
+      dataNew: []
+    }
   },
 
   methods: {
 
     openLightBox (item) {
-      if(!item.mime) return
+      if (!item.mime) return
       const type = fileType(item.mime)
       if (type === 'image') {
         console.log(item.url)
       }
+    },
 
+    async deleteFile (id) {
+      const response = await files.delete(id)
+      if (response.status === 'ok') {
+        return response
+      } else {
+        return response
+      }
     },
 
     filePreview (item) {

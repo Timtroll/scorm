@@ -121,7 +121,8 @@
           </div>
 
           <!--uploadedPreview-->
-          <FileGrid :data="uploadedPreview"/>
+          <FileGrid :data="uploadedPreview"
+                    :allow-actions="false"/>
 
           <!--          <pre class="uk-margin-remove-bottom"-->
           <!--               v-if="uploadedPreview.length">{{uploadedPreview}}</pre>-->
@@ -241,8 +242,8 @@ export default {
     upload () {
 
       for (const file of this.preview) {
-        file.status          = 'upload'
-        let formData         = new FormData()
+        file.status  = 'upload'
+        let formData = new FormData()
         formData.append('description', file.description)
         formData.append('upload', file.file)
 
