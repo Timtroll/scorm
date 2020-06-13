@@ -50,26 +50,27 @@
           <div v-text="file.mime"></div>
         </div>
 
-        <!--remove-->
-        <button type="button"
-                v-if="allowActions"
-                @click="deleteFile(file.id)"
-                class="uk-button uk-button-danger pos-list-files__button uk-button-small">
-          <img src="/img/icons/icon__trash.svg"
-               uk-svg
-               width="12"
-               height="12">
-        </button>
-
-        <!--description-->
-        <div class="pos-list-files__description"
-             v-if="allowActions">
-          <input class="uk-input uk-form-small uk-width-1-1"
-                 placeholder="Описание файла"
-                 v-model="dataNew[index].description">
-        </div>
-
       </div>
+
+      <!--remove-->
+      <button type="button"
+              v-if="allowActions"
+              @click="deleteFile(file.id)"
+              class="uk-button uk-button-danger pos-list-files__button uk-button-small">
+        <img src="/img/icons/icon__trash.svg"
+             uk-svg
+             width="12"
+             height="12">
+      </button>
+
+      <!--description-->
+      <div class="pos-list-files__description"
+           v-if="allowActions">
+        <input class="uk-input uk-form-small uk-width-1-1"
+               placeholder="Описание файла"
+               v-model="dataNew[index].description">
+      </div>
+
     </div>
 
   </div>
