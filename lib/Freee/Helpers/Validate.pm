@@ -43,77 +43,77 @@ sub register {
         return $@ ? undef : 1;
     });
 
-    # Валидация указанного блока полей при чтении html запроса
-    # my $list = $self->_check('settings');
-    # возвращает 1/undef
-    $app->helper( '_check' => sub {
-# warn Dumper($_[0]->tx->req->params->to_hash);
-        return 0 unless $_[1];
+#     # Валидация указанного блока полей при чтении html запроса
+#     # my $list = $self->_check('settings');
+#     # возвращает 1/undef
+#     $app->helper( '_check' => sub {
+# # warn Dumper($_[0]->tx->req->params->to_hash);
+#         return 0 unless $_[1];
 
-        my @error = ();
+#         my @error = ();
 
-       # Проверка наличия объекта для валидации
-        if ( defined $vfields->{$_[1]} ) {
-            my $valid = $vfields->{$_[1]};
+#        # Проверка наличия объекта для валидации
+#         if ( defined $vfields->{$_[1]} ) {
+#             my $valid = $vfields->{$_[1]};
 
-            # проверка полей
-            my $strip = HTML::Strip->new();
+#             # проверка полей
+#             my $strip = HTML::Strip->new();
 
-            # проверка для роутов
-            foreach my $fld (keys %$valid) {
+#             # проверка для роутов
+#             foreach my $fld (keys %$valid) {
 
-                # читаем и чистим поле от html
-                my $val = $_[0]->param($fld) // 0;
-                $val = $strip->parse($val) if $val;
+#                 # читаем и чистим поле от html
+#                 my $val = $_[0]->param($fld) // 0;
+#                 $val = $strip->parse($val) if $val;
 
-                # Проверка обязательности поля
-                if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
-                    unless ($val) {
-                       push @error, "Field '$fld' has null length";
-                       next;
-                    }
+#                 # Проверка обязательности поля
+#                 if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
+#                     unless ($val) {
+#                        push @error, "Field '$fld' has null length";
+#                        next;
+#                     }
 
-                    # проверяем длинну поля, если указано проверять ??????????????????????????????? дублируется в _check_fields
-                    if ( $$valid{$fld}[2] ) {
-                        if ( !$val || length($val) > $$valid{$fld}[2] ) {
-                            push @error, "Validation error for '$fld'. Field has wrong length";
-                            next;
-                        }
-                    }
+#                     # проверяем длинну поля, если указано проверять ??????????????????????????????? дублируется в _check_fields
+#                     if ( $$valid{$fld}[2] ) {
+#                         if ( !$val || length($val) > $$valid{$fld}[2] ) {
+#                             push @error, "Validation error for '$fld'. Field has wrong length";
+#                             next;
+#                         }
+#                     }
 
-                    my $re = $$valid{$fld}[1];
-warn ref($re);
-                    # есть ли значение в списке
-                    if ( ref($re) eq 'ARRAY' ) {
-                        unless ( grep {/$val/} @{$$valid{$fld}[1]} ) {
-                            push @error, "Validation error for '$fld'. Field has wrong type=";
-                        }
-                    }
-                    # валидация по регэкспу ????????????????????????????? дублируется в _check_fields
-                    else {
-                        unless ( $val =~ $re ) {
-                            push @error, "Validation error for '$fld'. Field has wrong type";
-                        }
-                    }
-                }
-                else {
-# ??????????????????
-                    if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
-                        push @error, "Validation error for '$fld'. Field is empty or not exists";
-                    }
-                }
-            }
-        }
-        else {
-            push @error, "Not exists validation data for route '$_[1]'";
-        }
+#                     my $re = $$valid{$fld}[1];
+# warn ref($re);
+#                     #  задан ли Regexp
+#                     if ( ref($re) eq 'Regexp' ) {
+#                         unless ( grep {/$val/} @{$$valid{$fld}[1]} ) {
+#                             push @error, "Validation error for '$fld'. Field has wrong type=";
+#                         }
+#                     }
+#                     # # валидация по регэкспу
+#                     # else {
+#                     #     unless ( $val =~ $re ) {
+#                     #         push @error, "Validation error for '$fld'. Field has wrong type";
+#                     #     }
+#                     # }
+#                 }
+#                 else {
+# # ??????????????????
+#                     if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
+#                         push @error, "Validation error for '$fld'. Field is empty or not exists";
+#                     }
+#                 }
+#             }
+#         }
+#         else {
+#             push @error, "Not exists validation data for route '$_[1]'";
+#         }
 
-        return @error ? 0 : 1, \@error;
-    });
+#         return @error ? 0 : 1, \@error;
+#     });
 
-    # формирование типов перед сохранением в БД
+    # Валидация указанного блока полей и формирование типов
     # my $list = $self->_check_fields($$vfields{'/settings/save'}});
-    # возвращает ссылку на хэш из $self->param(*)
+    # возвращает ссылку на хэш из $self->param(*) + ошибку, если она есть
     $app->helper( '_check_fields' => sub {
         my $self = shift;
 
@@ -123,11 +123,20 @@ warn ref($re);
         my %data = ();
 
         foreach ( keys %{$$vfields{$self->url_for}} ) {
+warn $_;
             # проверка статуса
-            if ( ( ( $$vfields{ $self->url_for }{$_}[0] eq 'required' ) || ( $$vfields{ $self->url_for }{$_}[0] eq '' ) ) && ( $self->param($_) ) ) {
+            if (
+                $self->param($_) &&
+                (
+                    ( $$vfields{ $self->url_for }{$_}[0] eq 'required' ) ||
+                    ( $$vfields{ $self->url_for }{$_}[0] eq '' )
+                )
+            ) {
                 # проверка длины
-                my $size = length( $self->param($_) );
-                unless ( $vfields->{ $self->url_for }->{$_}->[2] && (  $size <= $vfields->{ $self->url_for }->{$_}->[2] ) ) {
+                unless (
+                    $vfields->{ $self->url_for }->{$_}->[2] &&
+                    length( $self->param($_) ) <= $vfields->{ $self->url_for }->{$_}->[2]
+                ) {
                     push @error, "_check_fields: wrong size of '$_'";
                     last;
                 }
@@ -178,7 +187,8 @@ warn ref($re);
 
                 ## новое имя файла
                 # расширение файла
-warn $self->param( $_ )->{'headers'};
+use Data::Dumper;
+warn Dumper $self->param( $_ )->{'headers'};
                 $data{'extension'} = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
                 unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
@@ -194,6 +204,7 @@ warn $self->param( $_ )->{'headers'};
                     last;
                 }
 
+# перенести в контроллер
                 # генерация случайного имени
                 my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
                 $data{ 'filename' } = $self->_random_string( $name_length );
@@ -239,6 +250,8 @@ warn $self->param( $_ )->{'headers'};
                     }
                 }
             }
+        }
+        elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
         }
 
         my $error;
