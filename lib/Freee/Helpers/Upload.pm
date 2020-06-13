@@ -56,8 +56,8 @@ sub register {
 
         # создание файла с описанием
         unless ( $mess ) {
-            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-            $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
+            $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
+            $extension = $self->{'app'}->{'settings'}->{'desc_extension'};
             $write_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
             $mess = "Can not write desc of $$data{'title'}" unless $write_result;
         }
@@ -86,7 +86,7 @@ sub register {
         # удаление файла
         unless ( @mess ) {
             $filename = $$fileinfo{'filename'} . '.' . $$fileinfo{'extension'};
-            $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
+            $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
             $cmd = $local_path . $filename;
 
             $cmd = `rm $cmd`;
@@ -168,7 +168,7 @@ sub register {
 
         # добавление данных об url
         unless ( @mess ) {
-            $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
+            $host = $self->{'app'}->{'settings'}->{ 'site_url' };
             foreach my $row ( values %{$result} ) {
                 $url = join( '/', ( $host, 'upload', $$row{ 'filename' } . '.' . $$row{ 'extension' } ) );
                 push @result, { %$row, 'url', $url };
@@ -185,7 +185,8 @@ sub register {
     $app->helper( '_update_media' => sub {
         my ( $self, $data ) = @_;
 
-        my ( $sth,  $media, $local_path, $url_path, $extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
+        my ( $sth, $media, $local_path, $url_path, $desc_extension, $rewrite_result, $json, $mess, $result, $url, $sql, $host, @mess );
+
         # обновление описания в бд
         $sth = $self->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
         $sth->bind_param( 1, $$data{'description'} );
@@ -210,20 +211,19 @@ sub register {
         }
 
         # запись нового файла с описанием
-        $host = $self->{ 'app' }->{ 'settings' }->{ 'site_url' };
-        $local_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_local_path' };
-        $url_path = $self->{ 'app' }->{ 'settings' }->{ 'upload_url_path' };
-        $extension = $self->{ 'app' }->{ 'settings' }->{ 'desc_extension' };
+        $host = $self->{'app'}->{'settings'}->{ 'site_url' };
+        $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
+        $url_path = $self->{'app'}->{'settings'}->{ 'upload_url_path' };
+        $desc_extension = $self->{'app'}->{'settings'}->{'desc_extension'};
         unless ( @mess ){
-            $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $extension, $json );
+            $rewrite_result = write_file( $local_path . $$data{ 'filename' } . '.' . $desc_extension, $json );
             push @mess, "Can not rewrite desc of $$data{'title'}" unless $rewrite_result;
         }
 
         unless ( $mess ){
             $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
         }
-
-        if ( @mess ) {
+        else {
             $mess = join( "\n", @mess );
         }
         return $data, $mess;
