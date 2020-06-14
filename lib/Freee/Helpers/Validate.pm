@@ -151,13 +151,23 @@ warn $_;
                 # ввод данных в хэш
                 $data{$_} = $self->param($_);
             }
-            elsif ( ( $$vfields{$self->url_for}{$_}[0] eq 'file_required' ) && ( $self->param($_) ) ) {
-                # старое имя файла
-                $data{'title'} = $self->param($_)->{'filename'} // 0;
-                unless ( $data{'title'} ) {
-                    push @error, "_check_fields: can't read file's old name";
-                    last;
-                }
+            elsif (
+                $self->param($_) &&
+                ( $$vfields{$self->url_for}{$_}[0] eq 'file_required' )
+            ) {
+                # # старое имя файла
+                # $data{'title'} = $self->param($_)->{'filename'} // 0;
+                # unless ( $data{'title'} ) {
+                #     push @error, "_check_fields: can't read file's old name";
+                #     last;
+                # }
+
+                # # имя файла
+                # unless ( $data{ 'title' } ) {
+                #     push @error, "_check_fields: can't read content";
+                #     last;
+                # }
+
 
                 unless ( exists $self->param( $_ )->{'asset'}->{'content'} ) {
                     push @error, "_check_fields: file is too large for input limit";
@@ -171,11 +181,6 @@ warn $_;
                     last;
                 }
 
-                # имя файла
-                unless ( $data{ 'title' } ) {
-                    push @error, "_check_fields: can't read content";
-                    last;
-                }
 
                 # размер файла
                 $data{ 'size' } = length( $data{ 'content' } );
@@ -184,6 +189,8 @@ warn $_;
                     push @error, "_check_fields: file is too large";
                     last;
                 }
+
+
 
                 # имя файла
                 $data{'filename'} = $self->param( $_ )->{'filename'};

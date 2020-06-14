@@ -110,7 +110,7 @@ sub search {
     }
 
     $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'status'} = @mess ? 'warn' : 'ok';
     $resp->{'data'} = $data unless @mess;
     $self->render( 'json' => $resp );
 }
