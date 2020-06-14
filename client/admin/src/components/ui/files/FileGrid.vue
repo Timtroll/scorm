@@ -1,6 +1,6 @@
 <template>
   <div class="pos-list-files"
-       v-if="data.length">
+       v-if="data && data.length">
 
     <!-- pos-list-file-->
     <div class="pos-list-file"
