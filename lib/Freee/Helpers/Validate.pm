@@ -190,7 +190,7 @@ warn $_;
 
                 # расширение файла
                 $data{'extension'} = '';
-                $data{'filename'} =~ /^.*\.(\w)+$/;
+                $data{'filename'} =~ /^.*\.(\w+)$/;
                 $data{'extension'} = lc $1;
                 unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
