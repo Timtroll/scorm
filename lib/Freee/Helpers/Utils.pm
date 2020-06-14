@@ -105,7 +105,7 @@ sub register {
         # построение дерева
         foreach my $obj (@{$list}) {
             $obj->{'keywords'} = $obj->{'label'};
-            $obj->{folder} = 0;
+            # $obj->{folder} = 0;
             die "_list_to_tree:  Object undefined\n" unless $obj;
 
             my $id = $obj->{$id_field} || die "_list_to_tree: No $id_field in object\n";
@@ -143,7 +143,7 @@ sub register {
             # иначе добавляем его как дочерний элемент
             else {
                 warn "Adding $id as child of $pid\n" if DEBUGGING;
-                $index{$pid}->{folder} = 1;
+                # $index{$pid}->{folder} = 1;
                 push @{$index{$pid}->{$children_key}}, $obj;
             }
         }   
