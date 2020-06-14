@@ -20,16 +20,18 @@ sub index {
     }
 
     unless ( @mess ) {
+        # store real file name
+        $$data{'title'} = $$data{'filename'};
 
         # генерация случайного имени
         my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
-        $filename = $self->_random_string( $name_length );
-
+        $$data{'filename'} = $self->_random_string( $name_length );
         while ( $self->_exists_in_directory( './upload/'.$$data{'filename'} ) ) {
-            $filename = $self->_random_string( $name_length );
+            $$data{'filename'} = $self->_random_string( $name_length );
         }
+
         # путь файла
-        $$data{ 'path' } = 'local';
+        $$data{'path'} = 'local';
 
         # присвоение пустого значения вместо null
         $$data{'description'} = '' unless ( $$data{'description'} );
@@ -39,10 +41,10 @@ sub index {
 
         # запись файла
         $result = write_file(
-            $self->{'app'}->{'settings'}->{'upload_local_path'} . $filename . '.' . $$data{'extension'},
+            $self->{'app'}->{'settings'}->{'upload_local_path'} . $$data{'filename'} . '.' . $$data{'extension'},
             $$data{'content'}
         );
-        push @mess, "Can not write $$data{'title'}" unless $result;
+        push @mess, "Can not store '$$data{'filename'}' file" unless $result;
 
         unless ( @mess ) {
             # ввод данных в таблицу
@@ -51,7 +53,7 @@ sub index {
 
                 # получение url
             unless ( @mess ) {
-                $url = $self->{'app'}->{'settings'}->{'site_url'} . $self->{'app'}->{'settings'}->{'upload_url_path'} . $filename . '.' . $$data{ 'extension' };
+                $url = $self->{'app'}->{'settings'}->{'site_url'} . $self->{'app'}->{'settings'}->{'upload_url_path'} . $$data{'filename'} . '.' . $$data{ 'extension' };
             }
         }
     }
