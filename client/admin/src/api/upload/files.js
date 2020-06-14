@@ -82,9 +82,12 @@ export default class files {
         notify(result.status, 'success')
       }
       return result
-    }
-
-    if (result.status === 'fail') {
+    } else if (result.status === 'warn') {
+      if (notifyOk) {
+        notify(result.message, 'warning')
+      }
+      return result
+    } else if (result.status === 'fail') {
 
       notify('ERROR: ' + result.message, 'danger')
       return result
