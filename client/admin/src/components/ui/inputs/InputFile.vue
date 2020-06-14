@@ -122,7 +122,7 @@
 
           <!--uploadedPreview-->
           <FileGrid :data="uploadedPreview"
-                    :allow-actions="false"/>
+                    :allow-actions="true"/>
 
           <!--          <pre class="uk-margin-remove-bottom"-->
           <!--               v-if="uploadedPreview.length">{{uploadedPreview}}</pre>-->

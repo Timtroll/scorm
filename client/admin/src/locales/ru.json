@@ -122,6 +122,7 @@
     "upload":             "Перетащите файлы для загрузки",
     "submit":             "Загрузить",
     "select":             "Выбрать файлы",
+    "removeConfirm":      "Удалить файл?",
     "fileRemoved":        "Файл удален",
     "descriptionUpdated": "Данные сохранены"
   }

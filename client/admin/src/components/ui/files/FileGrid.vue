@@ -121,10 +121,16 @@ export default {
     },
 
     async deleteFile (id, index) {
-      const response = await files.delete(id)
-      if (response.status === 'ok') {
-        this.dataNew.splice(index, 1)
+
+      const d = confirm(this.$t('media.removeConfirm'))
+
+      if (d) {
+        const response = await files.delete(id)
+        if (response.status === 'ok') {
+          this.dataNew.splice(index, 1)
+        }
       }
+
     },
 
     async updateFile (id, description) {
