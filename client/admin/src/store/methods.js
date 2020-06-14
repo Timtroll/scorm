@@ -99,8 +99,9 @@ function groupedFields (data, proto) {
             groupItem.label       = item.label
             const groupItemFields = item.fields
 
-            //console.log('groupItem', groupItemFields)
+            console.log('groupItem', groupItemFields)
 
+            if(!groupItemFields) return
             groupItemFields.forEach(itemField => {
 
               //console.log(itemField)
