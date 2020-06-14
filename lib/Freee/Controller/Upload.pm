@@ -25,7 +25,7 @@ sub index {
         my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
         $filename = $self->_random_string( $name_length );
 
-        while ( $self->_exists_in_directory( './upload/'.$fullname ) ) {
+        while ( $self->_exists_in_directory( './upload/'.$$data{'filename'} ) ) {
             $filename = $self->_random_string( $name_length );
         }
         # путь файла
