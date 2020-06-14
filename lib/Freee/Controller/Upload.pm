@@ -10,12 +10,8 @@ use common;
 sub index {
     my $self = shift;
 
-    my ( $data, $error, $result, $local_path, $url_path, $resp, $url, $host, @mess );
-
+    my ( $data, $error, $result, $filename, $resp, $url, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-    $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
-    $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
-    $host = $self->{'app'}->{'settings'}->{'site_url'};
 
     # проверка данных
     unless ( @mess ) {
@@ -24,6 +20,17 @@ sub index {
     }
 
     unless ( @mess ) {
+
+        # генерация случайного имени
+        my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
+        $filename = $self->_random_string( $name_length );
+
+        while ( $self->_exists_in_directory( './upload/'.$fullname ) ) {
+            $filename = $self->_random_string( $name_length );
+        }
+        # путь файла
+        $$data{ 'path' } = 'local';
+
         # присвоение пустого значения вместо null
         $$data{'description'} = '' unless ( $$data{'description'} );
 
@@ -31,7 +38,10 @@ sub index {
         $$data{'mime'} = $$mime{$$data{'extension'}} || '';
 
         # запись файла
-        $result = write_file( $local_path . $$data{'filename'} . '.' . $$data{'extension'}, $$data{'content'} );
+        $result = write_file(
+            $self->{'app'}->{'settings'}->{'upload_local_path'} . $filename . '.' . $$data{'extension'},
+            $$data{'content'}
+        );
         push @mess, "Can not write $$data{'title'}" unless $result;
 
         unless ( @mess ) {
@@ -41,7 +51,7 @@ sub index {
 
                 # получение url
             unless ( @mess ) {
-                $url = $host . $url_path . $$data{ 'filename' } . '.' . $$data{ 'extension' };
+                $url = $self->{'app'}->{'settings'}->{'site_url'} . $self->{'app'}->{'settings'}->{'upload_url_path'} . $filename . '.' . $$data{ 'extension' };
             }
         }
     }

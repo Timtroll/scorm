@@ -185,37 +185,23 @@ warn $_;
                     last;
                 }
 
-                ## новое имя файла
+                # имя файла
+                $data{'filename'} = $self->param( $_ )->{'filename'};
+
                 # расширение файла
-use Data::Dumper;
-warn Dumper $self->param( $_ );
-                $data{'extension'} = $self->param( $_ )->{'headers'}->{'headers'}->{'content-disposition'}->[0] // 0;
+                $data{'extension'} = '';
+                $data{'filename'} =~ /^.*\.(\w)+$/;
+                $data{'extension'} = lc $1;
                 unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
                     last;
                 }
-
-                $data{'extension'} =~ /^.*filename=\"(.*?)\.(.*?)\"/;
-                $data{'extension'} = lc $2;
 
                 # проверка расширения
                 unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
                     push @error, "_check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
-
-# перенести в контроллер
-                # генерация случайного имени
-                my $name_length = $self->{'app'}->{'settings'}->{'upload_name_length'};
-                $data{ 'filename' } = $self->_random_string( $name_length );
-                my $fullname = $data{ 'filename' } . '.' . $data{'extension'};
-
-                while ( $self->_exists_in_directory( './upload/'.$fullname ) ) {
-                    $data{ 'filename' } = $self->_random_string( $name_length );
-                    $fullname = $data{ 'filename' } . '.' . $data{'extension'};
-                }
-                # путь файла
-                $data{ 'path' } = 'local';
             }
             else {
                 unless ( ( $$vfields{ $self->url_for }{$_}[0] eq '' ) || ( $$vfields{$self->url_for}{$_}[0] eq 'filename' ) ) {
