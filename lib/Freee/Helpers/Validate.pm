@@ -43,74 +43,6 @@ sub register {
         return $@ ? undef : 1;
     });
 
-#     # Валидация указанного блока полей при чтении html запроса
-#     # my $list = $self->_check('settings');
-#     # возвращает 1/undef
-#     $app->helper( '_check' => sub {
-# # warn Dumper($_[0]->tx->req->params->to_hash);
-#         return 0 unless $_[1];
-
-#         my @error = ();
-
-#        # Проверка наличия объекта для валидации
-#         if ( defined $vfields->{$_[1]} ) {
-#             my $valid = $vfields->{$_[1]};
-
-#             # проверка полей
-#             my $strip = HTML::Strip->new();
-
-#             # проверка для роутов
-#             foreach my $fld (keys %$valid) {
-
-#                 # читаем и чистим поле от html
-#                 my $val = $_[0]->param($fld) // 0;
-#                 $val = $strip->parse($val) if $val;
-
-#                 # Проверка обязательности поля
-#                 if ( defined $_[0]->param($fld) && ($$valid{$fld}[0] eq 'required') ) {
-#                     unless ($val) {
-#                        push @error, "Field '$fld' has null length";
-#                        next;
-#                     }
-
-#                     # проверяем длинну поля, если указано проверять ??????????????????????????????? дублируется в _check_fields
-#                     if ( $$valid{$fld}[2] ) {
-#                         if ( !$val || length($val) > $$valid{$fld}[2] ) {
-#                             push @error, "Validation error for '$fld'. Field has wrong length";
-#                             next;
-#                         }
-#                     }
-
-#                     my $re = $$valid{$fld}[1];
-# warn ref($re);
-#                     #  задан ли Regexp
-#                     if ( ref($re) eq 'Regexp' ) {
-#                         unless ( grep {/$val/} @{$$valid{$fld}[1]} ) {
-#                             push @error, "Validation error for '$fld'. Field has wrong type=";
-#                         }
-#                     }
-#                     # # валидация по регэкспу
-#                     # else {
-#                     #     unless ( $val =~ $re ) {
-#                     #         push @error, "Validation error for '$fld'. Field has wrong type";
-#                     #     }
-#                     # }
-#                 }
-#                 else {
-# # ??????????????????
-#                     if ( $$valid{$fld}[0] && ($$valid{$fld}[0] eq 'required') ) {
-#                         push @error, "Validation error for '$fld'. Field is empty or not exists";
-#                     }
-#                 }
-#             }
-#         }
-#         else {
-#             push @error, "Not exists validation data for route '$_[1]'";
-#         }
-
-#         return @error ? 0 : 1, \@error;
-#     });
-
     # Валидация указанного блока полей и формирование типов
     # my $list = $self->_check_fields($$vfields{'/settings/save'}});
     # возвращает ссылку на хэш из $self->param(*) + ошибку, если она есть
@@ -123,27 +55,20 @@ sub register {
         my %data = ();
 
         foreach ( keys %{$$vfields{$self->url_for}} ) {
-warn $_;
+            my $required = $$vfields{ $self->url_for }{$_}[0];
+            my $regexp = $$vfields{ $self->url_for }{$_}[1];
+            my $max_size = $$vfields{ $self->url_for }{$_}[2];
+
             # проверка статуса
-            if (
-                $self->param($_) &&
-                (
-                    ( $$vfields{ $self->url_for }{$_}[0] eq 'required' ) ||
-                    ( $$vfields{ $self->url_for }{$_}[0] eq '' )
-                )
-            ) {
+            if ( $self->param($_) && ( ( $required eq 'required' ) || ( $required eq '' ) ) ) {
                 # проверка длины
-                unless (
-                    $vfields->{ $self->url_for }->{$_}->[2] &&
-                    length( $self->param($_) ) <= $vfields->{ $self->url_for }->{$_}->[2]
-                ) {
+                unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
                     push @error, "_check_fields: wrong size of '$_'";
                     last;
                 }
 
                 # проверка соответствия рег выражению
-                my $regular = $vfields->{ $self->url_for }->{$_}->[1];
-                unless ( $regular && ( $self->param( $_ ) =~ /$regular/ ) ) {
+                unless ( $regexp && ( $self->param( $_ ) =~ /$regexp/ ) ) {
                     push @error, "_check_fields: '$_' don't match regular expression";
                     last;
                 }
@@ -151,51 +76,27 @@ warn $_;
                 # ввод данных в хэш
                 $data{$_} = $self->param($_);
             }
-            elsif (
-                $self->param($_) &&
-                ( $$vfields{$self->url_for}{$_}[0] eq 'file_required' )
-            ) {
-                # # старое имя файла
-                # $data{'title'} = $self->param($_)->{'filename'} // 0;
-                # unless ( $data{'title'} ) {
-                #     push @error, "_check_fields: can't read file's old name";
-                #     last;
-                # }
+            elsif ( $self->param($_) && ( $required eq 'file_required' ) ) {
 
-                # # имя файла
-                # unless ( $data{ 'title' } ) {
-                #     push @error, "_check_fields: can't read content";
-                #     last;
-                # }
-
-
-                unless ( exists $self->param( $_ )->{'asset'}->{'content'} ) {
-                    push @error, "_check_fields: file is too large for input limit";
-                    last;
-                }
-
-                # содержимое файла
-                $data{ 'content' } = $self->param( $_ )->{'asset'}->{'content'} // 0;
-                unless ( $data{'content'} ) {
+                # проверка наличия содержимого файла
+                unless ( $self->param( $_ )->{'asset'}->{'content'} ) {
                     push @error, "_check_fields: no file's content";
                     last;
                 }
+                $data{'content'} = $self->param( $_ )->{'asset'}->{'content'};
 
+                # проверка размера файла
+                $data{'size'} = length( $data{'content'} );
 
-                # размер файла
-                $data{ 'size' } = length( $data{ 'content' } );
-
-                if ( $data{ 'size' } > $self->{'app'}->{'settings'}->{ 'upload_max_size' } ) {
+                if ( $data{'size'} > $max_size ) {
                     push @error, "_check_fields: file is too large";
                     last;
                 }
 
-
-
-                # имя файла
+                # получение имени файла
                 $data{'filename'} = $self->param( $_ )->{'filename'};
 
-                # расширение файла
+                # получения расширения файла в нижнем регистре
                 $data{'extension'} = '';
                 $data{'filename'} =~ /^.*\.(\w+)$/;
                 $data{'extension'} = lc $1;
@@ -204,14 +105,14 @@ warn $_;
                     last;
                 }
 
-                # проверка расширения
+                # проверка того, что разрешено загружать файл с текущим расширением
                 unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
                     push @error, "_check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
             }
             else {
-                unless ( ( $$vfields{ $self->url_for }{$_}[0] eq '' ) || ( $$vfields{$self->url_for}{$_}[0] eq 'filename' ) ) {
+                unless ( ( $required eq '' ) || ( $required eq 'filename' ) ) {
                     push @error, "_check_fields: don't have required data";
                     last;
                 }
@@ -260,14 +161,13 @@ warn $_;
     # my $list = $self->_param_fields('get_tree');
     # возвращает 1/undef
     $app->helper( '_param_fields' => sub {
-warn '_param_fields';
-warn $self->{'app'}->{'upload_max_size'};
+
         $vfields = {
             # валидация роутов
 ################
             # роуты settings/*
             '/upload'  => {
-                "upload"        => [ 'file_required', undef, $self->{'app'}->{'upload_max_size'} ],
+                "upload"        => [ 'file_required', undef, $app->{'settings'}->{'upload_max_size'} ],
                 "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
             '/upload/delete'  => {
