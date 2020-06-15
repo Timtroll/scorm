@@ -22,12 +22,12 @@ warn "index";
 #     }
 # );
     $list = Freee::EAV->new( 'User' );
-$list = $list->_list(
-    {
-        Parents => { 1      => 0 },
-        Filter  => { Type   => 'User' },
-    }
-);
+    $list = $list->_list(
+        {
+            Parents => { 1      => 0 },
+            Filter  => { Type   => 'User' },
+        }
+    );
 warn Dumper $list;
 
 

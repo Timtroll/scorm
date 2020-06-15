@@ -35,13 +35,16 @@ sub AUTOLOAD {
     if ( exists( $self->{Fields}->{ $self->{Type} }->{ $method } ) || exists( $self->{ItemFields}->{ $method } ) || ( exists( $self->{_item} ) && exists( $self->{_item}->{ $method } ) ) || exists( $self->{Fields}->{ 'Default' }->{ $method } ) ) {
         if ( scalar( @_ ) ) {
             return $self->_store( $method, @_ );
-        } elsif ( exists( $self->{_item} ) ) {
+        }
+        elsif ( exists( $self->{_item} ) ) {
             return $self->{_item}->{ $method } if exists( $self->{_item}->{ $method } );
             return $self->_get_field( $method );
-        } else {
+        }
+        else {
             return undef();
         };
-    } else {
+    }
+    else {
 #        return $self->$method( @_ );
     };
 };
@@ -63,12 +66,12 @@ sub _init {
         $Self->{FieldsById}->{ $$field{id} } = $field;
     };
 
-    $Self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'type', 'import_type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
+    $Self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'import_source', 'type', 'import_type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
 
     $Self->{DataTables} = {
-        int => [ '"public"."EAV_data_int4"', '"EAV_data_int4_pkey"' ],
-        string => [ '"public"."EAV_data_string"', '"EAV_data_string_pkey"' ],
-        boolean => [ '"public"."EAV_data_boolean"', '"EAV_data_boolean_pkey"' ],
+        int      => [ '"public"."EAV_data_int4"',     '"EAV_data_int4_pkey"' ],
+        string   => [ '"public"."EAV_data_string"',   '"EAV_data_string_pkey"' ],
+        boolean  => [ '"public"."EAV_data_boolean"',  '"EAV_data_boolean_pkey"' ],
         datetime => [ '"public"."EAV_data_datetime"', '"EAV_data_datetime_pkey"' ]
     };
 
@@ -105,9 +108,12 @@ sub _init {
 use DDP;            
 p $obj->{_item};
 warn $Self;
+warn $Type;
             $Self->{Roots}->{ $Type } = $obj;
         };
     };
+warn $Self->{Type};
+
     my $RootType;
     $RootType = ucfirst( $Self->{Type} ) if exists( $Self->{Type} );
     $Self->{Root} = $Self->{Roots}->{ $Self->{Type} } if defined( $RootType );
@@ -125,6 +131,11 @@ warn $Target;
 
     $Target->{$_} = $Self->{$_} foreach (@$fields);
 
+    #!! remove this
+    $Target->{Type} = ucfirst( $Target->{Type} );
+    #!! remove this
+warn $Target->{Type};
+
     $Target->{Root} = $Self->{Roots}->{ $Target->{Type} };
 }
 
@@ -134,15 +145,18 @@ sub _InitThisItem {
     if ( exists( $$Params{id} ) ) {
         $Self->{_item} = $Self->_get( $$Params{id} );
         return undef unless defined( $Self->{_item} );
-    } elsif ( exists( $$Params{import_id} ) && !exists( $$Params{parent} ) ) {
+    }
+    elsif ( exists( $$Params{import_id} ) && !exists( $$Params{parent} ) ) {
         $Self->{_item} = $Self->_get( $$Params{import_id}, $$Params{Type} );
         return undef unless defined( $Self->{_item} );
-    } elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
+    }
+    elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
         $Self->{_item} = $Self->_create( $Params );
         my $Type = '\''.$$Params{Type}.'\'';
-        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ){
+        if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ) {
             $Self->_MultiStore( $Params->{data} );
-        }elsif( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ){
+        }
+        elsif( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ){
             $Self->_MultiStore( { $$Params{Type} => $Params->{$Type} } );
         }
     };
@@ -158,6 +172,7 @@ sub _get {
     my $sql = $import_id_flag_and_type ? 'SELECT * FROM "public"."EAV_items" WHERE "import_id" = '.$id.' AND "import_type" = '.$Self->{dbh}->quote( $import_id_flag_and_type ) : 'SELECT * FROM "public"."EAV_items" WHERE "id" = '.$id;
     my $item = $Self->{dbh}->selectrow_hashref( $sql );
     return undef() unless defined( $item );
+
     #!!FIXIT
     $$item{Type} = $$item{type} = $$item{import_type};
     delete( $$item{import_type} );

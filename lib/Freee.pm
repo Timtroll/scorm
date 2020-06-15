@@ -53,8 +53,8 @@ sub startup {
     # init Pg connection
     $self->{dbh} = $self->pg_dbh();
 
-    # Модель EAV
-    my $null = Freee::EAV->new( 'Base', { 'dbh' => $self->{dbh} } );
+    # Модель EAV передаем коннекшн базы
+    Freee::EAV->new( 'User', { 'dbh' => $self->{dbh} } );
 
     # init Beanstalk connection
     $self->_beans_init();
