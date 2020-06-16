@@ -54,6 +54,7 @@ sub get_tree {
     $self->render( 'json' => $resp );
 }
 
+# сохранить группу настроек
 sub save_folder {
     my $self = shift;
 

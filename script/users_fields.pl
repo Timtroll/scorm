@@ -59,36 +59,40 @@ if ( DBI->errstr ) {
 my $UH = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
 use DDP;
 p $UH->{Root};
-die $UH->{Root}->id();
+p $UH->{Root}->id();
 die;
 
 
 # делаем запись
-my $user = Freee::EAV->new( 'User', { 'publish' => \1, 'parent' => 1, 
-    'title' => 'admin',
-    'User' => {
-        'place'         => "адрес",
-        'country'       => "страна",
-        'birthday'      => "202-04-04 20:00:00",
-        'patronymic'    => "Отчество 3",
-        'name'          => "Имя 2",
-        'surname'       => "Фамилия 112",
+my $user = Freee::EAV->new( 'User',
+    {
+        'publish' => \1,
+        'parent' => 1, 
+        'title' => 'admin',
+        'User' => {
+            'place'         => "адрес",
+            'country'       => "страна",
+            'birthday'      => "202-04-04 20:00:00",
+            'patronymic'    => "Отчество 3",
+            'name'          => "Имя 2",
+            'surname'       => "Фамилия 112",
 
-        # 'publish'     => $$data{'status'} ? \1 : \0, 
-        # 'parent'      => 1,
-        # 'email'       => $$data{'email'},
-        # 'password'    => $$data{'password'},
-        # 'time_create' => $$data{'time_create'},
-        # 'time_access' => $$data{'time_access'},
-        # 'time_update' => $$data{'time_update'},
-        # 'timezone'    => $$data{'timezone'}
+            # 'publish'     => $$data{'status'} ? \1 : \0, 
+            # 'parent'      => 1,
+            # 'email'       => $$data{'email'},
+            # 'password'    => $$data{'password'},
+            # 'time_create' => $$data{'time_create'},
+            # 'time_access' => $$data{'time_access'},
+            # 'time_update' => $$data{'time_update'},
+            # 'timezone'    => $$data{'timezone'}
+        }
     }
-});
+);
 
-# читаем запись
-$user = Freee::EAV->new( 'User', { 'id' => 2 } );
-# warn Dumper $user;
-warn Dumper $user->GetUser(2);
+# # читаем запись
+# $user = Freee::EAV->new( 'User', { 'id' => 2 } );
+# # warn Dumper $user;
+# warn Dumper $user->GetUser(2);
 
 
 # my $id = $user->id();

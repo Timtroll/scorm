@@ -90,7 +90,7 @@ CREATE TABLE "public"."EAV_items" (
     id integer DEFAULT nextval('public.eav_items_id_seq'::regclass) NOT NULL,
     publish boolean DEFAULT false NOT NULL,
     import_id integer DEFAULT 0,
-    import_type "public"."EAV_object_type",
+    type "public"."EAV_object_type",
     import_source varchar,
     date_created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     date_updated date,
@@ -150,7 +150,7 @@ BEGIN
         UPDATE "public"."EAV_items" SET "has_childs" = "has_childs" + 1 WHERE "id" = NEW.parent;
         SELECT * INTO _iParent FROM "public"."EAV_items" WHERE "id" = NEW.parent;
         SELECT * INTO _iSelf FROM "public"."EAV_items" WHERE "id" = NEW.id;
-        IF ( _iSelf.import_type = _iParent.import_type ) THEN
+        IF ( _iSelf.type = _iParent.type ) THEN
             UPDATE "public"."EAV_items" SET "parent" = NEW.parent WHERE "id" = NEW.id;
             END IF;
     END IF;
@@ -196,7 +196,7 @@ $$;
 CREATE FUNCTION "public".eav_getrootid(_type character varying) RETURNS integer
     LANGUAGE sql IMMUTABLE
     AS $$
-    SELECT "id" FROM "public"."EAV_items" WHERE "import_type" = _type::"EAV_object_type" AND "parent" = 0;
+    SELECT "id" FROM "public"."EAV_items" WHERE "type" = _type::"EAV_object_type" AND "parent" = 0;
 $$;
 
 CREATE INDEX "EAV_data_boolean_field_id_data_idx" ON "public"."EAV_data_boolean" USING btree (field_id, data);
@@ -207,13 +207,13 @@ CREATE INDEX "EAV_data_int4_field_id_data_idx" ON "public"."EAV_data_int4" USING
 
 CREATE UNIQUE INDEX "EAV_items_id_has_childs_idx" ON "public"."EAV_items" USING btree (id, has_childs);
 
-CREATE UNIQUE INDEX "EAV_items_id_import_type_has_childs_idx" ON "public"."EAV_items" USING btree (id, import_type, has_childs);
+CREATE UNIQUE INDEX "EAV_items_id_type_has_childs_idx" ON "public"."EAV_items" USING btree (id, type, has_childs);
 
 CREATE UNIQUE INDEX "EAV_items_id_publish_has_childs_idx" ON "public"."EAV_items" USING btree (id, publish, has_childs);
 
-CREATE UNIQUE INDEX "EAV_items_id_publish_import_type_has_childs_idx" ON "public"."EAV_items" USING btree (id, publish, import_type, has_childs);
+CREATE UNIQUE INDEX "EAV_items_id_publish_type_has_childs_idx" ON "public"."EAV_items" USING btree (id, publish, type, has_childs);
 
-CREATE INDEX "EAV_items_import_id_import_type_idx" ON "public"."EAV_items" USING btree (import_id, import_type);
+CREATE INDEX "EAV_items_import_id_type_idx" ON "public"."EAV_items" USING btree (import_id, type);
 
 CREATE INDEX "EAV_links_id_distance_idx" ON "public"."EAV_links" USING btree (id, distance);
 
@@ -229,7 +229,7 @@ CREATE TRIGGER "EAV_links_trigger_ai" AFTER INSERT ON "public"."EAV_links" FOR E
 
 CREATE INDEX "EAV_data_string_field_id_data_gin_idx" ON "public"."EAV_data_string" USING gin (field_id, lower((data)::text) "public".gin_trgm_ops);
 
-CREATE INDEX "EAV_items_import_type_title_gin_idx" ON "public"."EAV_items" USING gin (import_type, lower((title)::text) "public".gin_trgm_ops);
+CREATE INDEX "EAV_items_type_title_gin_idx" ON "public"."EAV_items" USING gin (type, lower((title)::text) "public".gin_trgm_ops);
 
-CREATE INDEX "EAV_items_publish_import_type_title_gin_idx" ON "public"."EAV_items" USING gin (((publish)::integer), import_type, lower((title)::text) "public".gin_trgm_ops);
+CREATE INDEX "EAV_items_publish_type_title_gin_idx" ON "public"."EAV_items" USING gin (((publish)::integer), type, lower((title)::text) "public".gin_trgm_ops);
 

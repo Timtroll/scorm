@@ -15,7 +15,7 @@ $$;
 INSERT INTO "public"."EAV_items" (
     publish,
     import_id,
-    import_type,
+    type,
     date_created,
     title,
     parent,

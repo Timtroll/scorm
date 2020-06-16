@@ -20,6 +20,7 @@ sub new {
 
     my $Other = bless { Type => $_[0]->{Type} }, $Class;
     $Self->_init_copy( $Other, $_[0] );
+
     return $Other if exists( $_[0]->{PreventCreate} ) && $_[0]->{PreventCreate};
     return defined( $Other->_InitThisItem( $_[0] ) ) ? $Other : undef();
 }
@@ -28,6 +29,7 @@ our $AUTOLOAD;
 
 sub AUTOLOAD {
     my $self = shift;
+
     my $method = substr( $AUTOLOAD, rindex( $AUTOLOAD, '::' ) + 2 );
 
     return 1 if $method eq 'DESTROY';
@@ -42,12 +44,12 @@ sub AUTOLOAD {
         }
         else {
             return undef();
-        };
+        }
     }
     else {
 #        return $self->$method( @_ );
-    };
-};
+    }
+}
 
 sub _init {
     my $Self = shift;
@@ -64,9 +66,9 @@ sub _init {
     for my $field ( @$fields ) {
         $Self->{Fields}->{ $field->{set} }->{ $field->{alias} } = $field;
         $Self->{FieldsById}->{ $$field{id} } = $field;
-    };
+    }
 
-    $Self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'import_source', 'type', 'import_type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
+    $Self->{ItemFields} = { map { ( $_, 1 ) } ( 'id', 'publish', 'import_id', 'import_source', 'type', 'type', 'title', 'date_created', 'date_updated', 'parent', 'has_childs' ) } ;
 
     $Self->{DataTables} = {
         int      => [ '"public"."EAV_data_int4"',     '"EAV_data_int4_pkey"' ],
@@ -88,21 +90,23 @@ sub _init {
         warn $Type;
         my $T = ucfirst($Type);
         my $Class = $Base.'::'.$T;
-        if( !defined($Loaded{$Type}) ){
+        if ( !defined($Loaded{$Type}) ) {
             my $xClass = $Class.'.pm';
             $xClass =~ s/\:\:/\//g;
             require $xClass;
             $Loaded{$Type} = 1;
         }
-        my ( $id ) = ( map { $_->{id} } grep { $_->{import_type} eq $Type } @{ $Self->{_roots} } );
+        my ( $id ) = ( map { $_->{id} } grep { $_->{type} eq $Type } @{ $Self->{_roots} } );
         if ( !defined( $id ) ) {
             if ( $Type eq 'Default' ) {
                  $Self->{Roots}->{ $Type } =  undef();
-            } else {
+            }
+            else {
                  my $obj = $Class->new({ Type => $Type, parent => 0, publish => \1, import_id => undef(), title => $T });
                  $Self->{Roots}->{ $Type } = $obj;
-            };
-        } else {
+            }
+        }
+        else {
             my $obj = $Class->new( { Type => $Type } );
             $obj->{_item} = $obj->_get( $id );
 use DDP;            
@@ -110,15 +114,15 @@ p $obj->{_item};
 warn $Self;
 warn $Type;
             $Self->{Roots}->{ $Type } = $obj;
-        };
-    };
+        }
+    }
 warn $Self->{Type};
 
     my $RootType;
     $RootType = ucfirst( $Self->{Type} ) if exists( $Self->{Type} );
     $Self->{Root} = $Self->{Roots}->{ $Self->{Type} } if defined( $RootType );
     $sth->finish();
-};
+}
 
 sub _init_copy {
     my ( $Self, $Target, $Params ) = @_;
@@ -126,10 +130,13 @@ sub _init_copy {
         'dbh',        'FieldsAsArray', 'Fields',    'FieldsById', 'ItemFields',
         'DataTables', 'Roots'
     ];
-warn $Self;
-warn $Target;
-
+# warn $Self;
+warn keys %$Target;
+warn '---';
+warn join('=', @$fields);
     $Target->{$_} = $Self->{$_} foreach (@$fields);
+# warn $Target->{Type};
+warn '---';
 
     #!! remove this
     $Target->{Type} = ucfirst( $Target->{Type} );
@@ -156,26 +163,26 @@ sub _InitThisItem {
         if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ) {
             $Self->_MultiStore( $Params->{data} );
         }
-        elsif( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ){
+        elsif ( exists( $Params->{$Type} ) && defined( $Params->{$Type} ) && ref( $Params->{$Type} ) && ref( $Params->{$Type} ) eq 'HASH' ) {
             $Self->_MultiStore( { $$Params{Type} => $Params->{$Type} } );
         }
-    };
+    }
 
     return 1;
-};
+}
 
 sub _get {
     my $Self = $_[0];
     my $id = int( $_[1] || 0 );
     my $import_id_flag_and_type = exists( $_[2] ) && $_[2] ? $_[2] : 0;
 
-    my $sql = $import_id_flag_and_type ? 'SELECT * FROM "public"."EAV_items" WHERE "import_id" = '.$id.' AND "import_type" = '.$Self->{dbh}->quote( $import_id_flag_and_type ) : 'SELECT * FROM "public"."EAV_items" WHERE "id" = '.$id;
+    my $sql = $import_id_flag_and_type ? 'SELECT * FROM "public"."EAV_items" WHERE "import_id" = '.$id.' AND "type" = '.$Self->{dbh}->quote( $import_id_flag_and_type ) : 'SELECT * FROM "public"."EAV_items" WHERE "id" = '.$id;
     my $item = $Self->{dbh}->selectrow_hashref( $sql );
     return undef() unless defined( $item );
 
     #!!FIXIT
-    $$item{Type} = $$item{type} = $$item{import_type};
-    delete( $$item{import_type} );
+    $$item{Type} = $$item{type} = $$item{type};
+    delete( $$item{type} );
     #!!FIXIT
     my $sth = $Self->{dbh}->prepare( 'SELECT "parent", "distance" FROM "public"."EAV_links" WHERE "id" = '.$id );
     $sth->execute();
@@ -187,13 +194,14 @@ sub _get {
 
 sub GetTitle {
     my $Self = shift;
-    return undef() unless exists( $Self->{_item} );
 
+    return undef() unless exists( $Self->{_item} );
     return $Self->{_item}->{title};
-};
+}
 
 sub _getAll {
     my $Self = shift;
+
     return undef() unless exists( $Self->{_item} );
 
     $Self->{_item}->{Childs} = $Self->_get_childs( { Split => 1 } );
@@ -213,7 +221,7 @@ sub _getAll {
     };
 
     return $Self->{_item};
-};
+}
 
 sub _get_field {
     my ( $Self, $FieldName ) = @_ ;
@@ -231,6 +239,7 @@ sub _get_field {
 
 sub _get_childs {
     my $Self = shift;
+
     return undef() unless exists( $Self->{_item} );
 
     my $id = int( $Self->{_item}->{id} );
@@ -248,7 +257,7 @@ sub _get_childs {
         Direct => [ map { $_->{id} } grep { !$_->{distance} } @{ $Childs } ],
         All => $Childs
     };
-};
+}
 
 sub _boolean_by_input {
     my ( $Self, $data ) = @_;
@@ -259,13 +268,14 @@ sub _boolean_by_input {
     $value = 'false' if !$data || $data eq 'f' || $data eq 'false' || ( ref( $data ) && ref( $data ) eq 'SCALAR' && $$data == 0 );
 
     return $value;
-};
+}
 
 sub _boolean_by_db {
-};
+}
 
 sub _store {
     my ( $Self, $FieldName, $data ) = @_;
+
     my $origin_data = $data;
     my $type = $Self->{Type};
     $type = 'Default' if exists( $Self->{Fields}->{ 'Default' }->{ $FieldName } );
@@ -281,24 +291,28 @@ sub _store {
 
     if ( $$val{type} eq 'boolean' ) {
         $data = $Self->_boolean_by_input( $data );
-    } elsif ( ( $$val{type} eq 'datetime' || $$val{type} eq 'int' ) && !$data) {
+    }
+    elsif ( ( $$val{type} eq 'datetime' || $$val{type} eq 'int' ) && !$data) {
         $data = 'NULL';
-    } elsif ( $$val{type} eq 'int' ) {
+    }
+    elsif ( $$val{type} eq 'int' ) {
          $data = $Self->{dbh}->quote( int( $data ) );
-    } else {
+    }
+    else {
         $data = $Self->{dbh}->quote( $data );
-    };
+    }
 
     my $x;
     if ( $sysprefix ) {
         $x = $Self->{dbh}->do( 'UPDATE "public"."EAV_items" SET '.$FieldName.' = '.$data.' WHERE "id" = '.$Self->{_item}->{id} );
-    } else {
+    }
+    else {
         $x = $Self->{dbh}->do(
             'INSERT INTO '.$Self->{DataTables}->{ $$val{type} }->[0].'  ( "id", "field_id", "data" ) VALUES ( '.int( $Self->{_item}->{id} ).', '.int( $$val{id} ).', '.$data.') '.
             'ON CONFLICT '.
             'ON CONSTRAINT '.$Self->{DataTables}->{ $$val{type} }->[1].' DO UPDATE SET "data" = '.$data
         );
-    };
+    }
 
     if ( $x ) {
         if ( $sysprefix ) {
@@ -306,13 +320,14 @@ sub _store {
             if ( $FieldName eq 'publish' ) {
                 $Self->{_item}->{publish} = $data eq 'true' ? 1 : 0;
             };
-        } else {
+        }
+        else {
             $Self->{_item}->{ $Self->{Type} }->{ $FieldName } = $origin_data;
             if ( $$val{type} eq 'boolean' ) {
                 $Self->{_item}->{ $Self->{Type} }->{ $FieldName } = $data eq 'true' ? 1 : 0;
-            };
-        };
-    };
+            }
+        }
+    }
 
     return $x;
 }
@@ -325,17 +340,18 @@ sub RefreshView{
 
 sub _create {
     my ( $Self, $Item ) = @_;
+
     $Item->{Type} = $Self->{Type} unless exists( $Item->{Type} );
     die unless exists( $$Item{Type} ) && exists( $Self->{Fields}->{ $$Item{Type} } );
     die unless exists( $$Item{parent} ) && $$Item{parent} =~ /^\d+$/;
 
     my $data = {
         'publish' => 'false',
-        'import_type' => $Self->{dbh}->quote( $$Item{Type} )
+        'type' => $Self->{dbh}->quote( $$Item{Type} )
     };
-    $$data{publish} = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
+    $$data{publish}   = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
     $$data{import_id} = $Self->{dbh}->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
-    $$data{title} = $Self->{dbh}->quote( $$Item{title} );
+    $$data{title}     = $Self->{dbh}->quote( $$Item{title} );
     $$data{import_source} = $Self->{dbh}->quote( $$Item{import_source} ) if exists( $$Item{import_source} ) && defined( $$Item{import_source} );
 
     $Self->{dbh}->do( 'INSERT INTO "public"."EAV_items" ('.join( ',', map { '"'.$_.'"'} keys %$data ).') VALUES ('.join( ',', map { $$data{$_} } keys %$data ).') RETURNING "id"' );
@@ -345,7 +361,7 @@ sub _create {
         next if $$val{type} ne $$Item{Type} && $$val{type} ne 'Default';
         $Self->{dbh}->do( 'INSERT INTO '.$Self->{DataTables}->{ $$val{type} }->[0].' ( "id", "field_id", "data" ) VALUES ('.$id.', '.$$val{id}.', '.$Self->{dbh}->quote( $$val{default_value} ).' )'  );
         $data->{ $$Item{Type} }->{ $$val{alias} } = $$val{default_value};
-    };
+    }
 
     $Self->{dbh}->do( 'INSERT INTO "public"."EAV_links" ("parent", "id", "distance") VALUES ('.$$Item{parent}.', '.$id.', 0)' );
     my $p = $Self->_get( $$Item{parent} );
@@ -353,7 +369,7 @@ sub _create {
     $data->{parents} = [ {distance => 0, parent => $$Item{parent} }, map { $_->{distance} += 1; $_ } sort { $a->{distance} <=> $b->{distance} } @$parents ];
 
     return $data;
-};
+}
 
 sub _MultiStore {
     my ( $Self, $Params ) = @_;
@@ -368,16 +384,17 @@ sub _MultiStore {
             next if !exists( $Self->{Fields}->{ $key }->{ $field } );
             $Self->_store( $field, $Params->{ $key }->{ $field } );
         }
-    };
+    }
 
     return 1;
 }
 
 sub _delete {
     my $Self = shift;
+
     return undef() unless exists( $Self->{_item} );
     return $Self->{dbh}->do( 'UPDATE "public"."EAV_items" SET "publish" = false WHERE "id" = '.int( $Self->{_item}->{id} ) );
-};
+}
 
 sub _MoveChilds {
     my ( $Self, $Params ) = @_ ;
@@ -394,20 +411,21 @@ sub _MoveChilds {
 
     for my $parent ( @$parents ) {
         $Self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" = '.$parent->{parent}.' AND "id" IN ('.join( ', ', @$Childs ).')' );
-    };
+    }
 
     for my $child ( @$Childs ) {
         $Self->{dbh}->do(
             'INSERT INTO "public"."EAV_links" ( "id", "parent", "distance" ) VALUES ( '.$child.', '.int( $Params->{NewParent} ).', 0 ) '.
             'ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO UPDATE SET "distance" = 0'
         );
-    };
+    }
 
     return 1;
-};
+}
 
 sub _AttachToParent {
     my ( $Self, $Params ) = @_ ;
+
     return undef() unless $Self->{_item};
     return undef() unless defined( $Params );
     my $parent = ref( $Params ) && ref( $Params ) eq 'HASH' && exists( $Params->{parent} ) ? int( $Params->{parent} || 0 ): int( $Params || 0 );
@@ -416,7 +434,7 @@ sub _AttachToParent {
     $Self->{dbh}->do( 'INSERT INTO "public"."EAV_links" ("id", "parent", "distance") VALUES ( '.int( $Self->{_item}->{id} ).', '.$parent.', 0 ) ON CONFLICT ON CONSTRAINT "EAV_links_pkey" DO NOTHING' );
 
     return 1;
-};
+}
 
 sub _RealDelete {
     my $Self = shift;
@@ -433,16 +451,17 @@ sub _RealDelete {
 
     if ( !exists( $Params->{SaveChilds} ) || !$Params->{SaveChilds} ) {
         push @$items, @$Childs;
-    } else {
+    }
+    else {
         my $dParent = $Self->{dbh}->selectrow_array( 'SELECT "parent" FROM "public"."EAV_links" WHERE "id" = '.$id.' AND distance = 0' );
         $Self->_MoveChilds( { NewParent => $dParent } );
-    };
+    }
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "id" IN ('.join( ',', @$items ).') ' );
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_links" WHERE "parent" IN ('.join( ',', @$items ).') ' );
     $Self->{dbh}->do( 'DELETE FROM "public"."EAV_items" WHERE "id" IN ('.join( ',', @$items ).')' );
     for my $tbl ( map { $Self->{DataTables}->{ $_ }->[0] } keys %{ $Self->{DataTables} } ) {
         $Self->{dbh}->do( 'DELETE FROM '.$tbl.' WHERE "id" IN ('.join( ',', @$items ).')' );
-    };
+    }
 
     delete( $Self->{_item} );
 
@@ -458,11 +477,14 @@ sub _MakeFilterStatement {
     my $res = '';
     if ( !defined( $v ) ) {
         $res .= $prefix.' IS NULL ';
-    } elsif ( !ref( $v ) ) {
+    }
+    elsif ( !ref( $v ) ) {
         $res .= $prefix.' = '.$Self->{dbh}->quote( $v )
-    } elsif ( ref( $v ) eq 'SCALAR' && ( $$v == 0 || $$v == 1 ) ) {
+    }
+    elsif ( ref( $v ) eq 'SCALAR' && ( $$v == 0 || $$v == 1 ) ) {
         $res .= $prefix.' = '.( $$v == 0 ? 'false' : 'true' )
-    } elsif ( ref( $v ) eq 'ARRAY' && scalar( @$v ) ) {
+    }
+    elsif ( ref( $v ) eq 'ARRAY' && scalar( @$v ) ) {
         if ( scalar( @$v ) <= 10 ) {
             $res .= '( '.join( ' OR ', map { $prefix.' = '.$Self->{dbh}->quote( $_ ) } @$v ).' )';
         } elsif ( scalar( @$v ) <= 1000 ) {
@@ -470,7 +492,8 @@ sub _MakeFilterStatement {
         } else {
             $res .= $prefix.' = ANY ( VALUES( '.join( ', ', map { $Self->{dbh}->quote( $_ ) } @$v ).' )';
         }
-    } elsif ( ref( $v ) eq 'HASH' ) {
+    }
+    elsif ( ref( $v ) eq 'HASH' ) {
         my $simple_keys = { gt => '>', gte => '>=', lt => '<', lte => '<=', '~*' => '~*' };
         my $v_keys = { map { ( $_, lc( $_ ) ) } keys %$v };
         for my $k ( grep { exists( $simple_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
@@ -493,12 +516,12 @@ sub _MakeFilterStatement {
             # $value =~ s/(^.?\'|\'$)//gs;
             $prefix = $prefix && $prefix ne '' ? "lower($prefix)" : '';
             $res .= $prefix.' '.$like_keys->{ $v_keys->{$k} }.' \''.( $p_start ? '%' : '' ).$value.( $p_end ? '%' : '' ).'\'';
-        };
+        }
     }
 
     $Self->{Debug} && $Self->{LogObject}->Dumper($res);
     return $res;
-};
+}
 
 sub _list {
     my ( $Self, $Params ) = @_ ;
@@ -549,8 +572,8 @@ sub _list {
         if ( !$is_sys_field ) {
             $Params->{Fields} = [] if !exists( $Params->{Fields} ) || !defined( $Params->{Fields} ) || !ref( $Params->{Fields} ) || ref( $Params->{Fields} ) ne 'ARRAY';
             push @{ $Params->{Fields} }, $sort_field unless scalar( grep { $_ eq $sort_field } @{ $Params->{Fields} } );
-        };
-    };
+        }
+    }
 
     if ( exists( $Params->{Fields} ) && ref( $Params->{Fields} ) eq 'ARRAY' ) {
         my $i = 0;
@@ -567,7 +590,7 @@ sub _list {
             };
             $i++;
         }
-    };
+    }
     $sql.= ' FROM '.( exists( $Params->{INJECTION} ) ? $Params->{INJECTION} : '' ).' "public"."EAV_items" AS items '.( exists( $Params->{INJECTION} ) ? ' ON items."id" = INJECTION."id" ' : '' ).' ';
     my $i = 0;
     if ( exists( $Params->{Parents} ) && defined( $Params->{Parents} ) && ref( $Params->{Parents} ) ) {
@@ -590,7 +613,8 @@ sub _list {
             };
         };
         $i++;
-    };
+    }
+
     $sql .= $data_sql;
     if ( exists( $Params->{Filter} ) && ref( $Params->{Filter} ) eq 'HASH' ) {
         my $i = 0;
@@ -614,7 +638,7 @@ sub _list {
     $sql .= $filter_sql;
     $sql .= $Params->{JOIN} if exists( $Params->{JOIN} ) && defined( $Params->{JOIN} );
     $items_filter_sql .= ' AND has_childs = 0 ' if scalar( grep { $_ =~ /leaves/i } keys %$Params );
-    $sql .= ' WHERE 1 = 1 '.( exists( $Params->{Filter}->{Type} ) ? ' AND '.$Self->_MakeFilterStatement( { value => $Params->{Filter}->{Type}, prefix => 'items."import_type"' } ) : '' ).$items_filter_sql;
+    $sql .= ' WHERE 1 = 1 '.( exists( $Params->{Filter}->{Type} ) ? ' AND '.$Self->_MakeFilterStatement( { value => $Params->{Filter}->{Type}, prefix => 'items."type"' } ) : '' ).$items_filter_sql;
     #default - show only published items, if we want to look over all - should add ShowHidden => 1, if we want to look hidden only - should add ShowHiddenOnly
     if ( !scalar( grep { $_ eq 'ShowHidden' && defined( $Params->{$_} ) && $Params->{$_} } keys %$Params ) ) {
         $sql .= ' AND items.publish = true ';
@@ -647,17 +671,19 @@ sub _list {
     my $r = $sth->fetchall_arrayref({});
     $sth->finish();
     return $r;
-};
+}
 
 sub getIDByImport {
     my $self = shift;
-    return $self->{dbh}->selectrow_array( 'SELECT "id" FROM "public"."EAV_items" WHERE "import_id" = '.$self->{dbh}->quote( $_[0] ).' AND "import_type" = '.$self->{dbh}->quote( $self->{Type} ) );
-};
+    return $self->{dbh}->selectrow_array( 'SELECT "id" FROM "public"."EAV_items" WHERE "import_id" = '.$self->{dbh}->quote( $_[0] ).' AND "type" = '.$self->{dbh}->quote( $self->{Type} ) );
+}
 
 sub getParentsInTree {
     my ( $Self, $Params ) = @_;
+
     return undef() unless $Self->{_item};
     return undef() unless defined( $Params );
+
     my $parent = ref( $Params ) && ref( $Params ) eq 'HASH' && exists( $Params->{parent} ) ? int( $Params->{parent} || 0 ): int( $Params || 0 );
     return undef() unless $parent;
 
@@ -671,7 +697,7 @@ sub getParentsInTree {
     $sth->finish();
 
     return [ sort { $a->{distance} <=> $b->{distance} } @$r ];
-};
+}
 
 sub Search {
     my ( $Self, $Params ) = @_;
@@ -692,17 +718,18 @@ sub Search {
         };
         $ItemsSubQuery .= $Self->{DataTables}->{ $lt }->[0].' AS d WHERE ';
         $ItemsSubQuery .= '( '.join( ' OR ', map { 'd."field_id" = '.$_ } @$fields_sql ).' ) AND ';
-    } else {
+    }
+    else {
         return undef() unless exists( $Params->{Type} ) && defined( $Params->{Type} );
         return undef() unless exists( $Self->{DataTables}->{ $Params->{Type} } );
         $ItemsSubQuery .= $Self->{DataTables}->{ $Params->{Type} }->[0].' AS d WHERE ';
-    };
+    }
     $ItemsSubQuery .= $Self->_MakeFilterStatement( { value => $Params->{Value}, prefix => exists( $Params->{Prefix} ) ? $Params->{Prefix} : 'd."data"' } );
 
     my $unions = [];
     for my $dt ( keys %{ $Self->{DataTables} } ) {
         push @$unions, 'SELECT "id", "field_id", "data"'.( $dt eq 'string' ? '' : '::varchar(4096)' ).' FROM '.$Self->{DataTables}->{ $dt }->[0].' WHERE "id" IN ( '.$ItemsSubQuery.' ) ';
-    };
+    }
 
     my $sql = join( ' UNION ', @$unions );
     return $sql if $Params->{SQLResult};
@@ -719,9 +746,9 @@ sub Search {
             $i++;
         };
         $Result->[ $i ]->{ $Self->{FieldsById}->{ $$r{field_id} }->{alias} } = $$r{data};
-    };
+    }
 
     return $Result;
-};
+}
 
 1;
