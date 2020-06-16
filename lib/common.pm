@@ -17,7 +17,7 @@ my $permissions = {};
 my $websockets = {};
 my $beans = {};
 my $routs = {};
-my $vfields = {};
+our $vfields = {};
 
 # vars for Graph database
 my $dbh = {};
