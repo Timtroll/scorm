@@ -1,37 +1,44 @@
 #!/usr/bin/perl -w
 
+# должен вызываться только из корневой директории для не существующей базы данных
 # миграция: чтение и запуск sql файлов из scorm/sql
+# для миграции тестовой базы данных добавить при вызове параметр test
+# ./script/migration.pl      - создание базы данных scorm при её отсутствии
+# ./script/migration.pl test - создание базы данных scorm_test при её отсутствии
+
 use utf8;
 use strict;
 use warnings;
 use File::Slurp::Unicode qw(slurp);;
 use DBI;
 
-my ( $path, $config, $test, $db, $dbh, $pwd, @path, @log_path, @list );
+my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $dbh, $res, $sth, $database, $filename, $create_db, $sql, @list );
 
 # проверка тестового режима
 if ( @ARGV ) {
     $test = shift @ARGV;
 }
 
+# путь к директории со скриптами миграции
+$path_sql = './sql';
+
+# путь к директории с конифгурацией
+$path_conf = './freee.conf';
+
+# путь к директории с логированием
 unless ( $test ) {
-    @path = ( './freee.conf', '../freee.conf' );
-    @log_path = ( './log/migration.log', '../log/migration.log' );
+    $path_log = './log/migration.log';
 }
 else {
-    @path = ( './freee.conf' );
-    @log_path = ( './log/migration_test.log' );
+    $path_log = './log/migration_test.log';
 }
 
 # поиск и чтение конфигурации 
-foreach $path ( @path ) {
-    if ( -e $path ) {
-        $config = slurp( $path, encoding => 'utf8' );
-        unless ( $config ) {
-            logging( "can't read config file from $path" ); 
-            exit; 
-        }
-        last;
+if ( -e $path_conf ) {
+    $config = slurp( $path_conf, encoding => 'utf8' );
+    unless ( $config ) {
+        logging( "can't read config file from $path_conf" ); 
+        exit; 
     }
 }
 
@@ -70,33 +77,24 @@ if ( DBI->errstr ) {
     exit;    
 }
 
-# проверка директории запуска файла
-$pwd = `pwd`;
-chomp $pwd;
-
-if ( $config->{'root'} eq $pwd ) {
-    unless ( $test ){
-        $path = './sql';
-    }
-    else {
-        $path = './t/Migration';
-    }
-} 
-else {
-    $path = '../sql';
+# проверка существования бд
+$database = $test ? 'scorm_test' : 'scorm';
+if ( check_db( $database ) ) {
+    warn 'database ' . $database . ' already exists';
+    logging( 'database ' . $database . ' already exists' );
+    exit;    
 }
 
-my ( $filename, $sql, $sth, $res );
-
-# создание базы и таблицы
-$filename = $path . '/_create_db.sql';
+# создание базы
+$create_db = $test ? '/_create_test_db.sql' : '/_create_db.sql';
+$filename = $path_sql . $create_db;
 $sql = slurp( $filename, encoding => 'utf8' );
 $sth = $dbh->prepare( $sql );
 $res = $sth->execute();
 if ( DBI->errstr ) {
     warn "execute doesn't work " . DBI->errstr . " in $filename script";
     logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
-    exit;    
+    exit;
 }
 warn 'Db created';
 
@@ -109,33 +107,33 @@ $dbh = DBI->connect(
 );
 if ( DBI->errstr ) {
     logging( "connection to database doesn't work:" . DBI->errstr );
-    exit;    
+    exit;
 }
 
-$filename = $path . '/_create_extiention.sql';
+# создание расширения
+$filename = $path_sql . '/_create_extiention.sql';
 $sql = slurp( $filename, encoding => 'utf8' );
 $sth = $dbh->prepare( $sql );
 $res = $sth->execute();
 if ( DBI->errstr ) {
     warn "execute doesn't work " . DBI->errstr . " in $filename script";
     logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
-    exit;    
+    exit;
 }
 
 # чтение файлов директории скриптов
-@list = `ls $path 2>&1`;
+@list = `ls $path_sql 2>&1`;
 if ( $? ) {
-    logging( "can't read directory $path: @list" ); 
-    exit; 
+    logging( "can't read directory $path_sql: @list" ); 
+    exit;
 };
 # обработка файлов директории  
 foreach ( @list ) {
     chomp;
     # фильтрация не sql файлов и папок
-    next if ( -d $path . '/' . $_ || /^\_/ || ! /\.sql$/ );
+    next if ( -d $path_sql . '/' . $_ || /^\_/ || ! /\.sql$/ );
 
-    # my ( $filename, $sql, $sth, $res );
-    $filename = $path . '/' . $_;
+    $filename = $path_sql . '/' . $_;
 
     # чтение содержимого файлов
     $sql = slurp( $filename, encoding => 'utf8' );
@@ -154,19 +152,30 @@ foreach ( @list ) {
     }
 }
 
+
 # логирование ошибки
 # logging( "комментарий и текст ошибки" );
 sub logging {
     my $logdata = shift;
     my $log;
 
-    foreach my $path ( @log_path ) {
-
-        if ( -e $path ) {
-            open( $log, '>>', $path ) or warn "Can't open log file!";
-                print $log "$logdata\n";
-            close( $log );
-        }
+    if ( -e $path_log ) {
+        open( $log, '>>', $path_log ) or warn "Can't open log file!";
+            print $log "$logdata\n";
+        close( $log );
     }
+}
 
+# проверка существования базы данных
+# my true = check_db( database );
+sub check_db {
+    my $database = shift;
+
+    my $check_db = 'SELECT datname FROM pg_database WHERE datname = ?';
+    $sth = $dbh->prepare( $check_db );
+    $sth->bind_param( 1, $database );
+    $res = $sth->execute();
+    $res = 0 if $res == '0E0';
+
+    return $res;
 }
