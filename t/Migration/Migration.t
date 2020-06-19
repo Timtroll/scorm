@@ -3,7 +3,7 @@
 # миграция: чтение и запуск sql файлов из scorm/sql
 use strict;
 use warnings;
-use File::Slurp::Unicode qw(slurp);;
+use File::Slurp::Unicode qw(slurp);
 use DBI;
 
 use Mojo::Base -strict;
@@ -167,13 +167,13 @@ $sth = $dbh->prepare( $check_db );
 $res = $sth->execute();
 $res = 0 if $res == '0E0';
 
-# удаление тестовой бд
-if ( $res ) {
-    $delete = 'DROP DATABASE "scorm_test"';
-    $sth = $dbh->prepare( $delete );
-    $res = $sth->execute();
-    die( "delete doesn't work " . DBI->errstr ) if ( DBI->errstr );
-    diag"database was deleted";
-}
+# # удаление тестовой бд
+# if ( $res ) {
+#     $delete = 'DROP DATABASE "scorm_test"';
+#     $sth = $dbh->prepare( $delete );
+#     $res = $sth->execute();
+#     die( "delete doesn't work " . DBI->errstr ) if ( DBI->errstr );
+#     diag"database was deleted";
+# }
 
 done_testing();

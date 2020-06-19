@@ -58,10 +58,6 @@ if ( DBI->errstr ) {
 
 my $UH = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
 use DDP;
-p $UH->{Root};
-p $UH->{Root}->id();
-die;
-
 
 # делаем запись
 my $user = Freee::EAV->new( 'User',
@@ -88,6 +84,7 @@ my $user = Freee::EAV->new( 'User',
         }
     }
 );
+p $user;
 
 # # читаем запись
 # $user = Freee::EAV->new( 'User', { 'id' => 2 } );

@@ -130,18 +130,11 @@ sub _init_copy {
         'dbh',        'FieldsAsArray', 'Fields',    'FieldsById', 'ItemFields',
         'DataTables', 'Roots'
     ];
-# warn $Self;
-warn keys %$Target;
-warn '---';
-warn join('=', @$fields);
     $Target->{$_} = $Self->{$_} foreach (@$fields);
-# warn $Target->{Type};
-warn '---';
 
     #!! remove this
-    $Target->{Type} = ucfirst( $Target->{Type} );
+    #$Target->{Type} = ucfirst( $Target->{Type} );
     #!! remove this
-warn $Target->{Type};
 
     $Target->{Root} = $Self->{Roots}->{ $Target->{Type} };
 }

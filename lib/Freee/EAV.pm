@@ -13,7 +13,7 @@ sub new {
     require $xClass;
 
     $Params = {} if !ref($Params) || ref($Params) ne 'HASH';
-    # $Params->{Type} = lc( $Type );
+    $Params->{Type} = $Type;
 
     return $Class->new( $Params );
 }
