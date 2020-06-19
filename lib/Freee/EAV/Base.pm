@@ -85,7 +85,7 @@ sub _init {
     my %Loaded;
 
     for my $Type ( keys %{ $Self->{Fields} } ) {
-        warn $Type;
+        # warn $Type;
         my $T = ucfirst($Type);
         my $Class = $Base.'::'.$T;
         if( !defined($Loaded{$Type}) ){
@@ -106,13 +106,13 @@ sub _init {
             my $obj = $Class->new( { Type => $Type } );
             $obj->{_item} = $obj->_get( $id );
 use DDP;            
-p $obj->{_item};
-warn $Self;
-warn $Type;
+# p $obj->{_item};
+# warn $Self;
+# warn $Type;
             $Self->{Roots}->{ $Type } = $obj;
         };
     };
-warn $Self->{Type};
+# warn $Self->{Type};
 
     my $RootType;
     $RootType = ucfirst( $Self->{Type} ) if exists( $Self->{Type} );
@@ -126,15 +126,15 @@ sub _init_copy {
         'dbh',        'FieldsAsArray', 'Fields',    'FieldsById', 'ItemFields',
         'DataTables', 'Roots'
     ];
-warn $Self;
-warn $Target;
+# warn $Self;
+# warn $Target;
 
     $Target->{$_} = $Self->{$_} foreach (@$fields);
 
     #!! remove this
     $Target->{Type} = ucfirst( $Target->{Type} );
     #!! remove this
-warn $Target->{Type};
+# warn $Target->{Type};
 
     $Target->{Root} = $Self->{Roots}->{ $Target->{Type} };
 }

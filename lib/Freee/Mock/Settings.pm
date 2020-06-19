@@ -5,7 +5,7 @@ use utf8;
 use Encode qw( encode );
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK $settings );
-
+use FindBin;
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw( $settings );
@@ -73,9 +73,9 @@ $settings = {
             "type"          => "InputText",
             "name"          => "upload_local_path",
             "label"         => "Локальный путь к хранилищу файлов",
-            "placeholder"   => "/home/troll/freee/public/storage/",
+            "placeholder"   => $FindBin::Bin . '/../public/storage/',
             "mask"          => "",
-            "value"         => '/home/troll/freee/public/storage/',
+            "value"         => $FindBin::Bin . '/../public/storage/',
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
@@ -115,9 +115,9 @@ $settings = {
             "type"          => "InputText",
             "name"          => "root",
             "label"         => "Корень проекта",
-            "placeholder"   => "/home/troll/freee",
+            "placeholder"   => $FindBin::Bin . '/../',
             "mask"          => "",
-            "value"         => '/home/troll/freee',
+            "value"         => $FindBin::Bin . '/../',
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,

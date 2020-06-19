@@ -3,7 +3,7 @@
 # миграция: чтение и запуск sql файлов из scorm/sql
 use strict;
 use warnings;
-use File::Slurp::Unicode qw(slurp);;
+use File::Slurp::Unicode qw(slurp);
 use DBI;
 
 use Mojo::Base -strict;

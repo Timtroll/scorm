@@ -9,7 +9,7 @@
 use utf8;
 use strict;
 use warnings;
-use File::Slurp::Unicode qw(slurp);;
+use File::Slurp::Unicode qw(slurp);
 use DBI;
 
 my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $dbh, $res, $sth, $database, $filename, $create_db, $sql, @list );

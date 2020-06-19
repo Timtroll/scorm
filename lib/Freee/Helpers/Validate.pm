@@ -77,7 +77,6 @@ sub register {
                 $data{$_} = $self->param($_);
             }
             elsif ( $self->param($_) && ( $required eq 'file_required' ) ) {
-
                 # проверка наличия содержимого файла
                 unless ( $self->param( $_ )->{'asset'}->{'content'} ) {
                     push @error, "_check_fields: no file's content";
@@ -99,7 +98,7 @@ sub register {
                 # получения расширения файла в нижнем регистре
                 $data{'extension'} = '';
                 $data{'filename'} =~ /^.*\.(\w+)$/;
-                $data{'extension'} = lc $1;
+                $data{'extension'} = lc $1 if $1;
                 unless ( $data{'extension'} ) {
                     push @error, "_check_fields: can't read extension";
                     last;
