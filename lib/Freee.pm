@@ -59,7 +59,7 @@ sub startup {
     # init Beanstalk connection
     $self->_beans_init();
 
-# Модель по Mojo
+## Модель по Mojo
 #     # подгружаем модель и создадим соответствующий хелпер для вызова модели
 #     my $model = Freee::Model->new(
 #         app => $self,
