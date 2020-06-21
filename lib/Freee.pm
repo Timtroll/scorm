@@ -60,11 +60,8 @@ sub startup {
     $self->_beans_init();
 
 # Модель по Mojo
-    # подгружаем модель и создадим соответствующий хелпер для вызова модели
-    my $model = Freee::Model->new(
-        app => $self,
-        dbh => $self->{dbh}
-    );
+    # подгружаем модель и создадим соответствующий хелпер для вызова модели + передадим ссылки на $self и коннект к базе
+    my $model = Freee::Model->new( app => $self );
     $self->helper(
         model => sub {
             my ($self, $model_name) = @_;

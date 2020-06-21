@@ -11,8 +11,7 @@ use Data::Dumper;
 # my $true = $self->get_tree(1); - без листьев
 # my $true = $self->get_tree();  - c листьями
 sub get_tree {
-    my $self = shift;
-    my $no_children = shift;
+    my ( $self, $no_children ) = @_;
 
     my ( $list, $sql );
     if ( $no_children ) {
@@ -22,12 +21,7 @@ sub get_tree {
         $sql = 'SELECT id, label, name, parent FROM "public".settings ORDER by id';
     }
 
-# напрягает eval ???
-    eval {
-        $list = $self->{dbh}->selectall_arrayref( $sql, { Slice => {} } );
-    };
-    warn $@ if $@;
-    return if $@;
+    $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
 
     $list = $self->{app}->_list_to_tree($list, 'id', 'parent', 'children');
 
