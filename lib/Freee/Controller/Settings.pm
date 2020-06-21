@@ -28,7 +28,7 @@ sub get_folder {
         push @mess, $error unless $data;
 
         if ($data) {
-            $data = $self->_get_folder( $self->param('id') );
+            $data = $self->model('Settings')->_get_folder( $self->param('id') );
             push @mess, "Could not get '".$self->param('id')."'" unless $data;
         }
     }
@@ -45,7 +45,7 @@ sub get_tree {
     my $self = shift;
 
     # передаем 1, чтобы получить дерево без листьев
-    my $list = $self->model('Settings')->get_tree(1);
+    my $list = $self->model('Settings')->_get_tree(1);
 
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;
@@ -79,7 +79,7 @@ sub save_folder {
             $$data{'folder'} = $self->param('folder') // 1;
             $$data{'status'} = $self->param('status') // 0;
 
-            $id = $self->_save_folder( $data ) unless @mess;
+            $id = $self->model('Settings')->_save_folder( $data ) unless @mess;
             push @mess, "Could not save folder item '$$data{'id'}'" unless ( $id || @mess );
         }
     }
@@ -128,7 +128,7 @@ sub add_folder {
                     $$data{'status'} = 1;
                     $$data{'folder'} = 1;
 
-                    $id = $self->_insert_folder( $data );
+                    $id = $self->model('Settings')->_insert_folder( $data );
                     push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
                 }
                 else {
@@ -164,7 +164,7 @@ sub get_leafs {
 
         if ($data) {
             if ( ( $$data{'id'} == 0 ) || ( $self->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
-                $list = $self->_get_leafs( $$data{'id'} );
+                $list = $self->model('Settings')->_get_leafs( $$data{'id'} );
                 push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
 
                 # данные для таблицы
@@ -207,7 +207,7 @@ sub load_default {
     my $self = shift;
 
     # очистка таблицы и сброс счетчика
-    $self->_reset_settings();
+    $self->model('Settings')->_reset_settings();
 
     my ($id, $sub, $resp, @mess);
     foreach my $folder ( @{$settings->{'settings'}} ) {
@@ -225,7 +225,7 @@ sub load_default {
             "folder"        => 1,
             "parent"        => 0
         };
-        $id = $self->_insert_folder($sub, []);
+        $id = $self->model('Settings')->_insert_folder($sub, []);
         push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         if (@{$$folder{'children'}}) {
@@ -245,13 +245,13 @@ sub load_default {
                     "parent"        => $id  # указываем родительский id
                 };
 
-                my $chldid = $self->_insert_setting($sub, []);
+                my $chldid = $self->model('Settings')->_insert_setting($sub, []);
                 push @mess, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
             }
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
+    $self->{'settings'} = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -302,13 +302,13 @@ sub add {
                 push @mess, "Setting named '$$data{'name'}' is exists";
             }
             else {
-                $id = $self->_insert_setting( $data, [] );
+                $id = $self->model('Settings')->_insert_setting( $data, [] );
                 push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
             }
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
+    $self->{'settings'} = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -332,7 +332,7 @@ sub edit {
         push @mess, $error unless $data;
 
         if ($data) {
-            $data = $self->_get_setting( $$data{'id'} );
+            $data = $self->model('Settings')->_get_setting( $$data{'id'} );
             push @mess, "Could not get '".$$data{'id'}."'" unless $data;
             $data = {
                 "folder" => $data->{'folder'},
@@ -414,14 +414,14 @@ sub save {
                     push @mess, "Setting named '$$data{'name'}' is exists";
                 }
                 else {
-                    $id = $self->_save_setting( $data, [] ) unless @mess;
+                    $id = $self->model('Settings')->_save_setting( $data, [] ) unless @mess;
                     push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
                 }
             }
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
+    $self->{'settings'} = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok' ;
@@ -444,11 +444,11 @@ sub delete {
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
 
-        $del = $self->_delete_setting( $$data{'id'} ) unless @mess;
+        $del = $self->model('Settings')->_delete_setting( $$data{'id'} ) unless @mess;
         push @mess, "Could not delete '$$data{'id'}'" unless ( $del || @mess );
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
+    $self->{'settings'} = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
@@ -480,7 +480,7 @@ sub toggle {
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
+    $self->{'settings'} = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';

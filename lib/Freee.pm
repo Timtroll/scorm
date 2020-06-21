@@ -36,15 +36,11 @@ sub startup {
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
-    $self->plugin('Freee::Helpers::PgSettings');
     $self->plugin('Freee::Helpers::PgGroups');
     $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
     $self->plugin('Freee::Helpers::Upload');
     $self->plugin('Freee::Helpers::User');
-
-    # обновление объекта с настройками
-    $self->{'settings'} = $self->_get_config();
 
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
@@ -56,9 +52,6 @@ sub startup {
     # Модель EAV передаем коннекшн базы
     Freee::EAV->new( 'User', { 'dbh' => $self->{dbh} } );
 
-    # init Beanstalk connection
-    $self->_beans_init();
-
 # Модель по Mojo
     # подгружаем модель и создадим соответствующий хелпер для вызова модели + передадим ссылки на $self и коннект к базе
     my $model = Freee::Model->new( app => $self );
@@ -68,6 +61,12 @@ sub startup {
             return $model->get_model($model_name);
         }
     );
+
+    # обновление объекта с настройками
+    $self->{'settings'} = $self->model('Settings')->_get_config();
+
+    # init Beanstalk connection
+    $self->_beans_init();
 
     # Router
     $r = $self->routes;

@@ -8,12 +8,13 @@ has 'app';
 #     state $self;
 #     my $class = shift;
 
-#     # if (ref $class && $class->isa(__PACKAGE__)) {
-#     #     scalar( @_ ) == 1 ? $_[0]->{eav} = $class->{eav} : push @_, eav => $class->{eav};
-#     # }
+# #     # if (ref $class && $class->isa(__PACKAGE__)) {
+# #     #     scalar( @_ ) == 1 ? $_[0]->{eav} = $class->{eav} : push @_, eav => $class->{eav};
+# #     # }
 # use Data::Dumper;
-# warn Dumper \@_;
-#     $self = $class->SUPER::new(@_) unless defined $self; 
+# warn Dumper $class;
+# warn Dumper $class->{dbh};
+#     # $self = $class->SUPER::new(@_) unless defined $self; 
 
 #     return $self;
 # }
