@@ -8,6 +8,7 @@ use JSON::XS;
 use Encode;
 
 use Freee::Mock::Settings;
+use Freee::Model::Settings;
 use Data::Dumper;
 use common;
 
@@ -44,7 +45,7 @@ sub get_tree {
     my $self = shift;
 
     # передаем 1, чтобы получить дерево без листьев
-    my $list = $self->_get_tree(1);
+    my $list = $self->model('Settings')->get_tree(1);
 
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;

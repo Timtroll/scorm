@@ -59,21 +59,18 @@ sub startup {
     # init Beanstalk connection
     $self->_beans_init();
 
-## Модель по Mojo
-#     # подгружаем модель и создадим соответствующий хелпер для вызова модели
-#     my $model = Freee::Model->new(
-#         app => $self,
-#         dbh => $self->{dbh}
-#     );
-#     # my $model = Freee::Model->new($self);
-#     $self->helper(
-#         model => sub {
-#             my ($self, $model_name) = @_;
-#             return $model->get_model($model_name);
-#         }
-#     );
-# # warn Dumper $self->model('MyModel')->get_config_data;
-# warn Dumper $self->model('MyModel')->get_;
+# Модель по Mojo
+    # подгружаем модель и создадим соответствующий хелпер для вызова модели
+    my $model = Freee::Model->new(
+        app => $self,
+        dbh => $self->{dbh}
+    );
+    $self->helper(
+        model => sub {
+            my ($self, $model_name) = @_;
+            return $model->get_model($model_name);
+        }
+    );
 
     # Router
     $r = $self->routes;

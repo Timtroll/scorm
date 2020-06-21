@@ -22,31 +22,6 @@ sub register {
     # таблица настроек
     ###################################################################
 
-    # получить дерево настроек без листьев
-    # my $true = $self->_get_tree();
-    $app->helper( '_get_tree' => sub {
-        my $self = shift;
-        my $no_children = shift;
-
-        my ($list, $sql);
-        if ($no_children) {
-            $sql = 'SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id';
-        }
-        else {
-            $sql = 'SELECT id, label, name, parent FROM "public".settings ORDER by id';
-        }
-
-        eval {
-            $list = $self->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
-        };
-        warn $@ if $@;
-        return if $@;
-
-        $list = $self->_list_to_tree($list, 'id', 'parent', 'children');
-
-        return $list;
-    });
-
     # читаем одну настройку
     # my $row = $self->_get_folder( 99 );
     # возвращается строка в виде объекта

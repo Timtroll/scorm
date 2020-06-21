@@ -4,17 +4,18 @@ use Mojo::Base -base;
 
 has 'app';
 
-sub new {
-    state $self;
-    my $class = shift;
+# sub new {
+#     state $self;
+#     my $class = shift;
 
-    if (ref $class && $class->isa(__PACKAGE__)) {
-        scalar( @_ ) == 1 ? $_[0]->{eav} = $class->{eav} : push @_, eav => $class->{eav};
-    }
+#     # if (ref $class && $class->isa(__PACKAGE__)) {
+#     #     scalar( @_ ) == 1 ? $_[0]->{eav} = $class->{eav} : push @_, eav => $class->{eav};
+#     # }
+# use Data::Dumper;
+# warn Dumper \@_;
+#     $self = $class->SUPER::new(@_) unless defined $self; 
 
-    $self = $class->SUPER::new(@_) unless defined $self; 
-
-    return $self;
-}
+#     return $self;
+# }
 
 1;

@@ -8,14 +8,15 @@ use Carp qw/ croak /;
 has modules => sub { {} };
 
 sub new {
-    state $self;
     my ($class, %args) = @_;
 
-    $self = $class->SUPER::new(%args);
+    my $self = $class->SUPER::new(%args);
     for my $pm ( grep { $_ ne 'Freee::Model::Base' } find_modules('Freee::Model') ) {
         my $e = load_class( $pm );
         croak "Loading '$pm' failed: $e" if ref $e;
         my ($basename) = $pm =~ /Freee::Model::(.*)/;
+use Data::Dumper;
+warn Dumper $basename;
         $self->modules->{$basename} = $pm->new( %args );
     }
 
