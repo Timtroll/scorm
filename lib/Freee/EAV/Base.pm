@@ -87,7 +87,7 @@ sub _init {
     my %Loaded;
 
     for my $Type ( keys %{ $Self->{Fields} } ) {
-        warn $Type;
+        # warn $Type;
         my $T = ucfirst($Type);
         my $Class = $Base.'::'.$T;
         if ( !defined($Loaded{$Type}) ) {
@@ -109,14 +109,14 @@ sub _init {
         else {
             my $obj = $Class->new( { Type => $Type } );
             $obj->{_item} = $obj->_get( $id );
-use DDP;            
-p $obj->{_item};
-warn $Self;
-warn $Type;
+# use DDP;            
+# p $obj->{_item};
+# warn $Self;
+# warn $Type;
             $Self->{Roots}->{ $Type } = $obj;
         }
     }
-warn $Self->{Type};
+# warn $Self->{Type};
 
     my $RootType;
     $RootType = ucfirst( $Self->{Type} ) if exists( $Self->{Type} );
