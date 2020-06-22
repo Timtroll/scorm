@@ -30,11 +30,11 @@ $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-                       'description' => 'description.svg',
+                       'description' => 'description',
                         upload => { file => $picture_path . 'all_right.svg' }
                   },
         'result' => {
-                        'id'        => '1',
+                        'id'        => 1,
                         'mime'      => 'image/svg+xml',
                         'status'    => 'ok'
                     },
@@ -46,7 +46,7 @@ $test_data = {
                         upload => { file => $picture_path . 'all_right.jpg' }
                   },
         'result' => {
-                        'id'        => '1',
+                        'id'        => 2,
                         'mime'      => 'image/svg+xml',
                         'status'    => 'ok'
                     },
@@ -113,6 +113,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
     $url = $$response{'url'};
     delete $response->{'url'};
+    diag Dumper( $response );
     ok( %$result == %$response, "Response is correct" );
     if ( $url ) {
         # составление списка возможных расширений

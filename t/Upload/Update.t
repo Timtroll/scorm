@@ -42,16 +42,31 @@ $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'        => 1
+            'id'          => 1,
+            'description' => 'description'
         },
         'result' => {
-            'status'    => 'ok'
+                        'id'        => 1,
+                        'mime'      => 'image/svg+xml',
+                        'status'    => 'ok'
         },
-        'comment' => 'All right:' 
+        'comment'         => 'All right:' 
+    },
+    2 => {
+        'data' => {
+            'id'          => 1,
+            'description' => ''
+        },
+        'result' => {
+                        'id'        => 1,
+                        'mime'      => 'image/svg+xml',
+                        'status'    => 'ok'
+        },
+        'comment'         => 'Empty description:' 
     },
 
     # отрицательные тесты
-    2 => {
+    3 => {
         'data' => {
             'id'        => 404
         },
@@ -61,14 +76,14 @@ $test_data = {
         },
         'comment' => "File with id doesn't exist:" 
     },
-    3 => {
+    4 => {
         'result' => {
             'message'   => "_check_fields: don't have required data",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
-    4 => {
+    5 => {
         'data' => {
             'id'        => - 404
         },
@@ -84,7 +99,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     $data = $$test_data{$test}{'data'};
     $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/upload/delete/' => form => $data )
+    $t->post_ok($host.'/upload/update/' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

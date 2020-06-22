@@ -34,9 +34,8 @@ sub register {
                 $config->{'dbs'}->{'databases'}->{$database}->{'password'},
                 $config->{'dbs'}->{'databases'}->{$database}->{'options'}
             );
-            # $self->pg_init();
         }
-        $dbh->{errstr} = sub {
+        $self->{errstr} = sub {
             print "Error received: $DBI::errstr\n";
         };
         return $self->{dbh};
