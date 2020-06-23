@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
-# обновление описания загруженного файла 
-# "id" => 1 - id файла ( >0 )
-# "description" => "description" - описание файла, до 256 символов, может быть пустым
+# получить запись о загруженном файле
+# "search" => 1/"file.48symbols.name"/"part of description" - данные для поиска
 use Mojo::Base -strict;
 
 use Test::More;
@@ -15,7 +14,7 @@ use Data::Dumper;
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $data, $test_data, $result, $response, $url, $regular, $desc_path, $file_path, $description, $cmd );
+my ( $t, $host, $picture_path, $size, $data, $test_data, $result, $response, $url, $regular, $desc_path, $file_path, $cmd );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
@@ -27,6 +26,9 @@ $host = $t->app->config->{'host'};
 
 # Путь к директории с файлами
 $picture_path = './t/Upload/';
+
+# размер загружаемого файла
+$size = -s $picture_path . 'all_right.svg';
 
 # загрузка файла
 diag "Add media:";
@@ -62,64 +64,73 @@ $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'          => 1,
-            'description' => 'description'
+                        'search'    => 1,
         },
         'result' => {
-                        'id'        => 1,
-                        'mime'      => 'image/svg+xml',
-                        'status'    => 'ok',
-                        'url'       => $url
+                        'data'      => [
+                                            {
+                                              "description" => "description",
+                                              "id"          =>  1,
+                                              "mime"        =>  'image/svg+xml',
+                                              "size"        =>  $size,
+                                              "title"       =>  'all_right.svg',
+                                              "url"         =>  $url
+                                            }
+                                        ],
+                        'status'    => 'ok'
         },
-        'comment'         => 'All right:' 
+        'comment'         => 'Search for id' 
     },
     2 => {
         'data' => {
-            'id'          => 1,
-            'description' => ''
+                        'search'    => $1,
         },
         'result' => {
-                        'id'        => 1,
-                        'mime'      => 'image/svg+xml',
-                        'status'    => 'ok',
-                        'url'       => $url
+                        'data'      => [
+                                            {
+                                              "description" => "description",
+                                              "id"          =>  1,
+                                              "mime"        =>  'image/svg+xml',
+                                              "size"        =>  $size,
+                                              "title"       =>  'all_right.svg',
+                                              "url"         =>  $url
+                                            }
+                                        ],
+                        'status'    => 'ok'
         },
-        'comment'         => 'Empty description:' 
+        'comment'         => 'Search for filename:' 
     },
-
-    # отрицательные тесты
     3 => {
+        'data' => {
+                        'search'    => 'desc',
+        },
+        'result' => {
+                        'data'      => [
+                                            {
+                                              "description" => "description",
+                                              "id"          =>  1,
+                                              "mime"        =>  'image/svg+xml',
+                                              "size"        =>  $size,
+                                              "title"       =>  'all_right.svg',
+                                              "url"         =>  $url
+                                            }
+                                        ],
+                        'status'    => 'ok'
+        },
+        'comment' => "Search for description:" 
+    },
+    # отрицательные тесты
+    4 => {
         'data' => {
             'id'          => 404,
             'description' => 'description'
         },
         'result' => {
-            'message'   => 'Can not get file info',
-            'status'    => 'fail'
-        },
-        'comment' => "File with id doesn't exist:" 
-    },
-    4 => {
-        'data' => {
-            'description' => 'description'
-        },
-        'result' => {
-            'message'   => "_check_fields: don't have required data",
-            'status'    => 'fail'
-        },
-        'comment' => 'No data:' 
-    },
-    5 => {
-        'data' => {
-            'id'        => - 404,
-            'description' => 'description'
-        },
-        'result' => {
-            'message'   => "_check_fields: 'id' don't match regular expression",
-            'status'    => 'fail'
+            'message'   => "can not get data from database",
+            'status'    => 'warn'
         },
         'comment' => 'Wrong type of id:' 
-    },
+    }
 };
 
 # запросы и проверка их выполнения
@@ -129,27 +140,16 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка подключения
-    $t->post_ok($host.'/upload/update/' => form => $data )
+    $t->post_ok($host.'/upload/search/' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8');
 
     # проверка данных ответа
     $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+diag Dumper( $response );
+diag Dumper( $result );
     ok( Compare( $result, $response ), "Response is correct" );
 
-    # проверка содержимого файла описания
-    if ( $$result{'status'} eq 'ok' ) {
-        $description = read_file( $desc_path );
-        $description = decode_json $description;
-        ok( 
-            $$description{'description'} eq $$data{'description'} &&
-            $$description{'mime'} eq $$test_data{$test}{'result'}{'mime'} &&
-            $$description{'filename'} eq $1 &&
-            $$description{'extension'} eq $2 &&
-            $$description{'title'} eq 'all_right.svg',
-            "New description is correct"
-        );
-    }
     diag "";
 };
 
