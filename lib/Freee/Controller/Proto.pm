@@ -126,33 +126,40 @@ sub proto_user {
                     {
                         'label'     => 'Основные',
                         'fields'    => {
-                            'surname'       => '', # Фамилия
-                            'name'          => '', # Имя
-                            'patronymic'    => '', # Отчество
-                            'place'         => '', # город
-                            'country'       => '', # страна
-                            'timezone'      => '', # часовой пояс
-                            'birthday'      => '', # дата рождения (в секундах)
-                            'status'        => '', # активный / не активный пользователь
-                            'password'      => '', # пароль
-                            'newpassword'   => '', # пароль
-                            'avatar'        => '',
-                            'type'          => ''                        # тип
+                            {'surname'       => ''}, # Фамилия
+                            {'name'          => ''}, # Имя
+                            {'patronymic'    => ''}, # Отчество
+                            {'place'         => ''}, # город
+                            {'country'       => ''}, # страна
+                            {'timezone'      => ''}, # часовой пояс
+                            {'birthday'      => ''}, # дата рождения (в секундах)
+                            {'status'        => ''}, # активный / не активный пользователь
+                            {'password'      => ''}, # пароль
+                            {'newpassword'   => ''}, # пароль
+                            {'avatar'        => ''},
+                            {'type'          => ''}                        # тип
                         }
                     },
                     {
                         'label' => 'Контакты',
                         'fields' => {
-                            'email'           => '', # email пользователя
-                            'emailconfirmed'  => '', # email подтвержден
-                            'phone'           => '', # номер телефона
-                            'phoneconfirmed'  => ''  # телефон подтвержден
+                            {'email'           => ''}, # email пользователя
+                            {'emailconfirmed'  => ''}, # email подтвержден
+                            {'phone'           => ''}, # номер телефона
+                            {'phoneconfirmed'  => ''}  # телефон подтвержден
                         }
+                    },
+                    {
+                        "fields" => [
+                            {"password"        => ""},
+                            {"newpassword"     => ""},
+                        ],
+                        "label" => "Пароль"
                     },
                     {
                         "label" => "Группы",
                         "fields" => {
-                            "groups" => []  # список ID групп
+                            {"groups" => []}  # список ID групп
                         }
                     }
                 ]
