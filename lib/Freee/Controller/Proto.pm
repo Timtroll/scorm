@@ -125,7 +125,7 @@ sub proto_user {
                 'tabs' => [ # Вкладки 
                     {
                         'label'     => 'Основные',
-                        'fields'    => {
+                        'fields'    => [
                             {'surname'       => ''}, # Фамилия
                             {'name'          => ''}, # Имя
                             {'patronymic'    => ''}, # Отчество
@@ -138,29 +138,29 @@ sub proto_user {
                             {'newpassword'   => ''}, # пароль
                             {'avatar'        => ''},
                             {'type'          => ''}                        # тип
-                        }
+                        ]
                     },
                     {
                         'label' => 'Контакты',
-                        'fields' => {
+                        'fields' => [
                             {'email'           => ''}, # email пользователя
                             {'emailconfirmed'  => ''}, # email подтвержден
                             {'phone'           => ''}, # номер телефона
                             {'phoneconfirmed'  => ''}  # телефон подтвержден
-                        }
+                        ]
                     },
                     {
                         "fields" => [
                             {"password"        => ""},
-                            {"newpassword"     => ""},
+                            {"newpassword"     => ""}
                         ],
                         "label" => "Пароль"
                     },
                     {
                         "label" => "Группы",
-                        "fields" => {
+                        "fields" => [
                             {"groups" => []}  # список ID групп
-                        }
+                        ]
                     }
                 ]
             };
