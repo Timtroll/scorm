@@ -124,8 +124,8 @@ sub _get_media {
             $sql = 'SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ?';
             @bind = ( $$data{'search'} );
         }
-        elsif ( $$data{'search'} =~ qr/^[\w]+$/os && length( $$data{'search'} ) == 48 ) {
-            $sql = 'SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ?';
+        elsif ( $$data{'search'} =~ qr/^[\da-zA-Z]+$/os && length( $$data{'search'} ) == 48 ) {
+            $sql = 'SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "filename" = ?';
             @bind = ( $$data{'search'} );
         }
         else {

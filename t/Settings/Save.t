@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w
 # Сохранение настройки
 # my $id = $self->update({
 # 'id'          => 1,

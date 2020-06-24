@@ -25,7 +25,7 @@ clear_db();
 $host = $t->app->config->{'host'};
 
 # Путь к директории с файлами
-$picture_path = './t/Upload/';
+$picture_path = './t/Upload/files/';
 
 # размер загружаемого файла
 $size = -s $picture_path . 'all_right.svg';
@@ -122,15 +122,23 @@ $test_data = {
     # отрицательные тесты
     4 => {
         'data' => {
-            'id'          => 404,
-            'description' => 'description'
+            'search'      => 404
         },
         'result' => {
             'message'   => "can not get data from database",
             'status'    => 'warn'
         },
-        'comment' => 'Wrong type of id:' 
-    }
+        'comment' => "Id doesn't exist:" 
+    },
+    5 => {
+        'data' => {
+        },
+        'result' => {
+            'message'   => "_check_fields: don't have required data",
+            'status'    => 'warn'
+        },
+        'comment' => 'No search:' 
+    },
 };
 
 # запросы и проверка их выполнения
@@ -146,8 +154,6 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
     # проверка данных ответа
     $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-diag Dumper( $response );
-diag Dumper( $result );
     ok( Compare( $result, $response ), "Response is correct" );
 
     diag "";

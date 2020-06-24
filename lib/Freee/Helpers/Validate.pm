@@ -117,8 +117,8 @@ sub register {
                 }
             }
         }
-
-
+warn 'before';
+warn Dumper( \%data );
         my $route = $self->url_for;
         # проверка, указанынй id это фолдер или нет (для роутов с'settings'и 'folder' в названии)
         if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
@@ -142,16 +142,18 @@ sub register {
                         return 0, "_check_fields: Action is not allowed for '$route'";
                     }
                 }
+                # ???????????????????????????????????????????????????????????????????????????
+                elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
+                }
             }
-        }
-        elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
         }
 
         my $error;
         if ( @error ) {
             $error = join( "\n", @error );
         }
-
+warn 'after';
+warn Dumper( \%data );
         return \%data, $error;
 
     });

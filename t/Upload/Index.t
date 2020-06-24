@@ -26,7 +26,7 @@ clear_db();
 $host = $t->app->config->{'host'};
 
 # путь к директории с файлами
-$picture_path = './t/Upload/';
+$picture_path = './t/Upload/files/';
 
 # размер загружаемого файла
 $size = -s $picture_path . 'all_right.svg';

@@ -23,7 +23,7 @@ clear_db();
 $host = $t->app->config->{'host'};
 
 # путь к директории с файлами
-$picture_path = './t/Upload/';
+$picture_path = './t/Upload/files/';
 
 # ввод данных
 diag "Add media:";

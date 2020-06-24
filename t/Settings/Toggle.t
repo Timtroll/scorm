@@ -1,3 +1,4 @@
+#!/usr/bin/perl -w
 # изменение поля на 1/0
 # my $true = $self->toggle();
 # 'id'    - id записи 

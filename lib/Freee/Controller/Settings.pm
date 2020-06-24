@@ -108,7 +108,8 @@ sub add_folder {
         # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
-
+# warn "after check";
+# warn Dumper( $data );
         unless (@mess) {
             # проверяем поле name на дубликат
             if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
@@ -127,6 +128,8 @@ sub add_folder {
                     $$data{'readonly'} = 0;
                     $$data{'status'} = 1;
                     $$data{'folder'} = 1;
+warn "before insert";
+warn Dumper( $data );
 
                     $id = $self->model('Settings')->_insert_folder( $data );
                     push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
