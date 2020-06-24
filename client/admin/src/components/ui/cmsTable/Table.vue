@@ -120,7 +120,7 @@
 
           <!--header-->
           <thead class="pos-table-header"
-                 v-if="tableHeader.length > 0">
+                 v-if="tableHeader && tableHeader.length > 0">
           <tr>
             <!--expand Row-->
             <th class="pos-table-expand uk-table-shrink uk-text-center">
