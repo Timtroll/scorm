@@ -108,8 +108,7 @@ sub add_folder {
         # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error unless $data;
-# warn "after check";
-# warn Dumper( $data );
+
         unless (@mess) {
             # проверяем поле name на дубликат
             if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
@@ -128,8 +127,6 @@ sub add_folder {
                     $$data{'readonly'} = 0;
                     $$data{'status'} = 1;
                     $$data{'folder'} = 1;
-warn "before insert";
-warn Dumper( $data );
 
                     $id = $self->model('Settings')->_insert_folder( $data );
                     push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
@@ -286,7 +283,7 @@ sub add {
     unless (@mess) {
         # # проверка данных
         ($data, $error) = $self->_check_fields();
-        # push @mess, $error unless $data;
+        push @mess, $error if $error;
 
         unless (@mess) {
             # корректирование пустых значений
@@ -304,6 +301,12 @@ sub add {
             if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
                 push @mess, "Setting named '$$data{'name'}' is exists";
             }
+            # elsif ( ) {
+            #     push @mess, "setting can't have parent $$data{'parent'}' doesn't exist";
+            # }
+            # elsif ( ) {
+            #     push @mess, "'$$data{'parent'}' doesn't exist";
+            # }
             else {
                 $id = $self->model('Settings')->_insert_setting( $data, [] );
                 push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
@@ -315,7 +318,7 @@ sub add {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
 }

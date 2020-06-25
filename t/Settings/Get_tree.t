@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # получить дерево без листьев
 use Mojo::Base -strict;
 

@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # создание настройки
 # my $id = $self->_insert_setting({
 # "parent"      => 0,           - обязательно (должно быть натуральным числом)
@@ -212,7 +211,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 0,
+            'readonly'    => 1,
             'folder'      => 0,
             'status'      => 1
         },
@@ -258,7 +257,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'parent'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data",
             'status'    => 'fail',
         },
         'comment' => 'No parent:' 
@@ -277,7 +276,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data",
             'status'    => 'fail',
         },
         'comment' => 'No name:' 
@@ -296,7 +295,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data",
             'status'    => 'fail',
         },
         'comment' => 'No label:' 
@@ -315,7 +314,7 @@ my $test_data = {
             'readonly'    => 0
         },
         'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data",
             'status'    => 'fail',
         },
         'comment' => 'No status:' 
@@ -346,16 +345,17 @@ my $test_data = {
             'name'        => 'name',
             'label'       => 'label',
             'placeholder' => 'placeholder',
-            'type'        => get_type(),
+            'type'        => '???????????????',
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'folder'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not create new setting item ''",
+            # 'message'   => "Could not create new setting item ''",
+            'message'   => "_check_fields: 'type' don't match regular expression",
             'status'    => 'fail',
         },
         'comment' => 'Wrong field type:'
@@ -370,7 +370,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'folder'      => 0,
             'status'      => 0
         },
@@ -390,7 +390,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'folder'      => 0,
             'status'      => 0
         },
@@ -410,7 +410,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'folder'      => 0,
             'status'      => 0
         },
@@ -430,7 +430,7 @@ my $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'status'      => 0
         },
         'result' => {

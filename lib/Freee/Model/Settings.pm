@@ -197,6 +197,7 @@ sub _insert_setting {
     my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     my $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
+
     return $id;
 }
 
