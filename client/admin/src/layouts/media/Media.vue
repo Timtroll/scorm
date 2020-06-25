@@ -59,6 +59,7 @@
 <script>
 
 import filesClass from './../../api/upload/files'
+import {notify} from '../../store/methods'
 
 const files = new filesClass
 
@@ -108,7 +109,16 @@ export default {
       this.searchResult = []
       const response    = await files.search(this.searchRequest)
       const data        = await response
-      this.searchResult = data.data
+      if (data.hasOwnProperty('data')) {
+        this.searchResult = data.data
+      }
+      if (data.hasOwnProperty('status')) {
+        if (data.status === 'warn')
+          notify(data.message, 'warning')
+        if (data.status === 'fail')
+          notify(data.message, 'danger')
+      }
+
     }
 
   }
