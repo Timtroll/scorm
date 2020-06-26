@@ -176,7 +176,8 @@ sub add {
     my ($self);
     $self = shift;
 
-    my ($data, $resp, $error, @mess);
+    my ($data, $resp, $result, $error, @mess);
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     unless (@mess) {
         # проверка данных
@@ -184,78 +185,11 @@ sub add {
         push @mess, $error unless $data;
 
         unless ( @mess ) {
-            # проверяем, - есть ли такой юзер
+            # проверяем, - есть ли такой юзер в EAV и users
 
-            # таблица users
-            my $user_data = {
-                'email'             => '',  # email пользователя
-                'password'          => '',  # хеш пароля
-                'time_create'       => '',  # время создания
-                'time_access'       => '',  # время последней активности
-                'time_update'       => '',  # время последих изменений
-                'timezone'          => ''  # часовой пояс
-            };
-
-            # таблица users_social
-            # my $user_data = {
-            #     "user_id" int4 NOT NULL,
-            #     "social" "public"."social" NOT NULL,
-            #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
-            #     "social_id",     => 123123123,
-            #     "social_profile" => "{}"
-            # };
-
-            # таблица media (аватарка)
-            my $media_data = {
-                "path"      => 'local',
-                "filename"  => 'local',
-                "title"     => 'Название файла',
-                "size"      => 'local',
-#?                "type" varchar(32) COLLATE "default",
-                "mime"      => 'local',
-                "description"      => 'local',
-                "order"      => 'local',
-                "flags"     => 0
-            };
-
-            # таблицы EAV
-            my $eav_data = {
-            };
-
-            # делаем запись в EAV
-            my $user = Freee::EAV->new( 'User', { 'publish' => $$data{'status'} ? \1 : \0, 'parent' => 1 } );
-            $user->StoreUser({
-                'title' => join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) ),
-                'User' => {
-                    'Surname'       => $$data{'surname'},
-                    'Name'          => $$data{'name'},
-                    'Patronymic'    => $$data{'patronymic'},
-                    'City'          => $$data{'city'},
-                    'Country'       => $$data{'country'},
-                    'Birthday'      => $$data{'birthday'},
-                    'Phone'         => $$data{'phone'},
-                    'Flags'         => 0,
-                }
-            });
-
-            # $data = {
-            #     'id'                => 1,
-            #     'surname'           => 'Фамилия',           # Фамилия
-            #     'name'              => 'Имя',               # Имя
-            #     'patronymic'        => 'Отчество',          # Отчество
-            #     'city'              => 'Санкт-Петербург',   # город
-            #     'country'           => 'Россия',            # страна
-            #     'timezone'          => '+3',                # часовой пояс
-            #     'birthday'          => 123132131,           # дата рождения (в секундах)
-            #     'email'             => 'username@ya.ru',    # email пользователя
-            #     'emailconfirmed'    => 1,                   # email подтвержден
-            #     'phone'             => 79312445646,         # номер телефона
-            #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-            #     'status'            => 1,                   # активный / не активный пользователь
-            #     'groups'            => [1, 2, 3],           # список ID групп
-            #     'password'          => 'khasdf',            # хеш пароля
-            #     'avatar'            => 'https://thispersondoesnotexist.com/image'
-            # };
+            # добавляем юзера в EAV и users
+            ( $result, $error ) = $self->model('User')->_insert_user( $data );
+            push @mess, $error unless $result;
         }
     }
 

@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 # получить запись о загруженном файле
 # "search" => 1/"file.48symbols.name"/"part of description" - данные для поиска
 use Mojo::Base -strict;
