@@ -87,14 +87,15 @@ print "route = ", $self->url_for, "\n";
     # валидируем входные параметры, если есть соответствующие правила
     if (defined $$vfields{$self->url_for}) {
         # my ($res, $err) = $self->_check( $$routs{$self->url_for} );
-        my ( $res, $error ) = $self->_check_fields( $self->url_for );
-# print "check_token $res, error:\n";
-# print Dumper($err);
-        unless ($res) {
-            # выводим ошибки, если валидация html данных не прошла
-            $self->render( json => { 'status' => 'fail', message => join("\n", @$error) } );
-            return;
-        }
+#??????????????????????????????????????????????????????????????????
+#         my ( $res, $error ) = $self->_check_fields( $self->url_for );
+# # print "check_token $res, error:\n";
+# # print Dumper($err);
+#         unless ($res) {
+#             # выводим ошибки, если валидация html данных не прошла
+#             $self->render( json => { 'status' => 'fail', message => join("\n", @$error) } );
+#             return;
+#         }
     }
 
     # проверка пермишенов

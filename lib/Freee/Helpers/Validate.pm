@@ -60,7 +60,7 @@ sub register {
             my $max_size = $$vfields{ $self->url_for }{$_}[2];
 
             # проверка статуса
-            if ( $self->param($_) && ( ( $required eq 'required' ) || ( $required eq '' ) ) ) {
+            if ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( ( $required eq 'required' ) || ( $required eq '' ) ) ) {
                 # проверка длины
                 unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
                     push @error, "_check_fields: wrong size of '$_'";
@@ -118,7 +118,6 @@ sub register {
             }
         }
 
-
         my $route = $self->url_for;
         # проверка, указанынй id это фолдер или нет (для роутов с'settings'и 'folder' в названии)
         if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
@@ -142,9 +141,10 @@ sub register {
                         return 0, "_check_fields: Action is not allowed for '$route'";
                     }
                 }
+                # ???????????????????????????????????????????????????????????????????????????
+                elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
+                }
             }
-        }
-        elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
         }
 
         my $error;
@@ -235,10 +235,10 @@ sub register {
 ################
             # роуты settings/*
             '/settings/add_folder'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -254,15 +254,16 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/delete_folder'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/proto_leaf'  => {
-                "parent"        => [ 'required', qr/^\d+$/os ]
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/proto_folder'  => {
-                "parent"        => [ 'required', qr/^\d+$/os ]
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/settings/add'  => {
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "placeholder"   => [ '', qr/.*/os, 256 ],

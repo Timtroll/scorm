@@ -162,6 +162,7 @@ sub search {
         $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
         foreach my $row ( values %{$data} ) {
             $url = $host . $url_path . $$row{'filename'} . '.' . $$row{'extension'};
+            delete @{$row}{'filename', 'extension'};
             push @data, { %$row, 'url' => $url };
         }
     }

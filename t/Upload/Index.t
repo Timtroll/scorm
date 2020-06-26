@@ -8,23 +8,28 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw( decode_json );
+use Data::Compare;
+use File::Slurp;
 use Data::Dumper;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $url);
+my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $url, $size, $description );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
 clear_db();
 
-# Устанавливаем адрес
+# установка адреса
 $host = $t->app->config->{'host'};
 
-# Путь к директории с файлами
-$picture_path = './t/Upload/';
+# путь к директории с файлами
+$picture_path = './t/Upload/files/';
+
+# размер загружаемого файла
+$size = -s $picture_path . 'all_right.svg';
 
 $test_data = {
     # положительные тесты
@@ -43,7 +48,7 @@ $test_data = {
     2 => {
         'data' => {
                        'description' => '',
-                        upload => { file => $picture_path . 'all_right.jpg' }
+                        upload => { file => $picture_path . 'all_right.svg' }
                   },
         'result' => {
                         'id'        => 2,
@@ -59,7 +64,7 @@ $test_data = {
                     'description' => 'description'
                    },
         'result' => {
-                    'message'   => "_check_fields: no file's content",
+                    'message'   => "_check_fields: don't have required data",
                     'status'    => 'fail'
         },
         'comment' => 'empty file:' 
@@ -99,23 +104,30 @@ $test_data = {
     }
 };
 
+# запросы и проверка их выполнения
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     $data = $$test_data{$test}{'data'};
     $result = $$test_data{$test}{'result'};
 
+    # проверка подключения
     $t->post_ok( $host.'/upload/' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
     }
     $t->content_type_is('application/json;charset=UTF-8');
+
+    # проверка данных ответа
     $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+    # url проверяется отдельно, так как оно генерируется случайно
     $url = $$response{'url'};
     delete $response->{'url'};
-    diag Dumper( $response );
-    ok( %$result == %$response, "Response is correct" );
-    if ( $url ) {
+    ok( Compare( $result, $response ), "Response is correct" );
+
+    # дополнительные проверки работы положительных запросов
+    if ( $$result{'status'} eq 'ok' ) {
+
         # составление списка возможных расширений
         $extension = '(';
         foreach ( keys %{$t->app->{'settings'}->{'valid_extensions'}} ) {
@@ -124,16 +136,26 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         $extension =~ s/\|$/)/;
 
         # регулярное выражение для проверки url
-        $regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . '.)(' . $extension . ')$';
+        $regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . ').(' . $extension . ')$';
         ok( $url =~ /$regular/, "Url is correct" );
 
-        # путь к загруженному файлу
-        $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . $2;
-        ok( -s $file_path, "Download was successful");
+        # проверка размера загруженного файла
+        $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $2;
+        ok( -s $file_path == $size, "Download was successful");
 
-        # путь к файлу описания
-        $desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . $t->app->{'settings'}->{'desc_extension'};
-        ok( -s $desc_path, "Description created");
+        # проверка содержимого файла описания
+        $desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $t->app->{'settings'}->{'desc_extension'};
+        $description = read_file( $desc_path );
+        $description = decode_json $description;
+        ok( 
+            $$description{'description'} eq $$data{'description'} &&
+            $$description{'mime'} eq $$result{'mime'} &&
+            $$description{'filename'} eq $1 &&
+            $$description{'extension'} eq $2 &&
+            $$description{'title'} eq 'all_right.svg' &&
+            $$description{'size'} == $size,
+            "Description is correct"
+        );
 
         # удаление загруженных файлов
         $cmd = `rm $file_path $desc_path`;
