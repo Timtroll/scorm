@@ -11,6 +11,7 @@ use Data::Dumper;
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
+
 my ( $t, $host, $picture_path, $data, $test_data, $result );
 $t = Test::Mojo->new('Freee');
 
@@ -33,10 +34,11 @@ $data = {
 $t->post_ok( $host.'/upload/' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
-    last;
+    done_testing();
+    exit;
 }
 $t->content_type_is('application/json;charset=UTF-8');
-diag "";
+diag "Start";
 
 $test_data = {
     # положительные тесты
