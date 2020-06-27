@@ -36,32 +36,48 @@ sub _insert_user {
             # };
 
             # делаем запись в EAV
-            $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
-            my $user = Freee::EAV->new( 'User',
-                {
-                    'publish' => \1,
-                    'parent' => 1, 
-                    'title' => $$data{'title'},
-                    'User' => {
-                        'surname'   => $$data{'surname'},
-                        'name'      => $$data{'name'},
-                        'patronymic'=> $$data{'patronymic'},
-                        'place'     => $$data{'place'},
-                        'country'   => $$data{'country'},
-                        'birthday'  => $$data{'birthday'}
-                    }
-                }
-            );
-            my $id = $user->id();
-warn '===========';
-warn $user->id();
+# 1            $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
+#             my $user = Freee::EAV->new( 'User',
+#                 {
+#                     'publish' => \1,
+#                     'parent' => 1, 
+#                     'title' => $$data{'title'},
+#                     'User' => {
+#                         'surname'   => $$data{'surname'},
+#                         'name'      => $$data{'name'},
+#                         'patronymic'=> $$data{'patronymic'},
+#                         'place'     => $$data{'place'},
+#                         'country'   => $$data{'country'},
+#                         'birthday'  => $$data{'birthday'}
+#                     }
+#                 }
+#             );
+#             my $id = $user->id();
+# warn '===========';
+my $id;
+
+my $usr = Freee::EAV->new( 'User', { id => 2 } );
+# взять веь объект
+my $xx = $usr->_getAll();
+warn Dumper $xx;
+# взять нужное поле
+my $yy = {
+    surname     => $usr->surname(),
+    name        => $usr->name(),
+    patronymic  => $usr->patronymic(),
+    place       => $usr->place(),
+    country     => $usr->country(),
+    birthday    => $usr->birthday()
+};
+warn Dumper $yy;
+# warn $user->id();
 # warn Dumper $user;
 
 ##### потом добавить заполнение поля flags ???????????????????????????????????????????????????????
             # запись данных в users
             my $sql = 'INSERT INTO "public"."users" ("email", "phone", "password", "eav_id", "timezone", "time_access", "time_update") VALUES (?, ?, ?, ?, ?, NOW(), NOW()) RETURNING "id"';
-warn $sql;
-warn Dumper $data;
+# warn $sql;
+# warn Dumper $data;
             $sth = $self->{'app'}->pg_dbh->prepare( $sql );
             $sth->bind_param( 1, $$data{'email'} );
             $sth->bind_param( 2, $$data{'phone'} );

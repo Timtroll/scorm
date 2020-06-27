@@ -70,6 +70,8 @@ warn Dumper $data;
 
     $t->post_ok( $host.'/user/add' => form => $data );
 # warn Dumper $t->status_is(200)->{tx}->{res};
+# warn join( "\n", keys %{$t});
+warn Dumper $t->{tx}->{res}->content->{asset}->{content};
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

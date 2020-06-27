@@ -109,14 +109,9 @@ sub _init {
         else {
             my $obj = $Class->new( { Type => $Type } );
             $obj->{_item} = $obj->_get( $id );
-# use DDP;            
-# p $obj->{_item};
-# warn $Self;
-# warn $Type;
             $Self->{Roots}->{ $Type } = $obj;
         }
     }
-# warn $Self->{Type};
 
     my $RootType;
     $RootType = ucfirst( $Self->{Type} ) if exists( $Self->{Type} );
@@ -152,7 +147,11 @@ sub _InitThisItem {
     }
     elsif ( exists( $$Params{parent} ) && exists( $$Params{Type} ) ) {
         $Self->{_item} = $Self->_create( $Params );
-        my $Type = '\''.$$Params{Type}.'\'';
+
+        # !!? 
+        # my $Type = '\''.$$Params{Type}.'\'';
+        my $Type = $$Params{Type};
+
         if ( exists( $Params->{data} ) && defined( $Params->{data} ) && ref( $Params->{data} ) && ref( $Params->{data} ) eq 'HASH' ) {
             $Self->_MultiStore( $Params->{data} );
         }
@@ -342,6 +341,7 @@ sub _create {
         'publish' => 'false',
         'type' => $Self->{dbh}->quote( $$Item{Type} )
     };
+
     $$data{publish}   = 'true' if exists( $$Item{publish} ) && $$Item{publish} && $$Item{publish} !~ /^(?:false|0)$/i;
     $$data{import_id} = $Self->{dbh}->quote( $$Item{import_id} ) if exists( $$Item{import_id} ) && defined( $$Item{import_id} );
     $$data{title}     = $Self->{dbh}->quote( $$Item{title} );
@@ -635,9 +635,11 @@ sub _list {
     #default - show only published items, if we want to look over all - should add ShowHidden => 1, if we want to look hidden only - should add ShowHiddenOnly
     if ( !scalar( grep { $_ eq 'ShowHidden' && defined( $Params->{$_} ) && $Params->{$_} } keys %$Params ) ) {
         $sql .= ' AND items.publish = true ';
-    } elsif ( exists( $Params->{ShowHiddenOnly} ) && $Params->{ShowHiddenOnly} ) {
+    }
+    elsif ( exists( $Params->{ShowHiddenOnly} ) && $Params->{ShowHiddenOnly} ) {
         $sql .= ' AND items.publish = false ';
-    };#else - ShowHidden exists and it's true - so we are not use "publish" filter.
+    }
+    #else - ShowHidden exists and it's true - so we are not use "publish" filter.
 
     $sql .= ' '.$Params->{GROUP_BY}.' ' if exists( $Params->{GROUP_BY} );
 
@@ -650,8 +652,8 @@ sub _list {
         if ( $Params->{Limit} !~ /^null$/i ) {
             $limit =  int( $Params->{Limit} ) if int( $Params->{Limit} || 0 );
             $sql .= ' LIMIT '.$limit;
-        };
-    };
+        }
+    }
 
     my $offset = 0;
     $offset = int( $Params->{Offset} ) if exists( $Params->{Offset} ) && int( $Params->{Offset} || 0 );

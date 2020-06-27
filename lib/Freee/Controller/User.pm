@@ -83,7 +83,7 @@ warn Dumper $list;
 }
 
 sub edit {
-    my ($self, );
+    my ($self);
     $self = shift;
 
     my ($user, $data, $param, $resp, $error, $main, $contacts, $groups, @mess);
@@ -195,7 +195,7 @@ sub add {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'id'} = $result if $result;
 
     $self->render( 'json' => $resp );
 }
