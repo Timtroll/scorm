@@ -186,6 +186,12 @@ sub add {
 
         unless ( @mess ) {
             # проверяем, - есть ли такой юзер в EAV и users
+            my $usr = Freee::EAV->new( 'User', { id => 2 } );
+            my $user = {
+                'email' => $$data{'email'},
+                'phone' => $$data{'phone'}
+            };
+            ( $result, $error ) = $self->model('User')->_check_user( $user );
 
             # добавляем юзера в EAV и users
             ( $result, $error ) = $self->model('User')->_insert_user( $data );

@@ -87,7 +87,6 @@ sub _init {
     my %Loaded;
 
     for my $Type ( keys %{ $Self->{Fields} } ) {
-        # warn $Type;
         my $T = ucfirst($Type);
         my $Class = $Base.'::'.$T;
         if ( !defined($Loaded{$Type}) ) {
@@ -205,10 +204,9 @@ sub _getAll {
         $sth->execute();
         my $rows = $sth->fetchall_arrayref({});
         $sth->finish();
-
         for my $r ( @$rows ) {
             my $alias = $Self->{FieldsById}->{ $$r{field_id} };
-            $Self->{_item}->{ $alias } = $r->{data};
+            $Self->{_item}->{ $alias->{alias} } = $r->{data};
         };
     };
 
