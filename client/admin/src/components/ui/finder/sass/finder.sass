@@ -1,0 +1,43 @@
+@import "../../../../assets/sass/uikit/variables"
+@import "../../../../assets/sass/mixins"
+
+.pos-finder
+  height: 100%
+  min-width: 100%
+  position: relative
+  overflow-y: hidden
+  overflow-x: auto
+  display: grid
+
+.pos-finder-column
+  box-sizing: border-box
+  background-color: $global-muted-background
+  border-right: 1px solid $global-border
+  display: flex
+  flex-direction: column
+  min-width: 320px
+  max-width: 400px
+  height: 100%
+  overflow: hidden
+
+.pos-finder-column-header
+  box-sizing: content-box
+  overflow: hidden
+  height: $global-control-height + 1
+  line-height: $global-control-height + 1
+  flex: none
+  border-bottom: 1px solid $global-border
+
+.pos-finder-column-header-search
+  position: relative
+
+.pos-finder-column-header-label
+  font-weight: bold
+  & > *
+    padding: 0 $global-small-margin
+
+.pos-finder-column-body
+  flex: 1
+  min-height: 10px
+  overflow-x: hidden
+  overflow-y: auto

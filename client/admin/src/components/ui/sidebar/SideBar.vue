@@ -20,6 +20,7 @@
                        :title="item.meta.breadcrumb">
             <img :uk-img="'data-src:' + item.meta.icon"
                  uk-svg
+                 :alt="''"
                  width="24"
                  height="24">
           </router-link>

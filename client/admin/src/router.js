@@ -53,13 +53,13 @@ const router = new Router({
         {
           path:          '/courses',
           name:          'Courses',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/courses'),
           showInSideBar: true,
           meta:          {
             root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_courses.svg',
-            breadcrumb:   'Курсы'
+            breadcrumb:   'Настройки курсов'
           }
         },
         {

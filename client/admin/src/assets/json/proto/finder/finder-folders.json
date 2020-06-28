@@ -1,0 +1,21 @@
+[
+  {
+    "title":  "label",
+    "add":    1,
+    "edit":   1,
+    "remove": 1,
+    "list":   [
+      {
+        "id":          1,
+        "label":       "label 1",
+        "description": "description",
+        "folder":      1
+      }, {
+        "id":          2,
+        "label":       "label 2",
+        "description": "description",
+        "folder":      1
+      }
+    ]
+  }
+]
