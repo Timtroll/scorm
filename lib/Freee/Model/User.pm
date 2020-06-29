@@ -75,6 +75,10 @@ sub _check_user {
     my ( $sth, $result, $mess, @mess );
 
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        my $usr = Freee::EAV->new( 'User' );
+        $list = $usr->_list( $dbh, { Filter => { 'user.surname' => $value } } );
+
+
         # взять нужное поле
         my $yy = {
             surname     => $usr->surname(),
@@ -87,7 +91,6 @@ sub _check_user {
         warn Dumper $yy;
 # warn $user->id();
 # warn Dumper $user;
-
     }
     else {
         return;
