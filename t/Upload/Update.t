@@ -106,7 +106,7 @@ $test_data = {
             'description' => 'description'
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data",
+            'message'   => "_check_fields: don't have required data in -id-",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 

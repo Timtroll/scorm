@@ -133,7 +133,7 @@ $test_data = {
         'data' => {
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data",
+            'message'   => "_check_fields: don't have required data in -search-",
             'status'    => 'warn'
         },
         'comment' => 'No search:' 

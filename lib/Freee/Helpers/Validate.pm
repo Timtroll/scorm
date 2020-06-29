@@ -55,12 +55,28 @@ sub register {
         my %data = ();
 
         foreach ( keys %{$$vfields{$self->url_for}} ) {
-            my $required = $$vfields{ $self->url_for }{$_}[0];
-            my $regexp = $$vfields{ $self->url_for }{$_}[1];
-            my $max_size = $$vfields{ $self->url_for }{$_}[2];
+            my ( $required, $regexp, $max_size ) = @{ $$vfields{ $self->url_for }{$_} };
 
             # проверка статуса
-            if ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( ( $required eq 'required' ) || ( $required eq '' ) ) ) {
+            if ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( $required eq 'required' ) ) {
+            # if ( ( $self->param($_) || ( $self->param($_) =~ /^0$/ ) ) && ( $required eq 'required' ) ) {
+                # проверка длины
+                unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
+                    push @error, "_check_fields: wrong size of '$_'";
+                    last;
+                }
+
+                # проверка соответствия рег выражению
+                unless ( $regexp && ( $self->param( $_ ) =~ /$regexp/ ) ) {
+                    push @error, "_check_fields: '$_' don't match regular expression";
+                    last;
+                }
+
+                # ввод данных в хэш
+                $data{$_} = $self->param($_) // '';
+            }
+            elsif ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( $required eq '' ) ) {
+            # elsif ( ( $self->param($_) || ( $self->param($_) =~ /^0$/ ) ) && ( $required eq '' ) ) {
                 # проверка длины
                 unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
                     push @error, "_check_fields: wrong size of '$_'";
@@ -111,8 +127,7 @@ sub register {
                 }
             }
             else {
-# ??????????????/
-                unless ( ( $required eq '' ) || ( $required eq 'filename' ) ) {
+                if ( ( $required eq 'required' ) || ( $required eq 'file_required' ) ) {
                     push @error, "_check_fields: don't have required data in -$_-";
                     last;
                 }
@@ -256,7 +271,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -281,7 +296,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
@@ -295,7 +310,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

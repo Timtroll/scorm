@@ -295,15 +295,16 @@ sub add {
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
             unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
             unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-            unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
+            unless ( defined $$data{'status'} )      { $$data{'status'}      = 1 };
 
             # проверяем поле name на дубликат
-            if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
+            if ( $self->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
                 push @mess, "Setting named '$$data{'name'}' is exists";
             }
-            # elsif ( ) {
-            #     push @mess, "setting can't have parent $$data{'parent'}' doesn't exist";
-            # }
+            elsif ( $self->_exists_in_table('settings', 'folder', $$data{'parent'} ) != 1 ) {
+warn Dumper( $self->_exists_in_table('settings', 'folder', $$data{'parent'} ) );
+                push @mess, "setting have wrong parent $$data{'parent'}";
+            }
             # elsif ( ) {
             #     push @mess, "'$$data{'parent'}' doesn't exist";
             # }
