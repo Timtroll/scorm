@@ -1,6 +1,7 @@
 <template>
   <!--CELL-->
   <div class="pos-finder-column">
+
     <!--CELL HEADER-->
     <div class="pos-finder-column-header uk-grid-collapse"
          uk-grid>
