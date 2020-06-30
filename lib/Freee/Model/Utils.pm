@@ -22,7 +22,7 @@ sub _exists_in_table {
     # Проверяем наличие таблицы в базе данных
     my $sql = "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname != 'information_schema' and schemaname != 'pg_catalog' and tablename = '".$table."'";
 
-    my $sth = $self->pg_dbh->prepare( $sql );
+    my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     my $row = $sth->fetchrow_hashref();
     return unless $row->{'count'};
@@ -32,7 +32,7 @@ sub _exists_in_table {
     # исключаем из поиска id
     $sql .='AND "id"<>'.$excude_id if $excude_id;
 
-    $sth = $self->pg_dbh->prepare( $sql );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     $row = $sth->fetchrow_hashref();
 
@@ -49,11 +49,15 @@ sub _toggle {
     my ($self, $data) = @_;
 
     return unless $data;
-    return unless ( $$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'} );
+    return unless ( $$data{'table'} );
+    return unless ( $$data{'id'} );
+    return unless ( $$data{'fieldname'} );
 
     my $result;
     my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
-    $result = $self->pg_dbh->do($sql) + 0;
+
+    $result = $self->{app}->pg_dbh->do($sql);
+    $result = $result ? $result : 0;
 
     return $result;
 }
@@ -68,7 +72,7 @@ sub _folder_check {
 
     my $sql = 'SELECT "public"."folder" FROM "public"."settings" WHERE "id"='.$id;
 
-    my $sth = $self->pg_dbh->prepare( $sql );
+    my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     my $result = $sth->fetchrow_hashref();
 

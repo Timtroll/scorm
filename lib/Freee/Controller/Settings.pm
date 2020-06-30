@@ -47,7 +47,7 @@ sub get_tree {
 
     # передаем 1, чтобы получить дерево без листьев
     my $list = $self->model('Settings')->_get_tree(1);
-
+warn Dumper $list;
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;
     $resp->{'status'} = $list ? 'ok' : 'fail';

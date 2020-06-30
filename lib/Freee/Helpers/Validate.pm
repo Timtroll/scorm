@@ -52,55 +52,33 @@ sub register {
 
         return 0, '_check_fields: No route' unless $self->url_for;
 
+        my $url_for = $self->url_for;
         my @error;
         my %data = ();
 
-        foreach ( keys %{$$vfields{$self->url_for}} ) {
-            my ( $required, $regexp, $max_size ) = @{ $$vfields{ $self->url_for }{$_} };
+        foreach my $field ( keys %{$$vfields{$url_for}} ) {
+            my $param = $self->param($field) // 0;
+            my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
-            # проверка статуса
-#????????????????????????????????????????????????????????????????????
-            if ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( $required eq 'required' ) ) {
-            # if ( ( $self->param($_) || ( $self->param($_) =~ /^0$/ ) ) && ( $required eq 'required' ) ) {
-                # проверка длины
-                unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
-                    push @error, "_check_fields: wrong size of '$_'";
-                    last;
-                }
-
-                # проверка соответствия рег выражению
-                unless ( $regexp && ( $self->param( $_ ) =~ /$regexp/ ) ) {
-                    push @error, "_check_fields: '$_' don't match regular expression";
-                    last;
-                }
-
-                # ввод данных в хэш
-                $data{$_} = $self->param($_) // '';
+            # проверка длины
+            unless ( $max_size && length( $param ) <= $max_size ) {
+                push @error, "_check_fields: '$field' has wrong size";
+                last;
             }
-            elsif ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( $required eq '' ) ) {
-            # elsif ( ( $self->param($_) || ( $self->param($_) =~ /^0$/ ) ) && ( $required eq '' ) ) {
-                # проверка длины
-                unless ( $max_size && length( $self->param($_) ) <= $max_size ) {
-                    push @error, "_check_fields: wrong size of '$_'";
-                    last;
-                }
 
-                # проверка соответствия рег выражению
-                unless ( $regexp && ( $self->param( $_ ) =~ /$regexp/ ) ) {
-                    push @error, "_check_fields: '$_' don't match regular expression";
-                    last;
-                }
-
-                # ввод данных в хэш
-                $data{$_} = $self->param($_) // '';
+            # проверка обязательности заполнения (исключение - 0 для toggle)
+            if ( ( $required eq 'required' ) && $url_for !~ /toggle/ && !$param) {
+                push @error, "_check_fields: didn't has required data in '$field'";
+                last;
             }
-            elsif ( $self->param($_) && ( $required eq 'file_required' ) ) {
+            # отдельная проверка для загружаемых файлов
+            elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
-                unless ( $self->param( $_ )->{'asset'}->{'content'} ) {
+                unless ( $param->{'asset'}->{'content'} ) {
                     push @error, "_check_fields: no file's content";
                     last;
                 }
-                $data{'content'} = $self->param( $_ )->{'asset'}->{'content'};
+                $data{'content'} = $param->{'asset'}->{'content'};
 
                 # проверка размера файла
                 $data{'size'} = length( $data{'content'} );
@@ -111,7 +89,7 @@ sub register {
                 }
 
                 # получение имени файла
-                $data{'filename'} = $self->param( $_ )->{'filename'};
+                $data{'filename'} = $param->{'filename'};
 
                 # получения расширения файла в нижнем регистре
                 $data{'extension'} = '';
@@ -127,43 +105,33 @@ sub register {
                     push @error, "_check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
+                next;
+            }
+
+            # проверка на toggle
+            if ( $url_for =~ /toggle/ ) {
+                if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
+                    unless ( grep( /^$param$/, @{$regexp} ) ) {
+                        push @error, "_check_fields: '$field' didn't match required in check array";
+                        last;
+                    }
+                }
+                else {
+                    unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                        push @error, "_check_fields: '$field' didn't match regular expression";
+                        last;
+                    }
+                    }
             }
             else {
-                if ( ( $required eq 'required' ) || ( $required eq 'file_required' ) ) {
-                    push @error, "_check_fields: don't have required data in -$_-";
+                unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                    push @error, "_check_fields: '$field' didn't match regular expression";
                     last;
                 }
             }
 
-        }
-
-        my $route = $self->url_for;
-        # проверка, указанынй id это фолдер или нет (для роутов с'settings'и 'folder' в названии)
-        if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
-            if ( $route =~ /folder$/ ) {
-                unless ( $self->model('Utils')->_folder_check( $data{'id'} ) ) {
-                    return 0, "_check_fields: Action for '$data{'id'}' is not allowed for '$route'";
-                }
-            }
-            else {
-                # 'toggle' работает для фолдеров и записей
-                if ( $route =~ /toggle$/ ) {
-                    if ( defined $$vfields{$self->url_for}{'fieldname'} ) {
-                        my $value = $data{'fieldname'};
-                        unless ( grep( /^$value$/, @{$$vfields{$self->url_for}{'fieldname'}[1]} ) ) {
-                            return 0, "_check_fields: Action is not allowed to '$route', wrong field '$data{'fieldname'}'";
-                        }
-                    }
-                }
-                elsif ( $route =~ /(add|edit|save)$/ ) {
-                    if ( $self->model('Utils')->_folder_check( $data{'id'} ) ) {
-                        return 0, "_check_fields: Action is not allowed for '$route'";
-                    }
-                }
-                # ???????????????????????????????????????????????????????????????????????????
-                elsif ( ( ( $route =~ /^\/upload/ ) ) && ( $data{'id'} ) ) {
-                }
-            }
+            # cохраняем переданные данные
+            $data{$field} = $param;
         }
 
         my $error;
@@ -322,7 +290,6 @@ sub register {
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
-                # "fieldname"     => [ 'required', '(required|readonly|status)', 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
@@ -346,7 +313,7 @@ sub register {
             },
             '/groups/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['status'] ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
@@ -367,7 +334,7 @@ sub register {
             },
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'] ],
+                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'], 6],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
@@ -453,7 +420,7 @@ sub register {
             },
             '/forum/toggle'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
-                "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'] ],
+                "table"         => [ '', ['forum_messages', 'forum_themes', 'forum_groups'], 14 ],
                 "value"         => [ '', qr/^[01]$/os, 1 ]
             }
         };
