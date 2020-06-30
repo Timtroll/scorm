@@ -210,38 +210,26 @@ sub startup {
     $auth->post('/routes/')             ->to('routes#index');       # список роутов конкретной группы
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
-    $auth->post('/routes/toggle')       ->to('routes#toggle');      # смена значения поля роута
+    $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
+
+    # управление предметами
+    $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
+    $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
+    $auth->post('/discipline/get')      ->to('discipline#get');     # Получить данные для редактирования предмета
+    $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
+    $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
+    $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
 
     # управление темами
-    $auth->post('/subject/')            ->to('subject#index');
-    $auth->post('/subject/list')        ->to('subject#list');
-    $auth->post('/subject/add')         ->to('subject#add');
-    $auth->post('/subject/edit')        ->to('subject#edit');
-    $auth->post('/subject/save')        ->to('subject#save');
-    $auth->post('/subject/toggle')      ->to('subject#toggle');
-    $auth->post('/subject/delete')      ->to('subject#delete');
-
-    # управление темами
-    $auth->post('/themes/')             ->to('themes#index');
-    $auth->post('/themes/list')         ->to('themes#list');
-    $auth->post('/themes/add')          ->to('themes#add');
-    $auth->post('/themes/edit')         ->to('themes#edit');
-    $auth->post('/themes/save')         ->to('themes#save');
-    $auth->post('/themes/toggle')       ->to('themes#toggle');
-    $auth->post('/themes/delete')       ->to('themes#delete');
-
-    # управление лекциями
-    $auth->post('/lections/')           ->to('lections#index');
-    $auth->post('/lections/list')       ->to('lections#list');
-    $auth->post('/lections/add')        ->to('lections#add');
-    $auth->post('/lections/edit')       ->to('lections#edit');
-    $auth->post('/lections/save')       ->to('lections#save');
-    $auth->post('/lections/toggle')     ->to('lections#toggle');
-    $auth->post('/lections/delete')     ->to('lections#delete');
+    $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета
+    $auth->post('/themes/add')          ->to('themes#add');         # Добавить тему предмета
+    $auth->post('/themes/get')          ->to('themes#get');         # Получить данные для редактирования темы предмета
+    $auth->post('/themes/save')         ->to('themes#save');        # Сохранить тему предмета
+    $auth->post('/themes/toggle')       ->to('themes#toggle');      # Изменить статус темы предмета (вкл/выкл)
+    $auth->post('/themes/delete')       ->to('themes#delete');      # Удалить тему предмета
 
     # управление заданиями
     $auth->post('/tasks/')              ->to('tasks#index');
-    $auth->post('/tasks/list')          ->to('tasks#list');
     $auth->post('/tasks/add')           ->to('tasks#add');
     $auth->post('/tasks/edit')          ->to('tasks#edit');
     $auth->post('/tasks/save')          ->to('tasks#save');

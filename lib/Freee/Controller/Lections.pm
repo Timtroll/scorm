@@ -1,4 +1,4 @@
-package Freee::Controller::Lections;
+package Freee::Controller::Discipline;
 
 use utf8;
 
@@ -12,7 +12,7 @@ sub index {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'index',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -26,7 +26,7 @@ sub add {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'add',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -40,7 +40,7 @@ sub edit {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'edit',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -54,7 +54,7 @@ sub save {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'save',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -68,7 +68,7 @@ sub move {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'move',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -82,7 +82,7 @@ sub activate {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'activate',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -96,7 +96,7 @@ sub hide {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'hide',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
@@ -110,7 +110,7 @@ sub delete {
 
     $self->render(
         'json'    => {
-            'controller'    => 'Lections',
+            'controller'    => 'Discipline',
             'route'         => 'delete',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash
