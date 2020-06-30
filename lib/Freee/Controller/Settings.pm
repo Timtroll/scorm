@@ -9,6 +9,7 @@ use Encode;
 
 use Freee::Mock::Settings;
 use Freee::Model::Settings;
+use Freee::Model::Utils;
 use Data::Dumper;
 use common;
 
@@ -112,7 +113,7 @@ sub add_folder {
 
         unless ( @mess ) {
             # проверяем поле name на дубликат
-            if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
+            if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'})) {
                 push @mess, "Folder item named '$$data{'name'}' is exists";
             }
             else {
@@ -164,7 +165,7 @@ sub get_leafs {
         push @mess, $error if $error;
 
         unless ( @mess ) {
-            if ( ( $$data{'id'} == 0 ) || ( $self->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
+            if ( ( $$data{'id'} == 0 ) || ( $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
                 $list = $self->model('Settings')->_get_leafs( $$data{'id'} );
                 push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
 
@@ -299,11 +300,11 @@ sub add {
             unless ( defined $$data{'status'} )      { $$data{'status'}      = 1 };
 
             # проверяем поле name на дубликат
-            if ( $self->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
+            if ( $self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
                 push @mess, "Setting named '$$data{'name'}' is exists";
             }
             # проверяем то, что родитель существует и является фолдером
-            elsif ( !$self->_folder_check( $$data{'parent'} ) ) {
+            elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
                 push @mess, "setting have wrong parent $$data{'parent'}";
             }
             # запись настройки в бд
@@ -389,11 +390,11 @@ sub save {
             
             unless (@mess) {
                 # проверяем поле name на дубликат
-                if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
+                if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
                     push @mess, "Setting named '$$data{'name'}' is exists";
                 }
                 # проверяем то, что родитель существует и является фолдером
-                elsif ( !$self->_folder_check( $$data{'parent'} ) ) {
+                elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
                     push @mess, "setting have wrong parent $$data{'parent'}";
                 }
                 # сохранение настройки
@@ -459,7 +460,7 @@ sub toggle {
 
         unless ( @mess ) {
             $$data{'table'} = 'settings';
-            $toggle = $self->_toggle( $data ) unless @mess;
+            $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
             push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
         }
     }

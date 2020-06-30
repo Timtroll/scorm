@@ -316,7 +316,7 @@ sub toggle {
 
         unless (@mess) {
             $$data{'table'} = 'settings';
-            $toggle = $self->_toggle( $data ) unless @mess;
+            $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
             push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
         }
     }

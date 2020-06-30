@@ -4,6 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Freee::Model::Utils;
 use Encode;
 
 use common;
@@ -129,7 +130,7 @@ sub save {
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('groups', 'id', $$data{'id'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('groups', 'id', $$data{'id'}) ) {
                 # обновление данных группы
                 $id = $self->_update_group( $data );
                 push @mess, "Could not update Group named '$$data{'name'}'" unless $id;
@@ -188,7 +189,7 @@ sub toggle {
         push @mess, $error unless $data;
 
         $$data{'table'} = 'groups';
-        $toggle = $self->_toggle( $data ) unless @mess;
+        $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
     }
 

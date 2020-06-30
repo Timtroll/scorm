@@ -12,6 +12,7 @@ use DBI;
 use HTML::Strip;
 
 use Data::Dumper;
+use Freee::Model::Utils;
 use common;
 
 sub register {
@@ -140,7 +141,7 @@ sub register {
         # проверка, указанынй id это фолдер или нет (для роутов с'settings'и 'folder' в названии)
         if ( ( ( $route =~ /^\/settings/ ) ) && ( $data{'id'} ) ) {
             if ( $route =~ /folder$/ ) {
-                unless ( $self->_folder_check( $data{'id'} ) ) {
+                unless ( $self->model('Utils')->_folder_check( $data{'id'} ) ) {
                     return 0, "_check_fields: Action for '$data{'id'}' is not allowed for '$route'";
                 }
             }
@@ -155,7 +156,7 @@ sub register {
                     }
                 }
                 elsif ( $route =~ /(add|edit|save)$/ ) {
-                    if ( $self->_folder_check( $data{'id'} ) ) {
+                    if ( $self->model('Utils')->_folder_check( $data{'id'} ) ) {
                         return 0, "_check_fields: Action is not allowed for '$route'";
                     }
                 }

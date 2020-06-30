@@ -4,6 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Freee::Model::Utils;
 use Encode;
 
 use common;
@@ -32,7 +33,7 @@ sub index {
 
         # проверка существования роута указанной группы
         unless (@mess) {
-            if ( $self->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
                 # список роутов указанной группы
                 $list = $self->_routes_list( $$data{'parent'} );
                 push @mess, "Could not get list Routes for group '$$data{'parent'}'" unless $list;
@@ -119,7 +120,7 @@ sub save {
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('routes', 'id', $$data{'id'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'}) ) {
                 # обновление данных группы
                 $id = $self->_update_route( $data );
                 push @mess, "Could not update Route named '$$data{'name'}'" unless $id;
@@ -154,7 +155,7 @@ sub toggle {
         push @mess, $error unless $data;
 
         $$data{'table'} = 'routes';
-        $toggle = $self->_toggle( $data ) unless @mess;
+        $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
     }
 

@@ -207,8 +207,8 @@ sub _getAll {
         for my $r ( @$rows ) {
             my $alias = $Self->{FieldsById}->{ $$r{field_id} };
             $Self->{_item}->{ $alias->{alias} } = $r->{data};
-        };
-    };
+        }
+    }
 
     return $Self->{_item};
 }
@@ -309,7 +309,7 @@ sub _store {
             $Self->{_item}->{ $FieldName } = $origin_data;
             if ( $FieldName eq 'publish' ) {
                 $Self->{_item}->{publish} = $data eq 'true' ? 1 : 0;
-            };
+            }
         }
         else {
             $Self->{_item}->{ $Self->{Type} }->{ $FieldName } = $origin_data;
@@ -478,9 +478,11 @@ sub _MakeFilterStatement {
     elsif ( ref( $v ) eq 'ARRAY' && scalar( @$v ) ) {
         if ( scalar( @$v ) <= 10 ) {
             $res .= '( '.join( ' OR ', map { $prefix.' = '.$Self->{dbh}->quote( $_ ) } @$v ).' )';
-        } elsif ( scalar( @$v ) <= 1000 ) {
+        }
+        elsif ( scalar( @$v ) <= 1000 ) {
             $res .= $prefix.' IN ( '.join( ', ', map { $Self->{dbh}->quote( $_ ) } @$v ).' )';
-        } else {
+        }
+        else {
             $res .= $prefix.' = ANY ( VALUES( '.join( ', ', map { $Self->{dbh}->quote( $_ ) } @$v ).' )';
         }
     }
@@ -489,7 +491,7 @@ sub _MakeFilterStatement {
         my $v_keys = { map { ( $_, lc( $_ ) ) } keys %$v };
         for my $k ( grep { exists( $simple_keys->{ $v_keys->{ $_ } } ) } keys %$v_keys ) {
             $res .= $prefix.' '.$simple_keys->{ $v_keys->{$k} }.' '.$Self->{dbh}->quote( $v->{ $k } )
-        };
+        }
 
         #ILIKE не использует left-handed индекс
         #поэтому lower(field) like 'some%'
@@ -524,7 +526,7 @@ sub _list {
     if ( exists( $Params->{FIELDS} ) && defined( $Params->{FIELDS} ) ) {
         $sql = ( $Params->{FIELDS} =~ /^\,/ ? $sql.$Params->{FIELDS} : 'SELECT '.$Params->{FIELDS} );
         $select_fields = $Params->{FIELDS};
-    };
+    }
     my $data_sql = '';
     #joined ext fields
     #push order fields into $Params->{Fields}
@@ -556,7 +558,7 @@ sub _list {
             $nulls_v = 'LAST' if !defined( $nulls_v ) || $nulls_v !~ /^(?:first|last)$/i;
             $nulls_v = uc( $nulls_v );
             $sql = ' NULLS '.$nulls_v;
-        };
+        }
 
         $order_sql .= ( defined( $order_sql ) && length( $order_sql ) ? ', ' : '' ). $sql;
 
@@ -578,7 +580,7 @@ sub _list {
             $data_sql .= ' INNER JOIN '.$tbl.' AS OutData'.$i.' ON items."id" = OutData'.$i.'."id" AND OutData'.$i.'."field_id" = '.$Field->{id};
             if ( exists( $Params->{Filter}->{$f} ) ) {
                 $data_sql .= ' AND '.$Self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'OutData'.$i.'."data"' } );
-            };
+            }
             $i++;
         }
     }
@@ -590,19 +592,21 @@ sub _list {
                 if ( !ref( $Params->{Parents}->{ $p } ) ) {
                     $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
                     $sql .= ' AND links'.$i.'."distance" = '.int( $Params->{Parents}->{ $p } || 0 )
-                } elsif ( ref( $p ) eq 'HASH' ) {
+                }
+                elsif ( ref( $p ) eq 'HASH' ) {
                     $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
                     $sql .= ' AND links'.$i.'."distance" = '.int( $Params->{Parents}->{ $p }->{distance} );
 #                    if ( exists( $Params->{Parents}->{ $p }->{SelfType} ) && $Params->{Parents}->{ $p }->{SelfType} ) {
 #                        $sql .= ' INNER JOIN '
-#                    };
-                };
-            };
-        } elsif ( ref( $Params->{Parents} ) eq 'ARRAY' ) {
+#                    }
+                }
+            }
+        }
+        elsif ( ref( $Params->{Parents} ) eq 'ARRAY' ) {
             for my $p ( @{ $Params->{Parents} } ) {
                 $sql .= ' INNER JOIN "public"."EAV_links" AS links'.$i.' ON links'.$i.'."id" = items."id" AND links'.$i.'."parent" = '.int( $p );
-            };
-        };
+            }
+        }
         $i++;
     }
 
@@ -615,7 +619,7 @@ sub _list {
             if ( exists( $Self->{ItemFields}->{ $f } ) ) {
                 $items_filter_sql .= ' AND '.$Self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'items."'.$f.'"' } );
                 next;
-            };
+            }
 
             my ( $set, $field ) = ( split /\./, $f );
             next if !defined( $set ) || !defined( $field ) || !exists( $Self->{Fields}->{ $set }->{ $field } );
@@ -624,8 +628,8 @@ sub _list {
             my $tbl = $Self->{DataTables}->{ $Field->{type} }->[0];
             $filter_sql .= ' INNER JOIN '.$tbl.' AS FilterData'.$i.' ON items."id" = FilterData'.$i.'."id" AND FilterData'.$i.'."field_id" = '.$Field->{id};
             $filter_sql .= ' AND '.$Self->_MakeFilterStatement( { value => $Params->{Filter}->{$f}, prefix => 'FilterData'.$i.'."data"' } );
-        };
-    };
+        }
+    }
     $sql .= $filter_sql;
     $sql .= $Params->{JOIN} if exists( $Params->{JOIN} ) && defined( $Params->{JOIN} );
     $items_filter_sql .= ' AND has_childs = 0 ' if scalar( grep { $_ =~ /leaves/i } keys %$Params );
@@ -708,7 +712,7 @@ sub Search {
             return undef() if defined( $lt ) && $lt ne $f->{type};
             $lt = $f->{type};
             push @$fields_sql, $f->{id};
-        };
+        }
         $ItemsSubQuery .= $Self->{DataTables}->{ $lt }->[0].' AS d WHERE ';
         $ItemsSubQuery .= '( '.join( ' OR ', map { 'd."field_id" = '.$_ } @$fields_sql ).' ) AND ';
     }
@@ -737,7 +741,7 @@ sub Search {
             push @$Result, { id => $$r{id} };
             $lid = $$r{id};
             $i++;
-        };
+        }
         $Result->[ $i ]->{ $Self->{FieldsById}->{ $$r{field_id} }->{alias} } = $$r{data};
     }
 

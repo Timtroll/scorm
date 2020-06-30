@@ -4,6 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Freee::Model::Utils;
 
 use Data::Dumper;
 use common;
@@ -93,7 +94,7 @@ sub save_edit_theme {
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('forum_themes', 'id', $$data{'id'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('forum_themes', 'id', $$data{'id'}) ) {
 
                 $$data{'user_id'}      = 1;
                 $$data{'date_edited'}  = time();
@@ -225,7 +226,7 @@ sub save_edit_group {
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('forum_groups', 'id', $$data{'id'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('forum_groups', 'id', $$data{'id'}) ) {
 
                 $$data{'date_edited'}  = time();
 
@@ -359,7 +360,7 @@ sub save_edit {
 
         # проверка существования обновляемой строки
         unless (@mess) {
-            if ( $self->_exists_in_table('forum_messages', 'id', $$data{'id'}) ) {
+            if ( $self->model('Utils')->_exists_in_table('forum_messages', 'id', $$data{'id'}) ) {
 
                 $$data{'user_id'}      = 1;
                 $$data{'anounce'}      = substr( $$data{'msg'}, 0, 64);
@@ -466,7 +467,7 @@ sub toggle {
         $$data{'table'} = 'forum_messages';
         $$data{'fieldname'} = 'status';
 
-        $toggle = $self->_toggle( $data ) unless @mess;
+        $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;
 
         $$data_time{'id'}           = $$data{'id'};

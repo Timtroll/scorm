@@ -14,61 +14,6 @@ use constant DEBUGGING => 0;
 sub register {
     my ($self, $app) = @_;
 
-    # проверяем наличие таблицы и указанное поле на дубликат
-    # my $row = $self->_exists_in_table(<table>, '<id>', <value>, <excude_id>);
-    #  <table>       - имя таблицы, где будем искать
-    #  <id>         - название поле, которое будем искать
-    #  <value>      - значение поля, которое будем искать
-    #  <excude_id>  - исключаем указанный id
-    # возвращается 1/undef
-    $app->helper( '_exists_in_table' => sub {
-        my ($self, $table,  $name, $val, $excude_id) = @_;
-
-        return unless $name;
-
-        # Проверяем наличие таблицы в базе данных
-        my $sql = "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname != 'information_schema' and schemaname != 'pg_catalog' and tablename = '".$table."'";
-
-        my $sth = $self->pg_dbh->prepare( $sql );
-        $sth->execute();
-        my $row = $sth->fetchrow_hashref();
-        return unless $row->{'count'};
-
-        # проверяем поле name на дубликат
-        $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
-        # исключаем из поиска id
-        $sql .='AND "id"<>'.$excude_id if $excude_id;
-
-        $sth = $self->pg_dbh->prepare( $sql );
-        $sth->execute();
-        $row = $sth->fetchrow_hashref();
-
-        return $row->{'id'} ? 1 : 0;
-    });
-
-    # включение/отключение (1/0) определенного поля в указанной таблице по id
-    # my $true = $self->_toggle_route( <table>, <id>, <field>, <val> );
-    # <id>    - id записи 
-    # <field> - имя поля в таблице
-    # <val>   - 1/0
-    # возвращается true/false
-    $app->helper( '_toggle' => sub {
-        my ($self, $data) = @_;
-
-        return unless $data;
-        return unless ( $$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'} );
-
-        my $result;
-        my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
-        eval {
-            $result = $self->pg_dbh->do($sql) + 0;
-        };
-        warn $@ if $@;
-        return if $@;
-
-        return $result;
-    });
-
     # построение дерева по плоской таблице с парентами
     # $self->_list_to_tree(<list>, <id_field>, <parent>, <start_id>, <children_key>);
     # <list>        - ссылка на массив, из которого строим дерево
@@ -147,23 +92,6 @@ sub register {
         warn "Tree: @tree (", $#tree + 1, " items)\n" if DEBUGGING;
 
         return \@tree;
-    });
-
-    # получение значения поля folder по id
-    # my $true = folder_check( <id> );
-    # возвращается 1/0
-    $app->helper('_folder_check' => sub {
-        my ( $self, $id ) = @_;
-
-        return unless $id;
-
-        my $sql = 'SELECT folder FROM "public"."settings" WHERE "id"='.$id;
-
-        my $sth = $self->pg_dbh->prepare( $sql );
-        $sth->execute();
-        my $result = $sth->fetchrow_hashref();
-
-        return $result->{'folder'} ? 1 : 0;
     });
 
     # генерация строки из случайных букв и цифр
