@@ -15,7 +15,7 @@ my %eav_fields = (
     'place'       => 1,
     'country'     => 1,
     'birthday'    => 1
-};
+);
 
 # поля которые лежат в таблице users
 my %users_fields = (
@@ -44,7 +44,7 @@ my %masks_fields = (
     'user_id' => 1,
     'key'     => 1,
     'mask'    => 1
-};
+);
 
 
 ###################################################################
@@ -76,8 +76,7 @@ sub _check_user {
 
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         my $usr = Freee::EAV->new( 'User' );
-        $list = $usr->_list( $dbh, { Filter => { 'user.surname' => $value } } );
-
+        $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
 
         # взять нужное поле
         my $yy = {
