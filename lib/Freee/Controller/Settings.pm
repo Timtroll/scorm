@@ -79,8 +79,8 @@ sub save_folder {
             $$data{'folder'} = $self->param('folder') // 1;
             $$data{'status'} = $self->param('status') // 0;
 
-            $id = $self->model('Settings')->_save_folder( $data ) unless @mess;
-            push @mess, "Could not save folder item '$$data{'id'}'" unless ( $id || @mess );
+            $id = $self->model('Settings')->_save_folder( $data );
+            push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
         }
     }
 
