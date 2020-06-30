@@ -44,13 +44,13 @@ my $test_data = {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'parent'    => 0
         },
         'result' => {
             'id'        => '2',
             'status'    => 'ok'
         },
-        'comment' => 'Default parent:' 
+        'comment' => 'Default status:' 
     },
 
     # отрицательные тесты
@@ -65,7 +65,7 @@ my $test_data = {
             'message'   => "Parent '1' is wrong",
             'status'    => 'fail'
         },
-        'comment' => 'Folder parent:' 
+        'comment' => 'Wrong parent:' 
     },
     4 => {
         'data' => {
@@ -74,7 +74,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data in -label-",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
@@ -86,7 +86,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data in -name-",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
@@ -99,7 +99,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field has wrong type",
+            'message'   => "_check_fields: 'name' don't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong input format:' 

@@ -58,6 +58,7 @@ sub register {
             my ( $required, $regexp, $max_size ) = @{ $$vfields{ $self->url_for }{$_} };
 
             # проверка статуса
+#????????????????????????????????????????????????????????????????????
             if ( ( $self->param($_) || ( $self->param($_) eq 0 ) ) && ( $required eq 'required' ) ) {
             # if ( ( $self->param($_) || ( $self->param($_) =~ /^0$/ ) ) && ( $required eq 'required' ) ) {
                 # проверка длины
@@ -170,7 +171,6 @@ sub register {
         }
 
         return \%data, $error;
-
     });
 
     # загрузка правил валидации html полоей, например:
@@ -320,7 +320,8 @@ sub register {
             },
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'] ],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
+                # "fieldname"     => [ 'required', '(required|readonly|status)', 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################

@@ -68,9 +68,22 @@ my $test_data = {
         },
         'comment' => 'Status 1:' 
     },
+    3 => {
+        'data' => {
+            'id'          => 1,
+            'name'        => 'name3',
+            'label'       => 'label3',
+            'parent'      => 0
+        },
+        'result' => {
+            'id'        => 1,
+            'status'    => 'ok'
+        },
+        'comment' => 'No status:' 
+    },
 
     # отрицательные тесты
-    3 => {
+    4 => {
         'data' => {
             'id'          => 1,
             'label'       => 'label3',
@@ -78,12 +91,12 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
-            'status'    => 'fail',
+            'message'   => "_check_fields: don't have required data in -name-",
+            'status'    => 'fail'
         },
         'comment' => 'No name:' 
     },
-    4 => {
+    5 => {
         'data' => {
             'id'          => 1,
             'name'        => 'name4',
@@ -91,34 +104,21 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
-            'status'    => 'fail',
+            'message'   => "_check_fields: don't have required data in -label-",
+            'status'    => 'fail'
         },
         'comment' => 'No label:' 
-    },
-    5 => {
-        'data' => {
-            'id'          => 1,
-            'name'        => 'name5',
-            'label'       => 'label5',
-            'parent'      => 0
-        },
-        'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
-            'status'    => 'fail',
-        },
-        'comment' => 'No status:' 
     },
     6 => {
         'data' => {
             'name'        => 'name6',
             'label'       => 'label6',
-            'parent'      => 1,
+            'parent'      => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
-            'status'    => 'fail',
+            'message'   => "_check_fields: don't have required data in -id-",
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -130,7 +130,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data in -label-",
             'status'    => 'fail',
         },
         'comment' => 'Same name:'
@@ -144,8 +144,8 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
-            'status'    => 'fail',
+            'message'   => "_check_fields: 'id' don't match regular expression",
+            'status'    => 'fail'
         },
         'comment' => "Wrong id type:"
     },
@@ -159,7 +159,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: Action for '404' is not allowed for '/settings/save_folder'",
-            'status'    => 'fail',
+            'status'    => 'fail'
         },
         'comment' => 'Id do not exist:'
     },
@@ -173,7 +173,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: Action for '2' is not allowed for '/settings/save_folder'",
-            'status'    => 'fail',
+            'status'    => 'fail'
         },
         'comment' => 'Not exists folder:'
     },
@@ -185,8 +185,8 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'parent'. Field is empty or not exists",
-            'status'    => 'fail',
+            'message'   => "_check_fields: don't have required data in -parent-",
+            'status'    => 'fail'
         },
         'comment' => 'Not exists parent:'
     },

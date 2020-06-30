@@ -57,7 +57,7 @@ my $result = {
         {
             'label'     => 'testLabel',
             'name'      => 'testName',
-            'folder'    => 0,
+            'folder'    => 1,
             'parent'    => 0,
             'id'        => 1,
             'keywords'  => 'testLabel'

@@ -218,7 +218,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "_check_fields: 'id' don't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Validation mistake:' 

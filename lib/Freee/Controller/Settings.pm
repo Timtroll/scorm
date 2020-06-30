@@ -19,15 +19,15 @@ use common;
 sub get_folder {
     my $self = shift;
 
-    my ($resp, $data, $error, @mess);
+    my ( $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
-        if ($data) {
+        unless ( @mess ) {
             $data = $self->model('Settings')->_get_folder( $self->param('id') );
             push @mess, "Could not get '".$self->param('id')."'" unless $data;
         }
@@ -35,7 +35,7 @@ sub get_folder {
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'data'} = $data unless @mess;
 
     $self->render( 'json' => $resp );
 }
@@ -65,7 +65,7 @@ sub save_folder {
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        push @mess, $error if $error;
 
         unless (@mess) {
             # устанавляваем неиспользуемые для фолдера поля
@@ -97,6 +97,7 @@ sub save_folder {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
+#     "status",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
 # }
 sub add_folder {
     my $self = shift;
@@ -104,12 +105,12 @@ sub add_folder {
     my ($id, $data, $error, $resp, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
-        unless (@mess) {
+        unless ( @mess ) {
             # проверяем поле name на дубликат
             if ($self->_exists_in_table('settings', 'name', $$data{'name'})) {
                 push @mess, "Folder item named '$$data{'name'}' is exists";
@@ -160,9 +161,9 @@ sub get_leafs {
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        push @mess, $error if $error;
 
-        if ($data) {
+        unless ( @mess ) {
             if ( ( $$data{'id'} == 0 ) || ( $self->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
                 $list = $self->model('Settings')->_get_leafs( $$data{'id'} );
                 push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
@@ -282,7 +283,7 @@ sub add {
 
     unless (@mess) {
         # # проверка данных
-        ($data, $error) = $self->_check_fields();
+        ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
 
         unless (@mess) {
@@ -301,13 +302,11 @@ sub add {
             if ( $self->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
                 push @mess, "Setting named '$$data{'name'}' is exists";
             }
-            elsif ( $self->_exists_in_table('settings', 'folder', $$data{'parent'} ) != 1 ) {
-warn Dumper( $self->_exists_in_table('settings', 'folder', $$data{'parent'} ) );
+            # проверяем то, что родитель существует и является фолдером
+            elsif ( !$self->_folder_check( $$data{'parent'} ) ) {
                 push @mess, "setting have wrong parent $$data{'parent'}";
             }
-            # elsif ( ) {
-            #     push @mess, "'$$data{'parent'}' doesn't exist";
-            # }
+            # запись настройки в бд
             else {
                 $id = $self->model('Settings')->_insert_setting( $data, [] );
                 push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
@@ -330,50 +329,23 @@ warn Dumper( $self->_exists_in_table('settings', 'folder', $$data{'parent'} ) );
 sub edit {
     my $self = shift;
 
-    my ($id, $data, $error, @mess, $resp);
+    my ($id, $data, $result, $error, @mess, $resp);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {    
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
-        if ($data) {
-            $data = $self->model('Settings')->_get_setting( $$data{'id'} );
-            push @mess, "Could not get '".$$data{'id'}."'" unless $data;
-            $data = {
-                "folder" => $data->{'folder'},
-                "id"     => $data->{'id'},
-                "parent" => $data->{'parent'},
-                "tabs" => [
-                    {
-                        "label" => "Основное",
-                        "fields" => [
-                            { "name"          => $data->{'name'} },
-                            { "placeholder"   => $data->{'placeholder'} },
-                            { "readonly"      => $data->{'readonly'} },
-                            { "required"      => $data->{'required'} },
-                            { "status"        => $data->{'status'} }
-                        ]
-                    },
-                    {
-                        "label" => 'Дополнительные поля',
-                        "fields" => [
-                            { "label"       => $data->{'label'} },
-                            { "mask"        => $data->{'mask'} },
-                            { "selected"    => $data->{'selected'} },
-                            { "type"        => $data->{'type'} },
-                            { "value"       => $data->{'value'} }
-                        ]
-                    }
-                ]
-            };
+        unless ( @mess ) {
+            $result = $self->model('Settings')->_get_setting( $$data{'id'} );
+            push @mess, "Could not get id ".$$data{'id'} unless $result;
         }
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'data'} = $result if $result;
 
     $self->render( 'json' => $resp );
 }
@@ -395,15 +367,15 @@ sub save {
     my $self = shift;
 
     # read params
-    my ($id, $data, $error, $resp, @mess);
+    my ( $id, $data, $error, $resp, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
-        unless (@mess) {
+        unless ( @mess ) {
             # корректирование пустых значений
             $$data{'folder'} = 0;
             unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
@@ -415,11 +387,16 @@ sub save {
             unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
             unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
             
-            # проверяем поле name на дубликат
             unless (@mess) {
+                # проверяем поле name на дубликат
                 if ($self->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
                     push @mess, "Setting named '$$data{'name'}' is exists";
                 }
+                # проверяем то, что родитель существует и является фолдером
+                elsif ( !$self->_folder_check( $$data{'parent'} ) ) {
+                    push @mess, "setting have wrong parent $$data{'parent'}";
+                }
+                # сохранение настройки
                 else {
                     $id = $self->model('Settings')->_save_setting( $data, [] ) unless @mess;
                     push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
@@ -443,13 +420,13 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my ($del, $resp, $data, $error, @mess);
+    my ( $del, $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
         $del = $self->model('Settings')->_delete_setting( $$data{'id'} ) unless @mess;
         push @mess, "Could not delete '$$data{'id'}'" unless ( $del || @mess );
@@ -472,15 +449,15 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess);
+    my ( $toggle, $resp, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
 
-        unless (@mess) {
+        unless ( @mess ) {
             $$data{'table'} = 'settings';
             $toggle = $self->_toggle( $data ) unless @mess;
             push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;

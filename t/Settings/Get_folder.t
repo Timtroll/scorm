@@ -102,7 +102,7 @@ my $test_data = {
     },
     4 => {
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data in -id-",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -112,7 +112,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "_check_fields: 'id' don't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 

@@ -72,11 +72,12 @@ my %masks_fields = (
 sub _check_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $user, $mess, @mess );
+    my ( $sth, $usr, $result, $user, $list, $mess, @mess );
 
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-
-        my $usr = Freee::EAV->new( 'User' );
+my $dbh;
+my $value;
+        $usr = Freee::EAV->new( 'User' );
         $list = $usr->_list( $dbh, { Filter => { 'user.surname' => $value } } );
 
         # взять нужное поле

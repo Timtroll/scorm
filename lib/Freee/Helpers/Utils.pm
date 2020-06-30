@@ -28,12 +28,10 @@ sub register {
 
         # Проверяем наличие таблицы в базе данных
         my $sql = "SELECT count(*) FROM pg_catalog.pg_tables WHERE schemaname != 'information_schema' and schemaname != 'pg_catalog' and tablename = '".$table."'";
-        my $row;
-        eval {
-            $row = $self->pg_dbh->selectrow_hashref($sql);
-        };
-        warn $@ if $@;
-        return if $@;
+
+        my $sth = $self->pg_dbh->prepare( $sql );
+        $sth->execute();
+        my $row = $sth->fetchrow_hashref();
         return unless $row->{'count'};
 
         # проверяем поле name на дубликат
@@ -41,13 +39,11 @@ sub register {
         # исключаем из поиска id
         $sql .='AND "id"<>'.$excude_id if $excude_id;
 
-        eval {
-            $row = $self->pg_dbh->selectrow_hashref($sql);
-        };
-        warn $@ if $@;
-        return if $@;
+        $sth = $self->pg_dbh->prepare( $sql );
+        $sth->execute();
+        $row = $sth->fetchrow_hashref();
 
-        return $row;
+        return $row->{'id'} ? 1 : 0;
     });
 
     # включение/отключение (1/0) определенного поля в указанной таблице по id
@@ -60,7 +56,7 @@ sub register {
         my ($self, $data) = @_;
 
         return unless $data;
-        return unless ($$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'});
+        return unless ( $$data{'table'} || $$data{'id'} || $$data{'value'} || $$data{'fieldname'} );
 
         my $result;
         my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
@@ -157,26 +153,24 @@ sub register {
     # my $true = folder_check( <id> );
     # возвращается 1/0
     $app->helper('_folder_check' => sub {
-        # my $id = shift;
-        my ($self, $id) = @_;
+        my ( $self, $id ) = @_;
 
         return unless $id;
 
-        my $result;
         my $sql = 'SELECT folder FROM "public"."settings" WHERE "id"='.$id;
-        eval {
-            $result = $self->pg_dbh->selectrow_array($sql);
-        };
-        warn $@ if $@;
 
-        return $result ? $result : 0;
+        my $sth = $self->pg_dbh->prepare( $sql );
+        $sth->execute();
+        my $result = $sth->fetchrow_hashref();
+
+        return $result->{'folder'} ? 1 : 0;
     });
 
     # генерация строки из случайных букв и цифр
     # my $string = _random_string( length );
     # возвращается строка
     $app->helper('_random_string' => sub {
-        my ($self, $length) = @_;
+        my ( $self, $length ) = @_;
 
         return unless $length =~ /^\d+$/;
 

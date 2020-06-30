@@ -126,7 +126,7 @@ sub _save_folder {
             '"'.$_.'"='.($$data{$_} + 0);
         }
         else {
-            $$data{$_} ? '"'.$_.'"='.$self->pg_dbh->quote( $$data{$_} ) : '"'.$_."\"=''";
+            $$data{$_} ? '"'.$_.'"='.$self->{app}->pg_dbh->quote( $$data{$_} ) : '"'.$_."\"=''";
         }
     } keys %$data );
 
@@ -267,21 +267,18 @@ sub _delete_setting {
 # my $row = $self->model('Settings')->_get_setting( <id> );
 # возвращается строка в виде объекта
 sub _get_setting {
-    my ($self, $id) = @_;
+    my ( $self, $id ) = @_;
 
     return unless $id;
 
     my $sql = 'SELECT * FROM "public"."settings" WHERE "id"='.$id;
-    my $row;
-    eval {
-        $row = $self->{app}->pg_dbh->selectrow_hashref($sql);
-    };
-    warn $@ if $@;
-    return if $@;
+    my $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    my $row = $sth->fetchrow_hashref();
 
     # десериализуем поля vaue и selected
     my $out = [];
-    if ($row) {
+    if ( $row ) {
         $$row{'label'}       = $$row{'label'} ? $$row{'label'} : '';
         $$row{'mask'}        = $$row{'mask'} ? $$row{'mask'} : '';
         $$row{'name'}        = $$row{'name'} ? $$row{'name'} : '';

@@ -262,71 +262,12 @@ $test_data = {
         },
         'comment' => 'No readonly:' 
     },
-
-    # отрицательные тесты
     9 => {
         'data' => {
             'id'          => 2,
-            'name'        => 'name',
-            'label'       => 'label',
-            'placeholder' => 'placeholder',
-            'type'        => get_type(),
-            'mask'        => 'mask',
-            'value'       => 'value',
-            'selected'    => '[]',
-            'readonly'    => 0,
-            'status'      => 0
-        },
-        'result' => {
-            'message'   => "Validation error for 'parent'. Field is empty or not exists",
-            'status'    => 'fail',
-        },
-        'comment' => 'No parent:' 
-    },
-    10 => {
-        'data' => {
-            'id'          => 2,
             'parent'      => 1,
-            'label'       => 'label',
-            'placeholder' => 'placeholder',
-            'type'        => get_type(),
-            'mask'        => 'mask',
-            'value'       => 'value',
-            'selected'    => '[]',
-            'readonly'    => 0,
-            'status'      => 0
-        },
-        'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
-            'status'    => 'fail',
-        },
-        'comment' => 'No name:' 
-    },
-    11 => {
-        'data' => {
-            'id'          => 2,
-            'parent'      => 1,
-            'name'        => 'name',
-            'placeholder' => 'placeholder',
-            'type'        => get_type(),
-            'mask'        => 'mask',
-            'value'       => 'value',
-            'selected'    => '[]',
-            'readonly'    => 0,
-            'status'      => 0
-        },
-        'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
-            'status'    => 'fail',
-        },
-        'comment' => 'No label:' 
-    },
-    12 => {
-        'data' => {
-            'id'          => 2,
-            'parent'      => 1,
-            'name'        => 'name',
-            'label'       => 'label',
+            'name'        => 'name2',
+            'label'       => 'label2',
             'placeholder' => 'placeholder',
             'type'        => get_type(),
             'mask'        => 'mask',
@@ -335,10 +276,69 @@ $test_data = {
             'readonly'    => 0
         },
         'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
-            'status'    => 'fail',
+            'id'        => 2,
+            'status'    => 'ok',
         },
         'comment' => 'No status:' 
+    },
+
+    # отрицательные тесты
+    10 => {
+        'data' => {
+            'id'          => 2,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "_check_fields: don't have required data in -parent-",
+            'status'    => 'fail',
+        },
+        'comment' => 'No parent:' 
+    },
+    11 => {
+        'data' => {
+            'id'          => 2,
+            'parent'      => 1,
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "_check_fields: don't have required data in -name-",
+            'status'    => 'fail',
+        },
+        'comment' => 'No name:' 
+    },
+    12 => {
+        'data' => {
+            'id'          => 2,
+            'parent'      => 1,
+            'name'        => 'name',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "_check_fields: don't have required data in -label-",
+            'status'    => 'fail',
+        },
+        'comment' => 'No label:' 
     },
     13 => {
         'data' => {
@@ -354,7 +354,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: don't have required data in -id-",
             'status'    => 'fail',
         },
         'comment' => 'No id:' 
@@ -394,7 +394,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not update setting item '2'",
+            'message'   => "_check_fields: wrong size of 'readonly'",
             'status'    => 'fail',
         },
         'comment' => 'Wrong field type:'
@@ -410,11 +410,11 @@ $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'status'      => 0
         },
         'result' => {
-            'message'   => "Could not update setting item '3'",
+            'message'   => "setting have wrong parent 2",
             'status'    => 'fail',
         },
         'comment' => 'Parent not a folder:'
@@ -430,7 +430,7 @@ $test_data = {
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 'mistake',
+            'readonly'    => 0,
             'status'      => 0
         },
         'result' => {
@@ -439,6 +439,26 @@ $test_data = {
         },
         'comment' => 'Not a leaf:'
     },
+    18 => {
+        'data' => {
+            'id'          => 3,
+            'parent'      => 404,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "setting have wrong parent 404",
+            'status'    => 'fail',
+        },
+        'comment' => "Parent doesn't exist:"
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
