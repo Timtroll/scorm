@@ -9,14 +9,14 @@
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^19.0.1",
-    "@ckeditor/ckeditor5-build-classic": "^19.0.2",
+    "@ckeditor/ckeditor5-basic-styles": "^20.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^20.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^21.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^19.0.1",
-    "@ckeditor/ckeditor5-essentials": "^19.0.1",
-    "@ckeditor/ckeditor5-link": "^19.0.1",
-    "@ckeditor/ckeditor5-paragraph": "^19.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^19.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^20.0.0",
+    "@ckeditor/ckeditor5-essentials": "^20.0.0",
+    "@ckeditor/ckeditor5-link": "^20.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^20.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^20.0.0",
     "@ckeditor/ckeditor5-vue": "^1.0.1",
     "@editorjs/editorjs": "^2.18.0",
     "@riophae/vue-treeselect": "^0.4.0",
@@ -40,7 +40,7 @@
     "vue-router": "^3.3.4",
     "vue2-ace-editor": "^0.0.15",
     "vue2-touch-events": "^2.2.1",
-    "vuex": "^3.4.0",
+    "vuex": "^3.5.1",
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
