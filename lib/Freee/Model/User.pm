@@ -72,14 +72,14 @@ my %masks_fields = (
 sub _check_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $mess, @mess );
+    my ( $sth, $dbh, $result, $mess, $user, $value, @mess );
 
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         my $usr = Freee::EAV->new( 'User' );
-        $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+        my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
 
         # взять нужное поле
-        my $yy = {
+        $user = {
             surname     => $usr->surname(),
             name        => $usr->name(),
             patronymic  => $usr->patronymic(),
@@ -87,7 +87,7 @@ sub _check_user {
             country     => $usr->country(),
             birthday    => $usr->birthday()
         };
-        warn Dumper $yy;
+        warn Dumper $user;
 # warn $user->id();
 # warn Dumper $user;
     }
