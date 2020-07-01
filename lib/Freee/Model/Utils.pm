@@ -70,7 +70,7 @@ sub _folder_check {
 
     return unless $id;
 
-    my $sql = 'SELECT "public"."folder" FROM "public"."settings" WHERE "id"='.$id;
+    my $sql = 'SELECT "folder" FROM "public"."settings" WHERE "id"='.$id;
 
     my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();

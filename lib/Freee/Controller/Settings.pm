@@ -112,12 +112,14 @@ sub add_folder {
         push @mess, $error if $error;
 
         unless ( @mess ) {
+
             # проверяем поле name на дубликат
             if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'})) {
                 push @mess, "Folder item named '$$data{'name'}' is exists";
             }
             else {
                 unless ( $$data{'parent'} ) {
+
                     # устанавляваем обязательные поля для фолдера
                     $$data{'parent'} = 0;
                     $$data{'placeholder'} = '';
@@ -131,6 +133,7 @@ sub add_folder {
                     $$data{'folder'} = 1;
 
                     $id = $self->model('Settings')->_insert_folder( $data );
+
                     push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
                 }
                 else {
@@ -460,8 +463,16 @@ sub toggle {
 
         unless ( @mess ) {
             $$data{'table'} = 'settings';
-            $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
-            push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+
+            # проверка существования элемента для изменения
+            unless ($self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'})) {
+                push @mess, "Id '$$data{'id'}' doesn't exist";
+            }
+            # изменение поля
+            unless ( @mess ) {
+                $toggle = $self->model('Utils')->_toggle( $data );
+                push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+            }
         }
     }
     # обновление объекта с настройками

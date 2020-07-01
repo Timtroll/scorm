@@ -73,7 +73,7 @@ my $test_data = {
     },
     2 => {
         'result' => {
-            'message'   => "_check_fields: don't have required data in -id-",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -83,7 +83,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' don't match regular expression",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 

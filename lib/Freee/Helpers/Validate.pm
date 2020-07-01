@@ -57,17 +57,22 @@ sub register {
         my %data = ();
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
-            my $param = $self->param($field) // 0;
+            my $param = $self->param($field);
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
             # проверка длины
-            unless ( $max_size && length( $param ) <= $max_size ) {
+            if ( defined $param && $max_size && length( $param ) > $max_size ) {
                 push @error, "_check_fields: '$field' has wrong size";
                 last;
             }
 
+            # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
+            if ( ( $required eq 'required' ) && $field eq 'parent' && !defined $param && $param eq '') {
+                push @error, "_check_fields: didn't has required data in '$field'";
+                last;
+            }
             # проверка обязательности заполнения (исключение - 0 для toggle)
-            if ( ( $required eq 'required' ) && $url_for !~ /toggle/ && !$param) {
+            elsif ( ( $required eq 'required' ) && $url_for !~ /toggle/ && $field ne 'parent' && !$param ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
@@ -121,10 +126,11 @@ sub register {
                         push @error, "_check_fields: '$field' didn't match regular expression";
                         last;
                     }
-                    }
+                }
             }
             else {
-                unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                # unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                unless ( !defined $param || $param eq '' || ( $regexp && ( $param =~ /$regexp/ ) ) ) {
                     push @error, "_check_fields: '$field' didn't match regular expression";
                     last;
                 }

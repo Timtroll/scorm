@@ -297,7 +297,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -parent-",
+            'message'   => "_check_fields: didn't has required data in 'parent'",
             'status'    => 'fail',
         },
         'comment' => 'No parent:' 
@@ -316,7 +316,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -name-",
+            'message'   => "_check_fields: didn't has required data in 'name'",
             'status'    => 'fail',
         },
         'comment' => 'No name:' 
@@ -335,7 +335,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -label-",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail',
         },
         'comment' => 'No label:' 
@@ -354,7 +354,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -id-",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail',
         },
         'comment' => 'No id:' 
@@ -394,7 +394,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: wrong size of 'readonly'",
+            'message'   => "_check_fields: 'readonly' has wrong size",
             'status'    => 'fail',
         },
         'comment' => 'Wrong field type:'
@@ -434,7 +434,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: Action is not allowed for '/settings/save'",
+            'message'   => "setting have wrong parent 2",
             'status'    => 'fail',
         },
         'comment' => 'Not a leaf:'

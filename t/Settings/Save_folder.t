@@ -91,7 +91,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -name-",
+            'message'   => "_check_fields: didn't has required data in 'name'",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
@@ -104,7 +104,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -label-",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
@@ -117,7 +117,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -id-",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -130,7 +130,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -label-",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail',
         },
         'comment' => 'Same name:'
@@ -144,7 +144,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: 'id' don't match regular expression",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => "Wrong id type:"
@@ -158,7 +158,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: Action for '404' is not allowed for '/settings/save_folder'",
+            'message'   => "Id '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Id do not exist:'
@@ -185,7 +185,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -parent-",
+            'message'   => "_check_fields: didn't has required data in 'parent'",
             'status'    => 'fail'
         },
         'comment' => 'Not exists parent:'

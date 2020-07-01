@@ -74,7 +74,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -label-",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
@@ -86,7 +86,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: don't have required data in -name-",
+            'message'   => "_check_fields: didn't has required data in 'name'",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
@@ -99,7 +99,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'name' don't match regular expression",
+            'message'   => "_check_fields: 'name' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
