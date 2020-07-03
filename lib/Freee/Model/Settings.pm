@@ -278,26 +278,56 @@ sub _get_setting {
 
     # десериализуем поля vaue и selected
     my $out = [];
+    my $result;
     if ( $row ) {
-        $$row{'label'}       = $$row{'label'} ? $$row{'label'} : '';
-        $$row{'mask'}        = $$row{'mask'} ? $$row{'mask'} : '';
-        $$row{'name'}        = $$row{'name'} ? $$row{'name'} : '';
-        $$row{'parent'}      = $$row{'parent'} // 0;
-        $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
-        $$row{'readonly'}    = $$row{'readonly'} // 0;
-        $$row{'required'}    = $$row{'required'} // 0;
-        $$row{'type'}        = $$row{'type'} ? $$row{'type'} : '';
-        if ($$row{'value'}) {
-            $$row{'value'} = $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'};
-        }
-        else {
-            $$row{'value'} = '';
-        }
-        $$row{'selected'}  = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
-        $$row{'status'}    = $$row{'status'} // 0;
+
+        # $$row{'label'}       = $$row{'label'} ? $$row{'label'} : '';
+        # $$row{'mask'}        = $$row{'mask'} ? $$row{'mask'} : '';
+        # $$row{'name'}        = $$row{'name'} ? $$row{'name'} : '';
+        # $$row{'parent'}      = $$row{'parent'} // 0;
+        # $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
+        # $$row{'readonly'}    = $$row{'readonly'} // 0;
+        # $$row{'required'}    = $$row{'required'} // 0;
+        # $$row{'type'}        = $$row{'type'} ? $$row{'type'} : '';
+        # if ($$row{'value'}) {
+        #     $$row{'value'} = $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'};
+        # }
+        # else {
+        #     $$row{'value'} = '';
+        # }
+        # $$row{'selected'}  = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
+        # $$row{'status'}    = $$row{'status'} // 0;
+
+
+        $$result{'parent'} = $$row{'parent'} // 0,
+        $$result{'folder'} = 0,
+        $$result{'id'} = $$row{'id'},
+        $$result{'tabs'} = [
+            {
+                "label" => "Основные",
+                "fields" => [
+                    { "label" => $$row{'label'} ? $$row{'label'} : '' },
+                    { "name" => $$row{'name'} ? $$row{'name'} : '' },
+                    { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
+                    { "selected" => $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] },
+                    { "type" => $$row{'type'} ? $$row{'type'} : '' },
+                    { "value" => $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'} }
+                ]
+            },
+            {
+                "label" => "Дополнительно",
+                "fields" => [
+                    { "mask" => $$row{'mask'} ? $$row{'mask'} : '' },
+                    { "readonly" => $$row{'readonly'} // 0 },
+                    { "required" => $$row{'required'} // 0 },
+                    { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
+                    { "status" => $$row{'status'} // 0 }
+                ]
+            }
+        ]
     }
     
-    return $row;
+    return $result;
 }
 
 # ?????????????????? не используется?
