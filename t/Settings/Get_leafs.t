@@ -174,7 +174,7 @@ my $test_data = {
             'id'    => 404,
         },
         'result' => {
-            'message'   => "Setting id '404' not exists",
+            'message'   => "Folder id '404' does not exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 

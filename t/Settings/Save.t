@@ -434,10 +434,10 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "setting have wrong parent 2",
+            'message'   => "Id '1' is not a setting",
             'status'    => 'fail',
         },
-        'comment' => 'Not a leaf:'
+        'comment' => 'Not a setting:'
     },
     18 => {
         'data' => {
@@ -455,6 +455,26 @@ $test_data = {
         },
         'result' => {
             'message'   => "setting have wrong parent 404",
+            'status'    => 'fail',
+        },
+        'comment' => "Parent doesn't exist:"
+    },
+    19 => {
+        'data' => {
+            'id'          => 404,
+            'parent'      => 1,
+            'name'        => 'name',
+            'label'       => 'label',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0,
+            'status'      => 0
+        },
+        'result' => {
+            'message'   => "Id '404' doesn't exist",
             'status'    => 'fail',
         },
         'comment' => "Parent doesn't exist:"

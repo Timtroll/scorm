@@ -45,7 +45,12 @@ sub register {
         my (@tree, %index);
         # построение дерева
         foreach my $obj (@{$list}) {
-            $obj->{'keywords'} = $obj->{'label'};
+            # $obj->{'keywords'} = $obj->{'label'};
+            $obj->{'keywords'} = $self->{app}->_make_keywords( $obj->{'label'}, $obj->{'name'} );
+#?????????????????????????????????????????
+            $obj->{'children'} = [];
+#?????????????????????????????????????????
+            $obj->{'parent'} = 0;
             # $obj->{folder} = 0;
             die "_list_to_tree:  Object undefined\n" unless $obj;
 
@@ -92,6 +97,28 @@ sub register {
         warn "Tree: @tree (", $#tree + 1, " items)\n" if DEBUGGING;
 
         return \@tree;
+    });
+
+    # генерация списка ключевых слов
+    # my $keywords = _make_keywords( @words );
+    # возвращается строка
+    $app->helper('_make_keywords' => sub {
+        my ( $self, @texts ) = @_;
+        my @words = ();
+        my %keywords = ();
+        my $result = '';
+
+        foreach ( @texts ) {
+            push ( @words, split( / /, $_ ) );
+        }
+
+        foreach ( @words ) {
+            $keywords{ $_ } = 1;
+        }
+
+        $result = join( ' ', keys %keywords );
+
+        return $result;
     });
 
     # генерация строки из случайных букв и цифр

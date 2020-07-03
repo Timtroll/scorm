@@ -85,7 +85,7 @@ my $test_data = {
             'id'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: Action is not allowed for '/settings/edit'",
+            'message'   => "Id '1' is not a setting",
             'status'    => 'fail'
         },
         'comment' => 'Edit folder:'

@@ -27,7 +27,7 @@ sub _get_tree {
 
     $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );
 
-    $list = $self->{app}->_list_to_tree($list, 'id', 'parent', 'children');
+    $list = $self->{app}->_list_to_tree( $list, 'id', 'parent', 'children' );
 
     return $list;
 

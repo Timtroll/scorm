@@ -47,7 +47,7 @@ $data = {
 $t->post_ok( $host.'/settings/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
-    exit;
+    last;
 }
 $t->content_type_is('application/json;charset=UTF-8');
 diag "";
@@ -85,7 +85,7 @@ my $test_data = {
             'id'    => 2
         },
         'result' => {
-            'message'   => "_check_fields: Action for '2' is not allowed for '/settings/get_folder'",
+            'message'   => "Id '2' is not a folder",
             'status'    => 'fail'
         },
         'comment' => 'Get leaf:'
@@ -95,7 +95,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not get '404'",
+            'message'   => "Id '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 

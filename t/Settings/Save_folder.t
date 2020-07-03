@@ -31,9 +31,16 @@ my $host = $t->app->config->{'host'};
 # добавляем тестовый раздел настроек
 diag "Add folder:";
 $t->post_ok( $host.'/settings/add_folder' => form => {
-    "name"      => 'test',
-    "label"     => 'test',
+    "name"      => 'folder',
+    "label"     => 'folder',
     "parent"    => 0,
+    "status"    => 1
+});
+diag "Add folder:";
+$t->post_ok( $host.'/settings/add' => form => {
+    "name"      => 'setting',
+    "label"     => 'setting',
+    "parent"    => 1,
     "status"    => 1
 });
 diag "";
@@ -172,7 +179,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: Action for '2' is not allowed for '/settings/save_folder'",
+            'message'   => "Id '2' is not a folder",
             'status'    => 'fail'
         },
         'comment' => 'Not exists folder:'

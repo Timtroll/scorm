@@ -20,7 +20,7 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # Ввод фолдера
-diag "Add folder:";
+diag "Add folder parent:";
 my $data = {
     'name'      => 'testName',
     'label'     => 'testLabel',
@@ -33,23 +33,6 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     last;
 }
 $t->content_type_is('application/json;charset=UTF-8');
-diag "";
-
-# Ввод настройки
-diag "Add setting:";
-$data = {
-    'name'      => 'name',
-    'label'     => 'label',
-    'status'    => 1,
-    'parent'    => 1
-};
-$t->post_ok( $host.'/settings/add' => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag "Can't connect";
-    exit;
-}
-$t->content_type_is('application/json;charset=UTF-8');
-diag "";
 
 my $result = {
     'status' => 'ok',
@@ -60,7 +43,9 @@ my $result = {
             'folder'    => 1,
             'parent'    => 0,
             'id'        => 1,
-            'keywords'  => 'testLabel'
+            'keywords'  => 'testName testLabel',
+            'parent'    => 0,
+            'children'  => []
         }
     ]
 };

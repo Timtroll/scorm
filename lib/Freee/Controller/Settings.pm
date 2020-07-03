@@ -27,11 +27,22 @@ sub get_folder {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
+    }
 
-        unless ( @mess ) {
-            $data = $self->model('Settings')->_get_folder( $self->param('id') );
-            push @mess, "Could not get '".$self->param('id')."'" unless $data;
+    unless ( @mess ) {
+        # проверка существования id
+        unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' doesn't exist";
         }
+        # проверка того, что id принадлежит группе настроек
+        elsif ( !$self->model('Utils')->_folder_check( $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' is not a folder";
+        }
+    }
+
+    unless ( @mess ) {
+        $data = $self->model('Settings')->_get_folder( $self->param('id') );
+        push @mess, "Could not get '".$self->param('id')."'" unless $data;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -46,7 +57,7 @@ sub get_tree {
     my $self = shift;
 
     # передаем 1, чтобы получить дерево без листьев
-    my $list = $self->model('Settings')->_get_tree(1);
+    my $list = $self->model('Settings')->_get_tree( 1 );
 
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;
@@ -63,26 +74,38 @@ sub save_folder {
     my ($id, $resp, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
+    # проверка данных
     unless (@mess) {
-        # проверка данных
         ($data, $error) = $self->_check_fields();
         push @mess, $error if $error;
+    }
 
-        unless (@mess) {
-            # устанавляваем неиспользуемые для фолдера поля
-            $$data{'placeholder'} = '';
-            $$data{'type'} = '';
-            $$data{'mask'} = '';
-            $$data{'value'} = '';
-            $$data{'selected'} = '';
-            $$data{'required'} = 0;
-            $$data{'readonly'} = 0;
-            $$data{'folder'} = $self->param('folder') // 1;
-            $$data{'status'} = $self->param('status') // 0;
-
-            $id = $self->model('Settings')->_save_folder( $data );
-            push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
+    unless ( @mess ) {
+        # проверка существования id
+        unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' doesn't exist";
         }
+        # проверка того, что id принадлежит группе настроек
+        elsif ( !$self->model('Utils')->_folder_check( $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' is not a folder";
+        }
+    }
+
+    # сохранение
+    unless (@mess) {
+        # устанавляваем неиспользуемые для фолдера поля
+        $$data{'placeholder'} = '';
+        $$data{'type'} = '';
+        $$data{'mask'} = '';
+        $$data{'value'} = '';
+        $$data{'selected'} = '';
+        $$data{'required'} = 0;
+        $$data{'readonly'} = 0;
+        $$data{'folder'} = $self->param('folder') // 1;
+        $$data{'status'} = $self->param('status') // 0;
+
+        $id = $self->model('Settings')->_save_folder( $data );
+        push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -110,37 +133,38 @@ sub add_folder {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
+    }
 
-        unless ( @mess ) {
-
-            # проверяем поле name на дубликат
-            if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'})) {
-                push @mess, "Folder item named '$$data{'name'}' is exists";
-            }
-            else {
-                unless ( $$data{'parent'} ) {
-
-                    # устанавляваем обязательные поля для фолдера
-                    $$data{'parent'} = 0;
-                    $$data{'placeholder'} = '';
-                    $$data{'type'} = '';
-                    $$data{'mask'} = '';
-                    $$data{'value'} = '';
-                    $$data{'selected'} = '';
-                    $$data{'required'} = 0;
-                    $$data{'readonly'} = 0;
-                    $$data{'status'} = 1;
-                    $$data{'folder'} = 1;
-
-                    $id = $self->model('Settings')->_insert_folder( $data );
-
-                    push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
-                }
-                else {
-                    push @mess, "Parent '$$data{'parent'}' is wrong";
-                }
-            }
+    unless ( @mess ) {
+        # проверяем поле name на дубликат
+        if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'})) {
+            push @mess, "Folder item named '$$data{'name'}' is exists";
         }
+    }
+
+    unless ( @mess ) {
+        # проверяем существование родителя ( корневой каталог существует всегда )
+        if ( $$data{'parent'} ne 0 && !( $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'parent'} ) ) ) {
+            push @mess, "Parent folder with id '$$data{'parent'}' doesn't exist";
+        }
+    }
+
+    unless ( @mess ) {
+        # устанавляваем обязательные поля для фолдера
+        $$data{'placeholder'} = '';
+        $$data{'type'} = '';
+        $$data{'mask'} = '';
+        $$data{'value'} = '';
+        $$data{'selected'} = '';
+        $$data{'required'} = 0;
+        $$data{'readonly'} = 0;
+        $$data{'status'} = 1;
+        $$data{'folder'} = 1;
+
+        # добавление фолдера
+        $id = $self->model('Settings')->_insert_folder( $data );
+
+        push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -155,20 +179,20 @@ sub add_folder {
 
 # выбираем листья ветки дерева
 # my $id = $self->get_leafs();
-# 'id' - id фолдера для которого выбираем листья (id = 0 - выбираем корневые записи)
+# 'id' - id фолдера, для которого выбираем листья (id = 0 - выбираем корневые записи)
 sub get_leafs {
     my $self = shift;
 
-    my ($resp, $list, $table, $data, $error, @mess);
+    my ( $resp, $list, $table, $data, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
+        ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
 
         unless ( @mess ) {
-            if ( ( $$data{'id'} == 0 ) || ( $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'} ) ) )  {
+            if ( $$data{'id'} == 0 || $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'} ) && !$self->model('Utils')->_folder_check( $$data{'parent'} ) )  {
                 $list = $self->model('Settings')->_get_leafs( $$data{'id'} );
                 push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
 
@@ -191,7 +215,7 @@ sub get_leafs {
                     "body" => $list
                 } unless @mess;
             } else {
-                push @mess, "Setting id '$$data{'id'}' not exists";
+                push @mess, "Folder id '$$data{'id'}' does not exist";
             }
         }
     }
@@ -340,11 +364,18 @@ sub edit {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
+    }
 
-        unless ( @mess ) {
-            $result = $self->model('Settings')->_get_setting( $$data{'id'} );
-            push @mess, "Could not get id ".$$data{'id'} unless $result;
+    # проверка того, что id принадлежит настройке
+    unless ( @mess ) {
+        if ( $self->model('Utils')->_folder_check( $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' is not a setting";
         }
+    }
+
+    unless ( @mess ) {
+        $result = $self->model('Settings')->_get_setting( $$data{'id'} );
+        push @mess, "Could not get id ".$$data{'id'} unless $result;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -378,36 +409,46 @@ sub save {
         # проверка данных
         ( $data, $error ) = $self->_check_fields();
         push @mess, $error if $error;
+    }
 
-        unless ( @mess ) {
-            # корректирование пустых значений
-            $$data{'folder'} = 0;
-            unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
-            unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
-            unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
-            unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
-            unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
-            unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
-            unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-            unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
-            
-            unless (@mess) {
-                # проверяем поле name на дубликат
-                if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
-                    push @mess, "Setting named '$$data{'name'}' is exists";
-                }
-                # проверяем то, что родитель существует и является фолдером
-                elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
-                    push @mess, "setting have wrong parent $$data{'parent'}";
-                }
-                # сохранение настройки
-                else {
-                    $id = $self->model('Settings')->_save_setting( $data, [] ) unless @mess;
-                    push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
-                }
-            }
+    unless ( @mess ) {
+        # проверка существования id
+        unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' doesn't exist";
+        }
+        # проверка того, что id принадлежит настройке
+        elsif ( $self->model('Utils')->_folder_check( $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' is not a setting";
         }
     }
+
+    unless ( @mess ) {
+        # корректирование пустых значений
+        $$data{'folder'} = 0;
+        unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
+        unless ( defined $$data{'type'} )        { $$data{'type'}        = '' };
+        unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
+        unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
+        unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
+        unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
+        unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+        unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
+
+        # проверяем поле name на дубликат
+        if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
+            push @mess, "Setting named '$$data{'name'}' is exists";
+        }
+        # проверяем то, что родитель существует и является фолдером
+        elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
+            push @mess, "setting have wrong parent $$data{'parent'}";
+        }
+        # сохранение настройки
+        else {
+            $id = $self->model('Settings')->_save_setting( $data, [] );
+            push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+        }
+    }
+
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
