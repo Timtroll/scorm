@@ -1,7 +1,9 @@
 <template>
   <div class="pos-finder">
 
-    <FinderColumn :add="true"/>
+    <FinderColumn v-if="data"
+                  :data="data"
+                  :add="true"/>
 
   </div>
 </template>
@@ -23,12 +25,9 @@ export default {
   },
 
   data () {
-    return {
+    return {}
+  }
 
-    }
-  },
-
-  methods: {}
 }
 </script>
 

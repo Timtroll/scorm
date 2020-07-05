@@ -66,11 +66,13 @@ const files = new filesClass
 export default {
 
   name:       'Media',
+
   components: {
     FileGrid:  () => import(/* webpackChunkName: "FileGrid" */ '../../components/ui/files/FileGrid'),
     Card:      () => import(/* webpackChunkName: "Card" */ './../../components/ui/card/Card'),
     InputFile: () => import(/* webpackChunkName: "InputFile" */ './../../components/ui/inputs/InputFile')
   },
+
   metaInfo () {
     return {
       title:         this.$route.meta.breadcrumb,
@@ -89,7 +91,6 @@ export default {
   },
 
   computed: {
-
     searchSubmitDisable () {
       return !this.searchRequest
     },
@@ -97,7 +98,6 @@ export default {
     pageTitle () {
       return this.$route.meta.breadcrumb
     }
-
   },
 
   methods: {
@@ -118,9 +118,7 @@ export default {
         if (data.status === 'fail')
           notify(data.message, 'danger')
       }
-
     }
-
   }
 }
 </script>

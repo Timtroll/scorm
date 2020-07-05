@@ -1,21 +1,52 @@
-[
-  {
-    "title":  "label",
-    "add":    1,
-    "edit":   1,
-    "remove": 1,
-    "list":   [
-      {
-        "id":          1,
-        "label":       "label 1",
-        "description": "description",
-        "folder":      1
-      }, {
-        "id":          2,
-        "label":       "label 2",
-        "description": "description",
-        "folder":      1
-      }
-    ]
-  }
-]
+{
+  "title":  "label",
+  "add":    1,
+  "edit":   1,
+  "remove": 1,
+  "list":   [
+    {
+      "id":          1,
+      "parent":      0,
+      "label":       "label 1",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }, {
+      "id":          2,
+      "parent":      0,
+      "label":       "label 2",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }, {
+      "id":          3,
+      "parent":      0,
+      "label":       "label 2",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }, {
+      "id":          4,
+      "parent":      0,
+      "label":       "label 2",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }, {
+      "id":          5,
+      "parent":      0,
+      "label":       "label 2",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }, {
+      "id":          6,
+      "parent":      0,
+      "label":       "label 2",
+      "description": "description",
+      "folder":      1,
+      "children":    null
+    }
+  ]
+}
+

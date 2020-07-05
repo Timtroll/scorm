@@ -25,9 +25,8 @@
         <!-- label-->
         <div class="pos-finder-column-header-label search-toggle uk-flex">
 
-          <div class="uk-flex-1 uk-text-truncate">
-            label
-          </div>
+          <div class="uk-flex-1 uk-text-truncate"
+               v-text="data.title"></div>
 
           <div class="uk-flex-none">
             <a uk-toggle="target: .search-toggle; animation: uk-animation-slide-right"
@@ -57,7 +56,6 @@
                  v-model="searchInput"
                  @keyup.esc="clearSearchVal"
                  :placeholder="$t('actions.search')">
-
         </div>
 
       </div>
@@ -65,7 +63,57 @@
     </div>
 
     <!--CELL BODY-->
-    <div class="pos-finder-column-body"></div>
+    <div class="pos-finder-column-body"
+         v-if="data.list">
+
+      <ul class="pos-finder-list">
+
+        <li class="pos-finder-list-item"
+            v-for="item in data.list">
+
+          <div class="pos-finder-list-item__label"
+               v-text="item.label"></div>
+
+          <div class="pos-finder-list-item__actions">
+
+            <!--Добавить дочерний раздел-->
+            <a @click.prevent="addChildren(item)"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
+               class="pos-finder-list-item-actions__add">
+              <img src="/img/icons/icon__plus-doc.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+
+            <!--Редактировать раздел-->
+            <a @click.prevent="editChildren(item)"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
+               v-if="editable"
+               class="pos-finder-list-item-actions__edit">
+              <img src="/img/icons/icon__edit.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+
+            <!--Удалить раздел-->
+            <a @click.prevent="removeChildren(item)"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
+               class="pos-finder-list-item-actions__remove">
+              <img src="/img/icons/icon__trash.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+          </div>
+
+        </li>
+      </ul>
+    </div>
   </div>
   <!-- / CELL-->
 </template>
@@ -134,7 +182,14 @@ export default {
       this.searchInput = null
     },
 
-    addEl () {}
+    addEl () {},
+
+    addChildren (item) {},
+
+    removeChildren (item) {},
+
+    editChildren (item) {}
+
   }
 }
 </script>
