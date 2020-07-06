@@ -182,7 +182,7 @@ my $test_data = {
             'message'   => "Id '2' is not a folder",
             'status'    => 'fail'
         },
-        'comment' => 'Not exists folder:'
+        'comment' => 'Save as not folder:'
     },
     11 => {
         'data' => {
@@ -195,7 +195,7 @@ my $test_data = {
             'message'   => "_check_fields: didn't has required data in 'parent'",
             'status'    => 'fail'
         },
-        'comment' => 'Not exists parent:'
+        'comment' => 'Parent does not exist:'
     },
 };
 

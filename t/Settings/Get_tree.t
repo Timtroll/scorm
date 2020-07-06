@@ -4,12 +4,13 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
-use Mojo::JSON qw(decode_json encode_json);
+use Mojo::JSON qw( decode_json );
+use Data::Compare;
+use Data::Dumper;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-
 my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и готовим таблицу групп
@@ -43,7 +44,6 @@ my $result = {
             'folder'    => 1,
             'parent'    => 0,
             'id'        => 1,
-            'keywords'  => 'testName testLabel',
             'parent'    => 0,
             'children'  => []
         }
@@ -53,8 +53,16 @@ my $result = {
 diag "Get tree:";
 $t->post_ok($host.'/settings/get_tree' => form => $data )
     ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
+    ->content_type_is('application/json;charset=UTF-8');
+
+    # проверка данных ответа
+    my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+    my $keywords = $response->{'list'}->[0]->{'keywords'};
+    delete $response->{'list'}->[0]->{'keywords'};
+    ok( Compare( $result, $response ), "Response is correct" );
+
+    # keywords проверяются отдельно, так как их порядок случаен
+    ok( $keywords eq $$result{'list'}[0]{'label'} . ' ' . $$result{'list'}[0]{'name'} || $keywords eq $$result{'list'}[0]{'name'} . ' ' . $$result{'list'}[0]{'label'}, "Keywords are correct" );
 diag "";
 
 done_testing();

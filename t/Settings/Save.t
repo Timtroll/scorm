@@ -477,7 +477,7 @@ $test_data = {
             'message'   => "Id '404' doesn't exist",
             'status'    => 'fail',
         },
-        'comment' => "Parent doesn't exist:"
+        'comment' => "Id doesn't exist:"
     }
 };
 

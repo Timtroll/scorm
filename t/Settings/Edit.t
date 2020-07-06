@@ -6,6 +6,7 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 use Data::Dumper;
+use Encode qw( _utf8_on );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -132,13 +133,9 @@ my $test_data = {
     },
 };
 
-# use Encode qw( _utf8_off );
-# use Data::Compare;
-# выключение флага utf8
-# warn Dumper( $$test_data{1}{'result'}{'data'}{'tabs'}[0]{'label'} );
-# _utf8_off( $$test_data{1}{'result'}{'data'}{'tabs'}[0]{'label'} );
-# _utf8_off( $$test_data{1}{'result'}{'data'}{'tabs'}[1]{'label'} );
-# warn Dumper( $$test_data{1}{'result'}{'data'}{'tabs'}[0]{'label'} );
+# включение флага utf8
+_utf8_on( $$test_data{1}{'result'}{'data'}{'tabs'}[0]{'label'} );
+_utf8_on( $$test_data{1}{'result'}{'data'}{'tabs'}[1]{'label'} );
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
@@ -148,11 +145,6 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
-    # my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-    # warn Dumper( $result );
-    # warn Dumper( $response );
-    # ok( Compare( $result, $response ), "Response is correct" );
-
     diag "";
 };
 

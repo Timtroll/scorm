@@ -280,25 +280,6 @@ sub _get_setting {
     my $out = [];
     my $result;
     if ( $row ) {
-
-        # $$row{'label'}       = $$row{'label'} ? $$row{'label'} : '';
-        # $$row{'mask'}        = $$row{'mask'} ? $$row{'mask'} : '';
-        # $$row{'name'}        = $$row{'name'} ? $$row{'name'} : '';
-        # $$row{'parent'}      = $$row{'parent'} // 0;
-        # $$row{'placeholder'} = $$row{'placeholder'} ? $$row{'placeholder'} : '';
-        # $$row{'readonly'}    = $$row{'readonly'} // 0;
-        # $$row{'required'}    = $$row{'required'} // 0;
-        # $$row{'type'}        = $$row{'type'} ? $$row{'type'} : '';
-        # if ($$row{'value'}) {
-        #     $$row{'value'} = $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'};
-        # }
-        # else {
-        #     $$row{'value'} = '';
-        # }
-        # $$row{'selected'}  = $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] ;
-        # $$row{'status'}    = $$row{'status'} // 0;
-
-
         $$result{'parent'} = $$row{'parent'} // 0,
         $$result{'folder'} = 0,
         $$result{'id'} = $$row{'id'},
