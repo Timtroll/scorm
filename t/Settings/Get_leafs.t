@@ -89,7 +89,7 @@ my $test_data = {
                     },
                     'massEdit' => 0,
                     'page' => {
-                        'per_page'      => 100,
+                        'per_page'      => 10,
                         'total'         => 1,
                         'current_page'  => 1
                     },
@@ -115,7 +115,7 @@ my $test_data = {
                     'editable'  => 1,
                     'page' => {
                         'current_page'  => 1,
-                        'per_page'      => 100,
+                        'per_page'      => 10,
                         'total'         => 0
                     },
                     'massEdit' => 0
@@ -136,7 +136,7 @@ my $test_data = {
                     'page' => {
                           'current_page' => 1,
                           'total' => 1,
-                          'per_page' => 100
+                          'per_page' => 10
                     },
                     'massEdit' => 0,
                     'removable' => 1,
@@ -174,7 +174,7 @@ my $test_data = {
             'id'    => 404,
         },
         'result' => {
-            'message'   => "Setting id '404' not exists",
+            'message'   => "Folder id '404' does not exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 

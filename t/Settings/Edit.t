@@ -6,6 +6,7 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 use Data::Dumper;
+use Encode qw( _utf8_on );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -59,22 +60,35 @@ my $test_data = {
             'id'    => 2
         },
         'result' => {
-            'data'      => {
-                'id'          => 2,
-                'parent'      => 1,
-                'name'        => 'name',
-                'label'       => 'label',
-                'placeholder' => '',
-                'type'        => '',
-                'mask'        => '',
-                'value'       => '',
-                'selected'    => [],
-                'required'    => 0,
-                'readonly'    => 0,
-                'status'      => 1,
-                'folder'      => 0
+            "data" => {
+                "id" => 2,
+                "parent" => 1,
+                "folder" => 0,
+                "tabs" => [
+                    {
+                        "label" => "Основные",
+                        "fields" => [
+                            { "label" => "label" },
+                            { "name" => "name" },
+                            { "placeholder" => '' },
+                            { "selected" => [] },
+                            { "type" => '' },
+                            { "value" => '' }
+                        ],
+                    },
+                    {
+                        "label" => "Дополнительно",
+                        "fields" => [
+                            { "mask" => '' },
+                            { "readonly" => 0 },
+                            { "required" => 0 },
+                            { "placeholder" => '' },
+                            { "status" => 1 }
+                        ]
+                    }
+                ]
             },
-            'status'    => 'ok'
+            'status' => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -85,7 +99,7 @@ my $test_data = {
             'id'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: Action is not allowed for '/settings/edit'",
+            'message'   => "Id '1' is not a setting",
             'status'    => 'fail'
         },
         'comment' => 'Edit folder:'
@@ -119,11 +133,14 @@ my $test_data = {
     },
 };
 
+# включение флага utf8
+_utf8_on( $$test_data{1}{'result'}{'data'}{'tabs'}[0]{'label'} );
+_utf8_on( $$test_data{1}{'result'}{'data'}{'tabs'}[1]{'label'} );
+
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-
     $t->post_ok($host.'/settings/edit' => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')

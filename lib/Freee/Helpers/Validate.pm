@@ -67,12 +67,17 @@ sub register {
             }
 
             # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
-            if ( ( $required eq 'required' ) && $field eq 'parent' && !defined $param && $param eq '') {
+            if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
+                push @error, "_check_fields: didn't has required data in '$field'";
+                last;
+            }
+            # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
+            elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
             # проверка обязательности заполнения (исключение - 0 для toggle)
-            elsif ( ( $required eq 'required' ) && $url_for !~ /toggle/ && $field ne 'parent' && !$param ) {
+            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs)/ && $field ne 'parent' && !$param ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }

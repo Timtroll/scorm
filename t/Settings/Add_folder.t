@@ -35,7 +35,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'id'        => '1',
+            'id'        => 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
@@ -47,13 +47,11 @@ my $test_data = {
             'parent'    => 0
         },
         'result' => {
-            'id'        => '2',
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'Default status:' 
     },
-
-    # отрицательные тесты
     3 => {
         'data' => {
             'name'      => 'name3',
@@ -62,11 +60,13 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Parent '1' is wrong",
-            'status'    => 'fail'
+            'id'        => 3,
+            'status'    => 'ok'
         },
-        'comment' => 'Wrong parent:' 
+        'comment' => 'Folder in folder:' 
     },
+
+    # отрицательные тесты
     4 => {
         'data' => {
             'name'      => 'name4',
@@ -125,10 +125,10 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Parent '404' is wrong",
+            'message'   => "Parent folder with id '404' doesn't exist",
             'status'    => 'fail'
         },
-        'comment' => 'Parent dont exist:' 
+        'comment' => 'Parent doesnt exist:' 
     },
 };
 
