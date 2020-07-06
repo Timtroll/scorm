@@ -1,21 +1,2202 @@
-[
-  {
-    "title":  "label",
-    "add":    1,
-    "edit":   1,
-    "remove": 1,
-    "list":   [
-      {
-        "id":          1,
-        "label":       "label 1",
-        "description": "description",
-        "folder":      1
-      }, {
-        "id":          2,
-        "label":       "label 2",
-        "description": "description",
-        "folder":      1
-      }
-    ]
-  }
-]
+{
+  "label":  "Предметы",
+  "add":    1,
+  "edit":   1,
+  "remove": 1,
+  "list":   [
+    {
+      "id":     1,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Алгебра",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 11",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 21",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            },
+            {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            },
+            {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 31",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 41",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 51",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 61",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "id":     2,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Литература",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 1",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 2",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 3",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 4",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 5",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 6",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "id":     3,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Физика",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 1",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 2",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 3",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 4",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 5",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 6",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "id":     4,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Геометрия",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 1",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 2",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 3",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 4",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 5",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 6",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "id":     5,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Биология",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 1",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 2",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 3",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 4",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 5",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "label 6",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }, {
+      "id":     6,
+      "add":    1,
+      "edit":   1,
+      "remove": 1,
+      "parent": 0,
+      "label":  "Химия",
+      "folder": 1,
+      "list":   [
+        {
+          "id":     1,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 1",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия - урок 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     2,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 2",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т2 - урок 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "labХимия т2 - урок el 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т2 - урок  3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т2 - урок  4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т2 - урок  5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т2 - урок  6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     3,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 3",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т3 - урок 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     4,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 4",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    1,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "Химия т4 - урок 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     5,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 5",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 0
+            }, {
+              "id":     5,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }, {
+          "id":     6,
+          "add":    1,
+          "edit":   1,
+          "remove": 1,
+          "parent": 0,
+          "label":  "Химия - тема 6",
+          "folder": 1,
+          "list":   [
+            {
+              "id":     1,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 1",
+              "folder": 1
+            }, {
+              "id":     2,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 2",
+              "folder": 1
+            }, {
+              "id":     3,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 3",
+              "folder": 1
+            }, {
+              "id":     4,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 4",
+              "folder": 1
+            }, {
+              "id":     5,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 5",
+              "folder": 1
+            }, {
+              "id":     6,
+              "add":    0,
+              "edit":   1,
+              "remove": 1,
+              "parent": 0,
+              "label":  "label 6",
+              "folder": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

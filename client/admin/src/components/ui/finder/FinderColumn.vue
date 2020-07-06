@@ -8,7 +8,7 @@
 
       <!--Add Tree root el -->
       <div class="uk-width-auto"
-           v-if="add">
+           v-if="data.add">
         <button type="button"
                 class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                 @click.prevent="addEl()">
@@ -25,9 +25,8 @@
         <!-- label-->
         <div class="pos-finder-column-header-label search-toggle uk-flex">
 
-          <div class="uk-flex-1 uk-text-truncate">
-            label
-          </div>
+          <div class="uk-flex-1 uk-text-truncate"
+               v-text="data.label"></div>
 
           <div class="uk-flex-none">
             <a uk-toggle="target: .search-toggle; animation: uk-animation-slide-right"
@@ -57,7 +56,6 @@
                  v-model="searchInput"
                  @keyup.esc="clearSearchVal"
                  :placeholder="$t('actions.search')">
-
         </div>
 
       </div>
@@ -65,7 +63,64 @@
     </div>
 
     <!--CELL BODY-->
-    <div class="pos-finder-column-body"></div>
+    <div class="pos-finder-column-body"
+         v-if="data.list">
+
+      <ul class="pos-finder-list">
+
+        <!--nav item-->
+        <li class="pos-finder-list-item"
+            v-for="item in data.list"
+            :class="{selected: item.id === selected}">
+
+          <div class="pos-finder-list-item__label"
+               v-text="item.label"
+               @click="open(item)"></div>
+
+          <div class="pos-finder-list-item__actions">
+
+            <!--Добавить дочерний раздел-->
+            <a @click.prevent="addChildren(item)"
+               v-if="item.add"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
+               class="pos-finder-list-item-actions__add">
+              <img src="/img/icons/icon__plus-doc.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+
+            <!--Редактировать раздел-->
+            <a @click.prevent="editChildren(item)"
+               v-if="item.edit"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
+               class="pos-finder-list-item-actions__edit">
+              <img src="/img/icons/icon__edit.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+
+            <!--Удалить раздел-->
+            <a @click.prevent="removeChildren(item)"
+               v-if="item.remove"
+               :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
+               class="pos-finder-list-item-actions__remove">
+              <img src="/img/icons/icon__trash.svg"
+                   uk-svg
+                   width="14"
+                   height="14"
+                   alt="">
+            </a>
+          </div>
+
+        </li>
+        <!--nav item-->
+
+      </ul>
+    </div>
   </div>
   <!-- / CELL-->
 </template>
@@ -76,30 +131,22 @@ export default {
 
   props: {
 
-    add: {
-      type:    Boolean,
-      default: false
-    },
-
-    editable: {
-      type:    Boolean,
-      default: true
-    },
-
-    remove: {
-      type:    Boolean,
-      default: true
-    },
-
     data: {
       type:    Object,
       default: () => {}
     }
   },
 
+  watch: {
+    data () {
+      this.selected = null
+    }
+  },
+
   data () {
     return {
-      searchInput: null
+      searchInput: null,
+      selected:    null
     }
   },
 
@@ -134,7 +181,20 @@ export default {
       this.searchInput = null
     },
 
-    addEl () {}
+    open (item) {
+      this.selected      = item.id
+      this.data.selected = item
+      this.$emit('open', this.data)
+    },
+
+    addEl () {},
+
+    addChildren (item) {},
+
+    removeChildren (item) {},
+
+    editChildren (item) {}
+
   }
 }
 </script>
