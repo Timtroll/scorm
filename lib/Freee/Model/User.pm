@@ -73,11 +73,11 @@ sub _check_user {
     my ( $self, $data ) = @_;
 
     my ( $sth, $dbh, $result, $mess, $user, $value, @mess );
-
+# warn Dumper( $data );
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         my $usr = Freee::EAV->new( 'User' );
         my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
-
+# warn Dumper( $list );
         # взять нужное поле
         $user = {
             surname     => $usr->surname(),
@@ -86,16 +86,29 @@ sub _check_user {
             place       => $usr->place(),
             country     => $usr->country(),
             birthday    => $usr->birthday()
+            # id          => $usr->id(),
+            # email       => $usr->email(),
+            # eav_id      => $usr->eav_id(),
+            # phone       => $usr->phone(),
+            # password    => $usr->password(),
+            # timezone    => $usr->timezone(),
+            # time_create => $usr->time_create(),
+            # time_access => $usr->time_access(),
+            # time_update => $usr->time_update()
         };
-        warn Dumper $user;
+        # warn 'user';
+        # warn Dumper $user;
+
+        return @$list[0];
+
 # warn $user->id();
 # warn Dumper $user;
     }
     else {
-        return;
+        return( undef, "wrong data for check" );
     }
 
-    return $user;
+    # return $user;
 }
 
 # Получить все данные пользователя из EAV и таблицы users
@@ -119,6 +132,26 @@ sub _check_user {
 # }
 sub _get_user {
     my ( $self, $data ) = @_;
+
+    # $data = {
+    #     'id'          => 1,                               # берется из users
+    #     'place'       => 'place',                         # берется из EAV
+    #     'country'     => 'country',                       # берется из EAV
+    #     'birthday'    => '1972-01-06 00:00:00',           # берется из EAV
+    #     'surname'     => 'test',                          # берется из EAV
+    #     'name'        => 'name',                          # берется из EAV
+    #     'patronymic'  => 'patronymic',                    # берется из EAV
+    #     'email'       => 'test@test.com',                 # берется из users
+    #     'eav_id'      => 1,                               # берется из users
+    #     'phone'       => '+7(999) 222-2222',              # берется из users
+    #     'password'    => 'password',                      # берется из users
+    #     'timezone'    => '10'                             # берется из users
+    #     'time_create' => '2020-06-27 22:16:27.874726+03', # берется из users
+    #     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
+    #     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
+    # };
+
+    # return $data;
 
     my ( $sth, $result, $mess, @mess );
 
@@ -156,7 +189,7 @@ warn Dumper $user;
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $mess, @mess );
+    my ( $sth, $result, $mess, $sql, @mess );
 
     # проверка входных данных
     if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -175,18 +208,20 @@ sub _insert_user {
 #                 "flags"     => 0
 #             };
 
-        foreach ("email", "phone", "password", "eav_id", "timezone") {
-            if ( defined($$data{'email'}) ) {
-                if ($$data{'email'}) {
+        # foreach ("email", "phone", "password", "eav_id", "timezone") {
+        #     if ( defined( $$data{'$_'} ) ) {
+        #         if ( $$data{'$_'} ) {
 
-                }
-                else {
+        #         }
+        #         else {
+        #             return( undef, "field $_ isn't defined" )
+        #         }
+        #     }
+        # }
 
-                }
-            }
-        }
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
+
         my $user = Freee::EAV->new( 'User',
             {
                 'publish' => \1,
@@ -202,18 +237,20 @@ sub _insert_user {
                 }
             }
         );
-        my $eav_id = $user->id();
+        $$data{'eav_id'} = $user->id();
 
-        if ($eav_id) {
+        if ( $$data{'eav_id'} ) {
 ##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
-            # запись данных в users
-            my $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
 
+            # запись данных в users
+            my @user_keys = ( "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone" );
+            $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
+
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
             $sth->execute();
 
-            $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
+            $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
             push @mess, "Can not insert $$data{'title'}" unless $result;
-warn "result = $result";
 
             # таблица users_social
             # my $user_data = {

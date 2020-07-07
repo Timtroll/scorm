@@ -3,12 +3,12 @@
 # 'surname'      => 'фамилия',         # До 24 букв, обязательное поле
 # 'name'         => 'имя',             # До 24 букв, обязательное поле
 # 'patronymic',  => 'отчество',        # До 32 букв, обязательное поле
-# 'place'        => 'место жительства',# До 64 букв, цифр и знаков, обязательное поле
+# 'place'        => 'place',           # До 64 букв, цифр и знаков, обязательное поле
 # 'country'      => 'Россия',          # До 32 букв, обязательное поле
 # 'timezone'     => '+3',              # +/- с 1/2 цифрами, обязательное поле
 # 'birthday'     => '01.01.2000',      # 12 цифр, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
-# 'avatar'       => 'CKEditor',        # До 9 цифр, обязательное поле
+# 'avatar'       => 1234,              # До 9 цифр, обязательное поле
 # 'type'         => 1,                 # Цифра 1-4, обязательное поле
 # 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
 # });
@@ -38,17 +38,17 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'surname'      => 'фамилия_right',
+            'name'         => 'имя_right',
+            'patronymic',  => 'отчество_right',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru'
+            'email'        => 'emailright@email.ru'
         },
         'result' => {
             'id'        => 1,
@@ -60,15 +60,14 @@ my $test_data = {
     # отрицательные тесты
     2 => {
         'data' => {
-            'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
@@ -81,14 +80,13 @@ my $test_data = {
     3 => {
         'data' => {
             'surname'      => 'фамилия',
-            'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
@@ -102,13 +100,12 @@ my $test_data = {
         'data' => {
             'surname'      => 'фамилия',
             'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
@@ -123,17 +120,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
-            'country'      => 'Россия',
+            'place'        => 'place',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "Setting named 'country' is exists",
+            'message'   => "_check_fields: didn't has required data in 'country'",
             'status'    => 'fail',
         },
         'comment' => 'No country:'
@@ -143,17 +139,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
-            'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "_check_fields: 'timezone' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'timezone'",
             'status'    => 'fail',
         },
         'comment' => 'No timezone:'
@@ -163,17 +158,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "_check_fields: 'birthday' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'birthday'",
             'status'    => 'fail',
         },
         'comment' => 'No birthday:'
@@ -183,17 +177,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "_check_fields: 'password' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'password'",
             'status'    => 'fail',
         },
         'comment' => 'No password:'
@@ -203,17 +196,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
             'type'         => 1,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "_check_fields: 'avatar' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'avatar'",
             'status'    => 'fail',
         },
         'comment' => 'No avatar:'
@@ -223,17 +215,16 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
-            'type'         => 1,
+            'avatar'       => 1234,
             'email'        => 'email@email.ru'
         },
         'result' => {
-            'message'   => "_check_fields: 'type' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'type'",
             'status'    => 'fail',
         },
         'comment' => 'No type:'
@@ -243,41 +234,60 @@ my $test_data = {
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
-            'type'         => 1,
-            'email'        => 'email@email.ru'
+            'avatar'       => 1234,
+            'type'         => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'email' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'email'",
             'status'    => 'fail',
         },
         'comment' => 'No email:'
     },
     12 => {
         'data' => {
-            'surname'      => 404,
+            'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
-            'place'        => 'место жительства',
+            'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'CKEditor',
+            'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru'
+            'email'        => '+++'
         },
         'result' => {
-            'message'   => "_check_fields: 'surname' didn't match regular expression",
+            'message'   => "_check_fields: 'email' didn't match regular expression",
             'status'    => 'fail',
         },
-        'comment' => 'Wrong type:'
+        'comment' => 'Wrong email:'
     },
+    13 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'Россия',
+            'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
+            'password'     => 'password1',
+            'avatar'       => 1234,
+            'type'         => 1,
+            'email'        => 'emailright@email.ru'
+        },
+        'result' => {
+            'message'   => "Email emailright\@email.ru already used",
+            'status'    => 'fail',
+        },
+        'comment' => "Email already used:"
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
@@ -299,9 +309,18 @@ done_testing();
 
 # очистка тестовой таблицы
 sub clear_db {
-    if ($t->app->config->{test}) {
+    if ( $t->app->config->{test} ) {
         $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")

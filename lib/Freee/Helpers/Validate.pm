@@ -76,7 +76,7 @@ sub register {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
-            # проверка обязательности заполнения (исключение - 0 для toggle)
+            # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs и parent )
             elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs)/ && $field ne 'parent' && !$param ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
@@ -199,15 +199,13 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^[0-9 \-]$/os, 24 ],
-                'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^\d+$/os, 3 ],
+                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
-                'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
-                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'birthday'      => [ 'required', qr/^[\d\.]+$/os, 12 ],
+                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
                 'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
-                'email'         => [ 'required', qr/^[\w\d\@]+$/os, 100 ]
+                'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

@@ -207,61 +207,47 @@ sub add {
 }
 
 sub add_by_email {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    my ($data, $resp, $error, $result, $data_eav, $user, @mess);
+    my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
     }
 
+    unless ( @mess ) {
+        # проверяем, - есть ли такой юзер в EAV и users
+
+        # my $usr = Freee::EAV->new( 'User', { id => 2 } );
+        my $user = {
+            'email' => $$data{'email'}
+        };
+
+        ( $result, $error ) = $self->model('User')->_check_user( $user );
+
+        if ( $result ) {
+            push @mess, "Email $$data{'email'} already used";
+        }
+        push @mess, $error if $error;
+    }
+
+    # добавляем юзера в EAV и users
     unless ( @mess ) {
         $$data{'time_create'} = $self->_get_time();
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
+        $$data{'phone'}       = ' ';
 
-# print Dumper( $data );
-
-        $data_eav = {
-            'publish'     => $$data{'status'} ? \1 : \0, 
-            'parent'      => 1,
-            'email'       => $$data{'email'},
-            'password'    => $$data{'password'},
-            'time_create' => $$data{'time_create'},
-            'time_access' => $$data{'time_access'},
-            'time_update' => $$data{'time_update'},
-            'timezone'    => $$data{'timezone'}
-        };
-
-        $user = Freee::EAV::User->new( 'User', $data_eav );
-        # $user = Freee::EAV::User->new( $data_eav );
+        ( $result, $error ) = $self->model('User')->_insert_user( $data );
+        push @mess, $error if $error;
     }
-
-
-#     unless ( @mess ) {
-#         # $$data{'time_create'} = 1;
-#         # $$data{'time_create'} = time();
-#         $$data{'time_create'} = gmtime();
-#         # $$data{'time_access'} = 1;
-#         $$data{'time_access'} = gmtime();
-#         # $$data{'time_access'} = gmtime();
-#         # $$data{'time_access'} = 1;
-#         $$data{'time_update'} = gmtime();
-#         # $$data{'status'} = 1;
-#         $$data{'eav_id'} = 123;
-# warn Dumper( $$data{'time_create'} );
-# warn Dumper( $$data{'time_access'} );
-# warn Dumper( $$data{'time_update'} );
-#         ( $result, $error ) = $self->_insert_user( $data );
-#         push @mess, $error unless $result;
-#     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result if $result;
+    $resp->{'id'} = $result unless @mess;
 
     $self->render( 'json' => $resp );
 }
