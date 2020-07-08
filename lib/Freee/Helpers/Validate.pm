@@ -71,13 +71,18 @@ sub register {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
+            # проверка заполнения обязательного поля status, оно не undef и не пустая строка
+            if ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
+                push @error, "_check_fields: didn't has required data in '$field'";
+                last;
+            }
             # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
             elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
             # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs и parent )
-            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs)/ && $field ne 'parent' && !$param ) {
+            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs)/ && $field ne 'parent' && $field ne 'status' && !$param ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
@@ -189,8 +194,7 @@ sub register {
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
                 'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
-                'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'newpassword'   => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
@@ -202,10 +206,25 @@ sub register {
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
                 'birthday'      => [ 'required', qr/^[\d\.]+$/os, 12 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
                 'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
                 'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ]
+            },
+            '/user/add_by_phone'  => {
+                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+                'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
+                'phone'         => [ 'required', qr/^[0-9 \-\+\(\)]+$/os, 24 ],
+                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
+                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
+                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
+                'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

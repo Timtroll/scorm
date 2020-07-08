@@ -72,43 +72,34 @@ my %masks_fields = (
 sub _check_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $dbh, $result, $mess, $user, $value, @mess );
-# warn Dumper( $data );
-    if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        my $usr = Freee::EAV->new( 'User' );
-        my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
-# warn Dumper( $list );
-        # взять нужное поле
-        $user = {
-            surname     => $usr->surname(),
-            name        => $usr->name(),
-            patronymic  => $usr->patronymic(),
-            place       => $usr->place(),
-            country     => $usr->country(),
-            birthday    => $usr->birthday()
-            # id          => $usr->id(),
-            # email       => $usr->email(),
-            # eav_id      => $usr->eav_id(),
-            # phone       => $usr->phone(),
-            # password    => $usr->password(),
-            # timezone    => $usr->timezone(),
-            # time_create => $usr->time_create(),
-            # time_access => $usr->time_access(),
-            # time_update => $usr->time_update()
-        };
-        # warn 'user';
-        # warn Dumper $user;
-
-        return @$list[0];
-
-# warn $user->id();
-# warn Dumper $user;
-    }
-    else {
-        return( undef, "wrong data for check" );
-    }
-
+    # my ( $sth, $dbh, $result, $mess, $user, $value, @mess );
+    # if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+    #     my $usr = Freee::EAV->new( 'User' );
+    #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+    #     # взять нужное поле
+    #     $user = {
+    #         surname     => $usr->surname(),
+    #         name        => $usr->name(),
+    #         patronymic  => $usr->patronymic(),
+    #         place       => $usr->place(),
+    #         country     => $usr->country(),
+    #         birthday    => $usr->birthday()
+    #     };
+    # }
+    # else {
+    # }
     # return $user;
+
+    unless ( $$data{'email'} || $$data{'phone'} ) {
+        return undef, 'no data for check';
+    }
+
+    my $usr = Freee::EAV->new( 'User' );
+    my $user = $usr->_getAll();
+    my $list = $usr->_list();
+warn Dumper $user;
+warn Dumper $list;
+
 }
 
 # Получить все данные пользователя из EAV и таблицы users
@@ -224,7 +215,7 @@ sub _insert_user {
 
         my $user = Freee::EAV->new( 'User',
             {
-                'publish' => \1,
+                'publish' => $$data{'status'},
                 'parent' => 1, 
                 'title' => $$data{'title'},
                 'User' => {

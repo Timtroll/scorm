@@ -190,6 +190,7 @@ sub startup {
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # регистрация юзера
     $auth->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
+    $auth->post('/user/add_by_phone')   ->to('user#add_by_phone');  # регистрация юзера по номеру телефона 
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
     $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера

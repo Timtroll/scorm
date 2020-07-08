@@ -12,6 +12,7 @@
 # 'avatar'       => 1234,              # До 9 цифр, обязательное поле
 # 'type'         => 1,                 # Цифра 1-4, обязательное поле
 # 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
+# 'phone'        => 'email@email.ru'   # +, 11 цифр, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -49,7 +50,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'emailright@email.ru',
+            'phone'        => '+79212222222',
             'status'       => 1
         },
         'result' => {
@@ -70,7 +71,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'emailright2@email.ru',
+            'phone'        => '+79212222221',
             'status'       => 0
         },
         'result' => {
@@ -92,7 +93,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -112,7 +113,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -132,7 +133,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -152,7 +153,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -172,7 +173,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -192,7 +193,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -212,7 +213,7 @@ my $test_data = {
             'birthday'     => '01.01.2000',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -232,7 +233,7 @@ my $test_data = {
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'type'         => 1,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -252,7 +253,7 @@ my $test_data = {
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1234,
-            'email'        => 'email@email.ru',
+            'phone'        => '+79211111111',
             'status'       => 1
         },
         'result' => {
@@ -276,10 +277,10 @@ my $test_data = {
             'status'       => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'email'",
+            'message'   => "_check_fields: didn't has required data in 'phone'",
             'status'    => 'fail',
         },
-        'comment' => 'No email:'
+        'comment' => 'No phone:'
     },
     13 => {
         'data' => {
@@ -292,10 +293,12 @@ my $test_data = {
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1234,
-            'type'         => 1
+            'type'         => 1,
+            'phone'        => '+79211111111a',
+            'status'       => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'status'",
+            'message'   => "_check_fields: 'phone' didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => 'No status:'
@@ -312,35 +315,14 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => '+++',
+            'phone'        => '+79212222222',
             'status'       => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'email' didn't match regular expression",
+            'message'   => "Phone +79212222222 already used",
             'status'    => 'fail',
         },
-        'comment' => 'Wrong email:'
-    },
-    15 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 1234,
-            'type'         => 1,
-            'email'        => 'emailright@email.ru',
-            'status'       => 1
-        },
-        'result' => {
-            'message'   => "Email emailright\@email.ru already used",
-            'status'    => 'fail',
-        },
-        'comment' => "Email already used:"
+        'comment' => "Telephone already used:"
     }
 };
 
@@ -349,7 +331,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/add_by_email' => form => $data );
+    $t->post_ok( $host.'/user/add_by_phone' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

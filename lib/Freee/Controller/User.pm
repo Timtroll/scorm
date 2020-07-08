@@ -182,26 +182,37 @@ sub add {
     unless (@mess) {
         # проверка данных
         ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        push @mess, $error if $error;
+    }
 
-        unless ( @mess ) {
-            # проверяем, - есть ли такой юзер в EAV и users
-            my $usr = Freee::EAV->new( 'User', { id => 2 } );
-            my $user = {
-                'email' => $$data{'email'},
-                'phone' => $$data{'phone'}
-            };
-            ( $result, $error ) = $self->model('User')->_check_user( $user );
+    unless ( @mess ) {
+        # проверяем, - есть ли такой юзер в EAV и users
+        # my $usr = Freee::EAV->new( 'User', { id => 2 } );
+        my $user = {
+            'email' => $$data{'email'},
+            'phone' => $$data{'phone'}
+        };
+        ( $result, $error ) = $self->model('User')->_check_user( $user );
 
-            # добавляем юзера в EAV и users
-            ( $result, $error ) = $self->model('User')->_insert_user( $data );
-            push @mess, $error unless $result;
-        }
+        # if ( $result ) {
+        #     push @mess, "Email $$data{'email'} already used";
+        # }
+        push @mess, $error if $error;
+    }
+
+    unless ( @mess ) {
+        # добавляем юзера в EAV и users
+        $$data{'time_create'} = $self->_get_time();
+        $$data{'time_access'} = $self->_get_time();
+        $$data{'time_update'} = $self->_get_time();
+
+        ( $result, $error ) = $self->model('User')->_insert_user( $data );
+        push @mess, $error if $error;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result if $result;
+    $resp->{'id'} = $result unless @mess;
 
     $self->render( 'json' => $resp );
 }
@@ -240,6 +251,52 @@ sub add_by_email {
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
         $$data{'phone'}       = ' ';
+
+        ( $result, $error ) = $self->model('User')->_insert_user( $data );
+        push @mess, $error if $error;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+sub add_by_phone {
+    my $self = shift;
+
+    my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    unless ( @mess ) {
+        # проверяем, - есть ли такой юзер в EAV и users
+
+        # my $usr = Freee::EAV->new( 'User', { id => 2 } );
+        my $user = {
+            'phone' => $$data{'phone'}
+        };
+
+        ( $result, $error ) = $self->model('User')->_check_user( $user );
+
+        if ( $result ) {
+            push @mess, "Phone $$data{'phone'} already used";
+        }
+        push @mess, $error if $error;
+    }
+
+    # добавляем юзера в EAV и users
+    unless ( @mess ) {
+        $$data{'time_create'} = $self->_get_time();
+        $$data{'time_access'} = $self->_get_time();
+        $$data{'time_update'} = $self->_get_time();
+        $$data{'email'}       = ' ';
 
         ( $result, $error ) = $self->model('User')->_insert_user( $data );
         push @mess, $error if $error;
