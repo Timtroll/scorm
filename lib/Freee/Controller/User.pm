@@ -10,6 +10,51 @@ use Data::Dumper;
 sub index {
     my ($self);
     $self = shift;
+
+    $self->render(
+        'json'    => {
+            {
+               "list" => {
+                    "body" => [
+                        {
+                            "surname" =>  "Фамилия",
+                            "name" =>  "Имя",
+                            "patronymic" =>  "Отчество",
+                            "place" =>  "Луна",
+                            "country" =>  "Киргизия",
+                            "timezone" =>  "+3",
+                            "birthday" =>  "01.01.2020",
+                            "password" =>  "password1",
+                            "avatar" =>  1234,
+                            "type" =>  1,
+                            "email" =>  "email\@mail.ru",
+                            "emailconfirmed" =>  1,
+                            "phone" =>  "9873636363",
+                            "phoneconfirmed" =>  1,
+                            "status" =>  1
+                        }
+                    ],
+                    "settings" => {
+                        "editable" => 1,
+                        "massEdit" => 0,
+                        "page" => {
+                            "current_page" => 1,
+                            "per_page" => 100,
+                            "total" => 0
+                        },
+                        "removable" => 1,
+                        "sort" => {
+                            "name" => "id",
+                            "order" => "asc"
+                        }
+                    }
+                },
+               "status" => "ok"
+            }
+        }
+    );
+    return;
+
 warn "index";
 
     my ($data, $list, $resp, @mess);
@@ -85,6 +130,61 @@ warn Dumper $list;
 sub edit {
     my ($self);
     $self = shift;
+
+    $self->render(
+        'json'    => {
+            "data" => {
+                "tabs" => [
+                    {
+                    "fields" => [
+                       {"name" => "имя_right"},
+                       {"patronymic" => "отчество_right"},
+                       {"surname" => "фамилия_right"},
+                       {"birthday" => "01.01.2000"},
+                       {"avatar" => "1234"},
+                       {"country" => "Россия"},
+                       {"place" => "place"},
+                       {"status" => "1"},
+                       {"timezone" => '+3'},
+                       {"type" => "1"}
+                    ],
+                    "label" => "Основные"
+                },
+                {
+                    "fields" => [
+                       {"email" => "emailright\@email.ru"},
+                       {"emailconfirmed" => "emailright\@email.ru"},
+                       {"phone" => '+79212222222'},
+                       {"phoneconfirmed" => '+79212222222'}
+                    ],
+                    "label" => "Контакты"
+                 },
+                 {
+                    "fields" => [
+                        {"password" => "password1"},
+                        {"newpassword" => "password1"}
+                    ],
+                    "label" => "Пароль"
+                 },
+                    {
+                        "fields" => [
+                           {"groups" => [] }
+                        ],
+                        "label" => "Группы"
+                    }
+                ]
+            },
+            "status" => "ok"
+        }
+    );
+    return;
+
+    $self->render(
+        'json'    => {
+            'message'   => 'error',
+            'status'    => 'fail'
+        }
+    );
 
     my ($user, $data, $param, $resp, $error, $main, $contacts, $groups, @mess);
 
@@ -176,6 +276,14 @@ sub add {
     my ($self);
     $self = shift;
 
+    $self->render(
+        'json'    => {
+            'id'        => 1,
+            'status'    => 'ok'
+        }
+    );
+    return;
+
     my ($data, $resp, $result, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
@@ -219,6 +327,21 @@ sub add {
 
 sub add_by_email {
     my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'id'        => 1,
+            'status'    => 'ok'
+        }
+    );
+
+    $self->render(
+        'json'    => {
+            'message'   => 'Email emailright@email.ru already used',
+            'status'    => 'fail'
+        }
+    );
+    return;
 
     my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
@@ -265,6 +388,14 @@ sub add_by_email {
 
 sub add_by_phone {
     my $self = shift;
+
+    $self->render(
+        'json'    => {
+            'id'        => 1,
+            'status'    => 'ok'
+        }
+    );
+    return;
 
     my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
@@ -313,6 +444,14 @@ sub save {
     my ($self);
     $self = shift;
 
+    $self->render(
+        'json'    => {
+            'id'        => 1,
+            'status'    => 'ok'
+        }
+    );
+    return;
+
     my ($data, $resp, @mess);
     $data = {
         'id'                => 1,
@@ -349,6 +488,14 @@ sub save {
 sub toggle {
     my $self = shift;
 
+    $self->render(
+        'json'    => {
+            'id'        => 1,
+            'status'    => 'ok'
+        }
+    );
+    return;
+
     my ($toggle, $resp, $data, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
@@ -374,6 +521,13 @@ sub toggle {
 sub delete {
     my ($self);
     $self = shift;
+
+    $self->render(
+        'json'    => {
+            'status'    => 'ok'
+        }
+    );
+    return;
 
     my ($data, $resp, @mess);
     $data = {};
