@@ -63,7 +63,7 @@ $test_data = {
                     'description' => 'description'
                    },
         'result' => {
-                    'message'   => "_check_fields: don't have required data in -upload-",
+                    'message'   => "_check_fields: didn't has required data in 'upload'",
                     'status'    => 'fail'
         },
         'comment' => 'empty file:' 

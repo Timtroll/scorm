@@ -131,9 +131,8 @@ $settings = {
             "label"         => "Разрешённые расширения загружаемых файлов (не включать значение  desc !!!)",
             "placeholder"   => "",
             "mask"          => "",
-            "value"         => [
-              ["1", "png"], ["1", "jpg"], ["1", "jpeg"], ["1", "svg"], ["1", "txt"]
-            ],
+            # значение хранится в Mock/extensions.pm
+            "value"         => "",
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,

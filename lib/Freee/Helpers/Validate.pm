@@ -122,7 +122,10 @@ sub register {
                 }
                 next;
             }
-
+            elsif ( $required eq 'file_required' ) {
+                push @error, "_check_fields: didn't has required data in '$field'";
+                last;   
+            }
             # проверка на toggle
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {

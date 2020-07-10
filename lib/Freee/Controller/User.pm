@@ -276,13 +276,13 @@ sub add {
     my ($self);
     $self = shift;
 
-    $self->render(
-        'json'    => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    );
-    return;
+    # $self->render(
+    #     'json'    => {
+    #         'id'        => 1,
+    #         'status'    => 'ok'
+    #     }
+    # );
+    # return;
 
     my ($data, $resp, $result, $error, @mess);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    

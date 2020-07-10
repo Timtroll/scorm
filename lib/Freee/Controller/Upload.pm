@@ -38,7 +38,7 @@ sub index {
         $$data{'description'} = '' unless ( $$data{'description'} );
 
         # получение mime
-        $$data{'mime'} = $$mime{$$data{'extension'}} || '';
+        $$data{'mime'} = $self->{'app'}->{'settings'}->{'valid_extensions'}->{$$data{'extension'}} || '';
 
         # запись файла
         $result = write_file(

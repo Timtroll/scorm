@@ -90,14 +90,17 @@ sub _check_user {
     # }
     # return $user;
 
-    unless ( $$data{'email'} || $$data{'phone'} ) {
-        return undef, 'no data for check';
-    }
+    # unless ( $$data{'email'} || $$data{'phone'} ) {
+    #     return undef, 'no data for check';
+    # }
 
     my $usr = Freee::EAV->new( 'User' );
     my $user = $usr->_getAll();
     my $list = $usr->_list();
+        # my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+print "getAll:\n";
 warn Dumper $user;
+print "list:\n";
 warn Dumper $list;
 
 }
@@ -198,17 +201,6 @@ sub _insert_user {
 #                 "order"      => 'local',
 #                 "flags"     => 0
 #             };
-
-        # foreach ("email", "phone", "password", "eav_id", "timezone") {
-        #     if ( defined( $$data{'$_'} ) ) {
-        #         if ( $$data{'$_'} ) {
-
-        #         }
-        #         else {
-        #             return( undef, "field $_ isn't defined" )
-        #         }
-        #     }
-        # }
 
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
