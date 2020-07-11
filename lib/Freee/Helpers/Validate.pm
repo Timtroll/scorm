@@ -304,6 +304,50 @@ sub register {
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
+            # роуты discipline/*
+            '/discipline'  => {
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+            },
+            '/discipline/get'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/discipline/add'  => {
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "description"   => [ 'required', qr/.*/os, 256 ],
+                "content"       => [ 'required', qr/.*/os, 2048 ],
+                "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
+                "attachment"    => [ 'required', qr/.*/os, 2048 ], # ????????? порверить regexp
+                "keywords"      => [ 'required', qr/.*/os, 2048 ],
+                "link"          => [ 'required', qr/.*/os, 256 ],
+                "seo"           => [ 'required', qr/.*/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/discipline/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
+                "label"         => [ 'required', qr/.*/os, 256 ],
+                "description"   => [ 'required', qr/.*/os, 256 ],
+                "content"       => [ 'required', qr/.*/os, 2048 ],
+                "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
+                "attachment"    => [ 'required', qr/.*/os, 2048 ], # ????????? порверить regexp
+                "keywords"      => [ 'required', qr/.*/os, 2048 ],
+                "link"          => [ 'required', qr/.*/os, 256 ],
+                "seo"           => [ 'required', qr/.*/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/discipline/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/discipline/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
             # роуты groups/*
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
