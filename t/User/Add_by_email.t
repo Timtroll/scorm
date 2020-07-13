@@ -292,7 +292,8 @@ my $test_data = {
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1234,
-            'type'         => 1
+            'type'         => 1,
+            'email'        => 'email@email.ru',
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'status'",
@@ -337,7 +338,7 @@ my $test_data = {
             'status'       => 1
         },
         'result' => {
-            'message'   => "Email emailright\@email.ru already used",
+            'message'   => "email 'emailright\@email.ru' already used",
             'status'    => 'fail',
         },
         'comment' => "Email already used:"

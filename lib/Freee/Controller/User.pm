@@ -296,16 +296,18 @@ sub add {
     unless ( @mess ) {
         # проверяем, - есть ли такой юзер в EAV и users
         # my $usr = Freee::EAV->new( 'User', { id => 2 } );
-        my $user = {
-            'email' => $$data{'email'},
-            'phone' => $$data{'phone'}
-        };
-        ( $result, $error ) = $self->model('User')->_check_user( $user );
-
+        # my $user = {
+        #     'email' => $$data{'email'},
+        #     'phone' => $$data{'phone'}
+        # };
+        # ( $result, $error ) = $self->model('User')->_check_user( $user );
         # if ( $result ) {
         #     push @mess, "Email $$data{'email'} already used";
         # }
-        push @mess, $error if $error;
+
+        # проверяем, используется ли емэйл или телефон другим пользователем
+        ( $result, $error ) = $self->model('User')->_check_user( $data );
+        push @mess, $error unless $result;
     }
 
     unless ( @mess ) {
@@ -328,20 +330,20 @@ sub add {
 sub add_by_email {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    );
+    # $self->render(
+    #     'json'    => {
+    #         'id'        => 1,
+    #         'status'    => 'ok'
+    #     }
+    # );
 
-    $self->render(
-        'json'    => {
-            'message'   => 'Email emailright@email.ru already used',
-            'status'    => 'fail'
-        }
-    );
-    return;
+    # $self->render(
+    #     'json'    => {
+    #         'message'   => 'Email emailright@email.ru already used',
+    #         'status'    => 'fail'
+    #     }
+    # );
+    # return;
 
     my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
@@ -353,19 +355,9 @@ sub add_by_email {
     }
 
     unless ( @mess ) {
-        # проверяем, - есть ли такой юзер в EAV и users
-
-        # my $usr = Freee::EAV->new( 'User', { id => 2 } );
-        my $user = {
-            'email' => $$data{'email'}
-        };
-
-        ( $result, $error ) = $self->model('User')->_check_user( $user );
-
-        if ( $result ) {
-            push @mess, "Email $$data{'email'} already used";
-        }
-        push @mess, $error if $error;
+        # проверяем, используется ли емэйл другим пользователем
+        ( $result, $error ) = $self->model('User')->_check_user( $data );
+        push @mess, $error unless $result;
     }
 
     # добавляем юзера в EAV и users
@@ -389,13 +381,13 @@ sub add_by_email {
 sub add_by_phone {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    );
-    return;
+    # $self->render(
+    #     'json'    => {
+    #         'id'        => 1,
+    #         'status'    => 'ok'
+    #     }
+    # );
+    # return;
 
     my ( $data, $resp, $error, $result, $data_eav, $user, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
@@ -407,19 +399,9 @@ sub add_by_phone {
     }
 
     unless ( @mess ) {
-        # проверяем, - есть ли такой юзер в EAV и users
-
-        # my $usr = Freee::EAV->new( 'User', { id => 2 } );
-        my $user = {
-            'phone' => $$data{'phone'}
-        };
-
-        ( $result, $error ) = $self->model('User')->_check_user( $user );
-
-        if ( $result ) {
-            push @mess, "Phone $$data{'phone'} already used";
-        }
-        push @mess, $error if $error;
+        # проверяем, используется ли телефон другим пользователем
+        ( $result, $error ) = $self->model('User')->_check_user( $data );
+        push @mess, $error unless $result;
     }
 
     # добавляем юзера в EAV и users
@@ -488,53 +470,63 @@ sub save {
 sub toggle {
     my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    );
-    return;
+    # $self->render(
+    #     'json'    => {
+    #         'id'        => 1,
+    #         'status'    => 'ok'
+    #     }
+    # );
+    # return;
 
-    my ($toggle, $resp, $data, $error, @mess);
+    my ( $toggle, $resp, $data, $result, $error, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @mess ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
 
-        unless (@mess) {
-            $$data{'table'} = 'settings';
-            $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
-            push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
-        }
+    unless ( @mess ) {
+        ( $result, $error ) = $self->model('User')->_toggle_user( $data );
+        push @mess, $error if $error;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} if $toggle;
+    $resp->{'id'} = $$data{'id'} unless @mess;
 
     $self->render( 'json' => $resp );
 }
 
 sub delete {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'status'    => 'ok'
-        }
-    );
-    return;
+    # $self->render(
+    #     'json'    => {
+    #         'status'    => 'ok'
+    #     }
+    # );
+    # return;
 
-    my ($data, $resp, @mess);
-    $data = {};
+    my ( $data, $resp, $result, $error, @mess );
+
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    # удаление пользователя из EAV и из Users
+    unless ( @mess ) {
+        ( $result, $error ) = $self->model('User')->_delete_user( $data );
+        push @mess, $error if $error;
+    }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
 
     $self->render( 'json' => $resp );
 }

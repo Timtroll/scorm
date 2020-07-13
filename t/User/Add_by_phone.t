@@ -319,7 +319,7 @@ my $test_data = {
             'status'       => 1
         },
         'result' => {
-            'message'   => "Phone +79212222222 already used",
+            'message'   => "phone '+79212222222' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"

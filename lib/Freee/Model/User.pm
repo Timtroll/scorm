@@ -89,20 +89,41 @@ sub _check_user {
     # else {
     # }
     # return $user;
-
-    # unless ( $$data{'email'} || $$data{'phone'} ) {
-    #     return undef, 'no data for check';
-    # }
-
-    my $usr = Freee::EAV->new( 'User' );
-    my $user = $usr->_getAll();
-    my $list = $usr->_list();
+    # my $usr = Freee::EAV->new( 'User' );
+    # my $user = $usr->_getAll();
+    # my $list = $usr->_list();
         # my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
-print "getAll:\n";
-warn Dumper $user;
-print "list:\n";
-warn Dumper $list;
 
+    my ( $sth, $sql, $result, $error, @mess );
+
+    unless ( $$data{'email'} || $$data{'phone'} ) {
+        push @mess, 'no data for check';
+    }
+
+    unless ( @mess ) {
+        foreach ( 'email', 'phone' ) {
+            if ( $$data{ $_ } ) {
+                $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'";
+                # $sql = 'SELECT "id" FROM "public"."users" WHERE ? = ?';
+
+                $sth = $self->{app}->pg_dbh->prepare( $sql );
+                # $sth->bind_param( 1, $_ );
+                # $sth->bind_param( 2, $$data{ $_ } );
+
+                $result = $sth->execute();
+
+                unless ( $result == '0E0' ) {
+                    push @mess, "$_ '$$data{ $_ }' already used";    
+                }
+            }
+        }
+    }
+
+    if ( @mess ) {
+        return( undef, join( "\n", @mess ) )
+    }
+
+    return 1;
 }
 
 # Получить все данные пользователя из EAV и таблицы users
@@ -186,8 +207,9 @@ sub _insert_user {
     my ( $sth, $result, $mess, $sql, @mess );
 
     # проверка входных данных
-    if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @mess, "no data for insert";
+    }
             # загружаем аватарку
             # таблица media (аватарка)
 #             my $media_data = {
@@ -201,7 +223,7 @@ sub _insert_user {
 #                 "order"      => 'local',
 #                 "flags"     => 0
 #             };
-
+    unless ( @mess) {
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
@@ -222,34 +244,32 @@ sub _insert_user {
         );
         $$data{'eav_id'} = $user->id();
 
-        if ( $$data{'eav_id'} ) {
-##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
-
-            # запись данных в users
-            my @user_keys = ( "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone" );
-            $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
-
-            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-            $sth->execute();
-
-            $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
-            push @mess, "Can not insert $$data{'title'}" unless $result;
-
-            # таблица users_social
-            # my $user_data = {
-            #     "user_id" int4 NOT NULL,
-            #     "social" "public"."social" NOT NULL,
-            #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
-            #     "social_id",     => 123123123,
-            #     "social_profile" => "{}"
-            # };
-        }
-        else {
+        unless ( $$data{'eav_id'} ) {
             push @mess, "Could not insert user into EAV";
         }
     }
-    else {
-        push @mess, "no data for insert";
+
+    unless ( @mess ) {
+##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
+
+        # запись данных в users
+        my @user_keys = ( "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone" );
+        $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
+
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->execute();
+
+        $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
+        push @mess, "Can not insert $$data{'title'} into users" unless $result;
+
+        # таблица users_social
+        # my $user_data = {
+        #     "user_id" int4 NOT NULL,
+        #     "social" "public"."social" NOT NULL,
+        #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
+        #     "social_id",     => 123123123,
+        #     "social_profile" => "{}"
+        # };
     }
 
     if ( @mess ) {
@@ -259,4 +279,72 @@ sub _insert_user {
     return $result, $mess;
 }
 
+sub _toggle_user {
+    my ( $self, $data ) = @_;
+
+    my ( $sth, $usr, $result, $mess, $sql, @mess );
+
+    unless ( $$data{'id'} ) {
+        push @mess, 'no data for toggle';
+    }
+
+    unless ( @mess ) {
+        # проверка существования пользователя с id
+        $sql = 'SELECT "id" FROM "public"."users" WHERE "id" = ?';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+
+        $result = $sth->execute();
+        push @mess, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
+    }
+
+    unless ( @mess ) {
+        # смена значение publish в EAV
+        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
+        $result = $usr->_delete();
+
+        push @mess, "can't toggle from EAV" unless $result;
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $result, $mess;
+}
+
+sub _delete_user {
+    my ( $self, $data ) = @_;
+
+    my ( $sth, $usr, $result, $mess, $sql, @mess );
+
+    unless ( $$data{'id'} ) {
+        push @mess, 'no data for delete';
+    }
+
+    unless ( @mess ) {
+        # удаление из users
+        $sql = 'DELETE FROM "public"."users" WHERE "id" = ? RETURNING "id"';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+
+        $result = $sth->execute();
+
+        push @mess, "could not delete '$$data{'id'}'" if $result eq '0E0';
+    }
+
+    unless ( @mess ) {
+        # удаление из EAV
+        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
+        $result = $usr->_RealDelete();
+
+        push @mess, "can't delete from EAV" unless $result;
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $result, $mess;
+}
 1;

@@ -41,7 +41,7 @@ my $data = {
     'phone'        => '+79212222222',
     'status'       => 1
 };
-$t->post_ok( $host.'/settings/add' => form => $data );
+$t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -64,7 +64,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not delete '404'",
+            'message'   => "could not delete '404'",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -85,7 +85,7 @@ my $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
-    },
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

@@ -65,7 +65,7 @@ sub register {
                 push @error, "_check_fields: '$field' has wrong size";
                 last;
             }
-
+##########################     переделать на проверку на хэш
             # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
             if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
                 push @error, "_check_fields: didn't has required data in '$field'";
@@ -86,6 +86,7 @@ sub register {
                 push @error, "_check_fields: didn't has required data in '$field'";
                 last;
             }
+############################
             # отдельная проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла

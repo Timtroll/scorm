@@ -41,7 +41,7 @@ my $data = {
     'phone'        => '+79212222222',
     'status'       => 1
 };
-$t->post_ok( $host.'/settings/add' => form => $data );
+$t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -65,14 +65,14 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not toggle '404'",
+            'message'   => "user with '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 

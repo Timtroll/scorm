@@ -354,7 +354,7 @@ my $test_data = {
             'status'       => 1
         },
         'result' => {
-            'message'   => "Email emailright\@email.ru already used",
+            'message'   => "email 'emailright\@email.ru' already used",
             'status'    => 'fail',
         },
         'comment' => "Email already used:"
@@ -371,12 +371,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1234,
             'type'         => 1,
-            'email'        => 'emailright@email.ru',
+            'email'        => 'emailright3@email.ru',
             'phone'        => '+79212222222',
             'status'       => 1
         },
         'result' => {
-            'message'   => "Email emailright\@email.ru already used",
+            'message'   => "phone '+79212222222' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"
