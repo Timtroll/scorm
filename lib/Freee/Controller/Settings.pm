@@ -8,6 +8,8 @@ use JSON::XS;
 use Encode;
 
 use Freee::Mock::Settings;
+use Freee::Mock::Extensions;
+
 use Freee::Model::Settings;
 use Freee::Model::Utils;
 use Data::Dumper;
@@ -273,12 +275,18 @@ sub load_default {
                     "status"        => 1,
                     "parent"        => $id  # указываем родительский id
                 };
-
+                # значение valid_extensions берётся из Mock/extensions.pm
+                if ( $$children{'name'} eq 'valid_extensions' ) {
+                    $$sub{'value'} = $mime;
+                }
                 my $chldid = $self->model('Settings')->_insert_setting($sub, []);
                 push @mess, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
             }
         }
     }
+
+    # добавление valid_extensions из extensions.json
+
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
