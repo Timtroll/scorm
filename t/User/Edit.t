@@ -35,7 +35,7 @@ my $data = {
     'timezone'     => '+3',
     'birthday'     => '01.01.2000',
     'password'     => 'password1',
-    'avatar'       => 1234,
+    'avatar'       => 'https://thispersondoesnotexist.com/image',
     'type'         => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+79212222222',
@@ -57,36 +57,36 @@ my $test_data = {
             "data" => {
                 "tabs" => [
                     {
-                    "fields" => [
-                       {"name" => "имя_right"},
-                       {"patronymic" => "отчество_right"},
-                       {"surname" => "фамилия_right"},
-                       {"birthday" => "01.01.2000"},
-                       {"avatar" => "1234"},
-                       {"country" => "Россия"},
-                       {"place" => "place"},
-                       {"status" => "1"},
-                       {"timezone" => '+3'},
-                       {"type" => "1"}
-                    ],
-                    "label" => "Основные"
-                },
-                {
-                    "fields" => [
-                       {"email" => "emailright\@email.ru"},
-                       {"emailconfirmed" => "emailright\@email.ru"},
-                       {"phone" => '+79212222222'},
-                       {"phoneconfirmed" => '+79212222222'}
-                    ],
-                    "label" => "Контакты"
-                 },
-                 {
-                    "fields" => [
-                        {"password" => "password1"},
-                        {"newpassword" => "password1"}
-                    ],
-                    "label" => "Пароль"
-                 },
+                        "fields" => [
+                           {"name" => "имя_right"},
+                           {"patronymic" => "отчество_right"},
+                           {"surname" => "фамилия_right"},
+                           {"birthday" => "2000-01-01 00:00:00"},
+                           {"avatar" => "https://thispersondoesnotexist.com/image"},
+                           {"country" => "Россия"},
+                           {"place" => "place"},
+                           {"status" => "1"},
+                           {"timezone" => '3'},
+                           {"type" => 'User'}
+                        ],
+                        "label" => "Основные"
+                    },
+                    {
+                        "fields" => [
+                           {"email" => "emailright\@email.ru"},
+                           {"emailconfirmed" => "emailright\@email.ru"},
+                           {"phone" => '+79212222222'},
+                           {"phoneconfirmed" => '+79212222222'}
+                        ],
+                        "label" => "Контакты"
+                    },
+                    {
+                        "fields" => [
+                            {"password" => "password1"},
+                            {"newpassword" => "password1"}
+                        ],
+                        "label" => "Пароль"
+                    },
                     {
                         "fields" => [
                            {"groups" => [] }
@@ -105,7 +105,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "Could not edit '404'",
+            'message'   => "can't get object from users",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
