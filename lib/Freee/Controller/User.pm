@@ -56,15 +56,6 @@ sub index {
 
 # warn "index";
 
-    my ( $data, $list, $resp, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @mess ) {
-        # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
-    }
-
 # my $OfficeHelper = $Self->{EAVObject}->new('Office');
 # my $Childs       = $OfficeHelper->_list(
 #     {
@@ -72,36 +63,6 @@ sub index {
 #         Filter  => { Type                      => 'office' },
 #     }
 # );
-
-    unless ( @mess ) {
-
-    $list = Freee::EAV->new( 'User' );
-    $list = $list->_list(
-        {
-            Parents => { 1      => 0 },
-            Filter  => { Type   => 'User' },
-        }
-    );
-warn Dumper $list;
-
-
-    $data = {
-        'body' => [],
-        'settings' => {
-            'editable' => 1,
-            'massEdit' => 0,
-            'page' => {
-                'current_page' => 1,
-                'per_page' => 100,
-                'total' => 0
-            },
-            'removable' => 1,
-            'sort' => {
-                'name' => 'id',
-                'order' => 'asc'
-            }
-        }
-    };
 
     # my @data;
     # foreach (1..10) {
@@ -127,9 +88,56 @@ warn Dumper $list;
     # $data->{'body'} = \@data;
     # $data->{'settings'}->{'page'}->{'total'} = scalar(@data);
 
-    $data->{'body'} = $list;
-    $data->{'settings'}->{'page'}->{'total'} = scalar(@$list);
+    my ( $data, $list, $resp, $error, $usr, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    # unless ( @mess ) {
+
+    #     $usr = Freee::EAV->new( 'User' );
+    #     # $list = $list->_list(
+    #     #     {
+    #     #         Parents => { 1      => 0 },
+    #     #         Filter  => { Type   => 'User' },
+    #     #     }
+    #     # );
+    #     $list = $usr->_list( $dbh, { Filter => { 'User.parent' => $$data{'id'} } } );
+
+    # warn Dumper $list;
+    # }
+
+    unless ( @mess ) {
+        # получаем список пользователей группы
+        ( $list, $error ) = $self->model('User')->_get_list( $data );
+        push @mess, $error if $error;
+    }
+
+    unless ( @mess ) {
+        $data = {
+            'body' => [],
+            'settings' => {
+                'editable' => 1,
+                'massEdit' => 0,
+                'page' => {
+                    'current_page' => 1,
+                    'per_page' => 100,
+                    'total' => 0
+                },
+                'removable' => 1,
+                'sort' => {
+                    'name' => 'id',
+                    'order' => 'asc'
+                }
+            }
+        };
+
+        $data->{'body'} = $list;
+        $data->{'settings'}->{'page'}->{'total'} = scalar(@$list);
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;

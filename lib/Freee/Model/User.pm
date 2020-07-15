@@ -130,6 +130,34 @@ sub _check_user {
     return 1;
 }
 
+sub _get_list {
+    my ( $self, $data ) = @_;
+
+    my ( $list, $mess, @mess );
+
+    unless ( $$data{'id'} ) {
+        push @mess, "no data for list";
+    }
+
+    unless ( @mess ) {
+    #     $usr = Freee::EAV->new( 'User' );
+    #     $list = $list->_list(
+    #         {
+    #             Parents => { 1      => 0 },
+    #             Filter  => { Type   => 'User' },
+    #         }
+    #     );
+    #     $list = $usr->_list( $dbh, { Filter => { 'User.parent' => $$data{'id'} } } );
+
+    # warn Dumper $list;
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $list, $mess;
+}
 # Получить все данные пользователя из EAV и таблицы users
 # ( $result, $error ) = $self->model('User')->_get_user( $data );
 # $data = {
@@ -214,7 +242,7 @@ sub _get_user {
                {"patronymic" => $$result_eav{'patronymic'} },
                {"surname"    => $$result_eav{'surname'} },
                {"birthday"   => $$result_eav{'birthday'} },
-               {"avatar"     => 'https://thispersondoesnotexist.com/image' },                           #?????????
+               {"avatar"     => $$result_eav{'import_source'} },
                {"country"    => $$result_eav{'country'} },
                {"place"      => $$result_eav{'place'} },
                {"status"     => $$result_eav{'publish'} ? 1 : 0 },
@@ -257,7 +285,7 @@ sub _get_user {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $mess, $sql, @mess );
+    my ( $sth, $user, $result, $mess, $sql, @mess );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -280,18 +308,20 @@ sub _insert_user {
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
-        my $user = Freee::EAV->new( 'User',
+        $user = Freee::EAV->new( 'User',
             {
                 'publish' => $$data{'status'},
                 'parent' => 1, 
                 'title' => $$data{'title'},
                 'User' => {
-                    'surname'   => $$data{'surname'},
-                    'name'      => $$data{'name'},
-                    'patronymic'=> $$data{'patronymic'},
-                    'place'     => $$data{'place'},
-                    'country'   => $$data{'country'},
-                    'birthday'  => $$data{'birthday'}
+                    'surname'      => $$data{'surname'},
+                    'name'         => $$data{'name'},
+                    'patronymic'   => $$data{'patronymic'},
+                    'place'        => $$data{'place'},
+                    'country'      => $$data{'country'},
+                    'birthday'     => $$data{'birthday'},
+                    'import_source'=> $$data{'avatar'},
+                    'date_updated' => $$data{'time_update'}
                 }
             }
         );
@@ -335,7 +365,7 @@ sub _insert_user {
 sub _save_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $mess, $sql, @mess );
+    my ( $sth, $usr, $result, $mess, $sql, @user_keys, @mess );
 
     unless ( $$data{'id'} ) {
         push @mess, 'no data for toggle';
@@ -343,7 +373,14 @@ sub _save_user {
 
     unless ( @mess ) {
         # обновление полей в users
-        my @user_keys = ( "email", "phone", "password", "time_access", "time_update", "timezone" );
+        @user_keys = ( "email", "phone", "time_access", "time_update", "timezone" );
+
+        if ( $$data{'password'} ) {
+            # вместо старого пароля присваивается новый  ??????????????????????????????????????????
+            $$data{'password'} = $$data{'newpassword'};
+            push @user_keys, 'password';
+        }
+
         $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} @user_keys ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).') WHERE "id" = ? RETURNING "id"';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
@@ -353,27 +390,32 @@ sub _save_user {
         push @mess, "can't update $$data{'id'}" if $result eq '0E0';
     }
 
-#     unless ( @mess ) {
-#         # обновление полей в EAV
-#         $usr = Freee::EAV->new( 'User',
-#             {
-#                 'publish' => $$data{'status'},
-#                 'parent' => 1, 
-#                 'title' => $$data{'title'},
-#                 'User' => {
-#                     'surname'   => $$data{'surname'},
-#                     'name'      => $$data{'name'},
-#                     'patronymic'=> $$data{'patronymic'},
-#                     'place'     => $$data{'place'},
-#                     'country'   => $$data{'country'},
-#                     'birthday'  => $$data{'birthday'}
-#                 }
-#             }
-#         );
-#         $result = $usr->_store();
-# warn $result;
-#         push @mess, "can't update EAV" unless $result;
-#     }
+    unless ( @mess ) {
+        $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
+
+        # обновление полей в EAV
+        $usr = Freee::EAV->new( 'User',
+            {
+                'id'      => $$data{'id'},
+                'publish' => $$data{'status'},
+                'parent'  => 1, 
+                'title'   => $$data{'title'},
+                'User'    => {
+                    'surname'      => $$data{'surname'},
+                    'name'         => $$data{'name'},
+                    'patronymic'   => $$data{'patronymic'},
+                    'place'        => $$data{'place'},
+                    'country'      => $$data{'country'},
+                    'birthday'     => $$data{'birthday'},
+                    'import_source'=> $$data{'avatar'},
+                    'date_updated' => $$data{'time_update'}
+                }
+            }
+        );
+        $result = $usr->id();
+
+        push @mess, "can't update EAV" unless $result == $$data{'id'};
+    }
 
     if ( @mess ) {
         $mess = join( "\n", @mess );

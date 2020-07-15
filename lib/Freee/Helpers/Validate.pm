@@ -130,13 +130,13 @@ sub register {
             # проверка на toggle
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
-                    unless ( grep( /^$param$/, @{$regexp} ) ) {
+                    unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
                         push @error, "_check_fields: '$field' didn't match required in check array";
                         last;
                     }
                 }
                 else {
-                    unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                    unless ( $regexp && defined $param && ( $param =~ /$regexp/ ) ) {
                         push @error, "_check_fields: '$field' didn't match regular expression";
                         last;
                     }
