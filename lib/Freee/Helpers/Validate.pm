@@ -130,13 +130,13 @@ sub register {
             # проверка на toggle
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
-                    unless ( grep( /^$param$/, @{$regexp} ) ) {
+                    unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
                         push @error, "_check_fields: '$field' didn't match required in check array";
                         last;
                     }
                 }
                 else {
-                    unless ( $regexp && ( $param =~ /$regexp/ ) ) {
+                    unless ( $regexp && defined $param && ( $param =~ /$regexp/ ) ) {
                         push @error, "_check_fields: '$field' didn't match regular expression";
                         last;
                     }
@@ -187,6 +187,9 @@ sub register {
             },
 ################
             # роуты user/*
+            '/user'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
             '/user/add'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -199,7 +202,7 @@ sub register {
                 'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
+                'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
             '/user/add_by_email'  => {
@@ -212,7 +215,7 @@ sub register {
                 'birthday'      => [ 'required', qr/^[\d\.]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
-                'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
+                'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
                 'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ]
             },
@@ -227,7 +230,7 @@ sub register {
                 'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'avatar'        => [ 'required', qr/^\d+$/os, 9 ],
+                'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
             '/user/edit'  => {
@@ -239,11 +242,11 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^[0-9 \-]$/os, 24 ],
-                'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
+                'phone'         => [ '', qr/^[0-9 \-\+\(\)]+$/os, 24 ],
+                'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
-                'birthday'      => [ 'required', qr/^\d+$/os, 12 ],
+                'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],

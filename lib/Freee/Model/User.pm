@@ -103,7 +103,12 @@ sub _check_user {
     unless ( @mess ) {
         foreach ( 'email', 'phone' ) {
             if ( $$data{ $_ } ) {
-                $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'";
+                if ( $$data{'id'} ) {
+                    $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'" . ' EXCEPT SELECT "id" FROM "public"."users" WHERE "id" = ' . $$data{'id'};
+                }
+                else {
+                    $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'";
+                }
                 # $sql = 'SELECT "id" FROM "public"."users" WHERE ? = ?';
 
                 $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -111,7 +116,6 @@ sub _check_user {
                 # $sth->bind_param( 2, $$data{ $_ } );
 
                 $result = $sth->execute();
-
                 unless ( $result == '0E0' ) {
                     push @mess, "$_ '$$data{ $_ }' already used";    
                 }
@@ -126,6 +130,34 @@ sub _check_user {
     return 1;
 }
 
+sub _get_list {
+    my ( $self, $data ) = @_;
+
+    my ( $list, $mess, @mess );
+
+    unless ( $$data{'id'} ) {
+        push @mess, "no data for list";
+    }
+
+    unless ( @mess ) {
+    #     $usr = Freee::EAV->new( 'User' );
+    #     $list = $list->_list(
+    #         {
+    #             Parents => { 1      => 0 },
+    #             Filter  => { Type   => 'User' },
+    #         }
+    #     );
+    #     $list = $usr->_list( $dbh, { Filter => { 'User.parent' => $$data{'id'} } } );
+
+    # warn Dumper $list;
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $list, $mess;
+}
 # Получить все данные пользователя из EAV и таблицы users
 # ( $result, $error ) = $self->model('User')->_get_user( $data );
 # $data = {
@@ -168,23 +200,72 @@ sub _get_user {
 
     # return $data;
 
-    my ( $sth, $result, $mess, @mess );
+    my ( $sth, $sql, $usr, $result_users, $result_eav, $main, $contacts, $password, $groups, $mess, @mess );
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @mess, "no data for get";
+    }
 
-    if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-warn '===========';
-        # взять весь объект из EAV
-        my $usr = Freee::EAV->new( 'User', { id => 2 } );
-        my $user = $usr->_getAll();
-warn Dumper $user;
-
+    unless ( @mess ) {
         # взять весь объект из таблицы users
+        $sql = 'SELECT * FROM "public"."users" WHERE "id" = ?';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+        $sth->execute();
 
-    }
-    else {
-        return;
+        $result_users = $sth->fetchrow_hashref();
+        if ( $result_users ) {
+            $contacts = [
+               {"email"          => $$result_users{'email'} },
+               {"emailconfirmed" => $$result_users{'email'} },
+               {"phone"          => $$result_users{'phone'} },
+               {"phoneconfirmed" => $$result_users{'phone'} }
+            ];
+
+            $password = [
+               {"password"       => $$result_users{'password'} },
+               {"newpassword"    => $$result_users{'password'} }
+            ];
+        }
+        else {
+            push @mess, "can't get object from users";
+        }
     }
 
-    return 1;
+    unless ( @mess ) {
+        # взять весь объект из EAV
+        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
+
+        $result_eav = $usr->_getAll();
+        if ( $result_eav ) {
+            $main = [
+               {"name"       => $$result_eav{'name'} },
+               {"patronymic" => $$result_eav{'patronymic'} },
+               {"surname"    => $$result_eav{'surname'} },
+               {"birthday"   => $$result_eav{'birthday'} },
+               {"avatar"     => $$result_eav{'import_source'} },
+               {"country"    => $$result_eav{'country'} },
+               {"place"      => $$result_eav{'place'} },
+               {"status"     => $$result_eav{'publish'} ? 1 : 0 },
+               {"timezone"   => $$result_users{'timezone'} },   #??????????
+               {"type"       => $$result_eav{'Type'} }
+            ]
+        }
+        else {
+            push @mess, "can't get object from EAV";
+        }
+    }
+
+    unless ( @mess ) {
+        $groups = [
+           { "groups" => [] }
+        ]
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $main, $contacts, $password, $groups, $mess;
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
@@ -204,7 +285,7 @@ warn Dumper $user;
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $mess, $sql, @mess );
+    my ( $sth, $user, $result, $mess, $sql, @mess );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -227,18 +308,20 @@ sub _insert_user {
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
-        my $user = Freee::EAV->new( 'User',
+        $user = Freee::EAV->new( 'User',
             {
                 'publish' => $$data{'status'},
                 'parent' => 1, 
                 'title' => $$data{'title'},
                 'User' => {
-                    'surname'   => $$data{'surname'},
-                    'name'      => $$data{'name'},
-                    'patronymic'=> $$data{'patronymic'},
-                    'place'     => $$data{'place'},
-                    'country'   => $$data{'country'},
-                    'birthday'  => $$data{'birthday'}
+                    'surname'      => $$data{'surname'},
+                    'name'         => $$data{'name'},
+                    'patronymic'   => $$data{'patronymic'},
+                    'place'        => $$data{'place'},
+                    'country'      => $$data{'country'},
+                    'birthday'     => $$data{'birthday'},
+                    'import_source'=> $$data{'avatar'},
+                    'date_updated' => $$data{'time_update'}
                 }
             }
         );
@@ -270,6 +353,68 @@ sub _insert_user {
         #     "social_id",     => 123123123,
         #     "social_profile" => "{}"
         # };
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+
+    return $result, $mess;
+}
+
+sub _save_user {
+    my ( $self, $data ) = @_;
+
+    my ( $sth, $usr, $result, $mess, $sql, @user_keys, @mess );
+
+    unless ( $$data{'id'} ) {
+        push @mess, 'no data for toggle';
+    }
+
+    unless ( @mess ) {
+        # обновление полей в users
+        @user_keys = ( "email", "phone", "time_access", "time_update", "timezone" );
+
+        if ( $$data{'password'} ) {
+            # вместо старого пароля присваивается новый  ??????????????????????????????????????????
+            $$data{'password'} = $$data{'newpassword'};
+            push @user_keys, 'password';
+        }
+
+        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} @user_keys ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).') WHERE "id" = ? RETURNING "id"';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+
+        $result = $sth->execute();
+
+        push @mess, "can't update $$data{'id'}" if $result eq '0E0';
+    }
+
+    unless ( @mess ) {
+        $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
+
+        # обновление полей в EAV
+        $usr = Freee::EAV->new( 'User',
+            {
+                'id'      => $$data{'id'},
+                'publish' => $$data{'status'},
+                'parent'  => 1, 
+                'title'   => $$data{'title'},
+                'User'    => {
+                    'surname'      => $$data{'surname'},
+                    'name'         => $$data{'name'},
+                    'patronymic'   => $$data{'patronymic'},
+                    'place'        => $$data{'place'},
+                    'country'      => $$data{'country'},
+                    'birthday'     => $$data{'birthday'},
+                    'import_source'=> $$data{'avatar'},
+                    'date_updated' => $$data{'time_update'}
+                }
+            }
+        );
+        $result = $usr->id();
+
+        push @mess, "can't update EAV" unless $result == $$data{'id'};
     }
 
     if ( @mess ) {

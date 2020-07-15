@@ -41,7 +41,7 @@ my $data = {
     'phone'        => '9873636363',
     'status'       => 1
 };
-$t->post_ok( $host.'/settings/add' => form => $data );
+$t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
