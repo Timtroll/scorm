@@ -188,7 +188,8 @@ sub register {
 ################
             # роуты user/*
             '/user'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/user/add'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -254,7 +255,8 @@ sub register {
                 'type'          => [ 'required', qr/^\d+$/os, 3 ]
             },
             '/user/toggle'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/user/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

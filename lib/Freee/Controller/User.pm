@@ -88,7 +88,7 @@ sub index {
     # $data->{'body'} = \@data;
     # $data->{'settings'}->{'page'}->{'total'} = scalar(@data);
 
-    my ( $data, $list, $resp, $error, $usr, @mess );
+    my ( $data, $list, $resp, $error, $result, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     unless ( @mess ) {
@@ -113,36 +113,42 @@ sub index {
 
     unless ( @mess ) {
         # получаем список пользователей группы
-        ( $list, $error ) = $self->model('User')->_get_list( $data );
+        ( $result, $error ) = $self->model('User')->_get_list( $data );
         push @mess, $error if $error;
     }
 
     unless ( @mess ) {
-        $data = {
-            'body' => [],
-            'settings' => {
-                'editable' => 1,
-                'massEdit' => 0,
-                'page' => {
-                    'current_page' => 1,
-                    'per_page' => 100,
-                    'total' => 0
-                },
-                'removable' => 1,
-                'sort' => {
-                    'name' => 'id',
-                    'order' => 'asc'
+        $list = {
+            'list' => {
+                'settings' => {
+                    'editable' => 1,
+                    'massEdit' => 0,
+                    'page' => {
+                        'current_page' => 1,
+                        'per_page' => 100
+                    },
+                    'removable' => 1,
+                    'sort' => {
+                        'name' => 'id',
+                        'order' => 'asc'
+                    }
                 }
             }
         };
 
-        $data->{'body'} = $list;
-        $data->{'settings'}->{'page'}->{'total'} = scalar(@$list);
+        if ( $result ) {
+            $list->{'list'}->{'body'} = $result;
+            $list->{'list'}->{'settings'}->{'page'}->{'total'} = scalar(@$result);
+        }
+        else {
+            $list->{'list'}->{'body'} = [];
+            $list->{'list'}->{'settings'}->{'page'}->{'total'} = 0;
+        }
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $data unless @mess;
+    $resp->{'data'} = $list unless @mess;
 
     $self->render( 'json' => $resp );
 }
@@ -388,6 +394,8 @@ sub add {
         $$data{'time_create'} = $self->_get_time();
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
+        $$data{'publish'}     = $$data{'status'};
+        $$data{'groups'}      = ' ';
 
         ( $result, $error ) = $self->model('User')->_insert_user( $data );
         push @mess, $error if $error;
@@ -438,7 +446,9 @@ sub add_by_email {
         $$data{'time_create'} = $self->_get_time();
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
+        $$data{'publish'}     = $$data{'status'};
         $$data{'phone'}       = ' ';
+        $$data{'groups'}      = ' ';
 
         ( $result, $error ) = $self->model('User')->_insert_user( $data );
         push @mess, $error if $error;
@@ -483,6 +493,8 @@ sub add_by_phone {
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
         $$data{'email'}       = ' ';
+        $$data{'publish'}     = $$data{'status'};
+        $$data{'groups'}      = ' ';
 
         ( $result, $error ) = $self->model('User')->_insert_user( $data );
         push @mess, $error if $error;
@@ -559,6 +571,8 @@ sub save {
     unless ( @mess ) {
         $$data{'time_access'} = $self->_get_time();
         $$data{'time_update'} = $self->_get_time();
+        $$data{'groups'} = ' ';
+        $$data{'publish'} =  $$data{'status'};
 
         ( $result, $error ) = $self->model('User')->_save_user( $data );
         push @mess, $error if $error;
@@ -602,6 +616,7 @@ sub toggle {
     }
 
     unless ( @mess ) {
+        $$data{'status'} = $$data{'status'} ? 'true' : 'false';
         ( $result, $error ) = $self->model('User')->_toggle_user( $data );
         push @mess, $error if $error;
     }

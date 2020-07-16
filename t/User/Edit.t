@@ -32,7 +32,7 @@ my $data = {
     'patronymic',  => 'отчество_right',
     'place'        => 'place',
     'country'      => 'Россия',
-    'timezone'     => '+3',
+    'timezone'     => '-3',
     'birthday'     => '01.01.2000',
     'password'     => 'password1',
     'avatar'       => 'https://thispersondoesnotexist.com/image',
@@ -66,7 +66,7 @@ my $test_data = {
                            {"country" => "Россия"},
                            {"place" => "place"},
                            {"status" => "1"},
-                           {"timezone" => '3'},
+                           {"timezone" => '-3'},
                            {"type" => 'User'}
                         ],
                         "label" => "Основные"

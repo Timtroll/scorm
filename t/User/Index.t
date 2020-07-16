@@ -35,7 +35,7 @@ my $data = {
     'timezone'     => '+3',
     'birthday'     => '01.01.2000',
     'password'     => 'password1',
-    'avatar'       => 1234,
+    'avatar'       => 'https://thispersondoesnotexist.com/image',
     'type'         => 1,
     'email'        => 'email@mail.ru',
     'phone'        => '9873636363',
@@ -58,23 +58,101 @@ my $test_data = {
                "list" => {
                     "body" => [
                         {
-                            "surname" =>  "Фамилия",
-                            "name" =>  "Имя",
-                            "patronymic" =>  "Отчество",
+                            # "surname" =>  "Фамилия",
+                            # "name" =>  "Имя",
+                            # "patronymic" =>  "Отчество",
                             "place" =>  "Луна",
                             "country" =>  "Киргизия",
-                            "timezone" =>  "+3",
+                            "timezone" =>  "3",
                             "birthday" =>  "01.01.2020",
                             "password" =>  "password1",
-                            "avatar" =>  1234,
+                            # "avatar" => 'https://thispersondoesnotexist.com/image',
                             "type" =>  1,
                             "email" =>  "email\@mail.ru",
                             "emailconfirmed" =>  1,
                             "phone" =>  "9873636363",
                             "phoneconfirmed" =>  1,
-                            "status" =>  1
+                            "status" =>  1,
+                            "eav_id" =>  1
                         }
                     ],
+                    "settings" => {
+                        "editable" => 1,
+                        "massEdit" => 0,
+                        "page" => {
+                            "current_page" => 1,
+                            "per_page" => 100,
+                            "total" => 1
+                        },
+                        "removable" => 1,
+                        "sort" => {
+                            "name" => "id",
+                            "order" => "asc"
+                        }
+                    }
+                }
+            },
+            'status' => 'ok'
+        },
+        'comment' => 'No status:' 
+    },    
+    2 => {
+        'data' => {
+            'id'     => 1,
+            'status' => 1
+        },
+        'result' => {
+            "data" => {
+               "list" => {
+                    "body" => [
+                        {
+                            # "surname" =>  "Фамилия",
+                            # "name" =>  "Имя",
+                            # "patronymic" =>  "Отчество",
+                            "place" =>  "Луна",
+                            "country" =>  "Киргизия",
+                            "timezone" =>  "3",
+                            "birthday" =>  "01.01.2020",
+                            "password" =>  "password1",
+                            # "avatar" => 'https://thispersondoesnotexist.com/image',
+                            "type" =>  1,
+                            "email" =>  "email\@mail.ru",
+                            "emailconfirmed" =>  1,
+                            "phone" =>  "9873636363",
+                            "phoneconfirmed" =>  1,
+                            "status" =>  1,
+                            "eav_id" =>  1
+                        }
+                    ],
+                    "settings" => {
+                        "editable" => 1,
+                        "massEdit" => 0,
+                        "page" => {
+                            "current_page" => 1,
+                            "per_page" => 100,
+                            "total" => 1
+                        },
+                        "removable" => 1,
+                        "sort" => {
+                            "name" => "id",
+                            "order" => "asc"
+                        }
+                    }
+                }
+            },
+            'status' => 'ok'
+        },
+        'comment' => 'Status 1:' 
+    },
+    3 => {
+        'data' => {
+            'id'     => 1,
+            'status' => 0
+        },
+        'result' => {
+            "data" => {
+               "list" => {
+                    "body" => [],
                     "settings" => {
                         "editable" => 1,
                         "massEdit" => 0,
@@ -93,27 +171,27 @@ my $test_data = {
             },
             'status' => 'ok'
         },
-        'comment' => 'All fields:' 
+        'comment' => 'Status 0:' 
     },
     # отрицательные тесты
-    2 => {
-        'data' => {
-            'id'        => 404
-        },
-        'result' => {
-            'message'   => "Could not take '404'",
-            'status'    => 'fail'
-        },
-        'comment' => 'Wrong id:' 
-    },
-    3 => {
+    # 4 => {
+    #     'data' => {
+    #         'id'        => 404
+    #     },
+    #     'result' => {
+    #         'message'   => "Could not take '404'",
+    #         'status'    => 'fail'
+    #     },
+    #     'comment' => 'Wrong id:' 
+    # },
+    4 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
-    4 => {
+    5 => {
         'data' => {
             'id'        => - 404
         },

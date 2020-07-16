@@ -205,7 +205,7 @@ $test_data = {
             'type'         => 1,
             'email'        => '6@email.ru',
             'phone'        => '+6',
-            'status'       => 1
+            'status'       => 0
         },
         'result' => {
             'id'        => 1,
