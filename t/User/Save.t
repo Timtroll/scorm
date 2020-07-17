@@ -54,7 +54,8 @@ my $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -75,7 +76,8 @@ my $test_data = {
             'type'         => 1,
             'email'        => '2@email.ru',
             'phone'        => '+2',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 2,
@@ -113,7 +115,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -136,7 +139,8 @@ $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -159,7 +163,8 @@ $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '1@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -183,7 +188,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -205,7 +211,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '6@email.ru',
             'phone'        => '+6',
-            'status'       => 0
+            'status'       => 0,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -230,7 +237,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+79211111111',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
@@ -254,7 +262,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '2@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "email '2\@email.ru' already used",
@@ -278,7 +287,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+2',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "phone '+2' already used",
@@ -302,7 +312,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '3@email.ru',
             'phone'        => '+3',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "can't update 404",
@@ -326,7 +337,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "Password and newpassword are the same",
@@ -349,7 +361,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => 'No newpassword',
@@ -372,7 +385,8 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => 'No password',
@@ -394,7 +408,8 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "No email and no phone",
@@ -418,13 +433,37 @@ $test_data = {
             'type'         => 1,
             'email'        => '1@email.ru',
             'phone'        => '+1',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => 'Wrong id validation:'
+    },
+    15 => {
+        'data' => {
+            'id'           => 1,
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'Россия',
+            'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
+            'avatar'       => 'https://thispersondoesnotexist.com/image',
+            'type'         => 1,
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '+4',
+            'status'       => 1,
+            'groups'       => "[1, 2, 404, 405]"
+        },
+        'result' => {
+            'message'   => "group with id '404' doesn't exist",
+            'status'    => 'fail',
+        },
+        'comment' => "Group doesn't exist:"
     }
 };
 

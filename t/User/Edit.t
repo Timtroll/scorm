@@ -39,7 +39,8 @@ my $data = {
     'type'         => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+79212222222',
-    'status'       => 1
+    'status'       => 1,
+    'groups'       => "[1, 2, 3]"
 };
 $t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -68,7 +69,7 @@ my $test_data = {
                            {"status" => "1"},
                            {"timezone" => '-3'},
                            {"type" => 'User'}
-                        ],
+                       ],
                         "label" => "Основные"
                     },
                     {
@@ -77,23 +78,23 @@ my $test_data = {
                            {"emailconfirmed" => "emailright\@email.ru"},
                            {"phone" => '+79212222222'},
                            {"phoneconfirmed" => '+79212222222'}
-                        ],
+                       ],
                         "label" => "Контакты"
                     },
                     {
                         "fields" => [
                             {"password" => "password1"},
                             {"newpassword" => "password1"}
-                        ],
+                       ],
                         "label" => "Пароль"
                     },
                     {
                         "fields" => [
-                           {"groups" => [] }
-                        ],
+                           {"groups" => "[1, 2, 3]" }
+                       ],
                         "label" => "Группы"
                     }
-                ]
+               ]
             },
             'status' => 'ok'
         },

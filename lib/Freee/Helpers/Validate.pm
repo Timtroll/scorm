@@ -204,7 +204,8 @@ sub register {
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
-                'type'          => [ 'required', qr/^\d+$/os, 3 ]
+                'type'          => [ 'required', qr/^\d+$/os, 3 ],
+                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
             },
             '/user/add_by_email'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -218,7 +219,8 @@ sub register {
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
-                'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ]
+                'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ],
+                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
             },
             '/user/add_by_phone'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -232,7 +234,8 @@ sub register {
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
-                'type'          => [ 'required', qr/^\d+$/os, 3 ]
+                'type'          => [ 'required', qr/^\d+$/os, 3 ],
+                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -252,7 +255,8 @@ sub register {
                 'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
-                'type'          => [ 'required', qr/^\d+$/os, 3 ]
+                'type'          => [ 'required', qr/^\d+$/os, 3 ],
+                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
             },
             '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],

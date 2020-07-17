@@ -69,6 +69,7 @@ my %masks_fields = (
 #     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
 #     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
 # }
+# не нужен??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 sub _check_user {
     my ( $self, $data ) = @_;
 
@@ -117,7 +118,7 @@ sub _check_user {
 
                 $result = $sth->execute();
                 unless ( $result == '0E0' ) {
-                    push @mess, "$_ '$$data{ $_ }' already used";    
+                    push @mess, "$_ '$$data{ $_ }' already used";
                 }
             }
         }
@@ -133,35 +134,38 @@ sub _check_user {
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $sth, $list, $mess, @list, @mess );
+    my ( $sql, $fields, $sth, $list, $mess, @list, @mess );
 
     unless ( $$data{'id'} ) {
         push @mess, "no data for list";
     }
 
     unless ( @mess ) {
+        # выбираемые поля
+        $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
+
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT * FROM "public"."users" WHERE "id" = ?';
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ?';
         }
         elsif ( $$data{'status'} ) {
-            $sql = 'SELECT * FROM "public"."users" WHERE "id" = ? AND "publish" = TRUE';
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = TRUE';
         }
         else {
-            $sql = 'SELECT * FROM "public"."users" WHERE "id" = ? AND "publish" = FALSE';
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = FALSE';
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( 1, '%[' . $$data{'id'} . ']%' );
+        $sth->bind_param( 2, '%[' . $$data{'id'} . ', %' );
+        $sth->bind_param( 3, '% ' . $$data{'id'} . ', %' );
+        $sth->bind_param( 4, '% ' . $$data{'id'} . ']%' );
         $sth->execute();
 
         $list = $sth->fetchall_hashref('id');
-warn Dumper( $list );
 
         if ( $list ) {
-            foreach ( keys %$list ) {
-                $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
-                $list->{ $_ }->{'email_confirmed'} = 1;
-                $list->{ $_ }->{'phone_confirmed'} = 1;
+            foreach ( sort keys %$list ) {
+                $list->{ $_ }->{'status'} = delete $list->{ $_ }->{'publish'} ? 1 : 0;
                 push @list, $$list{ $_ };
             }
             $list = \@list;
@@ -241,6 +245,10 @@ sub _get_user {
                {"password"       => $$result_users{'password'} },
                {"newpassword"    => $$result_users{'password'} }
             ];
+
+            $groups = [
+               { "groups" => $$result_users{'groups'} }
+            ]
         }
         else {
             push @mess, "can't get object from users";
@@ -261,7 +269,7 @@ sub _get_user {
                {"avatar"     => $$result_eav{'import_source'} },
                {"country"    => $$result_eav{'country'} },
                {"place"      => $$result_eav{'place'} },
-               {"status"     => $$result_eav{'publish'} ? 1 : 0 },
+               {"status"     => $$result_users{'publish'} ? 1 : 0 },
                {"timezone"   => $$result_users{'timezone'} },
                {"type"       => $$result_eav{'Type'} }
             ]
@@ -269,12 +277,6 @@ sub _get_user {
         else {
             push @mess, "can't get object from EAV";
         }
-    }
-
-    unless ( @mess ) {
-        $groups = [
-           { "groups" => [] }
-        ]
     }
 
     if ( @mess ) {
