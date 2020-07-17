@@ -69,6 +69,7 @@ my %masks_fields = (
 #     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
 #     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
 # }
+# не нужен??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 sub _check_user {
     my ( $self, $data ) = @_;
 
@@ -117,7 +118,7 @@ sub _check_user {
 
                 $result = $sth->execute();
                 unless ( $result == '0E0' ) {
-                    push @mess, "$_ '$$data{ $_ }' already used";    
+                    push @mess, "$_ '$$data{ $_ }' already used";
                 }
             }
         }
@@ -133,23 +134,42 @@ sub _check_user {
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $list, $mess, @mess );
+    my ( $sql, $fields, $sth, $list, $mess, @list, @mess );
 
     unless ( $$data{'id'} ) {
         push @mess, "no data for list";
     }
 
     unless ( @mess ) {
-    #     $usr = Freee::EAV->new( 'User' );
-    #     $list = $list->_list(
-    #         {
-    #             Parents => { 1      => 0 },
-    #             Filter  => { Type   => 'User' },
-    #         }
-    #     );
-    #     $list = $usr->_list( $dbh, { Filter => { 'User.parent' => $$data{'id'} } } );
+        # выбираемые поля
+        $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
 
-    # warn Dumper $list;
+        # взять объекты из таблицы users
+        unless ( defined $$data{'status'} ) {
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ?';
+        }
+        elsif ( $$data{'status'} ) {
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = TRUE';
+        }
+        else {
+            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = FALSE';
+        }
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, '%[' . $$data{'id'} . ']%' );
+        $sth->bind_param( 2, '%[' . $$data{'id'} . ', %' );
+        $sth->bind_param( 3, '% ' . $$data{'id'} . ', %' );
+        $sth->bind_param( 4, '% ' . $$data{'id'} . ']%' );
+        $sth->execute();
+
+        $list = $sth->fetchall_hashref('id');
+
+        if ( $list ) {
+            foreach ( sort keys %$list ) {
+                $list->{ $_ }->{'status'} = delete $list->{ $_ }->{'publish'} ? 1 : 0;
+                push @list, $$list{ $_ };
+            }
+            $list = \@list;
+        }
     }
 
     if ( @mess ) {
@@ -225,6 +245,10 @@ sub _get_user {
                {"password"       => $$result_users{'password'} },
                {"newpassword"    => $$result_users{'password'} }
             ];
+
+            $groups = [
+               { "groups" => $$result_users{'groups'} }
+            ]
         }
         else {
             push @mess, "can't get object from users";
@@ -245,20 +269,14 @@ sub _get_user {
                {"avatar"     => $$result_eav{'import_source'} },
                {"country"    => $$result_eav{'country'} },
                {"place"      => $$result_eav{'place'} },
-               {"status"     => $$result_eav{'publish'} ? 1 : 0 },
-               {"timezone"   => $$result_users{'timezone'} },   #??????????
+               {"status"     => $$result_users{'publish'} ? 1 : 0 },
+               {"timezone"   => $$result_users{'timezone'} },
                {"type"       => $$result_eav{'Type'} }
             ]
         }
         else {
             push @mess, "can't get object from EAV";
         }
-    }
-
-    unless ( @mess ) {
-        $groups = [
-           { "groups" => [] }
-        ]
     }
 
     if ( @mess ) {
@@ -285,7 +303,7 @@ sub _get_user {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $user, $result, $mess, $sql, @mess );
+    my ( $sth, $user, $result, $mess, $sql, @mess, @user_keys );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -310,7 +328,6 @@ sub _insert_user {
 
         $user = Freee::EAV->new( 'User',
             {
-                'publish' => $$data{'status'},
                 'parent' => 1, 
                 'title' => $$data{'title'},
                 'User' => {
@@ -336,7 +353,7 @@ sub _insert_user {
 ##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
 
         # запись данных в users
-        my @user_keys = ( "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone" );
+        @user_keys = ( "publish", "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone", "groups" );
         $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
 
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
@@ -368,12 +385,12 @@ sub _save_user {
     my ( $sth, $usr, $result, $mess, $sql, @user_keys, @mess );
 
     unless ( $$data{'id'} ) {
-        push @mess, 'no data for toggle';
+        push @mess, 'no data for save';
     }
 
     unless ( @mess ) {
         # обновление полей в users
-        @user_keys = ( "email", "phone", "time_access", "time_update", "timezone" );
+        @user_keys = ( "publish", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
         if ( $$data{'password'} ) {
             # вместо старого пароля присваивается новый  ??????????????????????????????????????????
@@ -394,27 +411,33 @@ sub _save_user {
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
         # обновление полей в EAV
+        # $usr = Freee::EAV->new( 'User' );
         $usr = Freee::EAV->new( 'User',
             {
                 'id'      => $$data{'id'},
-                'publish' => $$data{'status'},
-                'parent'  => 1, 
-                'title'   => $$data{'title'},
-                'User'    => {
-                    'surname'      => $$data{'surname'},
-                    'name'         => $$data{'name'},
-                    'patronymic'   => $$data{'patronymic'},
-                    'place'        => $$data{'place'},
-                    'country'      => $$data{'country'},
-                    'birthday'     => $$data{'birthday'},
-                    'import_source'=> $$data{'avatar'},
-                    'date_updated' => $$data{'time_update'}
-                }
+                'parent'  => 1
             }
         );
-        $result = $usr->id();
+        # $result = $usr->surname( $$data{'surname'} );
+        # $result = $usr->name( $$data{'name'} );
+        # $result = $usr->title( $$data{'title'} );
+# warn Dumper { 'User' => $data };
 
-        push @mess, "can't update EAV" unless $result == $$data{'id'};
+        $result = $usr->_MultiStore( {                 
+            'User' => {
+                'title'   => $$data{'title'},
+                'surname'      => $$data{'surname'},
+                'name'         => $$data{'name'},
+                'patronymic'   => $$data{'patronymic'},
+                'place'        => $$data{'place'},
+                'country'      => $$data{'country'},
+                'birthday'     => $$data{'birthday'},
+                'import_source'=> $$data{'avatar'},
+                'date_updated' => $$data{'time_update'}
+            }
+        });
+
+        push @mess, "can't update EAV" unless $result;
     }
 
     if ( @mess ) {
@@ -429,26 +452,19 @@ sub _toggle_user {
 
     my ( $sth, $usr, $result, $mess, $sql, @mess );
 
-    unless ( $$data{'id'} ) {
+    unless ( $$data{'id'} && defined $$data{'status'} ) {
         push @mess, 'no data for toggle';
     }
 
     unless ( @mess ) {
-        # проверка существования пользователя с id
-        $sql = 'SELECT "id" FROM "public"."users" WHERE "id" = ?';
+        # смена значений publish
+        $sql = 'UPDATE "public"."users" SET "publish" = ? WHERE "id" = ?';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( 1, $$data{'status'} );
+        $sth->bind_param( 2, $$data{'id'} );
 
         $result = $sth->execute();
         push @mess, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
-    }
-
-    unless ( @mess ) {
-        # смена значение publish в EAV
-        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
-        $result = $usr->_delete();
-
-        push @mess, "can't toggle from EAV" unless $result;
     }
 
     if ( @mess ) {
