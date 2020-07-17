@@ -39,7 +39,8 @@ my $data = {
     'type'         => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+79212222222',
-    'status'       => 1
+    'status'       => 1,
+    'groups'       => "[1, 2, 3]"
 };
 $t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -51,7 +52,8 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id' => 1
+            'id'     => 1,
+            'status' => 1
         },
         'result' => {
             'id'     => 1,
@@ -59,10 +61,22 @@ my $test_data = {
         },
         'comment' => 'All fields:' 
     },
-    # отрицательные тесты
     2 => {
         'data' => {
-            'id'        => 404
+            'id'     => 1,
+            'status' => 0
+        },
+        'result' => {
+            'id'     => 1,
+            'status' => 'ok'
+        },
+        'comment' => 'Status 0:' 
+    },
+    # отрицательные тесты
+    3 => {
+        'data' => {
+            'id'        => 404,
+            'status'    => 1
         },
         'result' => {
             'message'   => "user with '404' doesn't exist",
@@ -70,16 +84,20 @@ my $test_data = {
         },
         'comment' => 'Wrong id:' 
     },
-    3 => {
+    4 => {
+        'data' => {
+            'status'    => 1
+        },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
-        'comment' => 'No data:' 
+        'comment' => 'No id:' 
     },
-    4 => {
+    5 => {
         'data' => {
-            'id'        => - 404
+            'id'        => - 404,
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",

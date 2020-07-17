@@ -50,7 +50,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'emailright@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 1,
@@ -71,7 +72,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'emailright2@email.ru',
-            'status'       => 0
+            'status'       => 0,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'id'        => 2,
@@ -93,7 +95,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
@@ -113,7 +116,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
@@ -133,7 +137,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'patronymic'",
@@ -153,7 +158,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'country'",
@@ -173,7 +179,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'timezone'",
@@ -193,7 +200,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'birthday'",
@@ -213,7 +221,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'password'",
@@ -233,7 +242,8 @@ my $test_data = {
             'password'     => 'password1',
             'type'         => 1,
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'avatar'",
@@ -253,7 +263,8 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'email'        => 'email@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'type'",
@@ -273,7 +284,8 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'email'",
@@ -294,6 +306,7 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'email@email.ru',
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'status'",
@@ -314,7 +327,8 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '+++',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "_check_fields: 'email' didn't match regular expression",
@@ -335,13 +349,36 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => 'emailright@email.ru',
-            'status'       => 1
+            'status'       => 1,
+            'groups'       => "[1, 2, 3]"
         },
         'result' => {
             'message'   => "email 'emailright\@email.ru' already used",
             'status'    => 'fail',
         },
         'comment' => "Email already used:"
+    },
+    16 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'Россия',
+            'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
+            'password'     => 'password1',
+            'avatar'       => 'https://thispersondoesnotexist.com/image',
+            'type'         => 1,
+            'email'        => 'emailright3@email.ru',
+            'status'       => 1,
+            'groups'       => "[1, 2, 404, 405]"
+        },
+        'result' => {
+            'message'   => "group with id '404' doesn't exist",
+            'status'    => 'fail',
+        },
+        'comment' => "Group doesn't exist:"
     }
 };
 
