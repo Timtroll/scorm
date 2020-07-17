@@ -166,7 +166,7 @@
 
 <script>
 
-import {clone, confirm} from '../../../store/methods'
+import {clone, confirm} from '@/store/methods'
 
 export default {
 
@@ -177,6 +177,7 @@ export default {
     ListMenu: () => import(/* webpackChunkName: "ListMenu" */ './ListMenu'),
 
     // inputs
+    InputEditorJs:   () => import(/* webpackChunkName: "InputEditorJs" */ '../inputs/InputEditorJs'),
     InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
     InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
     InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
@@ -244,7 +245,8 @@ export default {
     // если добавление, то активная вкладка = 1
     if (this.add) {
       this.listMenuActiveId = 0
-    } else {
+    }
+    else {
       this.listMenuActiveId = 1
     }
 
@@ -317,7 +319,8 @@ export default {
     title () {
       if (this.add) {
         return this.$t('actions.add')
-      } else {
+      }
+      else {
         return this.$t('actions.edit')
       }
     },
@@ -402,10 +405,11 @@ export default {
 
         // поиск поля тип
         return allFieldsFlat
-            .flat()
-            .find(item => item.name === 'type')
+          .flat()
+          .find(item => item.name === 'type')
 
-      } else {
+      }
+      else {
         return array.find(item => item.name === 'type')
       }
     },
@@ -423,9 +427,10 @@ export default {
         }
 
         return allFieldsFlat
-            .flat()
+          .flat()
 
-      } else {
+      }
+      else {
         return array
       }
     },
@@ -452,7 +457,8 @@ export default {
 
       if (type === this.variableTypeField) {
         return this.variableTypeField
-      } else {
+      }
+      else {
         return type
       }
     },
@@ -471,11 +477,12 @@ export default {
     close () {
       if (this.dataIsChanged) {
         confirm(this.$t('messages.dataIsChanged'), this.$t('actions.ok'), this.$t('actions.no'))
-            .then(() => {
-              this.$emit('close')
-              this.$store.commit('card_right_show', false)
-            })
-      } else {
+          .then(() => {
+            this.$emit('close')
+            this.$store.commit('card_right_show', false)
+          })
+      }
+      else {
         this.$emit('close')
         this.$store.commit('card_right_show', false)
       }
@@ -503,7 +510,8 @@ export default {
     notEditable (mode) {
       if (mode || this.disabled) {
         return 1
-      } else {
+      }
+      else {
         return 0
       }
     }
