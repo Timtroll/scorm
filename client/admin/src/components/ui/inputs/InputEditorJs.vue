@@ -1,15 +1,10 @@
 <template>
   <li>
-    <div>
-      <label v-text="label || placeholder"
-             class="uk-form-label uk-text-truncate"
-             v-if="label || placeholder"/>
+    <div class="uk-form-controls uk-margin-top">
+      <EditorJs :data="valueInput"
+                @update="update($event)"
+                @ready="onReady"/>
     </div>
-
-    <div class="uk-form-controls">
-      <EditorJs :data="initData"/>
-    </div>
-
   </li>
 </template>
 
@@ -20,41 +15,51 @@ export default {
 
   components: {
     EditorJs: () => import(/* webpackChunkName: "EditorJs" */ '@/components/ui/editor-js/EditorJs')
-
   },
 
   props: {
-    value:       {
-      default: ''
-    },
-    label:       {
+
+    value: {},
+
+    label: {
       default: '',
       type:    String
     },
-    status:      { // 'loading' / 'success' / 'error'
+
+    status: { // 'loading' / 'success' / 'error'
       default: '',
       type:    String
     },
+
     placeholder: {
       default: '',
       type:    String
     },
-    editable:    {default: 1}
+
+    editable: {default: 1}
   },
 
   data () {
     return {
-      valueInput: this.value,
-
-      initData: {
-        'time':   null,
-        'blocks': null
-      }
-
+      valueInput: this.initData(this.value)
     }
   },
 
+  mounted () {
+    setTimeout(() => {
+      //this.initData(this.value)
+    }, 100)
+  },
+
   computed: {
+
+    onlyText () {
+      if (!this.valueInput) return
+      if (!this.valueInput.block) return
+
+      return this.valueInput.block
+                 .map(i => i.type === 'paragraph')
+    }
 
     //isChanged () {
     //  return this.valueInput !== this.value
@@ -81,13 +86,26 @@ export default {
 
   methods: {
 
-    save () {
-      console.log(this.$refs.editor)
-      this.$refs.editor.save()
+    initData (data) {
+      if (!data) return
+
+      console.log('1')
+      if (data.constructor === Object) {
+        console.log('Object')
+        return data
+
+      }
+      else if (data.constructor === String) {
+        console.log('String')
+        return {
+          blocks: [{
+            type: 'paragraph',
+            data: {text: this.value}
+          }]
+        }
+      }
     },
-    onSave (response) {
-      console.log(JSON.stringify(response))
-    },
+
     onReady () {
       console.log('ready')
     },
@@ -95,11 +113,9 @@ export default {
       console.log('changed')
     },
 
-    onInitialized (editor) {
-      console.log(editor)
-    },
-
-    update () {
+    update (data) {
+      this.isChanged  = true
+      this.valueInput = data
       this.$emit('change', this.isChanged)
       this.$emit('value', this.valueInput)
     }

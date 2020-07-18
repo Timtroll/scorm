@@ -247,7 +247,7 @@ export default {
       this.listMenuActiveId = 0
     }
     else {
-      this.listMenuActiveId = 1
+      this.listMenuActiveId = 0
     }
 
   },

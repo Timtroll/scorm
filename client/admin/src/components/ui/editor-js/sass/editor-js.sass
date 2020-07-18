@@ -1,5 +1,14 @@
 .editor-js
   padding: 0 30px
 
-  .ce-toolbar__content
+  .ce-toolbar__content,
+  .ce-block__content
     max-width: none
+
+@media (min-width: 651px)
+  .codex-editor--narrow
+    .ce-toolbar__plus
+      left: -30px
+
+    .ce-toolbar__actions
+      right: -30px
