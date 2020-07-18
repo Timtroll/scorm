@@ -27,7 +27,8 @@ const PLUGINS = {
   checklist:   require('@editorjs/checklist'),
   //textSpoiler:  require('editorjs-inline-spoiler-tool'),
   //attachesTool: require('@editorjs/attaches'),
-  underline:   require('@editorjs/underline')
+  underline:   require('@editorjs/underline'),
+  img:         require('./plugins/freee-img')
 }
 
 import EditorJS from '@editorjs/editorjs'
@@ -80,6 +81,10 @@ export default {
             levels:       [2, 3, 4, 5, 6],
             defaultLevel: 3
           }
+        },
+        img:        {
+          class:         PLUGINS.img,
+          inlineToolbar: true
         },
         list:       {
           class:         PLUGINS.list,
