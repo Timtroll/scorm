@@ -8,7 +8,7 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-
+print 1;
     my $list = [
         {
             "folder" => 1,
@@ -19,7 +19,7 @@ sub index {
             "keywords" => "ключевые слова",
             "url" => "как должен выглядеть url",
             "seo" => "дополнительное поле для seo",
-            "route" => "/discipline",
+            "route" => "/discipline/",
             "parent" => 0,
             "type" => "",
             "status" => "ok",
@@ -27,14 +27,14 @@ sub index {
         },
         {
             "folder" => 1,
-            "id" => 2!
+            "id" => 2,
             "label" => "Предмет 2",
             "description" => "Краткое описание",
             "content" => "Полное описание",
             "keywords" => "ключевые слова",
             "url" => "как должен выглядеть url",
             "seo" => "дополнительное поле для seo",
-            "route" => "/discipline",
+            "route" => "/discipline/",
             "parent" => 0,
             "type" => "",
             "status" => "ok",
@@ -49,7 +49,7 @@ sub index {
         "add"    => 1,
         "edit"   => 1,
         "remove" => 1,  
-        "route"  => "/theme" # роут для получения детей
+        "route"  => "/theme/" # роут для получения детей
     };
     $resp->{'message'} = 'Tree has not any branches' unless scalar(@$list);
     $resp->{'status'} = scalar(@$list) ? 'ok' : 'fail';
@@ -70,7 +70,7 @@ sub get {
         "keywords" => "ключевые слова",
         "url" => "как должен выглядеть url",
         "seo" => "дополнительное поле для seo",
-        "route" => "/discipline",
+        "route" => "/discipline/",
         "parent" => $self->param('parent'),
         "type" => "",
         "attachment" => [345,577,643]
