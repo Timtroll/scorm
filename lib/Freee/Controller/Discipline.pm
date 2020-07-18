@@ -20,13 +20,14 @@ sub index {
             "url" => "как должен выглядеть url",
             "seo" => "дополнительное поле для seo",
             "route" => "/discipline",
-            "parent" => $self->param('parent'),
+            "parent" => 0,
             "type" => "",
+            "status" => "ok",
             "attachment" => [345,577,643]
         },
         {
             "folder" => 1,
-            "id" => 2,
+            "id" => 2!
             "label" => "Предмет 2",
             "description" => "Краткое описание",
             "content" => "Полное описание",
@@ -34,13 +35,22 @@ sub index {
             "url" => "как должен выглядеть url",
             "seo" => "дополнительное поле для seo",
             "route" => "/discipline",
-            "parent" => $self->param('parent'),
+            "parent" => 0,
             "type" => "",
+            "status" => "ok",
             "attachment" => [345,577,643]
         }
     ];
 
     my $resp;
+    $resp->{'label'} = 'Предметы';
+    $resp->{'add'}   = 1;
+    $resp->{'child'} = {
+        "add"    => 1,
+        "edit"   => 1,
+        "remove" => 1,  
+        "route"  => "/theme" # роут для получения детей
+    };
     $resp->{'message'} = 'Tree has not any branches' unless scalar(@$list);
     $resp->{'status'} = scalar(@$list) ? 'ok' : 'fail';
     $resp->{'list'} = $list if scalar(@$list);
