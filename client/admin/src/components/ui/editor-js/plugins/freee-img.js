@@ -80,9 +80,15 @@ export default class FreeeImg {
                              .add('uk-button', 'uk-width-1-1', 'uk-button-default')
                              .setAttribute('tabindex', '-1')
                              .setAttribute('tabindex', 'button')
+                             .innerHTML('выбрать файл')
 
     fileWrap.append(file).append(selectFile)
     outer.append(fileWrap)
+
+    file.addEventListener('change', (e) => {
+      //this._toggleTune(tune.name);
+      //button.classList.toggle(this.api.styles.settingsButtonActive);
+    });
 
     return outer
   }
