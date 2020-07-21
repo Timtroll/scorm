@@ -122,6 +122,14 @@ sub startup {
     $auth->post('/cms/article_toggle')  ->to('cmsarticle#toggle');
     $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
 
+    # управление предметами
+    $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
+    $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
+    $auth->post('/discipline/get')      ->to('discipline#get');     # Получить данные для редактирования предмета
+    $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
+    $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
+    $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
+
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/subject_add')     ->to('cmssubject#add');
     $auth->post('/cms/subject_edit')    ->to('cmssubject#edit');
@@ -212,14 +220,6 @@ sub startup {
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
     $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
-
-    # управление предметами
-    $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
-    $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
-    $auth->post('/discipline/get')      ->to('discipline#get');     # Получить данные для редактирования предмета
-    $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
-    $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
-    $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
 
     # управление темами
     $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета

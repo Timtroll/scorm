@@ -24,7 +24,6 @@ CREATE TABLE "public"."users" (
     "time_access" timestamptz(6),
     "time_update" timestamptz(6),
     "timezone" int2 DEFAULT 3,
-    "groups" varchar(255) DEFAULT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
@@ -65,4 +64,14 @@ CREATE TRIGGER "users_set" AFTER UPDATE OF "publish"
 ON "public"."users"
 FOR EACH ROW
 EXECUTE PROCEDURE "users_trigger_set"();
+
+-- связь юзеров и групп 
+CREATE TABLE "public"."user_groups" (
+"user_id" int4 DEFAULT 0 NOT NULL,
+"group_id" int4 DEFAULT 0 NOT NULL,
+CONSTRAINT "user_groups_pkey" PRIMARY KEY ("user_id", "group_id")
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "public"."user_groups" OWNER TO "troll";
 ---------------------
