@@ -40,7 +40,7 @@ my $data = {
     'email'        => 'emailright@email.ru',
     'phone'        => '+79212222222',
     'status'       => 1,
-    'groups'       => "[1, 2, 3]"
+    'groups'       => "[1,2,3]"
 };
 $t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {

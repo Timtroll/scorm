@@ -52,7 +52,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79212222222',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
@@ -74,7 +74,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79212222221',
             'status'       => 0,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 2,
@@ -97,7 +97,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
@@ -118,7 +118,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
@@ -139,7 +139,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'patronymic'",
@@ -160,7 +160,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'country'",
@@ -181,7 +181,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'timezone'",
@@ -202,7 +202,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'birthday'",
@@ -223,7 +223,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'password'",
@@ -244,7 +244,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'avatar'",
@@ -265,7 +265,7 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'phone'        => '+79211111111',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'type'",
@@ -286,7 +286,7 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'phone'",
@@ -306,12 +306,11 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
-            'phone'        => '+79211111111a',
-            'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'phone'        => '+79211111111',
+            'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: 'phone' didn't match regular expression",
+            'message'   => "_check_fields: didn't has required data in 'status'",
             'status'    => 'fail',
         },
         'comment' => 'No status:'
@@ -330,7 +329,7 @@ my $test_data = {
             'type'         => 1,
             'phone'        => '+79212222222',
             'status'       => 1,
-            'groups'       => "[1, 2, 3]"
+            'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "phone '+79212222222' already used",
@@ -350,9 +349,9 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
-            'phone'        => '+4',
+            'phone'        => '+79212222224',
             'status'       => 1,
-            'groups'       => "[1, 2, 404, 405]"
+            'groups'       => "[1,2,404,405]"
         },
         'result' => {
             'message'   => "group with id '404' doesn't exist",

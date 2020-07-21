@@ -40,7 +40,7 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+1',
+            'phone'        => '+79211111111',
             'status'       => 1,
             'groups'       => "[1]"
         },
@@ -62,9 +62,9 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '2@email.ru',
-            'phone'        => '+2',
+            'phone'        => '+79211111112',
             'status'       => 1,
-            'groups'       => "[1, 2]"
+            'groups'       => "[1,2]"
         },
         'result' => {
             'id'        => 2,
@@ -84,9 +84,9 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '3@email.ru',
-            'phone'        => '+3',
+            'phone'        => '+79211111113',
             'status'       => 1,
-            'groups'       => "[2, 1, 3]"
+            'groups'       => "[2,1,3]"
         },
         'result' => {
             'id'        => 3,
@@ -106,9 +106,9 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '4@email.ru',
-            'phone'        => '+4',
+            'phone'        => '+79211111114',
             'status'       => 1,
-            'groups'       => "[3, 2, 1]"
+            'groups'       => "[3,2,1]"
         },
         'result' => {
             'id'        => 4,
@@ -128,9 +128,9 @@ my $test_data = {
             'avatar'       => 'https://thispersondoesnotexist.com/image',
             'type'         => 1,
             'email'        => '5@email.ru',
-            'phone'        => '+5',
+            'phone'        => '+79211111115',
             'status'       => 1,
-            'groups'       => "[3, 2, 4]"
+            'groups'       => "[3,2,4]"
         },
         'result' => {
             'id'        => 5,
@@ -165,7 +165,7 @@ $test_data = {
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "1\@email.ru",
-                            "phone" =>  "+1",
+                            "phone" =>  "+79211111111",
                             "status" =>  1,
                             "eav_id" =>  1,
                             "groups" => "[1]"
@@ -175,30 +175,30 @@ $test_data = {
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "2\@email.ru",
-                            "phone" =>  "+2",
+                            "phone" =>  "+79211111112",
                             "status" =>  1,
                             "eav_id" =>  2,
-                            "groups" => "[1, 2]"
+                            "groups" => "[1,2]"
                         },
                         {
                             "id" =>  3,
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "3\@email.ru",
-                            "phone" =>  "+3",
+                            "phone" =>  "+79211111113",
                             "status" =>  1,
                             "eav_id" =>  3,
-                            "groups" => "[2, 1, 3]"
+                            "groups" => "[2,1,3]"
                         },
                         {
                             "id" =>  4,
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "4\@email.ru",
-                            "phone" =>  "+4",
+                            "phone" =>  "+79211111114",
                             "status" =>  1,
                             "eav_id" =>  4,
-                            "groups" => "[3, 2, 1]"
+                            "groups" => "[3,2,1]"
                         }
                     ],
                     "settings" => {
@@ -235,7 +235,7 @@ $test_data = {
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "1\@email.ru",
-                            "phone" =>  "+1",
+                            "phone" =>  "+79211111111",
                             "status" =>  1,
                             "eav_id" =>  1,
                             "groups" => "[1]"
@@ -245,30 +245,30 @@ $test_data = {
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "2\@email.ru",
-                            "phone" =>  "+2",
+                            "phone" =>  "+79211111112",
                             "status" =>  1,
                             "eav_id" =>  2,
-                            "groups" => "[1, 2]"
+                            "groups" => "[1,2]"
                         },
                         {
                             "id" =>  3,
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "3\@email.ru",
-                            "phone" =>  "+3",
+                            "phone" =>  "+79211111113",
                             "status" =>  1,
                             "eav_id" =>  3,
-                            "groups" => "[2, 1, 3]"
+                            "groups" => "[2,1,3]"
                         },
                         {
                             "id" =>  4,
                             "timezone" =>  3,
                             "password" =>  "password1",
                             "email" =>  "4\@email.ru",
-                            "phone" =>  "+4",
+                            "phone" =>  "+79211111114",
                             "status" =>  1,
                             "eav_id" =>  4,
-                            "groups" => "[3, 2, 1]"
+                            "groups" => "[3,2,1]"
                         }
                     ],
                     "settings" => {

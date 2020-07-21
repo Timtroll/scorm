@@ -156,9 +156,9 @@ sub _get_list {
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, '%[' . $$data{'id'} . ']%' );
-        $sth->bind_param( 2, '%[' . $$data{'id'} . ', %' );
-        $sth->bind_param( 3, '% ' . $$data{'id'} . ', %' );
-        $sth->bind_param( 4, '% ' . $$data{'id'} . ']%' );
+        $sth->bind_param( 2, '%[' . $$data{'id'} . ',%' );
+        $sth->bind_param( 3, '%' .  $$data{'id'} . ',%' );
+        $sth->bind_param( 4, '%' .  $$data{'id'} . ']%' );
         $sth->execute();
 
         $list = $sth->fetchall_hashref('id');
@@ -234,11 +234,12 @@ sub _get_user {
 
         $result_users = $sth->fetchrow_hashref();
         if ( $result_users ) {
+    ### ???????????????????????????????????????????????????????????????????????? contacts - emailconfirmed phoneconfirmed ?
             $contacts = [
                {"email"          => $$result_users{'email'} },
-               {"emailconfirmed" => $$result_users{'email'} },
+               {"emailconfirmed" => 1 },
                {"phone"          => $$result_users{'phone'} },
-               {"phoneconfirmed" => $$result_users{'phone'} }
+               {"phoneconfirmed" => 1 }
             ];
 
             $password = [
@@ -338,7 +339,8 @@ sub _insert_user {
                     'country'      => $$data{'country'},
                     'birthday'     => $$data{'birthday'},
                     'import_source'=> $$data{'avatar'},
-                    'date_updated' => $$data{'time_update'}
+                    'date_updated' => $$data{'time_update'},
+                    'publish'      => $$data{'publish'}
                 }
             }
         );
@@ -393,7 +395,6 @@ sub _save_user {
         @user_keys = ( "publish", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
         if ( $$data{'password'} ) {
-            # вместо старого пароля присваивается новый  ??????????????????????????????????????????
             $$data{'password'} = $$data{'newpassword'};
             push @user_keys, 'password';
         }

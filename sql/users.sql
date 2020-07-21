@@ -24,6 +24,7 @@ CREATE TABLE "public"."users" (
     "time_access" timestamptz(6),
     "time_update" timestamptz(6),
     "timezone" int2 DEFAULT 3,
+    "groups" varchar(255) DEFAULT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
@@ -49,20 +50,20 @@ CREATE TABLE "public"."users_social" (
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."users_social" OWNER TO "troll";
 
----функция (рекурсивное удаление сообщений темы)
+---функция ( синхронизация статуса пользователя в users и EAV_items )
 CREATE OR REPLACE FUNCTION "public"."users_trigger_set"() RETURNS "pg_catalog"."trigger" AS $BODY$
 BEGIN
-UPDATE "public"."EAV_items" SET "publish" = OLD.publish WHERE "id" = OLD.id;
+UPDATE "public"."EAV_items" SET "publish" = NEW.publish WHERE "id" = OLD.id;
 
 RETURN OLD;
 END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE COST 100;
 
----триггер
-CREATE TRIGGER "users_set" AFTER UPDATE OF "publish"
-ON "public"."users"
+CREATE TRIGGER "users_set"
+AFTER UPDATE OF "publish" ON "public"."users"
 FOR EACH ROW
+WHEN ( OLD.publish IS DISTINCT FROM NEW.publish )
 EXECUTE PROCEDURE "users_trigger_set"();
 
 -- связь юзеров и групп 

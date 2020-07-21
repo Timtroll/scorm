@@ -40,7 +40,7 @@ my $data = {
     'email'        => 'emailright@email.ru',
     'phone'        => '+79212222222',
     'status'       => 1,
-    'groups'       => "[1, 2, 3]"
+    'groups'       => "[1,2,3]"
 };
 $t->post_ok( $host.'/user/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -75,9 +75,9 @@ my $test_data = {
                     {
                         "fields" => [
                            {"email" => "emailright\@email.ru"},
-                           {"emailconfirmed" => "emailright\@email.ru"},
+                           {"emailconfirmed" => 1},
                            {"phone" => '+79212222222'},
-                           {"phoneconfirmed" => '+79212222222'}
+                           {"phoneconfirmed" => 1}
                        ],
                         "label" => "Контакты"
                     },
@@ -90,7 +90,7 @@ my $test_data = {
                     },
                     {
                         "fields" => [
-                           {"groups" => "[1, 2, 3]" }
+                           {"groups" => "[1,2,3]" }
                        ],
                         "label" => "Группы"
                     }

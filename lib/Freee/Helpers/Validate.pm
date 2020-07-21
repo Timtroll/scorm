@@ -196,7 +196,7 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^[0-9 \-\+\(\)]+$/os, 24 ],
+                'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
@@ -205,7 +205,7 @@ sub register {
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
+                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
             },
             '/user/add_by_email'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
@@ -220,14 +220,14 @@ sub register {
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^(1|2|3|4)$/os, 1 ],
                 'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
+                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
             },
             '/user/add_by_phone'  => {
                 'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^[0-9 \-\+\(\)]+$/os, 24 ],
+                'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
                 'birthday'      => [ 'required', qr/^[\d\.\-\: ]+$/os, 12 ],
@@ -235,7 +235,7 @@ sub register {
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
+                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
             },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -246,7 +246,7 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ '', qr/^[0-9 \-\+\(\)]+$/os, 24 ],
+                'phone'         => [ '', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
                 'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
@@ -256,7 +256,7 @@ sub register {
                 'newpassword'   => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 64 ],
                 'type'          => [ 'required', qr/^\d+$/os, 3 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,\ )*\d+\]$/os, 24 ]
+                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
             },
             '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
