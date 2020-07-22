@@ -53,8 +53,12 @@ ALTER TABLE "public"."users_social" OWNER TO "troll";
 ---функция ( синхронизация статуса пользователя в users и EAV_items )
 CREATE OR REPLACE FUNCTION "public"."users_trigger_set"() RETURNS "pg_catalog"."trigger" AS $BODY$
 BEGIN
-UPDATE "public"."EAV_items" SET "publish" = NEW.publish WHERE "id" = OLD.id;
-
+IF ( TG_TABLE_NAME = 'users' ) THEN
+        UPDATE "public"."EAV_items" SET "publish" = NEW.publish WHERE "id" = OLD.id;
+END IF;
+IF ( TG_TABLE_NAME = 'EAV_items' ) THEN
+        UPDATE "public"."users" SET "publish" = NEW.publish WHERE "id" = OLD.id;
+END IF;
 RETURN OLD;
 END;
 $BODY$
@@ -62,6 +66,12 @@ LANGUAGE 'plpgsql' VOLATILE COST 100;
 
 CREATE TRIGGER "users_set"
 AFTER UPDATE OF "publish" ON "public"."users"
+FOR EACH ROW
+WHEN ( OLD.publish IS DISTINCT FROM NEW.publish )
+EXECUTE PROCEDURE "users_trigger_set"(); 
+
+CREATE TRIGGER "EAV_items_set"
+AFTER UPDATE OF "publish" ON "public"."EAV_items"
 FOR EACH ROW
 WHEN ( OLD.publish IS DISTINCT FROM NEW.publish )
 EXECUTE PROCEDURE "users_trigger_set"();
