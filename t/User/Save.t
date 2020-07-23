@@ -316,7 +316,7 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "can't update 404",
+            'message'   => "can't update 404 in users",
             'status'    => 'fail',
         },
         'comment' => "Wrong id:"
@@ -498,6 +498,8 @@ sub clear_db {
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
 
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")

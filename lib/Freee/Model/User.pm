@@ -3,6 +3,7 @@ package Freee::Model::User;
 use Mojo::Base 'Freee::Model::Base';
 
 use Data::Dumper;
+use Mojo::JSON qw( from_json );
 
 ###################################################################
 # Поля пользователя
@@ -146,19 +147,16 @@ sub _get_list {
 
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ?';
+            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ?';
         }
         elsif ( $$data{'status'} ) {
-            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = TRUE';
+            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ? AND i."publish" = true';
         }
         else {
-            $sql = 'SELECT' . $fields . 'FROM "public"."users" WHERE ( "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? OR "groups" LIKE ? ) AND "publish" = FALSE';
+            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ? AND i."publish" = false';
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, '%[' . $$data{'id'} . ']%' );
-        $sth->bind_param( 2, '%[' . $$data{'id'} . ',%' );
-        $sth->bind_param( 3, '%' .  $$data{'id'} . ',%' );
-        $sth->bind_param( 4, '%' .  $$data{'id'} . ']%' );
+        $sth->bind_param( 1, $$data{'id'} );
         $sth->execute();
 
         $list = $sth->fetchall_hashref('id');
@@ -304,7 +302,7 @@ sub _get_user {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $user, $result, $mess, $sql, @mess, @user_keys );
+    my ( $sth, $user, $user_id, $result, $mess, $sql, $groups, @mess, @user_keys );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -361,8 +359,8 @@ sub _insert_user {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
 
-        $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
-        push @mess, "Can not insert $$data{'title'} into users" unless $result;
+        $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
+        push @mess, "Can not insert $$data{'title'} into users" unless $user_id;
 
         # таблица users_social
         # my $user_data = {
@@ -374,17 +372,30 @@ sub _insert_user {
         # };
     }
 
+    #### зеполнение таблицы user_groups
+    unless ( @mess ) {
+        $groups = from_json( $$data{'groups'} );
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
+
+        foreach my $group_id ( @$groups ) {
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+            $sth->bind_param( 1, $user_id );
+            $sth->bind_param( 2, $group_id );
+            $result = $sth->execute();
+            push @mess, "Can not insert into 'user_groups'" unless $result;
+        }
+    }
+
     if ( @mess ) {
         $mess = join( "\n", @mess );
     }
-
-    return $result, $mess;
+    return $user_id, $mess;
 }
 
 sub _save_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $mess, $sql, @user_keys, @mess );
+    my ( $sth, $usr, $result, $mess, $sql, $groups, @user_keys, @mess );
 
     unless ( $$data{'id'} ) {
         push @mess, 'no data for save';
@@ -405,7 +416,7 @@ sub _save_user {
 
         $result = $sth->execute();
 
-        push @mess, "can't update $$data{'id'}" if $result eq '0E0';
+        push @mess, "can't update $$data{'id'} in users" if $result eq '0E0';
     }
 
     unless ( @mess ) {
@@ -441,10 +452,35 @@ sub _save_user {
         push @mess, "can't update EAV" unless $result;
     }
 
+    unless ( @mess ) {
+        # удаление из user_groups
+        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+        $result = $sth->execute();
+        push @mess, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
+    }
+
+    unless ( @mess ) {
+        # добавление в user_groups
+        $groups = from_json( $$data{'groups'} );
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
+
+        foreach my $group_id ( @$groups ) {
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+            $sth->bind_param( 1, $$data{'id'} );
+            $sth->bind_param( 2, $group_id );
+            $result = $sth->execute();
+            unless ( $result ) {
+                push @mess, "Can not update 'user_groups'";
+                last;
+            }
+        }
+    }
+
     if ( @mess ) {
         $mess = join( "\n", @mess );
     }
-
     return $result, $mess;
 }
 
@@ -492,7 +528,7 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        push @mess, "could not delete '$$data{'id'}'" if $result eq '0E0';
+        push @mess, "could not delete '$$data{'id'}' from users" if $result eq '0E0';
     }
 
     unless ( @mess ) {
@@ -501,6 +537,17 @@ sub _delete_user {
         $result = $usr->_RealDelete();
 
         push @mess, "can't delete from EAV" unless $result;
+    }
+
+    unless ( @mess ) {
+        # удаление из user_groups
+        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'id'} );
+
+        $result = $sth->execute();
+
+        push @mess, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
     }
 
     if ( @mess ) {
