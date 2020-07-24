@@ -50,31 +50,39 @@ CREATE TABLE "public"."users_social" (
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."users_social" OWNER TO "troll";
 
----функция ( синхронизация статуса пользователя в users и EAV_items )
-CREATE OR REPLACE FUNCTION "public"."users_trigger_set"() RETURNS "pg_catalog"."trigger" AS $BODY$
+---функция ( изменение статуса users после изменения статуса EAV_items )
+CREATE OR REPLACE FUNCTION "public"."users_trigger_set_users"() RETURNS "pg_catalog"."trigger" AS $BODY$
 BEGIN
-IF ( TG_TABLE_NAME = 'users' ) THEN
-        UPDATE "public"."EAV_items" SET "publish" = NEW.publish WHERE "id" = OLD.id;
-END IF;
-IF ( TG_TABLE_NAME = 'EAV_items' ) THEN
-        UPDATE "public"."users" SET "publish" = NEW.publish WHERE "id" = OLD.id;
-END IF;
+    UPDATE "public"."users" SET "publish" = NEW.publish WHERE "id" = OLD.id;
 RETURN OLD;
 END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE COST 100;
 
-CREATE TRIGGER "users_set"
-AFTER UPDATE OF "publish" ON "public"."users"
-FOR EACH ROW
-WHEN ( OLD.publish IS DISTINCT FROM NEW.publish )
-EXECUTE PROCEDURE "users_trigger_set"(); 
-
-CREATE TRIGGER "EAV_items_set"
+---триггер для вызова функции обновление users после обновления статуса в EAV_items
+---не работает при вызове после другого триггера!!!
+CREATE TRIGGER "users_set_publish"
 AFTER UPDATE OF "publish" ON "public"."EAV_items"
 FOR EACH ROW
-WHEN ( OLD.publish IS DISTINCT FROM NEW.publish )
-EXECUTE PROCEDURE "users_trigger_set"();
+WHEN ( ( OLD.publish IS DISTINCT FROM NEW.publish ) AND ( pg_trigger_depth() = 0 ) )
+EXECUTE PROCEDURE "users_trigger_set_users"(); 
+
+---функция ( изменение статуса EAV_items после изменения статуса users )
+CREATE OR REPLACE FUNCTION "public"."users_trigger_set_EAV_items"() RETURNS "pg_catalog"."trigger" AS $BODY$
+BEGIN
+    UPDATE "public"."EAV_items" SET "publish" = NEW.publish WHERE "id" = OLD.id;
+RETURN OLD;
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+---триггер для вызова функции обновление EAV_items после обновления статуса в users
+---не работает при вызове после другого триггера!!!
+CREATE TRIGGER "EAV_items_set_publish"
+AFTER UPDATE OF "publish" ON "public"."users"
+FOR EACH ROW
+WHEN ( ( OLD.publish IS DISTINCT FROM NEW.publish ) AND ( pg_trigger_depth() = 0 ) )
+EXECUTE PROCEDURE "users_trigger_set_EAV_items"();
 
 -- связь юзеров и групп 
 CREATE TABLE "public"."user_groups" (
