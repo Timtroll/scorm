@@ -419,6 +419,29 @@ my $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
+    },
+    18 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'Россия',
+            'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
+            'password'     => 'password1',
+            'avatar'       => 'https://thispersondoesnotexist.com/image',
+            'type'         => 1,
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '+71111111114',
+            'status'       => 1,
+            'groups'       => "[]"
+        },
+        'result' => {
+            'message'   => "_check_fields: 'groups' didn't match regular expression",
+            'status'    => 'fail',
+        },
+        'comment' => "No groups:"
     }
 };
 
@@ -453,6 +476,8 @@ sub clear_db {
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
 
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")

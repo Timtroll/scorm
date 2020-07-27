@@ -65,7 +65,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "could not delete '404'",
+            'message'   => "could not delete '404' from users",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -120,6 +120,8 @@ sub clear_db {
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
 
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")
