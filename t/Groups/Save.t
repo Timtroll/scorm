@@ -80,12 +80,12 @@ $test_data = {
     2 => {
         'data' => {
             'id'        => 404,
-            'name'      => 'name',
-            'label'     => 'label',
+            'name'      => 'name3',
+            'label'     => 'label3',
             'status'    => 1
         },
         'result' => {
-            'message'   => "Group named 'name' is not exists",
+            'message'   => "Group with id '404' does not exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -97,7 +97,7 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -109,7 +109,7 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'name'",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
@@ -121,7 +121,7 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
@@ -133,7 +133,7 @@ $test_data = {
             'label'     => 'label'
         },
         'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'status'",
             'status'    => 'fail'
         },
         'comment' => 'No value:' 
@@ -146,7 +146,7 @@ $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field has wrong type",
+            'message'   => "_check_fields: 'name' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
@@ -155,14 +155,27 @@ $test_data = {
         'data' => {
             'id'        => 1,
             'label'     => 'label2',
+            'name'      => 'name8',            
+            'status'    => 0
+        },
+        'result' => {
+            'message'   => "Group with label 'label2' already exists",
+            'status'    => 'fail'
+        },
+        'comment' => 'Label already used:' 
+    },
+    9 => {
+        'data' => {
+            'id'        => 1,
+            'label'     => 'label9',
             'name'      => 'name2',            
             'status'    => 0
         },
         'result' => {
-            'message'   => "Could not update Group named 'name2'",
+            'message'   => "Group with name 'name2' already exists",
             'status'    => 'fail'
         },
-        'comment' => 'Mistake from DB:' 
+        'comment' => 'Name already used:' 
     }
 };
 

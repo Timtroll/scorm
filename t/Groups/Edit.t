@@ -57,15 +57,14 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'data'      => {},
-            'message'   => "Could not get Group ''",
+            'message'   => "Could not get Group '404'",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -75,10 +74,10 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong id:' 
+        'comment' => 'Wrong input format:' 
     },
 };
 
