@@ -160,7 +160,7 @@ sub _update_group {
     }
 
     unless ( @mess ) {
-        $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . " RETURNING \"id\"" );
+        # $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . " RETURNING \"id\"" );
 
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $result = $sth->execute();
