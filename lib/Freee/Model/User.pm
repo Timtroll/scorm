@@ -464,13 +464,14 @@ sub _save_user {
     unless ( @mess ) {
         # добавление в user_groups
         $groups = from_json( $$data{'groups'} );
-        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? ) RETURNING user_id';
 
         foreach my $group_id ( @$groups ) {
             $sth = $self->{'app'}->pg_dbh->prepare( $sql );
             $sth->bind_param( 1, $$data{'id'} );
             $sth->bind_param( 2, $group_id );
-            $result = $sth->execute();
+            $sth->execute();
+            $result = $sth->fetchrow_array();
             unless ( $result ) {
                 push @mess, "Can not update 'user_groups'";
                 last;

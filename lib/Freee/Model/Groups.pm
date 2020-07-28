@@ -160,10 +160,10 @@ sub _update_group {
     }
 
     unless ( @mess ) {
-        # $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . " RETURNING \"id\"" );
-
+        $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-        $result = $sth->execute();
+        $sth->execute();
+        $result = $sth->fetchrow_array();
 
         push @mess, "Can not update $$data{'label'}" if $result eq '0E0';
     }
@@ -171,7 +171,7 @@ sub _update_group {
     if ( @mess ) {
         $mess = join( "\n", @mess );
     }
-    return $$data{'id'}, $mess;
+    return $result, $mess;
 }
 
 # удаление группы
