@@ -23,26 +23,24 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    my ($list, $set, $resp, @mess);
+    my ( $list, $error, $set, $row, $resp, @mess );
 
     # читаем группы из базы
-    unless ( $list = $self->_all_groups() ) {
-        push @mess, "Can not get list of group";
-    }
+    ( $list, $error ) = $self->model('Groups')->_all_groups();
+    push @mess, $error if $error;
 
     $set = [];
-    unless (@mess) {
+    unless ( @mess ) {
         # формируем данные для вывода
         foreach (sort {$a <=> $b} keys %$list) {
-            my $row = {
+            $row = {
                 'id'        => $_,
                 'label'     => $$list{$_}{'label'},
                 'component' => "Groups",
                 'opened'    => 0,
-                'folder'    => 1,
-                'keywords'  => "",
-                'children'  => [],
-                'table'     => {}
+                'folder'    => 0,
+                'keywords'  => $$list{$_}{'label'},
+                'children'  => []
             };
             push @{$set}, $row;
         }
