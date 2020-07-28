@@ -20,59 +20,73 @@ use common;
 sub _all_groups {
     my $self = shift;
 
+    my ( $sql, $sth, $groups, $list, $mess, @mess );
+
     # получаем список групп
-    my $groups;
-    eval{
-        $groups = $self->pg_dbh->selectall_hashref('SELECT id,label FROM "public"."groups"', 'id');
-    };
-    warn $@ if $@;
-    return if $@;
+    $sql = 'SELECT id,label FROM "public"."groups"';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+
+    $groups = $sth->fetchall_hashref( 'id' );
+    push @mess, "couldn't get list of groups" unless $groups;
 
     # синхронизация реальных роутов и роутов в группах
-    foreach my $parent (sort {$a <=> $b} keys %$groups) {
-        # получаем список роутов текущей группы
-        my $list = {};
-        eval {
-            $list = $self->pg_dbh->selectall_hashref('SELECT id, label, name, parent FROM "public"."routes" WHERE "parent"='.$parent, 'name');
-        };
-        warn $@ if $@;
-        return if $@;
+    unless ( @mess ) {
+        foreach my $parent (sort {$a <=> $b} keys %$groups) {
+            # получаем список роутов текущей группы
+            $sql = 'SELECT id, label, name, parent FROM "public"."routes" WHERE "parent" = ?';
 
-        # проверка соответствия роута в таблице тому, что есть в реальном списке роутов
-        foreach my $route (keys %$list) {
-            # удаляем роуты, которые есть в таблице, но которых нет в реальном списке
-            unless ( defined $$routs{ $route } ) {
-                eval {
-                    $self->pg_dbh->do( 'DELETE FROM "public"."routes" WHERE "id"='.$$list{$route}{'id'} );
-                };
+            $sth = $self->{app}->pg_dbh->prepare( $sql );
+            $sth->bind_param( 1, $parent );
+            $sth->execute();
+
+            $list = $sth->fetchall_hashref( 'name' );
+
+            unless ( $list ) {
+                push @mess, "couldn't get list of routes";
+                last;
             }
-        }
 
-        # проверка соответствия роута в реальном списке роутов тому, что есть в таблице 
-        foreach my $route (keys %$routs) {
-            unless ( defined $$list{$route} ) {
-                # добавляем роуты, которые есть в реальном списке, но которых нет в таблице
-                my $data = {
-                    "parent" => $parent,
-                    "label"  => $$routs{$route},
-                    "name"   => $route,
-                    "list"   => 0,
-                    "add"    => 0,
-                    "edit"   => 0,
-                    "delete" => 0,
-                    "status" => 1
-                };
-                my $sql = 'INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
-                eval {
-                    $self->pg_dbh->do( $sql );
-                };
-                warn $@ if $@;
-                return if $@;
+            # проверка соответствия роута в таблице тому, что есть в реальном списке роутов
+            foreach my $route ( keys %$list ) {
+                # удаляем роуты, которые есть в таблице, но которых нет в реальном списке
+                unless ( defined $$routs{ $route } ) {
+                    $sql = 'DELETE FROM "public"."routes" WHERE "id"= ?';
+
+                    $sth = $self->{app}->pg_dbh->prepare( $sql );
+                    $sth->bind_param( 1, $$list{$route}{'id'} );
+                    $sth->execute();
+                }
+            }
+
+            # проверка соответствия роута в реальном списке роутов тому, что есть в таблице 
+            foreach my $route (keys %$routs) {
+                unless ( defined $$list{$route} ) {
+                    # добавляем роуты, которые есть в реальном списке, но которых нет в таблице
+                    my $data = {
+                        "parent" => $parent,
+                        "label"  => $$routs{$route},
+                        "name"   => $route,
+                        "list"   => 0,
+                        "add"    => 0,
+                        "edit"   => 0,
+                        "delete" => 0,
+                        "status" => 1
+                    };
+                    $sql = 'INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
+
+                    $sth = $self->{app}->pg_dbh->prepare( $sql );
+                    $sth->execute();
+                }
             }
         }
     }
 
-    return $groups;
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+    return $groups, $mess;
 }
 
 # читаем одну группу
@@ -131,9 +145,10 @@ sub _insert_group {
         push @mess, "Can not insert $$data{'label'} into groups" unless $id;
     }
 
-#???????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-    # синхронизация реальных роутов в группах       ?????????????????????????????????????????????????????
-    # $self->_all_groups();
+    # синхронизация реальных роутов в группах
+    unless ( @mess ) {
+        $self->_all_groups();
+    }
 
     if ( @mess ) {
         $mess = join( "\n", @mess );

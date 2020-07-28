@@ -24,6 +24,64 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# Ввод групп
+my $data = {
+    1 => {
+        'data' => {
+            'name'      => 'name1',
+            'label'     => 'label1',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '1',
+            'status'    => 'ok'
+        }
+    },
+    2 => {
+        'data' => {
+            'name'      => 'name2',
+            'label'     => 'label2',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '2',
+            'status'    => 'ok' 
+        }
+    },
+    3 => {
+        'data' => {
+            'name'      => 'name3',
+            'label'     => 'label3',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '3',
+            'status'    => 'ok' 
+        }
+    },
+    4 => {
+        'data' => {
+            'name'      => 'name4',
+            'label'     => 'label4',
+            'status'    => 1
+        },
+        'result' => {
+            'id'        => '4',
+            'status'    => 'ok' 
+        }
+    }
+};
+diag "Create groups:";
+foreach my $test (sort {$a <=> $b} keys %{$data}) {
+    $t->post_ok( $host.'/groups/add' => form => $$data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$data{$test}{'result'} );
+}
+diag "";
+
 # Ввод пользователя
 diag "Add users:";
 my $test_data = {
@@ -370,6 +428,9 @@ done_testing();
 # очистка тестовой таблицы
 sub clear_db {
     if ( $t->app->config->{test} ) {
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
+
         $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
         $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
 

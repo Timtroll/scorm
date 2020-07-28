@@ -6,7 +6,6 @@
 #    "folder"      => 1,
 #    "keywords"    => "",
 #    "children"    => [],
-#    "table"       => {}use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
@@ -68,22 +67,20 @@ my $result = {
         {
             'label'     => 'label1',
             'id'        => 1,
-            'table'     => {},
             'opened'    => 0,
             'children'  => [],
             'component' => 'Groups',
-            'folder'    => 1,
-            'keywords'  => ''
+            'folder'    => 0,
+            'keywords'  => 'label1'
         },
         {
             'label'     => 'label2',
             'id'        => 2,
-            'table'     => {},
             'opened'    => 0,
             'children'  => [],
             'component' => 'Groups',
-            'folder'    => 1,
-            'keywords'  => ''
+            'folder'    => 0,
+            'keywords'  => 'label2'
         }
     ],
     'status' => 'ok'
