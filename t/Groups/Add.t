@@ -58,7 +58,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'label'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'label'",
             'status'    => 'fail'
         },
         'comment' => 'No label:' 
@@ -69,7 +69,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'name'",
             'status'    => 'fail'
         },
         'comment' => 'No name:' 
@@ -80,7 +80,7 @@ my $test_data = {
             'label'     => 'label5'
         },
         'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'status'",
             'status'    => 'fail'
         },
         'comment' => 'No status:' 
@@ -92,7 +92,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'name'. Field has wrong type",
+            'message'   => "_check_fields: 'name' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
@@ -104,11 +104,23 @@ my $test_data = {
             'status'     => 1
         },
         'result' => {
-            'message'    => "Could not insert data",
+            'message'    => "name 'name1' already exists",
             'status'     => 'fail'
         },
-        'comment' => 'Mistake from DB:' 
+        'comment' => 'Same name:' 
     },
+    8 => {
+        'data' => {
+            'name'       => 'name8',
+            'label'      => 'label1',
+            'status'     => 1
+        },
+        'result' => {
+            'message'    => "label 'label1' already exists",
+            'status'     => 'fail'
+        },
+        'comment' => 'Same label:' 
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
