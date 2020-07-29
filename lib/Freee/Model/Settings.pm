@@ -5,6 +5,8 @@ use Mojo::JSON;
 use JSON::XS;
 use Encode qw( _utf8_off );
 
+use File::Slurp;
+
 use Data::Dumper;
 
 ###################################################################
@@ -394,4 +396,68 @@ sub _reset_settings {
     return 1;
 }
 
+# экспорт текущих настроек
+# my ( $id, $error ) = $self->model('Settings')->_export_settings( $data );
+sub _export_settings {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $filename, $result, $content, $id, $mess, @result, @mess );
+
+    unless ( $data ) {
+        push @mess, "no data";
+    }
+    else {
+        # получение настроек
+        $sql = 'SELECT * FROM "public"."settings"';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->execute();
+
+        $result = $sth->fetchall_hashref("id");
+        if ( %$result ) {
+            foreach ( sort keys %$result ) {
+                push @result, $$result{ $_ };
+            }
+            $result = \@result;
+        }
+        else {
+            push @mess, "no result from 'settings'";
+        }
+    }
+
+    # запись данных в файл
+    unless ( @mess ) {
+        # получение имени файла
+        $filename = $$data{'time_create'} . '.json';
+
+        # перевод настреок в json
+        $content = encode_json( $result );
+
+        # запись файла
+        $result = write_file(
+            $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename,
+            $content
+        );
+        push @mess, "Can not store '$filename' file" unless $result;
+    }
+
+    # запись данных в таблицу
+    unless ( @mess ) {
+        $sql = 'INSERT INTO "public"."export_settings" ("title", "filename", "time_create") VALUES (?, ?, ?) RETURNING "id"';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$data{'title'} );
+        $sth->bind_param( 2, $filename );
+        $sth->bind_param( 3, $$data{'time_create'} );
+        $sth->execute();
+
+        $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
+        push @mess, "Can not insert '$filename' file into DB" unless $id;
+    }
+
+    if ( @mess ) {
+        $mess = join( "\n", @mess );
+    }
+    return $id, $mess;
+}
 1;

@@ -534,4 +534,34 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
+# экспорт текущих настроек
+# my $true = $self->export();
+# 'title' - описание файла с настройками в базе
+sub export {
+    my $self = shift;
+
+    my ( $id, $resp, $data, $error, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    # экспорт настроек
+    unless ( @mess ) {
+        $$data{'time_create'} = $self->model('Utils')->_get_time();
+
+        ( $id, $error ) = $self->model('Settings')->_export_settings( $data );
+        push @mess, $error if $error;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
 1;

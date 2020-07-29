@@ -166,12 +166,5 @@ sub register {
         return;
     });
 
-    $app->helper('_get_time' => sub {
-
-        # my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=localtime( time + 3 * 60 * 60 );
-        my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=localtime( time );
-        my $nice_timestamp = sprintf ( "%04d%02d%02d %02d:%02d:%02d", $year+1900, $mon+1, $mday, $hour, $min,$sec );
-        return $nice_timestamp;
-    });
 }
 1;

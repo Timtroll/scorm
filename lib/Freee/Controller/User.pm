@@ -415,9 +415,9 @@ sub add {
 
     unless ( @mess ) {
         # добавляем юзера в EAV и users
-        $$data{'time_create'} = $self->_get_time();
-        $$data{'time_access'} = $self->_get_time();
-        $$data{'time_update'} = $self->_get_time();
+        $$data{'time_create'} = $self->model('Utils')->_get_time();
+        $$data{'time_access'} = $self->model('Utils')->_get_time();
+        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
 
 # warn Dumper( $$data{'groups'} );
@@ -482,9 +482,9 @@ sub add_by_email {
 
     # добавляем юзера в EAV и users
     unless ( @mess ) {
-        $$data{'time_create'} = $self->_get_time();
-        $$data{'time_access'} = $self->_get_time();
-        $$data{'time_update'} = $self->_get_time();
+        $$data{'time_create'} = $self->model('Utils')->_get_time();
+        $$data{'time_access'} = $self->model('Utils')->_get_time();
+        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
         $$data{'phone'}       = ' ';
 
@@ -539,9 +539,9 @@ sub add_by_phone {
 
     # добавляем юзера в EAV и users
     unless ( @mess ) {
-        $$data{'time_create'} = $self->_get_time();
-        $$data{'time_access'} = $self->_get_time();
-        $$data{'time_update'} = $self->_get_time();
+        $$data{'time_create'} = $self->model('Utils')->_get_time();
+        $$data{'time_access'} = $self->model('Utils')->_get_time();
+        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'email'}       = ' ';
         $$data{'publish'}     = $$data{'status'};
 
@@ -635,8 +635,8 @@ sub save {
     }
 
     unless ( @mess ) {
-        $$data{'time_access'} = $self->_get_time();
-        $$data{'time_update'} = $self->_get_time();
+        $$data{'time_access'} = $self->model('Utils')->_get_time();
+        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'} =  $$data{'status'};
 
         ( $result, $error ) = $self->model('User')->_save_user( $data );

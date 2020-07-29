@@ -79,4 +79,14 @@ sub _folder_check {
     return $result->{'folder'} ? 1 : 0;
 }
 
+# получить текущее время
+sub _get_time {
+    my $self = shift;
+
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=localtime( time );
+
+    my $nice_timestamp = sprintf ( "%04d%02d%02d %02d:%02d:%02d", $year+1900, $mon+1, $mday, $hour, $min,$sec );
+    return $nice_timestamp;
+}
+
 1;

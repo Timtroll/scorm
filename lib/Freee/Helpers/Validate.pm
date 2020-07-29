@@ -170,7 +170,7 @@ sub register {
         $vfields = {
             # валидация роутов
 ################
-            # роуты settings/*
+            # роуты upload/*
             '/upload'  => {
                 "upload"        => [ 'file_required', undef, $app->{'settings'}->{'upload_max_size'} ],
                 "description"   => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
@@ -332,6 +332,15 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/settings/export'  => {
+                "title"         => [ '', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
+            },
+            '/settings/import'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/settings/del_export' => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
 ################
             # роуты discipline/*
