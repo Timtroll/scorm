@@ -1,0 +1,4 @@
+-- id с автоинкрементом
+-- title - название в листе 255 
+-- filename - название экспортного файла varchar 48
+-- дата создания     "time_create" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,

@@ -23,7 +23,7 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    my ( $list, $error, $set, $row, $resp, @mess );
+    my ( $list, $error, $set, $row, $resp, $keywords, @mess );
 
     # читаем группы из базы
     ( $list, $error ) = $self->model('Groups')->_all_groups();
@@ -31,15 +31,20 @@ sub index {
 
     $set = [];
     unless ( @mess ) {
+
+
         # формируем данные для вывода
         foreach (sort {$a <=> $b} keys %$list) {
+            # получение ключевых слов из label
+            $keywords = join( ' ', keys %{$self->{app}->_make_keywords( $$list{$_}{'label'} ) } );
+
             $row = {
                 'id'        => $_,
                 'label'     => $$list{$_}{'label'},
                 'component' => "Groups",
                 'opened'    => 0,
                 'folder'    => 0,
-                'keywords'  => $$list{$_}{'label'},
+                'keywords'  => $keywords,
                 'children'  => []
             };
             push @{$set}, $row;
