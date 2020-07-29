@@ -46,7 +46,7 @@ sub register {
         # построение дерева
         foreach my $obj (@{$list}) {
             # $obj->{'keywords'} = $obj->{'label'};
-            my $keywords = $self->{app}->_make_keywords( $obj->{'label'}, $obj->{'name'} );
+            my $keywords = $self->{app}->_make_keywords( $obj->{'label'} . ' ' . $obj->{'name'} );
             $obj->{'keywords'} = join( ' ', keys %$keywords );
 #?????????????????????????????????????????
             $obj->{'children'} = [];
@@ -102,16 +102,14 @@ sub register {
 
     # генерация списка ключевых слов
     # my $keywords = _make_keywords( @words );
-    # возвращается строка
+    # возвращается хэш со словами
     $app->helper('_make_keywords' => sub {
-        my ( $self, @texts ) = @_;
+        my ( $self, $text ) = @_;
+
         my @words = ();
         my %keywords = ();
 
-###?????????????????????????????????????????????????????????
-        foreach ( @texts ) {
-            push ( @words, split( / /, $_ ) );
-        }
+        @words = split( / /, $text );
 
         foreach ( @words ) {
             $keywords{ $_ } = 1;

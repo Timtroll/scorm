@@ -84,13 +84,4 @@ FOR EACH ROW
 WHEN ( ( OLD.publish IS DISTINCT FROM NEW.publish ) AND ( pg_trigger_depth() = 0 ) )
 EXECUTE PROCEDURE "users_trigger_set_EAV_items"();
 
--- связь юзеров и групп 
-CREATE TABLE "public"."user_groups" (
-"user_id" int4 DEFAULT 0 NOT NULL,
-"group_id" int4 DEFAULT 0 NOT NULL,
-CONSTRAINT "user_groups_pkey" PRIMARY KEY ("user_id", "group_id")
-)
-WITH (OIDS=FALSE);
-
-ALTER TABLE "public"."user_groups" OWNER TO "troll";
 ---------------------

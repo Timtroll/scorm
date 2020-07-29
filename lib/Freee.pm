@@ -108,6 +108,12 @@ sub startup {
     $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка одной настройки
     $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
 
+    # управление импортом и экспортом
+    $auth->post('/settings/export')       ->to('settings#export');          # экспорт текущих настроек
+    $auth->post('/settings/import')       ->to('settings#import');          # импорт сохранённых настроек
+    $auth->post('/settings/del_export')   ->to('settings#del_export');      # удаление сохранённых настроек
+    $auth->post('/settings/list_export')  ->to('settings#list_export');     # вывод списка сохранённых настроек
+
     # проверка на фолдер не нужна
     $auth->post('/settings/get_leafs')  ->to('settings#get_leafs');     # список листочков узла дерева
     $auth->post('/settings/toggle')     ->to('settings#toggle');        # включение/отключение поля в строке настройки

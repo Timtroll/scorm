@@ -89,7 +89,8 @@ my $result = {
 diag "All groups:";
 $t->post_ok( $host.'/groups/' )
     ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8');
+    ->content_type_is('application/json;charset=UTF-8')
+    ->json_is( $result );
 diag "";
 
 diag "Create routes:";
