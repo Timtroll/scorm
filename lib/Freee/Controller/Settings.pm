@@ -12,6 +12,8 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
+use File::Slurp;
+
 use Data::Dumper;
 use common;
 
@@ -535,12 +537,12 @@ sub toggle {
 }
 
 # экспорт текущих настроек
-# my $true = $self->export();
+# my $id = $self->export();
 # 'title' - описание файла с настройками в базе
 sub export {
     my $self = shift;
 
-    my ( $id, $resp, $data, $error, @mess );
+    my ( $id, $error, $resp, $data, $result, $json, $time, $filename, $filepath, @result, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless ( @mess ) {
@@ -549,12 +551,48 @@ sub export {
         push @mess, $error if $error;
     }
 
-    # экспорт настроек
+    # получение всех настроек
     unless ( @mess ) {
-        $$data{'time_create'} = $self->model('Utils')->_get_time();
+        $result = $self->model('Settings')->_get_all_settings();
+        if ( $result ) {
+                foreach ( keys %$result ) {
+                push @result, $$result{ $_ };
+            }
+            $result = \@result;
+        }
+        else {
+            push @mess, 'can\'t get data from settings';
+        }
+    }
 
-        ( $id, $error ) = $self->model('Settings')->_export_settings( $data );
-        push @mess, $error if $error;
+    # кодирование данных в json
+    unless ( @mess ) {
+        # перевод настреок в json
+        $json = encode_json( $result );
+        push @mess, "Can't encode into json" unless $json;
+    }
+
+    # запись данных в файл
+    unless ( @mess ) {
+        # получение времени
+        $time = $self->model('Utils')->_get_time();
+        # имя файла
+        $filename = $time . '.json';
+        # путь к файлу
+        $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
+        # запись файла
+        $result = write_file(
+            $filepath,
+            $json,
+            {err_mode => 'silent'}
+        );
+        push @mess, "Can't store '$filepath'" unless $result;
+    }
+
+    # запись данных о файле с настройками
+    unless ( @mess ) {
+        $id = $self->model('Settings')->_insert_export_setting( $$data{'title'}, $filename, $time );
+        push @mess, "Can't insert '$filename' file into DB" unless $id;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
@@ -564,4 +602,102 @@ sub export {
     $self->render( 'json' => $resp );
 }
 
+# импорт сохранённых настроек
+# my $true = $self->export();
+# 'title' - описание файла с настройками в базе
+sub import {
+    my $self = shift;
+
+    my ( $result, $resp, $data, $error, $filename, $filepath, $json, $settings, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    # получение имени файла экспортированной настройки
+    unless ( @mess ) {
+        $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
+        push @mess, "can't get filename with id '$$data{'id'}'" unless $filename;
+    }
+
+    # чтение файла
+    unless ( @mess ) {
+        # путь к файлу
+        $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
+        # чтение файла
+        $json = read_file( $filepath, {err_mode => 'silent'} );
+        push @mess, "can't read '$filepath'" unless $json;
+    }
+
+    # декодирование данных из json
+    unless ( @mess ) {
+        $settings = decode_json( $json );
+        push @mess, "Can't decode from json" unless $settings;
+    }
+
+    # загрузка экспортированных настроек
+    unless ( @mess ) {
+        # очистка текущей таблицы настроек
+        $self->model('Settings')->_reset_settings();
+
+        # импорт настроек
+        $result = $self->model('Settings')->_import_setting( $settings );
+        push @mess, "Can't import settings" unless $result;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+
+    $self->render( 'json' => $resp );
+}
+
+# удаление файла с экспортом и записи в таблице
+sub del_export {
+    my $self = shift;
+
+    my ( $data, $error, $filename, $filepath, $cmd, $id, $resp, @mess );
+    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+
+    unless ( @mess ) {
+        # проверка данных
+        ( $data, $error ) = $self->_check_fields();
+        push @mess, $error if $error;
+    }
+
+    # получение имени файла экспортированной настройки
+    unless ( @mess ) {
+        $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
+        push @mess, "can't get filename with id '$$data{'id'}'" unless $filename;
+    }
+
+    # проверка существования файла
+    unless ( @mess ) {
+        # путь к файлу
+        $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
+        push @mess, "'$filepath' doen't exist" unless ( $self->_exists_in_directory( $filepath ) );
+    }
+warn Dumper( $filepath );
+    # удаление файла
+    unless ( @mess ) {
+        $cmd = `rm $filepath`;
+        if ( $? ) {
+            push @mess, "Can't delete $filepath, $?";
+        }
+    }
+
+    # удаление записи из таблицы
+    unless ( @mess ) {
+        $id = $self->model('Settings')->_delete_export_setting( $id );
+        push @mess, "Can't delete '$filename' file from DB" unless $id;
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @mess;
+
+    $self->render( 'json' => $resp );
+}
 1;

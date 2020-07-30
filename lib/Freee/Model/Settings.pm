@@ -5,8 +5,6 @@ use Mojo::JSON;
 use JSON::XS;
 use Encode qw( _utf8_off );
 
-use File::Slurp;
-
 use Data::Dumper;
 
 ###################################################################
@@ -396,68 +394,115 @@ sub _reset_settings {
     return 1;
 }
 
-# экспорт текущих настроек
-# my ( $id, $error ) = $self->model('Settings')->_export_settings( $data );
-sub _export_settings {
+# получение всех настроек
+# my $hash = $self->model('Settings')->_get_all_settings();
+sub _get_all_settings {
+    my ( $self ) = @_;
+
+    my ( $sql, $sth, $result );
+
+    $sql = 'SELECT * FROM "public"."settings"';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+
+    $result = $sth->fetchall_hashref("id");
+    return %$result ? $result : 0;
+}
+
+# запись данных о файле с настройками
+# my $id = $self->model('Settings')->_insert_export_setting( $title, $filename, $time );
+sub _insert_export_setting {
+    my ( $self, $title, $filename, $time ) = @_;
+
+    my ( $sql, $sth, $id );
+
+    return unless( $title && $filename && $time );
+
+    $sql = 'INSERT INTO "public"."export_settings" ("title", "filename", "time_create") VALUES (?, ?, ?) RETURNING "id"';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( 1, $title );
+    $sth->bind_param( 2, $filename );
+    $sth->bind_param( 3, $time );
+    $sth->execute();
+
+    $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
+    return $id ? $id : 0;
+}
+
+# получение имени файла экспортированной настройки
+# my $filename = $self->model('Settings')->_get_export_setting( $id );
+sub _get_export_setting {
+    my ( $self, $id ) = @_;
+
+    my ( $sql, $sth, $result );
+
+    return unless( $id );
+
+    $sql = 'SELECT filename FROM "public"."export_settings" WHERE id = ?';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( 1, $id );
+    $sth->execute();
+    $result = $sth->fetchrow_hashref();
+
+    return $$result{'filename'} && $$result{'filename'} ne '0E0' ? $$result{'filename'} : 0;
+}
+
+# загрузка экспортированных настроек
+# my $true = $self->model('Settings')->_import_setting( $data );
+sub _import_setting {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $sth, $filename, $result, $content, $id, $mess, @result, @mess );
+    my ( $sql, $sth, $result );
 
-    unless ( $data ) {
-        push @mess, "no data";
+    return unless( $data );
+
+    $sql = 'INSERT INTO "public"."settings" ("parent", "name", "label", "placeholder", "type", "mask", "value", "selected", "required", "readonly", "status", "folder") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+    foreach my $row ( sort {$a->{'id'} <=> $b->{'id'}} @$data ) {
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $$row{'parent'} );
+        $sth->bind_param( 2, $$row{'name'} );
+        $sth->bind_param( 3, $$row{'label'} );
+        $sth->bind_param( 4, $$row{'placeholder'} );
+        $sth->bind_param( 5, $$row{'type'} );
+        $sth->bind_param( 6, $$row{'mask'} );
+        $sth->bind_param( 7, $$row{'value'} );
+        $sth->bind_param( 8, $$row{'selected'} );
+        $sth->bind_param( 9, $$row{'required'} );
+        $sth->bind_param( 10, $$row{'readonly'} );
+        $sth->bind_param( 11, $$row{'status'} );
+        $sth->bind_param( 12, $$row{'folder'} );
+        $result = $sth->execute();
+        return unless $result;
+    }
+
+    return 1;
+}
+
+# удаление записи об экспорт файле из бд
+# ( $id ) = $self->model('Upload')->_delete_export_setting( $id );
+sub _delete_export_setting {
+    my ( $self, $id ) = @_;
+
+    my ( $result, $sth, $sql );
+
+    # проверка входных данных
+    unless ( $id ) {
+        return;
     }
     else {
-        # получение настроек
-        $sql = 'SELECT * FROM "public"."settings"';
-
-        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        # удаление записи о файле
+        $sql = 'DELETE FROM "public"."export_settings" WHERE "id" = ? returning "id"';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( 1, $id );
         $sth->execute();
+        $result = $sth->fetchrow_hashref();
 
-        $result = $sth->fetchall_hashref("id");
-        if ( %$result ) {
-            foreach ( sort keys %$result ) {
-                push @result, $$result{ $_ };
-            }
-            $result = \@result;
-        }
-        else {
-            push @mess, "no result from 'settings'";
-        }
+        return $$result{'id'};
     }
-
-    # запись данных в файл
-    unless ( @mess ) {
-        # получение имени файла
-        $filename = $$data{'time_create'} . '.json';
-
-        # перевод настреок в json
-        $content = encode_json( $result );
-
-        # запись файла
-        $result = write_file(
-            $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename,
-            $content
-        );
-        push @mess, "Can not store '$filename' file" unless $result;
-    }
-
-    # запись данных в таблицу
-    unless ( @mess ) {
-        $sql = 'INSERT INTO "public"."export_settings" ("title", "filename", "time_create") VALUES (?, ?, ?) RETURNING "id"';
-
-        $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'title'} );
-        $sth->bind_param( 2, $filename );
-        $sth->bind_param( 3, $$data{'time_create'} );
-        $sth->execute();
-
-        $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
-        push @mess, "Can not insert '$filename' file into DB" unless $id;
-    }
-
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $id, $mess;
 }
+
 1;
