@@ -537,8 +537,9 @@ sub toggle {
 }
 
 # экспорт текущих настроек
-# my $id = $self->export();
+# my $id = $self->_insert_export_setting({
 # 'title' - описание файла с настройками в базе
+# });
 sub export {
     my $self = shift;
 
@@ -577,14 +578,14 @@ sub export {
         # получение времени
         $time = $self->model('Utils')->_get_time();
         # имя файла
-        $filename = $time . '.json';
+        $filename = time . '.json';
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
         # запись файла
         $result = write_file(
             $filepath,
-            $json,
-            {err_mode => 'silent'}
+            {err_mode => 'silent'},
+            $json
         );
         push @mess, "Can't store '$filepath'" unless $result;
     }
@@ -602,9 +603,10 @@ sub export {
     $self->render( 'json' => $resp );
 }
 
-# импорт сохранённых настроек
-# my $true = $self->export();
-# 'title' - описание файла с настройками в базе
+# импорт сохранённой настройки
+# my $true = $self->_import_setting({
+# 'id' - id записи в таблице export_settings
+# });
 sub import {
     my $self = shift;
 
@@ -655,6 +657,9 @@ sub import {
 }
 
 # удаление файла с экспортом и записи в таблице
+# my $true = $self->_delete_export_setting({
+# 'id' - id записи в таблице export_settings
+# });
 sub del_export {
     my $self = shift;
 
@@ -679,7 +684,7 @@ sub del_export {
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
         push @mess, "'$filepath' doen't exist" unless ( $self->_exists_in_directory( $filepath ) );
     }
-warn Dumper( $filepath );
+
     # удаление файла
     unless ( @mess ) {
         $cmd = `rm $filepath`;
@@ -690,13 +695,39 @@ warn Dumper( $filepath );
 
     # удаление записи из таблицы
     unless ( @mess ) {
-        $id = $self->model('Settings')->_delete_export_setting( $id );
+        $id = $self->model('Settings')->_delete_export_setting( $$data{'id'} );
         push @mess, "Can't delete '$filename' file from DB" unless $id;
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
     $resp->{'status'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @mess;
+
+    $self->render( 'json' => $resp );
+}
+
+# получение списка всех экспортированных настроек
+# my $list = $self->_get_list_exports({
+# });
+sub list_export {
+    my $self = shift;
+
+    my ( $list, $resp, @list, @mess );
+
+    $list = $self->model('Settings')->_get_list_exports();
+    if ( %$list ) {
+            foreach ( keys %$list ) {
+            push @list, $$list{ $_ };
+        }
+        $list = \@list;
+    }
+    else{
+        push @mess, 'can\'t get list of exports';
+    }
+
+    $resp->{'message'} = join("\n", @mess) if @mess;
+    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'list'} = $list unless @mess;
 
     $self->render( 'json' => $resp );
 }

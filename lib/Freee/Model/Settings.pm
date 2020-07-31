@@ -505,4 +505,17 @@ sub _delete_export_setting {
     }
 }
 
+# получение списка экспортированных настроек
+sub _get_list_exports {
+    my $self = shift;
+
+    my ( $sql, $sth, $list );
+
+    $sql = 'SELECT * FROM "public"."export_settings"';
+    $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    $list = $sth->fetchall_hashref("id");
+
+    return $list;
+}
 1;
