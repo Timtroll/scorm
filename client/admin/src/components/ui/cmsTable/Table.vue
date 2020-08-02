@@ -86,8 +86,7 @@
     <template #header>
 
       <!--table searchInput-->
-      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left"
-           v-if="tableNotEmpty">
+      <div class="uk-position-relative uk-width-medium uk-margin-auto-left pos-border-left">
         <a @click.prevent="clearSearchVal"
            v-if="searchInput"
            class="uk-form-icon uk-form-icon-flip">
@@ -234,7 +233,7 @@
 
 <script>
 
-  import {clone} from '../../../store/methods'
+  import {clone} from '@/store/methods'
 
   export default {
 

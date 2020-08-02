@@ -1,8 +1,8 @@
-import Api_Tree from '../../../api/users/Tree'
-import Api from '../../../api/users/Table'
-import store from '../../store'
+import Api_Tree                                 from '../../../api/users/Tree'
+import Api                                      from '../../../api/users/Table'
+import store                                    from '../../store'
 import {clone, flatTree, groupedFields, notify} from '../../methods'
-import Api_EditPanel from '../../../api/users/EditPanel'
+import Api_EditPanel                            from '../../../api/users/EditPanel'
 
 const actions = {
 
@@ -36,7 +36,8 @@ const actions = {
             //Плоское дерево
             const flattenTree = flatTree([...tree])
             store.commit('set_tree_flat', flattenTree)
-          } else {
+          }
+          else {
             store.commit('set_tree', [])
             store.commit('tree_status_success')
             store.commit('table_status_error')
@@ -46,7 +47,8 @@ const actions = {
 
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -71,9 +73,13 @@ const actions = {
           store.commit('set_table', table)
           store.commit('table_status_success')
         }
+        else {
+          store.commit('table_status_success')
+        }
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('table_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -114,7 +120,8 @@ const actions = {
         store.commit('editPanel_status_success') // статус - успех
         store.commit('card_right_show', true) // открытие правой панели
       }
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('editPanel_add', true)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
@@ -154,7 +161,8 @@ const actions = {
 
       store.commit('card_right_show', true) // открытие правой панели
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('card_right_show', false)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
@@ -178,7 +186,8 @@ const actions = {
       let response
       if (item.add) {
         response = await Api_EditPanel.list_add(item.fields)
-      } else {
+      }
+      else {
         response = await Api_EditPanel.list_save(item.fields)
       }
 
@@ -193,15 +202,18 @@ const actions = {
           store.commit('editPanel_status_success') // статус - успех
           notify(resp.status, 'success') // уведомление об ошибке
 
-        } else if (resp.status === 'fail' && resp.message) {
+        }
+        else if (resp.status === 'fail' && resp.message) {
           store.commit('editPanel_status_error') // статус - ошибка
           notify(resp.message, 'danger') // уведомление об ошибке
-        } else {
+        }
+        else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
@@ -236,12 +248,14 @@ const actions = {
             notify(resp.message, 'success') // уведомление об ошибке
           }
 
-        } else {
+        }
+        else {
           dispatch('getTable', parentId)
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       dispatch('getTable', parentId)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
