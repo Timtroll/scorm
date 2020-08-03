@@ -24,7 +24,7 @@
 # "required"    => 1              - обязательное поле
 # });
 
-# экспорт текущих настроек
+# сохранение текущего состояния таблицы настроек
 # export
 # my $id = $self->_insert_export_setting({
 # 'title' - обязательно (описание файла с настройками в базе)
@@ -225,7 +225,7 @@ $test_data = {
             'id'     => 404,
         },
         'result' => {
-            'message'   => 'can\'t get filename with id \'404\'',
+            'message'   => 'Id \'404\' doesn\'t exist',
             'status'    => 'fail'
         },
         'comment' => 'del_export - id doesn\'t exist:' 
@@ -259,7 +259,7 @@ $test_data = {
             'id'     => 2,
         },
         'result' => {
-            'message'   => 'can\'t get filename with id \'2\'',
+            'message'   => 'Id \'2\' doesn\'t exist',
             'status'    => 'fail'
         },
         'comment' => 'import - id doesn\'t exist:' 
@@ -272,25 +272,7 @@ $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'import - no id:' 
-    },
-
-    # # вывод списка настроек
-    # 15 => {
-    #     'route' => '/settings/list_export',
-    #     'data' => {},
-    #     'result' => {
-    #         "list" => [
-    #             {
-    #                 "id"           => "1",
-    #                 "filename"     => time+5 . '.json',
-    #                 "time_create"  => $t->app->model('Utils')->_get_time( 4 ) . '+03',
-    #                 "title"        => "description"
-    #             }
-    #         ],
-    #         'status'    => 'ok'
-    #     },
-    #     'comment' => 'list_export - all right:' 
-    # }
+    }
 };
 
 # запросы и проверка их выполнения
@@ -311,8 +293,6 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->content_type_is('application/json;charset=UTF-8');
     $t->json_is( $result );
     diag "";
-
-    sleep(1);
 };
 
 # проверка вывода списка экспортированных файлов
@@ -336,7 +316,6 @@ $t->content_type_is('application/json;charset=UTF-8');
 
 # проверка данных ответа
 $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-
 # url проверяется отдельно, так как оно генерируется случайно
 $time_create = $response->{'list'}->[0]->{'time_create'};
 delete $response->{'list'}->[0]->{'time_create'};

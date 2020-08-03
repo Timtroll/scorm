@@ -407,7 +407,7 @@ sub _get_all_settings {
     $sth->execute();
 
     $result = $sth->fetchall_hashref("id");
-    return %$result ? $result : 0;
+    return $result;
 }
 
 # запись данных о файле с настройками
@@ -428,7 +428,7 @@ sub _insert_export_setting {
     $sth->execute();
 
     $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
-    return $id ? $id : 0;
+    return $id;
 }
 
 # получение имени файла экспортированной настройки
@@ -447,7 +447,7 @@ sub _get_export_setting {
     $sth->execute();
     $result = $sth->fetchrow_hashref();
 
-    return $$result{'filename'} && $$result{'filename'} ne '0E0' ? $$result{'filename'} : 0;
+    return $$result{'filename'};
 }
 
 # загрузка экспортированных настроек

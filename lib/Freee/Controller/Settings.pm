@@ -543,7 +543,7 @@ sub toggle {
 sub export {
     my $self = shift;
 
-    my ( $id, $error, $resp, $data, $result, $json, $time, $filename, $filepath, @result, @mess );
+    my ( $id, $error, $resp, $data, $result, $json, $time, $filename, $filepath, $shift, @result, @mess );
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless ( @mess ) {
@@ -552,10 +552,10 @@ sub export {
         push @mess, $error if $error;
     }
 
-    # получение всех настроек
     unless ( @mess ) {
+        # получение всех настроек
         $result = $self->model('Settings')->_get_all_settings();
-        if ( $result ) {
+        if ( %$result ) {
                 foreach ( keys %$result ) {
                 push @result, $$result{ $_ };
             }
@@ -575,23 +575,31 @@ sub export {
 
     # запись данных в файл
     unless ( @mess ) {
-        # получение времени
-        $time = $self->model('Utils')->_get_time();
         # имя файла
         $filename = time . '.json';
         # путь к файлу
-        $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
+        $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/';
+        # создание нового имени, если такок файл уже существует
+        $shift = 1;
+        while ( $self->_exists_in_directory( $filepath . $filename ) ) {
+            $filename = time + $shift . '.json';
+            $shift++;
+        }
+
         # запись файла
         $result = write_file(
-            $filepath,
+            $filepath . $filename,
             {err_mode => 'silent'},
             $json
         );
-        push @mess, "Can't store '$filepath'" unless $result;
+        push @mess, "Can't store \'$filepath . $filename\'" unless $result;
     }
 
     # запись данных о файле с настройками
     unless ( @mess ) {
+        # получение времени
+        $time = $self->model('Utils')->_get_time();
+
         $id = $self->model('Settings')->_insert_export_setting( $$data{'title'}, $filename, $time );
         push @mess, "Can't insert '$filename' file into DB" unless $id;
     }
@@ -621,8 +629,14 @@ sub import {
 
     # получение имени файла экспортированной настройки
     unless ( @mess ) {
-        $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
-        push @mess, "can't get filename with id '$$data{'id'}'" unless $filename;
+    # проверка существования удаляемого элемента в таблице
+        unless ( $self->model('Utils')->_exists_in_table( 'export_settings', 'id', $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' doesn't exist";
+        }
+        else {
+        # получение имени файла экспортированной настройки
+            $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
+        }
     }
 
     # чтение файла
@@ -672,13 +686,18 @@ sub del_export {
         push @mess, $error if $error;
     }
 
-    # получение имени файла экспортированной настройки
     unless ( @mess ) {
-        $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
-        push @mess, "can't get filename with id '$$data{'id'}'" unless $filename;
+    # проверка существования удаляемого элемента в таблице
+        unless ( $self->model('Utils')->_exists_in_table( 'export_settings', 'id', $$data{'id'} ) ) {
+            push @mess, "Id '$$data{'id'}' doesn't exist";
+        }
+        else {
+        # получение имени файла экспортированной настройки
+            $filename = $self->model('Settings')->_get_export_setting( $$data{'id'} );
+        }
     }
 
-    # проверка существования файла
+    # проверка существования файла с настройками
     unless ( @mess ) {
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
@@ -721,13 +740,9 @@ sub list_export {
         }
         $list = \@list;
     }
-    else{
-        push @mess, 'can\'t get list of exports';
-    }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @mess;
+    $resp->{'status'} = 'ok';
+    $resp->{'list'} = $list;
 
     $self->render( 'json' => $resp );
 }
