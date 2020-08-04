@@ -128,13 +128,14 @@ export default {
 
     // переход на первую ссылку в дереве
     nav () {
+      if (!this.nav) return
+      if (!this.nav.length) return
       if (this.openFirst) {
-        if (!this.nav) return
-        if (!this.nav.length) return
+
         const nav     = this.nav
         const firstId = nav[0]
-        console.log(firstId)
         this.showTable(firstId)
+        //if (this.$route.meta.root) { }
       }
     }
   },
