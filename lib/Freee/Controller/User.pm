@@ -89,16 +89,15 @@ sub index {
     # $data->{'body'} = \@data;
     # $data->{'settings'}->{'page'}->{'total'} = scalar(@data);
 
-    my ( $data, $list, $resp, $error, $result, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+    my ( $data, $list, $resp, $result );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    # unless ( @mess ) {
+    # unless ( @! ) {
 
     #     $usr = Freee::EAV->new( 'User' );
     #     # $list = $list->_list(
@@ -112,13 +111,12 @@ sub index {
     # warn Dumper $list;
     # }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # получаем список пользователей группы
-        ( $result, $error ) = $self->model('User')->_get_list( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_get_list( $data );
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $list = {
             'list' => {
                 'settings' => {
@@ -147,9 +145,11 @@ sub index {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $list unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $list unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -212,25 +212,23 @@ sub edit {
     #     }
     # );
 
-    my ( $user, $data, $param, $resp, $error, $main, $contacts, $password, $groups, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+    my ( $user, $data, $param, $resp, $main, $contacts, $password, $groups );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # получаем данные пользователя
-        ( $main, $contacts, $password, $groups, $error ) = $self->model('User')->_get_user( $data );
-        push @mess, $error if $error;
+        ( $main, $contacts, $password, $groups ) = $self->model('User')->_get_user( $data );
     }
 
         # $user = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
         # $user = $user->GetUser( $$data{'id'} );
 
-    # unless ( @mess ) {
+    # unless ( @! ) {
 #             $main = [
 #                 { 'surname'       => $$user{'surname'} },       # Фамилия
 #                 { 'name'          => $$user{'name'} },          # Имя
@@ -276,7 +274,7 @@ sub edit {
 # warn Dumper( $contacts );
 # warn Dumper( $password );
     # Так будет отдаваться на фронт:
-    unless ( @mess ) {
+    unless ( @! ) {
         $data = {
             # 'id' => $$user{'id'},   ????????????????????????????????????????????????????
             'tabs' => [ # Вкладки 
@@ -301,7 +299,7 @@ sub edit {
     }
 
     # Так будет отдаваться на фронт:
-    # unless ( @mess ) {
+    # unless ( @! ) {
     #     $data = {
     #         "tabs" => [
     #             {
@@ -345,9 +343,11 @@ sub edit {
     #     };
     # }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $data unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -364,16 +364,15 @@ sub add {
     # );
     # return;
 
-    my ($data, $resp, $result, $error, $groups, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+    my ($data, $resp, $result, $groups );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    # unless ( @mess ) {
+    # unless ( @! ) {
     #     # проверяем, - есть ли такой юзер в EAV и users
     #     # my $usr = Freee::EAV->new( 'User', { id => 2 } );
     #     # my $user = {
@@ -382,38 +381,38 @@ sub add {
     #     # };
     #     # ( $result, $error ) = $self->model('User')->_check_user( $user );
     #     # if ( $result ) {
-    #     #     push @mess, "Email $$data{'email'} already used";
+    #     #     push @!, "Email $$data{'email'} already used";
     #     # }
 
     #     # проверяем, используется ли емэйл или телефон другим пользователем
     #     ( $result, $error ) = $self->model('User')->_check_user( $data );
-    #     push @mess, $error unless $result;
+    #     push @!, $error unless $result;
     # }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
-            push @mess, "email '$$data{ email }' already used"; 
+            push @!, "email '$$data{ email }' already used"; 
         }
 
         # проверяем, используется ли телефон другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
-            push @mess, "phone '$$data{ phone }' already used"; 
+            push @!, "phone '$$data{ phone }' already used"; 
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования групп пользователя
         $groups = from_json( $$data{'groups'} );
         foreach ( @$groups ) {
             unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @mess, "group with id '$_' doesn't exist";
+                push @!, "group with id '$_' doesn't exist";
                 last;
             }
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # добавляем юзера в EAV и users
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
@@ -424,13 +423,14 @@ sub add {
 #         $$data{'groups'}      = from_json( $$data{'groups'} );
 # warn Dumper( $$data{'groups'} );
 
-        ( $result, $error ) = $self->model('User')->_insert_user( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_insert_user( $data );
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -453,48 +453,48 @@ sub add_by_email {
     # );
     # return;
 
-    my ( $groups, $data, $resp, $error, $result, $data_eav, $user, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    my ( $groups, $data, $resp, $result, $data_eav, $user );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
-            push @mess, "email '$$data{ email }' already used"; 
+            push @!, "email '$$data{ email }' already used"; 
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования групп пользователя
         $groups = from_json( $$data{'groups'} );
         foreach ( @$groups ) {
             unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @mess, "group with id '$_' doesn't exist";
+                push @!, "group with id '$_' doesn't exist";
                 last;
             }
         }
     }
 
     # добавляем юзера в EAV и users
-    unless ( @mess ) {
+    unless ( @! ) {
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
         $$data{'phone'}       = ' ';
 
-        ( $result, $error ) = $self->model('User')->_insert_user( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_insert_user( $data );
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -510,48 +510,48 @@ sub add_by_phone {
     # );
     # return;
 
-    my ( $data, $resp, $error, $result, $data_eav, $user, $groups, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    my ( $data, $resp, $result, $data_eav, $user, $groups );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем, используется ли телефон другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
-            push @mess, "phone '$$data{ phone }' already used"; 
+            push @!, "phone '$$data{ phone }' already used"; 
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования групп пользователя
         $groups = from_json( $$data{'groups'} );
         foreach ( @$groups ) {
             unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @mess, "group with id '$_' doesn't exist";
+                push @!, "group with id '$_' doesn't exist";
                 last;
             }
         }
     }
 
     # добавляем юзера в EAV и users
-    unless ( @mess ) {
+    unless ( @! ) {
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'email'}       = ' ';
         $$data{'publish'}     = $$data{'status'};
 
-        ( $result, $error ) = $self->model('User')->_insert_user( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_insert_user( $data );
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -586,70 +586,66 @@ sub save {
     #     'avatar'            => 'https://thispersondoesnotexist.com/image'
     # };
 
-    my ( $data, $resp, $groups, $result, $error, $mess, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+    my ( $data, $resp, $groups, $result );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         unless ( $$data{'phone'} || $$data{'email'} ) {
-            push @mess, 'No email and no phone';
+            push @!, 'No email and no phone';
         }
 
         if ( $$data{'password'} && !$$data{'newpassword'} ) {
-            push @mess, 'No newpassword';
+            push @!, 'No newpassword';
         }
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
-            push @mess, 'No password';
+            push @!, 'No password';
         }
         elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
-            push @mess, 'Password and newpassword are the same';
+            push @!, 'Password and newpassword are the same';
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
         if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
-            push @mess, "email '$$data{ email }' already used"; 
+            push @!, "email '$$data{ email }' already used"; 
         }
 
         # проверяем, используется ли телефон другим пользователем
         if ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
-            push @mess, "phone '$$data{ phone }' already used"; 
+            push @!, "phone '$$data{ phone }' already used"; 
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования групп пользователя
         $groups = from_json( $$data{'groups'} );
         foreach ( @$groups ) {
             unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @mess, "group with id '$_' doesn't exist";
+                push @!, "group with id '$_' doesn't exist";
                 last;
             }
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'} =  $$data{'status'};
 
-        ( $result, $error ) = $self->model('User')->_save_user( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_save_user( $data );
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
 
-    $resp->{'message'} = $mess if $mess;
-    $resp->{'status'} = $mess ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless $mess;
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -671,24 +667,24 @@ sub toggle {
     # );
     # return;
 
-    my ( $toggle, $resp, $data, $result, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $toggle, $resp, $data, $result );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $$data{'status'} = $$data{'status'} ? 'true' : 'false';
-        ( $result, $error ) = $self->model('User')->_toggle_user( $data );
-        push @mess, $error if $error;
+        $result = $self->model('User')->_toggle_user( $data );
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -703,24 +699,24 @@ sub delete {
     # );
     # return;
 
-    my ( $data, $resp, $result, $error, @mess );
+    my ( $data, $resp, $result );
 
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
     # удаление пользователя из EAV и из Users
-    unless ( @mess ) {
-        ( $result, $error ) = $self->model('User')->_delete_user( $data );
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $result = $self->model('User')->_delete_user( $data );
     }
 
-    $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }

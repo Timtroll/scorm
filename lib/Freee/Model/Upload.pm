@@ -13,15 +13,15 @@ use Data::Dumper;
 sub _insert_media {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $mess, @mess );
+    my ( $sth, $result );
 
     # проверка входных данных
     unless ( $data ) {
-        push @mess, "no data for insert";
+        push @!, "no data for insert";
     }
 
 ##### потом добавить заполнение полей type, mime, order, flags ???????????????????????????????????????????????????????
-    unless ( @mess ) {
+    unless ( @! ) {
         # запись данных в базу
         $sth = $self->{'app'}->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
         $sth->bind_param( 1, $$data{'path'} );
@@ -37,14 +37,10 @@ sub _insert_media {
         $sth->execute();
 
         $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
-        push @mess, "Can not insert $$data{'title'}" unless $result;
+        push @!, "Can not insert $$data{'title'}" unless $result;
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $result, $mess;
+    return $result;
 }
 
 # возвращает имя и расширение файла
@@ -52,29 +48,25 @@ sub _insert_media {
 sub _check_media {
     my ( $self, $id ) = @_;
 
-    my ( $result, $sth, $sql, $mess, @mess );
+    my ( $result, $sth, $sql );
 
     # проверка входных данных
     unless ( $id ) {
-        push @mess, "no data for check";
+        push @!, "no data for check";
     }
 
     # поиск имени и расширения файла по id
-    unless ( @mess ) {
+    unless ( @! ) {
         $sql = q( SELECT "filename", "extension" FROM "public"."media" WHERE "id" = ? );
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $id );
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
-        push @mess, "Can not get file info" unless ( $result );
+        push @!, "Can not get file info" unless ( $result );
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $result, $mess;
+    return $result;
 }
 
 # удаляет файл и запись о нём
@@ -82,28 +74,24 @@ sub _check_media {
 sub _delete_media {
     my ( $self, $id ) = @_;
 
-    my ( $result, $sth, $sql, $mess, @mess );
+    my ( $result, $sth, $sql );
 
     # проверка входных данных
     unless ( $id ) {
-        push @mess, "no id for delete";
+        push @!, "no id for delete";
     }
 
     # удаление записи о файле
-    unless ( @mess ) {
+    unless ( @! ) {
         $sql = 'DELETE FROM "public"."media" WHERE "id" = ?';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $id );
 
         $result = $sth->execute();
-        push @mess, "Can not delete record $id from db" . DBI->errstr unless ( $result );
+        push @!, "Can not delete record $id from db" . DBI->errstr unless ( $result );
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $result, $mess;
+    return $result;
 }
 
 # выводит данные о файле
@@ -111,15 +99,15 @@ sub _delete_media {
 sub _get_media {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $sql, $count, $mess, @bind, @mess );
+    my ( $sth, $result, $sql, $count, @bind );
 
     # проверка входных данных
     unless ( $$data{'search'} ) {
-        push @mess, "no data for search";
+        push @!, "no data for search";
     }
 
     # запрос данных
-    unless ( @mess ) {
+    unless ( @! ) {
         if ( $$data{'search'} =~ qr/^\d+$/os ) {
             $sql = 'SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ?';
             @bind = ( $$data{'search'} );
@@ -142,13 +130,10 @@ sub _get_media {
         $sth->execute();
 
         $result = $sth->fetchall_hashref('id');
-        push @mess, "can not get data from database" unless %{$result};
+        push @!, "can not get data from database" unless %{$result};
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $result, $mess;
+    return $result;
 }
 
 # обновляет описание файла
@@ -156,11 +141,11 @@ sub _get_media {
 sub _update_media {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $result, $sql, $mess, @mess );
+    my ( $sth, $result, $sql );
 
     # проверка входных данных
     unless ( $$data{'id'} ) {
-        push @mess, "no data for update";
+        push @!, "no data for update";
     }
     else {
         # обновление описания в бд
@@ -169,25 +154,21 @@ sub _update_media {
         $sth->bind_param( 2, $$data{'id'} );
 
         $result = $sth->execute();
-        push @mess, "Can not update media" unless $result;
+        push @!, "Can not update media" unless $result;
     }
 
     # получение данных о файле
-    unless ( @mess ) {
+    unless ( @! ) {
         $sql = q( SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ? );
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
         $sth->execute();
 
         $data = $sth->fetchrow_hashref();
-        push @mess, "Can not get file info" unless ( $data );
+        push @!, "Can not get file info" unless ( $data );
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $data, $mess;
+    return $data;
 }
 
 1;

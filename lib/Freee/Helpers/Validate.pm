@@ -53,7 +53,6 @@ sub register {
         return 0, '_check_fields: No route' unless $self->url_for;
 
         my $url_for = $self->url_for;
-        my @error;
         my %data = ();
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
@@ -62,28 +61,33 @@ sub register {
 
             # проверка длины
             if ( defined $param && $max_size && length( $param ) > $max_size ) {
-                push @error, "_check_fields: '$field' has wrong size";
+                push @!, "_check_fields: '$field' has wrong size";
                 last;
             }
 ##########################     переделать на проверку на хэш
             # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
             if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
-                push @error, "_check_fields: didn't has required data in '$field'";
+                push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
             # проверка заполнения обязательного поля status, оно не undef и не пустая строка
             if ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
-                push @error, "_check_fields: didn't has required data in '$field'";
+                push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
             # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
             elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
-                push @error, "_check_fields: didn't has required data in '$field'";
+                push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
-            # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs и parent )
-            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs)/ && $field ne 'parent' && $field ne 'status' && !$param ) {
-                push @error, "_check_fields: didn't has required data in '$field'";
+            # проверка заполнения обязательных полей роута \/routes\/save, они не undef и не пустая строка
+            elsif ( ( $required eq 'required' ) && $url_for =~ /\/routes\/save/ && ( !defined $param || $param eq '' ) ) {
+                push @!, "_check_fields: didn't has required data in '$field'";
+                last;
+            }
+            # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs, parent, /routes/save )
+            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' && !$param ) {
+                push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
 ############################
@@ -91,7 +95,7 @@ sub register {
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
                 unless ( $param->{'asset'}->{'content'} ) {
-                    push @error, "_check_fields: no file's content";
+                    push @!, "_check_fields: no file's content";
                     last;
                 }
                 $data{'content'} = $param->{'asset'}->{'content'};
@@ -100,7 +104,7 @@ sub register {
                 $data{'size'} = length( $data{'content'} );
 
                 if ( $data{'size'} > $max_size ) {
-                    push @error, "_check_fields: file is too large";
+                    push @!, "_check_fields: file is too large";
                     last;
                 }
 
@@ -112,32 +116,32 @@ sub register {
                 $data{'filename'} =~ /^.*\.(\w+)$/;
                 $data{'extension'} = lc $1 if $1;
                 unless ( $data{'extension'} ) {
-                    push @error, "_check_fields: can't read extension";
+                    push @!, "_check_fields: can't read extension";
                     last;
                 }
 
                 # проверка того, что разрешено загружать файл с текущим расширением
                 unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
-                    push @error, "_check_fields: extension $data{'extension'} is not valid";
+                    push @!, "_check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
                 next;
             }
             elsif ( $required eq 'file_required' ) {
-                push @error, "_check_fields: didn't has required data in '$field'";
+                push @!, "_check_fields: didn't has required data in '$field'";
                 last;   
             }
             # проверка на toggle
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
                     unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
-                        push @error, "_check_fields: '$field' didn't match required in check array";
+                        push @!, "_check_fields: '$field' didn't match required in check array";
                         last;
                     }
                 }
                 else {
                     unless ( $regexp && defined $param && ( $param =~ /$regexp/ ) ) {
-                        push @error, "_check_fields: '$field' didn't match regular expression";
+                        push @!, "_check_fields: '$field' didn't match regular expression";
                         last;
                     }
                 }
@@ -145,7 +149,7 @@ sub register {
             else {
                 # unless ( $regexp && ( $param =~ /$regexp/ ) ) {
                 unless ( !defined $param || $param eq '' || ( $regexp && ( $param =~ /$regexp/ ) ) ) {
-                    push @error, "_check_fields: '$field' didn't match regular expression";
+                    push @!, "_check_fields: '$field' didn't match regular expression";
                     last;
                 }
             }
@@ -154,12 +158,7 @@ sub register {
             $data{$field} = $param;
         }
 
-        my $error;
-        if ( @error ) {
-            $error = join( "\n", @error );
-        }
-
-        return \%data, $error;
+        return \%data;
     });
 
     # загрузка правил валидации html полоей, например:

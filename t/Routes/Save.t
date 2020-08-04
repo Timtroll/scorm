@@ -168,7 +168,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -182,7 +182,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'list'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'list'",
             'status'    => 'fail'
         },
         'comment' => 'No list:' 
@@ -196,7 +196,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'add'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'add'",
             'status'    => 'fail'
         },
         'comment' => 'No add:' 
@@ -210,7 +210,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'edit'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'edit'",
             'status'    => 'fail'
         },
         'comment' => 'No edit:' 
@@ -224,7 +224,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'delete'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'delete'",
             'status'    => 'fail'
         },
         'comment' => 'No delete:' 
@@ -238,7 +238,7 @@ my $test_data = {
             'delete'    => 1,
         },
         'result' => {
-            'message'   => "Validation error for 'status'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'status'",
             'status'    => 'fail'
         },
         'comment' => 'No status:' 
@@ -253,7 +253,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 

@@ -20,7 +20,7 @@ use common;
 sub _all_groups {
     my $self = shift;
 
-    my ( $sql, $sth, $groups, $list, $mess, @mess );
+    my ( $sql, $sth, $groups, $list );
 
     # получаем список групп
     $sql = 'SELECT id,label FROM "public"."groups"';
@@ -29,10 +29,10 @@ sub _all_groups {
     $sth->execute();
 
     $groups = $sth->fetchall_hashref( 'id' );
-    push @mess, "couldn't get list of groups" unless $groups;
+    push @!, "couldn't get list of groups" unless $groups;
 
     # синхронизация реальных роутов и роутов в группах
-    unless ( @mess ) {
+    unless ( @! ) {
         foreach my $parent (sort {$a <=> $b} keys %$groups) {
             # получаем список роутов текущей группы
             $sql = 'SELECT id, label, name, parent FROM "public"."routes" WHERE "parent" = ?';
@@ -44,7 +44,7 @@ sub _all_groups {
             $list = $sth->fetchall_hashref( 'name' );
 
             unless ( $list ) {
-                push @mess, "couldn't get list of routes";
+                push @!, "couldn't get list of routes";
                 last;
             }
 
@@ -83,10 +83,7 @@ sub _all_groups {
         }
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $groups, $mess;
+    return $groups;
 }
 
 # читаем одну группу
@@ -95,11 +92,12 @@ sub _all_groups {
 sub _get_group {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $sth, $result, $mess, @mess );
+    my ( $sql, $sth, $result );
 
-    push @mess, 'no id' unless $$data{'id'};
-
-    unless( @mess ) {
+    unless ( $$data{'id'} ) {
+        push @!, 'no id';
+    }
+    else {
         # взять запись о группе из таблицы groups
         $sql = 'SELECT * FROM "public"."groups" WHERE "id" = ?';
 
@@ -108,13 +106,10 @@ sub _get_group {
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
-        push @mess, "Could not get Group '$$data{'id'}'" unless $result;
-    }
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
+        push @!, "Could not get Group '$$data{'id'}'" unless $result;
     }
 
-    return $result, $mess;
+    return $result;
 }
 
 # добавление группы пользователей
@@ -128,32 +123,29 @@ sub _get_group {
 sub _insert_group {
     my ( $self, $data ) = @_;
 
-    my ( $id, $sql, $sth, $mess, @mess );
+    my ( $id, $sql, $sth );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @mess, "no data for insert";
+        push @!, "no data for insert";
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $sql = 'INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
 
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
 
         $id = $sth->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
-        push @mess, "Can not insert $$data{'label'} into groups" unless $id;
+        push @!, "Can not insert $$data{'label'} into groups" unless $id;
     }
 
     # синхронизация реальных роутов в группах
-    unless ( @mess ) {
+    unless ( @! ) {
         $self->_all_groups();
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $id, $mess;
+    return $id;
 }
 
 # изменение группы пользователей
@@ -167,26 +159,23 @@ sub _insert_group {
 sub _update_group {
     my ( $self, $data ) = @_;
 
-    my ( $id, $sql, $sth, $result, $mess, @mess );
+    my ( $id, $sql, $sth, $result );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @mess, "no data for update";
+        push @!, "no data for update";
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
         $result = $sth->fetchrow_array();
 
-        push @mess, "Can not update $$data{'label'}" if $result eq '0E0';
+        push @!, "Can not update $$data{'label'}" if $result eq '0E0';
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $result, $mess;
+    return $result;
 }
 
 # удаление группы
@@ -195,11 +184,11 @@ sub _update_group {
 sub _delete_group {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $sth, $result, $mess, @mess );
+    my ( $sql, $sth, $result );
 
-    push @mess, 'no id' unless $$data{'id'};
+    push @!, 'no id' unless $$data{'id'};
 
-    unless( @mess ) {
+    unless( @! ) {
         # удаление записи из таблицы groups
         $sql = 'DELETE FROM "public"."groups" WHERE "id" = ?';
 
@@ -207,13 +196,10 @@ sub _delete_group {
         $sth->bind_param( 1, $$data{'id'} );
         $result = $sth->execute();
 
-        push @mess, "Could not delete Group '$$data{'id'}'" if $result eq '0E0';
-    }
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
+        push @!, "Could not delete Group '$$data{'id'}'" if $result eq '0E0';
     }
 
-    return $result, $mess;
+    return $result;
 }
 
 1;

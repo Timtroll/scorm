@@ -24,34 +24,35 @@ use common;
 sub get_folder {
     my $self = shift;
 
-    my ( $resp, $data, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $resp, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования id
         unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' doesn't exist";
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
         # проверка того, что id принадлежит группе настроек
         elsif ( !$self->model('Utils')->_folder_check( $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' is not a folder";
+            push @!, "Id '$$data{'id'}' is not a folder";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $data = $self->model('Settings')->_get_folder( $self->param('id') );
-        push @mess, "Could not get '".$self->param('id')."'" unless $data;
+        push @!, "Could not get '".$self->param('id')."'" unless $data;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $data unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -68,6 +69,8 @@ sub get_tree {
     $resp->{'status'} = $list ? 'ok' : 'fail';
     $resp->{'list'} = $list if $list;
 
+    @! = ();
+
     $self->render( 'json' => $resp );
 }
 
@@ -75,28 +78,27 @@ sub get_tree {
 sub save_folder {
     my $self = shift;
 
-    my ($id, $resp, $data, $error, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ($id, $resp, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     # проверка данных
-    unless (@mess) {
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования id
         unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' doesn't exist";
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
         # проверка того, что id принадлежит группе настроек
         elsif ( !$self->model('Utils')->_folder_check( $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' is not a folder";
+            push @!, "Id '$$data{'id'}' is not a folder";
         }
     }
 
     # сохранение
-    unless (@mess) {
+    unless ( @! ) {
         # устанавляваем неиспользуемые для фолдера поля
         $$data{'placeholder'} = '';
         $$data{'type'} = '';
@@ -109,12 +111,14 @@ sub save_folder {
         $$data{'status'} = $self->param('status') // 0;
 
         $id = $self->model('Settings')->_save_folder( $data );
-        push @mess, "Could not save folder item '$$data{'id'}'" unless $id;
+        push @!, "Could not save folder item '$$data{'id'}'" unless $id;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -130,30 +134,29 @@ sub save_folder {
 sub add_folder {
     my $self = shift;
 
-    my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ($id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем поле name на дубликат
         if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'})) {
-            push @mess, "Folder item named '$$data{'name'}' is exists";
+            push @!, "Folder item named '$$data{'name'}' is exists";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверяем существование родителя ( корневой каталог существует всегда )
         if ( $$data{'parent'} ne 0 && !( $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'parent'} ) ) ) {
-            push @mess, "Parent folder with id '$$data{'parent'}' doesn't exist";
+            push @!, "Parent folder with id '$$data{'parent'}' doesn't exist";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # устанавляваем обязательные поля для фолдера
         $$data{'placeholder'} = '';
         $$data{'type'} = '';
@@ -168,12 +171,14 @@ sub add_folder {
         # добавление фолдера
         $id = $self->model('Settings')->_insert_folder( $data );
 
-        push @mess, "Could not create new folder item '$$data{'id'}'" unless $id;
+        push @!, "Could not create new folder item '$$data{'id'}'" unless $id;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -187,18 +192,17 @@ sub add_folder {
 sub get_leafs {
     my $self = shift;
 
-    my ( $resp, $list, $table, $data, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $resp, $list, $table, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
 
-        unless ( @mess ) {
+        unless ( @! ) {
             if ( $$data{'id'} == 0 || $self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'} ) && !$self->model('Utils')->_folder_check( $$data{'parent'} ) )  {
                 $list = $self->model('Settings')->_get_leafs( $$data{'id'} );
-                push @mess, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
+                push @!, "Could not get leafs for folder id '".$$data{'id'}."'" unless $list;
 
                 # данные для таблицы
                 $table = {
@@ -217,19 +221,21 @@ sub get_leafs {
                         }
                     },
                     "body" => $list
-                } unless @mess;
+                } unless @!;
             } else {
-                push @mess, "Folder id '$$data{'id'}' does not exist";
+                push @!, "Folder id '$$data{'id'}' does not exist";
             }
         }
     }
     else {
-        push @mess, "Setting id '$$data{'id'}' not exists";
+        push @!, "Setting id '$$data{'id'}' not exists";
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $table if $table;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -242,7 +248,7 @@ sub load_default {
     # очистка таблицы и сброс счетчика
     $self->model('Settings')->_reset_settings();
 
-    my ($id, $sub, $resp, @mess);
+    my ( $id, $sub, $resp );
     foreach my $folder ( @{$settings->{'settings'}} ) {
         $sub = {
             "name"          => $$folder{'name'},
@@ -259,7 +265,7 @@ sub load_default {
             "parent"        => 0
         };
         $id = $self->model('Settings')->_insert_folder($sub, []);
-        push @mess, "Could not add setting Folder '$$folder{'label'}'" unless $id;
+        push @!, "Could not add setting Folder '$$folder{'label'}'" unless $id;
 
         if (@{$$folder{'children'}}) {
             foreach my $children ( @{$$folder{'children'}} ) {
@@ -282,7 +288,7 @@ sub load_default {
                     $$sub{'value'} = $mime;
                 }
                 my $chldid = $self->model('Settings')->_insert_setting($sub, []);
-                push @mess, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
+                push @!, "Could not add setting item '$$children{'label'}' in Folder '$$children{'label'}'" unless $chldid;
             }
         }
     }
@@ -292,8 +298,10 @@ sub load_default {
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -316,15 +324,14 @@ sub add {
     my $self = shift;
 
     # read params
-    my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ($id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless (@!) {
         # # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
 
-        unless (@mess) {
+        unless (@!) {
             # корректирование пустых значений
             $$data{'folder'} = 0;
             unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
@@ -338,25 +345,27 @@ sub add {
 
             # проверяем поле name на дубликат
             if ( $self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
-                push @mess, "Setting named '$$data{'name'}' is exists";
+                push @!, "Setting named '$$data{'name'}' is exists";
             }
             # проверяем то, что родитель существует и является фолдером
             elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
-                push @mess, "setting have wrong parent $$data{'parent'}";
+                push @!, "setting have wrong parent $$data{'parent'}";
             }
             # запись настройки в бд
             else {
                 $id = $self->model('Settings')->_insert_setting( $data, [] );
-                push @mess, "Could not create new setting item '$$data{'id'}'" unless $id;
+                push @!, "Could not create new setting item '$$data{'id'}'" unless $id;
             }
         }
     }
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -367,30 +376,31 @@ sub add {
 sub edit {
     my $self = shift;
 
-    my ($id, $data, $result, $error, @mess, $resp);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ($id, $data, $result, $resp);
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {    
+    unless ( @! ) {    
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
     # проверка того, что id принадлежит настройке
-    unless ( @mess ) {
+    unless ( @! ) {
         if ( $self->model('Utils')->_folder_check( $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' is not a setting";
+            push @!, "Id '$$data{'id'}' is not a setting";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $result = $self->model('Settings')->_get_setting( $$data{'id'} );
-        push @mess, "Could not get id ".$$data{'id'} unless $result;
+        push @!, "Could not get id ".$$data{'id'} unless $result;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result if $result;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -412,27 +422,26 @@ sub save {
     my $self = shift;
 
     # read params
-    my ( $id, $data, $error, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка существования id
         unless ( $self->model('Utils')->_exists_in_table( 'settings', 'id', $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' doesn't exist";
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
         # проверка того, что id принадлежит настройке
         elsif ( $self->model('Utils')->_folder_check( $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' is not a setting";
+            push @!, "Id '$$data{'id'}' is not a setting";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # корректирование пустых значений
         $$data{'folder'} = 0;
         unless ( defined $$data{'placeholder'} ) { $$data{'placeholder'} = '' };
@@ -446,25 +455,27 @@ sub save {
 
         # проверяем поле name на дубликат
         if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
-            push @mess, "Setting named '$$data{'name'}' is exists";
+            push @!, "Setting named '$$data{'name'}' is exists";
         }
         # проверяем то, что родитель существует и является фолдером
         elsif ( !$self->model('Utils')->_folder_check( $$data{'parent'} ) ) {
-            push @mess, "setting have wrong parent $$data{'parent'}";
+            push @!, "setting have wrong parent $$data{'parent'}";
         }
         # сохранение настройки
         else {
             $id = $self->model('Settings')->_save_setting( $data, [] );
-            push @mess, "Could not update setting item '$$data{'id'}'" unless $id;
+            push @!, "Could not update setting item '$$data{'id'}'" unless $id;
         }
     }
 
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok' ;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -475,23 +486,24 @@ sub save {
 sub delete {
     my $self = shift;
 
-    my ( $del, $resp, $data, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $del, $resp, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
 
-        $del = $self->model('Settings')->_delete_setting( $$data{'id'} ) unless @mess;
-        push @mess, "Could not delete '$$data{'id'}'" unless ( $del || @mess );
+        $del = $self->model('Settings')->_delete_setting( $$data{'id'} ) unless @!;
+        push @!, "Could not delete '$$data{'id'}'" unless ( $del || @! );
     }
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -504,34 +516,35 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ( $toggle, $resp, $data, $error, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $toggle, $resp, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
 
-        unless ( @mess ) {
+        unless ( @! ) {
             $$data{'table'} = 'settings';
 
             # проверка существования элемента для изменения
             unless ($self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'})) {
-                push @mess, "Id '$$data{'id'}' doesn't exist";
+                push @!, "Id '$$data{'id'}' doesn't exist";
             }
             # изменение поля
-            unless ( @mess ) {
+            unless ( @! ) {
                 $toggle = $self->model('Utils')->_toggle( $data );
-                push @mess, "Could not toggle '$$data{'id'}'" unless $toggle;
+                push @!, "Could not toggle '$$data{'id'}'" unless $toggle;
             }
         }
     }
     # обновление объекта с настройками
     $self->{'settings'} = $self->model('Settings')->_get_config();
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $toggle;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -543,16 +556,15 @@ sub toggle {
 sub export {
     my $self = shift;
 
-    my ( $id, $error, $resp, $data, $result, $json, $time, $filename, $filepath, $shift, @result, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $resp, $data, $result, $json, $time, $filename, $filepath, $shift, @result );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # получение всех настроек
         $result = $self->model('Settings')->_get_all_settings();
         if ( %$result ) {
@@ -562,19 +574,19 @@ sub export {
             $result = \@result;
         }
         else {
-            push @mess, 'can\'t get data from settings';
+            push @!, 'can\'t get data from settings';
         }
     }
 
     # кодирование данных в json
-    unless ( @mess ) {
+    unless ( @! ) {
         # перевод настреок в json
         $json = encode_json( $result );
-        push @mess, "Can't encode into json" unless $json;
+        push @!, "Can't encode into json" unless $json;
     }
 
     # запись данных в файл
-    unless ( @mess ) {
+    unless ( @! ) {
         # имя файла
         $filename = time . '.json';
         # путь к файлу
@@ -592,21 +604,23 @@ sub export {
             {err_mode => 'silent'},
             $json
         );
-        push @mess, "Can't store \'$filepath . $filename\'" unless $result;
+        push @!, "Can't store \'$filepath . $filename\'" unless $result;
     }
 
     # запись данных о файле с настройками
-    unless ( @mess ) {
+    unless ( @! ) {
         # получение времени
         $time = $self->model('Utils')->_get_time();
 
         $id = $self->model('Settings')->_insert_export_setting( $$data{'title'}, $filename, $time );
-        push @mess, "Can't insert '$filename' file into DB" unless $id;
+        push @!, "Can't insert '$filename' file into DB" unless $id;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -618,20 +632,19 @@ sub export {
 sub import {
     my $self = shift;
 
-    my ( $result, $resp, $data, $error, $filename, $filepath, $json, $settings, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $result, $resp, $data, $filename, $filepath, $json, $settings );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
     # получение имени файла экспортированной настройки
-    unless ( @mess ) {
+    unless ( @! ) {
     # проверка существования удаляемого элемента в таблице
         unless ( $self->model('Utils')->_exists_in_table( 'export_settings', 'id', $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' doesn't exist";
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
         else {
         # получение имени файла экспортированной настройки
@@ -640,32 +653,34 @@ sub import {
     }
 
     # чтение файла
-    unless ( @mess ) {
+    unless ( @! ) {
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
         # чтение файла
         $json = read_file( $filepath, {err_mode => 'silent'} );
-        push @mess, "can't read '$filepath'" unless $json;
+        push @!, "can't read '$filepath'" unless $json;
     }
 
     # декодирование данных из json
-    unless ( @mess ) {
+    unless ( @! ) {
         $settings = decode_json( $json );
-        push @mess, "Can't decode from json" unless $settings;
+        push @!, "Can't decode from json" unless $settings;
     }
 
     # загрузка экспортированных настроек
-    unless ( @mess ) {
+    unless ( @! ) {
         # очистка текущей таблицы настроек
         $self->model('Settings')->_reset_settings();
 
         # импорт настроек
         $result = $self->model('Settings')->_import_setting( $settings );
-        push @mess, "Can't import settings" unless $result;
+        push @!, "Can't import settings" unless $result;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -677,19 +692,18 @@ sub import {
 sub del_export {
     my $self = shift;
 
-    my ( $data, $error, $filename, $filepath, $cmd, $id, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $data, $filename, $filepath, $cmd, $id, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # проверка данных
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
     # проверка существования удаляемого элемента в таблице
         unless ( $self->model('Utils')->_exists_in_table( 'export_settings', 'id', $$data{'id'} ) ) {
-            push @mess, "Id '$$data{'id'}' doesn't exist";
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
         else {
         # получение имени файла экспортированной настройки
@@ -698,29 +712,31 @@ sub del_export {
     }
 
     # проверка существования файла с настройками
-    unless ( @mess ) {
+    unless ( @! ) {
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
-        push @mess, "'$filepath' doen't exist" unless ( $self->_exists_in_directory( $filepath ) );
+        push @!, "'$filepath' doen't exist" unless ( $self->_exists_in_directory( $filepath ) );
     }
 
     # удаление файла
-    unless ( @mess ) {
+    unless ( @! ) {
         $cmd = `rm $filepath`;
         if ( $? ) {
-            push @mess, "Can't delete $filepath, $?";
+            push @!, "Can't delete $filepath, $?";
         }
     }
 
     # удаление записи из таблицы
-    unless ( @mess ) {
+    unless ( @! ) {
         $id = $self->model('Settings')->_delete_export_setting( $$data{'id'} );
-        push @mess, "Can't delete '$filename' file from DB" unless $id;
+        push @!, "Can't delete '$filename' file from DB" unless $id;
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id unless @mess;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -731,7 +747,7 @@ sub del_export {
 sub list_export {
     my $self = shift;
 
-    my ( $list, $resp, @list, @mess );
+    my ( $list, $resp, @list );
 
     $list = $self->model('Settings')->_get_list_exports();
     if ( %$list ) {
@@ -743,6 +759,8 @@ sub list_export {
 
     $resp->{'status'} = 'ok';
     $resp->{'list'} = $list;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
