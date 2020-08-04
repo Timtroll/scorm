@@ -11,7 +11,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
     "@ckeditor/ckeditor5-build-classic": "^21.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^23.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^23.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
     "@ckeditor/ckeditor5-essentials": "^21.0.0",
     "@ckeditor/ckeditor5-link": "^21.0.0",
