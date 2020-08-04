@@ -59,7 +59,7 @@
 <script>
 
 import filesClass from './../../api/upload/files'
-import {notify} from '../../store/methods'
+import {notify} from '@/store/methods'
 
 const files = new filesClass
 

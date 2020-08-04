@@ -1,10 +1,11 @@
-import actions from './actions'
+import actions   from './actions'
 import mutations from './mutations'
-import getters from './getters'
+import getters   from './getters'
 
 const state = {
 
-  list: null
+  listRoot: null,
+  list:     null
 }
 
 export default {
