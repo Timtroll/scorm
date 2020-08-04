@@ -27,6 +27,7 @@
       <Tree v-if="nav"
             :add="false"
             :editable="false"
+            :open-first="true"
             :remove="false"
             :add-children="false"
             :nav="nav">
@@ -84,7 +85,6 @@ export default {
       leftNavToggleMobile: false,
 
       actions: {
-
         tree: {
           get:                'users/getTree',
           childComponentName: 'UsersItem'
