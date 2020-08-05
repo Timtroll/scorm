@@ -28,15 +28,14 @@ sub proto_leaf {
     my $self = shift;
 
     # read params
-    my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ($id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @! ) {
         # # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
-        unless (@mess) {
+        unless ( @! ) {
             # прототип настройки
             $data = {
                 "folder" => 0,
@@ -67,9 +66,9 @@ sub proto_leaf {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
 }
@@ -80,15 +79,14 @@ sub proto_folder {
     my $self = shift;
 
     # read params
-    my ($id, $data, $error, $resp, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @! ) {
         # # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
-        unless (@mess) {
+        unless ( @! ) {
             # прототип настройки
             $data = {
                 "folder"  => 0,
@@ -100,9 +98,9 @@ sub proto_folder {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
 }
@@ -111,15 +109,14 @@ sub proto_user {
     my $self = shift;
 
     # read params
-    my ($id, $data, $error, $resp, @mess);
-    # push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $data, $resp );
+    # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @! ) {
         # # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
-        unless (@mess) {
+        unless ( @! ) {
             # прототип настройки
             $data = {
                 'tabs' => [ # Вкладки
@@ -165,9 +162,9 @@ sub proto_user {
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
 }
