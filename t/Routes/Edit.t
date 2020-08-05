@@ -78,7 +78,7 @@ my $json =  $answer->{tx}->{res}->{content}->{asset}->{content} ;
 $json = decode_json $json;
 my $label = $json->{'list'}->{'body'}[0]->{'label'};
 my $name  = $json->{'list'}->{'body'}[0]->{'name'};
-warn Dumper( $label );
+
 my $test_data = {
     # положительные тесты
     1 => {

@@ -36,7 +36,7 @@ sub index {
                 # список роутов указанной группы
                 $list = $self->model('Routes')->_routes_list( $$data{'parent'} );
                 if ( %$list ) {
-                    foreach ( keys %$list ) {
+                    foreach ( sort { $a <=> $b } keys %$list ) {
                         push @list, $$list{ $_ };
                     }
                     $list = \@list;
@@ -85,12 +85,11 @@ sub edit {
     my ( $id, $data, $result, $resp );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@!) {
+    unless ( @! ) {
         # проверка данных
         $data = $self->_check_fields();
 
         unless ( @! ) {
-            # $result = $self->_get_route( $$data{'id'} );
             $result = $self->model('Routes')->_get_route( $$data{'id'} );
             push @!, "Could not get Route '$$data{'id'}'" unless $result;
         }

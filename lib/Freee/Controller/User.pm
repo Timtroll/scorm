@@ -418,6 +418,10 @@ sub add {
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
+        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
+        $$data{'place'}       = '' unless $$data{'place'};
+        $$data{'birthday'}    = '' unless $$data{'birthday'};
+        $$data{'avatar'}      = '' unless $$data{'avatar'};
 
 # warn Dumper( $$data{'groups'} );
 #         $$data{'groups'}      = from_json( $$data{'groups'} );
@@ -485,7 +489,11 @@ sub add_by_email {
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
-        $$data{'phone'}       = ' ';
+        $$data{'phone'}       = '';
+        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
+        $$data{'place'}       = '' unless $$data{'place'};
+        $$data{'birthday'}    = '' unless $$data{'birthday'};
+        $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_insert_user( $data );
     }
@@ -541,8 +549,12 @@ sub add_by_phone {
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
-        $$data{'email'}       = ' ';
+        $$data{'email'}       = '';
         $$data{'publish'}     = $$data{'status'};
+        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
+        $$data{'place'}       = '' unless $$data{'place'};
+        $$data{'birthday'}    = '' unless $$data{'birthday'};
+        $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_insert_user( $data );
     }
@@ -636,7 +648,11 @@ sub save {
     unless ( @! ) {
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
-        $$data{'publish'} =  $$data{'status'};
+        $$data{'publish'}     =  $$data{'status'};
+        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
+        $$data{'place'}       = '' unless $$data{'place'};
+        $$data{'birthday'}    = '' unless $$data{'birthday'};
+        $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_save_user( $data );
     }
