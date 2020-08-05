@@ -1,12 +1,12 @@
 <template>
   <div class="pos-finder">
 
-    <FinderColumn v-if="data"
-                  :data="data"
+    <FinderColumn v-if="root"
+                  :data="root"
                   @open="open($event)"/>
 
-    <FinderColumn v-if="columns"
-                  v-for="item in columns"
+    <FinderColumn v-if="levels"
+                  v-for="item in levels"
                   :data="item"
                   @open="item = $event"/>
 
@@ -23,10 +23,6 @@ export default {
 
   props: {
 
-    data: {
-      type:    Object,
-      default: () => {}
-    }
   },
 
   data () {
@@ -36,7 +32,16 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+
+    root () {
+      return this.$store.state.courses.listRoot
+    },
+
+    levels () {
+      return this.$store.state.courses.list
+    }
+  },
 
   methods: {
 

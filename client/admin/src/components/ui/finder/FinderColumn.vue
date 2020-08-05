@@ -70,7 +70,7 @@
 
         <!--nav item-->
         <li class="pos-finder-list-item"
-            v-for="item in data.list"
+            v-for="item in filterSearch"
             :class="{selected: item.id === selected}">
 
           <div class="pos-finder-list-item__label"
@@ -81,7 +81,7 @@
 
             <!--Добавить дочерний раздел-->
             <a @click.prevent="addChildren(item)"
-               v-if="item.add"
+               v-if="data.child.add"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.add')"
                class="pos-finder-list-item-actions__add">
               <img src="/img/icons/icon__plus-doc.svg"
@@ -93,7 +93,7 @@
 
             <!--Редактировать раздел-->
             <a @click.prevent="editChildren(item)"
-               v-if="item.edit"
+               v-if="data.child.edit"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
                class="pos-finder-list-item-actions__edit">
               <img src="/img/icons/icon__edit.svg"
@@ -105,7 +105,7 @@
 
             <!--Удалить раздел-->
             <a @click.prevent="removeChildren(item)"
-               v-if="item.remove"
+               v-if="data.child.remove"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
                class="pos-finder-list-item-actions__remove">
               <img src="/img/icons/icon__trash.svg"
@@ -156,14 +156,9 @@ export default {
     filterSearch () {
 
       if (!this.data) return null
+      if (!this.data.list) return null
 
-      return this.data
-                 .filter(item =>
-                   !this.searchInput
-                   || this.filterProp(item.name)
-                   || this.filterProp(item.label)
-                   || this.filterProp(item.keywords)
-                 )
+      return this.data.list.filter(item => !this.searchInput || this.filterProp(item.search))
     }
   },
 

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {notify} from '../../store/methods'
+import {notify} from '@/store/methods'
 
 let apiProxy = ''
 
@@ -21,7 +21,7 @@ export default class files {
    * @param upload
    */
   async upload (upload) {
-    if (!upload) return
+    if (!upload) return null
     return await this.serverHttp('/', upload)
   }
 

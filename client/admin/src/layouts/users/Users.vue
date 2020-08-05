@@ -27,6 +27,7 @@
       <Tree v-if="nav"
             :add="false"
             :editable="false"
+            :open-first="true"
             :remove="false"
             :add-children="false"
             :nav="nav">
@@ -84,7 +85,6 @@ export default {
       leftNavToggleMobile: false,
 
       actions: {
-
         tree: {
           get:                'users/getTree',
           childComponentName: 'UsersItem'
@@ -141,13 +141,20 @@ export default {
   },
 
   beforeDestroy () {
-    this.$store.commit('editPanel_show', false)
-    this.$store.commit('tree_active', null)
-    this.$store.commit('set_editPanel_proto', [])
-    this.$store.commit('set_tree_proto', [])
 
+    this.$store.commit('tree_active', null)
+    this.$store.commit('set_tree_proto', [])
+    this.closeEditPanel()
     // выгрузка Vuex модуля settings
     this.$store.unregisterModule('users')
+  },
+
+  watch: {
+
+    tableId () {
+      //// запись прототипа из json в store
+      this.$store.commit('set_editPanel_proto', protoLeaf)
+    }
   },
 
   computed: {
@@ -192,6 +199,11 @@ export default {
   },
 
   methods: {
+
+    closeEditPanel () {
+      this.$store.commit('editPanel_show', false)
+      this.$store.commit('set_editPanel_proto', [])
+    },
 
     // Очистка поля поиска
     clearSearchVal () {

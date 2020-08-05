@@ -74,118 +74,160 @@
 
 <script>
 
-  import {clone, flatTree} from '../../../store/methods'
+import {clone, flatTree} from '@/store/methods'
 
-  export default {
+export default {
 
-    components: {
-      IconBug: () => import(/* webpackChunkName: "IconBug" */ '../icons/IconBug'),
-      Loader:  () => import(/* webpackChunkName: "Loader" */ '../icons/Loader'),
-      NavTree: () => import(/* webpackChunkName: "NavTree" */ './NavTree')
+  components: {
+    IconBug: () => import(/* webpackChunkName: "IconBug" */ '../icons/IconBug'),
+    Loader:  () => import(/* webpackChunkName: "Loader" */ '../icons/Loader'),
+    NavTree: () => import(/* webpackChunkName: "NavTree" */ './NavTree')
+  },
+
+  name: 'Tree',
+
+  props: {
+
+    add: {
+      type:    Boolean,
+      default: true
     },
 
-    name: 'Tree',
+    openFirst: {
+      type:    Boolean,
+      default: false
+    },
 
-    props: {
-      add: {
-        type:    Boolean,
-        default: true
-      },
+    addChildren: {
+      type:    Boolean,
+      default: true
+    },
 
-      addChildren: {
-        type:    Boolean,
-        default: true
-      },
-      editable:    {
-        type:    Boolean,
-        default: true
-      },
-      remove:      {
-        type:    Boolean,
-        default: true
-      },
-      nav:         {
-        type: Array
+    editable: {
+      type:    Boolean,
+      default: true
+    },
+
+    remove: {
+      type:    Boolean,
+      default: true
+    },
+
+    nav: {
+      type: Array
+    }
+  },
+
+  data () {
+    return {
+      searchInput: null
+    }
+  },
+
+  watch: {
+
+    // переход на первую ссылку в дереве
+    nav () {
+      if (!this.nav) return
+      if (!this.nav.length) return
+      if (this.openFirst) {
+
+        const nav     = this.nav
+        const firstId = nav[0]
+        this.showTable(firstId)
+        //if (this.$route.meta.root) { }
+      }
+    }
+  },
+
+  computed: {
+
+    editPanel_api () { // список запросов для правой панели
+      return this.$store.getters.editPanel_api
+    },
+
+    tree_api () {
+      return this.$store.getters.tree_api
+    },
+
+    table_api () {
+      return this.$store.getters.table_api
+    },
+
+    protoFolder () {
+      if (this.tree_api) {
+        return this.$store.getters.tree_proto
       }
     },
 
-    data () {
-      return {
-        searchInput: null
+    // преобразование дерева навигации в один уровень для вывода результатов поиска
+    flattenNav () {
+      if (this.searchInput) {
+        return flatTree(clone(this.nav))
       }
-    },
-
-    computed: {
-
-      editPanel_api () { // список запросов для правой панели
-        return this.$store.getters.editPanel_api
-      },
-
-      tree_api () {
-        return this.$store.getters.tree_api
-      },
-
-      protoFolder () {
-        if (this.tree_api) {
-          return this.$store.getters.tree_proto
-        }
-      },
-
-      // преобразование дерева навигации в один уровень для вывода результатов поиска
-      flattenNav () {
-        if (this.searchInput) {
-          return flatTree(clone(this.nav))
-        } else {
-          return this.nav
-        }
-
-      },
-
-      // Поиск по полю label && keywords
-      filterSearch () {
-
-        if (!this.flattenNav) return
-
-        return this.flattenNav
-                   .filter(item =>
-                     !this.searchInput
-                     || this.filterProp(item.name)
-                     || this.filterProp(item.label)
-                     || this.filterProp(item.keywords)
-                   )
+      else {
+        return this.nav
       }
 
     },
 
-    methods: {
+    // Поиск по полю label && keywords
+    filterSearch () {
 
-      filterProp (prop) {
-        if (!prop) return
-        return prop
-          .toLowerCase()
-          .indexOf(this.searchInput.toLowerCase()) > -1
-      },
+      if (!this.flattenNav) return
 
-      async addFolder (parent) {
-        this.$store.commit('editPanel_add', true)
-        await this.$store.dispatch(this.editPanel_api.addFolderProto, parent)
-        this.$store.commit('editPanel_add', true)
-        await this.$store.commit('editPanel_folder', true)
+      return this.flattenNav
+                 .filter(item =>
+                   !this.searchInput
+                   || this.filterProp(item.name)
+                   || this.filterProp(item.label)
+                   || this.filterProp(item.keywords)
+                 )
+    }
 
-      },
+  },
 
-      // Очистка поля поиска
-      clearSearchVal () {
-        this.searchInput = null
-      },
+  methods: {
 
-      swipeLeft (direction) {
-        console.log('tree swipe - ' + direction)
-        if (direction === 'left') {
-          this.$store.commit('card_left_show', false)
+    showTable (item) {
+      this.$store.commit('card_right_show', false)
+      this.$store.commit('tree_active', item.id)
+      this.$store.dispatch(this.table_api.get, item.id)
+
+      this.$router.push({
+        name:   this.tree_api.childComponentName,
+        params: {
+          id:    item.id,
+          title: item.label
         }
+      })
+    },
 
+    filterProp (prop) {
+      if (!prop) return
+      return prop
+        .toLowerCase()
+        .indexOf(this.searchInput.toLowerCase()) > -1
+    },
+
+    async addFolder (parent) {
+      this.$store.commit('editPanel_add', true)
+      await this.$store.dispatch(this.editPanel_api.addFolderProto, parent)
+      this.$store.commit('editPanel_add', true)
+      await this.$store.commit('editPanel_folder', true)
+    },
+
+    // Очистка поля поиска
+    clearSearchVal () {
+      this.searchInput = null
+    },
+
+    swipeLeft (direction) {
+      console.log('tree swipe - ' + direction)
+      if (direction === 'left') {
+        this.$store.commit('card_left_show', false)
       }
     }
   }
+}
 </script>

@@ -58,8 +58,8 @@
 
 <script>
 
-import filesClass from './../../api/upload/files'
-import {notify} from '../../store/methods'
+import filesClass from '@/api/upload/files'
+import {notify} from '@/store/methods'
 
 const files = new filesClass
 
@@ -68,9 +68,9 @@ export default {
   name:       'Media',
 
   components: {
-    FileGrid:  () => import(/* webpackChunkName: "FileGrid" */ '../../components/ui/files/FileGrid'),
-    Card:      () => import(/* webpackChunkName: "Card" */ './../../components/ui/card/Card'),
-    InputFile: () => import(/* webpackChunkName: "InputFile" */ './../../components/ui/inputs/InputFile')
+    FileGrid:  () => import(/* webpackChunkName: "FileGrid" */ '@/components/ui/files/FileGrid'),
+    Card:      () => import(/* webpackChunkName: "Card" */ '@/components/ui/card/Card'),
+    InputFile: () => import(/* webpackChunkName: "InputFile" */ '@/components/ui/inputs/InputFile')
   },
 
   metaInfo () {

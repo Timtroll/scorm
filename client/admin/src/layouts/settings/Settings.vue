@@ -25,6 +25,7 @@
     <template #bodyLeft>
 
       <Tree v-if="nav"
+            :open-first="true"
             :nav="nav">
       </Tree>
     </template>
@@ -52,7 +53,7 @@
 
   // import VUEX module groups
   import settings from '@/store/modules/settings'
-  import {clone} from '../../store/methods'
+  import {clone} from '@/store/methods'
 
   export default {
 
