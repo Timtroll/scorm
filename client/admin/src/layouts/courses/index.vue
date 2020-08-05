@@ -10,7 +10,7 @@ export default {
   name: 'Courses',
 
   components: {
-    Finder: () => import(/* webpackChunkName: "Finder" */ '../../components/ui/finder/Finder')
+    Finder: () => import(/* webpackChunkName: "Finder" */ '@/components/ui/finder/Finder')
   },
 
   metaInfo () {
