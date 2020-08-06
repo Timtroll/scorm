@@ -9,7 +9,7 @@
 # 'birthday'     => '01.01.2000',      # 12 цифр, обязательное поле
 # 'status'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
-# 'avatar'       => 'https://thispersondoesnotexist.com/image',              # До 9 цифр, обязательное поле
+# 'avatar'       => 1,              # До 9 цифр, обязательное поле
 # 'type'         => 1,                 # Цифра 1-4, обязательное поле
 # 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
 # });
@@ -94,8 +94,7 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'emailright@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
@@ -116,8 +115,7 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'emailright2@email.ru',
             'status'       => 0,
             'groups'       => "[1,2,3]"
@@ -139,8 +137,7 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'email@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
@@ -160,8 +157,7 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'email@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
@@ -176,34 +172,12 @@ my $test_data = {
         'data' => {
             'surname'      => 'фамилия',
             'name'         => 'имя',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => 'email@email.ru',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: didn't has required data in 'patronymic'",
-            'status'    => 'fail',
-        },
-        'comment' => 'No patronymic:' 
-    },
-    6 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'email@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
@@ -214,7 +188,7 @@ my $test_data = {
         },
         'comment' => 'No country:'
     },
-    7 => {
+    6 => {
         'data' => {
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -223,8 +197,7 @@ my $test_data = {
             'country'      => 'Россия',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'email@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
@@ -235,6 +208,26 @@ my $test_data = {
         },
         'comment' => 'No timezone:'
     },
+    7 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'Россия',
+            'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
+            'avatar'       => 1,
+            'email'        => 'email@email.ru',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'password'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No password:'
+    },
     8 => {
         'data' => {
             'surname'      => 'фамилия',
@@ -243,18 +236,17 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'Россия',
             'timezone'     => '+3',
+            'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => 'email@email.ru',
+            'avatar'       => 1,
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'birthday'",
+            'message'   => "_check_fields: didn't has required data in 'email'",
             'status'    => 'fail',
         },
-        'comment' => 'No birthday:'
+        'comment' => 'No email:'
     },
     9 => {
         'data' => {
@@ -265,17 +257,17 @@ my $test_data = {
             'country'      => 'Россия',
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => 'email@email.ru',
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => '+++',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'password'",
+            'message'   => "_check_fields: 'email' didn't match regular expression",
             'status'    => 'fail',
         },
-        'comment' => 'No password:'
+        'comment' => 'Wrong email:'
     },
     10 => {
         'data' => {
@@ -287,16 +279,16 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'type'         => 1,
-            'email'        => 'email@email.ru',
+            'avatar'       => 1,
+            'email'        => 'emailright@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'avatar'",
+            'message'   => "email 'emailright\@email.ru' already used",
             'status'    => 'fail',
         },
-        'comment' => 'No avatar:'
+        'comment' => "Email already used:"
     },
     11 => {
         'data' => {
@@ -308,115 +300,7 @@ my $test_data = {
             'timezone'     => '+3',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'email'        => 'email@email.ru',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: didn't has required data in 'type'",
-            'status'    => 'fail',
-        },
-        'comment' => 'No type:'
-    },
-    12 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: didn't has required data in 'email'",
-            'status'    => 'fail',
-        },
-        'comment' => 'No email:'
-    },
-    13 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => 'email@email.ru',
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: didn't has required data in 'status'",
-            'status'    => 'fail',
-        },
-        'comment' => 'No status:'
-    },
-    14 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => '+++',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: 'email' didn't match regular expression",
-            'status'    => 'fail',
-        },
-        'comment' => 'Wrong email:'
-    },
-    15 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
-            'email'        => 'emailright@email.ru',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "email 'emailright\@email.ru' already used",
-            'status'    => 'fail',
-        },
-        'comment' => "Email already used:"
-    },
-    16 => {
-        'data' => {
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
-            'birthday'     => '01.01.2000',
-            'password'     => 'password1',
-            'avatar'       => 'https://thispersondoesnotexist.com/image',
-            'type'         => 1,
+            'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
             'status'       => 1,
             'groups'       => "[1,2,404,405]"

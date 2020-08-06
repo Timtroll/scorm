@@ -279,6 +279,10 @@ export default {
       }
     },
 
+    routePath () {
+      this.close()
+    },
+
     // установка типа поля VALUE при загрузке
     findTypeField () {
       if (this.findTypeField && this.findTypeField.value) {
@@ -289,6 +293,10 @@ export default {
   },
 
   computed: {
+
+    routePath () {
+      return this.$route.path
+    },
 
     // меню групп
     listMenu () {

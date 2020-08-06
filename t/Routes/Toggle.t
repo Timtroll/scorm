@@ -179,7 +179,7 @@ my $test_data = {
             'fieldname' => 'status'
         },
         'result' => {
-            'message'   => "Validation error for 'value'. Field is empty or not exists",
+            'message'   => "_check_fields: 'value' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'No value:'
@@ -190,7 +190,7 @@ my $test_data = {
             'value'     => 1,
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field is empty or not exists",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -201,7 +201,7 @@ my $test_data = {
             'value'     => 1,
         },
         'result' => {
-            'message'   => "Validation error for 'fieldname'. Field is empty or not exists",
+            'message'   => "_check_fields: 'fieldname' didn't match required in check array",
             'status'    => 'fail'
         },
         'comment' => 'No fieldname:' 
@@ -213,7 +213,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "Could not toggle Group '404'",
+            'message'   => "Id '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Id do not exist:' 
@@ -225,7 +225,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "Validation error for 'id'. Field has wrong type",
+            'message'   => "_check_fields: 'id' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 

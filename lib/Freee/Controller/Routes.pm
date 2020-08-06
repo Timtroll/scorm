@@ -23,20 +23,24 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    my ( $list, $data, $error, $table, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $list, $data, $table, $resp, @list );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless (@!) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
         # проверка существования роута указанной группы
-        unless (@mess) {
+        unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
                 # список роутов указанной группы
-                $list = $self->_routes_list( $$data{'parent'} );
-                push @mess, "Could not get list Routes for group '$$data{'parent'}'" unless $list;
+                $list = $self->model('Routes')->_routes_list( $$data{'parent'} );
+                if ( %$list ) {
+                    foreach ( sort { $a <=> $b } keys %$list ) {
+                        push @list, $$list{ $_ };
+                    }
+                    $list = \@list;
+                }
 
                 # данные для таблицы
                 $table = {
@@ -55,17 +59,19 @@ sub index {
                         }
                     },
                     "body" => $list
-                } unless @mess;
+                } unless @!;
             }
             else {
-                push @mess, "Routes for Group id '$$data{'parent'}' is not exists";
+                push @!, "Routes for Group id '$$data{'parent'}' is not exists";
             }
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'list'} = $table unless @mess;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'list'} = $table unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -76,23 +82,24 @@ sub index {
 sub edit {
     my $self = shift;
 
-    my ($id, $data, $error, @mess, $resp);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $data, $result, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @! ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
-        if ($data) {
-            $data = $self->_get_route( $$data{'id'} );
-            push @mess, "Could not get Route '$$data{'id'}'" unless $data;
+        unless ( @! ) {
+            $result = $self->model('Routes')->_get_route( $$data{'id'} );
+            push @!, "Could not get Route '$$data{'id'}'" unless $result;
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'data'} = $data if $data;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $result unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -110,30 +117,31 @@ sub edit {
 sub save {
     my ($self) = shift;
 
-    my ( $id, $data, $error, $resp, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $id, $data, $resp );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
+    unless ( @! ) {
         # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+        $data = $self->_check_fields();
 
         # проверка существования обновляемой строки
-        unless (@mess) {
+        unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'}) ) {
                 # обновление данных группы
-                $id = $self->_update_route( $data );
-                push @mess, "Could not update Route named '$$data{'name'}'" unless $id;
+                $id = $self->model('Routes')->_update_route( $data );
+                push @!, "Could not update Route named '$$data{'name'}'" unless $id;
             }
             else {
-                push @mess, "Route '$$data{'id'}' is not exists";
+                push @!, "Route '$$data{'id'}' is not exists";
             }
         }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -146,22 +154,31 @@ sub save {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess);
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $toggle, $resp, $data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless (@mess) {
-        # проверка данных
-        ($data, $error) = $self->_check_fields();
-        push @mess, $error unless $data;
+    # проверка данных
+    $data = $self->_check_fields() unless @!;
 
+    unless ( @! ) {
         $$data{'table'} = 'routes';
-        $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
-        push @mess, "Could not toggle Group '$$data{'id'}'" unless $toggle;
+
+        # проверка существования элемента для изменения
+        unless ($self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'})) {
+            push @!, "Id '$$data{'id'}' doesn't exist";
+        }
+        # изменение поля
+        unless ( @! ) {
+            $toggle = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle '$$data{'id'}'" unless $toggle;
+        }
     }
 
-    $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} if $toggle;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }

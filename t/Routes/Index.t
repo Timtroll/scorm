@@ -59,14 +59,14 @@ my $test_data = {
             'parent'    => 'mistake',
         },
         'result' => {
-            'message'   => "Validation error for 'parent'. Field has wrong type",
+            'message'   => "_check_fields: 'parent' didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
     3 => {
         'result' => {
-            'message'   => "Validation error for 'parent'. Field is empty or not exists",
+            'message'   => "_check_fields: didn't has required data in 'parent'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 

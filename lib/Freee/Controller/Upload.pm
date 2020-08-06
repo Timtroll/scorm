@@ -11,16 +11,15 @@ use common;
 sub index {
     my $self = shift;
 
-    my ( $data, $error, $result, $filename, $resp, $url, $json, $local_path, $extension, $write_result, $name_length, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+    my ( $data, $result, $filename, $resp, $url, $json, $local_path, $extension, $write_result, $name_length );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     # проверка данных
-    unless ( @mess ) {
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # store real file name
         $$data{'title'} = $$data{'filename'};
 
@@ -45,40 +44,41 @@ sub index {
             $self->{'app'}->{'settings'}->{'upload_local_path'} . $$data{'filename'} . '.' . $$data{'extension'},
             $$data{'content'}
         );
-        push @mess, "Can not store '$$data{'filename'}' file" unless $result;
+        push @!, "Can not store '$$data{'filename'}' file" unless $result;
     }
 
     # ввод данных в таблицу
-    unless ( @mess ) {
-        ( $result, $error ) = $self->model('Upload')->_insert_media( $data );
-        push @mess, $error unless $result;
+    unless ( @! ) {
+        $result = $self->model('Upload')->_insert_media( $data );
     }
 
     # преобразование данныхв json
-    unless ( @mess ) {
+    unless ( @! ) {
         delete $$data{'content'};
         $json = encode_json ( $data );
-        push @mess, "Can not convert into json $$data{'title'}" unless $json;
+        push @!, "Can not convert into json $$data{'title'}" unless $json;
     }
 
     # создание файла с описанием
-    unless ( @mess ) {
+    unless ( @! ) {
         $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
         $extension = $self->{'app'}->{'settings'}->{'desc_extension'};
         $write_result = write_file( $local_path . $$data{'filename'} . '.' . $extension, $json );
-        push @mess, "Can not write desc of $$data{'title'}" unless $write_result;
+        push @!, "Can not write desc of $$data{'title'}" unless $write_result;
     }
 
     # получение url
-    unless ( @mess ) {
+    unless ( @! ) {
         $url = $self->{'app'}->{'settings'}->{'site_url'} . $self->{'app'}->{'settings'}->{'upload_url_path'} . $$data{'filename'} . '.' . $$data{ 'extension' };
     }
 
-    $resp->{'message'} = join( "\n", @mess ) if @mess;
+    $resp->{'message'} = join( "\n", @! ) if @!;
     $resp->{'id'} = $result if $result;
     $resp->{'mime'} = $$data{'mime'} if $result;
     $resp->{'url'} = $url if $url;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -86,54 +86,53 @@ sub index {
 sub delete {
     my $self = shift;
 
-    my ( $data, $fileinfo, $error, $result, $resp, $filename, $cmd, $local_path, $full_path, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    my ( $data, $fileinfo, $result, $resp, $filename, $cmd, $local_path, $full_path );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
-    unless ( @mess ) {
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->_check_fields();
     }
 
     # получение данных об удаляемом файле из базы данных
-    unless ( @mess ) {
-        ( $fileinfo, $error ) = $self->model('Upload')->_check_media( $$data{'id'} );
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $fileinfo = $self->model('Upload')->_check_media( $$data{'id'} );
     }
 
     # удаление файла
-    unless ( @mess ) {
+    unless ( @! ) {
         $filename = $$fileinfo{'filename'} . '.' . $$fileinfo{'extension'};
         $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
         $full_path = $local_path . $filename;
         if ( $self->_exists_in_directory( $full_path ) ) {
             $cmd = `rm $full_path`;
             if ( $? ) {
-                push @mess, "Can not delete $full_path, $?";
+                push @!, "Can not delete $full_path, $?";
             }
         }
     }
 
     # удаление описания файла
-    unless ( @mess ) {
+    unless ( @! ) {
         $filename = $$fileinfo{'filename'} . '.' . 'desc';
         $full_path = $local_path . $filename;
         if ( $self->_exists_in_directory( $full_path ) ) {
             $cmd = `rm $full_path`;
             if ( $? ) {
-                push @mess, "Can not delete $full_path description, $?";
+                push @!, "Can not delete $full_path description, $?";
             }
         }
     }
 
     # удаление записи о файле
-    unless ( @mess ) {
-        ( $data, $error ) = $self->model('Upload')->_delete_media( $$data{'id'} );
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->model('Upload')->_delete_media( $$data{'id'} );
     }
 
-    $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }
@@ -141,23 +140,21 @@ sub delete {
 sub search {
     my $self = shift;
 
-    my ( $data, $error, $resp, $url, $host, $url_path, @data, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    my ( $data, $resp, $url, $host, $url_path, @data );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
-    unless ( @mess ) {
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->_check_fields();
     }
 
     # получение записи
-    unless ( @mess ) {
-        ( $data, $error ) = $self->model('Upload')->_get_media( $data );
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->model('Upload')->_get_media( $data );
     }
 
     # добавление данных об url
-    unless ( @mess ) {
+    unless ( @! ) {
         $host = $self->{'app'}->{'settings'}->{'site_url'};
         $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
         foreach my $row ( values %{$data} ) {
@@ -167,37 +164,38 @@ sub search {
         }
     }
 
-    $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'status'} = @mess ? 'warn' : 'ok';
-    $resp->{'data'} = \@data unless @mess;
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'warn' : 'ok';
+    $resp->{'data'} = \@data unless @!;
+
+    @! = ();
+
     $self->render( 'json' => $resp );
 }
 
 sub update {
     my $self = shift;
 
-    my ( $data, $error, $url, $resp, $host, $local_path, $url_path, $desc_extension, $json, $rewrite_result, @mess );
-    push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
+    my ( $data, $url, $resp, $host, $local_path, $url_path, $desc_extension, $json, $rewrite_result );
+    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
     # проверка данных
-    unless ( @mess ) {
-        ( $data, $error ) = $self->_check_fields();
-        push @mess, $error if $error;
+    unless ( @! ) {
+        $data = $self->_check_fields();
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # присвоение пустого значения вместо null
         $$data{'description'} = '' unless ( $$data{'description'} );
 
         # обновление записи
-        ( $data, $error ) = $self->model('Upload')->_update_media( $data );
-        push @mess, $error if $error;
+        $data = $self->model('Upload')->_update_media( $data );
     }
 
     # преобразование данных в json
-    unless ( @mess ) {
+    unless ( @! ) {
         $json = encode_json ( $data );
-        push @mess, "Can not convert into json $$data{'title'}" unless $json;
+        push @!, "Can not convert into json $$data{'title'}" unless $json;
     }
 
     # запись нового файла с описанием
@@ -205,20 +203,22 @@ sub update {
     $local_path = $self->{'app'}->{'settings'}->{'upload_local_path'};
     $url_path = $self->{'app'}->{'settings'}->{'upload_url_path'};
     $desc_extension = $self->{'app'}->{'settings'}->{'desc_extension'};
-    unless ( @mess ) {
+    unless ( @! ) {
         $rewrite_result = write_file( $local_path . $$data{'filename'} . '.' . $desc_extension, $json );
-        push @mess, "Can not update description of $$data{'title'}" unless $rewrite_result;
+        push @!, "Can not update description of $$data{'title'}" unless $rewrite_result;
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $url = $host . $url_path . $$data{'filename'} . '.' . $$data{'extension'};
     }
 
-    $resp->{'message'} = join( "\n", @mess ) if @mess;
-    $resp->{'id'} = $$data{'id'} unless @mess;
-    $resp->{'mime'} = $$data{'mime'} unless @mess;
-    $resp->{'url'} = $url unless @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'id'} = $$data{'id'} unless @!;
+    $resp->{'mime'} = $$data{'mime'} unless @!;
+    $resp->{'url'} = $url unless @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+
+    @! = ();
 
     $self->render( 'json' => $resp );
 }

@@ -36,9 +36,7 @@ sub startup {
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
-    $self->plugin('Freee::Helpers::PgRoutes');
     $self->plugin('Freee::Helpers::PgForum');
-    $self->plugin('Freee::Helpers::User');
 
     # init Pg connection
     $self->{dbh} = $self->pg_dbh();

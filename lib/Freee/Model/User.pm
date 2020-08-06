@@ -96,13 +96,13 @@ sub _check_user {
     # my $list = $usr->_list();
         # my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
 
-    my ( $sth, $sql, $result, $error, @mess );
+    my ( $sth, $sql, $result );
 
     unless ( $$data{'email'} || $$data{'phone'} ) {
-        push @mess, 'no data for check';
+        push @!, 'no data for check';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         foreach ( 'email', 'phone' ) {
             if ( $$data{ $_ } ) {
                 if ( $$data{'id'} ) {
@@ -119,29 +119,25 @@ sub _check_user {
 
                 $result = $sth->execute();
                 unless ( $result == '0E0' ) {
-                    push @mess, "$_ '$$data{ $_ }' already used";
+                    push @!, "$_ '$$data{ $_ }' already used";
                 }
             }
         }
     }
 
-    if ( @mess ) {
-        return( undef, join( "\n", @mess ) )
-    }
-
-    return 1;
+    return @! ? 0 : 1;
 }
 
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $fields, $sth, $list, $mess, @list, @mess );
+    my ( $sql, $fields, $sth, $list, @list );
 
     unless ( $$data{'id'} ) {
-        push @mess, "no data for list";
+        push @!, "no data for list";
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # выбираемые поля
         $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
 
@@ -170,11 +166,7 @@ sub _get_list {
         }
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $list, $mess;
+    return $list;
 }
 # Получить все данные пользователя из EAV и таблицы users
 # ( $result, $error ) = $self->model('User')->_get_user( $data );
@@ -218,12 +210,12 @@ sub _get_user {
 
     # return $data;
 
-    my ( $sth, $sql, $usr, $result_users, $result_eav, $main, $contacts, $password, $groups, $mess, @mess );
+    my ( $sth, $sql, $usr, $result_users, $result_eav, $main, $contacts, $password, $groups );
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @mess, "no data for get";
+        push @!, "no data for get";
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # взять весь объект из таблицы users
         $sql = 'SELECT * FROM "public"."users" WHERE "id" = ?';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -250,11 +242,11 @@ sub _get_user {
             ]
         }
         else {
-            push @mess, "can't get object from users";
+            push @!, "can't get object from users";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # взять весь объект из EAV
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
 
@@ -274,15 +266,11 @@ sub _get_user {
             ]
         }
         else {
-            push @mess, "can't get object from EAV";
+            push @!, "can't get object from EAV";
         }
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $main, $contacts, $password, $groups, $mess;
+    return $main, $contacts, $password, $groups;
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
@@ -302,11 +290,11 @@ sub _get_user {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $user, $user_id, $result, $mess, $sql, $groups, @mess, @user_keys );
+    my ( $sth, $user, $user_id, $result, $sql, $groups, @user_keys );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @mess, "no data for insert";
+        push @!, "no data for insert";
     }
             # загружаем аватарку
             # таблица media (аватарка)
@@ -321,7 +309,7 @@ sub _insert_user {
 #                 "order"      => 'local',
 #                 "flags"     => 0
 #             };
-    unless ( @mess) {
+    unless ( @!) {
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
@@ -345,11 +333,11 @@ sub _insert_user {
         $$data{'eav_id'} = $user->id();
 
         unless ( $$data{'eav_id'} ) {
-            push @mess, "Could not insert user into EAV";
+            push @!, "Could not insert user into EAV";
         }
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
 ##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
 
         # запись данных в users
@@ -360,7 +348,7 @@ sub _insert_user {
         $sth->execute();
 
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
-        push @mess, "Can not insert $$data{'title'} into users" unless $user_id;
+        push @!, "Can not insert $$data{'title'} into users" unless $user_id;
 
         # таблица users_social
         # my $user_data = {
@@ -373,7 +361,7 @@ sub _insert_user {
     }
 
     #### зеполнение таблицы user_groups
-    unless ( @mess ) {
+    unless ( @! ) {
         $groups = from_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
 
@@ -382,26 +370,23 @@ sub _insert_user {
             $sth->bind_param( 1, $user_id );
             $sth->bind_param( 2, $group_id );
             $result = $sth->execute();
-            push @mess, "Can not insert into 'user_groups'" unless $result;
+            push @!, "Can not insert into 'user_groups'" unless $result;
         }
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $user_id, $mess;
+    return $user_id;
 }
 
 sub _save_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $mess, $sql, $groups, @user_keys, @mess );
+    my ( $sth, $usr, $result, $sql, $groups, @user_keys );
 
     unless ( $$data{'id'} ) {
-        push @mess, 'no data for save';
+        push @!, 'no data for save';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # обновление полей в users
         @user_keys = ( "publish", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
@@ -416,10 +401,10 @@ sub _save_user {
 
         $result = $sth->execute();
 
-        push @mess, "can't update $$data{'id'} in users" if $result eq '0E0';
+        push @!, "can't update $$data{'id'} in users" if $result eq '0E0';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
         # обновление полей в EAV
@@ -449,19 +434,19 @@ sub _save_user {
             }
         });
 
-        push @mess, "can't update EAV" unless $result;
+        push @!, "can't update EAV" unless $result;
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # удаление из user_groups
         $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
         $result = $sth->execute();
-        push @mess, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
+        push @!, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # добавление в user_groups
         $groups = from_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? ) RETURNING user_id';
@@ -473,28 +458,25 @@ sub _save_user {
             $sth->execute();
             $result = $sth->fetchrow_array();
             unless ( $result ) {
-                push @mess, "Can not update 'user_groups'";
+                push @!, "Can not update 'user_groups'";
                 last;
             }
         }
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-    return $result, $mess;
+    return $result;
 }
 
 sub _toggle_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $mess, $sql, @mess );
+    my ( $sth, $usr, $result, $sql );
 
     unless ( $$data{'id'} && defined $$data{'status'} ) {
-        push @mess, 'no data for toggle';
+        push @!, 'no data for toggle';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # смена значений publish
         $sql = 'UPDATE "public"."users" SET "publish" = ? WHERE "id" = ?';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -502,26 +484,22 @@ sub _toggle_user {
         $sth->bind_param( 2, $$data{'id'} );
 
         $result = $sth->execute();
-        push @mess, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
+        push @!, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $result, $mess;
+    return $result;
 }
 
 sub _delete_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $mess, $sql, @mess );
+    my ( $sth, $usr, $result, $sql );
 
     unless ( $$data{'id'} ) {
-        push @mess, 'no data for delete';
+        push @!, 'no data for delete';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # удаление из users
         $sql = 'DELETE FROM "public"."users" WHERE "id" = ? RETURNING "id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -529,18 +507,18 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        push @mess, "could not delete '$$data{'id'}' from users" if $result eq '0E0';
+        push @!, "could not delete '$$data{'id'}' from users" if $result eq '0E0';
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # удаление из EAV
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
         $result = $usr->_RealDelete();
 
-        push @mess, "can't delete from EAV" unless $result;
+        push @!, "can't delete from EAV" unless $result;
     }
 
-    unless ( @mess ) {
+    unless ( @! ) {
         # удаление из user_groups
         $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -548,13 +526,9 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        push @mess, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
+        push @!, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
     }
 
-    if ( @mess ) {
-        $mess = join( "\n", @mess );
-    }
-
-    return $result, $mess;
+    return $result;
 }
 1;
