@@ -12,7 +12,7 @@ use warnings;
 use File::Slurp::Unicode qw(slurp);
 use DBI;
 
-my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $dbh, $res, $sth, $database, $filename, $create_db, $sql, @list );
+my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $dbh, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, @list );
 
 # проверка тестового режима
 if ( @ARGV ) {
@@ -32,6 +32,9 @@ unless ( $test ) {
 else {
     $path_log = './log/migration_test.log';
 }
+
+# остановка демона
+`./starting.sh stop`;
 
 # поиск и чтение конфигурации 
 if ( -e $path_conf ) {
@@ -152,6 +155,19 @@ foreach ( @list ) {
     }
 }
 
+# старт демона
+`./starting.sh start`;
+
+# загрузка дефолтных настроек
+$host = $config->{'host'};
+$url = $host . '/settings/load_default';
+# --spider - не загружать файл с ответом
+`wget --wait=1 --tries=10 --retry-connrefused --spider $url`;
+
+exit;
+
+
+####################################################################
 
 # логирование ошибки
 # logging( "комментарий и текст ошибки" );
