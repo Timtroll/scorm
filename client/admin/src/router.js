@@ -63,15 +63,15 @@ const router = new Router({
           }
         },
         {
-          path:          '/review',
-          name:          'Review',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
+          path:          '/lesson',
+          name:          'Lesson',
+          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/lesson/Lesson'),
           showInSideBar: true,
           meta:          {
             root:         true,
             authRequired: true,
             icon:         'img/icons/sidebar_review.svg',
-            breadcrumb:   'Отзывы'
+            breadcrumb:   'Урок'
           }
         },
         {
