@@ -6,6 +6,15 @@ BEGIN
     PERFORM eav_createfield( 'User', 'patronymic', 'Отчество', 'string', NULL );
     PERFORM eav_createfield( 'User', 'name', 'Имя', 'string', NULL );
     PERFORM eav_createfield( 'User', 'surname', 'Фамилия', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'label', 'Описание для отображения', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'description', 'Краткое содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'content', 'Полное содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'route', 'основной роут', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'attachment', 'ID файлов', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'keywords', 'ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'seo', 'поле для seo', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'status', 'Статус поля', 'string', NULL );
     -- PERFORM eav_createfield( 'Default', 'folder', 'Признак категории', 'boolean', NULL );
 END;
 $$;

@@ -9,6 +9,15 @@ PIDFILE="/tmp/$APPNAME.pid"
 
 PID=`ps -aef | grep "script/$APPNAME" | grep -v grep | awk '{print $2}'`
 
+status() {
+    if [ -n "$PID" ]
+        then
+            echo "$PID"
+        else
+            echo "no PID"
+    fi
+}
+
 startme() {
     if [ -n "$PID" ]
         then
@@ -67,6 +76,7 @@ restartme() {
 }
 
 case "$1" in 
+    status)   status ;;
     start)   startme ;;
     stop)    stopme ;;
     restart) restartme ;;

@@ -352,9 +352,9 @@ sub register {
                 "description"   => [ 'required', qr/.*/os, 256 ],
                 "content"       => [ 'required', qr/.*/os, 2048 ],
                 "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
-                "attachment"    => [ 'required', qr/.*/os, 2048 ], # ????????? порверить regexp
+                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ], # ????????? порверить regexp
                 "keywords"      => [ 'required', qr/.*/os, 2048 ],
-                "link"          => [ 'required', qr/.*/os, 256 ],
+                "url"           => [ 'required', qr/.*/os, 256 ],
                 "seo"           => [ 'required', qr/.*/os, 2048 ],
                 "status"        => [ '', qr/^[01]$/os, 1 ]
             },
@@ -366,9 +366,9 @@ sub register {
                 "description"   => [ 'required', qr/.*/os, 256 ],
                 "content"       => [ 'required', qr/.*/os, 2048 ],
                 "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
-                "attachment"    => [ 'required', qr/.*/os, 2048 ], # ????????? порверить regexp
+                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ], # ????????? порверить regexp
                 "keywords"      => [ 'required', qr/.*/os, 2048 ],
-                "link"          => [ 'required', qr/.*/os, 256 ],
+                "url"           => [ 'required', qr/.*/os, 256 ],
                 "seo"           => [ 'required', qr/.*/os, 2048 ],
                 "status"        => [ '', qr/^[01]$/os, 1 ]
             },

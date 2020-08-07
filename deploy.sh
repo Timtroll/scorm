@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# загрузка ветки master и build фронта
+
 if [ -n "$1" ]
 then
     SOURCE=$1
