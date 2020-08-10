@@ -71,7 +71,7 @@ sub register {
                 last;
             }
             # проверка заполнения обязательного поля status, оно не undef и не пустая строка
-            if ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
+            elsif ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
                 push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
@@ -147,9 +147,27 @@ sub register {
                 }
             }
             else {
-                # unless ( $regexp && ( $param =~ /$regexp/ ) ) {
                 unless ( !defined $param || $param eq '' || ( $regexp && ( $param =~ /$regexp/ ) ) ) {
                     push @!, "_check_fields: '$field' didn't match regular expression";
+                    last;
+                }
+            }
+
+            # проверка country на наличие в хэше возможных значений
+            my ( $countries, $timezones );
+
+            if ( $field eq 'country' ) {
+                my $countries = $self->_countries();
+                unless ( exists $$countries{$param} ) {
+                    push @!, "_check_fields: '$field' doesn't belong to list of valid expressions";
+                    last;
+                }
+            }
+            # проверка timezone на наличие в хэше возможных значений
+            elsif ( $field eq 'timezone' ) {
+                $timezones = $self->_time_zones();
+                unless ( exists $$timezones{$param} ) {
+                    push @!, "_check_fields: '$field' doesn't belong to list of valid expressions";
                     last;
                 }
             }
@@ -197,8 +215,8 @@ sub register {
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
-                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -210,8 +228,8 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
-                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
+                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
                 'birthday'      => [ '', qr/^[\d\.]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
@@ -225,8 +243,8 @@ sub register {
                 'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
-                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
-                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 9 ],
+                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -244,8 +262,8 @@ sub register {
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'phone'         => [ '', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^[\w\- ]+$/os, 32 ],
-                'timezone'      => [ 'required', qr/^(\+|\-)*\d+$/os, 3 ],
+                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -348,28 +366,28 @@ sub register {
             '/discipline/add'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
-                "label"         => [ 'required', qr/.*/os, 256 ],
-                "description"   => [ 'required', qr/.*/os, 256 ],
-                "content"       => [ 'required', qr/.*/os, 2048 ],
-                "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
-                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ], # ????????? порверить regexp
-                "keywords"      => [ 'required', qr/.*/os, 2048 ],
-                "url"           => [ 'required', qr/.*/os, 256 ],
-                "seo"           => [ 'required', qr/.*/os, 2048 ],
+                "label"         => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "route"         => [ 'required', qr/^[\w\/_]+$/os, 2048 ], # ????????? не нужен
+                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-0-9~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
                 "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/discipline/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
-                "label"         => [ 'required', qr/.*/os, 256 ],
-                "description"   => [ 'required', qr/.*/os, 256 ],
-                "content"       => [ 'required', qr/.*/os, 2048 ],
-                "route"         => [ 'required', qr/.*/os, 2048 ], # ????????? не нужен
-                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ], # ????????? порверить regexp
-                "keywords"      => [ 'required', qr/.*/os, 2048 ],
-                "url"           => [ 'required', qr/.*/os, 256 ],
-                "seo"           => [ 'required', qr/.*/os, 2048 ],
+                "label"         => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "route"         => [ 'required', qr/^[\w]+$/os, 2048 ], # ????????? не нужен
+                "attachment"    => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-0-9~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
                 "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/discipline/delete'  => {
@@ -720,6 +738,56 @@ sub register {
         };
 
         return $countries;
+    });
+
+    # cписок часовых поясов по странам
+    $app->helper( '_time_zones' => sub {
+        my $timezones = {
+            'ACST' => 'UTC+9:30',
+            'AEST' => 'UTC+10',
+            'AKT'  => 'UTC−9',
+            'ART'  => 'UTC-3',
+            'AST'  => 'UTC-4',
+            'AWST' => 'UTC+8',
+            'BDT'  => 'UTC+6',
+            'BTT'  => 'UTC+6',
+            'CAT'  => 'UTC+2',
+            'CET'  => 'UTC+1',
+            'CST'  => 'UTC−6',
+            'CXT'  => 'UTC+7',
+            'ChT'  => 'UTC−4',
+            'EAT'  => 'UTC+3',
+            'EET'  => 'UTC+2',
+            'EST'  => 'UTC−5',
+            'FET'  => 'UTC+3',
+            'GALT' => 'UTC-6',
+            'GMT'  => 'UTC',
+            'HAST' => 'UTC−10',
+            'HKT'  => 'UTC+8',
+            'IRST' => 'UTC+3:30',
+            'IST'  => 'UTC+2',
+            'IST'  => 'UTC+5:30',
+            'JST'  => 'UTC+9',
+            'MT'   => 'UTC−7',
+            'MSK'  => 'UTC+3',
+            'MST'  => 'UTC+6:30',
+            'NFT'  => 'UTC+11',
+            'NST'  => 'UTC-3:30',
+            'PET'  => 'UTC-5',
+            'PHT'  => 'UTC+8',
+            'PKT'  => 'UTC+5',
+            'PMST' => 'UTC-3',
+            'PST'  => 'UTC-8',
+            'SLT'  => 'UTC+5:30',
+            'SST'  => 'UTC+8',
+            'ST'   => 'UTC−11',
+            'THA'  => 'UTC+7',
+            'UTC'  => 'UTC',
+            'WAT'  => 'UTC+1',
+            'WET'  => 'UTC'
+        };
+
+        return $timezones;
     });
 }
 

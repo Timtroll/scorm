@@ -157,61 +157,6 @@ sub index {
 sub edit {
     my $self = shift;
 
-    # $self->render(
-    #     'json'    => {
-    #         "data" => {
-    #             "tabs" => [
-    #                 {
-    #                 "fields" => [
-    #                    {"name" => "имя_right"},
-    #                    {"patronymic" => "отчество_right"},
-    #                    {"surname" => "фамилия_right"},
-    #                    {"birthday" => "01.01.2000"},
-    #                    {"avatar" => "1234"},
-    #                    {"country" => "Россия"},
-    #                    {"place" => "place"},
-    #                    {"status" => "1"},
-    #                    {"timezone" => '+3'},
-    #                    {"type" => "1"}
-    #                 ],
-    #                 "label" => "Основные"
-    #             },
-    #             {
-    #                 "fields" => [
-    #                    {"email" => "emailright\@email.ru"},
-    #                    {"emailconfirmed" => "emailright\@email.ru"},
-    #                    {"phone" => '+79212222222'},
-    #                    {"phoneconfirmed" => '+79212222222'}
-    #                 ],
-    #                 "label" => "Контакты"
-    #              },
-    #              {
-    #                 "fields" => [
-    #                     {"password" => "password1"},
-    #                     {"newpassword" => "password1"}
-    #                 ],
-    #                 "label" => "Пароль"
-    #              },
-    #                 {
-    #                     "fields" => [
-    #                        {"groups" => [] }
-    #                     ],
-    #                     "label" => "Группы"
-    #                 }
-    #             ]
-    #         },
-    #         "status" => "ok"
-    #     }
-    # );
-    # return;
-
-    # $self->render(
-    #     'json'    => {
-    #         'message'   => 'error',
-    #         'status'    => 'fail'
-    #     }
-    # );
-
     my ( $user, $data, $param, $resp, $main, $contacts, $password, $groups );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
@@ -225,54 +170,6 @@ sub edit {
         ( $main, $contacts, $password, $groups ) = $self->model('User')->_get_user( $data );
     }
 
-        # $user = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
-        # $user = $user->GetUser( $$data{'id'} );
-
-    # unless ( @! ) {
-#             $main = [
-#                 { 'surname'       => $$user{'surname'} },       # Фамилия
-#                 { 'name'          => $$user{'name'} },          # Имя
-#                 { 'patronymic'    => $$user{'patronymic'} },    # Отчество
-#                 { 'city'          => $$user{'city'} },          # город
-#                 { 'country'       => $$user{'country'} },       # страна
-# #?                        { 'timezone'      => $$user{'timezone'} },    # часовой пояс
-#                 { 'birthday'      => $$user{'birthday'} },      # дата рождения (в секундах)
-# #?                        { 'password'    => $$user{'password'} },      # пароль
-# #?                        { 'newpassword' => $$user{'newpassword'} },   # пароль
-# #?                        { 'type'          => 3 }                        # тип
-#             ];
-#             $contacts = [
-#                 { 'email'           => $$user{'email'} },           # email пользователя
-# #?                        { 'emailconfirmed'  => $$user{'emailconfirmed'} },  # email подтвержден
-#                 { 'phone'           => $$user{'phone'} },           # номер телефона
-# #?                        { 'phoneconfirmed'  => $$user{'phoneconfirmed'} }   # телефон подтвержден
-#             ];
-#             $groups = [
-#                 { "groups" => 1 }  # список ID групп
-#             ];
-    # }
-
-    # $user = {
-    #     'id'                => 1,
-    #     'surname'           => 'Фамилия',           # Фамилия
-    #     'name'              => 'Имя',               # Имя
-    #     'patronymic'        => 'Отчество',          # Отчество
-    #     'city'              => 'Санкт-Петербург',   # город
-    #     'country'           => 'Россия',            # страна
-    #     'timezone'          => '+3',                # часовой пояс
-    #     'birthday'          => 123132131,           # дата рождения (в секундах)
-    #     'email'             => 'username@ya.ru',    # email пользователя
-    #     'emailconfirmed'    => 1,                   # email подтвержден
-    #     'phone'             => 79312445646,         # номер телефона
-    #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-    #     'status'            => 1,                   # активный / не активный пользователь
-    #     'groups'            => [1, 2, 3],           # список ID групп
-    #     'password'          => 'khasdf',            # хеш пароля
-    #     'avatar'            => 'https://thispersondoesnotexist.com/image'
-    # };
-
-# warn Dumper( $contacts );
-# warn Dumper( $password );
     # Так будет отдаваться на фронт:
     unless ( @! ) {
         $data = {
@@ -342,6 +239,20 @@ sub edit {
     #         ]
     #     };
     # }
+
+    # получение значений для select
+    my ( $hashref, $countries, $timezones );
+    unless ( @! ) {
+        $hashref = $self->_countries();
+        foreach ( sort { $a cmp $b } keys %$hashref ) {
+            push @$countries, [ $_, $$hashref{$_} ];
+        }
+
+        $hashref = $self->_time_zones();
+        foreach ( sort { $a cmp $b } keys %$hashref ) {
+            push @$timezones, [ $_, $$hashref{$_} ];
+        }
+    }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';

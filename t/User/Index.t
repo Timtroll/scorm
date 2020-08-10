@@ -91,8 +91,9 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
+            'country'      => 'RU'
+,
+            'timezone'     => 'EAT',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -112,8 +113,9 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
+            'country'      => 'RU'
+,
+            'timezone'     => 'EAT',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -133,8 +135,9 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
+            'country'      => 'RU'
+,
+            'timezone'     => 'EAT',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -154,8 +157,9 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
+            'country'      => 'RU'
+,
+            'timezone'     => 'EAT',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -175,8 +179,9 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'Россия',
-            'timezone'     => '+3',
+            'country'      => 'RU'
+,
+            'timezone'     => 'EAT',
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -215,7 +220,7 @@ $test_data = {
                     "body" => [
                         {
                             "id" =>  1,
-                            "timezone" =>  3,
+                            "timezone" => 'EAT',
                             "password" =>  "password1",
                             "email" =>  "1\@email.ru",
                             "phone" =>  "+79211111111",
@@ -225,7 +230,7 @@ $test_data = {
                         },
                         {
                             "id" =>  2,
-                            "timezone" =>  3,
+                            "timezone" => 'EAT',
                             "password" =>  "password1",
                             "email" =>  "2\@email.ru",
                             "phone" =>  "+79211111112",
@@ -235,7 +240,7 @@ $test_data = {
                         },
                         {
                             "id" =>  3,
-                            "timezone" =>  3,
+                            "timezone" => 'EAT',
                             "password" =>  "password1",
                             "email" =>  "3\@email.ru",
                             "phone" =>  "+79211111113",
@@ -245,7 +250,7 @@ $test_data = {
                         },
                         {
                             "id" =>  4,
-                            "timezone" =>  3,
+                            "timezone" => 'EAT',
                             "password" =>  "password1",
                             "email" =>  "4\@email.ru",
                             "phone" =>  "+79211111114",
@@ -285,7 +290,7 @@ $test_data = {
                     "body" => [
                         {
                             "id" =>  1,
-                            "timezone" =>  3,
+                            "timezone" =>  'EAT',
                             "password" =>  "password1",
                             "email" =>  "1\@email.ru",
                             "phone" =>  "+79211111111",
@@ -295,7 +300,7 @@ $test_data = {
                         },
                         {
                             "id" =>  2,
-                            "timezone" =>  3,
+                            "timezone" =>  'EAT',
                             "password" =>  "password1",
                             "email" =>  "2\@email.ru",
                             "phone" =>  "+79211111112",
@@ -305,7 +310,7 @@ $test_data = {
                         },
                         {
                             "id" =>  3,
-                            "timezone" =>  3,
+                            "timezone" =>  'EAT',
                             "password" =>  "password1",
                             "email" =>  "3\@email.ru",
                             "phone" =>  "+79211111113",
@@ -315,7 +320,7 @@ $test_data = {
                         },
                         {
                             "id" =>  4,
-                            "timezone" =>  3,
+                            "timezone" =>  'EAT',
                             "password" =>  "password1",
                             "email" =>  "4\@email.ru",
                             "phone" =>  "+79211111114",

@@ -23,7 +23,7 @@ CREATE TABLE "public"."users" (
     "time_create" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
     "time_access" timestamptz(6),
     "time_update" timestamptz(6),
-    "timezone" int2 DEFAULT 3,
+    "timezone" varchar(16) DEFAULT 3,
     "groups" varchar(255) DEFAULT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 )

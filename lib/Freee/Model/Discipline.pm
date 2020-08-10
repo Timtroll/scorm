@@ -180,7 +180,7 @@ sub _toggle_discipline {
     my ( $discipline, $result );
 
     unless ( $$data{'id'} && defined $$data{'value'} ) {
-        push @!, 'no data for toggle';
+        return;
     }
     else {
         # обновление поля в EAV
