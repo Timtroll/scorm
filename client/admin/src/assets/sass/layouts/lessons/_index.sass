@@ -1,0 +1,24 @@
+@import "../../uikit/variables"
+@import "../../mixins"
+
+.pos-lesson-teach
+  display: grid
+  grid-gap: 10px
+  height: 100%
+  overflow: hidden
+  grid-template-columns: 1.2fr .8fr
+  grid-template-rows: fit-content(200px)
+  grid-template-areas: "video content" "user content"
+
+.pos-lesson-teach-video
+  background-color: #7d964b
+
+  grid-area: video
+
+.pos-lesson-teach-users
+  background-color: #95b3c0
+  grid-area: user
+
+.pos-lesson-teach-content
+  background-color: #2e82c2
+  grid-area: content

@@ -1,13 +1,11 @@
-<!--
-  - Copyright (c) 2020. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  - Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
-  - Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
-  - Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
-  - Vestibulum commodo. Ut rhoncus gravida arcu.
-  -->
-
 <template>
-
+  <div class="pos-lesson-teach">
+    <div class="pos-lesson-teach-video">
+      <canvas width="1920" height="1080"></canvas>
+    </div>
+    <div class="pos-lesson-teach-users"></div>
+    <div class="pos-lesson-teach-content"></div>
+  </div>
 </template>
 
 <script>
@@ -43,4 +41,5 @@ export default {
 
 <style lang="sass"
        scoped>
+@import "./src/assets/sass/layouts/lessons"
 </style>
