@@ -24,7 +24,7 @@
           <video width="1920"
                  height="1080"
                  v-touch:swipe="moveVideo"
-                 v-touch-options="{swipeTolerance: 10, touchHoldTolerance: 300}"
+                 v-touch-options="{swipeTolerance: 5, touchHoldTolerance: 300}"
                  autoplay
                  playsinline
                  muted
@@ -59,6 +59,20 @@
 </template>
 
 <script>
+/** Examples:
+ * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
+ * https://github.com/openrtc-io/awesome-webrtc
+ * https://www.twilio.com/blog/2014/12/set-phasers-to-stunturn-getting-started-with-webrtc-using-node-js-socket-io-and-twilios-nat-traversal-service.html
+ * Free Stun-turn server https://www.twilio.com/stun-turn
+ * https://www.npmjs.com/package/stun
+ * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
+ * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
+ *
+ * free-webrtc-server -
+ *    url https://free-webrtc-server.herokuapp.com:8888
+ *    docs - https://elements.heroku.com/buttons/florindumitru/signalmaster /
+ *           https://github.com/florindumitru/signalmaster
+ */
 export default {
   name: 'Lesson',
 
