@@ -1,0 +1,51 @@
+@import "../../uikit/variables"
+@import "../../mixins"
+
+/** VIDEO
+.pos-lesson-teach-video
+  background-color: #e5eed4
+  grid-area: video
+
+.pos-lesson-teach-video-outer
+  position: relative
+
+
+// screen
+.pos-lesson-teach-video-screen
+  object-fit: cover
+
+  &.main-screen
+    position: static
+
+  &.second-screen
+    z-index: 2
+    transition: all .3s ease-in-out
+    position: absolute
+    background-color: #555d67
+    //display: flex
+    width: 40%
+    overflow: hidden
+    border-radius: $border-rounded-border-radius
+    margin: $global-xsmall-margin
+    box-shadow: $global-medium-box-shadow
+    top: 0
+    bottom: auto
+    left: auto
+    right: 0
+
+    &.right
+      left: auto
+      right: 0
+
+    &.left
+      left: 0
+      right: auto
+
+    &.top
+      top: 0
+      bottom: auto
+
+    &.bottom
+      bottom: 0
+      top: auto
+

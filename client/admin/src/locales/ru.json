@@ -125,5 +125,11 @@
     "removeConfirm":      "Удалить файл?",
     "fileRemoved":        "Файл удален",
     "descriptionUpdated": "Данные сохранены"
+  },
+  "lesson":       {
+    "participants":           "Участники",
+    "participantsReplied":    "ответили",
+    "participantsNotReplied": "ответили",
+    "participantsAll":        "ответили"
   }
 }
