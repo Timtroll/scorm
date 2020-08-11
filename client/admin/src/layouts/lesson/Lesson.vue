@@ -96,9 +96,8 @@ export default {
 
   methods: {
 
-    // moveVideo
+    // move second Video
     moveVideo (direction) {
-      console.log(direction)
       switch (direction) {
         case ('left'):
           this.secondScreen.position.v = 'left'
@@ -113,7 +112,6 @@ export default {
           this.secondScreen.position.h = 'bottom'
           break
       }
-
     }
   }
 }
