@@ -10,52 +10,71 @@ use Mojo::JSON qw( from_json );
 
 sub index {
     my $self = shift;
-print 1;
-    my $list = [
-        {
-            "folder" => 1,
-            "id" => 1,
-            "label" => "Предмет 1",
-            "description" => "Краткое описание",
-            "content" => "Полное описание",
-            "keywords" => "ключевые слова",
-            "url" => "как должен выглядеть url",
-            "seo" => "дополнительное поле для seo",
-            "route" => "/discipline/",
-            "parent" => 0,
-            "type" => "",
-            "status" => "ok",
-            "attachment" => [345,577,643]
-        },
-        {
-            "folder" => 1,
-            "id" => 2,
-            "label" => "Предмет 2",
-            "description" => "Краткое описание",
-            "content" => "Полное описание",
-            "keywords" => "ключевые слова",
-            "url" => "как должен выглядеть url",
-            "seo" => "дополнительное поле для seo",
-            "route" => "/discipline/",
-            "parent" => 0,
-            "type" => "",
-            "status" => "ok",
-            "attachment" => [345,577,643]
-        }
-    ];
 
-    my $resp;
-    $resp->{'label'} = 'Предметы';
-    $resp->{'add'}   = 1;
-    $resp->{'child'} = {
-        "add"    => 1,
-        "edit"   => 1,
-        "remove" => 1,  
-        "route"  => "/theme/" # роут для получения детей
-    };
-    $resp->{'message'} = 'Tree has not any branches' unless scalar(@$list);
-    $resp->{'status'} = scalar(@$list) ? 'ok' : 'fail';
-    $resp->{'list'} = $list if scalar(@$list);
+    my ( $list, $result, $resp );
+# print 1;
+#     my $list = [
+#         {
+#             "folder" => 1,
+#             "id" => 1,
+#             "label" => "Предмет 1",
+#             "description" => "Краткое описание",
+#             "content" => "Полное описание",
+#             "keywords" => "ключевые слова",
+#             "url" => "как должен выглядеть url",
+#             "seo" => "дополнительное поле для seo",
+#             "route" => "/discipline/",
+#             "parent" => 0,
+#             "type" => "",
+#             "status" => "ok",
+#             "attachment" => [345,577,643]
+#         },
+#         {
+#             "folder" => 1,
+#             "id" => 2,
+#             "label" => "Предмет 2",
+#             "description" => "Краткое описание",
+#             "content" => "Полное описание",
+#             "keywords" => "ключевые слова",
+#             "url" => "как должен выглядеть url",
+#             "seo" => "дополнительное поле для seo",
+#             "route" => "/discipline/",
+#             "parent" => 0,
+#             "type" => "",
+#             "status" => "ok",
+#             "attachment" => [345,577,643]
+#         }
+#     ];
+
+#     my $resp;
+#     $resp->{'label'} = 'Предметы';
+#     $resp->{'add'}   = 1;
+#     $resp->{'child'} = {
+#         "add"    => 1,
+#         "edit"   => 1,
+#         "remove" => 1,  
+#         "route"  => "/theme/" # роут для получения детей
+#     };
+
+    $list = $self->model('Discipline')->_list_discipline();
+
+    unless ( @! ) {
+        $result = {
+            "label" =>  "Предметы",
+            "add"   => 1,              # разрешает добавлять предметы
+            "child" =>  {
+                "add"    => 1,         # разрешает добавлять детей
+                "edit"   => 1,         # разрешает редактировать детей
+                "remove" => 1,         # разрешает удалять детей
+                "route"  => "/theme",  # роут для получения детей
+            },
+            "list" => $list
+        };
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $result unless @!;
 
     $self->render( 'json' => $resp );
 }
@@ -74,7 +93,6 @@ sub get {
     unless ( @! ) {
         # получение объекта EAV
         $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
-        push @!, 'can\'t get list' unless $result;
     }
 
     unless ( @! ) {
@@ -137,6 +155,13 @@ sub add {
         }
     }
 
+    unless ( @! || !$$data{'parent'} ) {
+        # проверка существования родителя
+        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+        }
+    }
+
     unless ( @! ) {
         # добавляем предмет в EAV
         $$data{'status'} = 1 unless defined $$data{'status'};
@@ -176,6 +201,12 @@ sub save {
         }
     }
 
+    unless ( @! || !$$data{'parent'} ) {
+        # проверка существования родителя
+        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+        }
+    }
 
     unless ( @! ) {
         $$data{'status'} = 1 unless defined $$data{'status'};

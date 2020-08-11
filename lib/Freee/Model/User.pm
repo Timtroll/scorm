@@ -315,9 +315,10 @@ sub _insert_user {
 
         $user = Freee::EAV->new( 'User',
             {
-                'parent' => 1, 
+                'parent' => 0, 
                 'title' => $$data{'title'},
                 'User' => {
+                    'parent'       => 0, 
                     'surname'      => $$data{'surname'},
                     'name'         => $$data{'name'},
                     'patronymic'   => $$data{'patronymic'},
@@ -412,7 +413,7 @@ sub _save_user {
         $usr = Freee::EAV->new( 'User',
             {
                 'id'      => $$data{'id'},
-                'parent'  => 1
+                'parent'  => 0
             }
         );
         # $result = $usr->surname( $$data{'surname'} );

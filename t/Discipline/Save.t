@@ -220,7 +220,28 @@ my $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
-    }
+    },
+    8 => {
+        'data' => {
+            'id'          => 404,
+            'name'        => 'Предмет',
+            'label'       => 'Предмет',
+            'description' => 'Краткое описание',
+            'content'     => 'Полное описание',
+            'keywords'    => 'ключевые слова',
+            'url'         => 'https://test.com',
+            'seo'         => 'дополнительное поле для seo',
+            'route'       => '/discipline',
+            'parent'      => 404,
+            'attachment'  => '[1]'
+        },
+        'result' => {
+            'message'   => "parent with id '404' doesn't exist in discipline",
+            'status'    => 'fail',
+        },
+        'comment' => "Validation error:"
+    },
+
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
@@ -228,7 +249,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/add' => form => $data );
+    $t->post_ok( $host.'/discipline/save' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

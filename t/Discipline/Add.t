@@ -99,7 +99,7 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'route'       => '/discipline',
-            'parent'      => 0,
+            'parent'      => 2,
             'attachment'  => '[1]'
         },
         'result' => {
@@ -165,6 +165,25 @@ my $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
+    },
+    7 => {
+        'data' => {
+            'name'        => 'Предмет',
+            'label'       => 'Предмет',
+            'description' => 'Краткое описание',
+            'content'     => 'Полное описание',
+            'keywords'    => 'ключевые слова',
+            'url'         => 'https://test.com',
+            'seo'         => 'дополнительное поле для seo',
+            'route'       => '/discipline',
+            'parent'      => 404,
+            'attachment'  => '[1]'
+        },
+        'result' => {
+            'message'   => "parent with id '404' doesn't exist in discipline",
+            'status'    => 'fail',
+        },
+        'comment' => "No parent:"
     }
 };
 

@@ -97,6 +97,58 @@ sub _delete_discipline {
 #     "parent" => $self->param('parent'),
 #     "attachment" => [345,577,643]
 # };
+sub _list_discipline {
+    my $self = shift;
+
+    my ( $discipline, $result, $list );
+
+    # инициализация EAV
+    $discipline = Freee::EAV->new( 'Discipline', { 'id' => 1 } );
+    unless ( $discipline ) {
+        push @!, "Tree has not any branches";
+        return;
+    }
+
+    $list = $discipline->_list();
+    # $list = $discipline->_getAll();
+
+    # if ( $result ) {
+    #     $list = {
+    #        "id"          => $$result{'id'},
+    #        "label"       => $$result{'label'},
+    #        "description" => $$result{'description'},
+    #        "content"     => $$result{'content'},
+    #        "keywords"    => $$result{'keywords'},
+    #        "url"         => $$result{'url'},
+    #        "seo"         => $$result{'seo'},
+    #        "route"       => $$result{'route'},
+    #        "parent"      => $$result{'parent'},
+    #        "attachment"  => $$result{'attachment'},
+    #        "status"      => $$result{'publish'}
+    #     }
+    # } 
+    # else {
+    #     push @!, 'can\'t get list';
+    #     return;
+    # }
+# warn Dumper( $result );
+warn Dumper( $list );
+    return $list;
+}
+
+# my $data = {
+#     "folder" => 1,
+#     "id" => $self->param('id'),
+#     "label" => "Предмет 1",
+#     "description" => "Краткое описание",
+#     "content" => "Полное описание",
+#     "keywords" => "ключевые слова",
+#     "url" => "как должен выглядеть url",
+#     "seo" => "дополнительное поле для seo",
+#     "route" => "/discipline/",
+#     "parent" => $self->param('parent'),
+#     "attachment" => [345,577,643]
+# };
 sub _get_discipline {
     my ( $self, $id ) = @_;
 
@@ -104,12 +156,16 @@ sub _get_discipline {
 
     unless ( $id ) {
         push @!, "no data for get";
+        return;
     }
     else {
         # взять весь объект из EAV
         $discipline = Freee::EAV->new( 'Discipline', { 'id' => $id } );
 
-        return unless $discipline;
+        unless ( $discipline ) {
+            push @!, "discipline with id '$id' doesn't exist";
+            return;
+        }
 
         $result = $discipline->_getAll();
         if ( $result ) {
@@ -126,6 +182,10 @@ sub _get_discipline {
                "attachment"  => $$result{'attachment'},
                "status"      => $$result{'publish'}
             }
+        } 
+        else {
+            push @!, 'can\'t get list';
+            return;
         }
     }
 
@@ -145,17 +205,16 @@ sub _save_discipline {
         # обновление полей в EAV
         $discipline = Freee::EAV->new( 'Discipline',
             {
-                'id'      => $$data{'id'},
+                'id'      => $$data{'id'}
             }
         );
 
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {                 
-            'parent' => $$data{'parent'},
-            'title' => $$data{'title'},
             'Discipline' => {
-                'parent' => $$data{'parent'}, 
+                'title'        => $$data{'title'},
+                'parent'       => $$data{'parent'}, 
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -202,24 +261,24 @@ sub _toggle_discipline {
     return $result;
 }
 
-# sub _exists_in_discipline {
-#     my ( $self, $id ) = @_;
+sub _exists_in_discipline {
+    my ( $self, $id ) = @_;
 
-#     my ( $discipline, $result );
+    my ( $discipline, $result );
 
-#     unless ( $id ) {
-#         push @!, 'no id for check';
-#     }
-#     else {
-#         # поиск объекта с таким id
-#         $discipline = Freee::EAV->new( 'Discipline',
-#             {
-#                 'id'      => $id
-#             }
-#         );
-#     }
+    unless ( $id ) {
+        push @!, 'no id for check';
+    }
+    else {
+        # поиск объекта с таким id
+        $discipline = Freee::EAV->new( 'Discipline',
+            {
+                'id'      => $id
+            }
+        );
+    }
 
-#     return $discipline ? 1 : 0;
-# }
+    return $discipline ? 1 : 0;
+}
 
 1;
