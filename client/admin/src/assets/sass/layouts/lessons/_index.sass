@@ -14,6 +14,13 @@
   grid-template-areas: "video content" "user content"
 
   @media (max-width: $breakpoint-medium)
+    grid-template-columns: .9fr 1.1fr
+    overflow-x: hidden
+    overflow-y: hidden
+    grid-gap: 0
+    grid-template-rows: fit-content(100px)
+
+  @media (max-width: $breakpoint-small)
     grid-template-columns: 1fr
     grid-template-areas: "video" "user" "content"
     height: 100%
