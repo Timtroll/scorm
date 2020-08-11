@@ -1,7 +1,7 @@
 <template>
   <div class="pos-lesson-teach">
     <div class="pos-lesson-teach-video">
-      <canvas width="1920" height="1080"></canvas>
+      <video width="1920" height="1080"></video>
     </div>
     <div class="pos-lesson-teach-users"></div>
     <div class="pos-lesson-teach-content"></div>
