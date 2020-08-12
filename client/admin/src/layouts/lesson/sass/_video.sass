@@ -3,8 +3,8 @@
 
 /** VIDEO
 .pos-lesson-teach-video
-  background-color: #e5eed4
   grid-area: video
+  border-bottom: $global-border-width solid $global-border
 
 .pos-lesson-teach-video-outer
   position: relative
@@ -49,3 +49,8 @@
       bottom: 0
       top: auto
 
+.pos-lesson-teach-video__controls
+  display: flex
+  padding: $global-margin
+  @media (max-width: $breakpoint-large)
+    padding: $global-small-margin

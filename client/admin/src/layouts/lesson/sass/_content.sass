@@ -3,9 +3,13 @@
 
 /** CONTENT
 .pos-lesson-teach-content
-  background-color: #e0eaf1
   grid-area: content
   padding: $global-margin
+  border-left: $global-border-width solid $global-border
 
-  @media (max-width: $breakpoint-medium)
+  @media (max-width: $breakpoint-large)
     padding: $global-small-margin
+
+  @media (max-width: $breakpoint-small)
+    border-left: none
+    border-top: $global-border-width solid $global-border

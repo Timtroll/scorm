@@ -2,47 +2,9 @@
   <div class="pos-lesson-teach">
 
     <!--VIDEO-->
-    <div class="pos-lesson-teach-video">
+    <WebRTC/>
 
-      <div class="pos-lesson-teach-video-outer">
-
-        <div class="pos-lesson-teach-video-screen main-screen">
-          <video width="1920"
-                 height="1080"
-                 autoplay
-                 playsinline
-                 muted
-                 loop
-                 controls
-                 preload="auto">
-            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">
-          </video>
-        </div>
-
-        <div class="pos-lesson-teach-video-screen second-screen"
-             :class="[secondScreen.position.v, secondScreen.position.h]">
-          <video width="1920"
-                 height="1080"
-                 v-touch:swipe="moveVideo"
-                 v-touch-options="{swipeTolerance: 1, touchHoldTolerance: 300}"
-                 autoplay
-                 playsinline
-                 muted
-                 loop
-                 preload="auto">
-            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">
-          </video>
-        </div>
-
-      </div>
-
-      <div class="pos-lesson-teach-video__controls"></div>
-
-    </div>
-
-
-        <ListUsers :users="users"/>
-
+    <ListUsers :users="users"/>
 
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">Content</div>
@@ -52,6 +14,7 @@
 <script>
 import lessons   from './store'
 import ListUsers from './ListUsers'
+import WebRTC    from '@/layouts/lesson/store/WebRTC'
 
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
@@ -71,6 +34,7 @@ export default {
   name: 'Lesson',
 
   components: {
+    WebRTC,
     ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
@@ -97,12 +61,7 @@ export default {
 
       users: null,
 
-      secondScreen: {
-        position: {
-          v: 'right',
-          h: 'top'
-        }
-      }
+
     }
   },
 
@@ -143,25 +102,8 @@ export default {
         .then(response => response.json())
         .then(result => this.users = result)
         .catch(error => console.log('error', error))
-    },
-
-    // move second Video
-    moveVideo (direction) {
-      switch (direction) {
-        case ('left'):
-          this.secondScreen.position.v = 'left'
-          break
-        case ('right'):
-          this.secondScreen.position.v = 'right'
-          break
-        case ('top'):
-          this.secondScreen.position.h = 'top'
-          break
-        case ('bottom'):
-          this.secondScreen.position.h = 'bottom'
-          break
-      }
     }
+
   }
 }
 </script>

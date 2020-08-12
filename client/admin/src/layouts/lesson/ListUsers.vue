@@ -8,7 +8,7 @@
       <div class="pos-lesson-users-header__title"
            v-text="$t('lesson.participants')"></div>
 
-      <div class=""
+      <div class="uk-flex-none"
            v-if="selectedFilter">
         <button class="uk-button uk-button-small uk-button-default"
                 type="button"
