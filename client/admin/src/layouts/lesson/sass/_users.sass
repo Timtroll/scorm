@@ -1,0 +1,34 @@
+@import "./../../../assets/sass/uikit/variables"
+@import "./../../../assets/sass/mixins"
+
+$avaSize: 60px
+$gap: 5px
+
+/** USERS
+.pos-lesson-teach-users
+  background-color: #efe8d4
+  grid-area: user
+  padding: $global-margin
+
+  @media (max-width: $breakpoint-medium)
+    padding: $global-small-margin
+
+.pos-lesson-users
+  margin-top: $global-small-margin
+  display: grid
+  grid-gap: $gap
+  grid-template-columns: repeat(auto-fill, $avaSize)
+
+.pos-lesson-user
+
+.pos-lesson-user__ava
+  width: $avaSize
+  height: $avaSize
+  //background-color: $global-muted-color
+  overflow: hidden
+  border-radius: 500px
+  background: $global-muted-color 50% 50% no-repeat
+  background-size: cover
+  transform-origin: center center
+  transition: transform .3s ease
+

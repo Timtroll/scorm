@@ -13,6 +13,10 @@ const mutations = {
 
   card_left_nav_click (state) {
     state.card.leftNavClick = !state.card.leftNavClick
+  },
+
+  navBarLeftActionShow (state) {
+    state.navBarLeftAction.visibility = state
   }
 
 }

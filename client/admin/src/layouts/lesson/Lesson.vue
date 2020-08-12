@@ -49,6 +49,7 @@
       </div>
 
       <div class="pos-lesson-teach-users-body">
+        <ListUsers :users="users"/>
       </div>
 
     </div>
@@ -59,6 +60,9 @@
 </template>
 
 <script>
+import lessons from './store'
+import ListUsers   from './ListUsers'
+
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
  * https://github.com/openrtc-io/awesome-webrtc
@@ -77,12 +81,13 @@ export default {
   name: 'Lesson',
 
   components: {
+    ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
 
   metaInfo () {
     return {
-      title:         'Lesson',
+      title:         'Урок',
       titleTemplate: '%s - ' + this.$t('app.title'),
       htmlAttrs:     {
         lang: this.$t('app.lang')
@@ -99,6 +104,9 @@ export default {
 
   data () {
     return {
+
+      users: null,
+
       secondScreen: {
         position: {
           v: 'right',
@@ -108,7 +116,44 @@ export default {
     }
   },
 
+  async created () {
+    // Регистрация Vuex модуля settings
+    await this.$store.registerModule('lessons', lessons)
+  },
+
+  async mounted () {
+
+    // показать кнопку меню в navBar
+    this.$store.commit('navBarLeftActionShow', false)
+    await this.getUsers()
+  },
+
+  beforeDestroy () {
+
+    // выгрузка Vuex модуля settings
+    this.$store.unregisterModule('lessons')
+  },
+
   methods: {
+
+    getUsers () {
+      const myHeaders = new Headers()
+      myHeaders.append('X-API-KEY', '34F47E32-4A194143-B9CAA132-11B6DCFD')
+
+      const formData = new FormData()
+
+      const requestOptions = {
+        method:   'POST',
+        headers:  myHeaders,
+        body:     formData,
+        redirect: 'follow'
+      }
+
+      fetch('https://uifaces.co/api?limit=25&from_age=8&to_age=16', requestOptions)
+        .then(response => response.json())
+        .then(result => this.users = result)
+        .catch(error => console.log('error', error))
+    },
 
     // move second Video
     moveVideo (direction) {
@@ -131,7 +176,6 @@ export default {
 }
 </script>
 
-<style lang="sass"
-       scoped>
-@import "./src/assets/sass/layouts/lessons"
+<style lang="sass">
+@import "./sass"
 </style>

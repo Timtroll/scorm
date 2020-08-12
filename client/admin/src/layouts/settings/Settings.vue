@@ -106,6 +106,9 @@
 
     async created () {
 
+      // показать кнопку меню в navBar
+      this.$store.commit('navBarLeftActionShow', true)
+
       // Регистрация Vuex модуля settings
       await this.$store.registerModule('settings', settings)
 
