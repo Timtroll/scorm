@@ -1,11 +1,13 @@
 @import "./../../../assets/sass/uikit/variables"
 @import "./../../../assets/sass/mixins"
 
-$avaSize: 60px
-$gap: 5px
+$avaSize: 80px
+$gap: 10px
+$avaBorder: 3px
+$transition-duration: 0.3s
 
 /** USERS
-.pos-lesson-teach-users
+.pos-lesson-users
   background-color: #efe8d4
   grid-area: user
   padding: $global-margin
@@ -13,13 +15,43 @@ $gap: 5px
   @media (max-width: $breakpoint-medium)
     padding: $global-small-margin
 
-.pos-lesson-users
+.pos-lesson-users-header
+  display: flex
+  align-items: center
+
+.pos-lesson-users-header__title
+  flex: 1
+  min-width: 100px
+
+.pos-lesson-users-body
+  @media (max-width: $breakpoint-small)
+    overflow-x: auto
+    overflow-y: visible
+
+.pos-lesson-users-list
   margin-top: $global-small-margin
   display: grid
   grid-gap: $gap
   grid-template-columns: repeat(auto-fill, $avaSize)
+  padding: $gap*4 $gap
+
+  @media (max-width: $breakpoint-small)
+    grid-auto-flow: column
+    width: auto
 
 .pos-lesson-user
+  position: relative
+  cursor: pointer
+
+  &.active
+    z-index: 10
+
+    .pos-lesson-user__info
+      opacity: 1
+
+  &.online
+    .pos-lesson-user__status
+      background-color: $global-success-background
 
 .pos-lesson-user__ava
   width: $avaSize
@@ -31,4 +63,36 @@ $gap: 5px
   background-size: cover
   transform-origin: center center
   transition: transform .3s ease
+  position: relative
+  z-index: 1
+
+.pos-lesson-user__status
+  position: absolute
+  width: $gap*1.2
+  height: $gap*1.2
+  background-color: $global-danger-background
+  border-radius: 500px
+  top: 75%
+  left: 75%
+  z-index: 2
+  box-sizing: content-box
+  border: 3px solid $global-background
+
+.pos-lesson-user__info
+  transition: opacity $transition-duration ease-in-out
+  opacity: 0
+  text-align: center
+  font-size: .8rem
+  line-height: 1.3
+  position: absolute
+  z-index: 0
+  background: $global-background
+  left: -$gap
+  right: -$gap
+  bottom: -$gap
+  padding: $gap $gap/2 $gap*2 + $avaSize $gap/2
+  border-radius: $gap $gap ($avaSize+$gap/2) ($avaSize+$gap/2)
+  box-shadow: 0 4px 5px rgba(0, 0, 0, .1)
+
+.pos-lesson-user__info--meta
 

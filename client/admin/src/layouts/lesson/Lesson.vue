@@ -40,19 +40,9 @@
 
     </div>
 
-    <!--USERS-->
-    <div class="pos-lesson-teach-users">
 
-      <div class="pos-lesson-teach-users-header">
-        <div class="pos-lesson-teach-users-header__title"
-             v-text="$t('lesson.participants')"></div>
-      </div>
-
-      <div class="pos-lesson-teach-users-body">
         <ListUsers :users="users"/>
-      </div>
 
-    </div>
 
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">Content</div>
@@ -60,19 +50,19 @@
 </template>
 
 <script>
-import lessons from './store'
-import ListUsers   from './ListUsers'
+import lessons   from './store'
+import ListUsers from './ListUsers'
 
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
  * https://github.com/openrtc-io/awesome-webrtc
  * https://www.twilio.com/blog/2014/12/set-phasers-to-stunturn-getting-started-with-webrtc-using-node-js-socket-io-and-twilios-nat-traversal-service.html
- * Free Stun-turn server https://www.twilio.com/stun-turn
+ * Free Stun-turn server https://www.twilio.com/stun-turn | Google's public STUN server (stun.l.google.com:19302)
  * https://www.npmjs.com/package/stun
  * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
- * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
  *
- * free-webrtc-server -
+ * https://github.com/simplewebrtc/SimpleWebRTC
+ * free-webrtc-server - SimpleWebRTC
  *    url https://free-webrtc-server.herokuapp.com:8888
  *    docs - https://elements.heroku.com/buttons/florindumitru/signalmaster /
  *           https://github.com/florindumitru/signalmaster
