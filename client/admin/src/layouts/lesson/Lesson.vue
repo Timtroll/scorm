@@ -24,7 +24,7 @@
           <video width="1920"
                  height="1080"
                  v-touch:swipe="moveVideo"
-                 v-touch-options="{swipeTolerance: 5, touchHoldTolerance: 300}"
+                 v-touch-options="{swipeTolerance: 1, touchHoldTolerance: 300}"
                  autoplay
                  playsinline
                  muted
