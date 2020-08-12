@@ -182,7 +182,6 @@ const actions = {
     store.commit('card_right_show', false)
     store.commit('editPanel_data', []) // очистка данных VUEX
     store.commit('editPanel_status_success') // статус - успех
-
   },
 
   // ***************************************

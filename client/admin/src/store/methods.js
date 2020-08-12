@@ -55,6 +55,16 @@ function flatTree (arr) {
  */
 function groupedFields (data, proto) {
 
+  function _checkSelected (data) {
+    const isObject = Object.prototype.toString.call(data) === '[object Object]'
+    if (isObject) {
+      return data.hasOwnProperty('selected') && data.hasOwnProperty('value')
+    }
+    else {
+      return false
+    }
+  }
+
   const groups = {
     main: [],
     tabs: []
@@ -101,7 +111,7 @@ function groupedFields (data, proto) {
 
             console.log('groupItem', groupItemFields)
 
-            if(!groupItemFields) return
+            if (!groupItemFields) return
             groupItemFields.forEach(itemField => {
 
               //console.log(itemField)
@@ -112,7 +122,8 @@ function groupedFields (data, proto) {
               let protoKeyOne = protoKey[0]
 
               if (protoKeyOne) {
-                protoKeyOne.value = val
+                protoKeyOne.value    = (_checkSelected(val)) ? val.value : val
+                protoKeyOne.selected = (_checkSelected(val)) ? val.selected : ''
                 groupItem.fields.push(protoKeyOne)
               }
 
@@ -142,7 +153,8 @@ function groupedFields (data, proto) {
     }
 
     return groups
-  } else {
+  }
+  else {
     console.error('groupedFields - no data or proto')
   }
 
