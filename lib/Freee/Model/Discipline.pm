@@ -16,7 +16,6 @@ use Data::Dumper;
 #    'label'       => 'Предмет 1',                      # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
 #    'content'     => 'Полное описание',                # кладется в EAV
-#    'route'       => '/discipline',                    # кладется в EAV
 #    'attachment'  => '[345,577,643],                   # кладется в EAV
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
@@ -46,7 +45,6 @@ sub _insert_discipline {
                     'label'        => $$data{'label'},
                     'description'  => $$data{'description'},
                     'content'      => $$data{'content'},
-                    'route'        => $$data{'route'},
                     'keywords'     => $$data{'keywords'},
                     'import_source'=> $$data{'avatar'},
                     'url'          => $$data{'url'},
@@ -103,14 +101,22 @@ sub _list_discipline {
     my ( $discipline, $result, $list );
 
     # инициализация EAV
-    $discipline = Freee::EAV->new( 'Discipline', { 'id' => 1 } );
+    $discipline = Freee::EAV->new( 'Discipline' );
     unless ( $discipline ) {
         push @!, "Tree has not any branches";
         return;
     }
 
-    $list = $discipline->_list();
+    #     my $usr = Freee::EAV->new( 'User' );
+    #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+
+    # $list = $discipline->_list( { FIELDS => 'id', INJECTION => '"public"."EAV_data_string"' });
+    $list = $discipline->_list( { FIELDS => 'url' });
+    warn Dumper( 'list:' );
+    warn Dumper( $list );
+
     # $list = $discipline->_getAll();
+    # warn Dumper( $list );
 
     # if ( $result ) {
     #     $list = {
@@ -132,7 +138,7 @@ sub _list_discipline {
     #     return;
     # }
 # warn Dumper( $result );
-warn Dumper( $list );
+
     return $list;
 }
 
@@ -177,7 +183,7 @@ sub _get_discipline {
                "keywords"    => $$result{'keywords'},
                "url"         => $$result{'url'},
                "seo"         => $$result{'seo'},
-               "route"       => $$result{'route'},
+               "route"       => '/discipline',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
                "status"      => $$result{'publish'}
@@ -219,7 +225,6 @@ sub _save_discipline {
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
                 'content'      => $$data{'content'},
-                'route'        => $$data{'route'},
                 'keywords'     => $$data{'keywords'},
                 'import_source'=> $$data{'avatar'},
                 'url'          => $$data{'url'},

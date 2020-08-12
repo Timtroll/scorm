@@ -5,7 +5,6 @@
 # 'label'       => 'описание поля для отображения', # До 256 букв, цифр и знаков, обязательное поле
 # 'description' => 'краткое содержание',            # До 256 букв, цифр и знаков, обязательное поле
 # 'content'     => 'полное содержание',             # До 2048 букв, цифр и знаков, обязательное поле
-# 'route'       => 'основной роут для запросов',    # До 2048 букв, обязательное поле
 # 'attachment'  => 'массив ID вложенных файлов',    # До 255 цифр в массиве, обязательное поле
 # 'keywords'    => 'ключевые слова и фразы',        # До 2048 символов, слова, разделенные запятыми, обязательное поле
 # 'url'         => 'url страницы',                  # До 256 символов, электронный адрес, обязательное поле
@@ -58,7 +57,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'status'      => 1,
             'attachment'  => '[1]'
@@ -78,7 +76,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'status'      => 0,
             'attachment'  => '[1]'
@@ -98,8 +95,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
-            'parent'      => 2,
+            'parent'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
@@ -118,7 +114,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'attachment'  => '[1]'
         },
@@ -137,7 +132,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'attachment'  => '[1,404]'
         },
@@ -156,7 +150,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'attachment'  => 'error'
         },
@@ -175,7 +168,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 404,
             'attachment'  => '[1]'
         },

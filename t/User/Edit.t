@@ -105,17 +105,31 @@ my $test_data = {
                 "tabs" => [
                     {
                         "fields" => [
-                           {"name" => "имя_right"},
-                           {"patronymic" => "отчество_right"},
-                           {"surname" => "фамилия_right"},
-                           {"birthday" => "2000-01-01 00:00:00"},
-                           {"avatar" => 1},
-                           {"country" => "RU"},
-                           {"place" => "place"},
-                           {"status" => "1"},
-                           {"timezone" => 'EAT'},
-                           {"type" => 'User'}
-                       ],
+                            {"name" => "имя_right"},
+                            {"patronymic" => "отчество_right"},
+                            {"surname" => "фамилия_right"},
+                            {"birthday" => "2000-01-01 00:00:00"},
+                            {"avatar" => 1},
+                            {"country" =>
+                                {
+                                    "selected" => [
+                                        ...,"-2","-1","0","+1","+2",...
+                                    ], 
+                                    "value"    => "Россия"
+                                }
+                            },
+                            {"place" => "place"},
+                            {"status" => "1"},
+                            {"timezone" => 
+                                {
+                                    "selected" => [
+                                        ...,"-2","-1","0","+1","+2",...
+                                    ], 
+                                    "value"    => ""
+                                }
+                            },
+                            {"type" => 'User'}
+                        ],
                         "label" => "Основные"
                     },
                     {

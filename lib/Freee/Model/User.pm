@@ -253,16 +253,30 @@ sub _get_user {
         $result_eav = $usr->_getAll();
         if ( $result_eav ) {
             $main = [
-               {"name"       => $$result_eav{'name'} },
-               {"patronymic" => $$result_eav{'patronymic'} },
-               {"surname"    => $$result_eav{'surname'} },
-               {"birthday"   => $$result_eav{'birthday'} },
-               {"avatar"     => $$result_eav{'import_source'} },
-               {"country"    => $$result_eav{'country'} },
-               {"place"      => $$result_eav{'place'} },
-               {"status"     => $$result_users{'publish'} ? 1 : 0 },
-               {"timezone"   => $$result_users{'timezone'} },
-               {"type"       => $$result_eav{'Type'} }
+                {"name"       => $$result_eav{'name'} },
+                {"patronymic" => $$result_eav{'patronymic'} },
+                {"surname"    => $$result_eav{'surname'} },
+                {"birthday"   => $$result_eav{'birthday'} },
+                {"avatar"     => $$result_eav{'import_source'} },
+                {"country"    =>  
+                    {
+                        "selected" => [
+                            "...","-2","-1","0","+1","+2","..."
+                        ], 
+                        "value"    => $$result_eav{'country'}
+                    }
+                },
+                {"place"      => $$result_eav{'place'} },
+                {"status"     => $$result_users{'publish'} ? 1 : 0 },
+                {"timezone"    =>  
+                    {
+                        "selected" => [
+                            "...","-2","-1","0","+1","+2","..."
+                        ], 
+                        "value"    => $$result_users{'timezone'}
+                    }
+                },
+                {"type"       => $$result_eav{'Type'} }
             ]
         }
         else {

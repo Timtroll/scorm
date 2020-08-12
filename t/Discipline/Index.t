@@ -48,7 +48,6 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
             'parent'      => 0,
             'status'      => 1,
             'attachment'  => '[1]'
@@ -68,8 +67,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'route'       => '/discipline',
-            'parent'      => 1,
+            'parent'      => 0,
             'status'      => 1,
             'attachment'  => '[1]'
         },
