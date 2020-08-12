@@ -1,9 +1,9 @@
 <template>
-  <div class="pos-lesson-teach-video">
+  <div class="pos-lesson-video">
 
-    <div class="pos-lesson-teach-video-outer">
+    <div class="pos-lesson-video-outer">
 
-      <div class="pos-lesson-teach-video-screen main-screen">
+      <div class="pos-lesson-video-screen main-screen">
         <video width="1920"
                height="1080"
                autoplay
@@ -16,7 +16,7 @@
         </video>
       </div>
 
-      <div class="pos-lesson-teach-video-screen second-screen"
+      <div class="pos-lesson-video-screen second-screen"
            v-if="selectedPosition"
            :class="[secondScreen.position.v, secondScreen.position.h]">
         <video width="1920"
@@ -34,7 +34,7 @@
 
     </div>
 
-    <div class="pos-lesson-teach-video__controls">
+    <div class="pos-lesson-video__controls">
 
       <div class="uk-flex-none"
            v-if="selectedPosition">
@@ -146,7 +146,3 @@ export default {
   }
 }
 </script>
-
-<style lang="sass"
-       scoped>
-</style>
