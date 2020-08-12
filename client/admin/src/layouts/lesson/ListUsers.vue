@@ -14,7 +14,8 @@
                 type="button"
                 v-text="selectedFilter.label">
         </button>
-        <div uk-dropdown="mode: click; pos: bottom-right">
+        <div ref="filter"
+             uk-dropdown="mode: click; pos: bottom-right; animation: uk-animation-slide-bottom-small">
           <ul class="uk-nav uk-dropdown-nav">
             <li :class="{'uk-active': selectedFilter === item}"
                 v-for="item in userFilter">
@@ -57,6 +58,8 @@
 </template>
 
 <script>
+import UIkit from 'uikit'
+
 export default {
   name: 'ListUsers',
 
@@ -91,7 +94,11 @@ export default {
   },
 
   methods: {
-    selectFilter (item) {this.selectedFilter = item},
+
+    selectFilter (item) {
+      this.selectedFilter = item
+      UIkit.dropdown(this.$refs.filter).hide(0)
+    },
 
     selectUser (user) {
       if (this.selectedUser === user) {
