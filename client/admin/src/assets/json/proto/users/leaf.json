@@ -209,14 +209,14 @@
     "width":       1
   },
   {
-    "label":       "хеш пароля",
+    "label":       "Пароль",
     "name":        "password",
     "placeholder": "",
-    "readonly":    1,
+    "readonly":    0,
     "required":    0,
     "mask":        null,
     "add":         true,
-    "type":        "InputInfo",
+    "type":        "InputText",
     "value":       "",
     "inline":      0,
     "show":        0,
