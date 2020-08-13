@@ -23,7 +23,8 @@
 </template>
 
 <script>
-  import main from '@/store/modules/main'
+  import main     from '@/store/modules/main'
+  import settings from '@/store/modules/settings'
 
   export default {
 
@@ -36,12 +37,15 @@
 
     async beforeCreate () {
       // Регистрация Vuex модулей
+      // Регистрация Vuex модуля settings
       await this.$store.registerModule('main', main)
+      await this.$store.registerModule('settings', settings)
     },
 
     beforeDestroy () {
 
       // выгрузка Vuex модулей
+      this.$store.unregisterModule('settings')
       this.$store.unregisterModule('main')
 
     }

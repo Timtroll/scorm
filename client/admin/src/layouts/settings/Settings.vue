@@ -51,8 +51,6 @@
   import settingsProtoLeaf from '@/assets/json/proto/settings/leaf.json'
   import settingsProtoFolder from '@/assets/json/proto/settings/folder.json'
 
-  // import VUEX module groups
-  import settings from '@/store/modules/settings'
   import {clone} from '@/store/methods'
 
   export default {
@@ -109,8 +107,7 @@
       // показать кнопку меню в navBar
       this.$store.commit('navBarLeftActionShow', true)
 
-      // Регистрация Vuex модуля settings
-      await this.$store.registerModule('settings', settings)
+
 
       // // запросы
       this.$store.commit('table_api', this.actions.table)
@@ -143,9 +140,6 @@
       this.$store.commit('tree_active', null)
       this.$store.commit('set_editPanel_proto', [])
       this.$store.commit('set_tree_proto', [])
-
-      // выгрузка Vuex модуля settings
-      this.$store.unregisterModule('settings')
     },
 
     computed: {
