@@ -4,7 +4,7 @@
 $avaSize: 80px
 $gap: 10px
 $avaBorder: 3px
-$transition-duration: 0.3s
+$transition-duration: 0.2s
 
 /** USERS
 .pos-lesson-users
@@ -28,7 +28,7 @@ $transition-duration: 0.3s
     overflow-y: visible
 
 .pos-lesson-users-list
-  margin-top: $global-small-margin
+  margin-top: $global-medium-margin
   display: grid
   grid-gap: $gap
   grid-template-columns: repeat(auto-fill, $avaSize)
@@ -65,17 +65,41 @@ $transition-duration: 0.3s
   position: relative
   z-index: 1
 
-.pos-lesson-user__status
+.pos-lesson-user__status,
+.pos-lesson-user__ball
   position: absolute
-  width: $gap*1.2
-  height: $gap*1.2
   background-color: $global-danger-background
   border-radius: 500px
-  top: 75%
-  left: 75%
   z-index: 2
   box-sizing: content-box
+  left: 75%
+
+.pos-lesson-user__status
+  width: $gap*1.2
+  height: $gap*1.2
+  top: 75%
   border: 3px solid $global-background
+
+
+.pos-lesson-user__ball
+  width: $gap*2
+  height: $gap*2
+  bottom: 75%
+  border: 2px solid $global-background
+  text-align: center
+  font-size: .8rem
+  font-weight: bold
+  color: $global-inverse-color
+  line-height: $gap*2
+
+  &.warning
+    background-color: $global-warning-background
+
+  &.primary
+    background-color: $global-primary-background
+
+  &.success
+    background-color: $global-success-background
 
 .pos-lesson-user__info
   transition: opacity $transition-duration ease-in-out

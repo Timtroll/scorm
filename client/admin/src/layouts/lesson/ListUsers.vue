@@ -15,6 +15,7 @@
                 v-text="selectedFilter.label">
         </button>
         <div ref="filter"
+             class="uk-dropdown-small"
              uk-dropdown="mode: click; pos: bottom-right; animation: uk-animation-slide-bottom-small">
           <ul class="uk-nav uk-dropdown-nav">
             <li :class="{'uk-active': selectedFilter === item}"
@@ -48,6 +49,9 @@
                :style="{backgroundImage: `url(${user.photo})`}"></div>
 
           <div class="pos-lesson-user__status"></div>
+          <div class="pos-lesson-user__ball"
+               :class="ballColor(4)"
+               v-text="'4'"></div>
         </aside>
 
       </div>
@@ -94,6 +98,17 @@ export default {
   },
 
   methods: {
+
+    ballColor (ball) {
+      switch (ball) {
+        case (ball = 3):
+          return 'warning'
+        case (ball = 4):
+          return 'primary'
+        case (ball = 5):
+          return 'success'
+      }
+    },
 
     selectFilter (item) {
       this.selectedFilter = item

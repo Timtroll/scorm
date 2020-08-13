@@ -46,12 +46,14 @@
         </a>
 
         <div ref="filter"
+             class="uk-dropdown-small"
              uk-dropdown="mode: click; pos: top-left; animation: uk-animation-slide-top-small">
           <ul class="uk-grid-small"
               uk-grid>
             <li :class="{'uk-active': selectedPosition === item}"
                 v-for="item in position">
               <a href="#"
+                 :class="{'uk-text-danger' : selectedPosition === item, 'uk-link-muted' : selectedPosition !== item}"
                  @click="selectPosition(item)">
                 <img :src="item.icon"
                      width="20"
@@ -114,7 +116,6 @@ export default {
     }
   },
 
-
   async mounted () {
     this.selectedPosition = this.position[0]
   },
@@ -123,7 +124,6 @@ export default {
 
     // move second Video
     moveVideo (direction) {
-      console.log(direction)
       switch (direction) {
         case ('left'):
           this.secondScreen.position.v = 'left'
