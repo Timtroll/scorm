@@ -22,7 +22,7 @@
         <video width="1920"
                height="1080"
                v-touch:swipe="moveVideo"
-               v-touch-options="{swipeTolerance: 1, touchHoldTolerance: 300}"
+               v-touch-options="{swipeTolerance: 10, touchHoldTolerance: 300}"
                autoplay
                playsinline
                muted
@@ -114,6 +114,7 @@ export default {
     }
   },
 
+
   async mounted () {
     this.selectedPosition = this.position[0]
   },
@@ -122,19 +123,33 @@ export default {
 
     // move second Video
     moveVideo (direction) {
+      console.log(direction)
       switch (direction) {
         case ('left'):
           this.secondScreen.position.v = 'left'
+          this.changePositionIndicator('v', 'left')
           break
         case ('right'):
           this.secondScreen.position.v = 'right'
+          this.changePositionIndicator('v', 'right')
           break
         case ('top'):
           this.secondScreen.position.h = 'top'
+          this.changePositionIndicator('h', 'top')
           break
         case ('bottom'):
           this.secondScreen.position.h = 'bottom'
+          this.changePositionIndicator('h', 'bottom')
           break
+      }
+    },
+
+    changePositionIndicator (direction, pos) {
+      if (direction === 'v') {
+        this.selectedPosition = this.position.find(i => i.v === pos && i.h === this.secondScreen.position.h)
+      }
+      else {
+        this.selectedPosition = this.position.find(i => i.h === pos && i.v === this.secondScreen.position.v)
       }
     },
 
