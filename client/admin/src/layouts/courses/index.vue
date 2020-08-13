@@ -31,6 +31,8 @@ export default {
   },
 
   async mounted () {
+    // показать кнопку меню в navBar
+    this.$store.commit('navBarLeftActionShow', false)
     await this.$store.registerModule('courses', courses)
     await this.getFinderRoot()
   },

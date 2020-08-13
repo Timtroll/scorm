@@ -47,216 +47,216 @@
 
 <script>
 
-  //import прототипа колонок таблицы
-  import settingsProtoLeaf from '@/assets/json/proto/settings/leaf.json'
-  import settingsProtoFolder from '@/assets/json/proto/settings/folder.json'
+//import прототипа колонок таблицы
+import settingsProtoLeaf   from '@/assets/json/proto/settings/leaf.json'
+import settingsProtoFolder from '@/assets/json/proto/settings/folder.json'
 
-  import {clone} from '@/store/methods'
+import {clone} from '@/store/methods'
 
-  export default {
+export default {
 
-    name: 'Settings',
+  name: 'Settings',
 
-    components: {
-      IconBug: () => import(/* webpackChunkName: "IconBug" */ '@/components/ui/icons/IconBug'),
-      Tree:    () => import(/* webpackChunkName: "Tree" */ '@/components/ui/cmsTree/Tree'),
-      NavTree: () => import(/* webpackChunkName: "NavTree" */ '@/components/ui/cmsTree/NavTree'),
-      Card:    () => import(/* webpackChunkName: "Card" */ '@/components/ui/card/Card'),
-      Loader:  () => import(/* webpackChunkName: "Loader" */ '@/components/ui/icons/Loader'),
-      List:    () => import(/* webpackChunkName: "List" */ '@/components/ui/cmsList/List')
-    },
+  components: {
+    IconBug: () => import(/* webpackChunkName: "IconBug" */ '@/components/ui/icons/IconBug'),
+    Tree:    () => import(/* webpackChunkName: "Tree" */ '@/components/ui/cmsTree/Tree'),
+    NavTree: () => import(/* webpackChunkName: "NavTree" */ '@/components/ui/cmsTree/NavTree'),
+    Card:    () => import(/* webpackChunkName: "Card" */ '@/components/ui/card/Card'),
+    Loader:  () => import(/* webpackChunkName: "Loader" */ '@/components/ui/icons/Loader'),
+    List:    () => import(/* webpackChunkName: "List" */ '@/components/ui/cmsList/List')
+  },
 
-    data () {
-      return {
+  data () {
+    return {
 
-        leftNavToggleMobile: false,
+      leftNavToggleMobile: false,
 
-        actions: {
+      actions: {
 
-          tree: {
-            get:                'settings/getTree',
-            edit:               'settings/folderEdit',
-            add:                'settings/addFolder',
-            save:               'settings/saveFolder',
-            remove:             'settings/removeFolder',
-            childComponentName: 'SettingItem'
-          },
+        tree: {
+          get:                'settings/getTree',
+          edit:               'settings/folderEdit',
+          add:                'settings/addFolder',
+          save:               'settings/saveFolder',
+          remove:             'settings/removeFolder',
+          childComponentName: 'SettingItem'
+        },
 
-          table: {
-            get:       'settings/getTable',
-            save:      'settings/leafSave',
-            saveField: 'settings/leafSaveField',
-            remove:    'settings/removeLeaf'
+        table: {
+          get:       'settings/getTable',
+          save:      'settings/leafSave',
+          saveField: 'settings/leafSaveField',
+          remove:    'settings/removeLeaf'
 
-          },
+        },
 
-          editPanel: {
-            get:            'settings/leafEdit',
-            save:           'settings/leafSave',
-            addProto:       'settings/leafProto',
-            addFolderProto: 'settings/folderProto',
-            add:            'settings/leafAdd'
-          }
+        editPanel: {
+          get:            'settings/leafEdit',
+          save:           'settings/leafSave',
+          addProto:       'settings/leafProto',
+          addFolderProto: 'settings/folderProto',
+          add:            'settings/leafAdd'
         }
-
       }
+
+    }
+  },
+
+  async created () {
+
+    // показать кнопку меню в navBar
+    this.$store.commit('navBarLeftActionShow', true)
+
+    // // запросы
+    this.$store.commit('table_api', this.actions.table)
+    this.$store.commit('tree_api', this.actions.tree)
+    this.$store.commit('editPanel_api', this.actions.editPanel)
+
+    //// запись прототипа из json в store
+    this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
+    this.$store.commit('set_tree_proto', settingsProtoFolder)
+
+    //// Получение дерева с сервера
+    await this.$store.dispatch(this.actions.tree.get)
+
+    // установка в store Id активного документа
+    if (this.tableId) {
+      await this.$store.commit('table_current', Number(this.tableId))
+    }
+
+    //// Размер панели редактирования
+    await this.$store.commit('editPanel_size', false)
+    this.$store.commit('card_right_show', false)
+
+    // показать кнопку Добавить
+    this.$store.commit('table_addChildren', true)
+
+  },
+
+  beforeDestroy () {
+    this.$store.commit('editPanel_show', false)
+    this.$store.commit('tree_active', null)
+    this.$store.commit('set_editPanel_proto', [])
+    this.$store.commit('set_tree_proto', [])
+  },
+
+  computed: {
+
+    loader () {
+      return this.$store.getters.tree_status
     },
 
-    async created () {
+    tableId () {
+      return Number(this.$route.params.id)
+    },
 
-      // показать кнопку меню в navBar
-      this.$store.commit('navBarLeftActionShow', true)
+    editPanel_show () {
+      return this.$store.getters.cardRightState
+    },
 
+    cardLeft_show () {
+      return this.$store.getters.cardLeftState
+    },
 
+    editPanel_add () {
+      return this.$store.getters.editPanel_add
+    },
 
-      // // запросы
-      this.$store.commit('table_api', this.actions.table)
-      this.$store.commit('tree_api', this.actions.tree)
-      this.$store.commit('editPanel_api', this.actions.editPanel)
+    editPanel_folder () {
+      return this.$store.getters.editPanel_folder
+    },
 
-      //// запись прототипа из json в store
-      this.$store.commit('set_editPanel_proto', settingsProtoLeaf)
-      this.$store.commit('set_tree_proto', settingsProtoFolder)
+    editPanel_data () {
+      return this.$store.getters.editPanel_item
+    },
 
-      //// Получение дерева с сервера
-      await this.$store.dispatch(this.actions.tree.get)
+    // Left nav tree
+    nav () {
+      return this.$store.getters.tree
+    },
 
-      // установка в store Id активного документа
-      if (this.tableId) {
-        await this.$store.commit('table_current', Number(this.tableId))
-      }
+    cardLeftClickAction () {
+      return this.$store.getters.cardLeftClickAction
+    }
 
-      //// Размер панели редактирования
-      await this.$store.commit('editPanel_size', false)
+  },
+
+  methods: {
+
+    // Очистка поля поиска
+    clearSearchVal () {
+      this.table.searchInput = null
+    },
+
+    closeAddGroup () {
       this.$store.commit('card_right_show', false)
-
-      // показать кнопку Добавить
-      this.$store.commit('table_addChildren', true)
-
     },
 
-    beforeDestroy () {
-      this.$store.commit('editPanel_show', false)
-      this.$store.commit('tree_active', null)
-      this.$store.commit('set_editPanel_proto', [])
-      this.$store.commit('set_tree_proto', [])
-    },
-
-    computed: {
-
-      loader () {
-        return this.$store.getters.tree_status
-      },
-
-      tableId () {
-        return Number(this.$route.params.id)
-      },
-
-      editPanel_show () {
-        return this.$store.getters.cardRightState
-      },
-
-      cardLeft_show () {
-        return this.$store.getters.cardLeftState
-      },
-
-      editPanel_add () {
-        return this.$store.getters.editPanel_add
-      },
-
-      editPanel_folder () {
-        return this.$store.getters.editPanel_folder
-      },
-
-      editPanel_data () {
-        return this.$store.getters.editPanel_item
-      },
-
-      // Left nav tree
-      nav () {
-        return this.$store.getters.tree
-      },
-
-      cardLeftClickAction () {
-        return this.$store.getters.cardLeftClickAction
+    save (data) {
+      if (this.editPanel_folder) {
+        this.saveFolder(data)
       }
-
+      else {
+        this.saveLeaf(data)
+      }
     },
 
-    methods: {
+    // сохранение Folder
+    saveFolder (data) {
 
-      // Очистка поля поиска
-      clearSearchVal () {
-        this.table.searchInput = null
-      },
-
-      closeAddGroup () {
-        this.$store.commit('card_right_show', false)
-      },
-
-      save (data) {
-        if (this.editPanel_folder) {
-          this.saveFolder(data)
-        } else {
-          this.saveLeaf(data)
-        }
-      },
-
-      // сохранение Folder
-      saveFolder (data) {
-
-        if (this.editPanel_add) {
-          const save = {
-            add:    this.editPanel_add,
-            folder: true,
-            fields: {}
-          }
-
-          const arr = JSON.parse(JSON.stringify(data))
-          arr.forEach(item => {save.fields[item.name] = item.value})
-
-          this.$store.dispatch(this.actions.tree.add, save)
-        } else {
-
-          const save = {
-            add:    this.editPanel_add,
-            folder: true,
-            fields: {}
-          }
-
-          const arr = JSON.parse(JSON.stringify(data))
-          arr.forEach(item => {save.fields[item.name] = item.value})
-
-          this.$store.dispatch(this.actions.tree.save, save)
-        }
-
-      },
-
-      // сохранение Листочка
-      saveLeaf (data) {
-
+      if (this.editPanel_add) {
         const save = {
           add:    this.editPanel_add,
-          folder: false,
+          folder: true,
           fields: {}
         }
 
-        const arr = clone(data)
+        const arr = JSON.parse(JSON.stringify(data))
         arr.forEach(item => {save.fields[item.name] = item.value})
 
-        // преобразование в JSON поля selected
-        save.fields.selected = JSON.stringify(save.fields.selected)
+        this.$store.dispatch(this.actions.tree.add, save)
+      }
+      else {
 
-        // преобразование в JSON поля value, если тип поля InputDoubleList
-        if (save.fields.type === 'InputDoubleList') {
-          save.fields.value = JSON.stringify(save.fields.value)
+        const save = {
+          add:    this.editPanel_add,
+          folder: true,
+          fields: {}
         }
 
-        this.$store.dispatch(this.actions.editPanel.save, save)
+        const arr = JSON.parse(JSON.stringify(data))
+        arr.forEach(item => {save.fields[item.name] = item.value})
 
+        this.$store.dispatch(this.actions.tree.save, save)
       }
+
+    },
+
+    // сохранение Листочка
+    saveLeaf (data) {
+
+      const save = {
+        add:    this.editPanel_add,
+        folder: false,
+        fields: {}
+      }
+
+      const arr = clone(data)
+      arr.forEach(item => {save.fields[item.name] = item.value})
+
+      // преобразование в JSON поля selected
+      save.fields.selected = JSON.stringify(save.fields.selected)
+
+      // преобразование в JSON поля value, если тип поля InputDoubleList
+      if (save.fields.type === 'InputDoubleList') {
+        save.fields.value = JSON.stringify(save.fields.value)
+      }
+
+      this.$store.dispatch(this.actions.editPanel.save, save)
 
     }
 
   }
+
+}
 </script>
