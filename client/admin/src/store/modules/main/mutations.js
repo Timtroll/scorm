@@ -15,8 +15,8 @@ const mutations = {
     state.card.leftNavClick = !state.card.leftNavClick
   },
 
-  navBarLeftActionShow (state) {
-    state.navBarLeftAction.visibility = state
+  navBarLeftActionShow (state, data) {
+    state.navBarLeftAction.visibility = data
   }
 
 }
