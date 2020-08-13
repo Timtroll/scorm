@@ -111,9 +111,9 @@ sub _list_discipline {
     #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
 
     # $list = $discipline->_list( { FIELDS => 'id', INJECTION => '"public"."EAV_data_string"' });
-    $list = $discipline->_list( { FIELDS => 'url' });
-    warn Dumper( 'list:' );
-    warn Dumper( $list );
+    # $list = $discipline->_list( { FIELDS => 'url' });
+    # warn Dumper( 'list:' );
+    # warn Dumper( $list );
 
     # $list = $discipline->_getAll();
     # warn Dumper( $list );

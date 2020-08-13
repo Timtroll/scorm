@@ -190,27 +190,7 @@ sub _get_list {
 sub _get_user {
     my ( $self, $data ) = @_;
 
-    # $data = {
-    #     'id'          => 1,                               # берется из users
-    #     'place'       => 'place',                         # берется из EAV
-    #     'country'     => 'country',                       # берется из EAV
-    #     'birthday'    => '1972-01-06 00:00:00',           # берется из EAV
-    #     'surname'     => 'test',                          # берется из EAV
-    #     'name'        => 'name',                          # берется из EAV
-    #     'patronymic'  => 'patronymic',                    # берется из EAV
-    #     'email'       => 'test@test.com',                 # берется из users
-    #     'eav_id'      => 1,                               # берется из users
-    #     'phone'       => '+7(999) 222-2222',              # берется из users
-    #     'password'    => 'password',                      # берется из users
-    #     'timezone'    => '10'                             # берется из users
-    #     'time_create' => '2020-06-27 22:16:27.874726+03', # берется из users
-    #     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
-    #     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
-    # };
-
-    # return $data;
-
-    my ( $sth, $sql, $usr, $result_users, $result_eav, $main, $contacts, $password, $groups );
+    my ( $sth, $sql, $usr, $result_users, $result_eav );
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for get";
     }
@@ -223,27 +203,7 @@ sub _get_user {
         $sth->execute();
 
         $result_users = $sth->fetchrow_hashref();
-        if ( $result_users ) {
-    ### ???????????????????????????????????????????????????????????????????????? contacts - emailconfirmed phoneconfirmed ?
-            $contacts = [
-               {"email"          => $$result_users{'email'} },
-               {"emailconfirmed" => 1 },
-               {"phone"          => $$result_users{'phone'} },
-               {"phoneconfirmed" => 1 }
-            ];
-
-            $password = [
-               {"password"       => $$result_users{'password'} },
-               {"newpassword"    => $$result_users{'password'} }
-            ];
-
-            $groups = [
-               { "groups" => $$result_users{'groups'} }
-            ]
-        }
-        else {
-            push @!, "can't get object from users";
-        }
+        push @!, "can't get object from users" unless $result_users;
     }
 
     unless ( @! ) {
@@ -251,40 +211,10 @@ sub _get_user {
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
 
         $result_eav = $usr->_getAll();
-        if ( $result_eav ) {
-            $main = [
-                {"name"       => $$result_eav{'name'} },
-                {"patronymic" => $$result_eav{'patronymic'} },
-                {"surname"    => $$result_eav{'surname'} },
-                {"birthday"   => $$result_eav{'birthday'} },
-                {"avatar"     => $$result_eav{'import_source'} },
-                {"country"    =>  
-                    {
-                        "selected" => [
-                            "...","-2","-1","0","+1","+2","..."
-                        ], 
-                        "value"    => $$result_eav{'country'}
-                    }
-                },
-                {"place"      => $$result_eav{'place'} },
-                {"status"     => $$result_users{'publish'} ? 1 : 0 },
-                {"timezone"    =>  
-                    {
-                        "selected" => [
-                            "...","-2","-1","0","+1","+2","..."
-                        ], 
-                        "value"    => $$result_users{'timezone'}
-                    }
-                },
-                {"type"       => $$result_eav{'Type'} }
-            ]
-        }
-        else {
-            push @!, "can't get object from EAV";
-        }
+        push @!, "can't get object from EAV" unless $result_eav;
     }
 
-    return $main, $contacts, $password, $groups;
+    return $result_users, $result_eav;
 }
 
 # Добавлением нового пользователя в EAV и таблицу users

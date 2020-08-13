@@ -5,7 +5,7 @@
 # 'patronymic',  => 'отчество',        # До 32 букв, обязательное поле
 # 'place'        => 'place',           # До 64 букв, цифр и знаков, обязательное поле
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
-# 'timezone'     => 'EAT',             # 2-4 буквы кода часового пояса, обязательное поле
+# 'timezone'     => 12.75,             # 2-4 буквы кода часового пояса, обязательное поле
 # 'birthday'     => '01.01.2000',      # 12 цифр, обязательное поле
 # 'status'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
@@ -92,7 +92,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -114,7 +114,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -137,7 +137,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -158,7 +158,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -178,7 +178,7 @@ my $test_data = {
             'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -221,7 +221,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
@@ -242,7 +242,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -263,7 +263,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -285,7 +285,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,
@@ -307,7 +307,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'timezone'     => 'EAT',
+            'timezone'     => 12.75,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
             'avatar'       => 1,

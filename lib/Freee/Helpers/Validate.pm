@@ -85,8 +85,13 @@ sub register {
                 push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
+            # проверка заполнения обязательного поля timezone, они не undef и не пустая строка
+            elsif ( ( $required eq 'required' ) && $field eq 'timezone' && ( !defined $param || $param eq '' ) ) {
+                push @!, "_check_fields: didn't has required data in '$field'";
+                last;
+            }
             # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs, parent, /routes/save )
-            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' && !$param ) {
+            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' && $field ne 'timezone' && !$param ) {
                 push @!, "_check_fields: didn't has required data in '$field'";
                 last;
             }
@@ -216,7 +221,7 @@ sub register {
                 'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
+                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -229,7 +234,8 @@ sub register {
                 'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
+                # 'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
+                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^[\d\.]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
@@ -244,7 +250,7 @@ sub register {
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'phone'         => [ 'required', qr/^\+\d{11}$/os, 12 ],
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
+                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -263,7 +269,7 @@ sub register {
                 'phone'         => [ '', qr/^\+\d{11}$/os, 12 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^[\w{2,4}]+$/os, 4 ],
+                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^[\d\.\-\: ]+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
@@ -778,7 +784,7 @@ sub register {
             12    => 'UTC+12',
             12.75 => 'UTC+12:45',
             13    => 'UTC+13',
-            14    => 'UTC+14',
+            14    => 'UTC+14'
         };
 
         return $timezones;
