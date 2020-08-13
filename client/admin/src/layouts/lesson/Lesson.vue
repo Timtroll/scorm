@@ -2,7 +2,7 @@
   <div class="pos-lesson-teach">
 
     <!--VIDEO-->
-    <WebRTC/>
+    <WebRTCScreen />
 
     <ListUsers :users="users"/>
 
@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import lessons   from './store'
-import ListUsers from './ListUsers'
-import WebRTC    from '@/layouts/lesson/store/WebRTC'
+import lessons      from './store'
+import ListUsers    from './ListUsers'
+import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
 
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
@@ -35,7 +35,7 @@ export default {
   name: 'Lesson',
 
   components: {
-    WebRTC,
+    WebRTCScreen,
     ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
@@ -60,8 +60,7 @@ export default {
   data () {
     return {
 
-      users: null,
-
+      users: null
 
     }
   },

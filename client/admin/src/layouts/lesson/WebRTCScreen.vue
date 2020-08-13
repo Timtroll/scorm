@@ -4,16 +4,30 @@
     <div class="pos-lesson-video-outer">
 
       <div class="pos-lesson-video-screen main-screen">
-        <video width="1920"
-               height="1080"
-               autoplay
-               playsinline
-               muted
-               loop
-               controls
-               preload="auto">
-          <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">
-        </video>
+
+        <vue-webrtc ref="webrtc"
+
+                    :cameraHeight="160"
+                    :roomId="roomId"
+                    v-on:joined-room="logEvent"
+                    v-on:left-room="logEvent"
+                    v-on:opened-room="logEvent"
+                    v-on:share-started="logEvent"
+                    v-on:share-stopped="logEvent"
+                    @error="onError"/>
+
+        <!--        :stun-server="'https://free-webrtc-server.herokuapp.com'"-->
+        <!--        :turn-server="'https://free-webrtc-server.herokuapp.com'"-->
+        <!--        <video width="1920"-->
+        <!--               height="1080"-->
+        <!--               autoplay-->
+        <!--               playsinline-->
+        <!--               muted-->
+        <!--               loop-->
+        <!--               controls-->
+        <!--               preload="auto">-->
+        <!--          <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">-->
+        <!--        </video>-->
       </div>
 
       <div class="pos-lesson-video-screen second-screen"
@@ -69,10 +83,19 @@
 </template>
 
 <script>
+import {WebRTC} from 'vue-webrtc'
+import connect  from '@/api/socket/webRtc'
+import * as io  from 'socket.io-client'
+
+window.io = io
+
+const socket = new connect
+
 export default {
-  name: 'WebRTC',
+  name: 'WebRTCScreen',
 
   components: {
+    'vue-webrtc': WebRTC
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
 
@@ -85,6 +108,9 @@ export default {
 
   data () {
     return {
+      img:    null,
+      roomId: 'lesson',
+
       selectedPosition: null,
 
       position: [
@@ -118,9 +144,33 @@ export default {
 
   async mounted () {
     this.selectedPosition = this.position[0]
+    this.onJoin()
+  },
+
+  beforeDestroy () {
+    this.onLeave()
   },
 
   methods: {
+
+    onCapture () {
+      this.img = this.$refs.webrtc.capture()
+    },
+    onJoin () {
+      this.$refs.webrtc.join()
+    },
+    onLeave () {
+      this.$refs.webrtc.leave()
+    },
+    onShareScreen () {
+      this.img = this.$refs.webrtc.shareScreen()
+    },
+    onError (error, stream) {
+      console.log('On Error Event', error, stream)
+    },
+    logEvent (event) {
+      console.log('Event : ', event)
+    },
 
     // move second Video
     moveVideo (direction) {
