@@ -2,6 +2,7 @@ const mutations = {
 
   setListRoot (state, data) {
 
+    if(!data.list) return
     data.list.forEach(i => {
       i.search = []
 
