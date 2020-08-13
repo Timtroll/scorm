@@ -133,11 +133,11 @@
         var url;
         if ("offerer" == type) {
             //url = "<%= url_for('/wschannel/offerer')->to_abs->scheme('ws') %>";
-            url = "ws://localhost:4444/wschannel/offerer";
+            url = "wss://freee.su/wschannel/offerer";
         }
         else {
            // url = "<%= url_for('/wschannel/answerer')->to_abs->scheme('ws') %>";
-            url = "ws://localhost:4444/wschannel/answerer";
+            url = "wss://freee.su/wschannel/answerer";
         }
         console.log("Connecting: " + url);
         socket = new WebSocket(url);
