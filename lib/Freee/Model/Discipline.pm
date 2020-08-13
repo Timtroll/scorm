@@ -16,7 +16,6 @@ use Data::Dumper;
 #    'label'       => 'Предмет 1',                      # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
 #    'content'     => 'Полное описание',                # кладется в EAV
-#    'route'       => '/discipline',                    # кладется в EAV
 #    'attachment'  => '[345,577,643],                   # кладется в EAV
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
@@ -46,7 +45,6 @@ sub _insert_discipline {
                     'label'        => $$data{'label'},
                     'description'  => $$data{'description'},
                     'content'      => $$data{'content'},
-                    'route'        => $$data{'route'},
                     'keywords'     => $$data{'keywords'},
                     'import_source'=> $$data{'avatar'},
                     'url'          => $$data{'url'},
@@ -97,6 +95,66 @@ sub _delete_discipline {
 #     "parent" => $self->param('parent'),
 #     "attachment" => [345,577,643]
 # };
+sub _list_discipline {
+    my $self = shift;
+
+    my ( $discipline, $result, $list );
+
+    # инициализация EAV
+    $discipline = Freee::EAV->new( 'Discipline' );
+    unless ( $discipline ) {
+        push @!, "Tree has not any branches";
+        return;
+    }
+
+    #     my $usr = Freee::EAV->new( 'User' );
+    #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+
+    # $list = $discipline->_list( { FIELDS => 'id', INJECTION => '"public"."EAV_data_string"' });
+    # $list = $discipline->_list( { FIELDS => 'url' });
+    # warn Dumper( 'list:' );
+    # warn Dumper( $list );
+
+    # $list = $discipline->_getAll();
+    # warn Dumper( $list );
+
+    # if ( $result ) {
+    #     $list = {
+    #        "id"          => $$result{'id'},
+    #        "label"       => $$result{'label'},
+    #        "description" => $$result{'description'},
+    #        "content"     => $$result{'content'},
+    #        "keywords"    => $$result{'keywords'},
+    #        "url"         => $$result{'url'},
+    #        "seo"         => $$result{'seo'},
+    #        "route"       => $$result{'route'},
+    #        "parent"      => $$result{'parent'},
+    #        "attachment"  => $$result{'attachment'},
+    #        "status"      => $$result{'publish'}
+    #     }
+    # } 
+    # else {
+    #     push @!, 'can\'t get list';
+    #     return;
+    # }
+# warn Dumper( $result );
+
+    return $list;
+}
+
+# my $data = {
+#     "folder" => 1,
+#     "id" => $self->param('id'),
+#     "label" => "Предмет 1",
+#     "description" => "Краткое описание",
+#     "content" => "Полное описание",
+#     "keywords" => "ключевые слова",
+#     "url" => "как должен выглядеть url",
+#     "seo" => "дополнительное поле для seo",
+#     "route" => "/discipline/",
+#     "parent" => $self->param('parent'),
+#     "attachment" => [345,577,643]
+# };
 sub _get_discipline {
     my ( $self, $id ) = @_;
 
@@ -104,12 +162,16 @@ sub _get_discipline {
 
     unless ( $id ) {
         push @!, "no data for get";
+        return;
     }
     else {
         # взять весь объект из EAV
         $discipline = Freee::EAV->new( 'Discipline', { 'id' => $id } );
 
-        return unless $discipline;
+        unless ( $discipline ) {
+            push @!, "discipline with id '$id' doesn't exist";
+            return;
+        }
 
         $result = $discipline->_getAll();
         if ( $result ) {
@@ -121,11 +183,15 @@ sub _get_discipline {
                "keywords"    => $$result{'keywords'},
                "url"         => $$result{'url'},
                "seo"         => $$result{'seo'},
-               "route"       => $$result{'route'},
+               "route"       => '/discipline',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
                "status"      => $$result{'publish'}
             }
+        } 
+        else {
+            push @!, 'can\'t get list';
+            return;
         }
     }
 
@@ -145,22 +211,20 @@ sub _save_discipline {
         # обновление полей в EAV
         $discipline = Freee::EAV->new( 'Discipline',
             {
-                'id'      => $$data{'id'},
+                'id'      => $$data{'id'}
             }
         );
 
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {                 
-            'parent' => $$data{'parent'},
-            'title' => $$data{'title'},
             'Discipline' => {
-                'parent' => $$data{'parent'}, 
+                'title'        => $$data{'title'},
+                'parent'       => $$data{'parent'}, 
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
                 'content'      => $$data{'content'},
-                'route'        => $$data{'route'},
                 'keywords'     => $$data{'keywords'},
                 'import_source'=> $$data{'avatar'},
                 'url'          => $$data{'url'},
@@ -180,7 +244,7 @@ sub _toggle_discipline {
     my ( $discipline, $result );
 
     unless ( $$data{'id'} && defined $$data{'value'} ) {
-        push @!, 'no data for toggle';
+        return;
     }
     else {
         # обновление поля в EAV
@@ -202,24 +266,24 @@ sub _toggle_discipline {
     return $result;
 }
 
-# sub _exists_in_discipline {
-#     my ( $self, $id ) = @_;
+sub _exists_in_discipline {
+    my ( $self, $id ) = @_;
 
-#     my ( $discipline, $result );
+    my ( $discipline, $result );
 
-#     unless ( $id ) {
-#         push @!, 'no id for check';
-#     }
-#     else {
-#         # поиск объекта с таким id
-#         $discipline = Freee::EAV->new( 'Discipline',
-#             {
-#                 'id'      => $id
-#             }
-#         );
-#     }
+    unless ( $id ) {
+        push @!, 'no id for check';
+    }
+    else {
+        # поиск объекта с таким id
+        $discipline = Freee::EAV->new( 'Discipline',
+            {
+                'id'      => $id
+            }
+        );
+    }
 
-#     return $discipline ? 1 : 0;
-# }
+    return $discipline ? 1 : 0;
+}
 
 1;

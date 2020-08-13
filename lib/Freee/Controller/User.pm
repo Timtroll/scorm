@@ -157,62 +157,7 @@ sub index {
 sub edit {
     my $self = shift;
 
-    # $self->render(
-    #     'json'    => {
-    #         "data" => {
-    #             "tabs" => [
-    #                 {
-    #                 "fields" => [
-    #                    {"name" => "имя_right"},
-    #                    {"patronymic" => "отчество_right"},
-    #                    {"surname" => "фамилия_right"},
-    #                    {"birthday" => "01.01.2000"},
-    #                    {"avatar" => "1234"},
-    #                    {"country" => "Россия"},
-    #                    {"place" => "place"},
-    #                    {"status" => "1"},
-    #                    {"timezone" => '+3'},
-    #                    {"type" => "1"}
-    #                 ],
-    #                 "label" => "Основные"
-    #             },
-    #             {
-    #                 "fields" => [
-    #                    {"email" => "emailright\@email.ru"},
-    #                    {"emailconfirmed" => "emailright\@email.ru"},
-    #                    {"phone" => '+79212222222'},
-    #                    {"phoneconfirmed" => '+79212222222'}
-    #                 ],
-    #                 "label" => "Контакты"
-    #              },
-    #              {
-    #                 "fields" => [
-    #                     {"password" => "password1"},
-    #                     {"newpassword" => "password1"}
-    #                 ],
-    #                 "label" => "Пароль"
-    #              },
-    #                 {
-    #                     "fields" => [
-    #                        {"groups" => [] }
-    #                     ],
-    #                     "label" => "Группы"
-    #                 }
-    #             ]
-    #         },
-    #         "status" => "ok"
-    #     }
-    # );
-    # return;
-
-    # $self->render(
-    #     'json'    => {
-    #         'message'   => 'error',
-    #         'status'    => 'fail'
-    #     }
-    # );
-
-    my ( $user, $data, $param, $resp, $main, $contacts, $password, $groups );
+    my ( $user, $data, $param, $resp, $result_users, $result_eav, $result, $hashref, $countries, $timezones );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     unless ( @! ) {
@@ -222,130 +167,85 @@ sub edit {
 
     unless ( @! ) {
         # получаем данные пользователя
-        ( $main, $contacts, $password, $groups ) = $self->model('User')->_get_user( $data );
+        ( $result_users, $result_eav ) = $self->model('User')->_get_user( $data );
     }
 
-        # $user = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
-        # $user = $user->GetUser( $$data{'id'} );
-
-    # unless ( @! ) {
-#             $main = [
-#                 { 'surname'       => $$user{'surname'} },       # Фамилия
-#                 { 'name'          => $$user{'name'} },          # Имя
-#                 { 'patronymic'    => $$user{'patronymic'} },    # Отчество
-#                 { 'city'          => $$user{'city'} },          # город
-#                 { 'country'       => $$user{'country'} },       # страна
-# #?                        { 'timezone'      => $$user{'timezone'} },    # часовой пояс
-#                 { 'birthday'      => $$user{'birthday'} },      # дата рождения (в секундах)
-# #?                        { 'password'    => $$user{'password'} },      # пароль
-# #?                        { 'newpassword' => $$user{'newpassword'} },   # пароль
-# #?                        { 'type'          => 3 }                        # тип
-#             ];
-#             $contacts = [
-#                 { 'email'           => $$user{'email'} },           # email пользователя
-# #?                        { 'emailconfirmed'  => $$user{'emailconfirmed'} },  # email подтвержден
-#                 { 'phone'           => $$user{'phone'} },           # номер телефона
-# #?                        { 'phoneconfirmed'  => $$user{'phoneconfirmed'} }   # телефон подтвержден
-#             ];
-#             $groups = [
-#                 { "groups" => 1 }  # список ID групп
-#             ];
-    # }
-
-    # $user = {
-    #     'id'                => 1,
-    #     'surname'           => 'Фамилия',           # Фамилия
-    #     'name'              => 'Имя',               # Имя
-    #     'patronymic'        => 'Отчество',          # Отчество
-    #     'city'              => 'Санкт-Петербург',   # город
-    #     'country'           => 'Россия',            # страна
-    #     'timezone'          => '+3',                # часовой пояс
-    #     'birthday'          => 123132131,           # дата рождения (в секундах)
-    #     'email'             => 'username@ya.ru',    # email пользователя
-    #     'emailconfirmed'    => 1,                   # email подтвержден
-    #     'phone'             => 79312445646,         # номер телефона
-    #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-    #     'status'            => 1,                   # активный / не активный пользователь
-    #     'groups'            => [1, 2, 3],           # список ID групп
-    #     'password'          => 'khasdf',            # хеш пароля
-    #     'avatar'            => 'https://thispersondoesnotexist.com/image'
-    # };
-
-# warn Dumper( $contacts );
-# warn Dumper( $password );
-    # Так будет отдаваться на фронт:
+    # получение значений для selected
     unless ( @! ) {
-        $data = {
-            # 'id' => $$user{'id'},   ????????????????????????????????????????????????????
+        $hashref = $self->_countries();
+        foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
+            push @$countries, [ $_, $$hashref{$_} ];
+        }
+
+        $hashref = $self->_time_zones();
+        foreach ( sort { $a <=> $b } keys %$hashref ) {
+            push @$timezones, [ $_, $$hashref{$_} ];
+        }
+    }
+
+# use Encode ( '_utf8_on', '_utf8_off' );
+# _utf8_off( $countries );
+# _utf8_on( $countries );
+warn Dumper( $countries );
+
+
+    unless ( @! ) {
+        $result = {
             'tabs' => [ # Вкладки 
                 {
                     'label' => 'Основные',
-                    'fields'=> $main
+                    'fields'=> [
+                        {"name"       => $$result_eav{'name'} },
+                        {"patronymic" => $$result_eav{'patronymic'} },
+                        {"surname"    => $$result_eav{'surname'} },
+                        {"birthday"   => $$result_eav{'birthday'} },
+                        {"avatar"     => $$result_eav{'import_source'} },
+                        {"country"    =>  
+                            {
+                                "selected" => $countries, 
+                                "value"    => $$result_eav{'country'}
+                            }
+                        },
+                        {"place"      => $$result_eav{'place'} },
+                        {"status"     => $$result_users{'publish'} ? 1 : 0 },
+                        {"timezone"    =>  
+                            {
+                                "selected" => $timezones, 
+                                "value"    => $$result_users{'timezone'}
+                            }
+                        },
+                        {"type"       => $$result_eav{'Type'} }
+                    ]
                 },
                 {
                     'label' => 'Контакты',
-                    'fields' => $contacts
+                    'fields' => [
+                       {"email"          => $$result_users{'email'} },
+                       {"emailconfirmed" => 1 },
+                       {"phone"          => $$result_users{'phone'} },
+                       {"phoneconfirmed" => 1 }
+                    ]
                 },
                 {
                     'label' => 'Пароль',
-                    'fields' => $password
+                    'fields' => [
+                       {"password"       => $$result_users{'password'} },
+                       {"newpassword"    => $$result_users{'password'} }
+                    ]
                 },
                 {
                     "label" => "Группы",
-                    "fields" => $groups
+                    "fields" => [
+                       { "groups" => $$result_users{'groups'} }
+                    ]
                 }
             ]
         };
     }
 
-    # Так будет отдаваться на фронт:
-    # unless ( @! ) {
-    #     $data = {
-    #         "tabs" => [
-    #             {
-    #             "fields" => [
-    #                {"name" => "имя_right"},
-    #                {"patronymic" => "отчество_right"},
-    #                {"surname" => "фамилия_right"},
-    #                {"birthday" => "01.01.2000"},
-    #                {"avatar" => "1234"},
-    #                {"country" => "Россия"},
-    #                {"place" => "place"},
-    #                {"status" => "1"},
-    #                {"timezone" => '+3'},
-    #                {"type" => "1"}
-    #             ],
-    #             "label" => "Основные"
-    #         },
-    #         {
-    #             "fields" => [
-    #                {"email" => "emailright\@email.ru"},
-    #                {"emailconfirmed" => "emailright\@email.ru"},
-    #                {"phone" => '+79212222222'},
-    #                {"phoneconfirmed" => '+79212222222'}
-    #             ],
-    #             "label" => "Контакты"
-    #          },
-    #          {
-    #             "fields" => [
-    #                 {"password" => "password1"},
-    #                 {"newpassword" => "password1"}
-    #             ],
-    #             "label" => "Пароль"
-    #          },
-    #             {
-    #                 "fields" => [
-    #                    {"groups" => [] }
-    #                 ],
-    #                 "label" => "Группы"
-    #             }
-    #         ]
-    #     };
-    # }
-
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'data'} = $data unless @!;
+    $resp->{'data'} = $result unless @!;
 
     @! = ();
 
@@ -422,10 +322,6 @@ sub add {
         $$data{'place'}       = '' unless $$data{'place'};
         $$data{'birthday'}    = '' unless $$data{'birthday'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
-
-# warn Dumper( $$data{'groups'} );
-#         $$data{'groups'}      = from_json( $$data{'groups'} );
-# warn Dumper( $$data{'groups'} );
 
         $result = $self->model('User')->_insert_user( $data );
     }

@@ -1,6 +1,6 @@
-#  Удалить информацию о пользователе
-# my $id = $self->_delete_user({
-# 'id' => '1', # Id пользователя, до 9 цифр, обязательно
+# удалить предмет
+# my $id = $self->_delete_discipline({
+# 'id' => 1   # До 9 цифр, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -24,75 +24,45 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-# Ввод групп
+# Ввод файлов
 my $data = {
-    1 => {
-        'data' => {
-            'name'      => 'name1',
-            'label'     => 'label1',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '1',
-            'status'    => 'ok'
-        }
-    },
-    2 => {
-        'data' => {
-            'name'      => 'name2',
-            'label'     => 'label2',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '2',
-            'status'    => 'ok' 
-        }
-    },
-    3 => {
-        'data' => {
-            'name'      => 'name3',
-            'label'     => 'label3',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '3',
-            'status'    => 'ok' 
-        }
-    }
+   'description' => 'description',
+    upload => { file => './t/Discipline/all_right.svg' }
 };
-diag "Create groups:";
-foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$data{$test}{'result'} );
+diag "Insert media:";
+$t->post_ok( $host.'/upload/' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
 }
 diag "";
 
-# Ввод пользователя
-diag "Add user:";
+# Добавление предмета
 $data = {
-    'surname'      => 'фамилия_right',
-    'name'         => 'имя_right',
-    'patronymic',  => 'отчество_right',
-    'place'        => 'place',
-    'country'      => 'RU',
-    'timezone'     => -12,
-    'birthday'     => '01.01.2000',
-    'password'     => 'password1',
-    'avatar'       => 1,
-    'email'        => 'emailright@email.ru',
-    'phone'        => '+79212222222',
-    'status'       => 1,
-    'groups'       => "[1,2,3]"
+    'name'        => 'Предмет1',
+    'label'       => 'Предмет 1',
+    'description' => 'Краткое описание',
+    'content'     => 'Полное описание',
+    'keywords'    => 'ключевые слова',
+    'url'         => 'https://test.com',
+    'seo'         => 'дополнительное поле для seo',
+    'parent'      => 0,
+    'status'      => 1,
+    'attachment'  => '[1]'
 };
-$t->post_ok( $host.'/user/add' => form => $data );
+my $result = {
+    'id'        => 1,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag "Can't connect";
-    exit;
+    diag("Can't connect \n");
+    last;
 }
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
 
 my $test_data = {
     # положительные тесты
@@ -101,7 +71,8 @@ my $test_data = {
             'id' => 1
         },
         'result' => {
-            'status' => 'ok'
+            'status' => 'ok',
+            'id' => 1
         },
         'comment' => 'All fields:' 
     },
@@ -111,7 +82,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "could not delete '404' from users",
+            'message'   => "can't delete EAV object",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -140,7 +111,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/delete' => form => $data );
+    $t->post_ok( $host.'/discipline/delete' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -155,11 +126,8 @@ done_testing();
 # очистка тестовой таблицы
 sub clear_db {
     if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
+        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
+        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
 
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
 
@@ -169,10 +137,15 @@ sub clear_db {
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
 
         $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
     }
     else {
         warn("Turn on 'test' option in config")
     }
 }
+
+
+
+
+
+
+
