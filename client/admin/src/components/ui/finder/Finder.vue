@@ -1,8 +1,7 @@
 <template>
   <div class="pos-finder">
 
-    <FinderColumn v-if="root"
-                  :data="root"
+    <FinderColumn :data="root"
                   @open="open($event)"/>
 
     <FinderColumn v-if="levels"
