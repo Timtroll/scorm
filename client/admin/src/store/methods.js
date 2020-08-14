@@ -77,7 +77,7 @@ function groupedFields (data, proto) {
 
       if (data && data.hasOwnProperty(prop)) {
 
-        // Поля не объедененные в группы (видимы всегда)
+        // Поля не обледенённые в группы (видимы всегда)
         if (prop !== 'tabs') {
 
           // только те поля, которые определены в прототипе
@@ -94,7 +94,7 @@ function groupedFields (data, proto) {
 
         }
 
-        // Поля объедененные в группы
+        // Поля обледенённые в группы
         else if (prop === 'tabs') {
 
           const groupFields = data.tabs
@@ -109,22 +109,24 @@ function groupedFields (data, proto) {
             groupItem.label       = item.label
             const groupItemFields = item.fields
 
-            console.log('groupItem', groupItemFields)
+            //console.log('groupItem', groupItemFields)
 
             if (!groupItemFields) return
             groupItemFields.forEach(itemField => {
 
               //console.log(itemField)
 
-              const key       = Object.keys(itemField)[0]
-              const val       = Object.values(itemField)[0]
-              let protoKey    = proto.filter(i => i.name === key)
-              let protoKeyOne = protoKey[0]
+              const key = Object.keys(itemField)[0]
+              const val = Object.values(itemField)[0]
+
+              //console.log(key, val)
+              let protoKeyOne = proto.find(i => i.name === key)
 
               if (protoKeyOne) {
                 protoKeyOne.value    = (_checkSelected(val)) ? val.value : val
                 protoKeyOne.selected = (_checkSelected(val)) ? val.selected : ''
                 groupItem.fields.push(protoKeyOne)
+                console.log('protoKeyOne', protoKeyOne)
               }
 
             })

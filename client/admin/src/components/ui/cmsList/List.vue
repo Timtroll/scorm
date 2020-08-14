@@ -105,6 +105,7 @@
                            :type="item.type"
                            :name="item.name"
                            :selected="valueSelected"
+                           :selected2="item.selected"
                            :readonly="notEditable(item.readonly)"
                            :add="item.add"
                            :required="item.required"
@@ -184,6 +185,7 @@ export default {
     InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
     InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),
     InputSelect:     () => import(/* webpackChunkName: "InputSelect" */ '../inputs/InputSelect'),
+    InputSelect2:    () => import(/* webpackChunkName: "InputSelect2" */ '../inputs/InputSelect2'),
     InputSelected:   () => import(/* webpackChunkName: "InputSelected" */ '../inputs/InputSelected'),
     InputNumber:     () => import(/* webpackChunkName: "InputNumber" */ '../inputs/InputNumber'),
     InputBoolean:    () => import(/* webpackChunkName: "InputBoolean" */ '../inputs/InputBoolean'),
