@@ -134,12 +134,12 @@ sub index {
         };
 
         if ( $result ) {
-            $list->{'list'}->{'body'} = $result;
-            $list->{'list'}->{'settings'}->{'page'}->{'total'} = scalar(@$result);
+            $list->{'body'} = $result;
+            $list->{'settings'}->{'page'}->{'total'} = scalar(@$result);
         }
         else {
-            $list->{'list'}->{'body'} = [];
-            $list->{'list'}->{'settings'}->{'page'}->{'total'} = 0;
+            $list->{'body'} = [];
+            $list->{'settings'}->{'page'}->{'total'} = 0;
         }
     }
 
