@@ -110,34 +110,30 @@ sub _list_discipline {
     #     my $usr = Freee::EAV->new( 'User' );
     #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
 
-    # $list = $discipline->_list( { FIELDS => 'id', INJECTION => '"public"."EAV_data_string"' });
-    # $list = $discipline->_list( { FIELDS => 'url' });
-    # warn Dumper( 'list:' );
-    # warn Dumper( $list );
+    # $list = $discipline->_list( { Parents => { 0 => 0 }, INJECTION => 1 });
 
+    # $list = $discipline->_list( { FIELDS => 'string.*, items.*', Parents => 0, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
+    $list = $discipline->_list( { Parents => 0, ShowHidden => 1 } );
+    foreach my $row ( @$list ) {
+        my $Obj = Freee::EAV->new( 'Discipline', { id => $row->{id} } );
+        # my $item = {
+        #     'label' => $Obj->label()
+        # };
+        $row->{'label'} = $Obj->label();
+        $row->{'description'} = $Obj->description();
+        # $row->{'route'} = $self->url_for;
+        # my $label = $Obj->label();
+        # print $label;
+    }
+    # $list = $discipline->_list();
+
+    # $list = $discipline->_list( { FIELDS => 'string.*', Parents => { 0 => 0 }, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
+    # $list = $discipline->_list( { Parents => { 0 => 0 }, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
+    # $list = $discipline->_list( { Parents => { 0 => 0 }, ShowHidden => 1 } );
+    # $list = $discipline->_list( { FIELDS => 'parent' });
     # $list = $discipline->_getAll();
-    # warn Dumper( $list );
 
-    # if ( $result ) {
-    #     $list = {
-    #        "id"          => $$result{'id'},
-    #        "label"       => $$result{'label'},
-    #        "description" => $$result{'description'},
-    #        "content"     => $$result{'content'},
-    #        "keywords"    => $$result{'keywords'},
-    #        "url"         => $$result{'url'},
-    #        "seo"         => $$result{'seo'},
-    #        "route"       => $$result{'route'},
-    #        "parent"      => $$result{'parent'},
-    #        "attachment"  => $$result{'attachment'},
-    #        "status"      => $$result{'publish'}
-    #     }
-    # } 
-    # else {
-    #     push @!, 'can\'t get list';
-    #     return;
-    # }
-# warn Dumper( $result );
+    # warn Dumper( $list );
 
     return $list;
 }

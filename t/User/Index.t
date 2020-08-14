@@ -91,8 +91,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 3,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
@@ -113,8 +112,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 3,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
@@ -135,8 +133,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 3,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
@@ -157,8 +154,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 3,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
@@ -179,8 +175,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 3,
             'birthday'     => '01.01.2000',
             'password'     => 'password1',
