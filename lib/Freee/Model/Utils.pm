@@ -4,6 +4,7 @@ use Mojo::Base 'Freee::Model::Base';
 use Mojo::JSON;
 use JSON::XS;
 use Encode qw( _utf8_off );
+use Time::Local;
 
 use Data::Dumper;
 
@@ -81,12 +82,40 @@ sub _folder_check {
 
 # получить текущее время
 sub _get_time {
-    my $self = shift;
-
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=localtime( time );
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime( time );
 
     my $nice_timestamp = sprintf ( "%04d%02d%02d %02d:%02d:%02d", $year+1900, $mon+1, $mday, $hour, $min,$sec );
     return $nice_timestamp;
 }
+
+# перевод секунд в дату
+sub _sec2date {
+    my ( $self, $time ) = @_;
+
+    unless ( $time ) {
+        push @!, 'no time';
+        return;
+    }
+
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime( $time );
+
+    my $nice_timestamp = sprintf ( "%04d%02d%02d %02d:%02d:%02d", $year+1900, $mon+1, $mday, $hour, $min,$sec );
+    return $nice_timestamp;
+}
+
+# перевод даты в секунды
+sub _date2sec {
+    my ( $self, $time ) = @_;
+
+    unless ( $time ) {
+        push @!, 'no time';
+        return;
+    }
+
+    # перевод времени в секунды
+    $time =~ /^(\d+)-(\d+)-(\d+)\ (\d+)\:(\d+)\:(\d+)$/;
+    $time = timelocal( $6, $5, $4, $3, $2-1, $1 );
+}
+
 
 1;

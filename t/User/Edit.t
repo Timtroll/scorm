@@ -80,7 +80,7 @@ $data = {
     'place'        => 'place',
     'country'      => 'RU',
     'timezone'     => 3,
-    'birthday'     => '01.01.2000',
+    'birthday'     => 807303600,
     'password'     => 'password1',
     'avatar'       => 1,
     'email'        => 'emailright@email.ru',
@@ -108,7 +108,7 @@ my $test_data = {
                             {"name" => "имя_right"},
                             {"patronymic" => "отчество_right"},
                             {"surname" => "фамилия_right"},
-                            {"birthday" => "2000-01-01 00:00:00"},
+                            {"birthday" => 807303600},
                             {"avatar" => 1},
                             {"country" =>
                                 {
