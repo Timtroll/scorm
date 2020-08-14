@@ -16,6 +16,7 @@
                     v-on:share-stopped="logEvent"
                     @error="onError"/>
 
+<!--        :socketURL="'wss://freee.su/wschannel/'"-->
         <!--        :stun-server="'https://free-webrtc-server.herokuapp.com'"-->
         <!--        :turn-server="'https://free-webrtc-server.herokuapp.com'"-->
         <!--        <video width="1920"-->

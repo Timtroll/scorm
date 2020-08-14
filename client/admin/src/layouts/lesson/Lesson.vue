@@ -30,6 +30,8 @@ import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
  *    url https://free-webrtc-server.herokuapp.com:8888
  *    docs - https://elements.heroku.com/buttons/florindumitru/signalmaster /
  *           https://github.com/florindumitru/signalmaster
+ *
+ * https://rtcmulticonnection.herokuapp.com/demos/
  */
 export default {
   name: 'Lesson',
