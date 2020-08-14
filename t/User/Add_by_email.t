@@ -6,7 +6,7 @@
 # 'place'        => 'place',           # До 64 букв, цифр и знаков, обязательное поле
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
 # 'timezone'     => 12.75,             # 2-4 буквы кода часового пояса, обязательное поле
-# 'birthday'     => '01.01.2000',      # 12 цифр, обязательное поле
+# 'birthday'     => 807393600,      # 12 цифр, обязательное поле
 # 'status'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
 # 'avatar'       => 1,              # До 9 цифр, обязательное поле
@@ -93,7 +93,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright@email.ru',
@@ -115,7 +115,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright2@email.ru',
@@ -138,7 +138,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
@@ -159,7 +159,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
@@ -179,7 +179,7 @@ my $test_data = {
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
@@ -200,7 +200,7 @@ my $test_data = {
             'place'        => 'place',
             'country'      => 'RU'
 ,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
@@ -222,7 +222,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => 'email@email.ru',
             'status'       => 1,
@@ -243,7 +243,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'status'       => 1,
@@ -264,7 +264,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '+++',
@@ -286,7 +286,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright@email.ru',
@@ -308,7 +308,7 @@ my $test_data = {
             'country'      => 'RU'
 ,
             'timezone'     => 12.75,
-            'birthday'     => '01.01.2000',
+            'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',

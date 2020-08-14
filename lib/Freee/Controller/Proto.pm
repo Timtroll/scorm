@@ -116,7 +116,7 @@ sub proto_user {
         # # проверка данных
         $data = $self->_check_fields();
 
-            unless ( @! ) {
+        unless ( @! ) {
             $hashref = $self->_countries();
             foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
                 push @$countries, [ $_, $$hashref{$_} ];
@@ -159,9 +159,7 @@ sub proto_user {
                         'label' => 'Контакты',
                         'fields' => [
                             {'email'           => ''}, # email пользователя
-                            {'emailconfirmed'  => ''}, # email подтвержден
-                            {'phone'           => ''}, # номер телефона
-                            {'phoneconfirmed'  => ''}  # телефон подтвержден
+                            {'phone'           => ''}  # номер телефона
                         ]
                     },
                     {
