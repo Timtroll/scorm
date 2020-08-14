@@ -183,11 +183,10 @@ sub edit {
         }
     }
 
-# use Encode ( '_utf8_on', '_utf8_off' );
-# _utf8_off( $countries );
-# _utf8_on( $countries );
-
     unless ( @! ) {
+        # перевод времени в секунды
+        $$result_eav{'birthday'} = $self->model('Utils')->_date2sec( $$result_eav{'birthday'} );
+
         $result = {
             'tabs' => [ # Вкладки 
                 {
@@ -311,16 +310,23 @@ sub add {
     }
 
     unless ( @! ) {
-        # добавляем юзера в EAV и users
+        # переводим секунды в дату рождения
+        if ( $$data{'birthday'} ) {
+            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
+        }
+        else {
+            $$data{'birthday'}    = '';
+        }
+
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'birthday'}    = '' unless $$data{'birthday'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
 
+        # добавляем юзера в EAV и users
         $result = $self->model('User')->_insert_user( $data );
     }
 
@@ -379,6 +385,14 @@ sub add_by_email {
 
     # добавляем юзера в EAV и users
     unless ( @! ) {
+        # переводим секунды в дату рождения
+        if ( $$data{'birthday'} ) {
+            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
+        }
+        else {
+            $$data{'birthday'}    = '';
+        }
+
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
@@ -386,7 +400,6 @@ sub add_by_email {
         $$data{'phone'}       = '';
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'birthday'}    = '' unless $$data{'birthday'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_insert_user( $data );
@@ -440,6 +453,14 @@ sub add_by_phone {
 
     # добавляем юзера в EAV и users
     unless ( @! ) {
+        # переводим секунды в дату рождения
+        if ( $$data{'birthday'} ) {
+            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
+        }
+        else {
+            $$data{'birthday'}    = '';
+        }
+
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
@@ -447,7 +468,6 @@ sub add_by_phone {
         $$data{'publish'}     = $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'birthday'}    = '' unless $$data{'birthday'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_insert_user( $data );
@@ -540,12 +560,19 @@ sub save {
     }
 
     unless ( @! ) {
+        # переводим секунды в дату рождения
+        if ( $$data{'birthday'} ) {
+            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
+        }
+        else {
+            $$data{'birthday'}    = '';
+        }
+
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     =  $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'birthday'}    = '' unless $$data{'birthday'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
 
         $result = $self->model('User')->_save_user( $data );
