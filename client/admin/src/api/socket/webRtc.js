@@ -1,7 +1,7 @@
 export default class socket {
 
   constructor () {
-    this.url =  'wss://freee.su/wschannel/:user'
+    this.url =  'wss://freee.su/wschannel/'
     this.socket = new WebSocket(this.url)
 
     this.socket.onopen = (event) => {
