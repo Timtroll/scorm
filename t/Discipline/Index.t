@@ -68,7 +68,7 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'status'      => 1,
+            'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {

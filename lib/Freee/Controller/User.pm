@@ -186,8 +186,6 @@ sub edit {
 # use Encode ( '_utf8_on', '_utf8_off' );
 # _utf8_off( $countries );
 # _utf8_on( $countries );
-warn Dumper( $countries );
-
 
     unless ( @! ) {
         $result = {
