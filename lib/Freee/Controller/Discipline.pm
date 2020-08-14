@@ -12,49 +12,6 @@ sub index {
     my $self = shift;
 
     my ( $list, $result, $resp );
-# print 1;
-#     my $list = [
-#         {
-#             "folder" => 1,
-#             "id" => 1,
-#             "label" => "Предмет 1",
-#             "description" => "Краткое описание",
-#             "content" => "Полное описание",
-#             "keywords" => "ключевые слова",
-#             "url" => "как должен выглядеть url",
-#             "seo" => "дополнительное поле для seo",
-#             "route" => "/discipline/",
-#             "parent" => 0,
-#             "type" => "",
-#             "status" => "ok",
-#             "attachment" => [345,577,643]
-#         },
-#         {
-#             "folder" => 1,
-#             "id" => 2,
-#             "label" => "Предмет 2",
-#             "description" => "Краткое описание",
-#             "content" => "Полное описание",
-#             "keywords" => "ключевые слова",
-#             "url" => "как должен выглядеть url",
-#             "seo" => "дополнительное поле для seo",
-#             "route" => "/discipline/",
-#             "parent" => 0,
-#             "type" => "",
-#             "status" => "ok",
-#             "attachment" => [345,577,643]
-#         }
-#     ];
-
-#     my $resp;
-#     $resp->{'label'} = 'Предметы';
-#     $resp->{'add'}   = 1;
-#     $resp->{'child'} = {
-#         "add"    => 1,
-#         "edit"   => 1,
-#         "remove" => 1,  
-#         "route"  => "/theme/" # роут для получения детей
-#     };
 
     $list = $self->model('Discipline')->_list_discipline();
 

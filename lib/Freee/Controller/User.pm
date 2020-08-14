@@ -11,84 +11,6 @@ use Mojo::JSON qw( from_json );
 sub index {
     my $self = shift;
 
-#     $self->render(
-#         'json'    => {
-#             {
-#                "list" => {
-#                     "body" => [
-#                         {
-#                             "surname" =>  "Фамилия",
-#                             "name" =>  "Имя",
-#                             "patronymic" =>  "Отчество",
-#                             "place" =>  "Луна",
-#                             "country" =>  "Киргизия",
-#                             "timezone" =>  "+3",
-#                             "birthday" =>  "01.01.2020",
-#                             "password" =>  "password1",
-#                             "avatar" =>  1234,
-#                             "type" =>  1,
-#                             "email" =>  "email\@mail.ru",
-#                             "emailconfirmed" =>  1,
-#                             "phone" =>  "9873636363",
-#                             "phoneconfirmed" =>  1,
-#                             "status" =>  1
-#                         }
-#                     ],
-#                     "settings" => {
-#                         "editable" => 1,
-#                         "massEdit" => 0,
-#                         "page" => {
-#                             "current_page" => 1,
-#                             "per_page" => 100,
-#                             "total" => 0
-#                         },
-#                         "removable" => 1,
-#                         "sort" => {
-#                             "name" => "id",
-#                             "order" => "asc"
-#                         }
-#                     }
-#                 },
-#                "status" => "ok"
-#             }
-#         }
-#     );
-#     return;
-
-# warn "index";
-
-# my $OfficeHelper = $Self->{EAVObject}->new('Office');
-# my $Childs       = $OfficeHelper->_list(
-#     {
-#         Parents => { $Param{Data}->{GroupNode} => 0 },
-#         Filter  => { Type                      => 'office' },
-#     }
-# );
-
-    # my @data;
-    # foreach (1..10) {
-    #     push @data, {
-    #         'id'                => $_,
-    #         'surname'           => 'Фамилия',           # Фамилия
-    #         'name'              => 'Имя',               # Имя
-    #         'patronymic'        => 'Отчество',          # Отчество
-    #         'city'              => 'Санкт-Петербург',   # город
-    #         'country'           => 'Россия',            # страна
-    #         'timezone'          => '+3',                # часовой пояс
-    #         'birthday'          => 123132131,           # дата рождения (в секундах)
-    #         'email'             => 'username_'.$_.'@ya.ru',    # email пользователя
-    #         'emailconfirmed'    => 1,                   # email подтвержден
-    #         'phone'             => 79312445646,         # номер телефона
-    #         'phoneconfirmed'    => 1,                   # телефон подтвержден
-    #         'status'            => 1,                   # активный / не активный пользователь
-    #         'groups'            => [1, 2, 3],           # список ID групп
-    #         'password'          => 'khasdf',            # хеш пароля
-    #         'avatar'            => 'https://thispersondoesnotexist.com/image'
-    #     };
-    # }
-    # $data->{'body'} = \@data;
-    # $data->{'settings'}->{'page'}->{'total'} = scalar(@data);
-
     my ( $data, $list, $resp, $result );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
@@ -96,20 +18,6 @@ sub index {
         # проверка данных
         $data = $self->_check_fields();
     }
-
-    # unless ( @! ) {
-
-    #     $usr = Freee::EAV->new( 'User' );
-    #     # $list = $list->_list(
-    #     #     {
-    #     #         Parents => { 1      => 0 },
-    #     #         Filter  => { Type   => 'User' },
-    #     #     }
-    #     # );
-    #     $list = $usr->_list( $dbh, { Filter => { 'User.parent' => $$data{'id'} } } );
-
-    # warn Dumper $list;
-    # }
 
     unless ( @! ) {
         # получаем список пользователей группы
@@ -251,14 +159,6 @@ sub add {
     my ($self);
     $self = shift;
 
-    # $self->render(
-    #     'json'    => {
-    #         'id'        => 1,
-    #         'status'    => 'ok'
-    #     }
-    # );
-    # return;
-
     my ($data, $resp, $result, $groups );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
@@ -266,23 +166,6 @@ sub add {
         # проверка данных
         $data = $self->_check_fields();
     }
-
-    # unless ( @! ) {
-    #     # проверяем, - есть ли такой юзер в EAV и users
-    #     # my $usr = Freee::EAV->new( 'User', { id => 2 } );
-    #     # my $user = {
-    #     #     'email' => $$data{'email'},
-    #     #     'phone' => $$data{'phone'}
-    #     # };
-    #     # ( $result, $error ) = $self->model('User')->_check_user( $user );
-    #     # if ( $result ) {
-    #     #     push @!, "Email $$data{'email'} already used";
-    #     # }
-
-    #     # проверяем, используется ли емэйл или телефон другим пользователем
-    #     ( $result, $error ) = $self->model('User')->_check_user( $data );
-    #     push @!, $error unless $result;
-    # }
 
     unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
@@ -323,6 +206,7 @@ sub add {
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
         $$data{'avatar'}      = '' unless $$data{'avatar'};
+        $$data{'groups'}      = '' unless $$data{'groups'};
 
         # добавляем юзера в EAV и users
         $result = $self->model('User')->_insert_user( $data );
@@ -339,21 +223,6 @@ sub add {
 
 sub add_by_email {
     my $self = shift;
-
-    # $self->render(
-    #     'json'    => {
-    #         'id'        => 1,
-    #         'status'    => 'ok'
-    #     }
-    # );
-
-    # $self->render(
-    #     'json'    => {
-    #         'message'   => 'Email emailright@email.ru already used',
-    #         'status'    => 'fail'
-    #     }
-    # );
-    # return;
 
     my ( $groups, $data, $resp, $result, $data_eav, $user );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
@@ -415,14 +284,6 @@ sub add_by_email {
 sub add_by_phone {
     my $self = shift;
 
-    # $self->render(
-    #     'json'    => {
-    #         'id'        => 1,
-    #         'status'    => 'ok'
-    #     }
-    # );
-    # return;
-
     my ( $data, $resp, $result, $data_eav, $user, $groups );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
@@ -480,35 +341,26 @@ sub add_by_phone {
     $self->render( 'json' => $resp );
 }
 
+# $data = {
+#     'id'                => 1,
+#     'surname'           => 'Фамилия',           # Фамилия
+#     'name'              => 'Имя',               # Имя
+#     'patronymic'        => 'Отчество',          # Отчество
+#     'city'              => 'Санкт-Петербург',   # город
+#     'country'           => 'Россия',            # страна
+#     'timezone'          => '+3',                # часовой пояс
+#     'birthday'          => 123132131,           # дата рождения (в секундах)
+#     'email'             => 'username@ya.ru',    # email пользователя
+#     'emailconfirmed'    => 1,                   # email подтвержден
+#     'phone'             => 79312445646,         # номер телефона
+#     'phoneconfirmed'    => 1,                   # телефон подтвержден
+#     'status'            => 1,                   # активный / не активный пользователь
+#     'groups'            => [1, 2, 3],           # список ID групп
+#     'password'          => 'khasdf',            # хеш пароля
+#     'avatar'            => 'https://thispersondoesnotexist.com/image'
+# };
 sub save {
     my $self = shift;
-
-    # $self->render(
-    #     'json'    => {
-    #         'id'        => 1,
-    #         'status'    => 'ok'
-    #     }
-    # );
-    # return;
-
-    # $data = {
-    #     'id'                => 1,
-    #     'surname'           => 'Фамилия',           # Фамилия
-    #     'name'              => 'Имя',               # Имя
-    #     'patronymic'        => 'Отчество',          # Отчество
-    #     'city'              => 'Санкт-Петербург',   # город
-    #     'country'           => 'Россия',            # страна
-    #     'timezone'          => '+3',                # часовой пояс
-    #     'birthday'          => 123132131,           # дата рождения (в секундах)
-    #     'email'             => 'username@ya.ru',    # email пользователя
-    #     'emailconfirmed'    => 1,                   # email подтвержден
-    #     'phone'             => 79312445646,         # номер телефона
-    #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-    #     'status'            => 1,                   # активный / не активный пользователь
-    #     'groups'            => [1, 2, 3],           # список ID групп
-    #     'password'          => 'khasdf',            # хеш пароля
-    #     'avatar'            => 'https://thispersondoesnotexist.com/image'
-    # };
 
     my ( $data, $resp, $groups, $result );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
@@ -594,13 +446,6 @@ sub save {
 sub toggle {
     my $self = shift;
 
-    # $self->render(
-    #     'json'    => {
-    #         'id'        => 1,
-    #         'status'    => 'ok'
-    #     }
-    # );
-    # return;
 
     my ( $toggle, $resp, $data, $result );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
@@ -626,13 +471,6 @@ sub toggle {
 
 sub delete {
     my $self = shift;
-
-    # $self->render(
-    #     'json'    => {
-    #         'status'    => 'ok'
-    #     }
-    # );
-    # return;
 
     my ( $data, $resp, $result );
 

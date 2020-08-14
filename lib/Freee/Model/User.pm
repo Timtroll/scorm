@@ -253,7 +253,7 @@ sub _insert_user {
 #                 "order"      => 'local',
 #                 "flags"     => 0
 #             };
-    unless ( @!) {
+    unless ( @! ) {
         # делаем запись в EAV
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
@@ -293,7 +293,7 @@ sub _insert_user {
         $sth->execute();
 
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
-        push @!, "Can not insert $$data{'title'} into users" unless $user_id;
+        push @!, "Can not insert $$data{'title'} into users". DBI->errstr unless $user_id;
 
         # таблица users_social
         # my $user_data = {
@@ -472,4 +472,5 @@ sub _delete_user {
 
     return $result;
 }
+
 1;

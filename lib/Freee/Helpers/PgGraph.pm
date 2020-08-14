@@ -38,6 +38,7 @@ sub register {
         $self->{errstr} = sub {
             print "Error received: $DBI::errstr\n";
         };
+
         return $self->{dbh};
     });
 
