@@ -118,19 +118,17 @@ sub index {
 
     unless ( @! ) {
         $list = {
-            'list' => {
-                'settings' => {
-                    'editable' => 1,
-                    'massEdit' => 0,
-                    'page' => {
-                        'current_page' => 1,
-                        'per_page' => 100
-                    },
-                    'removable' => 1,
-                    'sort' => {
-                        'name' => 'id',
-                        'order' => 'asc'
-                    }
+            'settings' => {
+                'editable' => 1,
+                'massEdit' => 0,
+                'page' => {
+                    'current_page' => 1,
+                    'per_page' => 100
+                },
+                'removable' => 1,
+                'sort' => {
+                    'name' => 'id',
+                    'order' => 'asc'
                 }
             }
         };
@@ -147,7 +145,7 @@ sub index {
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'data'} = $list unless @!;
+    $resp->{'list'} = $list unless @!;
 
     @! = ();
 
