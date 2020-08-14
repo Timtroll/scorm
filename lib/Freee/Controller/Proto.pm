@@ -109,15 +109,25 @@ sub proto_user {
     my $self = shift;
 
     # read params
-    my ( $id, $data, $resp );
+    my ( $id, $data, $hashref, $countries, $timezones, $resp );
     # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless ( @! ) {
         # # проверка данных
         $data = $self->_check_fields();
 
-        unless ( @! ) {
-            # прототип настройки
+            unless ( @! ) {
+            $hashref = $self->_countries();
+            foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
+                push @$countries, [ $_, $$hashref{$_} ];
+            }
+
+            $hashref = $self->_time_zones();
+            foreach ( sort { $a <=> $b } keys %$hashref ) {
+                push @$timezones, [ $_, $$hashref{$_} ];
+            }
+
+            # прототип пользователя
             $data = {
                 'tabs' => [ # Вкладки
                     {
@@ -127,8 +137,18 @@ sub proto_user {
                             {'name'          => ''}, # Имя
                             {'patronymic'    => ''}, # Отчество
                             {'place'         => ''}, # город
-                            {'country'       => ''}, # страна
-                            {'timezone'      => ''}, # часовой пояс
+                            {'country'       =>      # страна
+                                {
+                                    "selected"  => $countries, 
+                                    "value"     => ''
+                                }
+                            },
+                            {'timezone'       =>     # часовой пояс
+                                {
+                                    "selected"  => $timezones, 
+                                    "value"     => ''
+                                }
+                            },
                             {'birthday'      => ''}, # дата рождения (в секундах)
                             {'status'        => ''}, # активный / не активный пользователь
                             {'avatar'        => ''},

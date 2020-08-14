@@ -360,10 +360,6 @@ sub _save_user {
                 'parent'  => 0
             }
         );
-        # $result = $usr->surname( $$data{'surname'} );
-        # $result = $usr->name( $$data{'name'} );
-        # $result = $usr->title( $$data{'title'} );
-# warn Dumper { 'User' => $data };
 
         $result = $usr->_MultiStore( {                 
             'User' => {
