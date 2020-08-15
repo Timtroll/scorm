@@ -95,7 +95,6 @@ export default {
           save:      'users/leafSave',
           saveField: 'users/leafSaveField',
           remove:    'users/removeLeaf'
-
         },
 
         editPanel: {
@@ -114,6 +113,9 @@ export default {
 
     // Регистрация Vuex модуля settings
     await this.$store.registerModule('users', users)
+
+    // показать кнопку меню в navBar
+    this.$store.commit('navBarLeftActionShow', true)
 
     // // запросы
     this.$store.commit('table_api', this.actions.table)
@@ -144,6 +146,7 @@ export default {
 
     this.$store.commit('tree_active', null)
     this.$store.commit('set_tree_proto', [])
+    this.$store.commit('navBarLeftActionShow', false)
     this.closeEditPanel()
     // выгрузка Vuex модуля settings
     this.$store.unregisterModule('users')

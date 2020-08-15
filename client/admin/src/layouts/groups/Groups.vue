@@ -102,6 +102,9 @@ export default {
 
     await this.$store.registerModule('groups', groups)
 
+    // показать кнопку меню в navBar
+    this.$store.commit('navBarLeftActionShow', true)
+
     // запросы
     this.$store.commit('table_api', this.actions.table)
     this.$store.commit('tree_api', this.actions.tree)
@@ -133,6 +136,7 @@ export default {
     this.$store.commit('tree_active', null)
     this.$store.commit('set_editPanel_proto', [])
     this.$store.commit('set_tree_proto', [])
+    this.$store.commit('navBarLeftActionShow', false)
 
     // выгрузка Vuex модуля settings
     this.$store.unregisterModule('groups')
