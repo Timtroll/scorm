@@ -48,7 +48,7 @@ const actions = {
              localStorage.removeItem('token')
              delete axios.defaults.headers.common['Authorization']
             notify('До встречи!', 'success')
-             router.push({name: 'Login'})
+             router.push({name: 'Login'}).catch(e => {})
              resolve(response)
            }
          })

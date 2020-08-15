@@ -156,9 +156,7 @@
               .then(() => this.$router.push({
                 name: 'Main'
               }))
-              .catch((err) => {
-
-              })
+              .catch((err) => {})
         }
       },
 

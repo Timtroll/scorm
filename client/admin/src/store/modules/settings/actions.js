@@ -84,7 +84,7 @@ const actions = {
             params: {
               id: resp.id
             }
-          })
+          }).catch(e => {})
 
         } else {
           store.commit('editPanel_status_error') // статус - ошибка
@@ -157,7 +157,7 @@ const actions = {
 
           // если удаляем текушую страницу, то переходим в начало раздела
           if (router.currentRoute.params.id === id) {
-            await router.push({name: 'Settings'})
+            await router.push({name: 'Settings'}).catch(e => {})
           }
           await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об успехе

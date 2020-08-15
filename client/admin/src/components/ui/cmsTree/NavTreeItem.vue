@@ -223,7 +223,7 @@
             id:    item.id,
             title: item.label
           }
-        })
+        }).catch(e => {})
       },
 
       // edit children group

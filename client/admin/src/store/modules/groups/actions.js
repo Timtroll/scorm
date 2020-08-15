@@ -1,9 +1,9 @@
-import Api_EditPanel from '../../../api/groups/EditPanel'
-import Api_Tree from '../../../api/groups/Tree'
-import store from '../../store'
-import router from '../../../router'
+import Api_EditPanel             from '../../../api/groups/EditPanel'
+import Api_Tree                  from '../../../api/groups/Tree'
+import store                     from '../../store'
+import router                    from '../../../router'
 import {clone, flatTree, notify} from '../../methods'
-import Api from '../../../api/groups/Table'
+import Api                       from '../../../api/groups/Table'
 
 const actions = {
 
@@ -40,7 +40,8 @@ const actions = {
             //Плоское дерево
             const flattenTree = flatTree(clone(tree))
             store.commit('set_tree_flat', flattenTree)
-          } else {
+          }
+          else {
             store.commit('set_tree', [])
             store.commit('tree_status_success')
             notify('В дереве пусто', 'warning')
@@ -49,7 +50,8 @@ const actions = {
 
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -86,15 +88,17 @@ const actions = {
             params: {
               id: resp.id
             }
-          })
+          }).catch(e => {})
 
-        } else {
+        }
+        else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -123,16 +127,19 @@ const actions = {
           await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об ошибке
 
-        } else {
+        }
+        else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
-      } else {
+      }
+      else {
         store.commit('editPanel_status_error')
         notify('ERROR: ' + response.message, 'danger')
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -159,19 +166,21 @@ const actions = {
 
           // если удаляем текушую страницу, то переходим в начало раздела
           if (router.currentRoute.params.id === id) {
-            await router.push({name: 'Groups'})
+            await router.push({name: 'Groups'}).catch(e => {})
           }
           await dispatch('_updateFolder')
           notify(resp.status, 'success') // уведомление об успехе
 
-        } else {
+        }
+        else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify(resp.message, 'danger') // уведомление об ошибке
         }
 
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -204,13 +213,15 @@ const actions = {
           const table = resp.list
           await store.commit('set_table', table)
           //await store.commit('table_status_success')
-        } else {
+        }
+        else {
           store.commit('table_status_error') // статус - ошибка
           notify(resp.message, 'danger') // уведомление об ошибке
         }
       }
 
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('table_status_error')
       notify('ERROR: ' + e, 'danger')
       throw 'ERROR: ' + e
@@ -241,21 +252,25 @@ const actions = {
           // уведомление об успехе
           if (resp.message) {
             notify(resp.message, 'success')
-          } else {
+          }
+          else {
             notify(resp.status, 'success')
           }
 
-        } else {
+        }
+        else {
           // уведомление об ошибке
           if (resp.message) {
             notify(resp.message, 'danger')
-          } else {
+          }
+          else {
             notify(resp.status, 'danger')
           }
         }
 
       }
-    } catch (e) {
+    }
+    catch (e) {
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
@@ -296,7 +311,8 @@ const actions = {
         store.commit('editPanel_data', proto) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
       }
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       store.commit('card_right_show', false)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
@@ -320,7 +336,8 @@ const actions = {
       let response
       if (item.add) {
         response = await Api_EditPanel.list_add(item.fields)
-      } else {
+      }
+      else {
         response = await Api_EditPanel.list_save(item.fields)
       }
 
@@ -335,15 +352,18 @@ const actions = {
           store.commit('editPanel_status_success') // статус - успех
           notify(resp.status, 'success') // уведомление об ошибке
 
-        } else if (resp.status === 'fail' && resp.message) {
+        }
+        else if (resp.status === 'fail' && resp.message) {
           store.commit('editPanel_status_error') // статус - ошибка
           notify(resp.message, 'danger') // уведомление об ошибке
-        } else {
+        }
+        else {
           store.commit('editPanel_status_error') // статус - ошибка
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       store.commit('editPanel_status_error') // статус - ошибка
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
@@ -369,12 +389,14 @@ const actions = {
             notify(resp.message, 'success') // уведомление об ошибке
           }
 
-        } else {
+        }
+        else {
           dispatch('getTable', parentId)
           notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       dispatch('getTable', parentId)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e

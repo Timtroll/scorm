@@ -152,7 +152,7 @@
               title: item.label,
               item:  item
             }
-          })
+          }).catch(e => {})
 
         }
 

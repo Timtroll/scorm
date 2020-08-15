@@ -200,7 +200,7 @@ export default {
           id:    item.id,
           title: item.label
         }
-      })
+      }).catch(e => {})
     },
 
     filterProp (prop) {
