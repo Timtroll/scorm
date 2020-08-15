@@ -113,7 +113,6 @@
     <template #body>
 
       <div class="pos-table-container">
-
         <table v-if="tableNotEmpty"
                class="uk-table pos-table uk-table-striped uk-table-hover uk-table-divider uk-table-small uk-table-middle">
 

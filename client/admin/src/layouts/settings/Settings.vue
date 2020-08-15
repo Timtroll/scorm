@@ -23,7 +23,6 @@
 
     <!--bodyLeft-->
     <template #bodyLeft>
-
       <Tree v-if="nav"
             :open-first="true"
             :nav="nav">
@@ -138,6 +137,7 @@ export default {
     this.$store.commit('tree_active', null)
     this.$store.commit('set_editPanel_proto', [])
     this.$store.commit('set_tree_proto', [])
+    this.$store.commit('navBarLeftActionShow', false)
   },
 
   computed: {
