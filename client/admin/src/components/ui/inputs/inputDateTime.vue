@@ -43,93 +43,97 @@
 </template>
 
 <script>
-  import moment from 'moment'
+import moment from 'moment'
 
-  export default {
-    components: {
-      DatePick: () => import(/* webpackChunkName: "DatePick" */  './../datePick/DatePick')
+export default {
+  components: {
+    DatePick: () => import(/* webpackChunkName: "DatePick" */  './../datePick/DatePick')
 
+  },
+
+  name: 'inputDateTime',
+
+  props: {
+
+    value: {
+      default: '',
+      type:    [String, Number]
     },
 
-    name: 'inputDateTime',
-
-    props: {
-
-      value: {},
-
-      label: {
-        default: '',
-        type:    String
-      },
-
-      placeholder: {
-        default: '',
-        type:    String
-      },
-
-      readonly: {default: 0, type: Number},
-      required: {default: 0, type: Number},
-
-      mask: {
-        type: RegExp
-      }
-
+    label: {
+      default: '',
+      type:    String
     },
 
-    data () {
-      return {
-        valueInput: this.value,
-        valid:      true
-      }
+    placeholder: {
+      default: '',
+      type:    String
     },
 
-    watch: {
+    readonly: {default: 0, type: Number},
+    required: {default: 0, type: Number},
 
-      valueInput () {
-        if (this.mask) {
-          this.valueInput = this.valueInput.replace(this.mask, '')
-        }
-      }
-    },
+    mask: {
+      type: [String, RegExp]
+    }
 
-    computed: {
+  },
 
-      isChanged () {
-        return this.valueInput !== this.value
-      },
+  data () {
+    return {
+      valueInput: Number(this.value),
+      valid:      true
+    }
+  },
 
-      validate () {
+  watch: {
 
-        let validClass = null
-        if (this.required) {
-          if (!this.valueInput || this.valueInput.length < 1) {
-            validClass = 'uk-form-danger'
-            this.valid = false
-            this.$emit('valid', this.valid)
-          } else {
-            validClass = 'uk-form-success'
-            this.valid = true
-            this.$emit('valid', this.valid)
-          }
-        }
-        return validClass
-      }
-    },
-
-    methods: {
-
-      dateToSeconds (date) {
-        return moment(date).unix()
-      },
-
-      parseDate () {
-        return new Date(this.value * 1000)
-      },
-
-      update () {
-        this.$emit('change', this.isChanged)
-        this.$emit('value', this.dateToSeconds(this.valueInput))
+    valueInput () {
+      if (this.mask) {
+        this.valueInput = this.valueInput.replace(this.mask, '')
       }
     }
+  },
+
+  computed: {
+
+    isChanged () {
+      return this.valueInput !== Number(this.value)
+    },
+
+    validate () {
+
+      let validClass = null
+      if (this.required) {
+        if (!this.valueInput || this.valueInput.length < 1) {
+          validClass = 'uk-form-danger'
+          this.valid = false
+          this.$emit('valid', this.valid)
+        }
+        else {
+          validClass = 'uk-form-success'
+          this.valid = true
+          this.$emit('valid', this.valid)
+        }
+      }
+      return validClass
+    }
+  },
+
+  methods: {
+
+    dateToSeconds (date) {
+      return moment(date).unix()
+    },
+
+    parseDate () {
+      return new Date(this.value * 1000)
+    },
+
+    update () {
+      this.$emit('change', this.isChanged)
+      this.$emit('value', this.dateToSeconds(this.valueInput))
+    }
   }
+}
 </script>
