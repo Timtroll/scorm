@@ -133,6 +133,14 @@ sub startup {
     $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
     $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
 
+    # управление темами
+    $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета
+    $auth->post('/themes/add')          ->to('themes#add');         # Добавить тему предмета
+    $auth->post('/themes/edit')         ->to('themes#edit');        # Получить данные для редактирования темы предмета
+    $auth->post('/themes/save')         ->to('themes#save');        # Сохранить тему предмета
+    $auth->post('/themes/toggle')       ->to('themes#toggle');      # Изменить статус темы предмета (вкл/выкл)
+    $auth->post('/themes/delete')       ->to('themes#delete');      # Удалить тему предмета
+
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/subject_add')     ->to('cmssubject#add');
     $auth->post('/cms/subject_edit')    ->to('cmssubject#edit');
@@ -224,14 +232,6 @@ sub startup {
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
     $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
-
-    # управление темами
-    $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета
-    $auth->post('/themes/add')          ->to('themes#add');         # Добавить тему предмета
-    $auth->post('/themes/edit')         ->to('themes#edit');         # Получить данные для редактирования темы предмета
-    $auth->post('/themes/save')         ->to('themes#save');        # Сохранить тему предмета
-    $auth->post('/themes/toggle')       ->to('themes#toggle');      # Изменить статус темы предмета (вкл/выкл)
-    $auth->post('/themes/delete')       ->to('themes#delete');      # Удалить тему предмета
 
     # управление заданиями
     $auth->post('/tasks/')              ->to('tasks#index');
