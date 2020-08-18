@@ -644,7 +644,6 @@ sub _list {
     #else - ShowHidden exists and it's true - so we are not use "publish" filter.
 
     $sql .= ' '.$Params->{GROUP_BY}.' ' if exists( $Params->{GROUP_BY} );
-
     $order_sql = ' items.id DESC ' unless defined( $order_sql );
     $sql .= ' ORDER BY '.$order_sql;
 

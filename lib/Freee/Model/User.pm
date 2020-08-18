@@ -74,28 +74,6 @@ my %masks_fields = (
 sub _check_user {
     my ( $self, $data ) = @_;
 
-    # my ( $sth, $dbh, $result, $mess, $user, $value, @mess );
-    # if ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-    #     my $usr = Freee::EAV->new( 'User' );
-    #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
-    #     # взять нужное поле
-    #     $user = {
-    #         surname     => $usr->surname(),
-    #         name        => $usr->name(),
-    #         patronymic  => $usr->patronymic(),
-    #         place       => $usr->place(),
-    #         country     => $usr->country(),
-    #         birthday    => $usr->birthday()
-    #     };
-    # }
-    # else {
-    # }
-    # return $user;
-    # my $usr = Freee::EAV->new( 'User' );
-    # my $user = $usr->_getAll();
-    # my $list = $usr->_list();
-        # my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
-
     my ( $sth, $sql, $result );
 
     unless ( $$data{'email'} || $$data{'phone'} ) {
@@ -128,6 +106,10 @@ sub _check_user {
     return @! ? 0 : 1;
 }
 
+# список юзеров по группам (обязательно id группы)
+# $result = $self->model('User')->_get_list( $data );
+# id - Id группы
+# status - показывать группы только с этим статусом
 sub _get_list {
     my ( $self, $data ) = @_;
 
@@ -168,57 +150,64 @@ sub _get_list {
 
     return $list;
 }
-# Получить все данные пользователя из EAV и таблицы users
-# ( $result, $error ) = $self->model('User')->_get_user( $data );
+# Получить данные пользователя из EAV и таблицы users
+# ( $result ) = $self->model('User')->_get_user( $data );
 # $data = {
-#     'id'          => 1,                               # берется из users
-#     'place'       => 'place',                         # берется из EAV
-#     'country'     => 'country',                       # берется из EAV
-#     'birthday'    => '1972-01-06 00:00:00',           # берется из EAV
-#     'surname'     => 'test',                          # берется из EAV
-#     'name'        => 'name',                          # берется из EAV
-#     'patronymic'  => 'patronymic',                    # берется из EAV
-#     'email'       => 'test@test.com',                 # берется из users
-#     'eav_id'      => 1,                               # берется из users
-#     'phone'       => '+7(999) 222-2222',              # берется из users
-#     'password'    => 'password',                      # берется из users
-#     'timezone'    => '10'                             # берется из users
-#     'time_create' => '2020-06-27 22:16:27.874726+03', # берется из users
-#     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
-#     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
+#     'place'         => 'place',                         # берется из EAV
+#     'country'       => 'country',                       # берется из EAV
+#     'birthday'      => '1972-01-06 00:00:00',           # берется из EAV
+#     'surname'       => 'test',                          # берется из EAV
+#     'name'          => 'name',                          # берется из EAV
+#     'patronymic'    => 'patronymic',                    # берется из EAV
+#     'import_source' => 'https://exist.com/image',       # берется из EAV
+#     'email'         => 'test@test.com',                 # берется из users
+#     'phone'         => '+7(999) 222-2222',              # берется из users
+#     'password'      => 'password',                      # берется из users
+#     'timezone'      => '10',                            # берется из users
+#     'publish'       => true,                            # берется из users
+#     'groups'        => [1]                              # берется из users
 # }
 sub _get_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $sql, $usr, $result_users, $result_eav );
+    my ( $sth, $sql, $usr, $result );
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for get";
     }
 
     unless ( @! ) {
         # взять весь объект из таблицы users
-        $sql = 'SELECT * FROM "public"."users" WHERE "id" = ?';
+        $sql = 'SELECT publish, email, phone, password, timezone, groups FROM "public"."users" WHERE "id" = ?';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
         $sth->execute();
 
-        $result_users = $sth->fetchrow_hashref();
-        push @!, "can't get object from users" unless $result_users;
+        $result = $sth->fetchrow_hashref();
+        push @!, "can't get object from users" unless $result;
     }
 
     unless ( @! ) {
         # взять весь объект из EAV
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
-
-        $result_eav = $usr->_getAll();
-        push @!, "can't get object from EAV" unless $result_eav;
+        if ( $usr ) {
+            $result->{'name'}          = $usr->name();
+            $result->{'patronymic'}    = $usr->patronymic();
+            $result->{'surname'}       = $usr->surname();
+            $result->{'birthday'}      = $usr->birthday();
+            $result->{'import_source'} = $usr->import_source();
+            $result->{'country'}       = $usr->country();
+            $result->{'place'}         = $usr->place();
+        }
+        else {
+            push @!, "object with id 'data{'id'} doesn't exist";
+        }
     }
 
-    return $result_users, $result_eav;
+    return $result;
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
-# ( $result, $error ) = $self->model('User')->_insert_user( $data );
+# ( $user_id ) = $self->model('User')->_insert_user( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
@@ -322,6 +311,26 @@ sub _insert_user {
     return $user_id;
 }
 
+# сохранение данных о пользователе
+# $result = $self->model('User')->_save_user( $data );
+# $data = {
+#     'id'                => 1,
+#     'surname'           => 'Фамилия',           # Фамилия
+#     'name'              => 'Имя',               # Имя
+#     'patronymic'        => 'Отчество',          # Отчество
+#     'city'              => 'Санкт-Петербург',   # город
+#     'country'           => 'Россия',            # страна
+#     'timezone'          => '+3',                # часовой пояс
+#     'birthday'          => 123132131,           # дата рождения (в секундах)
+#     'email'             => 'username@ya.ru',    # email пользователя
+#     'emailconfirmed'    => 1,                   # email подтвержден
+#     'phone'             => 79312445646,         # номер телефона
+#     'phoneconfirmed'    => 1,                   # телефон подтвержден
+#     'status'            => 1,                   # активный / не активный пользователь
+#     'groups'            => [1, 2, 3],           # список ID групп
+#     'password'          => 'khasdf',            # хеш пароля
+#     'avatar'            => 'https://thispersondoesnotexist.com/image'
+# };
 sub _save_user {
     my ( $self, $data ) = @_;
 
@@ -353,7 +362,6 @@ sub _save_user {
         $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
         # обновление полей в EAV
-        # $usr = Freee::EAV->new( 'User' );
         $usr = Freee::EAV->new( 'User',
             {
                 'id'      => $$data{'id'},
@@ -408,6 +416,11 @@ sub _save_user {
     return $result;
 }
 
+# изменение поля на 1/0
+# my $true = $self->toggle( $data );
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
 sub _toggle_user {
     my ( $self, $data ) = @_;
 
@@ -431,6 +444,9 @@ sub _toggle_user {
     return $result;
 }
 
+# удаление пользователя
+# $result = $self->model('User')->_delete_user( $data );
+# 'id'    - id записи 
 sub _delete_user {
     my ( $self, $data ) = @_;
 

@@ -104,15 +104,15 @@ my $result = {
         },
         "list" => [
             {
-                "folder"      => 1,
+                "folder"      => 0,
                 "id"          => 1,
                 "label"       => "Предмет 1",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
-                "url"         => "как должен выглядеть url",
+                "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline",  # роут для работы с элементами
+                "route"       => "/discipline/",  # роут для работы с элементами
                 "parent"      => 0,
                 "status"      => 1,
                 "attachment"  => '[1]'
@@ -124,11 +124,11 @@ my $result = {
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
-                "url"         => "как должен выглядеть url",
+                "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline",
-                "parent"      => 1,
-                "status"      => 1,
+                "route"       => "/discipline/",
+                "parent"      => 0,
+                "status"      => 0,
                 "attachment"  => '[1]'
             }
         ]

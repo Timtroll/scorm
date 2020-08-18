@@ -8,53 +8,11 @@ use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
+# список предметов
 sub index {
     my $self = shift;
 
     my ( $list, $result, $resp );
-# print 1;
-#     my $list = [
-#         {
-#             "folder" => 1,
-#             "id" => 1,
-#             "label" => "Предмет 1",
-#             "description" => "Краткое описание",
-#             "content" => "Полное описание",
-#             "keywords" => "ключевые слова",
-#             "url" => "как должен выглядеть url",
-#             "seo" => "дополнительное поле для seo",
-#             "route" => "/discipline/",
-#             "parent" => 0,
-#             "type" => "",
-#             "status" => "ok",
-#             "attachment" => [345,577,643]
-#         },
-#         {
-#             "folder" => 1,
-#             "id" => 2,
-#             "label" => "Предмет 2",
-#             "description" => "Краткое описание",
-#             "content" => "Полное описание",
-#             "keywords" => "ключевые слова",
-#             "url" => "как должен выглядеть url",
-#             "seo" => "дополнительное поле для seo",
-#             "route" => "/discipline/",
-#             "parent" => 0,
-#             "type" => "",
-#             "status" => "ok",
-#             "attachment" => [345,577,643]
-#         }
-#     ];
-
-#     my $resp;
-#     $resp->{'label'} = 'Предметы';
-#     $resp->{'add'}   = 1;
-#     $resp->{'child'} = {
-#         "add"    => 1,
-#         "edit"   => 1,
-#         "remove" => 1,  
-#         "route"  => "/theme/" # роут для получения детей
-#     };
 
     $list = $self->model('Discipline')->_list_discipline();
 
@@ -66,7 +24,7 @@ sub index {
                 "add"    => 1,         # разрешает добавлять детей
                 "edit"   => 1,         # разрешает редактировать детей
                 "remove" => 1,         # разрешает удалять детей
-                "route"  => "/theme",  # роут для получения детей
+                "route"  => "/theme"   # роут для получения детей
             },
             "list" => $list
         };
@@ -79,6 +37,8 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
+# получить данные для редактирования предмета
+# id - id предмета
 sub get {
     my $self = shift;
 
@@ -133,6 +93,20 @@ sub get {
     $self->render( 'json' => $resp );
 }
 
+# Добавлением нового предмета в EAV
+# $id = $self->model('Discipline')->_insert_discipline( $data );
+# $data = {
+#    'parent'      => 0,                                # кладется в EAV
+#    'name'        => 'Название',                       # кладется в EAV
+#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'description' => 'Краткое описание',               # кладется в EAV
+#    'content'     => 'Полное описание',                # кладется в EAV
+#    'attachment'  => '[345,577,643],                   # кладется в EAV
+#    'keywords'    => 'ключевые слова',                 # кладется в EAV
+#    'url'         => 'как должен выглядеть url',       # кладется в EAV
+#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
+#    'status'      => 1                                 # кладется в EAV
+# }
 sub add {
     my $self = shift;
 
@@ -179,6 +153,20 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
+# сохранить предмет
+# $data = {
+#    'id'          => 3,                                # кладется в EAV
+#    'parent'      => 0,                                # кладется в EAV
+#    'name'        => 'Название',                       # кладется в EAV
+#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'description' => 'Краткое описание',               # кладется в EAV
+#    'content'     => 'Полное описание',                # кладется в EAV
+#    'attachment'  => '[345,577,643],                   # кладется в EAV
+#    'keywords'    => 'ключевые слова',                 # кладется в EAV
+#    'url'         => 'как должен выглядеть url',       # кладется в EAV
+#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
+#    'status'      => 1                                 # кладется в EAV
+# }
 sub save {
     my $self = shift;
 
@@ -227,6 +215,11 @@ sub save {
     $self->render( 'json' => $resp );
 }
 
+# изменить статус предмета (вкл/выкл)
+# $result = $self->model('Discipline')->_toggle_discipline( $data );
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
 sub toggle {
     my $self = shift;
 
@@ -253,6 +246,8 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
+# удалить предмет
+# 'id'    - id предмета 
 sub delete {
     my $self = shift;
 

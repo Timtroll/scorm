@@ -62,6 +62,9 @@ sub _insert_discipline {
     return $id;
 }
 
+# удалить предмет
+# $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+# 'id'    - id предмета 
 sub _delete_discipline {
     my ( $self, $id ) = @_;
 
@@ -82,18 +85,19 @@ sub _delete_discipline {
     return $result;
 }
 
-# my $data = {
-#     "folder" => 1,
-#     "id" => $self->param('id'),
-#     "label" => "Предмет 1",
-#     "description" => "Краткое описание",
-#     "content" => "Полное описание",
-#     "keywords" => "ключевые слова",
-#     "url" => "как должен выглядеть url",
-#     "seo" => "дополнительное поле для seo",
-#     "route" => "/discipline/",
-#     "parent" => $self->param('parent'),
-#     "attachment" => [345,577,643]
+# my $list = $self->model('Discipline')->_list_discipline();
+# my $list = {
+#     "folder"      => 1,                               # EAV_items
+#     "id"          => $self->param('id'),              # EAV_items
+#     "label"       => "Предмет 1",                     # EAV_data_string
+#     "description" => "Краткое описание",              # EAV_data_string
+#     "content"     => "Полное описание",               # EAV_data_string
+#     "keywords"    => "ключевые слова",                # EAV_data_string
+#     "url"         => "как должен выглядеть url",      # EAV_data_string
+#     "seo"         => "дополнительное поле для seo",   # EAV_data_string
+#     "route"       => "/discipline/",
+#     "parent"      => $self->param('parent'),          # EAV_items
+#     "attachment"  => [345,577,643]                    # EAV_data_string
 # };
 sub _list_discipline {
     my $self = shift;
@@ -107,37 +111,30 @@ sub _list_discipline {
         return;
     }
 
-    #     my $usr = Freee::EAV->new( 'User' );
-    #     my $list = $usr->_list( $dbh, { Filter => { 'User.surname' => $value } } );
+    $list = $discipline->_list( { Parents => 0, ShowHidden => 1, FIELDS => "has_childs, publish, parent, id", Order => [ { 'items.id' => 'ASC' } ] } );
 
-    # $list = $discipline->_list( { Parents => { 0 => 0 }, INJECTION => 1 });
-
-    # $list = $discipline->_list( { FIELDS => 'string.*, items.*', Parents => 0, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
-    $list = $discipline->_list( { Parents => 0, ShowHidden => 1 } );
     foreach my $row ( @$list ) {
-        my $Obj = Freee::EAV->new( 'Discipline', { id => $row->{id} } );
-        # my $item = {
-        #     'label' => $Obj->label()
-        # };
-        $row->{'label'} = $Obj->label();
-        $row->{'description'} = $Obj->description();
-        # $row->{'route'} = $self->url_for;
-        # my $label = $Obj->label();
-        # print $label;
+        my $EAV_discipline = Freee::EAV->new( 'Discipline', { id => $row->{id} } );
+        $row->{'folder'}      = $row->{'has_childs'};
+        $row->{'label'}       = $EAV_discipline->label();
+        $row->{'description'} = $EAV_discipline->description();
+        $row->{'content'}     = $EAV_discipline->content();
+        $row->{'keywords'}    = $EAV_discipline->keywords();
+        $row->{'url'}         = $EAV_discipline->url();
+        $row->{'seo'}         = $EAV_discipline->seo();
+        $row->{'route'}       = '/discipline/';
+        $row->{'parent'}      = $row->{'parent'};
+        $row->{'status'}      = $row->{'publish'};
+        $row->{'attachment'}  = $EAV_discipline->attachment();
+        delete $$row{'has_childs'};
+        delete $$row{'publish'};
     }
-    # $list = $discipline->_list();
-
-    # $list = $discipline->_list( { FIELDS => 'string.*', Parents => { 0 => 0 }, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
-    # $list = $discipline->_list( { Parents => { 0 => 0 }, ShowHidden => 1, JOIN => ' JOIN "public"."EAV_data_string"  AS string ON string."id" = items."id"' } );
-    # $list = $discipline->_list( { Parents => { 0 => 0 }, ShowHidden => 1 } );
-    # $list = $discipline->_list( { FIELDS => 'parent' });
-    # $list = $discipline->_getAll();
-
-    # warn Dumper( $list );
 
     return $list;
 }
 
+#  получить данные для редактирования предмета
+#  $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
 # my $data = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
@@ -194,6 +191,21 @@ sub _get_discipline {
     return $list;
 }
 
+# сохранить предмет
+# $result = $self->model('Discipline')->_save_discipline( $data );
+# $data = {
+#    'id'          => 3,                                # кладется в EAV
+#    'parent'      => 0,                                # кладется в EAV
+#    'name'        => 'Название',                       # кладется в EAV
+#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'description' => 'Краткое описание',               # кладется в EAV
+#    'content'     => 'Полное описание',                # кладется в EAV
+#    'attachment'  => '[345,577,643],                   # кладется в EAV
+#    'keywords'    => 'ключевые слова',                 # кладется в EAV
+#    'url'         => 'как должен выглядеть url',       # кладется в EAV
+#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
+#    'status'      => 1                                 # кладется в EAV
+# }
 sub _save_discipline {
     my ( $self, $data ) = @_;
 
@@ -234,6 +246,11 @@ sub _save_discipline {
     return $result;
 }
 
+# изменить статус предмета (вкл/выкл)
+# $result = $self->model('Discipline')->_toggle_discipline( $data );
+# 'id'    - id записи 
+# 'field' - имя поля в таблице
+# 'val'   - 1/0
 sub _toggle_discipline {
     my ( $self, $data ) = @_;
 
@@ -262,6 +279,9 @@ sub _toggle_discipline {
     return $result;
 }
 
+# проверка существования предмета с таким id
+# my $true = $self->model('Discipline')->_exists_in_discipline( $$data{'parent'}
+# 'id'    - id предмета
 sub _exists_in_discipline {
     my ( $self, $id ) = @_;
 
