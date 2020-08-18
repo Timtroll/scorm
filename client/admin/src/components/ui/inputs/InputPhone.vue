@@ -22,7 +22,7 @@
                    v-mask="'+7(###)###-####'"
                    v-model="valueInput"
                    type="text"
-                   @input="update"
+                   @change="update"
                    :placeholder="placeholder">
           </div>
         </div>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+  import {clone} from '@/store/methods'
+
   export default {
     name: 'InputPhone',
 
@@ -56,18 +58,18 @@
 
     data () {
       return {
-        valueInput: this.value,
+        valueInput: clone(this.value),
         valid:      true
       }
     },
 
     watch: {
 
-      valueInput () {
-        if (this.mask) {
-          this.valueInput = this.valueInput.replace(this.mask, '')
-        }
-      }
+      //valueInput () {
+      //  if (this.mask) {
+      //    this.valueInput = this.valueInput.replace(this.mask, '')
+      //  }
+      //}
     },
 
     computed: {
@@ -98,7 +100,7 @@
     methods: {
 
       update () {
-        this.$emit('change', this.isChanged)
+        this.$emit('change', true)
         this.$emit('value', this.valueInput)
       }
     }
