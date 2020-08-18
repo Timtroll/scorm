@@ -93,7 +93,7 @@
                  uk-form-custom>
               <input class="uk-input"
                      ref="files"
-                     multiple
+                     :multiple="!!multiply"
                      type="file"
                      @change="handleFiles"
                      :placeholder="placeholder">
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import filesClass from '@/api/upload/files'
+import filesClass            from '@/api/upload/files'
 import {notify, prettyBytes} from '@/store/methods'
 
 const files = new filesClass
@@ -158,7 +158,8 @@ export default {
       type:    String
     },
     readonly:    {default: 0, type: Number},
-    required:    {default: 0, type: Number}
+    required:    {default: 0, type: Number},
+    multiply:    {default: 0, type: Number}
 
   },
 
@@ -237,6 +238,18 @@ export default {
 
   },
 
+  watch: {
+    valueInput () {
+      this.$emit('change', this.isChanged)
+      if (this.multiply) {
+        this.$emit('value', this.valueInput)
+      }
+      else {
+        this.$emit('value', this.valueInput[0])
+      }
+    }
+  },
+
   methods: {
 
     upload () {
@@ -256,21 +269,41 @@ export default {
                 setTimeout(() => {
                   this.preview.splice(this.preview.indexOf(file), 1)
                 }, 500)
-              } else {
+              }
+              else {
                 file.status = 'error'
               }
             })
       }
     },
 
+    async deleteFile (id) {
+      if (id) {
+        const response = await files.delete(id)
+        if (response.status === 'ok') {
+          this.uploadedPreview.splice(0, 1)
+        }
+      }
+    },
+
     async fileUpload (data, index) {
       const response = await files.upload(data)
+
       if (response.status === 'ok') {
         const id = response.id
+        if (!this.multiply) {
+          if (this.uploadedPreview.length > 0) {
+            const removeFileId = this.uploadedPreview[0].id
+            await this.deleteFile(removeFileId)
+            this.valueInput.splice(0, 1)
+          }
+        }
+
         this.valueInput.push(id)
         await this.searchFile(id)
         return response
-      } else {
+      }
+      else {
         return response
       }
     },
@@ -288,7 +321,6 @@ export default {
     handleFiles (event) {
 
       const files = event.target.files || event.dataTransfer.files
-
       console.log('files', files)
 
       if (!files.length) return
@@ -312,10 +344,13 @@ export default {
 
         console.log(this.preview.length)
         if (this.fileCount) {
+          //this.preview.push(file)
           this.preview.push(file)
+
           if (!isImage) return
           this.createImage(files[i], i)
-        } else {
+        }
+        else {
           notify('Одновременно разрешено загружать не более ' + this.maxUploadCount + '-ти файлов')
           break
         }

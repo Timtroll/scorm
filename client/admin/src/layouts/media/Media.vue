@@ -46,7 +46,7 @@
 
         <div class="pos-media-search">
           <ul class="pos-list">
-            <InputFile/>
+            <InputFile :multiply="1"/>
           </ul>
         </div>
 
@@ -59,13 +59,13 @@
 <script>
 
 import filesClass from '@/api/upload/files'
-import {notify} from '@/store/methods'
+import {notify}   from '@/store/methods'
 
 const files = new filesClass
 
 export default {
 
-  name:       'Media',
+  name: 'Media',
 
   components: {
     FileGrid:  () => import(/* webpackChunkName: "FileGrid" */ '@/components/ui/files/FileGrid'),

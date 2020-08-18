@@ -23,32 +23,44 @@
 </template>
 
 <script>
-  import main     from '@/store/modules/main'
-  import settings from '@/store/modules/settings'
+import main     from '@/store/modules/main'
+import settings from '@/store/modules/settings'
 
-  export default {
+export default {
 
-    name: 'Main',
+  name: 'Main',
 
-    components: {
-      NavBar:  () => import(/* webpackChunkName: "NavBar" */ '../components/ui/navbar/NavBar'),
-      SideBar: () => import(/* webpackChunkName: "SideBar" */ '../components/ui/sidebar/SideBar')
-    },
+  components: {
+    NavBar:  () => import(/* webpackChunkName: "NavBar" */ '../components/ui/navbar/NavBar'),
+    SideBar: () => import(/* webpackChunkName: "SideBar" */ '../components/ui/sidebar/SideBar')
+  },
 
-    async beforeCreate () {
-      // Регистрация Vuex модулей
-      // Регистрация Vuex модуля settings
-      await this.$store.registerModule('main', main)
-      await this.$store.registerModule('settings', settings)
-    },
+  async beforeCreate () {
+    // Регистрация Vuex модулей
+    // Регистрация Vuex модуля settings
+    await this.$store.registerModule('main', main)
+    await this.$store.registerModule('settings', settings)
+  },
 
-    beforeDestroy () {
+  beforeDestroy () {
+    // выгрузка Vuex модулей
+    this.$store.unregisterModule('settings')
+    this.$store.unregisterModule('main')
+  },
 
-      // выгрузка Vuex модулей
-      this.$store.unregisterModule('settings')
-      this.$store.unregisterModule('main')
+  async mounted () {
+    await this.getConfig()
+  },
+
+  methods: {
+    async getConfig () {
+      const webRTC = await import('@/../public/config/web-rtc')
+      this.$store.commit('setConfig', {
+        webRTC: webRTC.default
+      })
 
     }
   }
+}
 </script>
 

@@ -199,13 +199,13 @@
   {
     "label":       "Фотография пользователя",
     "name":        "avatar",
-    "placeholder": "https://thispersondoesnotexist.com/image",
+    "placeholder": "",
     "readonly":    0,
     "required":    0,
     "mask":        null,
     "add":         true,
-    "type":        "InputText",
-    "value":       "https://thispersondoesnotexist.com/image",
+    "type":        "InputFile",
+    "value":       [],
     "inline":      0,
     "show":        0,
     "width":       1
