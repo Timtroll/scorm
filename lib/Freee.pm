@@ -128,7 +128,7 @@ sub startup {
     # управление предметами
     $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
     $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
-    $auth->post('/discipline/get')      ->to('discipline#get');     # Получить данные для редактирования предмета
+    $auth->post('/discipline/edit')     ->to('discipline#edit');     # Получить данные для редактирования предмета
     $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
     $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
     $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
@@ -228,7 +228,7 @@ sub startup {
     # управление темами
     $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета
     $auth->post('/themes/add')          ->to('themes#add');         # Добавить тему предмета
-    $auth->post('/themes/get')          ->to('themes#get');         # Получить данные для редактирования темы предмета
+    $auth->post('/themes/edit')         ->to('themes#edit');         # Получить данные для редактирования темы предмета
     $auth->post('/themes/save')         ->to('themes#save');        # Сохранить тему предмета
     $auth->post('/themes/toggle')       ->to('themes#toggle');      # Изменить статус темы предмета (вкл/выкл)
     $auth->post('/themes/delete')       ->to('themes#delete');      # Удалить тему предмета
