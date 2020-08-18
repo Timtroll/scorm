@@ -15,42 +15,32 @@ sub index {
     my $self = shift;
 
     my ( $data, $list, $resp, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
-
+    # проверка данных
+    $data = $self->_check_fields();
+    
     unless ( @! ) {
         # получаем список пользователей группы
         $result = $self->model('User')->_get_list( $data );
-    }
 
-    unless ( @! ) {
-        $list = {
-            'settings' => {
-                'editable' => 1,
-                'massEdit' => 0,
-                'page' => {
-                    'current_page' => 1,
-                    'per_page'     => 100
-                },
-                'removable' => 1,
-                'sort' => {
-                    'name' => 'id',
-                    'order' => 'asc'
+        unless ( @! ) {
+            $list = {
+                'settings' => {
+                    'editable' => 1,
+                    'massEdit' => 0,
+                    'page' => {
+                        'current_page' => 1,
+                        'per_page'     => 100
+                    },
+                    'removable' => 1,
+                    'sort' => {
+                        'name' => 'id',
+                        'order' => 'asc'
+                    }
                 }
-            }
-        };
+            };
 
-        if ( $result ) {
             $list->{'body'} = $result;
             $list->{'settings'}->{'page'}->{'total'} = scalar(@$result);
-        }
-        else {
-            $list->{'body'} = [];
-            $list->{'settings'}->{'page'}->{'total'} = 0;
         }
     }
 
@@ -64,33 +54,32 @@ sub index {
 }
 
 # редактирование юзера
-# id - Id пользователя
+# $self->edit($data)
+# $data = { 
+#     id => 123 - Id пользователя
+# }
 sub edit {
     my $self = shift;
 
     my ( $user, $data, $param, $resp, $user_data, $result, $hashref, $countries, $timezones );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # получаем данные пользователя
         $user_data = $self->model('User')->_get_user( $data );
-    }
 
-    # получение значений для selected
-    unless ( @! ) {
-        $hashref = $self->_countries();
-        foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
-            push @$countries, [ $_, $$hashref{$_} ];
-        }
+        # получение значений для selected
+        unless ( @! ) {
+            $hashref = $self->_countries();
+            foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
+                push @$countries, [ $_, $$hashref{$_} ];
+            }
 
-        $hashref = $self->_time_zones();
-        foreach ( sort { $a <=> $b } keys %$hashref ) {
-            push @$timezones, [ $_, $$hashref{$_} ];
+            $hashref = $self->_time_zones();
+            foreach ( sort { $a <=> $b } keys %$hashref ) {
+                push @$timezones, [ $_, $$hashref{$_} ];
+            }
         }
     }
 
@@ -168,6 +157,7 @@ sub edit {
 #     'surname'     => 'test',                          # кладется в EAV
 #     'name'        => 'name',                          # кладется в EAV
 #     'patronymic'  => 'patronymic',                    # кладется в EAV
+#     'groups'      => [1,2,100],                       # кладется в EAV может быть []
 #     'email'       => 'test@test.com',                 # кладется в users
 #     'phone'       => '+7(999) 222-2222',              # кладется в users
 #     'password'    => 'password',                      # кладется в users
@@ -217,6 +207,7 @@ sub add {
             $$data{'birthday'}    = '';
         }
 
+# ?????? перенести в базу
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
@@ -291,6 +282,7 @@ sub add_by_email {
             $$data{'birthday'}    = '';
         }
 
+# ?????????????
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
@@ -364,6 +356,7 @@ sub add_by_phone {
             $$data{'birthday'}    = '';
         }
 
+# ?????????????
         $$data{'time_create'} = $self->model('Utils')->_get_time();
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
@@ -418,11 +411,13 @@ sub save {
     }
 
     unless ( @! ) {
+#????????????????
+#        foreach () {}
         unless ( $$data{'phone'} || $$data{'email'} ) {
             push @!, 'No email and no phone';
         }
 
-        if ( $$data{'password'} && !$$data{'newpassword'} ) {
+        if ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
             push @!, 'No newpassword';
         }
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
@@ -438,7 +433,7 @@ sub save {
         if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
             push @!, "email '$$data{ email }' already used"; 
         }
-
+#??????????
         # проверяем, используется ли телефон другим пользователем
         if ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
             push @!, "phone '$$data{ phone }' already used"; 
@@ -464,7 +459,7 @@ sub save {
         else {
             $$data{'birthday'}    = '';
         }
-
+#?????????????/ sql
         $$data{'time_access'} = $self->model('Utils')->_get_time();
         $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     =  $$data{'status'};
@@ -503,6 +498,8 @@ sub toggle {
 
     unless ( @! ) {
         $$data{'status'} = $$data{'status'} ? 'true' : 'false';
+#???????????
+        # $$data{'status'} = $$data{'status'} ? \1 : \0;
         $result = $self->model('User')->_toggle_user( $data );
     }
 

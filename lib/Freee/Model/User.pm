@@ -81,6 +81,8 @@ sub _check_user {
     }
 
     unless ( @! ) {
+## ?? gпереписать одним sql
+# select id from ... where phone='..' or email='...'
         foreach ( 'email', 'phone' ) {
             if ( $$data{ $_ } ) {
                 if ( $$data{'id'} ) {
@@ -103,27 +105,30 @@ sub _check_user {
         }
     }
 
-    return @! ? 0 : 1;
+    return scalar(@!) ? 0 : 1;
 }
 
 # список юзеров по группам (обязательно id группы)
 # $result = $self->model('User')->_get_list( $data );
+# $data = {
+    #????????????????????
 # id - Id группы
 # status - показывать группы только с этим статусом
+# }
 sub _get_list {
     my ( $self, $data ) = @_;
 
     my ( $sql, $fields, $sth, $list, @list );
 
-    unless ( $$data{'id'} ) {
-        push @!, "no data for list";
-    }
+    push @!, "no data for list" unless ( $$data{'id'} );
 
     unless ( @! ) {
         # выбираемые поля
+        my $masks_fields;
         $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
 
         # взять объекты из таблицы users
+# ??????? однобквенное название полей + преобазовать true/false в 1/0
         unless ( defined $$data{'status'} ) {
             $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ?';
         }
@@ -136,12 +141,13 @@ sub _get_list {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
         $sth->execute();
-
+# ???? брать из sql в нужном формате
         $list = $sth->fetchall_hashref('id');
 
-        if ( $list ) {
+        if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
-                $list->{ $_ }->{'status'} = delete $list->{ $_ }->{'publish'} ? 1 : 0;
+                $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
+                delete $list->{ $_ }->{'publish'};
                 push @list, $$list{ $_ };
             }
             $list = \@list;
@@ -153,7 +159,9 @@ sub _get_list {
 
 # Получить данные пользователя из EAV и таблицы users
 # ( $result ) = $self->model('User')->_get_user( $data );
-# $data = {
+# $data ?????????
+# отдает
+# $result = {
 #     'place'         => 'place',                         # берется из EAV
 #     'country'       => 'country',                       # берется из EAV
 #     'birthday'      => '1972-01-06 00:00:00',           # берется из EAV
@@ -296,7 +304,7 @@ sub _insert_user {
         # };
     }
 
-    #### зеполнение таблицы user_groups
+    #### заполнение таблицы user_groups
     unless ( @! ) {
         $groups = from_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
@@ -388,6 +396,7 @@ sub _save_user {
         push @!, "can't update EAV" unless $result;
     }
 
+# ???????? решить проблему транзакцией
     unless ( @! ) {
         # удаление из user_groups
         $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
@@ -433,7 +442,7 @@ sub _toggle_user {
     }
 
     unless ( @! ) {
-        # смена значений publish
+        # смена значений publish (EAV меняется триггером)
         $sql = 'UPDATE "public"."users" SET "publish" = ? WHERE "id" = ?';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'status'} );
@@ -457,7 +466,7 @@ sub _delete_user {
     unless ( $$data{'id'} ) {
         push @!, 'no data for delete';
     }
-
+# ??? делать транзакцией
     unless ( @! ) {
         # удаление из users
         $sql = 'DELETE FROM "public"."users" WHERE "id" = ? RETURNING "id"';
