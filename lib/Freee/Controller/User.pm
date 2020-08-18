@@ -8,6 +8,9 @@ use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
+# список юзеров по группам (обязательно id группы)
+# id - Id группы
+# status - показывать группы только с этим статусом
 sub index {
     my $self = shift;
 
@@ -31,7 +34,7 @@ sub index {
                 'massEdit' => 0,
                 'page' => {
                     'current_page' => 1,
-                    'per_page' => 100
+                    'per_page'     => 100
                 },
                 'removable' => 1,
                 'sort' => {
@@ -60,10 +63,12 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
+# редактирование юзера
+# id - Id пользователя
 sub edit {
     my $self = shift;
 
-    my ( $user, $data, $param, $resp, $result_users, $result_eav, $result, $hashref, $countries, $timezones );
+    my ( $user, $data, $param, $resp, $result_eav, $result, $hashref, $countries, $timezones );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     unless ( @! ) {
@@ -73,7 +78,7 @@ sub edit {
 
     unless ( @! ) {
         # получаем данные пользователя
-        ( $result_users, $result_eav ) = $self->model('User')->_get_user( $data );
+        $result_eav = $self->model('User')->_get_user( $data );
     }
 
     # получение значений для selected
@@ -92,7 +97,6 @@ sub edit {
     unless ( @! ) {
         # перевод времени в секунды
         $$result_eav{'birthday'} = $self->model('Utils')->_date2sec( $$result_eav{'birthday'} );
-
         $result = {
             'tabs' => [ # Вкладки 
                 {
@@ -110,36 +114,35 @@ sub edit {
                             }
                         },
                         {"place"      => $$result_eav{'place'} },
-                        {"status"     => $$result_users{'publish'} ? 1 : 0 },
+                        {"status"     => $$result_eav{'publish'} ? 1 : 0 },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
-                                "value"    => $$result_users{'timezone'}
+                                "value"    => $$result_eav{'timezone'}
                             }
                         },
-                        {"type"       => $$result_eav{'Type'} }
+                        {"type"       => 'User' }
                     ]
                 },
                 {
                     'label' => 'Контакты',
                     'fields' => [
-                       {"email"          => $$result_users{'email'} },
+                       {"email"          => $$result_eav{'email'} },
                        {"emailconfirmed" => 1 },
-                       {"phone"          => $$result_users{'phone'} },
+                       {"phone"          => $$result_eav{'phone'} },
                        {"phoneconfirmed" => 1 }
                     ]
                 },
                 {
                     'label' => 'Пароль',
                     'fields' => [
-                       {"password"       => $$result_users{'password'} },
-                       {"newpassword"    => $$result_users{'password'} }
+                       {"password"       => $$result_eav{'password'} }
                     ]
                 },
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$result_users{'groups'} }
+                       { "groups" => $$result_eav{'groups'} }
                     ]
                 }
             ]
@@ -155,6 +158,20 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
+# Добавлением нового пользователя в EAV и таблицу users
+# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# $data = {
+#     'place'       => 'place',                         # кладется в EAV
+#     'country'     => 'country',                       # кладется в EAV
+#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
+#     'surname'     => 'test',                          # кладется в EAV
+#     'name'        => 'name',                          # кладется в EAV
+#     'patronymic'  => 'patronymic',                    # кладется в EAV
+#     'email'       => 'test@test.com',                 # кладется в users
+#     'phone'       => '+7(999) 222-2222',              # кладется в users
+#     'password'    => 'password',                      # кладется в users
+#     'timezone'    => '10',                            # кладется в users
+# }
 sub add {
     my ($self);
     $self = shift;
@@ -221,6 +238,19 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
+# Добавлением нового пользователя в EAV и таблицу users
+# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# $data = {
+#     'place'       => 'place',                         # кладется в EAV
+#     'country'     => 'country',                       # кладется в EAV
+#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
+#     'surname'     => 'test',                          # кладется в EAV
+#     'name'        => 'name',                          # кладется в EAV
+#     'patronymic'  => 'patronymic',                    # кладется в EAV
+#     'email'       => 'test@test.com',                 # кладется в users
+#     'password'    => 'password',                      # кладется в users
+#     'timezone'    => '10',                            # кладется в users
+# }
 sub add_by_email {
     my $self = shift;
 
@@ -281,6 +311,19 @@ sub add_by_email {
     $self->render( 'json' => $resp );
 }
 
+# Добавлением нового пользователя в EAV и таблицу users
+# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# $data = {
+#     'place'       => 'place',                         # кладется в EAV
+#     'country'     => 'country',                       # кладется в EAV
+#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
+#     'surname'     => 'test',                          # кладется в EAV
+#     'name'        => 'name',                          # кладется в EAV
+#     'patronymic'  => 'patronymic',                    # кладется в EAV
+#     'phone'       => '+7(999) 222-2222',              # кладется в users
+#     'password'    => 'password',                      # кладется в users
+#     'timezone'    => '10',                            # кладется в users
+# }
 sub add_by_phone {
     my $self = shift;
 
@@ -341,6 +384,9 @@ sub add_by_phone {
     $self->render( 'json' => $resp );
 }
 
+
+# сохранение данных о пользователе
+# $result = $self->model('User')->_save_user( $data );
 # $data = {
 #     'id'                => 1,
 #     'surname'           => 'Фамилия',           # Фамилия
@@ -439,13 +485,12 @@ sub save {
 
 
 # изменение поля на 1/0
-# my $true = $self->toggle();
+# my $true = $self->toggle( $data );
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
 sub toggle {
     my $self = shift;
-
 
     my ( $toggle, $resp, $data, $result );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
@@ -469,6 +514,9 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
+# удаление пользователя
+# $result = $self->model('User')->_delete_user( $data );
+# 'id'    - id записи 
 sub delete {
     my $self = shift;
 

@@ -211,62 +211,60 @@ $test_data = {
         },
         'result' => {
             "data" => {
-               "list" => {
-                    "body" => [
-                        {
-                            "id" =>  1,
-                            "timezone" => 3,
-                            "password" =>  "password1",
-                            "email" =>  "1\@email.ru",
-                            "phone" =>  "+79211111111",
-                            "status" =>  1,
-                            "eav_id" =>  1,
-                            "groups" => "[1]"
-                        },
-                        {
-                            "id" =>  2,
-                            "timezone" => 3,
-                            "password" =>  "password1",
-                            "email" =>  "2\@email.ru",
-                            "phone" =>  "+79211111112",
-                            "status" =>  1,
-                            "eav_id" =>  2,
-                            "groups" => "[1,2]"
-                        },
-                        {
-                            "id" =>  3,
-                            "timezone" => 3,
-                            "password" =>  "password1",
-                            "email" =>  "3\@email.ru",
-                            "phone" =>  "+79211111113",
-                            "status" =>  1,
-                            "eav_id" =>  3,
-                            "groups" => "[2,1,3]"
-                        },
-                        {
-                            "id" =>  4,
-                            "timezone" => 3,
-                            "password" =>  "password1",
-                            "email" =>  "4\@email.ru",
-                            "phone" =>  "+79211111114",
-                            "status" =>  1,
-                            "eav_id" =>  4,
-                            "groups" => "[3,2,1]"
-                        }
-                    ],
-                    "settings" => {
-                        "editable" => 1,
-                        "massEdit" => 0,
-                        "page" => {
-                            "current_page" => 1,
-                            "per_page" => 100,
-                            "total" => 4
-                        },
-                        "removable" => 1,
-                        "sort" => {
-                            "name" => "id",
-                            "order" => "asc"
-                        }
+                "body" => [
+                    {
+                        "id" =>  1,
+                        "timezone" => 3,
+                        "password" =>  "password1",
+                        "email" =>  "1\@email.ru",
+                        "phone" =>  "+79211111111",
+                        "status" =>  1,
+                        "eav_id" =>  1,
+                        "groups" => "[1]"
+                    },
+                    {
+                        "id" =>  2,
+                        "timezone" => 3,
+                        "password" =>  "password1",
+                        "email" =>  "2\@email.ru",
+                        "phone" =>  "+79211111112",
+                        "status" =>  1,
+                        "eav_id" =>  2,
+                        "groups" => "[1,2]"
+                    },
+                    {
+                        "id" =>  3,
+                        "timezone" => 3,
+                        "password" =>  "password1",
+                        "email" =>  "3\@email.ru",
+                        "phone" =>  "+79211111113",
+                        "status" =>  1,
+                        "eav_id" =>  3,
+                        "groups" => "[2,1,3]"
+                    },
+                    {
+                        "id" =>  4,
+                        "timezone" => 3,
+                        "password" =>  "password1",
+                        "email" =>  "4\@email.ru",
+                        "phone" =>  "+79211111114",
+                        "status" =>  1,
+                        "eav_id" =>  4,
+                        "groups" => "[3,2,1]"
+                    }
+                ],
+                "settings" => {
+                    "editable" => 1,
+                    "massEdit" => 0,
+                    "page" => {
+                        "current_page" => 1,
+                        "per_page" => 100,
+                        "total" => 4
+                    },
+                    "removable" => 1,
+                    "sort" => {
+                        "name" => "id",
+                        "order" => "asc"
                     }
                 }
             },
@@ -281,62 +279,60 @@ $test_data = {
         },
         'result' => {
             "data" => {
-               "list" => {
-                    "body" => [
-                        {
-                            "id" =>  1,
-                            "timezone" =>  3,
-                            "password" =>  "password1",
-                            "email" =>  "1\@email.ru",
-                            "phone" =>  "+79211111111",
-                            "status" =>  1,
-                            "eav_id" =>  1,
-                            "groups" => "[1]"
-                        },
-                        {
-                            "id" =>  2,
-                            "timezone" =>  3,
-                            "password" =>  "password1",
-                            "email" =>  "2\@email.ru",
-                            "phone" =>  "+79211111112",
-                            "status" =>  1,
-                            "eav_id" =>  2,
-                            "groups" => "[1,2]"
-                        },
-                        {
-                            "id" =>  3,
-                            "timezone" =>  3,
-                            "password" =>  "password1",
-                            "email" =>  "3\@email.ru",
-                            "phone" =>  "+79211111113",
-                            "status" =>  1,
-                            "eav_id" =>  3,
-                            "groups" => "[2,1,3]"
-                        },
-                        {
-                            "id" =>  4,
-                            "timezone" =>  3,
-                            "password" =>  "password1",
-                            "email" =>  "4\@email.ru",
-                            "phone" =>  "+79211111114",
-                            "status" =>  1,
-                            "eav_id" =>  4,
-                            "groups" => "[3,2,1]"
-                        }
-                    ],
-                    "settings" => {
-                        "editable" => 1,
-                        "massEdit" => 0,
-                        "page" => {
-                            "current_page" => 1,
-                            "per_page" => 100,
-                            "total" => 4
-                        },
-                        "removable" => 1,
-                        "sort" => {
-                            "name" => "id",
-                            "order" => "asc"
-                        }
+                "body" => [
+                    {
+                        "id" =>  1,
+                        "timezone" =>  3,
+                        "password" =>  "password1",
+                        "email" =>  "1\@email.ru",
+                        "phone" =>  "+79211111111",
+                        "status" =>  1,
+                        "eav_id" =>  1,
+                        "groups" => "[1]"
+                    },
+                    {
+                        "id" =>  2,
+                        "timezone" =>  3,
+                        "password" =>  "password1",
+                        "email" =>  "2\@email.ru",
+                        "phone" =>  "+79211111112",
+                        "status" =>  1,
+                        "eav_id" =>  2,
+                        "groups" => "[1,2]"
+                    },
+                    {
+                        "id" =>  3,
+                        "timezone" =>  3,
+                        "password" =>  "password1",
+                        "email" =>  "3\@email.ru",
+                        "phone" =>  "+79211111113",
+                        "status" =>  1,
+                        "eav_id" =>  3,
+                        "groups" => "[2,1,3]"
+                    },
+                    {
+                        "id" =>  4,
+                        "timezone" =>  3,
+                        "password" =>  "password1",
+                        "email" =>  "4\@email.ru",
+                        "phone" =>  "+79211111114",
+                        "status" =>  1,
+                        "eav_id" =>  4,
+                        "groups" => "[3,2,1]"
+                    }
+                ],
+                "settings" => {
+                    "editable" => 1,
+                    "massEdit" => 0,
+                    "page" => {
+                        "current_page" => 1,
+                        "per_page" => 100,
+                        "total" => 4
+                    },
+                    "removable" => 1,
+                    "sort" => {
+                        "name" => "id",
+                        "order" => "asc"
                     }
                 }
             },
@@ -351,21 +347,19 @@ $test_data = {
         },
         'result' => {
             "data" => {
-               "list" => {
-                    "body" => [],
-                    "settings" => {
-                        "editable" => 1,
-                        "massEdit" => 0,
-                        "page" => {
-                            "current_page" => 1,
-                            "per_page" => 100,
-                            "total" => 0
-                        },
-                        "removable" => 1,
-                        "sort" => {
-                            "name" => "id",
-                            "order" => "asc"
-                        }
+                "body" => [],
+                "settings" => {
+                    "editable" => 1,
+                    "massEdit" => 0,
+                    "page" => {
+                        "current_page" => 1,
+                        "per_page" => 100,
+                        "total" => 0
+                    },
+                    "removable" => 1,
+                    "sort" => {
+                        "name" => "id",
+                        "order" => "asc"
                     }
                 }
             },
@@ -373,17 +367,6 @@ $test_data = {
         },
         'comment' => 'Status 0:' 
     },
-    # отрицательные тесты
-    # 4 => {
-    #     'data' => {
-    #         'id'        => 404
-    #     },
-    #     'result' => {
-    #         'message'   => "Could not take '404'",
-    #         'status'    => 'fail'
-    #     },
-    #     'comment' => 'Wrong id:' 
-    # },
     4 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
