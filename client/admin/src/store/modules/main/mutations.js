@@ -17,6 +17,10 @@ const mutations = {
 
   navBarLeftActionShow (state, data) {
     state.navBarLeftAction.visibility = data
+  },
+
+  setConfig (state, data) {
+    state.config = data
   }
 
 }

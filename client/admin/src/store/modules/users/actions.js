@@ -99,7 +99,7 @@ const actions = {
    * @param id
    * @returns {Promise<void>}
    */
-  async leafEdit ({commit, state, getters}, id) {
+  async leafEdit ({commit, dispatch, state}, id) {
 
     try {
       store.commit('editPanel_status_request') // статус - запрос
@@ -119,6 +119,7 @@ const actions = {
         store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
         store.commit('card_right_show', true) // открытие правой панели
+        dispatch('getTable')
       }
     }
     catch (e) {

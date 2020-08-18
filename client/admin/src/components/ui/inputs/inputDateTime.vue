@@ -57,7 +57,7 @@ export default {
 
     value: {
       default: '',
-      type:    [String, Number]
+      type:   Number
     },
 
     label: {
@@ -81,7 +81,7 @@ export default {
 
   data () {
     return {
-      valueInput: Number(this.value),
+      valueInput: String(this.value),
       valid:      true
     }
   },
@@ -98,7 +98,7 @@ export default {
   computed: {
 
     isChanged () {
-      return this.valueInput !== Number(this.value)
+      return this.valueInput !== String(this.value)
     },
 
     validate () {

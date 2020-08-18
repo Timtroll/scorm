@@ -181,6 +181,8 @@ export default {
     InputEditorJs:   () => import(/* webpackChunkName: "InputEditorJs" */ '../inputs/InputEditorJs'),
     InputTextarea:   () => import(/* webpackChunkName: "InputTextarea" */ '../inputs/InputTextarea'),
     InputText:       () => import(/* webpackChunkName: "InputText" */ '../inputs/InputText'),
+    InputEmail:      () => import(/* webpackChunkName: "InputEmail" */ '../inputs/InputEmail'),
+    InputPhone:      () => import(/* webpackChunkName: "InputPhone" */ '../inputs/InputPhone'),
     InputInfo:       () => import(/* webpackChunkName: "InputInfo" */ '../inputs/InputInfo'),
     InputCKEditor:   () => import(/* webpackChunkName: "InputCKEditor" */ '../inputs/InputCKEditor'),
     InputTinyMCE:    () => import(/* webpackChunkName: "InputTinyMCE" */ '../inputs/InputTinyMCE'),

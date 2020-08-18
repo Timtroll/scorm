@@ -23,6 +23,12 @@ const state = {
       value: 'InputNumber',
       label: 'Число'
     }, {
+      value: 'InputEmail',
+      label: 'Email'
+    }, {
+      value: 'InputPhone',
+      label: 'Номер телефона'
+    }, {
       value: 'inputDateTime',
       label: 'Дата и время'
     }, {

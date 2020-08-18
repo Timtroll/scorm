@@ -1,21 +1,21 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store/store'
+import Vue     from 'vue'
+import App     from './App.vue'
+import router  from './router'
+import store   from './store/store'
 import VueMeta from 'vue-meta'
-import UIkit from 'uikit/dist/js/uikit.min'
+import UIkit   from 'uikit/dist/js/uikit.min'
 import './registerServiceWorker'
-import i18n from './i18n'
+import i18n    from './i18n'
 import './assets/sass/styles.sass'
 
 Vue.use(VueMeta, {
   refreshOnceOnNavigation: true
 })
 
-// Or as a directive
-import {VueMaskDirective} from 'v-mask'
+// VueMaskDirective
+import VueMaskDirective from 'vue-mask-directive'
 
-Vue.directive('mask', VueMaskDirective)
+Vue.use(VueMaskDirective)
 
 // Vue2 Touch Events
 import Vue2TouchEvents from 'vue2-touch-events'
