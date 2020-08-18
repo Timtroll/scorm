@@ -102,6 +102,7 @@ my $test_data = {
         },
         'result' => {
             "data" => {
+                "id"   => 1,
                 "tabs" => [
                     {
                         "fields" => [

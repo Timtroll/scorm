@@ -1,5 +1,5 @@
 # получить данные для редактирования предмета
-# my $id = $self->_get_discipline({
+# my $id = $self->_get_theme({
 # 'id' => 1   # До 9 цифр, обязательное поле
 # });
 use Mojo::Base -strict;
@@ -27,7 +27,7 @@ my $host = $t->app->config->{'host'};
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/Discipline/all_right.svg' }
+    upload => { file => './t/theme/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => form => $data );
@@ -55,7 +55,7 @@ my $result = {
     'status'    => 'ok'
 };
 
-$t->post_ok( $host.'/discipline/add' => form => $data );
+$t->post_ok( $host.'/theme/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -84,7 +84,7 @@ my $test_data = {
                             {"keywords" => "ключевые слова"},
                             {"url" => "https://test.com"},
                             {"seo" => "дополнительное поле для seo"},
-                            {"route" => "/discipline"},
+                            {"route" => "/theme"},
                             {"status" => 1},
 
                         ],
@@ -108,7 +108,7 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "discipline with id '404' doesn't exist",
+            'message'   => "theme with id '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -137,7 +137,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/get' => form => $data );
+    $t->post_ok( $host.'/theme/edit' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

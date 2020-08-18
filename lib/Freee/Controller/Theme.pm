@@ -1,4 +1,4 @@
-package Freee::Controller::Discipline;
+package Freee::Controller::Theme;
 
 use utf8;
 

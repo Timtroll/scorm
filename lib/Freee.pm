@@ -128,10 +128,18 @@ sub startup {
     # управление предметами
     $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
     $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
-    $auth->post('/discipline/get')      ->to('discipline#get');     # Получить данные для редактирования предмета
+    $auth->post('/discipline/edit')     ->to('discipline#edit');     # Получить данные для редактирования предмета
     $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
     $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
     $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
+
+    # управление темами
+    $auth->post('/theme/')              ->to('theme#index');        # Список тем
+    $auth->post('/theme/add')           ->to('theme#add');          # Добавить тему
+    $auth->post('/theme/edit')          ->to('theme#edit');          # Получить данные для редактирования темы
+    $auth->post('/theme/save')          ->to('theme#save');         # Сохранить тему
+    $auth->post('/theme/toggle')        ->to('theme#toggle');       # Изменить статус темы (вкл/выкл)
+    $auth->post('/theme/delete')        ->to('theme#delete');       # Удалить тему
 
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/subject_add')     ->to('cmssubject#add');
@@ -207,7 +215,7 @@ sub startup {
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/profile')        ->to('user#profile');       # пермишены и профиль юзера
-    $auth->post('/user/delete')         ->to('user#delete');       # удаление пользователя
+    $auth->post('/user/delete')         ->to('user#delete');        # удаление пользователя
 
     # управление группами пользователей
     $auth->post('/groups/')             ->to('groups#index');       # список групп
@@ -224,14 +232,6 @@ sub startup {
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
     $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
-
-    # управление темами
-    $auth->post('/themes/')             ->to('themes#index');       # Список тем предмета
-    $auth->post('/themes/add')          ->to('themes#add');         # Добавить тему предмета
-    $auth->post('/themes/get')          ->to('themes#get');         # Получить данные для редактирования темы предмета
-    $auth->post('/themes/save')         ->to('themes#save');        # Сохранить тему предмета
-    $auth->post('/themes/toggle')       ->to('themes#toggle');      # Изменить статус темы предмета (вкл/выкл)
-    $auth->post('/themes/delete')       ->to('themes#delete');      # Удалить тему предмета
 
     # управление заданиями
     $auth->post('/tasks/')              ->to('tasks#index');

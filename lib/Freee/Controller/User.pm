@@ -68,7 +68,7 @@ sub index {
 sub edit {
     my $self = shift;
 
-    my ( $user, $data, $param, $resp, $result_eav, $result, $hashref, $countries, $timezones );
+    my ( $user, $data, $param, $resp, $user_data, $result, $hashref, $countries, $timezones );
     push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
     unless ( @! ) {
@@ -78,7 +78,7 @@ sub edit {
 
     unless ( @! ) {
         # получаем данные пользователя
-        $result_eav = $self->model('User')->_get_user( $data );
+        $user_data = $self->model('User')->_get_user( $data );
     }
 
     # получение значений для selected
@@ -96,29 +96,30 @@ sub edit {
 
     unless ( @! ) {
         # перевод времени в секунды
-        $$result_eav{'birthday'} = $self->model('Utils')->_date2sec( $$result_eav{'birthday'} );
+        $$user_data{'birthday'} = $self->model('Utils')->_date2sec( $$user_data{'birthday'} );
         $result = {
+            'id'   => $$user_data{'id'},
             'tabs' => [ # Вкладки 
                 {
                     'label' => 'Основные',
                     'fields'=> [
-                        {"name"       => $$result_eav{'name'} },
-                        {"patronymic" => $$result_eav{'patronymic'} },
-                        {"surname"    => $$result_eav{'surname'} },
-                        {"birthday"   => $$result_eav{'birthday'} },
-                        {"avatar"     => $$result_eav{'import_source'} },
+                        {"name"       => $$user_data{'name'} },
+                        {"patronymic" => $$user_data{'patronymic'} },
+                        {"surname"    => $$user_data{'surname'} },
+                        {"birthday"   => $$user_data{'birthday'} },
+                        {"avatar"     => $$user_data{'import_source'} },
                         {"country"    =>  
                             {
                                 "selected" => $countries, 
-                                "value"    => $$result_eav{'country'}
+                                "value"    => $$user_data{'country'}
                             }
                         },
-                        {"place"      => $$result_eav{'place'} },
-                        {"status"     => $$result_eav{'publish'} ? 1 : 0 },
+                        {"place"      => $$user_data{'place'} },
+                        {"status"     => $$user_data{'publish'} ? 1 : 0 },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
-                                "value"    => $$result_eav{'timezone'}
+                                "value"    => $$user_data{'timezone'}
                             }
                         },
                         {"type"       => 'User' }
@@ -127,22 +128,22 @@ sub edit {
                 {
                     'label' => 'Контакты',
                     'fields' => [
-                       {"email"          => $$result_eav{'email'} },
+                       {"email"          => $$user_data{'email'} },
                        {"emailconfirmed" => 1 },
-                       {"phone"          => $$result_eav{'phone'} },
+                       {"phone"          => $$user_data{'phone'} },
                        {"phoneconfirmed" => 1 }
                     ]
                 },
                 {
                     'label' => 'Пароль',
                     'fields' => [
-                       {"password"       => $$result_eav{'password'} }
+                       {"password"       => $$user_data{'password'} }
                     ]
                 },
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$result_eav{'groups'} }
+                       { "groups" => $$user_data{'groups'} }
                     ]
                 }
             ]
