@@ -14,7 +14,7 @@ sub index {
 
     my ( $list, $result, $resp );
 
-    $list = $self->model('Discipline')->_list_discipline();
+    $list = $self->model('Theme')->_list_theme();
 
     unless ( @! ) {
         $result = {
@@ -52,7 +52,7 @@ sub edit {
 
     unless ( @! ) {
         # получение объекта EAV
-        $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
+        $result = $self->model('Theme')->_get_theme( $$data{'id'} );
     }
 
     unless ( @! ) {
@@ -94,7 +94,7 @@ sub edit {
 }
 
 # Добавлением нового предмета в EAV
-# $id = $self->model('Discipline')->_insert_discipline( $data );
+# $id = $self->model('Theme')->_insert_theme( $data );
 # $data = {
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
@@ -129,10 +129,16 @@ sub add {
         }
     }
 
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+    unless ( @! ) {
+        # проверка родителя
+        unless ( $$data{'parent'} ) {
+            push @!, "theme must have a nonzero parent";
+        }
+        elsif(
+            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
+            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
+        ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist";
         }
     }
 
@@ -141,7 +147,7 @@ sub add {
         $$data{'status'} = 1 unless defined $$data{'status'};
         $$data{'date_updated'} = $self->model('Utils')->_get_time();
 
-        $id = $self->model('Discipline')->_insert_discipline( $data );
+        $id = $self->model('Theme')->_insert_theme( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -189,10 +195,16 @@ sub save {
         }
     }
 
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+    unless ( @! ) {
+        # проверка родителя
+        unless ( $$data{'parent'} ) {
+            push @!, "theme must have a nonzero parent";
+        }
+        elsif(
+            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
+            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
+        ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist";
         }
     }
 
@@ -202,7 +214,7 @@ sub save {
         $$data{'time_update'} = $self->model('Utils')->_get_time();
 
         # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_save_discipline( $data );
+        $result = $self->model('Theme')->_save_theme( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -216,7 +228,7 @@ sub save {
 }
 
 # изменить статус предмета (вкл/выкл)
-# $result = $self->model('Discipline')->_toggle_discipline( $data );
+# $result = $self->model('Theme')->_toggle_theme( $data );
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
@@ -233,7 +245,7 @@ sub toggle {
 
     unless ( @! ) {
         # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_toggle_discipline( $data );
+        $result = $self->model('Theme')->_toggle_theme( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -261,7 +273,7 @@ sub delete {
 
     unless ( @! ) {
         # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+        $result = $self->model('Theme')->_delete_theme( $$data{'id'} );
         push @!, 'can\'t delete EAV object' unless $result;
     }
 

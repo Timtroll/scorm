@@ -27,7 +27,7 @@ my $host = $t->app->config->{'host'};
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/theme/all_right.svg' }
+    upload => { file => './t/Theme/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => form => $data );
