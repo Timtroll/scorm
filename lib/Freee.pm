@@ -207,6 +207,7 @@ sub startup {
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/profile')        ->to('user#profile');       # пермишены и профиль юзера
+    $auth->post('/user/delete')         ->to('user#delete');       # удаление пользователя
 
     # управление группами пользователей
     $auth->post('/groups/')             ->to('groups#index');       # список групп

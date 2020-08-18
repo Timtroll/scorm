@@ -112,8 +112,7 @@ my $test_data = {
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
-            'country'      => 'RU'
-,
+            'country'      => 'RU',
             'timezone'     => 12.75,
             'birthday'     => 807393600,
             'password'     => 'password1',

@@ -98,7 +98,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -119,7 +119,7 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '2@email.ru',
-            'phone'        => '+79211111112',
+            'phone'        => '+7(921)1111112',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -157,7 +157,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -180,7 +180,7 @@ $test_data = {
             'password'     => 'password1',
             'newpassword'  => 'password2',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -227,7 +227,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -249,7 +249,7 @@ $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => '6@email.ru',
-            'phone'        => '+79211111116',
+            'phone'        => '+7(921)1111116',
             'status'       => 0,
             'groups'       => "[1,2,3]"
         },
@@ -274,7 +274,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111119',
+            'phone'        => '+7(921)1111119',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -298,7 +298,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '2@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -322,12 +322,12 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111112',
+            'phone'        => '+7(921)1111112',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "phone '+79211111112' already used",
+            'message'   => "phone '+7(921)1111112' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"
@@ -346,7 +346,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '3@email.ru',
-            'phone'        => '+79211111113',
+            'phone'        => '+7(921)1111113',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -370,7 +370,7 @@ $test_data = {
             'newpassword'  => 'password1',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -393,7 +393,7 @@ $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -416,7 +416,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -462,7 +462,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -484,7 +484,7 @@ $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
-            'phone'        => '+79211111114',
+            'phone'        => '+7(921)1111114',
             'status'       => 1,
             'groups'       => "[1,2,404,405]"
         },

@@ -84,7 +84,7 @@ $data = {
     'password'     => 'password1',
     'avatar'       => 1,
     'email'        => 'emailright@email.ru',
-    'phone'        => '+79212222222',
+    'phone'        => '+7(921)2222222',
     'status'       => 1,
     'groups'       => "[1,2,3]"
 };
@@ -369,7 +369,7 @@ my $test_data = {
                         "fields" => [
                            {"email" => "emailright\@email.ru"},
                            {"emailconfirmed" => 1},
-                           {"phone" => '+79212222222'},
+                           {"phone" => '+7(921)2222222'},
                            {"phoneconfirmed" => 1}
                        ],
                         "label" => "Контакты"

@@ -95,7 +95,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79212222222',
+            'phone'        => '+7(921)2222222',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -116,7 +116,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79212222221',
+            'phone'        => '+7(921)2222221',
             'status'       => 0,
             'groups'       => "[1,2,3]"
         },
@@ -138,7 +138,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -158,7 +158,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -178,7 +178,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -198,7 +198,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -218,7 +218,7 @@ my $test_data = {
             'timezone'     => -12,
             'birthday'     => 807393600,
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -259,7 +259,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79211111111',
+            'phone'        => '+7(921)1111111',
             'groups'       => "[1,2,3]"
         },
         'result' => {
@@ -279,12 +279,12 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79212222222',
+            'phone'        => '+7(921)2222222',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "phone '+79212222222' already used",
+            'message'   => "phone '+7(921)2222222' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"
@@ -300,7 +300,7 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'phone'        => '+79212222224',
+            'phone'        => '+7(921)2222224',
             'status'       => 1,
             'groups'       => "[1,2,404,405]"
         },
