@@ -32,7 +32,7 @@
       </div>
 
       <div class="pos-lesson-video-screen second-screen"
-           v-if="selectedPosition"
+           v-if="selectedPosition && selectedPosition.v !== 'none'"
            :class="[secondScreen.position.v, secondScreen.position.h]">
         <video width="1920"
                height="1080"
@@ -116,6 +116,11 @@ export default {
 
       position: [
         {
+          v:    'none',
+          h:    'none',
+          icon: 'img/icons/pos_none.svg'
+        },
+        {
           v:    'right',
           h:    'top',
           icon: 'img/icons/pos_top-right.svg'
@@ -176,6 +181,10 @@ export default {
     // move second Video
     moveVideo (direction) {
       switch (direction) {
+        case ('none'):
+          this.secondScreen.position.v = 'left'
+          this.changePositionIndicator('h', 'none')
+          break
         case ('left'):
           this.secondScreen.position.v = 'left'
           this.changePositionIndicator('v', 'left')
