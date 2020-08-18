@@ -150,6 +150,7 @@ sub _get_list {
 
     return $list;
 }
+
 # Получить данные пользователя из EAV и таблицы users
 # ( $result ) = $self->model('User')->_get_user( $data );
 # $data = {
@@ -190,6 +191,7 @@ sub _get_user {
         # взять весь объект из EAV
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
         if ( $usr ) {
+            $result->{'id'}            = $usr->id();
             $result->{'name'}          = $usr->name();
             $result->{'patronymic'}    = $usr->patronymic();
             $result->{'surname'}       = $usr->surname();

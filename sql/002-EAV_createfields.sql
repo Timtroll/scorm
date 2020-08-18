@@ -14,6 +14,14 @@ BEGIN
     PERFORM eav_createfield( 'Discipline', 'url', 'url страницы', 'string', NULL );
     PERFORM eav_createfield( 'Discipline', 'seo', 'поле для seo', 'string', NULL );
     PERFORM eav_createfield( 'Discipline', 'status', 'Статус поля', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'label', 'Описание для отображения', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'description', 'Краткое содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'content', 'Полное содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'attachment', 'ID файлов', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'keywords', 'ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'seo', 'поле для seo', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'status', 'Статус поля', 'string', NULL );
     -- PERFORM eav_createfield( 'Default', 'folder', 'Признак категории', 'boolean', NULL );
 END;
 $$;
