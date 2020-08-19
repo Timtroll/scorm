@@ -21,8 +21,8 @@ CREATE TABLE "public"."users" (
     "password" varchar(32) COLLATE "default" DEFAULT NULL::character varying,
     "eav_id" int4 DEFAULT 0 NOT NULL,
     "time_create" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
-    "time_access" timestamptz(6),
-    "time_update" timestamptz(6),
+    "time_access" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
+    "time_update" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
     "timezone" varchar(16) DEFAULT 3,
     "groups" varchar(255) DEFAULT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

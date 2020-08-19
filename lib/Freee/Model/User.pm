@@ -52,62 +52,6 @@ my %masks_fields = (
 # Пользователи
 ###################################################################
 
-# Проверка наличия пользователя в таблице users
-# ( $result, $error ) = $self->model('User')->_check_user( $data );
-# $data = {
-#     'email'       => 'test@test.com',
-#     'phone'       => '+7(999) 222-2222'
-# }
-# возвращает данные пользователя или undef:
-# $data = {
-#     'id'          => 1,                               # берется из users
-#     'email'       => 'test@test.com',                 # берется из users
-#     'eav_id'      => 1,                               # берется из users
-#     'phone'       => '+7(999) 222-2222',              # берется из users
-#     'password'    => 'password',                      # берется из users
-#     'timezone'    => '10'                             # берется из users
-#     'time_create' => '2020-06-27 22:16:27.874726+03', # берется из users
-#     'time_access' => '2020-06-27 22:16:27.874726+03', # берется из users
-#     'time_update' => '2020-06-27 22:16:27.874726+03'  # берется из users
-# }
-# не нужен??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-sub _check_user {
-    my ( $self, $data ) = @_;
-
-    my ( $sth, $sql, $result );
-
-    unless ( $$data{'email'} || $$data{'phone'} ) {
-        push @!, 'no data for check';
-    }
-
-    unless ( @! ) {
-## ?? gпереписать одним sql
-# select id from ... where phone='..' or email='...'
-        foreach ( 'email', 'phone' ) {
-            if ( $$data{ $_ } ) {
-                if ( $$data{'id'} ) {
-                    $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'" . ' EXCEPT SELECT "id" FROM "public"."users" WHERE "id" = ' . $$data{'id'};
-                }
-                else {
-                    $sql = 'SELECT "id" FROM "public"."users" WHERE' . "\"$_\"" . '=' . "'$$data{ $_ }'";
-                }
-                # $sql = 'SELECT "id" FROM "public"."users" WHERE ? = ?';
-
-                $sth = $self->{app}->pg_dbh->prepare( $sql );
-                # $sth->bind_param( 1, $_ );
-                # $sth->bind_param( 2, $$data{ $_ } );
-
-                $result = $sth->execute();
-                unless ( $result == '0E0' ) {
-                    push @!, "$_ '$$data{ $_ }' already used";
-                }
-            }
-        }
-    }
-
-    return scalar(@!) ? 0 : 1;
-}
-
 # список юзеров по группам (обязательно id группы)
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
@@ -269,7 +213,6 @@ sub _insert_user {
                     'country'      => $$data{'country'},
                     'birthday'     => $$data{'birthday'},
                     'import_source'=> $$data{'avatar'},
-                    'date_updated' => $$data{'time_update'},
                     'publish'      => $$data{'publish'}
                 }
             }
@@ -285,7 +228,7 @@ sub _insert_user {
 ##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
 
         # запись данных в users
-        @user_keys = ( "publish", "email", "phone", "password", "eav_id", "time_create", "time_access", "time_update", "timezone", "groups" );
+        @user_keys = ( "publish", "email", "phone", "password", "eav_id", "timezone", "groups" );
         $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
 
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );

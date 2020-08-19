@@ -15,6 +15,7 @@ sub index {
     my $self = shift;
 
     my ( $data, $list, $resp, $result );
+
     # проверка данных
     $data = $self->_check_fields();
     
@@ -62,6 +63,7 @@ sub edit {
     my $self = shift;
 
     my ( $user, $data, $param, $resp, $user_data, $result, $hashref, $countries, $timezones );
+
     # проверка данных
     $data = $self->_check_fields();
 
@@ -126,7 +128,8 @@ sub edit {
                 {
                     'label' => 'Пароль',
                     'fields' => [
-                       {"password"       => $$user_data{'password'} }
+                       {"password"          => ' ' },
+                       {"newpassword"       => ' ' }
                     ]
                 },
                 {
@@ -164,36 +167,31 @@ sub edit {
 #     'timezone'    => '10',                            # кладется в users
 # }
 sub add {
-    my ($self);
-    $self = shift;
+    my $self = shift;
 
     my ($data, $resp, $result, $groups );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
             push @!, "email '$$data{ email }' already used"; 
         }
-
         # проверяем, используется ли телефон другим пользователем
-        if ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
+        elsif ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
             push @!, "phone '$$data{ phone }' already used"; 
         }
-    }
 
-    unless ( @! ) {
-        # проверка существования групп пользователя
-        $groups = from_json( $$data{'groups'} );
-        foreach ( @$groups ) {
-            unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @!, "group with id '$_' doesn't exist";
-                last;
+        unless ( @! ) {
+            # проверка существования групп пользователя
+            $groups = from_json( $$data{'groups'} );
+            foreach ( @$groups ) {
+                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
+                    push @!, "group with id '$_' doesn't exist";
+                    last;
+                }
             }
         }
     }
@@ -207,10 +205,6 @@ sub add {
             $$data{'birthday'}    = '';
         }
 
-# ?????? перенести в базу
-        $$data{'time_create'} = $self->model('Utils')->_get_time();
-        $$data{'time_access'} = $self->model('Utils')->_get_time();
-        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
@@ -247,27 +241,24 @@ sub add_by_email {
     my $self = shift;
 
     my ( $groups, $data, $resp, $result, $data_eav, $user );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверяем, используется ли емэйл другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
             push @!, "email '$$data{ email }' already used"; 
         }
-    }
 
-    unless ( @! ) {
-        # проверка существования групп пользователя
-        $groups = from_json( $$data{'groups'} );
-        foreach ( @$groups ) {
-            unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @!, "group with id '$_' doesn't exist";
-                last;
+        unless ( @! ) {
+            # проверка существования групп пользователя
+            $groups = from_json( $$data{'groups'} );
+            foreach ( @$groups ) {
+                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
+                    push @!, "group with id '$_' doesn't exist";
+                    last;
+                }
             }
         }
     }
@@ -282,10 +273,6 @@ sub add_by_email {
             $$data{'birthday'}    = '';
         }
 
-# ?????????????
-        $$data{'time_create'} = $self->model('Utils')->_get_time();
-        $$data{'time_access'} = $self->model('Utils')->_get_time();
-        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'publish'}     = $$data{'status'};
         $$data{'phone'}       = '';
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
@@ -321,27 +308,23 @@ sub add_by_phone {
     my $self = shift;
 
     my ( $data, $resp, $result, $data_eav, $user, $groups );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверяем, используется ли телефон другим пользователем
         if ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
             push @!, "phone '$$data{ phone }' already used"; 
         }
-    }
-
-    unless ( @! ) {
-        # проверка существования групп пользователя
-        $groups = from_json( $$data{'groups'} );
-        foreach ( @$groups ) {
-            unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @!, "group with id '$_' doesn't exist";
-                last;
+        unless ( @! ) {
+            # проверка существования групп пользователя
+            $groups = from_json( $$data{'groups'} );
+            foreach ( @$groups ) {
+                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
+                    push @!, "group with id '$_' doesn't exist";
+                    last;
+                }
             }
         }
     }
@@ -356,10 +339,6 @@ sub add_by_phone {
             $$data{'birthday'}    = '';
         }
 
-# ?????????????
-        $$data{'time_create'} = $self->model('Utils')->_get_time();
-        $$data{'time_access'} = $self->model('Utils')->_get_time();
-        $$data{'time_update'} = $self->model('Utils')->_get_time();
         $$data{'email'}       = '';
         $$data{'publish'}     = $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
@@ -403,21 +382,15 @@ sub save {
     my $self = shift;
 
     my ( $data, $resp, $groups, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
+
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
-
-    unless ( @! ) {
-#????????????????
-#        foreach () {}
         unless ( $$data{'phone'} || $$data{'email'} ) {
             push @!, 'No email and no phone';
         }
-
-        if ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
+        elsif ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
             push @!, 'No newpassword';
         }
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
@@ -426,27 +399,26 @@ sub save {
         elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
             push @!, 'Password and newpassword are the same';
         }
-    }
 
-    unless ( @! ) {
-        # проверяем, используется ли емэйл другим пользователем
-        if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
-            push @!, "email '$$data{ email }' already used"; 
-        }
-#??????????
-        # проверяем, используется ли телефон другим пользователем
-        if ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
-            push @!, "phone '$$data{ phone }' already used"; 
-        }
-    }
+        unless ( @! ) {
+            # проверяем, используется ли емэйл другим пользователем
+            if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
+                push @!, "email '$$data{ email }' already used"; 
+            }
+            # проверяем, используется ли телефон другим пользователем
+            elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
+                push @!, "phone '$$data{ phone }' already used"; 
+            }
 
-    unless ( @! ) {
-        # проверка существования групп пользователя
-        $groups = from_json( $$data{'groups'} );
-        foreach ( @$groups ) {
-            unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                push @!, "group with id '$_' doesn't exist";
-                last;
+            unless ( @! ) {
+                # проверка существования групп пользователя
+                $groups = from_json( $$data{'groups'} );
+                foreach ( @$groups ) {
+                    unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
+                        push @!, "group with id '$_' doesn't exist";
+                        last;
+                    }
+                }
             }
         }
     }
@@ -459,9 +431,9 @@ sub save {
         else {
             $$data{'birthday'}    = '';
         }
-#?????????????/ sql
-        $$data{'time_access'} = $self->model('Utils')->_get_time();
-        $$data{'time_update'} = $self->model('Utils')->_get_time();
+
+        $$data{'time_access'} = 'now';
+        $$data{'time_update'} = 'now';
         $$data{'publish'}     =  $$data{'status'};
         $$data{'patronymic'}  = '' unless $$data{'patronymic'};
         $$data{'place'}       = '' unless $$data{'place'};
@@ -488,19 +460,23 @@ sub save {
 sub toggle {
     my $self = shift;
 
-    my ( $toggle, $resp, $data, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    my ( $toggle, $resp, $data );
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
+    # проверка существования элемента для изменения
     unless ( @! ) {
-        $$data{'status'} = $$data{'status'} ? 'true' : 'false';
-#???????????
-        # $$data{'status'} = $$data{'status'} ? \1 : \0;
-        $result = $self->model('User')->_toggle_user( $data );
+        unless ( $self->model('Utils')->_exists_in_table( 'users', 'id', $$data{'id'} ) ) {
+            push @!, "user with '$$data{'id'}' doesn't exist";
+        }
+        unless ( @! ) {
+            $$data{'table'}     = 'users';
+            $$data{'fieldname'} = 'publish';
+            $$data{'value'}     = $$data{'status'} ? 'true' : 'false';
+            $toggle = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
+        }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -520,12 +496,8 @@ sub delete {
 
     my ( $data, $resp, $result );
 
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     # удаление пользователя из EAV и из Users
     unless ( @! ) {

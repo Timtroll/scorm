@@ -53,6 +53,7 @@ sub _toggle {
     return unless ( $$data{'table'} );
     return unless ( $$data{'id'} );
     return unless ( $$data{'fieldname'} );
+    return unless ( $$data{'value'} );
 
     my $result;
     my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};

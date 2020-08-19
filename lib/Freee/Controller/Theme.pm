@@ -43,12 +43,8 @@ sub edit {
     my $self = shift;
 
     my ( $data, $resp, $result, $list );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # получение объекта EAV
@@ -111,12 +107,8 @@ sub add {
     my $self = shift;
 
     my ( $data, $attachment, $resp, $id );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверка существования вложенных файлов
@@ -139,7 +131,6 @@ sub add {
     unless ( @! ) {
         # добавляем предмет в EAV
         $$data{'status'} = 1 unless defined $$data{'status'};
-        $$data{'date_updated'} = $self->model('Utils')->_get_time();
 
         $id = $self->model('Discipline')->_insert_discipline( $data );
     }
@@ -171,12 +162,8 @@ sub save {
     my $self = shift;
 
     my ( $data, $attachment, $resp, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверка существования вложенных файлов
@@ -199,7 +186,7 @@ sub save {
     unless ( @! ) {
         $$data{'status'} = 1 unless defined $$data{'status'};
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
-        $$data{'time_update'} = $self->model('Utils')->_get_time();
+        $$data{'time_update'} = 'now';
 
         # добавляем предмет в EAV
         $result = $self->model('Discipline')->_save_discipline( $data );
@@ -224,12 +211,8 @@ sub toggle {
     my $self = shift;
 
     my ( $data, $resp, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # добавляем предмет в EAV
@@ -252,12 +235,8 @@ sub delete {
     my $self = shift;
 
     my ( $data, $resp, $result );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{ $$vfields{ $self->url_for } };    
-
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # добавляем предмет в EAV

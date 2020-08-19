@@ -95,7 +95,7 @@ CREATE TABLE "public"."EAV_items" (
     type "public"."EAV_object_type",
     import_source varchar,
     date_created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    date_updated date,
+    date_updated timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     title character varying(4096),
     parent integer,
     has_childs integer DEFAULT 0

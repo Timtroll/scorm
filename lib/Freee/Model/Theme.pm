@@ -41,12 +41,11 @@ sub _insert_theme {
                 'publish'      => $$data{'status'},
                 'theme' => {
                     'parent'       => $$data{'parent'},
-                    'date_updated' => $$data{'date_updated'},
                     'label'        => $$data{'label'},
                     'description'  => $$data{'description'},
                     'content'      => $$data{'content'},
                     'keywords'     => $$data{'keywords'},
-                    'import_source'=> $$data{'avatar'},
+                    'import_source'=> '',
                     'url'          => $$data{'url'},
                     'seo'          => $$data{'seo'},
                     'attachment'   => $$data{'attachment'}
@@ -234,7 +233,7 @@ sub _save_theme {
                 'description'  => $$data{'description'},
                 'content'      => $$data{'content'},
                 'keywords'     => $$data{'keywords'},
-                'import_source'=> $$data{'avatar'},
+                'import_source'=> '',
                 'url'          => $$data{'url'},
                 'date_updated' => $$data{'time_update'},
                 'publish'      => $$data{'status'},
