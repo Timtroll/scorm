@@ -7,10 +7,14 @@ use Freee::EAV;
 use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
+use Digest::SHA qw( sha256 );
 
 # список юзеров по группам (обязательно id группы)
+# $self->index($data)
+# $data = { 
 # id - Id группы
 # status - показывать группы только с этим статусом
+# }
 sub index {
     my $self = shift;
 
@@ -152,7 +156,7 @@ sub edit {
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
-# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# ( $user_id ) = $self->add( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
@@ -169,7 +173,7 @@ sub edit {
 sub add {
     my $self = shift;
 
-    my ($data, $resp, $result, $groups );
+    my ( $data, $salt, $resp, $result, $groups );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -192,6 +196,13 @@ sub add {
                     push @!, "group with id '$_' doesn't exist";
                     last;
                 }
+            }
+            unless ( @! ) {
+                # получение соли из конфига
+                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+                # шифрование пароля
+                $$data{'password'} = sha256( $$data{'password'}, $salt );
             }
         }
     }
@@ -225,7 +236,7 @@ sub add {
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
-# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# $self->add_by_email( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
@@ -240,7 +251,7 @@ sub add {
 sub add_by_email {
     my $self = shift;
 
-    my ( $groups, $data, $resp, $result, $data_eav, $user );
+    my ( $groups, $data, $salt, $resp, $result, $data_eav, $user );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -259,6 +270,13 @@ sub add_by_email {
                     push @!, "group with id '$_' doesn't exist";
                     last;
                 }
+            }
+            unless ( @! ) {
+                # получение соли из конфига
+                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+                # шифрование пароля
+                $$data{'password'} = sha256( $$data{'password'}, $salt );
             }
         }
     }
@@ -292,7 +310,7 @@ sub add_by_email {
 }
 
 # Добавлением нового пользователя в EAV и таблицу users
-# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# $self->add_by_phone( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
@@ -307,7 +325,7 @@ sub add_by_email {
 sub add_by_phone {
     my $self = shift;
 
-    my ( $data, $resp, $result, $data_eav, $user, $groups );
+    my ( $data, $resp, $result, $data_eav, $user, $groups, $salt );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -325,6 +343,13 @@ sub add_by_phone {
                     push @!, "group with id '$_' doesn't exist";
                     last;
                 }
+            }
+            unless ( @! ) {
+                # получение соли из конфига
+                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+                # шифрование пароля
+                $$data{'password'} = sha256( $$data{'password'}, $salt );
             }
         }
     }
@@ -359,7 +384,7 @@ sub add_by_phone {
 
 
 # сохранение данных о пользователе
-# $result = $self->model('User')->_save_user( $data );
+# $self->save( $data );
 # $data = {
 #     'id'                => 1,
 #     'surname'           => 'Фамилия',           # Фамилия
@@ -381,7 +406,7 @@ sub add_by_phone {
 sub save {
     my $self = shift;
 
-    my ( $data, $resp, $groups, $result );
+    my ( $data, $salt, $resp, $groups, $result );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -424,6 +449,14 @@ sub save {
     }
 
     unless ( @! ) {
+        if ( $$data{'password'} ) {
+            # получение соли из конфига
+            $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+            # шифрование пароля
+            $$data{'password'} = sha256( $$data{'newpassword'}, $salt );
+        }
+
         # переводим секунды в дату рождения
         if ( $$data{'birthday'} ) {
             $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
@@ -453,10 +486,12 @@ sub save {
 
 
 # изменение поля на 1/0
-# my $true = $self->toggle( $data );
+# $data = {
+# $self->toggle( $data );
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
+#}
 sub toggle {
     my $self = shift;
 
@@ -489,8 +524,10 @@ sub toggle {
 }
 
 # удаление пользователя
-# $result = $self->model('User')->_delete_user( $data );
-# 'id'    - id записи 
+# $self->delete( $data );
+# $data = {
+# 'id'    - id записи
+#} 
 sub delete {
     my $self = shift;
 

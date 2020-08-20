@@ -8,8 +8,8 @@ use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
-# список предметов
-sub index {
+# получить список тем
+# $self->index( $data );sub index {
     my $self = shift;
 
     my ( $list, $result, $resp );
@@ -38,45 +38,49 @@ sub index {
 }
 
 # получить данные для редактирования предмета
+# $self->edit( $data );
+# $data = {
 # id - id предмета
+# }
 sub edit {
     my $self = shift;
 
     my ( $data, $resp, $result, $list );
+
     # проверка данных
     $data = $self->_check_fields();
 
     unless ( @! ) {
         # получение объекта EAV
         $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
-    }
 
-    unless ( @! ) {
-        $list = {
-            'id'     => $$result{'id'},
-            'parent' => $$result{'parent'},
-            'folder' => $$result{'parent'} ? 0 : 1,
-            'tabs'   => [
-                {
-                    'label'  => 'основные',
-                    'fields' => [
-                        { 'label'       => $$result{'label'} },
-                        { 'description' => $$result{'description'} },
-                        { 'keywords'    => $$result{'keywords'} },
-                        { 'url'         => $$result{'url'} },
-                        { 'seo'         => $$result{'seo'} },
-                        { 'route'       => $$result{'route'} },
-                        { 'status'      => $$result{'status'} }
-                    ]
-                },
-                {
-                    'label'  => 'Контент',
-                    'fields' => [
-                        { 'content'    => $$result{'content'} },
-                        { 'attachment' => $$result{'attachment'} }
-                    ]
-                }
-            ]
+        unless ( @! ) {
+            $list = {
+                'id'     => $$result{'id'},
+                'parent' => $$result{'parent'},
+                'folder' => $$result{'parent'} ? 0 : 1,
+                'tabs'   => [
+                    {
+                        'label'  => 'основные',
+                        'fields' => [
+                            { 'label'       => $$result{'label'} },
+                            { 'description' => $$result{'description'} },
+                            { 'keywords'    => $$result{'keywords'} },
+                            { 'url'         => $$result{'url'} },
+                            { 'seo'         => $$result{'seo'} },
+                            { 'route'       => $$result{'route'} },
+                            { 'status'      => $$result{'status'} }
+                        ]
+                    },
+                    {
+                        'label'  => 'Контент',
+                        'fields' => [
+                            { 'content'    => $$result{'content'} },
+                            { 'attachment' => $$result{'attachment'} }
+                        ]
+                    }
+                ]
+            }
         }
     }
 
@@ -89,8 +93,8 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
-# Добавлением нового предмета в EAV
-# $id = $self->model('Discipline')->_insert_discipline( $data );
+# Добавление новой темы в EAV
+# $self->add( $data );
 # $data = {
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
@@ -107,6 +111,7 @@ sub add {
     my $self = shift;
 
     my ( $data, $attachment, $resp, $id );
+
     # проверка данных
     $data = $self->_check_fields();
 
@@ -144,7 +149,8 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-# сохранить предмет
+# сохранить тему
+# $self->save( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
 #    'parent'      => 0,                                # кладется в EAV
@@ -162,6 +168,7 @@ sub save {
     my $self = shift;
 
     my ( $data, $attachment, $resp, $result );
+
     # проверка данных
     $data = $self->_check_fields();
 
@@ -202,15 +209,18 @@ sub save {
     $self->render( 'json' => $resp );
 }
 
-# изменить статус предмета (вкл/выкл)
-# $result = $self->model('Discipline')->_toggle_discipline( $data );
+# изменить статус темы (вкл/выкл)
+# $self->toggle( $data );
+# $data = {
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
+#}
 sub toggle {
     my $self = shift;
 
     my ( $data, $resp, $result );
+
     # проверка данных
     $data = $self->_check_fields();
 
@@ -229,12 +239,15 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
-# удалить предмет
-# 'id'    - id предмета 
-sub delete {
+# удалить тему
+# $self->delete( $data );
+# $data = {
+# 'id'    - id предмета
+#} sub delete {
     my $self = shift;
 
     my ( $data, $resp, $result );
+
     # проверка данных
     $data = $self->_check_fields();
 

@@ -31,8 +31,7 @@ sub _insert_discipline {
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
-
-    unless ( @! ) {
+    else {
         # делаем запись в EAV
         $discipline = Freee::EAV->new( 'Discipline',
             {
@@ -53,7 +52,7 @@ sub _insert_discipline {
             }
         );
         $id = $discipline->id();
-        unless ( $id ) {
+        unless ( scalar( $id ) ) {
             push @!, "Could not insert discipline into EAV";
         }
     }
@@ -63,13 +62,15 @@ sub _insert_discipline {
 
 # удалить предмет
 # $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
-# 'id'    - id предмета 
+# $data = {
+# 'id'    - id предмета
+# }
 sub _delete_discipline {
     my ( $self, $id ) = @_;
 
     my ( $discipline, $result );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, 'no id for delete';
     }
     else {
@@ -84,6 +85,7 @@ sub _delete_discipline {
     return $result;
 }
 
+# получить список предметов
 # my $list = $self->model('Discipline')->_list_discipline();
 # my $list = {
 #     "folder"      => 1,                               # EAV_items
@@ -133,8 +135,8 @@ sub _list_discipline {
 }
 
 #  получить данные для редактирования предмета
-#  $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
-# my $data = {
+#  my $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
+#  $result = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
 #     "label" => "Предмет 1",
@@ -152,7 +154,7 @@ sub _get_discipline {
 
     my ( $discipline, $result, $list );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, "no data for get";
         return;
     }
@@ -247,15 +249,17 @@ sub _save_discipline {
 
 # изменить статус предмета (вкл/выкл)
 # $result = $self->model('Discipline')->_toggle_discipline( $data );
+# $data = {
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
+# }
 sub _toggle_discipline {
     my ( $self, $data ) = @_;
 
     my ( $discipline, $result );
 
-    unless ( $$data{'id'} && defined $$data{'value'} ) {
+    unless ( scalar( $$data{'id'} ) && defined $$data{'value'} ) {
         return;
     }
     else {
@@ -278,15 +282,15 @@ sub _toggle_discipline {
     return $result;
 }
 
-# проверка существования предмета с таким id
-# my $true = $self->model('Discipline')->_exists_in_discipline( $$data{'parent'}
+# проверка существования предмета
+# my $true = $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} );
 # 'id'    - id предмета
 sub _exists_in_discipline {
     my ( $self, $id ) = @_;
 
     my ( $discipline, $result );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, 'no id for check';
     }
     else {

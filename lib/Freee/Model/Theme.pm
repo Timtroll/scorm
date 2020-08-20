@@ -8,7 +8,7 @@ use Data::Dumper;
 # Предметы
 ###################################################################
 
-# Добавлением нового предмета в EAV
+# Добавлением новой темы в EAV
 # $id = $self->model('theme')->_insert_theme( $data );
 # $data = {
 #    'parent'      => 0,                                # кладется в EAV
@@ -31,8 +31,7 @@ sub _insert_theme {
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
-
-    unless ( @! ) {
+    else {
         # делаем запись в EAV
         $theme = Freee::EAV->new( 'theme',
             {
@@ -61,15 +60,17 @@ sub _insert_theme {
     return $id;
 }
 
-# удалить предмет
+# удалить тему
 # $result = $self->model('theme')->_delete_theme( $$data{'id'} );
-# 'id'    - id предмета 
+# $data = {
+# 'id'    - id предмета
+# }
 sub _delete_theme {
     my ( $self, $id ) = @_;
 
     my ( $theme, $result );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, 'no id for delete';
     }
     else {
@@ -84,6 +85,7 @@ sub _delete_theme {
     return $result;
 }
 
+# получить список тем
 # my $list = $self->model('theme')->_list_theme();
 # my $list = {
 #     "folder"      => 1,                               # EAV_items
@@ -132,9 +134,9 @@ sub _list_theme {
     return $list;
 }
 
-#  получить данные для редактирования предмета
-#  $result = $self->model('theme')->_get_theme( $$data{'id'} );
-# my $data = {
+#  получить данные для редактирования темы
+#  my $result = $self->model('theme')->_get_theme( $$data{'id'} );
+#  $result = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
 #     "label" => "Предмет 1",
@@ -152,7 +154,7 @@ sub _get_theme {
 
     my ( $theme, $result, $list );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, "no data for get";
         return;
     }
@@ -190,7 +192,7 @@ sub _get_theme {
     return $list;
 }
 
-# сохранить предмет
+# сохранить тему
 # $result = $self->model('theme')->_save_theme( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
@@ -245,17 +247,19 @@ sub _save_theme {
     return $result;
 }
 
-# изменить статус предмета (вкл/выкл)
+# изменить статус темы (вкл/выкл)
 # $result = $self->model('theme')->_toggle_theme( $data );
+# $data = {
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
+# }
 sub _toggle_theme {
     my ( $self, $data ) = @_;
 
     my ( $theme, $result );
 
-    unless ( $$data{'id'} && defined $$data{'value'} ) {
+    unless ( scalar( $$data{'id'} ) && defined $$data{'value'} ) {
         return;
     }
     else {
@@ -278,15 +282,15 @@ sub _toggle_theme {
     return $result;
 }
 
-# проверка существования предмета с таким id
+# проверка существования темы
 # my $true = $self->model('theme')->_exists_in_theme( $$data{'parent'}
-# 'id'    - id предмета
+# 'id' - id темы
 sub _exists_in_theme {
     my ( $self, $id ) = @_;
 
     my ( $theme, $result );
 
-    unless ( $id ) {
+    unless ( scalar( $id ) ) {
         push @!, 'no id for check';
     }
     else {
@@ -298,7 +302,7 @@ sub _exists_in_theme {
         );
     }
 
-    return $theme ? 1 : 0;
+    return $theme ? \1 : \0;
 }
 
 1;

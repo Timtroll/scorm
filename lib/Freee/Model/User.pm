@@ -55,7 +55,6 @@ my %masks_fields = (
 # список юзеров по группам (обязательно id группы)
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
-    #????????????????????
 # id - Id группы
 # status - показывать группы только с этим статусом
 # }
@@ -72,20 +71,18 @@ sub _get_list {
         $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
 
         # взять объекты из таблицы users
-# ??????? однобквенное название полей + преобазовать true/false в 1/0
         unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ?';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?';
         }
         elsif ( $$data{'status'} ) {
-            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ? AND i."publish" = true';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = true';
         }
         else {
-            $sql = 'SELECT i.'. $fields . 'FROM "public"."user_groups" AS l INNER JOIN "public"."users" AS i ON i."id" = l."user_id" WHERE l."group_id" = ? AND i."publish" = false';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = false';
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
         $sth->execute();
-# ???? брать из sql в нужном формате
         $list = $sth->fetchall_hashref('id');
 
         if ( ref($list) eq 'HASH' ) {
@@ -103,8 +100,9 @@ sub _get_list {
 
 # Получить данные пользователя из EAV и таблицы users
 # ( $result ) = $self->model('User')->_get_user( $data );
-# $data ?????????
-# отдает
+# $data = {
+# id - Id пользователя
+# }
 # $result = {
 #     'place'         => 'place',                         # берется из EAV
 #     'country'       => 'country',                       # берется из EAV
@@ -183,6 +181,8 @@ sub _insert_user {
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
+    # открытие транзакции
+
             # загружаем аватарку
             # таблица media (аватарка)
 #             my $media_data = {
@@ -260,6 +260,8 @@ sub _insert_user {
             push @!, "Can not insert into 'user_groups'" unless $result;
         }
     }
+# закрытвание транзакции 
+# $self->{'app'}->pg_dbh
 
     return $user_id;
 }
@@ -298,7 +300,6 @@ sub _save_user {
         @user_keys = ( "publish", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
         if ( $$data{'password'} ) {
-            $$data{'password'} = $$data{'newpassword'};
             push @user_keys, 'password';
         }
 
@@ -372,9 +373,11 @@ sub _save_user {
 
 # изменение поля на 1/0
 # my $true = $self->toggle( $data );
+# $data = {
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
+# }
 sub _toggle_user {
     my ( $self, $data ) = @_;
 
@@ -400,7 +403,9 @@ sub _toggle_user {
 
 # удаление пользователя
 # $result = $self->model('User')->_delete_user( $data );
-# 'id'    - id записи 
+# $data = {
+# id - Id пользователя
+# }
 sub _delete_user {
     my ( $self, $data ) = @_;
 
