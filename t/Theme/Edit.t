@@ -27,7 +27,7 @@ my $host = $t->app->config->{'host'};
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/theme/all_right.svg' }
+    upload => { file => './t/Theme/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => form => $data );
@@ -37,7 +37,7 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 diag "";
 
-# Добавление предмета
+# Ввод предмета родителя
 $data = {
     'name'        => 'Предмет1',
     'label'       => 'Предмет 1',
@@ -50,8 +50,29 @@ $data = {
     'status'      => 1,
     'attachment'  => '[1]'
 };
+diag "Insert media:";
+$t->post_ok( $host.'/discipline/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+diag "";
+
+# Добавление темы
+$data = {
+    'name'        => 'Предмет1',
+    'label'       => 'Предмет 1',
+    'description' => 'Краткое описание',
+    'content'     => 'Полное описание',
+    'keywords'    => 'ключевые слова',
+    'url'         => 'https://test.com',
+    'seo'         => 'дополнительное поле для seo',
+    'parent'      => 1,
+    'status'      => 1,
+    'attachment'  => '[1]'
+};
 my $result = {
-    'id'        => 1,
+    'id'        => 2,
     'status'    => 'ok'
 };
 

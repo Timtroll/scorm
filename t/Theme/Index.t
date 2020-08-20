@@ -27,7 +27,7 @@ my $host = $t->app->config->{'host'};
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/theme/all_right.svg' }
+    upload => { file => './t/Theme/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => form => $data );
@@ -37,7 +37,28 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 diag "";
 
-# Добавление предметов
+# Ввод предмета родителя
+$data = {
+    'name'        => 'Предмет1',
+    'label'       => 'Предмет 1',
+    'description' => 'Краткое описание',
+    'content'     => 'Полное описание',
+    'keywords'    => 'ключевые слова',
+    'url'         => 'https://test.com',
+    'seo'         => 'дополнительное поле для seo',
+    'parent'      => 0,
+    'status'      => 1,
+    'attachment'  => '[1]'
+};
+diag "Insert media:";
+$t->post_ok( $host.'/discipline/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+diag "";
+
+# Добавление Тем
 my $test_data = {
     1 => {
         'data' => {
@@ -48,12 +69,12 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
@@ -67,12 +88,12 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
+            'id'        => 3,
             'status'    => 'ok'
         }
     }
@@ -94,7 +115,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 my $result = {
     "data" => {
-        "label" =>  "Предметы",
+        "label" =>  "Темы",
         "add"   => 1,              # разрешает добавлять предметы
         "child" =>  {
             "add"    => 1,         # разрешает добавлять детей
@@ -105,7 +126,7 @@ my $result = {
         "list" => [
             {
                 "folder"      => 0,
-                "id"          => 1,
+                "id"          => 2,
                 "label"       => "Предмет 1",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
@@ -119,7 +140,7 @@ my $result = {
             },
             {
                 "folder"      => 0,
-                "id"          => 2,
+                "id"          => 3,
                 "label"       => "Предмет 2",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",

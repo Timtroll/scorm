@@ -132,8 +132,8 @@ sub edit {
                 {
                     'label' => 'Пароль',
                     'fields' => [
-                       {"password"          => ' ' },
-                       {"newpassword"       => ' ' }
+                       {"password"          => '' },
+                       {"newpassword"       => '' }
                     ]
                 },
                 {

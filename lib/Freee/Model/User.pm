@@ -68,7 +68,7 @@ sub _get_list {
     unless ( @! ) {
         # выбираемые поля
         my $masks_fields;
-        $fields = ' id, publish, email, phone, password, eav_id, timezone, groups ';
+        $fields = ' id, publish, email, phone, eav_id, timezone, groups ';
 
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
@@ -87,6 +87,7 @@ sub _get_list {
 
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
+                $list->{ $_ }->{'password'} = '';
                 $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
                 delete $list->{ $_ }->{'publish'};
                 push @list, $$list{ $_ };

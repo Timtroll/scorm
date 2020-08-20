@@ -5,7 +5,7 @@ use Mojo::Base 'Freee::Model::Base';
 use Data::Dumper;
 
 ###################################################################
-# Предметы
+# Темы
 ###################################################################
 
 # Добавлением новой темы в EAV
@@ -33,12 +33,12 @@ sub _insert_theme {
     }
     else {
         # делаем запись в EAV
-        $theme = Freee::EAV->new( 'theme',
+        $theme = Freee::EAV->new( 'Theme',
             {
                 'parent'       => $$data{'parent'},
                 'title'        => $$data{'name'},
                 'publish'      => $$data{'status'},
-                'theme' => {
+                'Theme' => {
                     'parent'       => $$data{'parent'},
                     'label'        => $$data{'label'},
                     'description'  => $$data{'description'},
@@ -63,7 +63,7 @@ sub _insert_theme {
 # удалить тему
 # $result = $self->model('theme')->_delete_theme( $$data{'id'} );
 # $data = {
-# 'id'    - id предмета
+# 'id'    - id темы
 # }
 sub _delete_theme {
     my ( $self, $id ) = @_;
@@ -86,7 +86,7 @@ sub _delete_theme {
 }
 
 # получить список тем
-# my $list = $self->model('theme')->_list_theme();
+# my $list = $self->model('Theme')->_list_theme();
 # my $list = {
 #     "folder"      => 1,                               # EAV_items
 #     "id"          => $self->param('id'),              # EAV_items
@@ -106,7 +106,7 @@ sub _list_theme {
     my ( $theme, $result, $list );
 
     # инициализация EAV
-    $theme = Freee::EAV->new( 'theme' );
+    $theme = Freee::EAV->new( 'Theme' );
     unless ( $theme ) {
         push @!, "Tree has not any branches";
         return;
@@ -115,7 +115,7 @@ sub _list_theme {
     $list = $theme->_list( { Parents => 0, ShowHidden => 1, FIELDS => "has_childs, publish, parent, id", Order => [ { 'items.id' => 'ASC' } ] } );
 
     foreach my $row ( @$list ) {
-        my $EAV_theme = Freee::EAV->new( 'theme', { id => $row->{id} } );
+        my $EAV_theme = Freee::EAV->new( 'Theme', { id => $row->{id} } );
         $row->{'folder'}      = $row->{'has_childs'};
         $row->{'label'}       = $EAV_theme->label();
         $row->{'description'} = $EAV_theme->description();
@@ -135,8 +135,8 @@ sub _list_theme {
 }
 
 #  получить данные для редактирования темы
-#  my $result = $self->model('theme')->_get_theme( $$data{'id'} );
-#  $result = {
+#  $result = $self->model('Theme')->_get_theme( $$data{'id'} );
+# my $data = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
 #     "label" => "Предмет 1",
@@ -160,7 +160,7 @@ sub _get_theme {
     }
     else {
         # взять весь объект из EAV
-        $theme = Freee::EAV->new( 'theme', { 'id' => $id } );
+        $theme = Freee::EAV->new( 'Theme', { 'id' => $id } );
 
         unless ( $theme ) {
             push @!, "theme with id '$id' doesn't exist";
@@ -193,7 +193,7 @@ sub _get_theme {
 }
 
 # сохранить тему
-# $result = $self->model('theme')->_save_theme( $data );
+# $result = $self->model('Theme')->_save_theme( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
 #    'parent'      => 0,                                # кладется в EAV
@@ -218,7 +218,7 @@ sub _save_theme {
     }
     else {
         # обновление полей в EAV
-        $theme = Freee::EAV->new( 'theme',
+        $theme = Freee::EAV->new( 'Theme',
             {
                 'id'      => $$data{'id'}
             }
@@ -227,7 +227,7 @@ sub _save_theme {
         return unless $theme;
 
         $result = $theme->_MultiStore( {                 
-            'theme' => {
+            'Theme' => {
                 'title'        => $$data{'title'},
                 'parent'       => $$data{'parent'}, 
                 'title'        => $$data{'name'},
@@ -250,6 +250,7 @@ sub _save_theme {
 # изменить статус темы (вкл/выкл)
 # $result = $self->model('theme')->_toggle_theme( $data );
 # $data = {
+# $result = $self->model('Theme')->_toggle_theme( $data );
 # 'id'    - id записи 
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
@@ -264,7 +265,7 @@ sub _toggle_theme {
     }
     else {
         # обновление поля в EAV
-        $theme = Freee::EAV->new( 'theme',
+        $theme = Freee::EAV->new( 'Theme',
             {
                 'id'      => $$data{'id'},
             }
@@ -273,7 +274,7 @@ sub _toggle_theme {
         return unless $theme;
 
         $result = $theme->_MultiStore( {
-            'theme' => {
+            'Theme' => {
                 'publish' => $$data{'value'}, 
             }
         });
@@ -295,14 +296,14 @@ sub _exists_in_theme {
     }
     else {
         # поиск объекта с таким id
-        $theme = Freee::EAV->new( 'theme',
+        $theme = Freee::EAV->new( 'Theme',
             {
                 'id'      => $id
             }
         );
     }
 
-    return $theme ? \1 : \0;
+    return $theme ? 1 : 0;
 }
 
 1;

@@ -37,7 +37,7 @@ my $host = $t->app->config->{'host'};
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/theme/all_right.svg' }
+    upload => { file => './t/Theme/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => form => $data );
@@ -47,7 +47,7 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 diag "";
 
-# Добавление предмета
+# Ввод предмета родителя
 $data = {
     'name'        => 'Предмет1',
     'label'       => 'Предмет 1',
@@ -60,8 +60,29 @@ $data = {
     'status'      => 1,
     'attachment'  => '[1]'
 };
+diag "Insert media:";
+$t->post_ok( $host.'/discipline/add' => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+diag "";
+
+# Добавление темы
+$data = {
+    'name'        => 'Предмет1',
+    'label'       => 'Предмет 1',
+    'description' => 'Краткое описание',
+    'content'     => 'Полное описание',
+    'keywords'    => 'ключевые слова',
+    'url'         => 'https://test.com',
+    'seo'         => 'дополнительное поле для seo',
+    'parent'      => 1,
+    'status'      => 1,
+    'attachment'  => '[1]'
+};
 my $result = {
-    'id'        => 1,
+    'id'        => 2,
     'status'    => 'ok'
 };
 
@@ -78,7 +99,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -86,19 +107,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -106,19 +127,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
     3 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'name'        => 'Предмет3',
             'label'       => 'Предмет 3',
             'description' => 'Краткое описание',
@@ -126,11 +147,11 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'No status:' 
@@ -139,14 +160,14 @@ my $test_data = {
     # отрицательные тесты
     4 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
             'content'     => 'Полное описание',
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
@@ -157,7 +178,7 @@ my $test_data = {
     },
     5 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -165,7 +186,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'attachment'  => '[1,404]'
         },
         'result' => {
@@ -176,7 +197,7 @@ my $test_data = {
     },
     6 => {
         'data' => {
-            'id'          => 1,
+            'id'          => 2,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -184,7 +205,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'attachment'  => 'error'
         },
         'result' => {
@@ -195,7 +216,7 @@ my $test_data = {
     },
     7 => {
         'data' => {
-            'id'          => 404,
+            'id'          => 2,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -203,7 +224,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => 1,
             'attachment'  => 'error'
         },
         'result' => {
@@ -226,7 +247,7 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "parent with id '404' doesn't exist in theme",
+            'message'   => "parent with id '404' doesn't exist",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"

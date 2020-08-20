@@ -215,7 +215,7 @@ $test_data = {
                     {
                         "id" =>  1,
                         "timezone" => 3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
                         "status" =>  1,
@@ -225,7 +225,7 @@ $test_data = {
                     {
                         "id" =>  2,
                         "timezone" => 3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
                         "status" =>  1,
@@ -235,7 +235,7 @@ $test_data = {
                     {
                         "id" =>  3,
                         "timezone" => 3,
-                        "password" =>  "password1",
+                        "password" => '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
                         "status" =>  1,
@@ -245,7 +245,7 @@ $test_data = {
                     {
                         "id" =>  4,
                         "timezone" => 3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
                         "status" =>  1,
@@ -283,7 +283,7 @@ $test_data = {
                     {
                         "id" =>  1,
                         "timezone" =>  3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
                         "status" =>  1,
@@ -293,7 +293,7 @@ $test_data = {
                     {
                         "id" =>  2,
                         "timezone" =>  3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
                         "status" =>  1,
@@ -303,7 +303,7 @@ $test_data = {
                     {
                         "id" =>  3,
                         "timezone" =>  3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
                         "status" =>  1,
@@ -313,7 +313,7 @@ $test_data = {
                     {
                         "id" =>  4,
                         "timezone" =>  3,
-                        "password" =>  "password1",
+                        "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
                         "status" =>  1,

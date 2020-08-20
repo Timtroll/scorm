@@ -9,16 +9,17 @@ use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
 # получить список тем
-# $self->index( $data );sub index {
+# $self->index( $data );
+sub index {
     my $self = shift;
 
     my ( $list, $result, $resp );
 
-    $list = $self->model('Discipline')->_list_discipline();
+    $list = $self->model('Theme')->_list_theme();
 
     unless ( @! ) {
         $result = {
-            "label" =>  "Предметы",
+            "label" =>  "Темы",
             "add"   => 1,              # разрешает добавлять предметы
             "child" =>  {
                 "add"    => 1,         # разрешает добавлять детей
@@ -52,7 +53,7 @@ sub edit {
 
     unless ( @! ) {
         # получение объекта EAV
-        $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
+        $result = $self->model('Theme')->_get_theme( $$data{'id'} );
 
         unless ( @! ) {
             $list = {
@@ -126,18 +127,24 @@ sub add {
         }
     }
 
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+    unless ( @! ) {
+        # проверка родителя
+        unless ( $$data{'parent'} ) {
+            push @!, "theme must have a nonzero parent";
+        }
+        elsif(
+            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
+            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
+        ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist";
         }
     }
 
     unless ( @! ) {
-        # добавляем предмет в EAV
+        # добавляем тему в EAV
         $$data{'status'} = 1 unless defined $$data{'status'};
 
-        $id = $self->model('Discipline')->_insert_discipline( $data );
+        $id = $self->model('Theme')->_insert_theme( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -183,10 +190,16 @@ sub save {
         }
     }
 
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+    unless ( @! ) {
+        # проверка родителя
+        unless ( $$data{'parent'} ) {
+            push @!, "theme must have a nonzero parent";
+        }
+        elsif(
+            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
+            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
+        ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist";
         }
     }
 
@@ -195,8 +208,8 @@ sub save {
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_save_discipline( $data );
+        # добавляем тему в EAV
+        $result = $self->model('Theme')->_save_theme( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -225,8 +238,8 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_toggle_discipline( $data );
+        # добавляем тему в EAV
+        $result = $self->model('Theme')->_toggle_theme( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -242,8 +255,9 @@ sub toggle {
 # удалить тему
 # $self->delete( $data );
 # $data = {
-# 'id'    - id предмета
-#} sub delete {
+# 'id'    - id темы
+#} 
+sub delete {
     my $self = shift;
 
     my ( $data, $resp, $result );
@@ -252,8 +266,8 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+        # добавляем тему в EAV
+        $result = $self->model('Theme')->_delete_theme( $$data{'id'} );
         push @!, 'can\'t delete EAV object' unless $result;
     }
 

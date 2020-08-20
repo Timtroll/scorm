@@ -377,8 +377,8 @@ my $test_data = {
                     },
                     {
                         "fields" => [
-                            {"password"    => ' '},
-                            {"newpassword" => ' '}
+                            {"password"    => ''},
+                            {"newpassword" => ''}
                        ],
                         "label" => "Пароль"
                     },
