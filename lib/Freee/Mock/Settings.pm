@@ -372,6 +372,20 @@ $settings = {
             "parent"        => 1,
             "folder"        => 0,
             "status"        => 1
+          },
+          {
+            "readonly"      => 0,
+            "required"      => 1,
+            "type"          => "InputNumber",
+            "name"          => "list_limit",
+            "label"         => "количество записей на странице списка",
+            "placeholder"   => "100",
+            "mask"          => "\\d+",
+            "value"         => "100",
+            "selected"      => [],
+            "parent"        => 1,
+            "folder"        => 0,
+            "status"        => 1
           }
         ]
     },

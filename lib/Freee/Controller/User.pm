@@ -14,6 +14,7 @@ use Digest::SHA qw( sha256 );
 # $data = { 
 # id - Id группы
 # status - показывать группы только с этим статусом
+# page - вывести список начиная с этой страницы ( по умолчанию 1 )
 # }
 sub index {
     my $self = shift;
@@ -24,6 +25,11 @@ sub index {
     $data = $self->_check_fields();
     
     unless ( @! ) {
+        $$data{'page'} = 1 unless $$data{'page'};
+
+        $$data{'limit'}  = $self->{'app'}->{'settings'}->{'list_limit'};
+        $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
+
         # получаем список пользователей группы
         $result = $self->model('User')->_get_list( $data );
 
@@ -33,8 +39,8 @@ sub index {
                     'editable' => 1,
                     'massEdit' => 0,
                     'page' => {
-                        'current_page' => 1,
-                        'per_page'     => 100
+                        'current_page' => $$data{'page'},
+                        'per_page'     => $$data{'limit'}
                     },
                     'removable' => 1,
                     'sort' => {
@@ -155,8 +161,39 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
+# Добавить пустой объект пользователя
+# ( $user_id ) = $self->add();
+sub add {
+    my $self = shift;
+
+    my ( $resp, $result, $data );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! || !$$data{'parent'} ) {
+        # проверка существования родителя
+        unless( $self->model('User')->_exists_in_user( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in user";
+        }
+    }
+
+    unless ( @! ) {
+        # создание пустого объекта пользователя
+        $result = $self->model('User')->_empty_user( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
 # Добавлением нового пользователя в EAV и таблицу users
-# ( $user_id ) = $self->add( $data );
+# ( $user_id ) = $self->add_user( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
@@ -170,7 +207,7 @@ sub edit {
 #     'password'    => 'password',                      # кладется в users
 #     'timezone'    => '10',                            # кладется в users
 # }
-sub add {
+sub add_user {
     my $self = shift;
 
     my ( $data, $salt, $resp, $result, $groups );

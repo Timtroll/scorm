@@ -88,7 +88,7 @@ $data = {
     'status'       => 1,
     'groups'       => "[1,2,3]"
 };
-$t->post_ok( $host.'/user/add' => form => $data );
+$t->post_ok( $host.'/user/add_user' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;

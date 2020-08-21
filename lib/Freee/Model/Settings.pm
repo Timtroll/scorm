@@ -339,6 +339,7 @@ sub _get_config {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     $result = $sth->fetchall_arrayref();
+# $self->{app}->pg_dbh->commit or die $self->{app}->pg_dbh->errstr;
 
     # создание хэша настроек
     foreach my $setting ( @$result ) {

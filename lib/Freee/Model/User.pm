@@ -72,16 +72,18 @@ sub _get_list {
 
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? ORDER BY "id" LIMIT ? OFFSET ?';
         }
         elsif ( $$data{'status'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = true';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = true ORDER BY "id" LIMIT ? OFFSET ?';
         }
         else {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = false';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = false ORDER BY "id" LIMIT ? OFFSET ?';
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( 2, $$data{'limit'} );
+        $sth->bind_param( 3, $$data{'offset'} );
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
 
@@ -159,6 +161,27 @@ sub _get_user {
     return $result;
 }
 
+# Добавить пустой объект пользователя
+# $id = $self->model('User')->_empty_user( $data );
+sub _empty_user {
+    my ( $self, $data ) = @_;
+
+    my ( $usr, $id );
+
+    $$data{'parent'} = 0 unless scalar( $$data{'parent'} );
+
+    $usr = Freee::EAV->new( 'User', { 'parent' => 0 } );
+    $id = $usr->id();
+
+    unless ( $id ) {
+        push @!, "can't create empty object";
+        return;
+    }
+    else {
+        return $id;
+    }
+}
+
 # Добавлением нового пользователя в EAV и таблицу users
 # ( $user_id ) = $self->model('User')->_insert_user( $data );
 # $data = {
@@ -176,13 +199,15 @@ sub _get_user {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $user, $user_id, $result, $sql, $groups, @user_keys );
+    my ( $rc, $sth, $user, $user_id, $result, $sql, $groups, @user_keys );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
+# warn Dumper( $self );
     # открытие транзакции
+    # $rc  = $self->{'app'}->pg_dbh->begin_work;
 
             # загружаем аватарку
             # таблица media (аватарка)
@@ -222,6 +247,7 @@ sub _insert_user {
 
         unless ( $$data{'eav_id'} ) {
             push @!, "Could not insert user into EAV";
+            # $rc  = $self->{'app'}->pg_dbh->rollback;
         }
     }
 
@@ -236,7 +262,11 @@ sub _insert_user {
         $sth->execute();
 
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
-        push @!, "Can not insert $$data{'title'} into users". DBI->errstr unless $user_id;
+
+        unless ( $user_id ) {
+            push @!, "Can not insert $$data{'title'} into users". DBI->errstr;
+            # $rc  = $self->{'app'}->pg_dbh->rollback;
+        }
 
         # таблица users_social
         # my $user_data = {
@@ -258,10 +288,15 @@ sub _insert_user {
             $sth->bind_param( 1, $user_id );
             $sth->bind_param( 2, $group_id );
             $result = $sth->execute();
-            push @!, "Can not insert into 'user_groups'" unless $result;
+            unless ( $result ) {
+                push @!, "Can not insert into 'user_groups'";
+                # $rc  = $self->{'app'}->pg_dbh->rollback;
+            }
         }
     }
-# закрытвание транзакции 
+
+    # закрытие транзакции
+    # $rc  = $self->{'app'}->pg_dbh->commit;
 # $self->{'app'}->pg_dbh
 
     return $user_id;
@@ -449,4 +484,26 @@ sub _delete_user {
     return $result;
 }
 
+# проверка существования пользователя
+# my $true = $self->model('User')->_exists_in_user( $$data{'parent'} );
+# 'id'    - id пользователя
+sub _exists_in_user {
+    my ( $self, $id ) = @_;
+
+    my ( $user, $result );
+
+    unless ( scalar( $id ) ) {
+        push @!, 'no id for check';
+    }
+    else {
+        # поиск объекта с таким id
+        $user = Freee::EAV->new( 'User',
+            {
+                'id'      => $id
+            }
+        );
+    }
+
+    return $user ? 1 : 0;
+}
 1;

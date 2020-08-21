@@ -194,7 +194,7 @@ my $test_data = {
 
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
-    $t->post_ok( $host.'/user/add' => form => $$test_data{$test}{'data'} );
+    $t->post_ok( $host.'/user/add_user' => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -368,13 +368,41 @@ $test_data = {
         'comment' => 'Status 0:' 
     },
     4 => {
+        'data' => {
+            'id'     => 1,
+            'page'   => 404
+        },
+        'result' => {
+            "list" => {
+                "body" => [],
+                "settings" => {
+                    "editable" => 1,
+                    "massEdit" => 0,
+                    "page" => {
+                        "current_page" => 404,
+                        "per_page" => 100,
+                        "total" => 0
+                    },
+                    "removable" => 1,
+                    "sort" => {
+                        "name" => "id",
+                        "order" => "asc"
+                    }
+                }
+            },
+            'status' => 'ok'
+        },
+        'comment' => 'Page 404:' 
+    },
+    # отрицательные тесты
+    5 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
-    5 => {
+    6 => {
         'data' => {
             'id'        => - 404
         },

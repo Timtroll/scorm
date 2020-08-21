@@ -1,18 +1,19 @@
-# Сохранить информацию о пользователе
-# my $id = $self->_save_user({
-# 'id'           => 1,                 # До 9 цифр, обязательное поле
+# добавить информацию о пользователе, который зарегестрировался по электронному адресу
+# my $id = $self->_insert_user({
 # 'surname'      => 'фамилия',         # До 24 букв, обязательное поле
 # 'name'         => 'имя',             # До 24 букв, обязательное поле
 # 'patronymic',  => 'отчество',        # До 32 букв, обязательное поле
 # 'place'        => 'place',           # До 64 букв, цифр и знаков, обязательное поле
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
-# 'timezone'     => -3.5,             # 2-4 буквы кода часового пояса, обязательное поле
+# 'timezone'     => 12.75,             # цифры часового пояса, обязательное поле
 # 'birthday'     => 807393600,      # 12 цифр, обязательное поле
 # 'status'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
-# 'avatar'       => 1,              # До 9 цифр, обязательное поле
-# 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
-# 'phone'        => 'email@email.ru'   # +, 11 цифр, обязательное поле
+# 'avatar'       => 1,                 # До 64 символов, обязательное поле
+# 'type'         => 1,                 # Цифра 1-4, обязательное поле
+# 'email'        => 'email@email.ru',  # До 100 букв, цифр с @, обязательное поле
+# 'phone'        => '+12345678901',    # +, 11 цифр, обязательное поле,
+# 'groups'       => '[1]               # До 255 цифр в массиве, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -83,81 +84,21 @@ foreach my $test (sort {$a <=> $b} keys %{$data}) {
 }
 diag "";
 
-# Ввод пользователей для изменения
-diag "Add users:";
 my $test_data = {
-    1 => {
-        'data' => {
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    },
-    2 => {
-        'data' => {
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'avatar'       => 1,
-            'email'        => '2@email.ru',
-            'phone'        => '+7(921)1111112',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 2,
-            'status'    => 'ok'
-        }
-    }
-};
-
-
-foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
-    $t->post_ok( $host.'/user/add_user' => form => $$test_data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$test_data{$test}{'result'} );
-    diag "";
-}
-
-$test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
+            'surname'      => 'фамилия_right',
+            'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
             'place'        => 'place',
             'country'      => 'RU',
-            'timezone'     => -3.5,
+            'timezone'     => 12.75,
             'birthday'     => 807393600,
             'password'     => 'password1',
-            'newpassword'  => 'password2',
             'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'email'        => 'emailright@email.ru',
+            'phone'        => '+7(921)2222222',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -169,112 +110,36 @@ $test_data = {
     },
     2 => {
         'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
+            'surname'      => 'фамилия_right',
+            'name'         => 'имя_right',
             'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
+            'timezone'     => 12.75,
             'password'     => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'phone'        => '+7(921)1111111',
+            'email'        => 'emailright2@email.ru',
+            'phone'        => '+7(921)2222221',
             'status'       => 1,
-            'groups'       => "[1,2,3]"
+            'groups'       => "[2]"
         },
         'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
-        },
-        'comment' => 'No email:' 
-    },
-    3 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
-        },
-        'comment' => 'No phone:' 
-    },
-    4 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 1,
+            'id'        => 2,
             'status'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
-    5 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'avatar'       => 1,
-            'email'        => '6@email.ru',
-            'phone'        => '+7(921)1111116',
-            'status'       => 0,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
-        },
-        'comment' => 'No password and no newpassword:' 
-    },
 
     # отрицательные тесты
-    6 => {
+    3 => {
         'data' => {
-            'id'           => 1,
             'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'country'      => 'RU',
-            'timezone'     => -3.5,
+            'timezone'     => 12.75,
             'birthday'     => 807393600,
             'password'     => 'password1',
-            'newpassword'  => 'password2',
             'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111119',
+            'email'        => 'email@email.ru',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -282,209 +147,213 @@ $test_data = {
             'message'   => "_check_fields: didn't has required data in 'surname'",
             'status'    => 'fail',
         },
-        'comment' => 'No required field surname:' 
+        'comment' => 'No surname:' 
     },
-    7 => {
+    4 => {
         'data' => {
-            'id'           => 1,
             'surname'      => 'фамилия',
-            'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'country'      => 'RU',
-            'timezone'     => -3.5,
+            'timezone'     => 12.75,
             'birthday'     => 807393600,
             'password'     => 'password1',
-            'newpassword'  => 'password2',
             'avatar'       => 1,
-            'email'        => '2@email.ru',
+            'email'        => 'email@email.ru',
             'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "email '2\@email.ru' already used",
+            'message'   => "_check_fields: didn't has required data in 'name'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No name:' 
+    },
+    5 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'email@email.ru',
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'country'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No country:'
+    },
+    6 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'email@email.ru',
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'timezone'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No timezone:'
+    },
+    7 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'avatar'       => 1,
+            'email'        => 'email@email.ru',
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'password'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No password:'
+    },
+    8 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'email'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No email:'
+    },
+    9 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'email@email.ru',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: didn't has required data in 'phone'",
+            'status'    => 'fail',
+        },
+        'comment' => 'No phone:'
+    },
+    10 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => '+++',
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "_check_fields: 'email' didn't match regular expression",
+            'status'    => 'fail',
+        },
+        'comment' => 'No status:'
+    },
+    11 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'emailright@email.ru',
+            'phone'        => '+7(921)1111111',
+            'status'       => 1,
+            'groups'       => "[1,2,3]"
+        },
+        'result' => {
+            'message'   => "email 'emailright\@email.ru' already used",
             'status'    => 'fail',
         },
         'comment' => "Email already used:"
     },
-    8 => {
+    12 => {
         'data' => {
-            'id'           => 1,
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'country'      => 'RU',
-            'timezone'     => -3.5,
+            'timezone'     => 12.75,
             'birthday'     => 807393600,
             'password'     => 'password1',
-            'newpassword'  => 'password2',
             'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111112',
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '+7(921)2222222',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "phone '+7(921)1111112' already used",
+            'message'   => "phone '+7(921)2222222' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"
     },
-    9 => {
-        'data' => {
-            'id'           => 404,
-            'surname'      => 'фамилия',
-            'name'         => 'имя',
-            'patronymic',  => 'отчество',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'email'        => '3@email.ru',
-            'phone'        => '+7(921)1111113',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "can't update 404 in users",
-            'status'    => 'fail',
-        },
-        'comment' => "Wrong id:"
-    },
-    10 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'newpassword'  => 'password1',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "Password and newpassword are the same",
-            'status'    => 'fail',
-        },
-        'comment' => "Password and newpassword are the same:" 
-    },
-    11 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => 'No newpassword',
-            'status'    => 'fail',
-        },
-        'comment' => 'No newpassword:' 
-    },
-    12 => {
-        'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => 'No password',
-            'status'    => 'fail',
-        },
-        'comment' => 'No password:' 
-    },
     13 => {
         'data' => {
-            'id'           => 1,
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'  => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "No email and no phone",
-            'status'    => 'fail',
-        },
-        'comment' => 'No email and no phone:' 
-    },
-    14 => {
-        'data' => {
-            'id'           => 'qwerty',
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'newpassword'  => 'password2',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail',
-        },
-        'comment' => 'Wrong id validation:'
-    },
-    15 => {
-        'data' => {
-            'id'           => 1,
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
             'country'      => 'RU',
-            'timezone'     => -3.5,
+            'timezone'     => 12.75,
             'birthday'     => 807393600,
+            'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
-            'phone'        => '+7(921)1111114',
+            'phone'        => '+7(111)1111114',
             'status'       => 1,
             'groups'       => "[1,2,404,405]"
         },
@@ -493,15 +362,59 @@ $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
-    }
+    },
+    14 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '+7(111)1111114',
+            'status'       => 1,
+            'groups'       => "[]"
+        },
+        'result' => {
+            'message'   => "_check_fields: 'groups' didn't match regular expression",
+            'status'    => 'fail',
+        },
+        'comment' => "No groups:"
+    },
+    15 => {
+        'data' => {
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'UR',
+            'timezone'     => 12.75,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'avatar'       => 1,
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '+7(111)1111114',
+            'status'       => 1,
+            'groups'       => "[1]"
+        },
+        'result' => {
+            'message'   => "_check_fields: 'country' doesn't belong to list of valid expressions",
+            'status'    => 'fail',
+        },
+        'comment' => "Wrong country:"
+    },
 };
 
-foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/save' => form => $data );
+    $t->post_ok( $host.'/user/add_user' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
