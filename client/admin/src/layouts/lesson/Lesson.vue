@@ -205,7 +205,7 @@ export default {
         setTimeout(() => {
           if (!this.$refs.video) return
           const videoList = this.$refs.video
-          if (videoList.length) return
+          //if (videoList.length) return
           const video     = videoList.find(i => i.id === stream.streamid)
           video.srcObject = stream.stream
         }, 1000)
