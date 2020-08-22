@@ -2,9 +2,47 @@
   <div class="pos-lesson-teach">
 
     <!--VIDEO-->
-    <WebRTCScreen />
+    <!--    <WebRTCScreen />-->
+    <!--    <WebRTCScreen v-if="config"-->
+    <!--                  :config="config"/>-->
 
-    <ListUsers :users="users"/>
+    <div class="pos-lesson-video">
+
+      <div class="pos-lesson-video-outer">
+
+        <div class="pos-lesson-video-screen main-screen">
+
+          <video width="1920"
+                 ref="self"
+                 height="1080"
+                 autoplay
+                 playsinline
+                 muted
+                 loop
+                 controls
+                 preload="auto">
+            <!--            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">-->
+          </video>
+        </div>
+
+        <div class="pos-lesson-video-screen second-screen">
+          <video width="1920"
+                 height="1080"
+                 ref="remote"
+                 autoplay
+                 playsinline
+                 muted
+                 loop
+                 preload="auto">
+            <!--            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">-->
+          </video>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--    <ListUsers :users="users"/>-->
 
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">Content</div>
@@ -15,6 +53,13 @@
 import lessons      from './store'
 import ListUsers    from './ListUsers'
 import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
+import WebRtcInit   from '@/api/webRTC/index'
+//import Socket       from '@/api/socket/webRtc'
+//require('adapterjs')
+
+//import adapter from 'webrtc-adapter'
+
+//console.log(adapter.browserDetails)
 
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
@@ -39,7 +84,7 @@ export default {
   name: 'Lesson',
 
   components: {
-    WebRTCScreen,
+    //WebRTCScreen,
     ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
@@ -64,9 +109,22 @@ export default {
   data () {
     return {
 
-      users: null
+      rtc: null,
 
+      stream: {
+        self:   null,
+        remote: null
+      },
+
+      users:  null,
+      socket: null
     }
+  },
+
+  computed: {
+    //config () {
+    //  return this.$store.state.main.config.webRTC || null
+    //}
   },
 
   async created () {
@@ -75,10 +133,21 @@ export default {
   },
 
   async mounted () {
+    this.$nextTick(() => {
+      this.stream.self   = this.$refs.self
+      this.stream.remote = this.$refs.remote
+      this.rtc           = new WebRtcInit(this.$refs.self, this.$refs.remote)
+      this.rtc.start(this.$refs.self)
+    })
+
+    //this.socket = new Socket()
+    if (this.config) {
+
+    }
 
     // показать кнопку меню в navBar
     this.$store.commit('navBarLeftActionShow', false)
-    await this.getUsers()
+    //await this.getUsers()
   },
 
   beforeDestroy () {

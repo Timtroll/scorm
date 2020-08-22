@@ -1,20 +1,25 @@
 <template>
-  <div class="pos-lesson-video">
+  <div class="pos-lesson-video" v-if="config">
 
     <div class="pos-lesson-video-outer">
 
       <div class="pos-lesson-video-screen main-screen">
 
         <vue-webrtc ref="webrtc"
-
                     :cameraHeight="160"
                     :roomId="roomId"
+                    :socketURL="'wss://rtcmulticonnection.herokuapp.com/socket.io/'"
                     v-on:joined-room="logEvent"
                     v-on:left-room="logEvent"
                     v-on:opened-room="logEvent"
                     v-on:share-started="logEvent"
                     v-on:share-stopped="logEvent"
                     @error="onError"/>
+
+
+<!--        :stunServer="config.stunServer"-->
+<!--        :turnServer="config.turnServer"-->
+
 
         <!--        :socketURL="'wss://freee.su/wschannel/'"-->
         <!--        :stun-server="'https://free-webrtc-server.herokuapp.com'"-->
@@ -84,13 +89,12 @@
 </template>
 
 <script>
-import {WebRTC} from 'vue-webrtc'
-import connect  from '@/api/socket/webRtc'
-import * as io  from 'socket.io-client'
+import {WebRTC}   from 'vue-webrtc'
+import connect    from '@/api/socket/webRtc'
+import * as io    from 'socket.io-client'
 
-window.io = io
-
-const socket = new connect
+window.io    = io
+//const socket = new connect('wss://freee.su/wschannel/')
 
 export default {
   name: 'WebRTCScreen',
@@ -101,6 +105,10 @@ export default {
   },
 
   props: {
+    config:{
+      type:    Object,
+      default: () => {}
+    },
     data: {
       type:    Object,
       default: () => {}
@@ -148,6 +156,12 @@ export default {
     }
   },
 
+  //computed: {
+  //  config () {
+  //    return this.$store.state.main.config.webRTC || null
+  //  }
+  //},
+
   async mounted () {
     this.selectedPosition = this.position[0]
     this.onJoin()
@@ -162,18 +176,23 @@ export default {
     onCapture () {
       this.img = this.$refs.webrtc.capture()
     },
+
     onJoin () {
       this.$refs.webrtc.join()
     },
+
     onLeave () {
       this.$refs.webrtc.leave()
     },
+
     onShareScreen () {
       this.img = this.$refs.webrtc.shareScreen()
     },
+
     onError (error, stream) {
       console.log('On Error Event', error, stream)
     },
+
     logEvent (event) {
       console.log('Event : ', event)
     },

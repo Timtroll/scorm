@@ -1,10 +1,12 @@
-export default class socket {
 
-  constructor () {
-    this.url =  'wss://freee.su/wschannel/'
-    this.socket = new WebSocket(this.url)
+export default class Socket {
 
-    this.socket.onopen = (event) => {
+  constructor (wss = 'wss://freee.su/wschannel/') {
+
+    this.socket = new WebSocket(wss)
+
+    this.socket.onopen = async (event) => {
+
       console.log(`[onopen] Data received from server: ${JSON.stringify(event)} ${event.data}`)
     }
 
