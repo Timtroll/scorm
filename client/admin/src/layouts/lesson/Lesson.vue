@@ -43,7 +43,7 @@
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">
 
-      <div class=""
+      <div class="" style="display: flex"
            v-if="rtc && rtc.videoList">
 
         <div class=""
@@ -51,8 +51,8 @@
              :video="item.id"
              :key="item.id">
 
-          <video width="128"
-                 height="72"
+          <video  width="100"
+                 height="100"
                  ref="video"
                  autoplay
                  playsinline

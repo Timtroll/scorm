@@ -1,5 +1,6 @@
 /**
  * https://github.com/westonsoftware/vue-webrtc/blob/master/src/webrtc.vue
+ * FAQ https://github.com/muaz-khan/RTCMultiConnection/wiki#replace-tracks
  */
 import RTCMultiConnection from 'rtcmulticonnection'
 
@@ -46,6 +47,25 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
     this.rtcmConnection.session                = this.constraints
+    //this.rtcmConnection.mediaConstraints.audio = {
+    //  mandatory: {},
+    //  optional: [{
+    //    echoCancellation: true,
+    //    noiseSuppression: true,
+    //    autoGainControl:  true
+    //  }]
+    //}
+    //this.rtcmConnection.mediaConstraints.video = {
+    //  mandatory: {},
+    //  optional: [{
+    //    width:       1280,
+    //    height:      720,
+    //    aspectRatio: 16 / 9,
+    //    //frameRate:   {min: 20.0, max: 24.0},
+    //    //sampleRate:  1000,
+    //    resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+    //  }]
+    //}
   }
 
   async init () {
@@ -77,40 +97,6 @@ export default class WebRtcInitMulti {
       })
     }
 
-    //this.rtcmConnection.onstream = (stream) => {
-    //
-    //  let found = this.videoList.find(video => {
-    //    return video.id === stream.streamid
-    //  })
-    //
-    //  if (found === undefined) {
-    //    const video = {
-    //      id:     stream.streamid,
-    //      muted:  stream.type === 'local',
-    //      stream: stream.stream
-    //    }
-    //
-    //    this.videoList.push(video)
-    //
-    //    if (stream.type === 'local') {
-    //      this.localVideo = video
-    //    }
-    //  }
-    //
-    //  console.log('joined-room', stream)
-    //}
-    //
-    //this.rtcmConnection.onstreamended = (stream) => {
-    //  const newList = []
-    //  this.videoList.forEach((item) => {
-    //    if (item.id !== stream.streamid) {
-    //      newList.push(item)
-    //    }
-    //  })
-    //
-    //  this.videoList = newList
-    //  console.log('left-room', stream.streamid)
-    //}
   }
 
   join () {
