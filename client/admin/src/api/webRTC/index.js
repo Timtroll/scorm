@@ -1,40 +1,25 @@
 /**
- * https://www.html5rocks.com/en/tutorials/webrtc/basics/
+ * https://github.com/westonsoftware/vue-webrtc/blob/master/src/webrtc.vue
  */
+import RTCMultiConnection from 'rtcmulticonnection'
+
 require('adapterjs')
 
-// Signaling Channel (PubNub, Firebase, Socket.io, etc.)
-function SignalingChannel (peerConnection) {
-  // Setup the signaling channel here
-  this.peerConnection = peerConnection
-}
+export default class WebRtcInitMulti {
 
-SignalingChannel.prototype.send = (message) => {
-  console.log('SignalingChannel.send', message)
-  // Send messages using your favorite real-time network
-}
+  // role: lector, listener
+  constructor (role, roomId, socketURL, stunServer, turnServer) {
+    this.roomId         = 'multi-chat'
+    this.socketURL      = socketURL || 'https://rtcmulticonnection.herokuapp.com:443/'
+    this.stunServer     = null
+    this.turnServer     = null
+    this.rtcmConnection = null
 
-SignalingChannel.prototype.onmessage = (message) => {
-  // If we get a sdp we have to sign and return it
-  if (message.sdp != null) {
-    //var that = this
-    this.peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
-      this.peerConnection.createAnswer((description) => {
-        this.send(description)
-      })
-    })
-  }
-  else {
-    this.peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate))
-  }
-}
-
-export default class WebRtcInit {
-
-  constructor (selfView, remoteView) {
-    this.selfView    = selfView
-    this.remoteView  = remoteView
-    this.signaling   = new SignalingChannel('wss://rtcmulticonnection.herokuapp.com/socket.io/')
+    this.localVideo  = null
+    this.videoList   = []
+    this.canvas      = null
+    this.enableLogs  = false
+    this.role        = role || 'listener'
     this.constraints = {
       audio: {
         echoCancellation: true,
@@ -51,75 +36,173 @@ export default class WebRtcInit {
       }
     }
 
-    this.configuration = {
-      iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
-    }
+    this.enableAudio = true
+    this.enableVideo = true
 
-    this.pc            = new RTCPeerConnection(this.configuration)
-    this.pc.onicecandidate = ({candidate}) => this.signaling.send({candidate})
+    this.screenshotFormat = 'image/jpeg'
 
-    // let the "negotiationneeded" event trigger offer generation
-    this.pc.onnegotiationneeded = async () => {
-      try {
-        await this.pc.setLocalDescription(await this.pc.createOffer())
-        // send the offer to the other peer
-        this.signaling.send({desc: this.pc.localDescription})
-      }
-      catch (err) {
-        console.error(err)
-      }
-    }
-
-    // once remote track media arrives, show it in remote video element
-    this.pc.ontrack = (event) => {
-      // don't set srcObject again if it is already set.
-      if (this.remoteView.srcObject) return
-      this.remoteView.srcObject = event.streams[0]
-    }
-
-    this.signaling.onmessage = async ({desc, candidate}) => {
-      try {
-        if (desc) {
-          // if we get an offer, we need to reply with an answer
-          if (desc.type === 'offer') {
-            await this.pc.setRemoteDescription(desc)
-            const stream = await navigator.mediaDevices.getUserMedia(this.constraints)
-            stream.getTracks().forEach((track) =>
-              this.pc.addTrack(track, stream))
-            await this.pc.setLocalDescription(await this.pc.createAnswer())
-            this.signaling.send({desc: this.pc.localDescription})
-          }
-          else if (desc.type === 'answer') {
-            await this.pc.setRemoteDescription(desc)
-          }
-          else {
-            console.log('Unsupported SDP type.')
-          }
-        }
-        else if (candidate) {
-          await this.pc.addIceCandidate(candidate)
-        }
-      }
-      catch (err) {
-        console.error(err)
-      }
-    }
+    this.rtcmConnection                        = new RTCMultiConnection()
+    this.rtcmConnection.socketURL              = this.socketURL
+    this.rtcmConnection.autoCreateMediaElement = false
+    this.rtcmConnection.enableLogs             = this.enableLogs
+    this.rtcmConnection.session                = this.constraints
   }
 
-  async start (selfView) {
+  async init () {
 
-    try {
-      // get local stream, show it in self-view and add it to be sent
-      const stream = await navigator.mediaDevices.getUserMedia(this.constraints)
-
-      stream.getTracks()
-            .forEach((track) => this.pc.addTrack(track, stream))
-
-      selfView.srcObject = stream
-      console.log(selfView.srcObject)
+    this.rtcmConnection.sdpConstraints.mandatory = {
+      OfferToReceiveAudio: this.enableAudio,
+      OfferToReceiveVideo: this.enableVideo
     }
-    catch (err) {
-      console.error(err)
+
+    if ((this.stunServer !== null) || (this.turnServer !== null)) {
+      this.rtcmConnection.iceServers = [] // clear all defaults
+    }
+
+    if (this.stunServer !== null) {
+      this.rtcmConnection.iceServers.push({
+        urls: this.stunServer
+      })
+    }
+
+    if (this.turnServer !== null) {
+      const parse    = this.turnServer.split('%')
+      const username = parse[0].split('@')[0]
+      const password = parse[0].split('@')[1]
+      const turn     = parse[1]
+      this.rtcmConnection.iceServers.push({
+        urls:       turn,
+        credential: password,
+        username:   username
+      })
+    }
+
+    //this.rtcmConnection.onstream = (stream) => {
+    //
+    //  let found = this.videoList.find(video => {
+    //    return video.id === stream.streamid
+    //  })
+    //
+    //  if (found === undefined) {
+    //    const video = {
+    //      id:     stream.streamid,
+    //      muted:  stream.type === 'local',
+    //      stream: stream.stream
+    //    }
+    //
+    //    this.videoList.push(video)
+    //
+    //    if (stream.type === 'local') {
+    //      this.localVideo = video
+    //    }
+    //  }
+    //
+    //  console.log('joined-room', stream)
+    //}
+    //
+    //this.rtcmConnection.onstreamended = (stream) => {
+    //  const newList = []
+    //  this.videoList.forEach((item) => {
+    //    if (item.id !== stream.streamid) {
+    //      newList.push(item)
+    //    }
+    //  })
+    //
+    //  this.videoList = newList
+    //  console.log('left-room', stream.streamid)
+    //}
+  }
+
+  join () {
+    this.rtcmConnection
+        .openOrJoin(this.roomId, (isRoomExist, roomId) => {
+          if (isRoomExist === false && this.rtcmConnection.isInitiator === true) {
+            console.log('opened-room', roomId)
+          }
+        })
+  }
+
+  leave () {
+    this.rtcmConnection.attachStreams
+        .forEach((localStream) => {
+          localStream.stop()
+        })
+    this.videoList = []
+  }
+
+  capture () {
+    return this.getCanvas().toDataURL(this.screenshotFormat)
+  }
+
+  getCanvas () {
+    let video = this.getCurrentVideo()
+
+    if (video !== null && !this.ctx) {
+      let canvas    = document.createElement('canvas')
+      canvas.height = video.clientHeight
+      canvas.width  = video.clientWidth
+      this.canvas   = canvas
+      this.ctx      = canvas.getContext('2d')
+    }
+    const {ctx, canvas} = this
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+    return canvas
+  }
+
+  getCurrentVideo () {
+    if (this.localVideo === null) {
+      return null
+    }
+
+    for (let i = 0, len = this.$refs.videos.length; i < len; i++) {
+      if (this.$refs.videos[i].id === this.localVideo.id)
+        return this.$refs.videos[i]
+    }
+
+    return null
+  }
+
+  shareScreen () {
+    if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
+      const addStreamStopListener = (stream, callback) => {
+        let streamEndedEvent = 'ended'
+
+        if ('oninactive' in stream) {
+          streamEndedEvent = 'inactive'
+        }
+
+        stream.addEventListener(streamEndedEvent, () => {
+          callback()
+          callback = () => {}
+        }, false)
+      }
+
+      const onGettingSteam = (stream) => {
+        this.rtcmConnection.addStream(stream)
+        console.log('share-started', stream.streamid)
+
+        addStreamStopListener(stream, () => {
+          this.rtcmConnection.removeStream(stream.streamid)
+          console.log('share-stopped', stream.streamid)
+        })
+      }
+
+      const getDisplayMediaError = (error) => console.log('Media error: ' + JSON.stringify(error))
+
+      if (navigator.mediaDevices.getDisplayMedia) {
+        navigator.mediaDevices.getDisplayMedia({video: this.constraints.video, audio: false})
+                 .then(stream => {
+                   onGettingSteam(stream)
+                 }, getDisplayMediaError)
+                 .catch(getDisplayMediaError)
+      }
+      else if (navigator.getDisplayMedia) {
+        navigator.getDisplayMedia({video: this.constraints.video})
+                 .then(stream => {
+                   onGettingSteam(stream)
+                 }, getDisplayMediaError).catch(getDisplayMediaError)
+      }
     }
   }
 

@@ -9,34 +9,30 @@
     <div class="pos-lesson-video">
 
       <div class="pos-lesson-video-outer">
-
         <div class="pos-lesson-video-screen main-screen">
-
           <video width="1920"
-                 ref="self"
+                 ref="local"
                  height="1080"
                  autoplay
                  playsinline
                  muted
-                 loop
-                 controls
-                 preload="auto">
-            <!--            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">-->
+                 loop>
           </video>
         </div>
 
-        <div class="pos-lesson-video-screen second-screen">
-          <video width="1920"
-                 height="1080"
-                 ref="remote"
-                 autoplay
-                 playsinline
-                 muted
-                 loop
-                 preload="auto">
-            <!--            <source src="https://s3.eu-central-1.amazonaws.com/pipe.public.content/short.mp4">-->
-          </video>
-        </div>
+        <!--        <div class="pos-lesson-video-screen second-screen">-->
+        <!--          <video width="1920"-->
+        <!--                 height="1080"-->
+        <!--                 ref="remote"-->
+        <!--                 autoplay-->
+        <!--                 playsinline-->
+        <!--                 muted-->
+        <!--                 loop-->
+        <!--                 preload="auto"-->
+        <!--                 :muted="item.muted"-->
+        <!--                 :id="item.id">-->
+        <!--          </video>-->
+        <!--        </div>-->
 
       </div>
 
@@ -45,21 +41,47 @@
     <!--    <ListUsers :users="users"/>-->
 
     <!--CONTENT-->
-    <div class="pos-lesson-teach-content">Content</div>
+    <div class="pos-lesson-teach-content">
+
+      <div class=""
+           v-if="rtc && rtc.videoList">
+
+        <div class=""
+             v-for="item in rtc.videoList"
+             :video="item.id"
+             :key="item.id">
+
+          <video width="128"
+                 height="72"
+                 ref="video"
+                 autoplay
+                 playsinline
+                 muted
+                 loop
+                 :muted="item.muted"
+                 :id="item.id">
+          </video>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import lessons      from './store'
-import ListUsers    from './ListUsers'
-import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
-import WebRtcInit   from '@/api/webRTC/index'
+import lessons         from './store'
+//import ListUsers    from './ListUsers'
+//import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
+import WebRtcInitMulti from '@/api/webRTC/index'
 //import Socket       from '@/api/socket/webRtc'
 //require('adapterjs')
 
 //import adapter from 'webrtc-adapter'
 
 //console.log(adapter.browserDetails)
+
+import * as io from 'socket.io-client'
+
+window.io = io
 
 /** Examples:
  * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
@@ -85,7 +107,7 @@ export default {
 
   components: {
     //WebRTCScreen,
-    ListUsers
+    //ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
 
@@ -112,19 +134,13 @@ export default {
       rtc: null,
 
       stream: {
-        self:   null,
-        remote: null
+        localVideo: null,
+        videoList:  null
       },
 
       users:  null,
       socket: null
     }
-  },
-
-  computed: {
-    //config () {
-    //  return this.$store.state.main.config.webRTC || null
-    //}
   },
 
   async created () {
@@ -133,30 +149,93 @@ export default {
   },
 
   async mounted () {
+    this.leave()
+    this.$store.commit('navBarLeftActionShow', false)
+
     this.$nextTick(() => {
-      this.stream.self   = this.$refs.self
-      this.stream.remote = this.$refs.remote
-      this.rtc           = new WebRtcInit(this.$refs.self, this.$refs.remote)
-      this.rtc.start(this.$refs.self)
+      this.rtc = new WebRtcInitMulti('lector')
+      this.rtc.init(this.$refs.local, this.$refs.video)
+      this.getStream()
+
+      this.join()
+
     })
 
-    //this.socket = new Socket()
-    if (this.config) {
-
-    }
-
     // показать кнопку меню в navBar
-    this.$store.commit('navBarLeftActionShow', false)
     //await this.getUsers()
   },
 
   beforeDestroy () {
-
+    this.leave()
     // выгрузка Vuex модуля settings
     this.$store.unregisterModule('lessons')
   },
 
   methods: {
+
+    getStream () {
+      if (!this.rtc.rtcmConnection) return
+
+      this.rtc.rtcmConnection.onstream = (stream) => {
+
+        let found = this.rtc.videoList.find(video => {
+          return video.id === stream.streamid
+        })
+
+        if (found === undefined) {
+          const video = {
+            id:     stream.streamid,
+            muted:  stream.type === 'local',
+            stream: stream.stream
+          }
+
+          this.rtc.videoList.push(video)
+
+          if (stream.type === 'local') {
+            this.rtc.localVideo = video
+            this.$refs.local.srcObject = this.rtc.localVideo.stream
+          }
+
+        }
+
+        if (this.rtc.localVideo) {
+          this.rtc.videoList = this.rtc.videoList.filter(i => i.id !== this.rtc.localVideo.id)
+        }
+
+        setTimeout(() => {
+          if (!this.$refs.video) return
+          const videoList = this.$refs.video
+          if (videoList.length) return
+          const video     = videoList.find(i => i.id === stream.streamid)
+          video.srcObject = stream.stream
+        }, 1000)
+
+        console.log('joined-room', stream)
+      }
+
+      this.rtc.rtcmConnection.onstreamended = (stream) => {
+        const newList = []
+
+        this.rtc.videoList.forEach((item) => {
+          if (item.id !== stream.streamid) {
+            newList.push(item)
+          }
+        })
+
+        this.rtc.videoList = newList
+        console.log('left-room', stream.streamid)
+      }
+    },
+
+    leave () {
+      if (!this.rtc) return
+      this.rtc.leave()
+    },
+
+    join () {
+      if (!this.rtc) return
+      this.rtc.join()
+    },
 
     getUsers () {
       const myHeaders = new Headers()
