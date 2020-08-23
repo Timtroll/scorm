@@ -12,7 +12,7 @@ export default class WebRtcInitMulti {
   constructor (role, roomId, socketURL, stunServer, turnServer) {
     this.roomId         = 'multi-chat'
     //'https://rtcmulticonnection.herokuapp.com:443/'
-    this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/'
+    this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/' // https://scorm.site:443/
     //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/'
     this.stunServer     = null
     this.turnServer     = null
