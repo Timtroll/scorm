@@ -11,7 +11,9 @@ export default class WebRtcInitMulti {
   // role: lector, listener
   constructor (role, roomId, socketURL, stunServer, turnServer) {
     this.roomId         = 'multi-chat'
-    this.socketURL      = socketURL || 'https://rtcmulticonnection.herokuapp.com:443/'
+    //'https://rtcmulticonnection.herokuapp.com:443/'
+    this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/'
+    //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/'
     this.stunServer     = null
     this.turnServer     = null
     this.rtcmConnection = null
@@ -19,7 +21,7 @@ export default class WebRtcInitMulti {
     this.localVideo  = null
     this.videoList   = []
     this.canvas      = null
-    this.enableLogs  = false
+    this.enableLogs  = true
     this.role        = role || 'listener'
     this.constraints = {
       audio: {
