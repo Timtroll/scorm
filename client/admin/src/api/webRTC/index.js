@@ -2,9 +2,33 @@
  * https://github.com/westonsoftware/vue-webrtc/blob/master/src/webrtc.vue
  * FAQ https://github.com/muaz-khan/RTCMultiConnection/wiki#replace-tracks
  */
+
+/** Examples:
+ * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
+ * https://github.com/openrtc-io/awesome-webrtc
+ * https://www.twilio.com/blog/2014/12/set-phasers-to-stunturn-getting-started-with-webrtc-using-node-js-socket-io-and-twilios-nat-traversal-service.html
+ * Free Stun-turn server https://www.twilio.com/stun-turn | Google's public STUN server (stun.l.google.com:19302)
+ * https://www.npmjs.com/package/stun
+ * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
+ * https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/
+ *
+ * https://github.com/simplewebrtc/SimpleWebRTC
+ * free-webrtc-server - SimpleWebRTC
+ *    url https://free-webrtc-server.herokuapp.com:8888
+ *    docs - https://elements.heroku.com/buttons/florindumitru/signalmaster/
+ *           https://github.com/florindumitru/signalmaster
+ *
+ * https://rtcmulticonnection.herokuapp.com/demos/
+ *
+ * https://github.com/versatica/mediasoup/
+ */
+
 import RTCMultiConnection from 'rtcmulticonnection'
 
-require('adapterjs')
+//require('adapterjs')
+import adapter from 'webrtc-adapter'
+
+console.log(adapter.browserDetails)
 
 export default class WebRtcInitMulti {
 

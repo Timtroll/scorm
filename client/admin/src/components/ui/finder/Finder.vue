@@ -4,9 +4,9 @@
     <FinderColumn :data="root"
                   @open="open($event)"/>
 
-    <FinderColumn v-if="levels"
-                  v-for="item in levels"
+    <FinderColumn v-for="(item, index) in levels"
                   :data="item"
+                  :key="index"
                   @open="item = $event"/>
 
   </div>
@@ -20,9 +20,7 @@ export default {
     FinderColumn: () => import(/* webpackChunkName: "FinderColumn" */ './FinderColumn')
   },
 
-  props: {
-
-  },
+  props: {},
 
   data () {
     return {
@@ -71,7 +69,6 @@ export default {
     },
 
     openChildren (item) {
-
       //this.dataFiltered = item
     }
   }

@@ -43,7 +43,8 @@
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">
 
-      <div class="" style="display: flex"
+      <div class=""
+           style="display: flex"
            v-if="rtc && rtc.videoList">
 
         <div class=""
@@ -51,7 +52,7 @@
              :video="item.id"
              :key="item.id">
 
-          <video  width="100"
+          <video width="100"
                  height="100"
                  ref="video"
                  autoplay
@@ -70,38 +71,12 @@
 <script>
 import lessons         from './store'
 //import ListUsers    from './ListUsers'
-//import WebRTCScreen from '@/layouts/lesson/WebRTCScreen'
 import WebRtcInitMulti from '@/api/webRTC/index'
-//import Socket       from '@/api/socket/webRtc'
-//require('adapterjs')
-
-//import adapter from 'webrtc-adapter'
-
-//console.log(adapter.browserDetails)
 
 import * as io from 'socket.io-client'
 
 window.io = io
 
-/** Examples:
- * https://github.com/webrtc/FirebaseRTC/blob/master/public/app.js
- * https://github.com/openrtc-io/awesome-webrtc
- * https://www.twilio.com/blog/2014/12/set-phasers-to-stunturn-getting-started-with-webrtc-using-node-js-socket-io-and-twilios-nat-traversal-service.html
- * Free Stun-turn server https://www.twilio.com/stun-turn | Google's public STUN server (stun.l.google.com:19302)
- * https://www.npmjs.com/package/stun
- * https://github.com/shahidcodes/webrtc-video-call-example-nodejs/blob/master/index.js
- * https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/
- *
- * https://github.com/simplewebrtc/SimpleWebRTC
- * free-webrtc-server - SimpleWebRTC
- *    url https://free-webrtc-server.herokuapp.com:8888
- *    docs - https://elements.heroku.com/buttons/florindumitru/signalmaster/
- *           https://github.com/florindumitru/signalmaster
- *
- * https://rtcmulticonnection.herokuapp.com/demos/
- *
- * https://github.com/versatica/mediasoup/
- */
 export default {
   name: 'Lesson',
 
@@ -153,12 +128,7 @@ export default {
     this.$store.commit('navBarLeftActionShow', false)
 
     this.$nextTick(() => {
-      this.rtc = new WebRtcInitMulti('lector')
-      this.rtc.init(this.$refs.local, this.$refs.video)
-      this.getStream()
-
-      this.join()
-
+      this.startRTC()
     })
 
     // показать кнопку меню в navBar
@@ -171,11 +141,25 @@ export default {
     this.$store.unregisterModule('lessons')
   },
 
+  watch: {
+    rtc () {
+      if (!this.rtc) {
+        this.startRTC()
+      }
+    }
+  },
+
   methods: {
+
+    startRTC () {
+      this.rtc = new WebRtcInitMulti('lector')
+      this.rtc.init(this.$refs.local, this.$refs.video)
+      this.getStream()
+      this.join()
+    },
 
     getStream () {
       if (!this.rtc.rtcmConnection) return
-
       this.rtc.rtcmConnection.onstream = (stream) => {
 
         let found = this.rtc.videoList.find(video => {
@@ -192,10 +176,9 @@ export default {
           this.rtc.videoList.push(video)
 
           if (stream.type === 'local') {
-            this.rtc.localVideo = video
+            this.rtc.localVideo        = video
             this.$refs.local.srcObject = this.rtc.localVideo.stream
           }
-
         }
 
         if (this.rtc.localVideo) {
@@ -235,6 +218,16 @@ export default {
     join () {
       if (!this.rtc) return
       this.rtc.join()
+    },
+
+    shareScreen () {
+      if (!this.rtc) return
+      this.rtc.shareScreen()
+    },
+
+    getCanvas () {
+      if (!this.rtc) return
+      this.rtc.getCanvas()
     },
 
     getUsers () {
