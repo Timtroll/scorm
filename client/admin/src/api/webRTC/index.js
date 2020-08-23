@@ -49,15 +49,15 @@ export default class WebRtcInitMulti {
     this.role        = role || 'listener'
     this.constraints = {
       audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl:  true
+        echoCancellation: true
+        //noiseSuppression: true,
+        //autoGainControl:  true
       },
       video: {
-        width:       {min: 640, max: 1280},
-        height:      {min: 360, max: 720},
+        width:       {min: 1280, max: 1280},
+        height:      {min: 720, max: 720},
         aspectRatio: 16 / 9,
-        frameRate:   {min: 20.0, max: 24.0},
+        frameRate:   {min: 12.0, max: 24.0},
         //sampleRate:  1000,
         resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
       }
@@ -72,47 +72,48 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.socketURL              = this.socketURL
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
-    this.rtcmConnection.session                = this.constraints
+    //this.rtcmConnection.session                = this.constraints
 
-    this.rtcmConnection.mediaConstraints = {
-      audio: {
-        mandatory: {
-          echoCancellation:         false, // disabling audio processing
-          googAutoGainControl:      true,
-          googNoiseSuppression:     true,
-          googHighpassFilter:       true,
-          googTypingNoiseDetection: true
-          //googAudioMirroring: true
-        }
-      },
-
-      video: {
-        mandatory: {
-          minAspectRatio: 16 / 9,
-          //resizeMode:     'crop-and-scale',
-          minFrameRate:   15,
-          maxFrameRate:   25,
-          minWidth:       640,
-          maxWidth:       1280,
-          minHeight:      360,
-          maxHeight:      720
-        },
-        optional:  [
-          {
-            facingMode: 'user' // or "application"
-          }
-        ]
-      }
-      //mandatory: {},
-      //optional:  [{
-      //  width:       1280,
-      //  height:      720,
-      //  aspectRatio: 16 / 9,
-      //  //frameRate:   {min: 20.0, max: 24.0},
-      //  //sampleRate:  1000,
-      //  resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
-      //}]
-    }
+    this.rtcmConnection.mediaConstraints = this.constraints
+    //this.rtcmConnection.mediaConstraints = {
+    //  audio: {
+    //    mandatory: {
+    //      echoCancellation:     true, // disabling audio processing
+    //      googAutoGainControl:  true,
+    //      googNoiseSuppression: true,
+    //      googHighpassFilter:   true
+    //      //googTypingNoiseDetection: true
+    //      //googAudioMirroring: true
+    //    }
+    //  },
+    //
+    //  video: {
+    //    mandatory: {
+    //      minAspectRatio: 16 / 9,
+    //      //resizeMode:     'crop-and-scale',
+    //      minFrameRate:   15,
+    //      maxFrameRate:   25,
+    //      minWidth:       640,
+    //      maxWidth:       1280,
+    //      minHeight:      360,
+    //      maxHeight:      720
+    //    },
+    //    optional:  [
+    //      {
+    //        facingMode: 'user' // or "application"
+    //      }
+    //    ]
+    //  }
+    //  //mandatory: {},
+    //  //optional:  [{
+    //  //  width:       1280,
+    //  //  height:      720,
+    //  //  aspectRatio: 16 / 9,
+    //  //  //frameRate:   {min: 20.0, max: 24.0},
+    //  //  //sampleRate:  1000,
+    //  //  resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+    //  //}]
+    //}
 
     //this.rtcmConnection.mediaConstraints.audio = {
     //  mandatory: {},
@@ -157,6 +158,7 @@ export default class WebRtcInitMulti {
       const username = parse[0].split('@')[0]
       const password = parse[0].split('@')[1]
       const turn     = parse[1]
+
       this.rtcmConnection.iceServers.push({
         urls:       turn,
         credential: password,
@@ -184,7 +186,8 @@ export default class WebRtcInitMulti {
   }
 
   capture () {
-    return this.getCanvas().toDataURL(this.screenshotFormat)
+    return this.getCanvas()
+               .toDataURL(this.screenshotFormat)
   }
 
   getCanvas () {
@@ -258,5 +261,24 @@ export default class WebRtcInitMulti {
       }
     }
   }
+
+  //setConstraints (connection) {
+  //  const supports = navigator.mediaDevices.getSupportedConstraints()
+  //  console.log('getSupportedConstraints', supports)
+  //  let constraints = {}
+  //  if (supports.width && supports.height) {
+  //    constraints = {
+  //      width:            128,
+  //      height:           72,
+  //      aspectRatio:      16 / 9,
+  //      echoCancellation: true,
+  //      facingMode:       'face',
+  //      frameRate:        1
+  //    }
+  //  }
+  //  connection.applyConstraints({
+  //    video: constraints
+  //  })
+  //}
 
 }

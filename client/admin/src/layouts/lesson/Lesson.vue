@@ -173,6 +173,8 @@ export default {
             stream: stream.stream
           }
 
+          //this.setConstraints(video.stream)
+
           this.rtc.videoList.push(video)
 
           if (stream.type === 'local') {
@@ -182,7 +184,8 @@ export default {
         }
 
         if (this.rtc.localVideo) {
-          this.rtc.videoList = this.rtc.videoList.filter(i => i.id !== this.rtc.localVideo.id)
+          this.rtc.videoList = this.rtc.videoList
+                                   .filter(i => i.id !== this.rtc.localVideo.id)
         }
 
         setTimeout(() => {
@@ -190,6 +193,7 @@ export default {
           const videoList = this.$refs.video
           //if (videoList.length) return
           const video     = videoList.find(i => i.id === stream.streamid)
+          if (!video) return
           video.srcObject = stream.stream
         }, 1000)
 
