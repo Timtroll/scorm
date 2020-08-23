@@ -10,9 +10,9 @@ export default class WebRtcInitMulti {
 
   // role: lector, listener
   constructor (role, roomId, socketURL, stunServer, turnServer) {
-    this.roomId         = 'multi-chat'
+    this.roomId    = 'multi-chat'
     //'https://rtcmulticonnection.herokuapp.com:443/'
-    this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/' // https://scorm.site:443/
+    this.socketURL = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/' // https://scorm.site:443/
     //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/'
     this.stunServer     = null
     this.turnServer     = null
@@ -49,6 +49,47 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
     this.rtcmConnection.session                = this.constraints
+
+    this.rtcmConnection.mediaConstraints = {
+      audio: {
+        mandatory: {
+          echoCancellation:         false, // disabling audio processing
+          googAutoGainControl:      true,
+          googNoiseSuppression:     true,
+          googHighpassFilter:       true,
+          googTypingNoiseDetection: true
+          //googAudioMirroring: true
+        }
+      },
+
+      video: {
+        mandatory: {
+          minAspectRatio: 16 / 9,
+          //resizeMode:     'crop-and-scale',
+          minFrameRate:   15,
+          maxFrameRate:   25,
+          minWidth:       640,
+          maxWidth:       1280,
+          minHeight:      360,
+          maxHeight:      720
+        },
+        optional:  [
+          {
+            facingMode: 'user' // or "application"
+          }
+        ]
+      }
+      //mandatory: {},
+      //optional:  [{
+      //  width:       1280,
+      //  height:      720,
+      //  aspectRatio: 16 / 9,
+      //  //frameRate:   {min: 20.0, max: 24.0},
+      //  //sampleRate:  1000,
+      //  resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+      //}]
+    }
+
     //this.rtcmConnection.mediaConstraints.audio = {
     //  mandatory: {},
     //  optional: [{
