@@ -161,8 +161,12 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
-# Добавить пустой объект пользователя
-# ( $user_id ) = $self->add();
+# Добавить пустой объект пользователя,
+# после добавления пустышки должен вызываться сразу роут /user/edit
+# Добавляется новый пользователь в EAV и таблицу users
+# $self->add();
+# возвращается id пользователя:
+
 sub add {
     my $self = shift;
 
@@ -179,89 +183,8 @@ sub add {
     }
 
     unless ( @! ) {
-print "====\n";
         # создание пустого объекта пользователя
         $result = $self->model('User')->_empty_user();
-    }
-
-    $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @!;
-
-    @! = ();
-
-    $self->render( 'json' => $resp );
-}
-
-# Добавлением нового пользователя в EAV и таблицу users
-# ( $user_id ) = $self->add_user( $data );
-# $data = {
-#     'place'       => 'place',                         # кладется в EAV
-#     'country'     => 'country',                       # кладется в EAV
-#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
-#     'surname'     => 'test',                          # кладется в EAV
-#     'name'        => 'name',                          # кладется в EAV
-#     'patronymic'  => 'patronymic',                    # кладется в EAV
-#     'groups'      => [1,2,100],                       # кладется в EAV может быть []
-#     'email'       => 'test@test.com',                 # кладется в users
-#     'phone'       => '+7(999) 222-2222',              # кладется в users
-#     'password'    => 'password',                      # кладется в users
-#     'timezone'    => '10',                            # кладется в users
-# }
-sub add_user {
-    my $self = shift;
-
-    my ( $data, $salt, $resp, $result, $groups );
-
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверяем, используется ли емэйл другим пользователем
-        if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
-            push @!, "email '$$data{ email }' already used"; 
-        }
-        # проверяем, используется ли телефон другим пользователем
-        elsif ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
-            push @!, "phone '$$data{ phone }' already used"; 
-        }
-
-        unless ( @! ) {
-            # проверка существования групп пользователя
-            $groups = from_json( $$data{'groups'} );
-            foreach ( @$groups ) {
-                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                    push @!, "group with id '$_' doesn't exist";
-                    last;
-                }
-            }
-            unless ( @! ) {
-                # получение соли из конфига
-                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-
-                # шифрование пароля
-                $$data{'password'} = sha256( $$data{'password'}, $salt );
-            }
-        }
-    }
-
-    unless ( @! ) {
-        # переводим секунды в дату рождения
-        if ( $$data{'birthday'} ) {
-            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
-        }
-        else {
-            $$data{'birthday'}    = '';
-        }
-
-        $$data{'publish'}     = $$data{'status'};
-        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
-        $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'avatar'}      = '' unless $$data{'avatar'};
-        $$data{'groups'}      = '' unless $$data{'groups'};
-
-        # добавляем юзера в EAV и users
-        $result = $self->model('User')->_insert_user( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;

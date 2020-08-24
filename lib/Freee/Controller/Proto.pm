@@ -105,86 +105,86 @@ sub proto_folder {
     $self->render( 'json' => $resp );
 }
 
-sub proto_user {
-    my $self = shift;
+# sub proto_user {
+#     my $self = shift;
 
-    # read params
-    my ( $id, $data, $hashref, $countries, $timezones, $resp );
-    # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+#     # read params
+#     my ( $id, $data, $hashref, $countries, $timezones, $resp );
+#     # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @! ) {
-        # # проверка данных
-        $data = $self->_check_fields();
+#     unless ( @! ) {
+#         # # проверка данных
+#         $data = $self->_check_fields();
 
-        unless ( @! ) {
-            $hashref = $self->_countries();
-            foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
-                push @$countries, [ $_, $$hashref{$_} ];
-            }
+#         unless ( @! ) {
+#             $hashref = $self->_countries();
+#             foreach ( sort { uc( $$hashref{$a} ) cmp uc( $$hashref{$b} ) } keys %$hashref ) {
+#                 push @$countries, [ $_, $$hashref{$_} ];
+#             }
 
-            $hashref = $self->_time_zones();
-            foreach ( sort { $a <=> $b } keys %$hashref ) {
-                push @$timezones, [ $_, $$hashref{$_} ];
-            }
+#             $hashref = $self->_time_zones();
+#             foreach ( sort { $a <=> $b } keys %$hashref ) {
+#                 push @$timezones, [ $_, $$hashref{$_} ];
+#             }
 
-            # прототип пользователя
-            $data = {
-                'tabs' => [ # Вкладки
-                    {
-                        'label'     => 'Основные',
-                        'fields'    => [
-                            {'surname'       => ''}, # Фамилия
-                            {'name'          => ''}, # Имя
-                            {'patronymic'    => ''}, # Отчество
-                            {'place'         => ''}, # город
-                            {'country'       =>      # страна
-                                {
-                                    "selected"  => $countries, 
-                                    "value"     => ''
-                                }
-                            },
-                            {'timezone'       =>     # часовой пояс
-                                {
-                                    "selected"  => $timezones, 
-                                    "value"     => ''
-                                }
-                            },
-                            {'birthday'      => ''}, # дата рождения (в секундах)
-                            {'status'        => ''}, # активный / не активный пользователь
-                            {'avatar'        => ''},
-                            {'type'          => ''}                        # тип
-                        ]
-                    },
-                    {
-                        'label' => 'Контакты',
-                        'fields' => [
-                            {'email'           => ''}, # email пользователя
-                            {'phone'           => ''}  # номер телефона
-                        ]
-                    },
-                    {
-                        "fields" => [
-                            {"password"        => ""},
-                        ],
-                        "label" => "Пароль"
-                    },
-                    {
-                        "label" => "Группы",
-                        "fields" => [
-                            {"groups" => []}  # список ID групп
-                        ]
-                    }
-                ]
-            };
-        }
-    }
+#             # прототип пользователя
+#             $data = {
+#                 'tabs' => [ # Вкладки
+#                     {
+#                         'label'     => 'Основные',
+#                         'fields'    => [
+#                             {'surname'       => ''}, # Фамилия
+#                             {'name'          => ''}, # Имя
+#                             {'patronymic'    => ''}, # Отчество
+#                             {'place'         => ''}, # город
+#                             {'country'       =>      # страна
+#                                 {
+#                                     "selected"  => $countries, 
+#                                     "value"     => ''
+#                                 }
+#                             },
+#                             {'timezone'       =>     # часовой пояс
+#                                 {
+#                                     "selected"  => $timezones, 
+#                                     "value"     => ''
+#                                 }
+#                             },
+#                             {'birthday'      => ''}, # дата рождения (в секундах)
+#                             {'status'        => ''}, # активный / не активный пользователь
+#                             {'avatar'        => ''},
+#                             {'type'          => ''}                        # тип
+#                         ]
+#                     },
+#                     {
+#                         'label' => 'Контакты',
+#                         'fields' => [
+#                             {'email'           => ''}, # email пользователя
+#                             {'phone'           => ''}  # номер телефона
+#                         ]
+#                     },
+#                     {
+#                         "fields" => [
+#                             {"password"        => ""},
+#                         ],
+#                         "label" => "Пароль"
+#                     },
+#                     {
+#                         "label" => "Группы",
+#                         "fields" => [
+#                             {"groups" => []}  # список ID групп
+#                         ]
+#                     }
+#                 ]
+#             };
+#         }
+#     }
 
-    $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'data'} = $data unless @!;
+#     $resp->{'message'} = join("\n", @!) if @!;
+#     $resp->{'status'} = @! ? 'fail' : 'ok';
+#     $resp->{'data'} = $data unless @!;
 
-    $self->render( 'json' => $resp );
-}
+#     $self->render( 'json' => $resp );
+# }
 
 
 1;

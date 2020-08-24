@@ -207,12 +207,11 @@ sub startup {
 
     # управление пользователями
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
-    $auth->post('/user/add')            ->to('user#add');           # создание пустышки юзера
-    $auth->post('/user/add_user')       ->to('user#add_user');      # заполнение пустышки юзера (регистрация юзера)
+    $auth->post('/user/add_user')       ->to('user#add');           # заполнение пустышки юзера (регистрация юзера)
     $auth->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
     $auth->post('/user/add_by_phone')   ->to('user#add_by_phone');  # регистрация юзера по номеру телефона 
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
-    $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
+#    $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/profile')        ->to('user#profile');       # пермишены и профиль юзера
