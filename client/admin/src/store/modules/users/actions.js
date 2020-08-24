@@ -133,12 +133,11 @@ const actions = {
   /**
    *
    * @param commit
-   * @param state
-   * @param getters
+   * @param dispatch
    * @param parentId
    * @returns {Promise<void>}
    */
-  async leafProto ({commit, state, getters}, parentId) {
+  async leafAdd ({commit, dispatch}, parentId) {
 
     try {
       store.commit('card_right_show', false)
@@ -147,20 +146,14 @@ const actions = {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
 
-      const response = await Api_EditPanel.list_proto(parentId)
+      const response = await Api_EditPanel.list_add(parentId)
 
       if (response.status !== 200) return
 
-      const resp  = await response.data
-      const proto = clone(store.getters.editPanel_proto)
+      const resp = await response.data
+      console.log(' add --- ', resp)
 
-      //const groups =_groupedFields({})
-      const groups = groupedFields(resp.data, proto)
-
-      store.commit('editPanel_data', groups) // запись данных во VUEX
-      store.commit('editPanel_status_success') // статус - успех
-
-      store.commit('card_right_show', true) // открытие правой панели
+      await dispatch('leafEdit', resp.id)
 
     }
     catch (e) {

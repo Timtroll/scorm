@@ -449,7 +449,6 @@ export default {
 
     createDataChanged (arr) {
 
-      console.log(arr)
       const newArr = []
       if (arr) {
         arr.forEach(item => {
@@ -466,7 +465,6 @@ export default {
     },
 
     variableType (type) {
-
       if (type === this.variableTypeField) {
         return this.variableTypeField
       }

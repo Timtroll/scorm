@@ -30,17 +30,6 @@ export default {
     })
   },
 
-  // получить прототип нового элемента Leaf
-  list_proto (group) {
-    return Api()({
-      url:    'user/proto_user',
-      method: 'post',
-      params: {
-        group: group
-      }
-    })
-  },
-
   list_toggle (params) {
     return Api()({
       url:    'user/toggle',
@@ -49,12 +38,14 @@ export default {
     })
   },
 
-  // добавление настройки
-  list_add (data) {
+  // добавление
+  list_add (parent) {
     return Api()({
       url:    'user/add',
       method: 'post',
-      params: data
+      params: {
+        parent: parent
+      }
     })
   }
 

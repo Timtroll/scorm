@@ -453,7 +453,6 @@ export default {
 
     getHeader () {
       if (this.tableRowsField) {
-
         const header    = []
         const protoLeaf = this.protoLeaf
         const row       = this.tableRowsField
@@ -467,7 +466,6 @@ export default {
           }
         }
         return header
-        //return header.filter(item => item.show === 1)
       }
     },
 

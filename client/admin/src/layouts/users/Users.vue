@@ -39,7 +39,7 @@
       <List :labels="'Добавить пользователя'"
             :data="editPanel_data"
             :variable-type-tield="'value'"
-            :add="editPanel_add"
+            :add="false"
             :folder="editPanel_folder"
             :parent="tableId"
             v-on:save="save($event)"
@@ -100,9 +100,9 @@ export default {
         editPanel: {
           get:            'users/leafEdit',
           save:           'users/leafSave',
-          addProto:       'users/leafProto',
-          addFolderProto: 'users/folderProto',
-          add:            'users/leafAdd'
+          addProto:       'users/leafAdd',
+          //addFolderProto: 'users/folderProto',
+          add:            'users/leafSave'
         }
       }
 
@@ -219,7 +219,7 @@ export default {
 
     save (data) {
       const save = {
-        add:    this.editPanel_add,
+        add:    false,
         folder: false,
         fields: {}
       }
