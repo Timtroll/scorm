@@ -2,6 +2,8 @@ package Freee::Model::User;
 
 use Mojo::Base 'Freee::Model::Base';
 
+use POSIX qw(strftime);
+use DBI qw(:sql_types);
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
@@ -61,7 +63,8 @@ my %masks_fields = (
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $fields, $sth, $list, @list );
+    my ( $sql, $fields, $sth, @list );
+    my $list = {};
 
     push @!, "no data for list" unless ( $$data{'id'} );
 
@@ -161,26 +164,27 @@ sub _get_user {
     return $result;
 }
 
-# Добавить пустой объект пользователя
-# $id = $self->model('User')->_empty_user( $data );
-sub _empty_user {
-    my ( $self, $data ) = @_;
+# # Добавить пустой объект пользователя
+# # $id = $self->model('User')->_empty_user( $data );
+# sub _empty_user {
+#     my ( $self, $data ) = @_;
 
-    my ( $usr, $id );
+#     my ( $usr, $id );
 
-    $$data{'parent'} = 0 unless scalar( $$data{'parent'} );
+#     $$data{'parent'} = 0 unless scalar( $$data{'parent'} );
 
-    $usr = Freee::EAV->new( 'User', { 'parent' => 0 } );
-    $id = $usr->id();
+#     $usr = Freee::EAV->new( 'User', { 'parent' => 0 } );
+#     $id = $usr->id();
 
-    unless ( $id ) {
-        push @!, "can't create empty object";
-        return;
-    }
-    else {
-        return $id;
-    }
-}
+#     unless ( $id ) {
+#         push @!, "can't create empty object";
+#         return;
+#     }
+#     else {
+#         _insert_user();
+#         return $id;
+#     }
+# }
 
 # Добавлением нового пользователя в EAV и таблицу users
 # ( $user_id ) = $self->model('User')->_insert_user( $data );
@@ -196,18 +200,18 @@ sub _empty_user {
 #     'password'    => 'password',                      # кладется в users
 #     'timezone'    => '10',                            # кладется в users
 # }
-sub _insert_user {
-    my ( $self, $data ) = @_;
+sub _empty_user {
+    my ( $self ) = @_;
 
-    my ( $rc, $sth, $user, $user_id, $result, $sql, $groups, @user_keys );
+    my ( $rc, $sth, $user, $data, $user_id, $result, $sql, $groups, @user_keys );
 
     # проверка входных данных
-    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @!, "no data for insert";
-    }
-# warn Dumper( $self );
-    # открытие транзакции
-    # $rc  = $self->{'app'}->pg_dbh->begin_work;
+    # unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+    #     push @!, "no data for insert";
+    # }
+
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->begin_work;
 
             # загружаем аватарку
             # таблица media (аватарка)
@@ -222,52 +226,58 @@ sub _insert_user {
 #                 "order"      => 'local',
 #                 "flags"     => 0
 #             };
-    unless ( @! ) {
         # делаем запись в EAV
-        $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
 
-        $user = Freee::EAV->new( 'User',
-            {
-                'parent' => 0, 
-                'title' => $$data{'title'},
-                'User' => {
-                    'parent'       => 0, 
-                    'surname'      => $$data{'surname'},
-                    'name'         => $$data{'name'},
-                    'patronymic'   => $$data{'patronymic'},
-                    'place'        => $$data{'place'},
-                    'country'      => $$data{'country'},
-                    'birthday'     => $$data{'birthday'},
-                    'import_source'=> $$data{'avatar'},
-                    'publish'      => $$data{'publish'}
-                }
-            }
-        );
-        $$data{'eav_id'} = $user->id();
-
-        unless ( $$data{'eav_id'} ) {
-            push @!, "Could not insert user into EAV";
-            # $rc  = $self->{'app'}->pg_dbh->rollback;
+    my $eav = {
+        'parent' => 0, 
+        'title' => 'New user',
+        'User' => {
+            'parent'       => 0, 
+            'surname'      => '',
+            'name'         => '',
+            'patronymic'   => '',
+            'place'        => '',
+            'country'      => 'RU',
+            'birthday'     => strftime( "%F %T", localtime() ),
+            'import_source'=> '',
+            'publish'      => \0
         }
+    };
+    $user = Freee::EAV->new( 'User', $eav );
+    $$data{'eav_id'} = $user->id();
+
+    my $timezone = strftime( "%z", localtime() ) / 100;
+    $data = {
+        'publish'   => 0,
+        'email'     => '',
+        'phone'     => '',
+        'password'  => '',
+        'eav_id'    => $user->id(),
+        'timezone'  => $timezone,
+        'groups'    => ''
+    };
+    unless ( $$data{'eav_id'} ) {
+        push @!, "Could not insert user into EAV";
+        $self->{'app'}->pg_dbh->rollback;
     }
 
     unless ( @! ) {
 ##### потом добавить заполнение поля users_flags ???????????????????????????????????????????????????????
-
         # запись данных в users
-        @user_keys = ( "publish", "email", "phone", "password", "eav_id", "timezone", "groups" );
-        $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} @user_keys ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).')';
-
+        $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$data ).' )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        foreach ( keys %$data ) {
+            my $type = /publish/ ? SQL_BOOLEAN : undef();
+            $sth->bind_param( ':'.$_, $$data{$_}, $type );
+        }
         $sth->execute();
 
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
 
         unless ( $user_id ) {
             push @!, "Can not insert $$data{'title'} into users". DBI->errstr;
-            # $rc  = $self->{'app'}->pg_dbh->rollback;
+            $self->{'app'}->pg_dbh->rollback;
         }
-
         # таблица users_social
         # my $user_data = {
         #     "user_id" int4 NOT NULL,
@@ -277,27 +287,26 @@ sub _insert_user {
         #     "social_profile" => "{}"
         # };
     }
-
+    
     #### заполнение таблицы user_groups
     unless ( @! ) {
         $groups = from_json( $$data{'groups'} );
-        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? )';
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
 
         foreach my $group_id ( @$groups ) {
             $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-            $sth->bind_param( 1, $user_id );
-            $sth->bind_param( 2, $group_id );
+            $sth->bind_param( ':user_id', $user_id );
+            $sth->bind_param( ':group_id', $group_id );
             $result = $sth->execute();
             unless ( $result ) {
                 push @!, "Can not insert into 'user_groups'";
-                # $rc  = $self->{'app'}->pg_dbh->rollback;
+                $self->{'app'}->pg_dbh->rollback;
             }
         }
     }
 
     # закрытие транзакции
-    # $rc  = $self->{'app'}->pg_dbh->commit;
-# $self->{'app'}->pg_dbh
+    $self->{'app'}->pg_dbh->commit;
 
     return $user_id;
 }

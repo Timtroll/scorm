@@ -171,16 +171,17 @@ sub add {
     # проверка данных
     $data = $self->_check_fields();
 
-    unless ( @! || !$$data{'parent'} ) {
+    unless ( @! ) {
         # проверка существования родителя
-        unless( $self->model('User')->_exists_in_user( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in user";
+        if ( $$data{'parent'} && !$self->model('User')->_exists_in_user( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exists";
         }
     }
 
     unless ( @! ) {
+print "====\n";
         # создание пустого объекта пользователя
-        $result = $self->model('User')->_empty_user( $data );
+        $result = $self->model('User')->_empty_user();
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
