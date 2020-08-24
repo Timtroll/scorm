@@ -164,29 +164,7 @@ sub _get_user {
     return $result;
 }
 
-# # Добавить пустой объект пользователя
-# # $id = $self->model('User')->_empty_user( $data );
-# sub _empty_user {
-#     my ( $self, $data ) = @_;
-
-#     my ( $usr, $id );
-
-#     $$data{'parent'} = 0 unless scalar( $$data{'parent'} );
-
-#     $usr = Freee::EAV->new( 'User', { 'parent' => 0 } );
-#     $id = $usr->id();
-
-#     unless ( $id ) {
-#         push @!, "can't create empty object";
-#         return;
-#     }
-#     else {
-#         _insert_user();
-#         return $id;
-#     }
-# }
-
-# Добавлением нового пользователя в EAV и таблицу users
+# Добавлением пустой объект пользователя в EAV и таблицу users
 # ( $user_id ) = $self->model('User')->_insert_user( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
@@ -213,21 +191,7 @@ sub _empty_user {
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
-            # загружаем аватарку
-            # таблица media (аватарка)
-#             my $media_data = {
-#                 "path"      => 'local',
-#                 "filename"  => 'local',
-#                 "title"     => 'Название файла',
-#                 "size"      => 'local',
-# #?                "type" varchar(32) COLLATE "default",
-#                 "mime"      => 'local',
-#                 "description"      => 'local',
-#                 "order"      => 'local',
-#                 "flags"     => 0
-#             };
-        # делаем запись в EAV
-
+    # делаем запись в EAV
     my $eav = {
         'parent' => 0, 
         'title' => 'New user',
@@ -278,32 +242,25 @@ sub _empty_user {
             push @!, "Can not insert $$data{'title'} into users". DBI->errstr;
             $self->{'app'}->pg_dbh->rollback;
         }
-        # таблица users_social
-        # my $user_data = {
-        #     "user_id" int4 NOT NULL,
-        #     "social" "public"."social" NOT NULL,
-        #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
-        #     "social_id",     => 123123123,
-        #     "social_profile" => "{}"
-        # };
     }
-    
-    #### заполнение таблицы user_groups
-    unless ( @! ) {
-        $groups = from_json( $$data{'groups'} );
-        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
 
-        foreach my $group_id ( @$groups ) {
-            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-            $sth->bind_param( ':user_id', $user_id );
-            $sth->bind_param( ':group_id', $group_id );
-            $result = $sth->execute();
-            unless ( $result ) {
-                push @!, "Can not insert into 'user_groups'";
-                $self->{'app'}->pg_dbh->rollback;
-            }
-        }
-    }
+# ????????????
+    #### заполнение таблицы user_groups
+    # unless ( @! ) {
+    #     $groups = from_json( $$data{'groups'} );
+    #     $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
+
+    #     foreach my $group_id ( @$groups ) {
+    #         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+    #         $sth->bind_param( ':user_id', $user_id );
+    #         $sth->bind_param( ':group_id', $group_id );
+    #         $result = $sth->execute();
+    #         unless ( $result ) {
+    #             push @!, "Can not insert into 'user_groups'";
+    #             $self->{'app'}->pg_dbh->rollback;
+    #         }
+    #     }
+    # }
 
     # закрытие транзакции
     $self->{'app'}->pg_dbh->commit;
@@ -339,6 +296,20 @@ sub _save_user {
     unless ( $$data{'id'} ) {
         push @!, 'no data for save';
     }
+
+    # загружаем аватарку
+    # таблица media (аватарка)
+    my $media_data = {
+        "path"      => 'local',
+        "filename"  => 'local',
+        "title"     => 'Название файла',
+        "size"      => 'local',
+#?                "type" varchar(32) COLLATE "default",
+        "mime"      => 'local',
+        "description"      => 'local',
+        "order"      => 'local',
+        "flags"     => 0
+    };
 
     unless ( @! ) {
         # обновление полей в users
@@ -384,6 +355,15 @@ sub _save_user {
 
         push @!, "can't update EAV" unless $result;
     }
+
+    # таблица users_social
+    # my $user_data = {
+    #     "user_id" int4 NOT NULL,
+    #     "social" "public"."social" NOT NULL,
+    #     "access_token" varchar(4096) COLLATE "default" DEFAULT NULL::character varying NOT NULL,
+    #     "social_id",     => 123123123,
+    #     "social_profile" => "{}"
+    # };
 
 # ???????? решить проблему транзакцией
     unless ( @! ) {

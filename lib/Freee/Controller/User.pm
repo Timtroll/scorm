@@ -170,22 +170,10 @@ sub edit {
 sub add {
     my $self = shift;
 
-    my ( $resp, $result, $data );
+    my ( $resp, $result );
 
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверка существования родителя
-        if ( $$data{'parent'} && !$self->model('User')->_exists_in_user( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exists";
-        }
-    }
-
-    unless ( @! ) {
-        # создание пустого объекта пользователя
-        $result = $self->model('User')->_empty_user();
-    }
+    # создание пустого объекта пользователя
+    $result = $self->model('User')->_empty_user();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';

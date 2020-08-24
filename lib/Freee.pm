@@ -207,7 +207,7 @@ sub startup {
 
     # управление пользователями
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
-    $auth->post('/user/add_user')       ->to('user#add');           # заполнение пустышки юзера (регистрация юзера)
+    $auth->post('/user/add')            ->to('user#add');           # заполнение пустышки юзера (регистрация юзера)
     $auth->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
     $auth->post('/user/add_by_phone')   ->to('user#add_by_phone');  # регистрация юзера по номеру телефона 
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
