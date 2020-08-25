@@ -145,7 +145,7 @@ sub edit {
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$user_data{'groups'} }
+                       { "groups" => from_json( $$user_data{'groups'} ) || [] }
                     ]
                 }
             ]
