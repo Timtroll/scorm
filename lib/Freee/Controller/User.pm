@@ -27,7 +27,7 @@ sub index {
     unless ( @! ) {
         $$data{'page'} = 1 unless $$data{'page'};
 
-        $$data{'limit'}  = $self->{'app'}->{'settings'}->{'list_limit'};
+        $$data{'limit'}  = $self->{'app'}->{'settings'}->{'per_page'};
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
 
         # получаем список пользователей группы

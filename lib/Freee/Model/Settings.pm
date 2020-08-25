@@ -333,12 +333,16 @@ sub _get_config {
     my $self = shift;
 
     my ( $sql, $sth, $result, $settings );
+    my $dbh = $self->{app}->pg_dbh;
 
     # получение настроек из бд
     $sql = 'SELECT "name", "value" FROM "public".settings WHERE "folder" = 0';
-    $sth = $self->{app}->pg_dbh->prepare( $sql );
-    $sth->execute();
+    $sth = $dbh->prepare( $sql );
+print Dumper $sth;
+    $dbh->commit;
+    $sth->execute;
     $result = $sth->fetchall_arrayref();
+    # $sth->finish;
 # $self->{app}->pg_dbh->commit or die $self->{app}->pg_dbh->errstr;
 
     # создание хэша настроек
