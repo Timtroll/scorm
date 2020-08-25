@@ -23,7 +23,7 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        0,
+    "show":        1,
     "width":       1
   },
   {
@@ -37,7 +37,7 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        2
+    "show":        1
   },
   {
     "label":       "Отчество",
@@ -64,7 +64,7 @@
     "type":        "InputText",
     "value":       "",
     "inline":      0,
-    "show":        0,
+    "show":        1,
     "width":       2
   },
   {
@@ -135,8 +135,8 @@
     "add":         true,
     "type":        "InputBoolean",
     "value":       0,
-    "inline":      0,
-    "show":        0,
+    "inline":      1,
+    "show":        1,
     "width":       2
   },
   {
@@ -150,7 +150,7 @@
     "type":        "InputPhone",
     "value":       1,
     "inline":      0,
-    "show":        0,
+    "show":        1,
     "width":       2
   },
   {
@@ -163,8 +163,8 @@
     "add":         true,
     "type":        "InputBoolean",
     "value":       0,
-    "inline":      0,
-    "show":        0,
+    "inline":      1,
+    "show":        1,
     "width":       2
   },
   {
@@ -178,7 +178,7 @@
     "type":        "InputBoolean",
     "value":       1,
     "inline":      1,
-    "show":        0,
+    "show":        1,
     "width":       3
   },
   {
