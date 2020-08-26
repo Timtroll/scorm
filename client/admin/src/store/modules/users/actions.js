@@ -151,8 +151,6 @@ const actions = {
       if (response.status !== 200) return
 
       const resp = await response.data
-      console.log(' add --- ', resp)
-
       await dispatch('leafEdit', resp.id)
 
     }
