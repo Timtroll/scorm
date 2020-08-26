@@ -56,7 +56,6 @@ export default {
   },
 
   mounted () {
-    console.log('this.value.isArray', this.value.isArray)
     this.valueInput = clone(this.value)
   },
 
