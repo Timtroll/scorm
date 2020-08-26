@@ -1,10 +1,10 @@
 <template>
-  <Finder :data="list"/>
+  <Finder :data="rootList"/>
 </template>
 
 <script>
 import courses from '@/store/modules/courses'
-import list    from '@/assets/json/proto/finder/finder-folders.json'
+//import list    from '@/assets/json/proto/finder/finder-folders.json'
 
 export default {
   name: 'Courses',
@@ -53,15 +53,7 @@ export default {
   methods: {
 
     async getFinderRoot () {
-
-      try {
-        const response = await this.$store.dispatch('courses/getRoot', {route: 'discipline/'})
-        //console.log(await response)
-        //this.rootList = await response
-      }
-      catch (e) {
-        console.log(e)
-      }
+      await this.$store.dispatch('courses/getRoot', {route: 'discipline/'})
     },
 
     async getFinderLevel (route, id) {

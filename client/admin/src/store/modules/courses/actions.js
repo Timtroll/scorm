@@ -9,7 +9,7 @@ const actions = {
     try {
       const response = await courses.load(data.route)
       if (response.status === 'ok') {
-        commit('setListRoot', response)
+        commit('setListRoot', response.data)
       }
     }
     catch (e) {

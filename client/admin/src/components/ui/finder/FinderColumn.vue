@@ -4,6 +4,7 @@
 
     <!--CELL HEADER-->
     <div class="pos-finder-column-header uk-grid-collapse"
+         v-if="data"
          uk-grid>
 
       <!--Add Tree root el -->
@@ -64,7 +65,7 @@
 
     <!--CELL BODY-->
     <div class="pos-finder-column-body"
-         v-if="data.list">
+         v-if="data && data.list">
 
       <ul class="pos-finder-list">
 
