@@ -20,6 +20,7 @@
                    v-model="valueInput"
                    name="checkboxes"
                    :id="checkbox.id"
+                   :checked="valueInput === checkbox.id"
                    :value="checkbox.id"
                    @change="update"
                    type="checkbox">
@@ -38,68 +39,69 @@
 
 <script>
 
-  import {clone} from '../../../store/methods'
+import {clone} from '@/store/methods'
 
-  export default {
-    name: 'InputCheckboxes',
+export default {
+  name: 'InputCheckboxes',
 
-    props: {
-      value:       {default: []},
-      name:        '',
-      label:       {default: '', type: String},
-      placeholder: {default: '', type: String},
-      selected:    {},
-      readonly:    {default: 0, type: Number},
-      required:    {default: 0, type: Number},
-      mask:        {type: RegExp}
-    },
+  props: {
+    value:       {type: Array, default: []},
+    name:        '',
+    label:       {default: '', type: String},
+    placeholder: {default: '', type: String},
+    selected:    {},
+    readonly:    {default: 0, type: Number},
+    required:    {default: 0, type: Number},
+    mask:        {type: RegExp}
+  },
 
-    async mounted () {
-      this.valueInput = (this.value.isArray) ? await clone(this.value) : []
-    },
+  mounted () {
+    console.log('this.value.isArray', this.value.isArray)
+    this.valueInput = clone(this.value)
+  },
 
-    data () {
-      return {
-        valueInput: []
-      }
-    },
-
-    computed: {
-
-      isChanged () {
-        return JSON.parse(JSON.stringify(this.valueInput)) !== JSON.parse(JSON.stringify(this.value))
-      },
-
-      listParents () {
-        return this.$store.getters.treeFlat
-      }
-
-    },
-
-    methods: {
-
-      update () {
-        this.$emit('change', this.isChanged)
-        this.$emit('value', JSON.stringify(this.valueInput))
-      }
-
-      //validate () {
-      //
-      //  let validClass = null
-      //  if (this.required) {
-      //    if (!this.valueInput && this.valueInput.length < 1) {
-      //      validClass = 'uk-form-danger'
-      //      this.valid = false
-      //      this.$emit('valid', this.valid)
-      //    } else {
-      //      validClass = 'uk-form-success'
-      //      this.valid = true
-      //      this.$emit('valid', this.valid)
-      //    }
-      //  }
-      //  return validClass
-      //}
-
+  data () {
+    return {
+      valueInput: []
     }
+  },
+
+  computed: {
+
+    isChanged () {
+      return JSON.parse(JSON.stringify(this.valueInput)) !== JSON.parse(JSON.stringify(this.value))
+    },
+
+    listParents () {
+      return this.$store.getters.treeFlat
+    }
+
+  },
+
+  methods: {
+
+    update () {
+      this.$emit('change', this.isChanged)
+      this.$emit('value', JSON.stringify(this.valueInput))
+    }
+
+    //validate () {
+    //
+    //  let validClass = null
+    //  if (this.required) {
+    //    if (!this.valueInput && this.valueInput.length < 1) {
+    //      validClass = 'uk-form-danger'
+    //      this.valid = false
+    //      this.$emit('valid', this.valid)
+    //    } else {
+    //      validClass = 'uk-form-success'
+    //      this.valid = true
+    //      this.$emit('valid', this.valid)
+    //    }
+    //  }
+    //  return validClass
+    //}
+
   }
+}
 </script>
