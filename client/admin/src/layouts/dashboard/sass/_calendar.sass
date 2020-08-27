@@ -30,7 +30,7 @@ $weekDaySize: 35px
   --fc-bg-event-color: #81b752
   --fc-bg-event-opacity: 0.3
   --fc-highlight-color: rgba(188, 232, 241, 0.3)
-  --fc-today-bg-color: rgb(229, 185, 25, .1)
+  --fc-today-bg-color: rgb(255, 162, 63, .08)
   --fc-now-indicator-color: #e24f45
 
 /** CALENDAR
@@ -94,3 +94,8 @@ $weekDaySize: 35px
 .pos-calendar-time
   color: $global-muted-color
   font-size: .8rem
+
+.fc-scrollgrid-section-body,
+.fc-scrollgrid-section-header
+  & > td
+    border-width: 0

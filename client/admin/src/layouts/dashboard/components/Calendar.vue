@@ -94,8 +94,8 @@ export default {
 
         views:               {
           timeGrid: {
-            slotMinTime: '09:00:00',
-            slotMaxTime: '16:00:00'
+            slotMinTime: '08:00:00',
+            slotMaxTime: '18:00:00'
           }
         },
         slotDuration:        '00:15:00',
@@ -108,8 +108,8 @@ export default {
 
         businessHours: {
           daysOfWeek: [1, 2, 3, 4, 5], // Monday - Thursday
-          startTime:  '09:00', // a start time (10am in this example)
-          endTime:    '16:00' // an end time (6pm in this example)
+          startTime:  '08:00', // a start time (10am in this example)
+          endTime:    '20:00' // an end time (6pm in this example)
         },
 
         nowIndicator: true,
