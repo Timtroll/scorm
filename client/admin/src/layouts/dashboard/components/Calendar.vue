@@ -4,11 +4,12 @@
     <div class="pos-calendar-header">
 
       <div class="pos-calendar-header-week">
+
         <div class="pos-calendar-header-week-item">
           <svg xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 48 48"
-               width="18"
-               height="18">
+               width="16"
+               height="16">
             <polyline points="33 6 15 24 33 42"
                       fill="none"
                       stroke="currentColor"
@@ -17,6 +18,7 @@
                       stroke-width="8"/>
           </svg>
         </div>
+
         <div class="pos-calendar-header-week-item">Пн</div>
         <div class="pos-calendar-header-week-item">Вт</div>
         <div class="pos-calendar-header-week-item">Ср</div>
@@ -24,11 +26,12 @@
         <div class="pos-calendar-header-week-item active">Пт</div>
         <div class="pos-calendar-header-week-item">Сб</div>
         <div class="pos-calendar-header-week-item">Вс</div>
+
         <div class="pos-calendar-header-week-item">
           <svg xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 48 48"
-               width="18"
-               height="18">
+               width="16"
+               height="16">
             <polyline points="15 42 33 24 15 6"
                       fill="none"
                       stroke="currentColor"
@@ -123,9 +126,9 @@ export default {
 
         events: [
           {
-            title: 'Conference',
-            start: new Date().setHours('12', '00', '00')
-            //end: '2020-06-13'
+            title: 'Lesson',
+            start: new Date().setHours(11, 0, 0),
+            end:   new Date().setHours(11, 45, 0)
           }
         ]
 

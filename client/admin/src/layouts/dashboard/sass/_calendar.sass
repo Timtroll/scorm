@@ -2,16 +2,43 @@
 @import "./../../../assets/sass/mixins"
 
 $weekDaySize: 35px
-//\:root
-//--fc-border-color: $global-border
-//--fc-daygrid-event-dot-width: 1px
+\:root
+  --fc-small-font-size: .85em
+  --fc-page-bg-color: #fff
+  --fc-neutral-bg-color: rgba(208, 208, 208, 0.3)
+  --fc-neutral-text-color: #7f8b95
+  --fc-border-color: #d5e1e6
+
+  --fc-button-text-color: #fff
+  --fc-button-bg-color: #2C3E50
+  --fc-button-border-color: #2C3E50
+  --fc-button-hover-bg-color: #1e2b37
+  --fc-button-hover-border-color: #1a252f
+  --fc-button-active-bg-color: #1a252f
+  --fc-button-active-border-color: #151e27
+
+  --fc-event-bg-color: #81b752
+  --fc-event-border-color: #81b752
+  --fc-event-text-color: #fff
+  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25)
+
+  --fc-event-resizer-thickness: 8px
+  --fc-event-resizer-dot-total-width: 8px
+  --fc-event-resizer-dot-border-width: 1px
+
+  --fc-non-business-color: rgba(215, 215, 215, 0.3)
+  --fc-bg-event-color: #81b752
+  --fc-bg-event-opacity: 0.3
+  --fc-highlight-color: rgba(188, 232, 241, 0.3)
+  --fc-today-bg-color: rgb(229, 185, 25, .1)
+  --fc-now-indicator-color: #e24f45
 
 /** CALENDAR
 .pos-calendar
   height: 100%
   display: flex
   flex-direction: column
-  width: 40%
+  width: 30%
   max-width: 800px
   min-width: 320px
   border-right: $global-border solid $global-border-width
@@ -38,13 +65,16 @@ $weekDaySize: 35px
   font-size: .9rem
   width: $weekDaySize
   height: $weekDaySize
-  line-height: $weekDaySize - ($global-border-width*2)
+  line-height: $weekDaySize
   box-sizing: border-box
   text-align: center
   flex: none
   border-radius: 500px
   cursor: pointer
   color: $global-muted-color
+
+  & > svg
+    transform: translateY(-1px)
 
   &:hover
     color: $global-color
@@ -59,6 +89,7 @@ $weekDaySize: 35px
 .pos-calendar-body
   flex: 1
   min-height: 100px
+  font-size: .95rem
 
 .pos-calendar-time
   color: $global-muted-color
