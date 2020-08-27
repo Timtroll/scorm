@@ -12,9 +12,7 @@
 
       <div class="pos-dashboard">
 
-        <div class="pos-dashboard-calendar">
-          <Calendar :data="calendar"/>
-        </div>
+        <Calendar :data="calendar"/>
 
         <div class="pos-dashboard-tasks"></div>
       </div>

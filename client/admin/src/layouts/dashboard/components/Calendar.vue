@@ -1,6 +1,50 @@
 <template>
-  <div ref="calendar"
-       class="pos-calendar"></div>
+  <div class="pos-calendar">
+
+    <div class="pos-calendar-header">
+
+      <div class="pos-calendar-header-week">
+        <div class="pos-calendar-header-week-item">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 48 48"
+               width="18"
+               height="18">
+            <polyline points="33 6 15 24 33 42"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="8"/>
+          </svg>
+        </div>
+        <div class="pos-calendar-header-week-item">Пн</div>
+        <div class="pos-calendar-header-week-item">Вт</div>
+        <div class="pos-calendar-header-week-item">Ср</div>
+        <div class="pos-calendar-header-week-item">Чт</div>
+        <div class="pos-calendar-header-week-item active">Пт</div>
+        <div class="pos-calendar-header-week-item">Сб</div>
+        <div class="pos-calendar-header-week-item">Вс</div>
+        <div class="pos-calendar-header-week-item">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 48 48"
+               width="18"
+               height="18">
+            <polyline points="15 42 33 24 15 6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="8"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <div ref="calendar"
+         class="pos-calendar-body"></div>
+
+  </div>
 </template>
 
 <script>
@@ -35,11 +79,12 @@ export default {
         themeSystem:   'standard',
         firstDay:      1,
         allDaySlot:    false,
-        headerToolbar: {
-          left:   'prev,today,next',
-          center: null,
-          right:  null
-        },
+        //headerToolbar: {
+        //  left:   'prev,today,next',
+        //  center: null,
+        //  right:  null
+        //},
+        headerToolbar: false,
 
         initialView: 'timeGridDay',
         initialDate: new Date(),
@@ -50,7 +95,7 @@ export default {
             slotMaxTime: '16:00:00'
           }
         },
-        slotDuration:        '00:05:00',
+        slotDuration:        '00:15:00',
         slotLabelClassNames: 'pos-calendar-time',
         slotLabelFormat:     {
           hour:           'numeric',

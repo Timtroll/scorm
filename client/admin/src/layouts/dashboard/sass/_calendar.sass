@@ -1,14 +1,65 @@
 @import "./../../../assets/sass/uikit/variables"
 @import "./../../../assets/sass/mixins"
 
-
-\:root
+$weekDaySize: 35px
+//\:root
 //--fc-border-color: $global-border
 //--fc-daygrid-event-dot-width: 1px
 
 /** CALENDAR
 .pos-calendar
   height: 100%
+  display: flex
+  flex-direction: column
+  width: 40%
+  max-width: 800px
+  min-width: 320px
+  border-right: $global-border solid $global-border-width
+  @media (max-width: $breakpoint-small)
+    width: 100vw
+
+.pos-calendar-header
+  box-sizing: border-box
+  flex: none
+  padding: $global-small-margin
+  width: 100%
+
+.pos-calendar-header-week
+  width: auto
+  display: grid
+  grid-template-columns: repeat(9, 1fr)
+  grid-gap: 0
+  align-content: space-between
+
+//align-items: center
+
+
+.pos-calendar-header-week-item
+  font-size: .9rem
+  width: $weekDaySize
+  height: $weekDaySize
+  line-height: $weekDaySize - ($global-border-width*2)
+  box-sizing: border-box
+  text-align: center
+  flex: none
+  border-radius: 500px
+  cursor: pointer
+  color: $global-muted-color
+
+  &:hover
+    color: $global-color
+    background-color: $global-muted-background
+
+  &.active
+    font-weight: bold
+    color: $global-inverse-color
+    background-color: $global-success-background
+
+
+.pos-calendar-body
+  flex: 1
+  min-height: 100px
 
 .pos-calendar-time
+  color: $global-muted-color
   font-size: .8rem
