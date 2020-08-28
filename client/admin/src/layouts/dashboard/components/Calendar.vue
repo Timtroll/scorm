@@ -54,6 +54,7 @@
 
 import {Calendar}     from '@fullcalendar/core'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import {getTime}      from '@/store/methods'
 
 export default {
   name: 'Calendar',
@@ -118,24 +119,74 @@ export default {
         selectable:   true,
         selectMirror: true,
 
-        select: (arg) => {
-          console.log(arg)
+        eventClassNames: 'pos-calendar-event',
+        eventContent:    (arg) => {
+          console.log(arg.event)
+          const event = arg.event
+          return {
+            html: `
+              <div class="pos-calendar-event-ava">
+                <div class="pos-calendar-event-ava__image"
+                  style="background-image: url(${event.extendedProps.teacher.ava})"></div>
+              </div>
+              <div class="pos-calendar-event-content">
+                <div class="pos-calendar-event__discipline">
+                  ${event.extendedProps.discipline} с ${getTime(event.start)} по ${getTime(event.end)}</div>
+                <div class="pos-calendar-event__theme">${event.extendedProps.theme}</div>
+                <div class="pos-calendar-event__teacher">${event.extendedProps.teacher.name}</div>
+              </div>
+            `
+          }
+        },
 
+        eventDidMount: (info) => {
+          //console.log(info.event.extendedProps)
+          // {description: "Lecture", department: "BioChemistry"}
+        },
+
+        select: (arg) => {
+          //console.log(arg)
           //this.calendar.unselect()
+        },
+
+        eventClick: (info) => {
+          info.jsEvent.preventDefault()
+          //console.log(info.event)
+          info.el.classList.add('clicked')
+        },
+
+        eventMouseEnter: (info) => {
+          info.el.classList.add('hover')
+        },
+
+        eventMouseLeave: (info) => {
+          info.jsEvent.preventDefault()
+          //console.log(info)
+          info.el.classList.remove('hover')
+          info.el.classList.remove('clicked')
         },
 
         events: [
           {
-            title: 'Lesson',
-            start: new Date().setHours(11, 0, 0),
-            end:   new Date().setHours(11, 45, 0)
+            id:            123412421,
+            title:         'Чистые вещества и смеси',
+            start:         new Date().setHours(11, 0, 0),
+            end:           new Date().setHours(11, 45, 0),
+            extendedProps: {
+              discipline: 'Химия',
+              theme:      'Чистые вещества и смеси',
+              teacher:    {
+                ava:  'https://thispersondoesnotexist.com/image',
+                name: 'Жуков Николай Семенович'
+              }
+            }
+
           }
         ]
 
       })
       this.calendar.render()
       //this.calendar.scrollToTime(new Date())
-      console.log(this.calendar)
     })
   },
 
@@ -147,6 +198,12 @@ export default {
   data () {
     return {
       calendar: null
+    }
+  },
+
+  methods: {
+    getTime (date) {
+      getTime(date)
     }
   }
 }

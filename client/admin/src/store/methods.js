@@ -1,4 +1,5 @@
-import UIkit from 'uikit/dist/js/uikit.min'
+import UIkit  from 'uikit/dist/js/uikit.min'
+import moment from 'moment'
 
 /**
  * Notifications
@@ -342,6 +343,10 @@ function fileType (mime) {
   }
 }
 
+function getTime (date) {
+  return moment(date).format('hh:mm')
+}
+
 export {
   notify,
   confirm,
@@ -353,5 +358,6 @@ export {
   dropHide,
   dropShow,
   prettyBytes,
-  fileType
+  fileType,
+  getTime
 }
