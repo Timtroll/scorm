@@ -3,6 +3,8 @@
 
     <div class="pos-calendar-header">
 
+      <div class="pos-calendar-header-time"> {{ time }}</div>
+
       <div class="pos-calendar-header-week">
 
         <div class="pos-calendar-header-week-item">
@@ -56,6 +58,7 @@ import {Calendar}     from '@fullcalendar/core'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import {getTime}      from '@/store/methods'
 
+let time
 export default {
   name: 'Calendar',
 
@@ -67,16 +70,95 @@ export default {
     data: {
       type:    Object,
       default: () => {}
+    },
+    date: {
+      type:    Date,
+      default: () => {
+        return new Date()
+      }
+    },
+    time: {
+      type:    String,
+      default: () => {}
     }
   },
 
   async mounted () {
     this.$nextTick(() => {
+      this.initCalendar()
+      this.fullCalendar.render()
+    })
+  },
+
+  beforeDestroy () {
+    // выгрузка Vuex модуля
+    this.fullCalendar.destroy()
+
+  },
+
+  data () {
+    return {
+      fullCalendar: null,
+
+      //currentTime: null,
+
+      events: [
+        {
+          id:            123412421,
+          title:         'Чистые вещества и смеси',
+          start:         new Date().setHours(8, 30, 0),
+          end:           new Date().setHours(9, 15, 0),
+          extendedProps: {
+            discipline: 'Химия',
+            theme:      'Чистые вещества и смеси',
+            teacher:    {
+              ava:  'https://thispersondoesnotexist.com/image',
+              name: 'Рушникова Екатерина Витальевна'
+            }
+          }
+        }, {
+          id:            123412422,
+          title:         'Чистые вещества и смеси',
+          start:         new Date().setHours(9, 30, 0),
+          end:           new Date().setHours(10, 15, 0),
+          extendedProps: {
+            discipline: 'Химия',
+            theme:      'Чистые вещества и смеси',
+            teacher:    {
+              ava:  'https://thispersondoesnotexist.com/image',
+              name: 'Рушникова Екатерина Витальевна'
+            }
+          }
+        },
+        {
+          id:            123412423,
+          title:         'Виды чисел',
+          start:         new Date().setHours(10, 30, 0),
+          end:           new Date().setHours(11, 15, 0),
+          extendedProps: {
+            discipline: 'Геометрия',
+            theme:      'Параллелограмм и трапеция',
+            teacher:    {
+              ava:  'https://thispersondoesnotexist.com/image',
+              name: 'Семенова Елена Васильевна'
+            }
+          }
+        }
+
+      ]
+    }
+  },
+
+  computed: {},
+
+  methods: {
+
+    initCalendar () {
 
       const initialLocaleCode = 'ru'
       const initialTimeZone   = 'local'
 
-      this.calendar = new Calendar(this.$refs.calendar, {
+      this.fullCalendar = new Calendar(this.$refs.calendar, {
         plugins:       [timeGridPlugin],
         locale:        initialLocaleCode,
         timeZone:      initialTimeZone,
@@ -120,7 +202,8 @@ export default {
         selectMirror: true,
 
         eventClassNames: 'pos-calendar-event',
-        eventContent:    (arg) => {
+
+        eventContent: (arg) => {
           console.log(arg.event)
           const event = arg.event
           return {
@@ -166,48 +249,15 @@ export default {
           info.el.classList.remove('clicked')
         },
 
-        events: [
-          {
-            id:            123412421,
-            title:         'Чистые вещества и смеси',
-            start:         new Date().setHours(11, 0, 0),
-            end:           new Date().setHours(11, 45, 0),
-            extendedProps: {
-              discipline: 'Химия',
-              theme:      'Чистые вещества и смеси',
-              teacher:    {
-                ava:  'https://thispersondoesnotexist.com/image',
-                name: 'Жуков Николай Семенович'
-              }
-            }
-
-          }
-        ]
+        events: this.events
 
       })
-      this.calendar.render()
-      //this.calendar.scrollToTime(new Date())
-    })
-  },
 
-  beforeDestroy () {
-    // выгрузка Vuex модуля
-    this.calendar.destroy()
-  },
+    },
 
-  data () {
-    return {
-      calendar: null
-    }
-  },
-
-  methods: {
     getTime (date) {
       getTime(date)
     }
   }
 }
 </script>
-
-<style lang="sass">
-</style>

@@ -12,7 +12,7 @@
 
       <div class="pos-dashboard">
 
-        <Calendar :data="calendar"/>
+        <Calendar :data="calendar" :time="currentTime" :date="currentDate"/>
 
         <div class="pos-dashboard-tasks"></div>
       </div>
@@ -26,6 +26,8 @@
 
 import dashboard from './store'
 import Calendar  from '@/layouts/dashboard/components/Calendar'
+
+let time
 
 export default {
 
@@ -52,7 +54,7 @@ export default {
     this.$store.commit('navBarLeftActionShow', false)
 
     this.$nextTick(() => {
-      //this.startRTC()
+      this.getCurrentDate()
     })
 
     // показать кнопку меню в navBar
@@ -65,6 +67,7 @@ export default {
   },
 
   beforeDestroy () {
+    clearInterval(time)
     // выгрузка Vuex модуля
     this.$store.unregisterModule('dashboard')
   },
@@ -75,7 +78,18 @@ export default {
       calendar: {
         data:    null,
         options: null
-      }
+      },
+
+      currentDate: null,
+      currentTime: null
+    }
+  },
+
+  watch: {
+
+    currentDate () {
+      const date       = new Date(this.currentDate)
+      this.currentTime = `${this.setZero(date.getHours())}:${this.setZero(date.getMinutes())}`
     }
   },
 
@@ -85,6 +99,21 @@ export default {
       return this.$route.meta.breadcrumb
     }
 
+  },
+
+  methods: {
+
+    setZero (number) {
+      return (number < 10) ? `0${number}` : number
+    },
+
+    getCurrentDate () {
+      time = setInterval(() => {
+        this.currentDate = new Date()
+        //.toISOString()
+        //.toLocaleString('ru')
+      }, 1000)
+    }
   }
 }
 </script>

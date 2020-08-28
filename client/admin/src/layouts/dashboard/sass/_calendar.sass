@@ -1,7 +1,7 @@
 @import "./../../../assets/sass/uikit/variables"
 @import "./../../../assets/sass/mixins"
 
-$weekDaySize: 35px
+$weekDaySize: 32px
 \:root
   --fc-small-font-size: .85em
   --fc-page-bg-color: #fff
@@ -50,6 +50,14 @@ $weekDaySize: 35px
   flex: none
   padding: $global-small-margin
   width: 100%
+
+.pos-calendar-header-time
+  font-size: 1.8rem
+  font-weight: lighter
+  line-height: 1
+  text-align: right
+  color: $global-success-background
+  margin-bottom: $global-xsmall-margin
 
 .pos-calendar-header-week
   width: auto
@@ -128,12 +136,20 @@ $weekDaySize: 35px
   flex-direction: column
 
 .pos-calendar-event__discipline
+  text-transform: uppercase
   font-size: .8rem
   font-weight: bold
+  opacity: .8
 
 .pos-calendar-event__theme
+  font-size: 1rem
+  flex: 1
+
+.pos-calendar-event__teacher
+  opacity: .8
+
+.pos-calendar-event__theme,
+.pos-calendar-event__teacher
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
-  font-size: 1rem
-  flex: 1
