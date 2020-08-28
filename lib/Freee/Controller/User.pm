@@ -145,7 +145,7 @@ sub edit {
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => from_json( $$user_data{'groups'} ) || [] }
+                       { "groups" => $$user_data{'groups'} ? from_json( $$user_data{'groups'} ) : [] }
                     ]
                 }
             ]
@@ -184,154 +184,6 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-# Добавлением нового пользователя в EAV и таблицу users
-# $self->add_by_email( $data );
-# $data = {
-#     'place'       => 'place',                         # кладется в EAV
-#     'country'     => 'country',                       # кладется в EAV
-#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
-#     'surname'     => 'test',                          # кладется в EAV
-#     'name'        => 'name',                          # кладется в EAV
-#     'patronymic'  => 'patronymic',                    # кладется в EAV
-#     'email'       => 'test@test.com',                 # кладется в users
-#     'password'    => 'password',                      # кладется в users
-#     'timezone'    => '10',                            # кладется в users
-# }
-sub add_by_email {
-    my $self = shift;
-
-    my ( $groups, $data, $salt, $resp, $result, $data_eav, $user );
-
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверяем, используется ли емэйл другим пользователем
-        if ( $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'} ) ) {
-            push @!, "email '$$data{ email }' already used"; 
-        }
-
-        unless ( @! ) {
-            # проверка существования групп пользователя
-            $groups = from_json( $$data{'groups'} );
-            foreach ( @$groups ) {
-                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                    push @!, "group with id '$_' doesn't exist";
-                    last;
-                }
-            }
-            unless ( @! ) {
-                # получение соли из конфига
-                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-
-                # шифрование пароля
-                $$data{'password'} = sha256( $$data{'password'}, $salt );
-            }
-        }
-    }
-
-    # добавляем юзера в EAV и users
-    unless ( @! ) {
-        # переводим секунды в дату рождения
-        if ( $$data{'birthday'} ) {
-            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
-        }
-        else {
-            $$data{'birthday'}    = '';
-        }
-
-        $$data{'publish'}     = $$data{'status'};
-        $$data{'phone'}       = '';
-        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
-        $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'avatar'}      = '' unless $$data{'avatar'};
-
-        $result = $self->model('User')->_insert_user( $data );
-    }
-
-    $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @!;
-
-    @! = ();
-
-    $self->render( 'json' => $resp );
-}
-
-# Добавлением нового пользователя в EAV и таблицу users
-# $self->add_by_phone( $data );
-# $data = {
-#     'place'       => 'place',                         # кладется в EAV
-#     'country'     => 'country',                       # кладется в EAV
-#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
-#     'surname'     => 'test',                          # кладется в EAV
-#     'name'        => 'name',                          # кладется в EAV
-#     'patronymic'  => 'patronymic',                    # кладется в EAV
-#     'phone'       => '+7(999) 222-2222',              # кладется в users
-#     'password'    => 'password',                      # кладется в users
-#     'timezone'    => '10',                            # кладется в users
-# }
-sub add_by_phone {
-    my $self = shift;
-
-    my ( $data, $resp, $result, $data_eav, $user, $groups, $salt );
-
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверяем, используется ли телефон другим пользователем
-        if ( $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'} ) ) {
-            push @!, "phone '$$data{ phone }' already used"; 
-        }
-        unless ( @! ) {
-            # проверка существования групп пользователя
-            $groups = from_json( $$data{'groups'} );
-            foreach ( @$groups ) {
-                unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
-                    push @!, "group with id '$_' doesn't exist";
-                    last;
-                }
-            }
-            unless ( @! ) {
-                # получение соли из конфига
-                $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-
-                # шифрование пароля
-                $$data{'password'} = sha256( $$data{'password'}, $salt );
-            }
-        }
-    }
-
-    # добавляем юзера в EAV и users
-    unless ( @! ) {
-        # переводим секунды в дату рождения
-        if ( $$data{'birthday'} ) {
-            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
-        }
-        else {
-            $$data{'birthday'}    = '';
-        }
-
-        $$data{'email'}       = '';
-        $$data{'publish'}     = $$data{'status'};
-        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
-        $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'avatar'}      = '' unless $$data{'avatar'};
-
-        $result = $self->model('User')->_insert_user( $data );
-    }
-
-    $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @!;
-
-    @! = ();
-
-    $self->render( 'json' => $resp );
-}
-
-
 # сохранение данных о пользователе
 # $self->save( $data );
 # $data = {
@@ -353,6 +205,107 @@ sub add_by_phone {
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
 # };
 sub save {
+    my $self = shift;
+
+    my ( $data, $salt, $resp, $groups, $result );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        unless ( $$data{'phone'} || $$data{'email'} ) {
+            push @!, 'No email and no phone';
+        }
+        elsif ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
+            push @!, 'No newpassword';
+        }
+        elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
+            push @!, 'No password';
+        }
+        elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
+            push @!, 'Password and newpassword are the same';
+        }
+
+        unless ( @! ) {
+            # проверяем, используется ли емэйл другим пользователем
+            if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
+                push @!, "email '$$data{ email }' already used"; 
+            }
+            # проверяем, используется ли телефон другим пользователем
+            elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
+                push @!, "phone '$$data{ phone }' already used"; 
+            }
+
+            unless ( @! ) {
+                # проверка существования групп пользователя
+                $groups = from_json( $$data{'groups'} );
+                foreach ( @$groups ) {
+                    unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
+                        push @!, "group with id '$_' doesn't exist";
+                        last;
+                    }
+                }
+            }
+        }
+    }
+
+    unless ( @! ) {
+        if ( $$data{'password'} ) {
+            # получение соли из конфига
+            $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+            # шифрование пароля
+            $$data{'password'} = sha256( $$data{'newpassword'}, $salt );
+        }
+
+        # переводим секунды в дату рождения
+        if ( $$data{'birthday'} ) {
+            $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
+        }
+        else {
+            $$data{'birthday'}    = '';
+        }
+
+        $$data{'time_access'} = 'now';
+        $$data{'time_update'} = 'now';
+        $$data{'publish'}     =  $$data{'status'};
+        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
+        $$data{'place'}       = '' unless $$data{'place'};
+        $$data{'avatar'}      = '' unless $$data{'avatar'};
+
+        $result = $self->model('User')->_save_user( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $result unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+# регистрация пользователя
+# $self->registration( $data );
+# $data = {
+#     'id'                => 1,
+#     'surname'           => 'Фамилия',           # Фамилия
+#     'name'              => 'Имя',               # Имя
+#     'patronymic'        => 'Отчество',          # Отчество
+#     'city'              => 'Санкт-Петербург',   # город
+#     'country'           => 'Россия',            # страна
+#     'timezone'          => '+3',                # часовой пояс
+#     'birthday'          => 123132131,           # дата рождения (в секундах)
+#     'email'             => 'username@ya.ru',    # email пользователя
+#     'emailconfirmed'    => 1,                   # email подтвержден
+#     'phone'             => 79312445646,         # номер телефона
+#     'phoneconfirmed'    => 1,                   # телефон подтвержден
+#     'status'            => 1,                   # активный / не активный пользователь
+#     'groups'            => [1, 2, 3],           # список ID групп
+#     'password'          => 'khasdf',            # хеш пароля
+#     'avatar'            => 'https://thispersondoesnotexist.com/image'
+# };
+sub registration {
     my $self = shift;
 
     my ( $data, $salt, $resp, $groups, $result );
