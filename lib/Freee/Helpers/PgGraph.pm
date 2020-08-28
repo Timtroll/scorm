@@ -26,9 +26,9 @@ sub register {
         # если в конфиге установлен test = 1 - подключаемся к тестовой базе
         my $database = 'pg_main';
         $database = 'pg_main_test' if ($config->{'test'});
-        # unless ($dbh) {
-        unless ($self->{dbh}) {
-            $self->{dbh} = DBI->connect(
+        unless ($dbh) {
+print "db connect\n";
+            $dbh = DBI->connect(
                 $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
                 $config->{'dbs'}->{'databases'}->{$database}->{'username'},
                 $config->{'dbs'}->{'databases'}->{$database}->{'password'},
@@ -39,7 +39,7 @@ sub register {
             print "Error received: $DBI::errstr\n";
         };
 
-        return $self->{dbh};
+        return $dbh;
     });
 
 

@@ -183,18 +183,13 @@ sub _empty_user {
 
     my ( $rc, $sth, $user, $data, $user_id, $result, $sql, $groups, @user_keys );
 
-    # проверка входных данных
-    # unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-    #     push @!, "no data for insert";
-    # }
-
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
     # делаем запись в EAV
     my $eav = {
         'parent' => 0, 
-        'title' => 'New user',
+        'title'  => 'New user',
         'User' => {
             'parent'       => 0, 
             'surname'      => '',
@@ -223,6 +218,7 @@ sub _empty_user {
     unless ( $$data{'eav_id'} ) {
         push @!, "Could not insert user into EAV";
         $self->{'app'}->pg_dbh->rollback;
+        return;
     }
 
     unless ( @! ) {
@@ -241,6 +237,7 @@ sub _empty_user {
         unless ( $user_id ) {
             push @!, "Can not insert $$data{'title'} into users". DBI->errstr;
             $self->{'app'}->pg_dbh->rollback;
+            return;
         }
     }
 

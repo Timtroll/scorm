@@ -9,12 +9,14 @@ use Mojolicious::Plugin::Config;
 use Mojo::Log;
 use Freee::EAV;
 use Freee::Model; 
+use DBD::Pg;
+use DBI;
 
 use common;
 use Data::Dumper;
 
 $| = 1;
-has 'dbh', 'mime';
+# has 'dbh', 'mime';
 
 # This method will run once at server start
 sub startup {
@@ -33,16 +35,17 @@ sub startup {
     # set life-time fo session (second)
     $self->sessions->default_expiration($config->{'expires'});
 
+
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgForum');
 
     # init Pg connection
-    $self->{dbh} = $self->pg_dbh();
+    $dbh = $self->pg_dbh();
 
     # Модель EAV передаем коннекшн базы
-    Freee::EAV->new( 'User', { 'dbh' => $self->{dbh} } );
+    Freee::EAV->new( 'User', { 'dbh' => $dbh } );
 
 # Модель по Mojo
     # подгружаем модель и создадим соответствующий хелпер для вызова модели + передадим ссылки на $self и коннект к базе
@@ -208,10 +211,8 @@ sub startup {
     # управление пользователями
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # заполнение пустышки юзера (регистрация юзера)
-    $auth->post('/user/add_by_email')   ->to('user#add_by_email');  # регистрация юзера по email 
-    $auth->post('/user/add_by_phone')   ->to('user#add_by_phone');  # регистрация юзера по номеру телефона 
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
-#    $auth->post('/user/proto_user')     ->to('proto#proto_user');   # прототип нового пользователя
+    $auth->post('/user/registration')   ->to('user#registration');  # регистрация пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/profile')        ->to('user#profile');       # пермишены и профиль юзера
@@ -294,5 +295,29 @@ sub startup {
         $$routs{ $_->{pattern}->{defaults}->{action} } = $_->{pattern}->{'unparsed'};
     }
 }
+
+# sub dbconnect {
+#     my ( $self ) = shift;
+# print "3\n";
+
+#     # если в конфиге установлен test = 1 - подключаемся к тестовой базе
+#     my $database = 'pg_main';
+#     $database = 'pg_main_test' if ($config->{'test'});
+
+#     unless ($self->{dbh}) {
+#         $self->{dbh} = DBI->connect(
+#             $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
+#             $config->{'dbs'}->{'databases'}->{$database}->{'username'},
+#             $config->{'dbs'}->{'databases'}->{$database}->{'password'},
+#             $config->{'dbs'}->{'databases'}->{$database}->{'options'}
+#         );
+#     }
+#     $self->{errstr} = sub {
+#         print "Error received: $DBI::errstr\n";
+#     };
+# print Dumper $self->{dbh};
+# print "------\n";
+#     return $self->{dbh};
+# }
 
 1;
