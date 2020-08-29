@@ -193,10 +193,7 @@ sub _empty_user {
     $sth->execute();
 
     $unaproved = $sth->fetchrow_hashref();
-    push @!, "Could not get Group '$$data{'id'}'" unless $result;
-print "unaproved = \n";
-use DDP;
-p $unaproved;
+    push @!, "Could not get Group '$$data{'id'}'" unless ((ref($unaproved) eq 'HASH') && ( $$unaproved{id} ) );
 
     # делаем запись в EAV
     my $eav = {
@@ -225,7 +222,7 @@ p $unaproved;
         'password'  => '',
         'eav_id'    => $user->id(),
         'timezone'  => $timezone,
-        'groups'    => ''
+        'groups'    => '["' . $$unaproved{id} . '"]'
     };
     unless ( $$data{'eav_id'} ) {
         push @!, "Could not insert user into EAV";
@@ -253,21 +250,18 @@ p $unaproved;
         }
     }
 
-# ????????????
     #### заполнение таблицы user_groups
     unless ( @! ) {
-        $groups = from_json( $$data{'groups'} );
-        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
+        # $groups = from_json( $$data{'groups'} );
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id )';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':user_id', $user_id );
+        $sth->bind_param( ':group_id', $$unaproved{id} );
+        $result = $sth->execute();
 
-        foreach my $group_id ( @$groups ) {
-            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-            $sth->bind_param( ':user_id', $user_id );
-            $sth->bind_param( ':group_id', $group_id );
-            $result = $sth->execute();
-            unless ( $result ) {
-                push @!, "Can not insert into 'user_groups'";
-                $self->{'app'}->pg_dbh->rollback;
-            }
+        unless ( $result ) {
+            push @!, "Can not insert into 'user_groups'";
+            $self->{'app'}->pg_dbh->rollback;
         }
     }
 
