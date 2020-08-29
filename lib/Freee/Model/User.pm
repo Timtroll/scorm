@@ -179,9 +179,9 @@ sub _get_user {
 #     'timezone'    => '10',                            # кладется в users
 # }
 sub _empty_user {
-    my ( $self ) = @_;
+    my ( $self, $data ) = @_;
 
-    my ( $rc, $sth, $user, $data, $user_id, $result, $sql, $unaproved, $groups, @user_keys );
+    my ( $rc, $sth, $user, $user_id, $result, $sql, $unaproved, $groups, @user_keys );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
@@ -193,7 +193,11 @@ sub _empty_user {
     $sth->execute();
 
     $unaproved = $sth->fetchrow_hashref();
-    push @!, "Could not get Group '$$data{'id'}'" unless ((ref($unaproved) eq 'HASH') && ( $$unaproved{id} ) );
+    unless ( (ref($unaproved) eq 'HASH') && $$unaproved{id} ) {
+        push @!, 'Could not get Groups';
+        $self->{'app'}->pg_dbh->rollback;
+        return;
+    }
 
     # делаем запись в EAV
     my $eav = {
@@ -201,12 +205,12 @@ sub _empty_user {
         'title'  => 'New user',
         'User' => {
             'parent'       => 0, 
-            'surname'      => '',
-            'name'         => '',
-            'patronymic'   => '',
-            'place'        => '',
-            'country'      => 'RU',
-            'birthday'     => strftime( "%F %T", localtime() ),
+            'surname'      => $$data{'surname'} ? $$data{'surname'} : '',
+            'name'         => $$data{'name'} ? $$data{'name'} : '',
+            'patronymic'   => $$data{'patronymic'} ? $$data{'patronymic'} : '',
+            'place'        => $$data{'place'} ? $$data{'place'} : '',
+            'country'      => $$data{'country'} ? $$data{'country'} : 'RU',
+            'birthday'     => $$data{'birthday'} ? $$data{'birthday'} : strftime( "%F %T", localtime() ),
             'import_source'=> '',
             'publish'      => \0
         }
@@ -217,11 +221,11 @@ sub _empty_user {
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
         'publish'   => 0,
-        'email'     => '',
-        'phone'     => '',
-        'password'  => '',
+        'email'     => $$data{'email'} ? $$data{'email'} : '',
+        'phone'     => $$data{'phone'} ? $$data{'phone'} : '',
+        'password'  => $$data{'password'} ? $$data{'password'} : '',
         'eav_id'    => $user->id(),
-        'timezone'  => $timezone,
+        'timezone'  => $$data{'timezone'} ? $$data{'timezone'} : $timezone,
         'groups'    => '["' . $$unaproved{id} . '"]'
     };
     unless ( $$data{'eav_id'} ) {
@@ -262,6 +266,7 @@ sub _empty_user {
         unless ( $result ) {
             push @!, "Can not insert into 'user_groups'";
             $self->{'app'}->pg_dbh->rollback;
+            return;
         }
     }
 
@@ -275,20 +280,20 @@ sub _empty_user {
 # $result = $self->model('User')->_save_user( $data );
 # $data = {
 #     'id'                => 1,
-#     'surname'           => 'Фамилия',           # Фамилия
-#     'name'              => 'Имя',               # Имя
-#     'patronymic'        => 'Отчество',          # Отчество
-#     'city'              => 'Санкт-Петербург',   # город
-#     'country'           => 'Россия',            # страна
-#     'timezone'          => '+3',                # часовой пояс
-#     'birthday'          => 123132131,           # дата рождения (в секундах)
-#     'email'             => 'username@ya.ru',    # email пользователя
-#     'emailconfirmed'    => 1,                   # email подтвержден
-#     'phone'             => 79312445646,         # номер телефона
-#     'phoneconfirmed'    => 1,                   # телефон подтвержден
-#     'status'            => 1,                   # активный / не активный пользователь
-#     'groups'            => [1, 2, 3],           # список ID групп
-#     'password'          => 'khasdf',            # хеш пароля
+#     'surname'           => 'Фамилия',            # Фамилия
+#     'name'              => 'Имя',                # Имя
+#     'patronymic'        => 'Отчество',           # Отчество
+#     'city'              => 'Санкт-Петербург',    # город
+#     'country'           => 'Россия',             # страна
+#     'timezone'          => '+3',                 # часовой пояс
+#     'birthday'          => '1972-01-06 00:00:00',# дата рождения
+#     'email'             => 'username@ya.ru',     # email пользователя
+#     'emailconfirmed'    => 1,                    # email подтвержден
+#     'phone'             => 79312445646,          # номер телефона
+#     'phoneconfirmed'    => 1,                    # телефон подтвержден
+#     'status'            => 1,                    # активный / не активный пользователь
+#     'groups'            => [1, 2, 3],            # список ID групп
+#     'password'          => 'khasdf',             # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
 # };
 sub _save_user {
@@ -331,7 +336,11 @@ sub _save_user {
 
         $result = $sth->execute();
 
-        push @!, "can't update $$data{'id'} in users" if $result eq '0E0';
+        if ( $result eq '0E0' ) {
+            push @!, "can't update $$data{'id'} in users";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
     }
 
     unless ( @! ) {
@@ -359,7 +368,11 @@ sub _save_user {
             }
         });
 
-        push @!, "can't update EAV" unless $result;
+        unless ( $result ) {
+            push @!, "can't update EAV";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
     }
 
     # таблица users_social
@@ -391,7 +404,9 @@ sub _save_user {
             $result = $sth->fetchrow_array();
             unless ( $result ) {
                 push @!, "Can not update 'user_groups'";
-                last;
+                $self->{'app'}->pg_dbh->rollback;
+                return;
+#                last;
             }
         }
     }

@@ -63,7 +63,7 @@ sub register {
 
             # проверка длины
             if ( defined $param && $max_size && length( $param ) > $max_size ) {
-                push @!, "_check_fields: '$field' has wrong size";
+                push @!, "$url_for _check_fields: '$field' has wrong size";
                 last;
             }
 
@@ -80,7 +80,7 @@ sub register {
                 }
                 else {
                     if ( !defined $param || $param eq '' ) {
-                        push @!, "_check_fields: didn't has required data in '$field' = ''";
+                        push @!, "$url_for _check_fields: didn't has required data in '$field' = ''";
                     }
                 }
             }
@@ -121,7 +121,7 @@ sub register {
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
                 unless ( $param->{'asset'}->{'content'} ) {
-                    push @!, "_check_fields: no file's content";
+                    push @!, "$url_for _check_fields: no file's content";
                     last;
                 }
                 $data{'content'} = $param->{'asset'}->{'content'};
@@ -130,7 +130,7 @@ sub register {
                 $data{'size'} = length( $data{'content'} );
 
                 if ( $data{'size'} > $max_size ) {
-                    push @!, "_check_fields: file is too large";
+                    push @!, "$url_for _check_fields: file is too large";
                     last;
                 }
 
@@ -142,19 +142,19 @@ sub register {
                 $data{'filename'} =~ /^.*\.(\w+)$/;
                 $data{'extension'} = lc $1 if $1;
                 unless ( $data{'extension'} ) {
-                    push @!, "_check_fields: can't read extension";
+                    push @!, "$url_for _check_fields: can't read extension";
                     last;
                 }
 
                 # проверка того, что разрешено загружать файл с текущим расширением
                 unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
-                    push @!, "_check_fields: extension $data{'extension'} is not valid";
+                    push @!, "$url_for _check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
                 next;
             }
             elsif ( $required eq 'file_required' ) {
-                push @!, "_check_fields: didn't has required file data in '$field'";
+                push @!, "$url_for _check_fields: didn't has required file data in '$field'";
                 last;
             }
 
@@ -162,20 +162,20 @@ sub register {
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
                     unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
-                        push @!, "_check_fields: '$field' didn't match required in check array";
+                        push @!, "$url_for _check_fields: '$field' didn't match required in check array";
                         last;
                     }
                 }
                 else {
                     unless ( $regexp && defined $param && ( $param =~ /$regexp/ ) ) {
-                        push @!, "_check_fields: '$field' didn't match regular expression";
+                        push @!, "$url_for _check_fields: '$field' didn't match regular expression";
                         last;
                     }
                 }
             }
             else {
                 unless ( !defined $param || $param eq '' || ( $regexp && ( $param =~ /$regexp/ ) ) ) {
-                    push @!, "_check_fields: '$field' didn't match regular expression";
+                    push @!, "$url_for _check_fields: '$field' didn't match regular expression";
                     last;
                 }
             }
@@ -186,7 +186,7 @@ sub register {
             if ( $field eq 'country' ) {
                 my $countries = $self->_countries();
                 unless ( exists $$countries{$param} ) {
-                    push @!, "_check_fields: '$field' doesn't belong to list of valid expressions";
+                    push @!, "$url_for _check_fields: '$field' doesn't belong to list of valid expressions";
                     last;
                 }
             }
@@ -194,7 +194,7 @@ sub register {
             elsif ( $field eq 'timezone' ) {
                 $timezones = $self->_time_zones();
                 unless ( exists $$timezones{$param} ) {
-                    push @!, "_check_fields: '$field' doesn't belong to list of valid expressions";
+                    push @!, "$url_for _check_fields: '$field' doesn't belong to list of valid expressions";
                     last;
                 }
             }
@@ -301,6 +301,18 @@ sub register {
                 'newpassword'   => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ '', qr/^\d+$/os, 9 ],
                 'groups'        => [ 'required', qr/^\[\"(\d+\,)*\d+\"\]$/os, 255 ]
+            },
+            '/user/registration'  => {
+                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+                'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+                'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
+                'phone'         => [ '', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
+                'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
+                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
+                'birthday'      => [ '', qr/^\d+$/os, 12 ],
+                'password'      => [ '', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
             },
             '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
