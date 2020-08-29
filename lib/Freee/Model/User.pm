@@ -406,7 +406,6 @@ sub _save_user {
                 push @!, "Can not update 'user_groups'";
                 $self->{'app'}->pg_dbh->rollback;
                 return;
-#                last;
             }
         }
     }
@@ -460,7 +459,10 @@ sub _delete_user {
     unless ( $$data{'id'} ) {
         push @!, 'no data for delete';
     }
-# ??? делать транзакцией
+
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->begin_work;
+
     unless ( @! ) {
         # удаление из users
         $sql = 'DELETE FROM "public"."users" WHERE "id" = :id RETURNING "id"';
@@ -469,7 +471,11 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        push @!, "could not delete '$$data{'id'}' from users" if $result eq '0E0';
+        if ( $result eq '0E0' ) {
+            push @!, "could not delete '$$data{'id'}' from users";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
     }
 
     unless ( @! ) {
@@ -477,7 +483,11 @@ sub _delete_user {
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
         $result = $usr->_RealDelete();
 
-        push @!, "can't delete from EAV" unless $result;
+        unless ($result) {
+            push @!, "can't delete from EAV";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
     }
 
     unless ( @! ) {
@@ -488,8 +498,15 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        push @!, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
+        if ( $result eq '0E0' ) {
+            push @!, "Could not delete '$$data{'id'}' from user_groups";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
     }
+
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->commit;
 
     return $result;
 }

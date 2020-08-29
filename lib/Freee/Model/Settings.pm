@@ -42,13 +42,16 @@ sub _get_folder {
 
     return unless $id;
 
-    my $sql = 'SELECT * FROM "public"."settings" WHERE "id"='.$id;
-    my $row;
+    my ( $sql, $sth, $row );
+    $sql = 'SELECT * FROM "public"."settings" WHERE "id" = :id';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $id );
+    $sth->execute();
 
     $row = $self->{app}->pg_dbh->selectrow_hashref($sql);
 
     # десериализуем поля vaue и selected
-    my $out = [];
     if ($row) {
         $$row{'parent'}     = $$row{'parent'} // 0;
         $$row{'name'}       = $$row{'name'} ? $$row{'name'} : '';
@@ -79,12 +82,14 @@ sub _insert_folder {
 
     return unless $data;
 
-    if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
+    my ( $sql, $sth, $id );
+
+    if ( $$data{'id'} && ( $$data{'id'} == $$data{'parent'} ) ) {
         warn 'Id and Parent is equal.';
         return;
     }
 
-    my $sql ='INSERT INTO "public"."settings" ('.
+    $sql ='INSERT INTO "public"."settings" ('.
         join( ',', map { '"'.$_.'"' } keys %$data ).
         ') VALUES ('.
         join( ',', map {
@@ -98,9 +103,9 @@ sub _insert_folder {
         } keys %$data ).
         ') RETURNING "id"';
 
-    my $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
-    my $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
+    $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
 
     return $id;
 }
@@ -116,12 +121,15 @@ sub _save_folder {
     my ($self, $data) = @_;
 
     return unless $$data{'id'};
+
+    my ( $fields, $sql, $sth );
+
     if ($$data{'id'} && ($$data{'id'} == $$data{'parent'})) {
         warn 'Id and Parent is equal.';
         return;
     }
 
-    my $fields = join( ', ', map {
+    $fields = join( ', ', map {
         if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
             '"'.$_.'"='.($$data{$_} + 0);
         }
@@ -130,7 +138,11 @@ sub _save_folder {
         }
     } keys %$data );
 
-    $self->{app}->pg_dbh->do( 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{id} );
+    $sql = 'UPDATE "public"."settings" SET '.$fields.' WHERE "id" = :id';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $$data{'id'} );
+    $sth->execute();
 
     return 1;
 }
@@ -142,10 +154,13 @@ sub _get_leafs {
 
     return unless defined $id;
 
-    my $sql = 'SELECT * FROM "public".settings WHERE "parent"='.$id.' ORDER by id';
+    my ( $list, $sql, $sth );
 
-    my $list;
-    $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+    $sql = 'SELECT * FROM "public"."settings" WHERE "parent" = :id ORDER by id';
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $id );
+    $sth->execute();
+    $list = $sth->fetchall_arrayref({});
 
     return $list;
 }
@@ -172,6 +187,8 @@ sub _insert_setting {
 
     return unless $data;
 
+    my ( $id, $sql, $sth );
+
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
@@ -180,11 +197,10 @@ sub _insert_setting {
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
-    my $sql ='INSERT INTO "public"."settings" ('.
+    $sql ='INSERT INTO "public"."settings" ('.
         join( ',', map { '"'.$_.'"' } keys %$data ).
         ') VALUES ('.
         join( ',', map {
-            # $$data{$_} =~/^\d+$/ ? ($$data{$_} + 0) : $self->pg_dbh->quote( $$data{$_} )
             if (length $$data{$_} && $$data{$_} =~ /^\d+$/) {
                 ($$data{$_} + 0)
             }
@@ -194,9 +210,9 @@ sub _insert_setting {
         } keys %$data ).
         ') RETURNING "id"';
 
-    my $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
-    my $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
+    $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
 
     return $id;
 }
@@ -228,6 +244,8 @@ sub _save_setting {
     return unless $data;
     return unless $$data{'id'};
 
+    my ( $fields, $sql, $sth );
+
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
         $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
@@ -236,13 +254,15 @@ sub _save_setting {
         $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
-    my $fields = join( ', ', map {
+    $fields = join( ', ', map {
         $$data{$_} =~ /^\d+$/ ? '"'.$_.'"='.($$data{$_} + 0) : '"'.$_.'"='.$self->{app}->pg_dbh->quote( $$data{$_} )
     } keys %$data );
 
-    my $sql = 'UPDATE "public"."settings" SET '.$fields." WHERE \"id\"=".$$data{'id'};
+    $sql = 'UPDATE "public"."settings" SET '.$fields.' WHERE "id"= :id';
 
-    $self->{app}->pg_dbh->do($sql);
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $$data{'id'} );
+    $sth->execute();
 
     return $$data{'id'};
 }
@@ -255,12 +275,15 @@ sub _delete_setting {
     my ($self, $id) = @_;
     return unless $id;
 
-    my $result;
-    my $sql = 'DELETE FROM "public"."settings" WHERE "id"='.$id;
+    my ( $result, $sql, $sth );
 
-    $result = $self->{app}->pg_dbh->do($sql) + 0;
+    $sql = 'DELETE FROM "public"."settings" WHERE "id" = :id';
 
-    return $result;
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $id );
+    $result = $sth->execute();
+
+    return $result + 0;
 }
 
 # читаем одну настройку
@@ -271,14 +294,16 @@ sub _get_setting {
 
     return unless $id;
 
-    my $sql = 'SELECT * FROM "public"."settings" WHERE "id"='.$id;
-    my $sth = $self->{app}->pg_dbh->prepare( $sql );
+    my ( $result, $row, $sql, $sth );
+
+    $sql = 'SELECT * FROM "public"."settings" WHERE "id" = :id';
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $id );
     $sth->execute();
-    my $row = $sth->fetchrow_hashref();
+
+    $row = $sth->fetchrow_hashref();
 
     # десериализуем поля vaue и selected
-    my $out = [];
-    my $result;
     if ( $row ) {
         $$result{'parent'} = $$row{'parent'} // 0,
         $$result{'folder'} = 0,
@@ -287,22 +312,22 @@ sub _get_setting {
             {
                 "label" => "Основные",
                 "fields" => [
-                    { "label" => $$row{'label'} ? $$row{'label'} : '' },
-                    { "name" => $$row{'name'} ? $$row{'name'} : '' },
+                    { "label"       => $$row{'label'} ? $$row{'label'} : '' },
+                    { "name"        => $$row{'name'} ? $$row{'name'} : '' },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "selected" => $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] },
-                    { "type" => $$row{'type'} ? $$row{'type'} : '' },
-                    { "value" => $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'} }
+                    { "selected"    => $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] },
+                    { "type"        => $$row{'type'} ? $$row{'type'} : '' },
+                    { "value"       => $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'} }
                 ]
             },
             {
                 "label" => "Дополнительно",
                 "fields" => [
-                    { "mask" => $$row{'mask'} ? $$row{'mask'} : '' },
-                    { "readonly" => $$row{'readonly'} // 0 },
-                    { "required" => $$row{'required'} // 0 },
+                    { "mask"        => $$row{'mask'} ? $$row{'mask'} : '' },
+                    { "readonly"    => $$row{'readonly'} // 0 },
+                    { "required"    => $$row{'required'} // 0 },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "status" => $$row{'status'} // 0 }
+                    { "status"      => $$row{'status'} // 0 }
                 ]
             }
         ]
@@ -317,10 +342,9 @@ sub _get_setting {
 sub _all_settings {
     my $self = shift;
 
-    my $sql = 'SELECT * FROM "public".settings ORDER by id';
+    my $sql = 'SELECT * FROM "public"."settings" ORDER by id';
 
-    my $list;
-    $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
+    my $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice=> {} } );
 
     $list = $self->{app}->_list_to_tree($list, 'id', 'parent', 'children');
 
@@ -334,18 +358,13 @@ sub _get_config {
 
     my ( $sql, $sth, $result, $settings );
 
-    my $dbh = $self->{app}->pg_dbh;
-    # my $dbh = $self->{dbh};
+
 
     # получение настроек из бд
-    $sql = 'SELECT "name", "value" FROM "public".settings WHERE "folder" = 0';
-    $sth = $dbh->prepare( $sql );
-
+    $sql = 'SELECT "name", "value" FROM "public"."settings" WHERE "folder" = 0';
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute;
     $result = $sth->fetchall_arrayref();
-    # $sth->finish;
-# $self->{app}->pg_dbh->commit or die $self->{app}->pg_dbh->errstr;
-    # $dbh->commit;
 
     # создание хэша настроек
     foreach my $setting ( @$result ) {
@@ -391,11 +410,9 @@ sub _reset_settings {
     my $self = shift;
 
     my $sql = 'TRUNCATE "public"."settings" RESTART IDENTITY';
-
     $self->{app}->pg_dbh->do($sql);
 
     $sql = 'ALTER SEQUENCE settings_id_seq RESTART';
-
     $self->{app}->pg_dbh->do($sql);
 
     return 1;
@@ -409,11 +426,11 @@ sub _get_all_settings {
     my ( $sql, $sth, $result );
 
     $sql = 'SELECT * FROM "public"."settings"';
-
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
 
     $result = $sth->fetchall_hashref("id");
+
     return $result;
 }
 
@@ -426,12 +443,12 @@ sub _insert_export_setting {
 
     return unless( $title && $filename && $time );
 
-    $sql = 'INSERT INTO "public"."export_settings" ("title", "filename", "time_create") VALUES (?, ?, ?) RETURNING "id"';
+    $sql = 'INSERT INTO "public"."export_settings" ("title", "filename", "time_create") VALUES (:title, :filename, :time_create) RETURNING "id"';
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
-    $sth->bind_param( 1, $title );
-    $sth->bind_param( 2, $filename );
-    $sth->bind_param( 3, $time );
+    $sth->bind_param( ':title', $title );
+    $sth->bind_param( ':filename', $filename );
+    $sth->bind_param( ':time', $time );
     $sth->execute();
 
     $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
@@ -447,10 +464,10 @@ sub _get_export_setting {
 
     return unless( $id );
 
-    $sql = 'SELECT filename FROM "public"."export_settings" WHERE id = ?';
+    $sql = 'SELECT filename FROM "public"."export_settings" WHERE id = :id';
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
-    $sth->bind_param( 1, $id );
+    $sth->bind_param( ':id', $id );
     $sth->execute();
     $result = $sth->fetchrow_hashref();
 
@@ -466,22 +483,22 @@ sub _import_setting {
 
     return unless( $data );
 
-    $sql = 'INSERT INTO "public"."settings" ("parent", "name", "label", "placeholder", "type", "mask", "value", "selected", "required", "readonly", "status", "folder") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    $sql = 'INSERT INTO "public"."settings" ("parent", "name", "label", "placeholder", "type", "mask", "value", "selected", "required", "readonly", "status", "folder") VALUES (:parent, :name, :label, :placeholder, :type, :mask, :value, :selected, :required, :readonly, :status, :folder)';
 
     foreach my $row ( sort {$a->{'id'} <=> $b->{'id'}} @$data ) {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$row{'parent'} );
-        $sth->bind_param( 2, $$row{'name'} );
-        $sth->bind_param( 3, $$row{'label'} );
-        $sth->bind_param( 4, $$row{'placeholder'} );
-        $sth->bind_param( 5, $$row{'type'} );
-        $sth->bind_param( 6, $$row{'mask'} );
-        $sth->bind_param( 7, $$row{'value'} );
-        $sth->bind_param( 8, $$row{'selected'} );
-        $sth->bind_param( 9, $$row{'required'} );
-        $sth->bind_param( 10, $$row{'readonly'} );
-        $sth->bind_param( 11, $$row{'status'} );
-        $sth->bind_param( 12, $$row{'folder'} );
+        $sth->bind_param( ':parent', $$row{'parent'} );
+        $sth->bind_param( ':name', $$row{'name'} );
+        $sth->bind_param( ':label', $$row{'label'} );
+        $sth->bind_param( ':placeholder', $$row{'placeholder'} );
+        $sth->bind_param( ':type', $$row{'type'} );
+        $sth->bind_param( ':mask', $$row{'mask'} );
+        $sth->bind_param( ':value', $$row{'value'} );
+        $sth->bind_param( ':selected', $$row{'selected'} );
+        $sth->bind_param( ':required', $$row{'required'} );
+        $sth->bind_param( ':readonly', $$row{'readonly'} );
+        $sth->bind_param( ':status', $$row{'status'} );
+        $sth->bind_param( ':folder', $$row{'folder'} );
         $result = $sth->execute();
         return unless $result;
     }
@@ -502,9 +519,9 @@ sub _delete_export_setting {
     }
     else {
         # удаление записи о файле
-        $sql = 'DELETE FROM "public"."export_settings" WHERE "id" = ? returning "id"';
+        $sql = 'DELETE FROM "public"."export_settings" WHERE "id" = :id returning "id"';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $id );
+        $sth->bind_param( ':id', $id );
         $sth->execute();
         $result = $sth->fetchrow_hashref();
 

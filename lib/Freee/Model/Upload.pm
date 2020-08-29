@@ -23,17 +23,17 @@ sub _insert_media {
 ##### потом добавить заполнение полей type, mime, order, flags ???????????????????????????????????????????????????????
     unless ( @! ) {
         # запись данных в базу
-        $sth = $self->{'app'}->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"' );
-        $sth->bind_param( 1, $$data{'path'} );
-        $sth->bind_param( 2, $$data{'filename'} );
-        $sth->bind_param( 3, $$data{'extension'} );
-        $sth->bind_param( 4, $$data{'title'} );
-        $sth->bind_param( 5, $$data{'size'} );
-        $sth->bind_param( 6, '' );
-        $sth->bind_param( 7, $$data{'mime'} );
-        $sth->bind_param( 8, $$data{'description'} );
-        $sth->bind_param( 9, 0 );
-        $sth->bind_param( 10, 0 );
+        $sth = $self->{'app'}->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (path, :filename, :extension, :title, :size, :type, :mime, :description, :order, :flags) RETURNING "id"' );
+        $sth->bind_param( ':path', $$data{'path'} );
+        $sth->bind_param( ':filename', $$data{'filename'} );
+        $sth->bind_param( ':extension', $$data{'extension'} );
+        $sth->bind_param( ':title', $$data{'title'} );
+        $sth->bind_param( ':size', $$data{'size'} );
+        $sth->bind_param( ':type', '' );
+        $sth->bind_param( ':mime', $$data{'mime'} );
+        $sth->bind_param( ':description', $$data{'description'} );
+        $sth->bind_param( ':order', 0 );
+        $sth->bind_param( ':flags', 0 );
         $sth->execute();
 
         $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
@@ -57,9 +57,9 @@ sub _check_media {
 
     # поиск имени и расширения файла по id
     unless ( @! ) {
-        $sql = q( SELECT "filename", "extension" FROM "public"."media" WHERE "id" = ? );
+        $sql = 'SELECT "filename", "extension" FROM "public"."media" WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $id );
+        $sth->bind_param( ':id', $id );
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
@@ -83,9 +83,9 @@ sub _delete_media {
 
     # удаление записи о файле
     unless ( @! ) {
-        $sql = 'DELETE FROM "public"."media" WHERE "id" = ?';
+        $sql = 'DELETE FROM "public"."media" WHERE "id" = :id';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $id );
+        $sth->bind_param( ':id', $id );
 
         $result = $sth->execute();
         push @!, "Can not delete record $id from db" . DBI->errstr unless ( $result );
@@ -149,9 +149,9 @@ sub _update_media {
     }
     else {
         # обновление описания в бд
-        $sth = $self->{app}->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = ? WHERE "id" = ? RETURNING "id"' );
-        $sth->bind_param( 1, $$data{'description'} );
-        $sth->bind_param( 2, $$data{'id'} );
+        $sth = $self->{app}->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = :description WHERE "id" = :id RETURNING "id"' );
+        $sth->bind_param( ':description', $$data{'description'} );
+        $sth->bind_param( ':id', $$data{'id'} );
 
         $result = $sth->execute();
         push @!, "Can not update media" unless $result;
@@ -159,9 +159,9 @@ sub _update_media {
 
     # получение данных о файле
     unless ( @! ) {
-        $sql = q( SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = ? );
+        $sql = 'SELECT "id", "filename", "title", "size", "mime", "description", "extension" FROM "public"."media" WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
 
         $data = $sth->fetchrow_hashref();

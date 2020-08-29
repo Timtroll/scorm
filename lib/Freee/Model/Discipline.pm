@@ -35,9 +35,9 @@ sub _insert_discipline {
         # делаем запись в EAV
         $discipline = Freee::EAV->new( 'Discipline',
             {
-                'parent'       => $$data{'parent'},
-                'title'        => $$data{'name'},
-                'publish'      => $$data{'status'},
+                'parent'    => $$data{'parent'},
+                'title'     => $$data{'name'},
+                'publish'   => $$data{'status'},
                 'Discipline' => {
                     'parent'       => $$data{'parent'},
                     'label'        => $$data{'label'},
@@ -112,7 +112,14 @@ sub _list_discipline {
         return;
     }
 
-    $list = $discipline->_list( { Parents => 0, ShowHidden => 1, FIELDS => "has_childs, publish, parent, id", Order => [ { 'items.id' => 'ASC' } ] } );
+    $list = $discipline->_list({
+        Parents     => 0,
+        ShowHidden  => 1,
+        FIELDS      => "has_childs, publish, parent, id", 
+        Order => [
+            { 'items.id' => 'ASC' }
+        ]
+    });
 
     foreach my $row ( @$list ) {
         my $EAV_discipline = Freee::EAV->new( 'Discipline', { id => $row->{id} } );
@@ -266,7 +273,7 @@ sub _toggle_discipline {
         # обновление поля в EAV
         $discipline = Freee::EAV->new( 'Discipline',
             {
-                'id'      => $$data{'id'},
+                'id' => $$data{'id'},
             }
         );
 
@@ -297,7 +304,7 @@ sub _exists_in_discipline {
         # поиск объекта с таким id
         $discipline = Freee::EAV->new( 'Discipline',
             {
-                'id'      => $id
+                'id' => $id
             }
         );
     }

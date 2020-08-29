@@ -35,9 +35,9 @@ sub _insert_theme {
         # делаем запись в EAV
         $theme = Freee::EAV->new( 'Theme',
             {
-                'parent'       => $$data{'parent'},
-                'title'        => $$data{'name'},
-                'publish'      => $$data{'status'},
+                'parent'    => $$data{'parent'},
+                'title'     => $$data{'name'},
+                'publish'   => $$data{'status'},
                 'Theme' => {
                     'parent'       => $$data{'parent'},
                     'label'        => $$data{'label'},
@@ -112,7 +112,14 @@ sub _list_theme {
         return;
     }
 
-    $list = $theme->_list( { Parents => 0, ShowHidden => 1, FIELDS => "has_childs, publish, parent, id", Order => [ { 'items.id' => 'ASC' } ] } );
+    $list = $theme->_list( {
+        Parents     => 0,
+        ShowHidden  => 1,
+        FIELDS      => "has_childs, publish, parent, id",
+        Order => [
+            { 'items.id' => 'ASC' }
+        ]
+    });
 
     foreach my $row ( @$list ) {
         my $EAV_theme = Freee::EAV->new( 'Theme', { id => $row->{id} } );
@@ -267,7 +274,7 @@ sub _toggle_theme {
         # обновление поля в EAV
         $theme = Freee::EAV->new( 'Theme',
             {
-                'id'      => $$data{'id'},
+                'id' => $$data{'id'},
             }
         );
 
@@ -298,7 +305,7 @@ sub _exists_in_theme {
         # поиск объекта с таким id
         $theme = Freee::EAV->new( 'Theme',
             {
-                'id'      => $id
+                'id' => $id
             }
         );
     }
