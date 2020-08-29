@@ -149,9 +149,15 @@ const actions = {
       const response = await Api_EditPanel.list_add(parentId)
 
       if (response.status !== 200) return
-
       const resp = await response.data
-      await dispatch('leafEdit', resp.id)
+      if (resp.status === 'ok') {
+        const resp = await response.data
+        await dispatch('leafEdit', resp.id)
+      }
+      else {
+        store.commit('editPanel_status_error') // статус - ошибка
+        notify(resp.message, 'danger') // уведомление об ошибке
+      }
 
     }
     catch (e) {
