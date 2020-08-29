@@ -12,17 +12,17 @@ export default {
     })
   },
 
-  signUpPhone (params) {
-    return Api()({
-      url:    'user/add_by_phone',
-      method: 'post',
-      params: params,
-    })
-  },
+  //signUpPhone (params) {
+  //  return Api()({
+  //    url:    'user/add_by_phone',
+  //    method: 'post',
+  //    params: params,
+  //  })
+  //},
 
-  signUpEmail (params) {
+  signUp (params) {
     return Api()({
-      url:    'user/add_by_email',
+      url:    'user/registration',
       method: 'post',
       params: params,
     })

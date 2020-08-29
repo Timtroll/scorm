@@ -440,26 +440,32 @@ export default {
       return arr
     },
 
+    //signUp () {
+    //  if (this.selectedRegisterMethod === 'email') {
+    //    this.signUpEmail()
+    //  }
+    //  else if (this.selectedRegisterMethod === 'phone') {
+    //    this.signUpPhone()
+    //  }
+    //},
+
     signUp () {
-      if (this.selectedRegisterMethod === 'email') {
-        this.signUpEmail()
-      }
-      else if (this.selectedRegisterMethod === 'phone') {
-        this.signUpPhone()
+      if (this.formValid) {
+        this.$store.dispatch('signUp', this.fieldsForSave)
       }
     },
-
-    signUpPhone () {
-      if (this.formValid) {
-        this.$store.dispatch('signUpPhone', this.fieldsForSave)
-      }
-    },
-
-    signUpEmail () {
-      if (this.formValid) {
-        this.$store.dispatch('signUpEmail', this.fieldsForSave)
-      }
-    }
+    //
+    //signUpPhone () {
+    //  if (this.formValid) {
+    //    this.$store.dispatch('signUpPhone', this.fieldsForSave)
+    //  }
+    //},
+    //
+    //signUpEmail () {
+    //  if (this.formValid) {
+    //    this.$store.dispatch('signUpEmail', this.fieldsForSave)
+    //  }
+    //}
 
   }
 

@@ -38,9 +38,9 @@ const actions = {
   },
 
   // signUpPhone
-  async signUpPhone ({}, fields) {
+  async signUp ({}, fields) {
     try {
-      const response = await Api.signUpPhone(fields)
+      const response = await Api.signUp(fields)
       if (response.status === 200) {
         const resp = await response.data
         if (resp.status === 'ok') {
@@ -57,24 +57,24 @@ const actions = {
   },
 
   // signUpEmail
-  async signUpEmail ({}, fields) {
-    console.log(fields)
-    try {
-      const response = await Api.signUpEmail(fields)
-      if (response.status === 200) {
-        const resp = await response.data
-        if (resp.status === 'ok') {
-          router
-            .push({name: 'Login'})
-            .catch(e => {})
-        }
-      }
-    }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
-      throw 'ERROR: ' + e
-    }
-  },
+  //async signUpEmail ({}, fields) {
+  //  console.log(fields)
+  //  try {
+  //    const response = await Api.signUpEmail(fields)
+  //    if (response.status === 200) {
+  //      const resp = await response.data
+  //      if (resp.status === 'ok') {
+  //        router
+  //          .push({name: 'Login'})
+  //          .catch(e => {})
+  //      }
+  //    }
+  //  }
+  //  catch (e) {
+  //    notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+  //    throw 'ERROR: ' + e
+  //  }
+  //},
 
   // logout
   logout ({commit}) {
