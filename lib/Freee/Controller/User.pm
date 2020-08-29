@@ -130,9 +130,9 @@ sub edit {
                     'label' => 'Контакты',
                     'fields' => [
                        {"email"          => $$user_data{'email'} },
-                       {"emailconfirmed" => 1 },
+                       {"emailconfirmed" => 0 },
                        {"phone"          => $$user_data{'phone'} },
-                       {"phoneconfirmed" => 1 }
+                       {"phoneconfirmed" => 0 }
                     ]
                 },
                 {

@@ -225,8 +225,6 @@ sub startup {
     $auth->post('/groups/delete')       ->to('groups#delete');      # удаление группы
     $auth->post('/groups/toggle')       ->to('groups#toggle');      # включение/отключение группы
 
-
-
     # управление роутами
     $auth->post('/routes/')             ->to('routes#index');       # список роутов конкретной группы
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута

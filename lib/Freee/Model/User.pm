@@ -294,6 +294,9 @@ sub _save_user {
         push @!, 'no data for save';
     }
 
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->begin_work;
+
     # загружаем аватарку
     # таблица media (аватарка)
     my $media_data = {
@@ -362,9 +365,11 @@ sub _save_user {
     #     "social_profile" => "{}"
     # };
 
-# ???????? решить проблему транзакцией
     unless ( @! ) {
-        # удаление из user_groups
+        # удаление из user_groups если Редактирование, если Добавлене, то не удаляем
+        # if ( $self->model('Utils')->_exists_in_table('user_groups', 'user_id', $$data{'id'}) ) {
+
+        # }
         $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $$data{'id'} );
@@ -389,6 +394,9 @@ sub _save_user {
             }
         }
     }
+
+    # закрытие транзакции
+    $self->{'app'}->pg_dbh->commit;
 
     return $result;
 }
@@ -492,4 +500,5 @@ sub _exists_in_user {
 
     return $user ? 1 : 0;
 }
+
 1;
