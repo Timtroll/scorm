@@ -47,7 +47,6 @@ sub startup {
     # Модель EAV передаем коннекшн базы
     Freee::EAV->new( 'User', { 'dbh' => $dbh } );
 
-# Модель по Mojo
     # подгружаем модель и создадим соответствующий хелпер для вызова модели + передадим ссылки на $self и коннект к базе
     my $model = Freee::Model->new( app => $self );
     $self->helper(
@@ -82,7 +81,7 @@ sub startup {
     $r->get('/wschannel/index')         ->to('wschannel#index');
     $r->websocket('/wschannel/:type')   ->to('wschannel#type');
 
-    # ??? требуется переписать так,чтобы можно было использовать безопасно
+# ??? требуется переписать так,чтобы можно было использовать безопасно
     $r->get('/settings/load_default')   ->to('settings#load_default');    # загрузка дефолтных настроек
 
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
@@ -104,16 +103,16 @@ sub startup {
     $auth->post('/settings/proto_folder') ->to('proto#proto_folder');   # прототип настройки
 
     # строки настроек - обязательная проверка на фолдер
-    $auth->post('/settings/add')          ->to('settings#add');           # добавление настройки
-    $auth->post('/settings/proto_leaf')   ->to('proto#proto_leaf');       # прототип настройки
-    $auth->post('/settings/edit')         ->to('settings#edit');          # загрузка одной настройки
-    $auth->post('/settings/save')         ->to('settings#save');          # добавление/сохранение настройки
+    $auth->post('/settings/add')          ->to('settings#add');         # добавление настройки
+    $auth->post('/settings/proto_leaf')   ->to('proto#proto_leaf');     # прототип настройки
+    $auth->post('/settings/edit')         ->to('settings#edit');        # загрузка одной настройки
+    $auth->post('/settings/save')         ->to('settings#save');        # добавление/сохранение настройки
 
     # управление импортом и экспортом
-    $auth->post('/settings/export')       ->to('settings#export');          # экспорт текущих настроек
-    $auth->post('/settings/import')       ->to('settings#import');          # импорт сохранённых настроек
-    $auth->post('/settings/del_export')   ->to('settings#del_export');      # удаление сохранённых настроек
-    $auth->post('/settings/list_export')  ->to('settings#list_export');     # вывод списка сохранённых настроек
+    $auth->post('/settings/export')       ->to('settings#export');      # экспорт текущих настроек
+    $auth->post('/settings/import')       ->to('settings#import');      # импорт сохранённых настроек
+    $auth->post('/settings/del_export')   ->to('settings#del_export');  # удаление сохранённых настроек
+    $auth->post('/settings/list_export')  ->to('settings#list_export'); # вывод списка сохранённых настроек
 
     # проверка на фолдер не нужна
     $auth->post('/settings/get_leafs')  ->to('settings#get_leafs');     # список листочков узла дерева
@@ -129,20 +128,20 @@ sub startup {
     $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
 
     # управление предметами
-    $auth->post('/discipline/')         ->to('discipline#index');   # Список предметов
-    $auth->post('/discipline/add')      ->to('discipline#add');     # Добавить предмет
-    $auth->post('/discipline/edit')     ->to('discipline#edit');     # Получить данные для редактирования предмета
-    $auth->post('/discipline/save')     ->to('discipline#save');    # Сохранить предмет
-    $auth->post('/discipline/toggle')   ->to('discipline#toggle');  # Изменить статус предмета (вкл/выкл)
-    $auth->post('/discipline/delete')   ->to('discipline#delete');  # Удалить предмет
+    $auth->post('/discipline/')         ->to('discipline#index');       # Список предметов
+    $auth->post('/discipline/add')      ->to('discipline#add');         # Добавить предмет
+    $auth->post('/discipline/edit')     ->to('discipline#edit');        # Получить данные для редактирования предмета
+    $auth->post('/discipline/save')     ->to('discipline#save');        # Сохранить предмет
+    $auth->post('/discipline/toggle')   ->to('discipline#toggle');      # Изменить статус предмета (вкл/выкл)
+    $auth->post('/discipline/delete')   ->to('discipline#delete');      # Удалить предмет
 
     # управление темами
-    $auth->post('/theme/')              ->to('theme#index');        # Список тем
-    $auth->post('/theme/add')           ->to('theme#add');          # Добавить тему
-    $auth->post('/theme/edit')          ->to('theme#edit');          # Получить данные для редактирования темы
-    $auth->post('/theme/save')          ->to('theme#save');         # Сохранить тему
-    $auth->post('/theme/toggle')        ->to('theme#toggle');       # Изменить статус темы (вкл/выкл)
-    $auth->post('/theme/delete')        ->to('theme#delete');       # Удалить тему
+    $auth->post('/theme/')              ->to('theme#index');            # Список тем
+    $auth->post('/theme/add')           ->to('theme#add');              # Добавить тему
+    $auth->post('/theme/edit')          ->to('theme#edit');             # Получить данные для редактирования темы
+    $auth->post('/theme/save')          ->to('theme#save');             # Сохранить тему
+    $auth->post('/theme/toggle')        ->to('theme#toggle');           # Изменить статус темы (вкл/выкл)
+    $auth->post('/theme/delete')        ->to('theme#delete');           # Удалить тему
 
     $auth->post('/cms/subject')         ->to('cmssubject#index');
     $auth->post('/cms/subject_add')     ->to('cmssubject#add');
