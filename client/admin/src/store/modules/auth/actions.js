@@ -1,7 +1,7 @@
-import axios from 'axios'
-import router from '../../../router'
+import axios    from 'axios'
+import router   from '../../../router'
 import {notify} from './../../methods'
-import Api from './../../../api/Auth'
+import Api      from './../../../api/Auth'
 
 const actions = {
 
@@ -21,7 +21,8 @@ const actions = {
              axios.defaults.headers.common['Authorization'] = token
              commit('auth_success', token, user)
              resolve(response)
-           } else {
+           }
+           else {
              notify(resp.mess, 'danger')
              commit('auth_error')
              localStorage.removeItem('token')
@@ -36,6 +37,45 @@ const actions = {
     })
   },
 
+  // signUpPhone
+  async signUpPhone ({}, fields) {
+    try {
+      const response = await Api.signUpPhone(fields)
+      if (response.status === 200) {
+        const resp = await response.data
+        if (resp.status === 'ok') {
+          router
+            .push({name: 'Login'})
+            .catch(e => {})
+        }
+      }
+    }
+    catch (e) {
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  // signUpEmail
+  async signUpEmail ({}, fields) {
+    console.log(fields)
+    try {
+      const response = await Api.signUpEmail(fields)
+      if (response.status === 200) {
+        const resp = await response.data
+        if (resp.status === 'ok') {
+          router
+            .push({name: 'Login'})
+            .catch(e => {})
+        }
+      }
+    }
+    catch (e) {
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
   // logout
   logout ({commit}) {
 
@@ -47,13 +87,13 @@ const actions = {
              commit('logout')
              localStorage.removeItem('token')
              delete axios.defaults.headers.common['Authorization']
-            notify('До встречи!', 'success')
+             notify('До встречи!', 'success')
              router.push({name: 'Login'}).catch(e => {})
              resolve(response)
            }
          })
          .catch(err => {
-          notify(err, 'danger')
+           notify(err, 'danger')
            reject(err)
          })
 

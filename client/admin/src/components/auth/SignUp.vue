@@ -33,7 +33,8 @@
 
           <div class="uk-text-small uk-text-muted">
             <span v-text="item.label"></span>
-            <span class="uk-text-danger" v-if="item.required"> *</span>
+            <span class="uk-text-danger"
+                  v-if="item.required"> *</span>
           </div>
 
           <!--text-->
@@ -142,7 +143,7 @@
           class="uk-list">
         <li v-for="method in registerMethods">
           <a type="button"
-             @click.prevent="selectForm(method.fields)"
+             @click.prevent="selectForm(method)"
              class="uk-button-link uk-display-inline-block uk-width-medium"
              v-text="method.title"></a>
         </li>
@@ -198,7 +199,8 @@ export default {
         }
       ],
 
-      selectedRegisterForm: null,
+      selectedRegisterForm:   null,
+      selectedRegisterMethod: null,
 
       register: {
         email: [
@@ -209,7 +211,7 @@ export default {
             type:         'text',
             select:       null,
             value:        '',
-            name:         'Email',
+            name:         'email',
             required:     true
           },
           {
@@ -398,6 +400,15 @@ export default {
       return this.$store.getters.authStatus
     },
 
+    fieldsForSave () {
+      if (!this.selectedRegisterForm) return
+      const object = {}
+      this.selectedRegisterForm.forEach(i => {
+        object[i.name] = i.value
+      })
+      return object
+    },
+
     fieldsRequired () {
       if (!this.selectedRegisterForm) return false
       return this.selectedRegisterForm.filter(i => i.required)
@@ -415,7 +426,8 @@ export default {
   methods: {
 
     selectForm (form) {
-      this.selectedRegisterForm = this.register[form]
+      this.selectedRegisterForm   = this.register[form.fields]
+      this.selectedRegisterMethod = form.fields
     },
 
     objectToArray (obj) {
@@ -429,14 +441,23 @@ export default {
     },
 
     signUp () {
+      if (this.selectedRegisterMethod === 'email') {
+        this.signUpEmail()
+      }
+      else if (this.selectedRegisterMethod === 'phone') {
+        this.signUpPhone()
+      }
+    },
+
+    signUpPhone () {
       if (this.formValid) {
-        //  let login = this.user.login
-        //  let pass  = this.user.pass
-        //  this.$store.dispatch('login', {login, pass})
-        //      .then(() => this.$router.push({
-        //        name: 'Main'
-        //      }))
-        //      .catch((err) => {})
+        this.$store.dispatch('signUpPhone', this.fieldsForSave)
+      }
+    },
+
+    signUpEmail () {
+      if (this.formValid) {
+        this.$store.dispatch('signUpEmail', this.fieldsForSave)
       }
     }
 
