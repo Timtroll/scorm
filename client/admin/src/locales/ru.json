@@ -6,12 +6,20 @@
   },
   "auth":         {
     "fields": {
-      "login":    "Имя пользователя",
+      "login":    "Email",
       "password": "Пароль",
       "submit":   "Войти"
     },
-    "title":  "Авторизация в панели управления",
+    "title":  "Войти",
     "logOut": "Покинуть матрицу"
+  },
+  "signUp":         {
+    "fields": {
+      "login":    "Email",
+      "password": "Пароль",
+      "submit":   "Войти"
+    },
+    "title":  "Регистрация"
   },
   "pageNotFound": {
     "title":   "Ошибка 404",

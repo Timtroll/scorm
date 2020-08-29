@@ -1,6 +1,6 @@
-import Vue from 'vue'
+import Vue    from 'vue'
 import Router from 'vue-router'
-import store from './store/store.js'
+import store  from './store/store.js'
 
 Vue.use(Router)
 
@@ -9,12 +9,32 @@ const router = new Router({
   base:   process.env.BASE_URL,
   routes: [
     {
-      path:      '/login',
-      name:      'Login',
-      component: () => import(/* webpackChunkName: "login" */ './views/Login'),
-      meta:      {
+      path:     '/login',
+      name:     'Start',
+      component:     () => import(/* webpackChunkName: "login" */ './views/Sign'),
+      meta:     {
         authRequired: false
-      }
+      },
+      children: [
+        {
+          path:          '/login',
+          name:          'Login',
+          component:     () => import(/* webpackChunkName: "login" */ './components/auth/LogIn'),
+          showInSideBar: true,
+          meta:          {
+            authRequired: false
+          }
+        },
+        {
+          path:          '/sign-up',
+          name:          'SignUp',
+          component:     () => import(/* webpackChunkName: "login" */ './components/auth/SignUp'),
+          showInSideBar: true,
+          meta:          {
+            authRequired: false
+          }
+        }
+      ]
     },
     {
       path:           '/',
@@ -235,10 +255,12 @@ router.beforeEach(
           name:  'Login',
           query: {redirect: to.name}
         })
-      } else {
+      }
+      else {
         next()
       }
-    } else {
+    }
+    else {
       next()
     }
   }
