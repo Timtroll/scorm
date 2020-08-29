@@ -64,37 +64,56 @@ sub register {
                 push @!, "_check_fields: '$field' has wrong size";
                 last;
             }
+
+            # поля которые не могут быть undef
+            my %exclude_fields = (
+                'parent' => 1,
+                'status' => 1,
+                'timezone' => 1,
+            );
+            # проверка обязательных полей
+            if ( $required eq 'required' ) {
+                if ( exists( $exclude_fields{$field} ) ) {
+                    $param = 0 unless $param;
+                }
+                else {
+                    if ( !defined $param || $param eq '' ) {
+                        push @!, "_check_fields: didn't has required data in '$field' = '$param'";
+                    }
+                }
+            }
 ##########################     переделать на проверку на хэш
-            # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
-            if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
-            # проверка заполнения обязательного поля status, оно не undef и не пустая строка
-            elsif ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
-            # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
-            elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
-            # проверка заполнения обязательных полей роута \/routes\/save, они не undef и не пустая строка
-            elsif ( ( $required eq 'required' ) && $url_for =~ /\/routes\/save/ && ( !defined $param || $param eq '' ) ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
-            # проверка заполнения обязательного поля timezone, они не undef и не пустая строка
-            elsif ( ( $required eq 'required' ) && $field eq 'timezone' && ( !defined $param || $param eq '' ) ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
-            # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs, parent, /routes/save )
-            elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' && $field ne 'timezone' && !$param ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
-                last;
-            }
+#             # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
+#             if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
+#                 push @!, "_check_fields: didn't has required -parent- data in '$field'";
+#                 last;
+#             }
+#             # проверка заполнения обязательного поля status, оно не undef и не пустая строка
+#             elsif ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
+#                 push @!, "_check_fields: didn't has required -status- data in '$field'";
+#                 last;
+#             }
+#             # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
+#             elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
+#                 push @!, "_check_fields: didn't has required -get_leafs- data in '$field'";
+#                 last;
+#             }
+#             # проверка заполнения обязательных полей роута \/routes\/save, они не undef и не пустая строка
+#             elsif ( ( $required eq 'required' ) && $url_for =~ /\/routes\/save/ && ( !defined $param || $param eq '' ) ) {
+#                 push @!, "_check_fields: didn't has required -\/routes\/save- data in '$field'";
+#                 last;
+#             }
+#             # проверка заполнения обязательного поля timezone, они не undef и не пустая строка
+#             elsif ( ( $required eq 'required' ) && $field eq 'timezone' && ( !defined $param || $param eq '' ) ) {
+#                 push @!, "_check_fields: didn't has required -timezone- data in '$field'";
+#                 last;
+#             }
+#             # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs, parent, /routes/save )
+#             elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' 
+# && $field ne 'timezone' && !$param ) {
+#                 push @!, "_check_fields: didn't has required -toggle|get_leafs|\/routes\/save- data in '$field'";
+#                 last;
+#             }
 ############################
             # отдельная проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
@@ -133,9 +152,10 @@ sub register {
                 next;
             }
             elsif ( $required eq 'file_required' ) {
-                push @!, "_check_fields: didn't has required data in '$field'";
+                push @!, "_check_fields: didn't has required file data in '$field'";
                 last;
             }
+
             # проверка на toggle
             if ( $url_for =~ /toggle/ ) {
                 if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
@@ -217,49 +237,49 @@ sub register {
             '/user/add'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ]
             },
-            '/user/add_user'  => {
-                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
-                'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
-                'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
-                'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'status'        => [ 'required', qr/^[01]$/os, 1 ],
-                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'avatar'        => [ '', qr/^\d+$/os, 9 ],
-                'groups'        => [ 'required', qr/^\[[\d\,\'\"]+\]$/os, 255 ]
-            },
-            '/user/add_by_email'  => {
-                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
-                'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
-                'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'status'        => [ 'required', qr/^[01]$/os, 1 ],
-                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
-                'avatar'        => [ '', qr/^\d+$/os, 9 ],
-                'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
-            },
-            '/user/add_by_phone'  => {
-                'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
-                'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
-                'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ 'required', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
-                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
-                'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
-                'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'status'        => [ 'required', qr/^[01]$/os, 1 ],
-                'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'avatar'        => [ '', qr/^\d+$/os, 9 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
-            },
+            # '/user/add_user'  => {
+            #     'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+            #     'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
+            #     'phone'         => [ 'required', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
+            #     'email'         => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
+            #     'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+            #     'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
+            #     'birthday'      => [ '', qr/^\d+$/os, 12 ],
+            #     'status'        => [ 'required', qr/^[01]$/os, 1 ],
+            #     'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+            #     'avatar'        => [ '', qr/^\d+$/os, 9 ],
+            #     'groups'        => [ 'required', qr/^\[[\d\,\'\"]+\]$/os, 255 ]
+            # },
+            # '/user/add_by_email'  => {
+            #     'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+            #     'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
+            #     'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+            #     'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
+            #     'birthday'      => [ '', qr/^\d+$/os, 12 ],
+            #     'status'        => [ 'required', qr/^[01]$/os, 1 ],
+            #     'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 64 ],
+            #     'avatar'        => [ '', qr/^\d+$/os, 9 ],
+            #     'email'         => [ 'required', qr/^[\w\d\@\.]+$/os, 100 ],
+            #     'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
+            # },
+            # '/user/add_by_phone'  => {
+            #     'surname'       => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
+            #     'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
+            #     'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
+            #     'phone'         => [ 'required', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
+            #     'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+            #     'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
+            #     'birthday'      => [ '', qr/^\d+$/os, 12 ],
+            #     'status'        => [ 'required', qr/^[01]$/os, 1 ],
+            #     'password'      => [ 'required', qr/^[\w\_\-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+            #     'avatar'        => [ '', qr/^\d+$/os, 9 ],
+            #     'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
+            # },
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },

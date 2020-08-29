@@ -12,9 +12,9 @@ use Digest::SHA qw( sha256 );
 # список юзеров по группам (обязательно id группы)
 # $self->index($data)
 # $data = { 
-# id - Id группы
-# status - показывать группы только с этим статусом
-# page - вывести список начиная с этой страницы ( по умолчанию 1 )
+#   id - Id группы
+#   status - показывать группы только с этим статусом
+#   page - вывести список начиная с этой страницы ( по умолчанию 1 )
 # }
 sub index {
     my $self = shift;
@@ -222,8 +222,8 @@ sub save {
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
             push @!, 'No password';
         }
-        elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
-            push @!, 'Password and newpassword are the same';
+        elsif ( $$data{'password'} && $$data{'password'} ne $$data{'newpassword'} ) {
+            push @!, 'Password and newpassword are not the same';
         }
 
         unless ( @! ) {
