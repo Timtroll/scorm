@@ -21,12 +21,20 @@
                 </option>
               </select>
 
+<!--              <span class="uk-link">-->
+<!--                <img src="/img/icons/icon_arrow__down.svg"-->
+<!--                     uk-svg-->
+<!--                     width="14"-->
+<!--                     height="14">-->
+<!--                <span></span>-->
+<!--            </span>-->
               <button class="uk-button pos-button-select"
+                      style="transform: none"
                       :class="validate"
                       :disabled="readonly === 1"
                       type="button"
                       tabindex="-1">
-                <span/>
+                <span></span>
                 <img src="/img/icons/icon_arrow__down.svg"
                      uk-svg
                      width="14"
