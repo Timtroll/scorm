@@ -1,8 +1,8 @@
-import Api_Tree                                 from '../../../api/users/Tree'
-import Api                                      from '../../../api/users/Table'
-import store                                    from '../../store'
-import {clone, flatTree, groupedFields, notify} from '../../methods'
-import Api_EditPanel                            from '../../../api/users/EditPanel'
+import Api_Tree                                 from '@/api/users/Tree'
+import Api                                      from '@/api/users/Table'
+import store                                    from '@/store/store'
+import {clone, flatTree, groupedFields, notify} from '@/store/methods'
+import Api_EditPanel                            from '@/api/users/EditPanel'
 
 const actions = {
 
@@ -68,13 +68,20 @@ const actions = {
       if (response.status === 200) {
         const resp = await response.data
 
-        if (typeof resp['list'] !== 'undefined') {
-          const table = resp.list
-          store.commit('set_table', table)
-          store.commit('table_status_success')
+        if (resp.status === 'ok') {
+
+          if (typeof resp['list'] !== 'undefined') {
+            const table = resp.list
+            store.commit('set_table', table)
+            store.commit('table_status_success')
+          }
+          else {
+            store.commit('table_status_success')
+          }
         }
         else {
-          store.commit('table_status_success')
+          notify('ERROR: ' + resp.message, 'danger')
+          store.commit('table_status_error')
         }
       }
 
@@ -119,7 +126,7 @@ const actions = {
         store.commit('editPanel_data', groups) // запись данных во VUEX
         store.commit('editPanel_status_success') // статус - успех
         store.commit('card_right_show', true) // открытие правой панели
-        dispatch('getTable')
+        //dispatch('getTable')
       }
     }
     catch (e) {
@@ -229,6 +236,7 @@ const actions = {
   async leafSaveField ({commit, state, getters, dispatch}, item) {
 
     const parentId = item.parent
+    console.log('item ---- action leafSaveField', item)
 
     try {
       //store.commit('editPanel_status_request') // статус - запрос
@@ -254,6 +262,38 @@ const actions = {
     }
     catch (e) {
       dispatch('getTable', parentId)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
+  /**
+   * удалить листочек
+   * @param commit
+   * @param dispatch
+   * @param data
+   * @returns {Promise<void>}
+   */
+  async removeLeaf ({dispatch}, data) {
+
+    try {
+      const response = await Api.list_delete(data.id)
+      if (response.status === 200) {
+        const resp = response.data
+        if (resp.status === 'ok') {
+          dispatch('getTable', data.parent)
+          if (resp.message) {
+            notify(resp.message, 'success') // уведомление об ошибке
+          }
+        }
+        else {
+          dispatch('getTable', data.parent)
+          notify('ERROR: ' + resp.message, 'danger') // уведомление об ошибке
+        }
+      }
+    }
+    catch (e) {
+      dispatch('getTable', data.parent)
       notify('ERROR: ' + e, 'danger') // уведомление об ошибке
       throw 'ERROR: ' + e
     }
