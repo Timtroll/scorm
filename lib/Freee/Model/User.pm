@@ -75,18 +75,18 @@ sub _get_list {
 
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? ORDER BY "id" LIMIT ? OFFSET ?';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
         elsif ( $$data{'status'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = true ORDER BY "id" LIMIT ? OFFSET ?';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?:group_id AND grp."publish" = true ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
         else {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ? AND grp."publish" = false ORDER BY "id" LIMIT ? OFFSET ?';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
-        $sth->bind_param( 2, $$data{'limit'} );
-        $sth->bind_param( 3, $$data{'offset'} );
+        $sth->bind_param( ':group_id', $$data{'id'} );
+        $sth->bind_param( ':limit', $$data{'limit'} );
+        $sth->bind_param( ':offset', $$data{'offset'} );
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
 
@@ -134,9 +134,9 @@ sub _get_user {
 
     unless ( @! ) {
         # взять весь объект из таблицы users
-        $sql = 'SELECT publish, email, phone, password, timezone, groups FROM "public"."users" WHERE "id" = ?';
+        $sql = 'SELECT publish, email, phone, password, timezone, groups FROM "public"."users" WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
@@ -181,10 +181,22 @@ sub _get_user {
 sub _empty_user {
     my ( $self ) = @_;
 
-    my ( $rc, $sth, $user, $data, $user_id, $result, $sql, $groups, @user_keys );
+    my ( $rc, $sth, $user, $data, $user_id, $result, $sql, $unaproved, $groups, @user_keys );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
+
+    # получаем id группы unaproved
+    $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'unaproved\'';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+
+    $unaproved = $sth->fetchrow_hashref();
+    push @!, "Could not get Group '$$data{'id'}'" unless $result;
+print "unaproved = \n";
+use DDP;
+p $unaproved;
 
     # делаем запись в EAV
     my $eav = {
@@ -243,21 +255,21 @@ sub _empty_user {
 
 # ????????????
     #### заполнение таблицы user_groups
-    # unless ( @! ) {
-    #     $groups = from_json( $$data{'groups'} );
-    #     $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
+    unless ( @! ) {
+        $groups = from_json( $$data{'groups'} );
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ":user_id", ":group_id" )';
 
-    #     foreach my $group_id ( @$groups ) {
-    #         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-    #         $sth->bind_param( ':user_id', $user_id );
-    #         $sth->bind_param( ':group_id', $group_id );
-    #         $result = $sth->execute();
-    #         unless ( $result ) {
-    #             push @!, "Can not insert into 'user_groups'";
-    #             $self->{'app'}->pg_dbh->rollback;
-    #         }
-    #     }
-    # }
+        foreach my $group_id ( @$groups ) {
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+            $sth->bind_param( ':user_id', $user_id );
+            $sth->bind_param( ':group_id', $group_id );
+            $result = $sth->execute();
+            unless ( $result ) {
+                push @!, "Can not insert into 'user_groups'";
+                $self->{'app'}->pg_dbh->rollback;
+            }
+        }
+    }
 
     # закрытие транзакции
     $self->{'app'}->pg_dbh->commit;
@@ -319,9 +331,9 @@ sub _save_user {
             push @user_keys, 'password';
         }
 
-        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} @user_keys ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).') WHERE "id" = ? RETURNING "id"';
+        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} @user_keys ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).') WHERE "id" = :id RETURNING "id"';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
 
         $result = $sth->execute();
 
@@ -366,26 +378,21 @@ sub _save_user {
     # };
 
     unless ( @! ) {
-        # удаление из user_groups если Редактирование, если Добавлене, то не удаляем
-        # if ( $self->model('Utils')->_exists_in_table('user_groups', 'user_id', $$data{'id'}) ) {
-
-        # }
-        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
+        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = :user_id RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':user_id', $$data{'id'} );
         $result = $sth->execute();
-        push @!, "could not delete '$$data{'id'}' from user_groups" if $result eq '0E0';
     }
 
     unless ( @! ) {
         # добавление в user_groups
         $groups = from_json( $$data{'groups'} );
-        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( ?, ? ) RETURNING user_id';
+        $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id ) RETURNING user_id';
 
         foreach my $group_id ( @$groups ) {
             $sth = $self->{'app'}->pg_dbh->prepare( $sql );
-            $sth->bind_param( 1, $$data{'id'} );
-            $sth->bind_param( 2, $group_id );
+            $sth->bind_param( ':user_id', $$data{'id'} );
+            $sth->bind_param( ':group_id', $group_id );
             $sth->execute();
             $result = $sth->fetchrow_array();
             unless ( $result ) {
@@ -419,10 +426,10 @@ sub _toggle_user {
 
     unless ( @! ) {
         # смена значений publish (EAV меняется триггером)
-        $sql = 'UPDATE "public"."users" SET "publish" = ? WHERE "id" = ?';
+        $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'status'} );
-        $sth->bind_param( 2, $$data{'id'} );
+        $sth->bind_param( ':publish', $$data{'status'} );
+        $sth->bind_param( ':id', $$data{'id'} );
 
         $result = $sth->execute();
         push @!, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
@@ -447,9 +454,9 @@ sub _delete_user {
 # ??? делать транзакцией
     unless ( @! ) {
         # удаление из users
-        $sql = 'DELETE FROM "public"."users" WHERE "id" = ? RETURNING "id"';
+        $sql = 'DELETE FROM "public"."users" WHERE "id" = :id RETURNING "id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
 
         $result = $sth->execute();
 
@@ -466,9 +473,9 @@ sub _delete_user {
 
     unless ( @! ) {
         # удаление из user_groups
-        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = ? RETURNING "user_id"';
+        $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = :user_id RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':user_id', $$data{'id'} );
 
         $result = $sth->execute();
 
