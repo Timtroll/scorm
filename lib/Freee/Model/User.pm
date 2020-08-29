@@ -466,9 +466,9 @@ sub _delete_user {
     unless ( @! ) {
         # удаление из users
         $sql = 'DELETE FROM "public"."users" WHERE "id" = :id RETURNING "id"';
+
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
-
         $result = $sth->execute();
 
         if ( $result eq '0E0' ) {

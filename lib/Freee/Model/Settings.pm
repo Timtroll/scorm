@@ -19,10 +19,10 @@ sub _get_tree {
 
     my ( $list, $sql );
     if ( $no_children ) {
-        $sql = 'SELECT id, label, name, parent, 1 as folder FROM "public".settings where id IN (SELECT DISTINCT parent FROM "public".settings) OR parent=0 ORDER by id';
+        $sql = 'SELECT id, label, name, parent, 1 as folder FROM "public"."settings" where id IN (SELECT DISTINCT parent FROM "public"."settings") OR parent=0 ORDER by id';
     }
     else {
-        $sql = 'SELECT id, label, name, parent FROM "public".settings ORDER by id';
+        $sql = 'SELECT id, label, name, parent FROM "public"."settings" ORDER by id';
     }
 
     $list = $self->{app}->pg_dbh->selectall_arrayref( $sql, { Slice => {} } );

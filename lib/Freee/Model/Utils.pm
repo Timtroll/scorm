@@ -49,11 +49,7 @@ sub _exists_in_table {
 sub _toggle {
     my ($self, $data) = @_;
 
-    return unless $data;
-    return unless ( $$data{'table'} );
-    return unless ( $$data{'id'} );
-    return unless ( $$data{'fieldname'} );
-    return unless ( $$data{'value'} );
+    return unless ( $data || $$data{'table'} || $$data{'id'} || $$data{'fieldname'} || $$data{'value'} );
 
     my $result;
     my $sql ='UPDATE "public"."'.$$data{'table'}.'" SET "'.$$data{'fieldname'}.'"='.$$data{'value'}.' WHERE "id"='.$$data{'id'};
