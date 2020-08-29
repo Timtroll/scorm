@@ -1,82 +1,174 @@
 <template>
   <!--login / recover form-->
-  <div
-    class="uk-width-1-1 uk-width-expand@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-left@l"
-    :class="[status !== 'loading' ? background.default : background.loading]">
-    <div class="uk-section uk-light uk-flex uk-flex-middle uk-height-1-1 uk-overflow-auto">
-      <div class="uk-container pos-perspective">
-        <div class="uk-margin uk-hidden@m uk-text-center pos-login-logo">
-          <img src="/img/logo__bw.svg"
-               class=""
-               width="40"
-               :alt="$t('app.title')"
-               uk-svg>
-        </div>
 
-        <!--Register by Email-->
-        <form class="pos-login">
+  <div class="uk-container">
 
-          <!--login-->
-          <div class="uk-margin"
-               v-for="item in register.email">
+    <form class="pos-login"
+          autocomplete="on">
 
-            <input class="uk-input"
-                   :disabled="status === 'loading'"
-                   :type="item.type"
-                   :placeholder="item.placeholder"
-                   autocomplete="username"
-                   v-model="item.value">
+      <!--Register form-->
+      <div class="uk-margin-small uk-text-large uk-flex uk-flex-middle">
 
+        <a v-if="selectedRegisterForm"
+           class="uk-icon-link uk-margin-small-right"
+           @click="selectedRegisterForm = null">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 48 48"
+               width="22">
+            <polyline points="33 6 15 24 33 42"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="8"/>
+          </svg>
+        </a>
+        <span v-text="$t('signUp.title')"></span>
+      </div>
+
+      <div v-if="selectedRegisterForm">
+
+        <div class="uk-margin-small"
+             v-for="item in selectedRegisterForm">
+
+          <div class="uk-text-small uk-text-muted">
+            <span v-text="item.label"></span>
+            <span class="uk-text-danger" v-if="item.required"> *</span>
           </div>
 
-          <!--          &lt;!&ndash;password&ndash;&gt;-->
-          <!--          <div class="uk-margin">-->
-          <!--            <div class="uk-inline">-->
-          <!--                <span class="uk-form-icon uk-form-icon-flip"-->
-          <!--                      uk-icon="icon: lock"></span>-->
-          <!--              <input class="uk-input"-->
-          <!--                     :disabled="status === 'loading'"-->
-          <!--                     autocomplete="current-password"-->
-          <!--                     v-model="user.pass"-->
-          <!--                     type="password"-->
-          <!--                     :placeholder="$t('auth.fields.password')"-->
-          <!--                     @keyup="keyMove">-->
-          <!--            </div>-->
-          <!--          </div>-->
+          <!--text-->
+          <input v-if="item.type === 'text'"
+                 class="uk-input uk-width-medium"
+                 :disabled="status === 'loading'"
+                 :type="item.type"
+                 :placeholder="item.placeholder"
+                 autocomplete="username"
+                 v-model="item.value">
 
-          <!--submit-->
-          <div class="uk-margin"
-               v-if="validateUser">
-            <button type="submit"
+          <!--tel-->
+          <input v-if="item.type === 'tel'"
+                 class="uk-input uk-width-medium"
+                 :disabled="status === 'loading'"
+                 pattern="[0-9]*"
+                 inputmode="numeric"
+                 v-mask="'+7(###)###-####'"
+                 :placeholder="item.placeholder"
+                 autocomplete="username"
+                 v-model="item.value">
+
+          <!--email-->
+          <input v-if="item.type === 'email'"
+                 class="uk-input uk-width-medium"
+                 :disabled="status === 'loading'"
+                 :type="item.type"
+                 :placeholder="item.placeholder"
+                 autocomplete="username"
+                 v-model="item.value">
+
+          <!--password-->
+          <input v-if="item.type === 'password'"
+                 class="uk-input uk-width-medium"
+                 :disabled="status === 'loading'"
+                 :type="item.type"
+                 :placeholder="item.placeholder"
+                 autocomplete="username"
+                 v-model="item.value">
+
+          <!--select-->
+          <div v-else-if="item.type === 'select'"
+               class="uk-width-1-1"
+               uk-form-custom="target: > * > span:first-child">
+
+            <select v-model="item.value"
+                    :disabled="status === 'loading'">
+
+              <option v-for="val in item.select"
+                      :value="val[0]">{{ val[1] }}
+              </option>
+            </select>
+
+            <button class="uk-button uk-button-default uk-width-1-1 uk-flex uk-flex-middle"
+                    style="transform: none"
                     :disabled="status === 'loading'"
-                    class="uk-width-1-1 uk-button uk-button-default"
-                    @click.prevent="login">
-                  <span uk-spinner="ratio: .6"
-                        v-if="status==='loading'"></span>
-              <span v-else
-                    v-text="$t('auth.fields.submit')"></span>
+                    type="button"
+                    tabindex="-1">
+              <span class="uk-text-truncate uk-text-left uk-flex-1"></span>
+              <img src="/img/icons/icon_arrow__down.svg"
+                   uk-svg
+                   width="14"
+                   height="14">
             </button>
           </div>
 
-        </form>
-
-        <div class="uk-margin-small-top uk-flex uk-flex-between uk-text-small">
-          <router-link class="uk-link-muted"
-                       :to="{name: 'Login'}"
-                       v-text="$t('auth.title')"/>
+          <!--date-->
+          <DatePick class="uk-width-1-1"
+                    v-else-if="item.type === 'date'"
+                    v-model="item.value"
+                    :format="'YYYY-MM-DD'"
+                    :displayFormat="'DD.MM.YYYY'"
+                    :selectableYearRange="5"
+                    :mobileBreakpointWidth="480"
+                    :inputAttributes="{class: 'uk-input uk-width-1-1', readonly: true}"
+                    :pickTime="false"
+                    :disabled="status === 'loading'"
+                    :pickMinutes="true"
+                    :placeholder="item.placeholder"
+                    :months="$t('calendar.months')"
+                    :weekdays="$t('calendar.weekdays')"
+                    :setTimeCaption="$t('calendar.setTimeCaption')"
+                    :prevMonthCaption="$t('calendar.prevMonthCaption')"
+                    :nextMonthCaption="$t('calendar.nextMonthCaption')">
+          </DatePick>
         </div>
+
+        <!--submit-->
+        <div class="uk-margin-small"
+             v-if="formValid">
+          <button type="submit"
+                  :disabled="status === 'loading'"
+                  class="uk-width-1-1 uk-button uk-button-default"
+                  @click.prevent="signUp">
+                  <span uk-spinner="ratio: .5"
+                        v-if="status==='loading'"></span>
+            <span v-else
+                  v-text="$t('auth.fields.submit')"></span>
+          </button>
+        </div>
+
       </div>
+
+      <!--Select Register form-->
+      <ul v-else
+          class="uk-list">
+        <li v-for="method in registerMethods">
+          <a type="button"
+             @click.prevent="selectForm(method.fields)"
+             class="uk-button-link uk-display-inline-block uk-width-medium"
+             v-text="method.title"></a>
+        </li>
+      </ul>
+
+    </form>
+
+    <div class="uk-margin-small-top uk-flex uk-flex-between uk-text-small">
+      <router-link class="uk-link-muted"
+                   :to="{name: 'Login'}"
+                   v-text="$t('auth.title')"/>
     </div>
   </div>
+
 </template>
 
 <script>
+
+import DatePick from '@/components/ui/datePick/DatePick'
+import country  from '@/assets/json/proto/countries.json'
+import timezone from '@/assets/json/proto/timezones.json'
+
 export default {
   name: 'SignUp',
 
-  components: {
-    KeyAnimations: () => import(/* webpackChunkName: "KeyAnimations" */ './KeyAnimations')
-  },
+  components: {DatePick},
 
   metaInfo () {
     return {
@@ -88,111 +180,270 @@ export default {
     }
   },
 
-  props: {
-    data: {
-      type:    Object,
-      default: () => {}
-    }
-  },
-
-  computed: {
-    //
-    //validateUser () {
-    //  return this.user.pass !== '' && this.user.login !== ''
-    //}
-  },
-
   data () {
     return {
-      direction: false,
-      motion:    false,
+
+      registerMethods: [
+        {
+          title:  'По Email',
+          fields: 'email'
+        },
+        {
+          title:  'По телефону',
+          fields: 'phone'
+        },
+        {
+          title:  'С помощью социальной сети',
+          fields: null
+        }
+      ],
+
+      selectedRegisterForm: null,
 
       register: {
         email: [
           {
-            placeholder:  'Фамилия',
-            autocomplete: 'username',
+            placeholder:  'ivan@email.com',
+            label:        'Email',
+            autocomplete: 'email',
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'Email',
+            required:     true
+          },
+          {
+            placeholder:  'Иванов',
+            label:        'Фамилия',
+            autocomplete: 'family-name',
             type:         'text',
             select:       null,
             value:        '',
             name:         'surname',
             required:     true
-          }, {
-            placeholder:  'Имя',
-            autocomplete: 'username',
+          },
+          {
+            placeholder:  'Иван',
+            label:        'Имя',
+            autocomplete: 'additional-name',
             type:         'text',
             select:       null,
             value:        '',
             name:         'name',
             required:     true
-          }, {
-            placeholder:  'Отчество',
-            autocomplete: 'username',
+          },
+          {
+            placeholder:  'Иванович',
+            label:        'Отчество',
+            autocomplete: 'given-name',
             type:         'text',
             select:       null,
             value:        '',
             name:         'patronymic',
             required:     false
-          }, {
-            placeholder:  'Место жительства',
-            autocomplete: 'username',
+          },
+
+          {
+            placeholder:  'г. Владивосток',
+            label:        'Место жительства',
+            autocomplete: 'shipping locality',
             type:         'text',
             select:       null,
             value:        '',
             name:         'place',
             required:     true
-          }, {
-            placeholder:  'Страна',
+          },
+          {
+            placeholder:  'Россия',
+            label:        'Страна',
             autocomplete: 'none',
             type:         'select',
-            select:       true,
+            select:       this.objectToArray(country),
             value:        '',
             name:         'country',
             required:     true
-          }, {
-            placeholder:  'Часовой пояс',
+          },
+          {
+            placeholder:  '+3',
+            label:        'Часовой пояс',
             autocomplete: 'none',
             type:         'select',
-            select:       true,
+            select:       this.objectToArray(timezone),
             value:        '',
             name:         'timezone',
             required:     true
-          }, {
-            placeholder:  'Дата рождения',
+          },
+          {
+            placeholder:  '19.08.1980',
+            label:        'Дата рождения',
             autocomplete: 'birthday',
             type:         'date',
             select:       null,
             value:        '',
             name:         'birthday',
             required:     false
+          },
+          {
+            placeholder:  'Сложный пароль',
+            label:        'Пароль',
+            autocomplete: 'birthday',
+            type:         'password',
+            select:       null,
+            value:        '',
+            name:         'password',
+            required:     true
           }
         ],
-        phone: []
-      },
+        phone: [
+          {
+            placeholder:  '+7(345) 464-5555',
+            label:        'Телефон',
+            autocomplete: 'tel',
+            type:         'tel',
+            select:       null,
+            value:        '',
+            name:         'phone',
+            required:     true
+          },
+          {
+            placeholder:  'Иванов',
+            label:        'Фамилия',
+            autocomplete: 'family-name',
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'surname',
+            required:     true
+          },
+          {
+            placeholder:  'Иван',
+            label:        'Имя',
+            autocomplete: 'additional-name',
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'name',
+            required:     true
+          },
+          {
+            placeholder:  'Иванович',
+            label:        'Отчество',
+            autocomplete: 'given-name',
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'patronymic',
+            required:     false
+          },
 
-      background: {
-        default: 'pos-login-background',
-        loading: 'uk-background-danger'
+          {
+            placeholder:  'г. Владивосток',
+            label:        'Место жительства',
+            autocomplete: 'shipping locality',
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'place',
+            required:     true
+          },
+          {
+            placeholder:  'Россия',
+            label:        'Страна',
+            autocomplete: 'none',
+            type:         'select',
+            select:       this.objectToArray(country),
+            value:        '',
+            name:         'country',
+            required:     true
+          },
+          {
+            placeholder:  '+3',
+            label:        'Часовой пояс',
+            autocomplete: 'none',
+            type:         'select',
+            select:       this.objectToArray(timezone),
+            value:        '',
+            name:         'timezone',
+            required:     true
+          },
+          {
+            placeholder:  '19.08.1980',
+            label:        'Дата рождения',
+            autocomplete: 'birthday',
+            type:         'date',
+            select:       null,
+            value:        '',
+            name:         'birthday',
+            required:     false
+          },
+          {
+            placeholder:  'Сложный пароль',
+            label:        'Пароль',
+            autocomplete: 'birthday',
+            type:         'password',
+            select:       null,
+            value:        '',
+            name:         'password',
+            required:     true
+          }
+        ]
       }
+
     }
+  },
+
+  computed: {
+
+    status () {
+      return this.$store.getters.authStatus
+    },
+
+    fieldsRequired () {
+      if (!this.selectedRegisterForm) return false
+      return this.selectedRegisterForm.filter(i => i.required)
+    },
+
+    formValid () {
+      if (!this.fieldsRequired) return null
+      const valid = (val) => val.value !== ''
+      return this.fieldsRequired.every(valid)
+      //return this.selectedRegisterForm.filter(i => i.required)
+    }
+
   },
 
   methods: {
 
-    // авторизация
-    signIn () {
-      //if (this.validateUser) {
-      //  let login = this.user.login
-      //  let pass  = this.user.pass
-      //  this.$store.dispatch('login', {login, pass})
-      //      .then(() => this.$router.push({
-      //        name: 'Main'
-      //      }))
-      //      .catch((err) => {})
-      //}
+    selectForm (form) {
+      this.selectedRegisterForm = this.register[form]
+    },
+
+    objectToArray (obj) {
+      const arr = []
+      for (let prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          arr.push([prop, obj[prop]])
+        }
+      }
+      return arr
+    },
+
+    signUp () {
+      if (this.formValid) {
+        //  let login = this.user.login
+        //  let pass  = this.user.pass
+        //  this.$store.dispatch('login', {login, pass})
+        //      .then(() => this.$router.push({
+        //        name: 'Main'
+        //      }))
+        //      .catch((err) => {})
+      }
     }
 
   }
 
 }
 </script>
+<style>
+.vdpComponent input {font-size: 1rem}
+</style>

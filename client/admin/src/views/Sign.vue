@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-height-1-1 uk-width-1-1 uk-grid uk-grid-collapse">
+  <div class="uk-height-1-1 uk-width-1-1 uk-grid uk-grid-collapse uk-overflow-auto">
 
     <!--logo - desktop-->
     <div
@@ -17,10 +17,19 @@
       </div>
     </div>
 
-    <transition name="fade"
-                mode="out-in">
-      <router-view/>
-    </transition>
+    <div
+      class="uk-width-1-1 uk-width-expand@s uk-width-1-2@l uk-flex uk-flex-center uk-height-viewport uk-flex-middle uk-flex-center uk-flex-left@l"
+      :class="[status !== 'loading' ? background.default : background.loading]">
+      <div class="uk-section uk-light uk-flex uk-flex-middle uk-height-1-1"
+           style="overflow-x: visible; overflow-y: auto">
+
+        <transition name="fade"
+                    mode="out-in">
+          <router-view/>
+        </transition>
+
+      </div>
+    </div>
 
   </div>
 </template>
