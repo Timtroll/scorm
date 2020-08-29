@@ -222,8 +222,8 @@ sub save {
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
             push @!, 'No password';
         }
-        elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
-            push @!, 'Password and newpassword are the same';
+        elsif ( $$data{'password'} && $$data{'password'} ne $$data{'newpassword'} ) {
+            push @!, 'Password and newpassword are not the same';
         }
 
         unless ( @! ) {

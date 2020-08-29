@@ -56,7 +56,6 @@ sub register {
         my %data = ();
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
-print "$field\n";
             my $param = $self->param($field);
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
