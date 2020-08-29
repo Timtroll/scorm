@@ -390,7 +390,7 @@ sub toggle {
             $$data{'table'}     = 'users';
             $$data{'fieldname'} = 'publish';
             $$data{'value'}     = $$data{'status'} ? 'true' : 'false';
-            $toggle = $self->model('Utils')->_toggle( $data );
+            $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
     }
