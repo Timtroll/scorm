@@ -2,6 +2,7 @@ import axios    from 'axios'
 import router   from '../../../router'
 import {notify} from './../../methods'
 import Api      from './../../../api/Auth'
+import store    from '@/store/store'
 
 const actions = {
 
@@ -47,6 +48,9 @@ const actions = {
           router
             .push({name: 'Login'})
             .catch(e => {})
+        }
+        else {
+          notify(resp.message, 'danger') // уведомление об ошибке
         }
       }
     }

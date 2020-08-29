@@ -165,6 +165,7 @@
 import DatePick from '@/components/ui/datePick/DatePick'
 import country  from '@/assets/json/proto/countries.json'
 import timezone from '@/assets/json/proto/timezones.json'
+import moment   from 'moment'
 
 export default {
   name: 'SignUp',
@@ -261,7 +262,7 @@ export default {
             autocomplete: 'none',
             type:         'select',
             select:       this.objectToArray(country),
-            value:        '',
+            value:        'RU',
             name:         'country',
             required:     true
           },
@@ -271,7 +272,7 @@ export default {
             autocomplete: 'none',
             type:         'select',
             select:       this.objectToArray(timezone),
-            value:        '',
+            value:        '3',
             name:         'timezone',
             required:     true
           },
@@ -354,7 +355,7 @@ export default {
             autocomplete: 'none',
             type:         'select',
             select:       this.objectToArray(country),
-            value:        '',
+            value:        'RU',
             name:         'country',
             required:     true
           },
@@ -364,7 +365,7 @@ export default {
             autocomplete: 'none',
             type:         'select',
             select:       this.objectToArray(timezone),
-            value:        '',
+            value:        '3',
             name:         'timezone',
             required:     true
           },
@@ -406,6 +407,9 @@ export default {
       this.selectedRegisterForm.forEach(i => {
         object[i.name] = i.value
       })
+      if (object.hasOwnProperty('birthday')) {
+        object.birthday = moment(object.birthday).unix()
+      }
       return object
     },
 
@@ -418,7 +422,6 @@ export default {
       if (!this.fieldsRequired) return null
       const valid = (val) => val.value !== ''
       return this.fieldsRequired.every(valid)
-      //return this.selectedRegisterForm.filter(i => i.required)
     }
 
   },
@@ -431,41 +434,24 @@ export default {
     },
 
     objectToArray (obj) {
+      function compareNumbers (a, b) {
+        return a[0] - b[0]
+      }
+
       const arr = []
       for (let prop in obj) {
         if (obj.hasOwnProperty(prop)) {
           arr.push([prop, obj[prop]])
         }
       }
-      return arr
+      return arr.sort(compareNumbers)
     },
-
-    //signUp () {
-    //  if (this.selectedRegisterMethod === 'email') {
-    //    this.signUpEmail()
-    //  }
-    //  else if (this.selectedRegisterMethod === 'phone') {
-    //    this.signUpPhone()
-    //  }
-    //},
 
     signUp () {
       if (this.formValid) {
         this.$store.dispatch('signUp', this.fieldsForSave)
       }
-    },
-    //
-    //signUpPhone () {
-    //  if (this.formValid) {
-    //    this.$store.dispatch('signUpPhone', this.fieldsForSave)
-    //  }
-    //},
-    //
-    //signUpEmail () {
-    //  if (this.formValid) {
-    //    this.$store.dispatch('signUpEmail', this.fieldsForSave)
-    //  }
-    //}
+    }
 
   }
 
