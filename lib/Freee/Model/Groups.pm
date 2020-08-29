@@ -35,10 +35,10 @@ sub _all_groups {
     unless ( @! ) {
         foreach my $parent (sort {$a <=> $b} keys %$groups) {
             # получаем список роутов текущей группы
-            $sql = 'SELECT id, label, name, parent FROM "public"."routes" WHERE "parent" = ?';
+            $sql = 'SELECT id, label, name, parent FROM "public"."routes" WHERE "parent" = :parent';
 
             $sth = $self->{app}->pg_dbh->prepare( $sql );
-            $sth->bind_param( 1, $parent );
+            $sth->bind_param( ':parent', $parent );
             $sth->execute();
 
             $list = $sth->fetchall_hashref( 'name' );
@@ -52,10 +52,10 @@ sub _all_groups {
             foreach my $route ( keys %$list ) {
                 # удаляем роуты, которые есть в таблице, но которых нет в реальном списке
                 unless ( defined $$routs{ $route } ) {
-                    $sql = 'DELETE FROM "public"."routes" WHERE "id"= ?';
+                    $sql = 'DELETE FROM "public"."routes" WHERE "id"= :id';
 
                     $sth = $self->{app}->pg_dbh->prepare( $sql );
-                    $sth->bind_param( 1, $$list{$route}{'id'} );
+                    $sth->bind_param( ':id', $$list{$route}{'id'} );
                     $sth->execute();
                 }
             }
@@ -99,10 +99,10 @@ sub _get_group {
     }
     else {
         # взять запись о группе из таблицы groups
-        $sql = 'SELECT * FROM "public"."groups" WHERE "id" = ?';
+        $sql = 'SELECT * FROM "public"."groups" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
@@ -190,10 +190,10 @@ sub _delete_group {
 
     unless( @! ) {
         # удаление записи из таблицы groups
-        $sql = 'DELETE FROM "public"."groups" WHERE "id" = ?';
+        $sql = 'DELETE FROM "public"."groups" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $$data{'id'} );
+        $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
 
         push @!, "Could not delete Group '$$data{'id'}'" if $result eq '0E0';

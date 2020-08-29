@@ -24,6 +24,7 @@ INSERT INTO "public"."groups" VALUES ('1', 'Администратор', 'admin'
 INSERT INTO "public"."groups" VALUES ('2', 'Студенты', 'students', '1');
 INSERT INTO "public"."groups" VALUES ('3', 'Ректоры', 'rectors', '1');
 INSERT INTO "public"."groups" VALUES ('4', 'Менеджеры', 'managers', '1');
+INSERT INTO "public"."groups" VALUES ('5', 'Нераспределенные', 'unaproved', '1');
 
 
 CREATE UNIQUE INDEX "groups_name_idx" ON "public"."groups" USING btree ("name");

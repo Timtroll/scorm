@@ -80,7 +80,7 @@ sub register {
                 }
                 else {
                     if ( !defined $param || $param eq '' ) {
-                        push @!, "_check_fields: didn't has required data in '$field' = '$param'";
+                        push @!, "_check_fields: didn't has required data in '$field' = ''";
                     }
                 }
             }
