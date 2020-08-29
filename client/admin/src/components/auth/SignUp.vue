@@ -132,7 +132,7 @@
                   <span uk-spinner="ratio: .5"
                         v-if="status==='loading'"></span>
             <span v-else
-                  v-text="$t('auth.fields.submit')"></span>
+                  v-text="$t('signUp.fields.submit')"></span>
           </button>
         </div>
 
@@ -433,10 +433,11 @@ export default {
       this.selectedRegisterMethod = form.fields
     },
 
+    compareNumbers (a, b) {
+      return a[0] - b[0]
+    },
+
     objectToArray (obj) {
-      function compareNumbers (a, b) {
-        return a[0] - b[0]
-      }
 
       const arr = []
       for (let prop in obj) {
@@ -444,7 +445,8 @@ export default {
           arr.push([prop, obj[prop]])
         }
       }
-      return arr.sort(compareNumbers)
+
+      return arr.sort(this.compareNumbers)
     },
 
     signUp () {

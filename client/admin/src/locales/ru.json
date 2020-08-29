@@ -17,7 +17,7 @@
     "fields": {
       "login":    "Email",
       "password": "Пароль",
-      "submit":   "Войти"
+      "submit":   "Зарегистрироваться"
     },
     "title":  "Регистрация"
   },
