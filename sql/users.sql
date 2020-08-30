@@ -29,7 +29,7 @@ CREATE TABLE "public"."users" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."users" OWNER TO "troll";
-ALTER SEQUENCE "users_pkey" RESTART WITH 1
+ALTER SEQUENCE "users_pkey" RESTART WITH 1;
 
 CREATE TABLE "public"."users_flags" (
     "user_id" int4 NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE "public"."users_flags" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."users_flags" OWNER TO "troll";
-ALTER SEQUENCE "users_flags_pkey" RESTART WITH 1
+ALTER SEQUENCE "users_flags_pkey" RESTART WITH 1;
 
 CREATE TABLE "public"."users_social" (
     "user_id" int4 NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE "public"."users_social" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."users_social" OWNER TO "troll";
-ALTER SEQUENCE "users_social_pkey" RESTART WITH 1
+ALTER SEQUENCE "users_social_pkey" RESTART WITH 1;
 
 ---функция ( изменение статуса users после изменения статуса EAV_items )
 CREATE OR REPLACE FUNCTION "public"."users_trigger_set_users"() RETURNS "pg_catalog"."trigger" AS $BODY$

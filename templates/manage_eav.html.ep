@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
+<head>
+    <title><%= $title %></title>
+    <meta charset="UTF-8">
+</head>
 <style>
 html {
     height: 96%;
@@ -54,11 +57,11 @@ body {
 <body>
 
 <!-- load the d3.js library --> 
-<script src="<%= $self->req->headers->host %>/d3.v4.min.js"></script>
+<script src="/d3/d3.v4.min.js"></script>
 <script>
 
-
-treeJSON = d3.json("root.json", function(error, treeData) {
+// treeJSON = d3.json("/d3/root.json", function(error, treeData) {
+treeJSON = d3.json("/manage_eav/root", function(error, treeData) {
     // Set the dimensions and margins of the diagram
     var radius = 8;
     // Set the dimensions and margins of the diagram
@@ -249,7 +252,6 @@ console.log(d);
     }
 });
 </script>
-<%= $self->req->headers->host %>
 <div class="Content"></div>
 
 </body>

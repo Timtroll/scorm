@@ -16,7 +16,7 @@ WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."groups" OWNER TO "troll";
 ALTER TABLE "public"."groups" ADD CONSTRAINT name UNIQUE (name);
-ALTER SEQUENCE "groups_pkey" RESTART WITH 1
+ALTER SEQUENCE "groups_pkey" RESTART WITH 1;
 
 -- ----------------------------
 -- Records of groups

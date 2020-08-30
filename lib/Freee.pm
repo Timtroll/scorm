@@ -89,11 +89,15 @@ sub startup {
 
     $auth = $r->under()->to('auth#check_token');
 
+    # работа с EAV объектами (служебное)
+    $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
+    $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
+
     # загрузка файлов
-    $auth->post('/upload/')               ->to('upload#index');       # сохранение загружаемого файла
-    $auth->post('/upload/search/')        ->to('upload#search');      # поиск загруженного файла
-    $auth->post('/upload/delete/')        ->to('upload#delete');      # удаление загруженного файла
-    $auth->post('/upload/update/')        ->to('upload#update');      # обновление описания загруженного файла
+    $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла
+    $auth->post('/upload/search/')        ->to('upload#search');        # поиск загруженного файла
+    $auth->post('/upload/delete/')        ->to('upload#delete');        # удаление загруженного файла
+    $auth->post('/upload/update/')        ->to('upload#update');        # обновление описания загруженного файла
 
     # левая менюха (дерево без листочков) - обязательная проверка на фолдер
     $auth->post('/settings/get_tree')     ->to('settings#get_tree');    # Все дерево без листочков
@@ -264,7 +268,6 @@ sub startup {
 
     # форум
     $auth->any('/forum/')               ->to('forum#index');        # стартовая страница
-
     $auth->post('/forum/list_themes')   ->to('forum#list_themes');
     $auth->post('/forum/theme')         ->to('forum#theme');
     $auth->post('/forum/add_theme')     ->to('forum#add_theme');
@@ -282,7 +285,6 @@ sub startup {
     $auth->post('/forum/save')          ->to('forum#save');          # редактирование сообщения
     $auth->post('/forum/edit')          ->to('forum#edit');          # вывод сообщения по id
     $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
-
     $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса
 
     $r->any('/*')->to('index#index');
@@ -292,29 +294,5 @@ sub startup {
         $$routs{ $_->{pattern}->{defaults}->{action} } = $_->{pattern}->{'unparsed'};
     }
 }
-
-# sub dbconnect {
-#     my ( $self ) = shift;
-# print "3\n";
-
-#     # если в конфиге установлен test = 1 - подключаемся к тестовой базе
-#     my $database = 'pg_main';
-#     $database = 'pg_main_test' if ($config->{'test'});
-
-#     unless ($self->{dbh}) {
-#         $self->{dbh} = DBI->connect(
-#             $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
-#             $config->{'dbs'}->{'databases'}->{$database}->{'username'},
-#             $config->{'dbs'}->{'databases'}->{$database}->{'password'},
-#             $config->{'dbs'}->{'databases'}->{$database}->{'options'}
-#         );
-#     }
-#     $self->{errstr} = sub {
-#         print "Error received: $DBI::errstr\n";
-#     };
-# print Dumper $self->{dbh};
-# print "------\n";
-#     return $self->{dbh};
-# }
 
 1;
