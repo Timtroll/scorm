@@ -16,6 +16,7 @@ CREATE TABLE "public"."universal_links" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."universal_links" OWNER TO "troll";
+ALTER SEQUENCE "universal_links" RESTART WITH 1
 
 
 CREATE TABLE "public"."universal_links_types" (
@@ -27,6 +28,7 @@ CREATE TABLE "public"."universal_links_types" (
 WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."universal_links_types" OWNER TO "troll";
+ALTER SEQUENCE "universal_links_types_pkey" RESTART WITH 1
 
 
 CREATE INDEX "a" ON "public"."universal_links" USING btree ("a_link_id", "a_link_type");

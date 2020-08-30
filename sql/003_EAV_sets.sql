@@ -4,3 +4,5 @@ CREATE TABLE "public"."EAV_sets" (
     CONSTRAINT "EAV_sets_pkey" PRIMARY KEY ("alias")
 )
 WITH (OIDS=FALSE);
+
+ALTER SEQUENCE "EAV_sets_pkey" RESTART WITH 1

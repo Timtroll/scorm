@@ -15,6 +15,7 @@ CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_groups" OWNER TO "troll";
+ALTER SEQUENCE "forum_groups_pkey" RESTART WITH 1
 
 ---функция (рекурсивное удаление тем группы)
 CREATE OR REPLACE FUNCTION "public"."groups_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$
@@ -51,6 +52,7 @@ CONSTRAINT "forum_messages_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_messages" OWNER TO "troll";
+ALTER SEQUENCE "forum_messages_pkey" RESTART WITH 1
 ---------------------
 
 DROP TABLE IF EXISTS "public"."forum_rates";
@@ -63,6 +65,7 @@ CONSTRAINT "forum_rates_pkey" PRIMARY KEY ("user_id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_rates" OWNER TO "troll";
+ALTER SEQUENCE "forum_rates_pkey" RESTART WITH 1
 ---------------------
 
 DROP TABLE IF EXISTS "public"."forum_themes";
@@ -85,6 +88,8 @@ CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_themes" OWNER TO "troll";
+ALTER SEQUENCE "forum_themes_pkey" RESTART WITH 1
+
 
 ---функция (рекурсивное удаление сообщений темы)
 CREATE OR REPLACE FUNCTION "public"."themes_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$

@@ -22,6 +22,7 @@ CREATE TABLE "public"."media" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."media" OWNER TO "troll";
+ALTER SEQUENCE "media_pkey" RESTART WITH 1
 
 CREATE TABLE "public"."media_version" (
     "id" int4 NOT NULL,
@@ -33,3 +34,4 @@ CREATE TABLE "public"."media_version" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."media_version" OWNER TO "troll";
+ALTER SEQUENCE "media_version_pkey" RESTART WITH 1

@@ -14,3 +14,4 @@ CREATE TABLE "public"."export_settings" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."export_settings" OWNER TO "troll";
+ALTER SEQUENCE "export_settings_pkey" RESTART WITH 1
