@@ -3,6 +3,7 @@ DROP SEQUENCE IF EXISTS "public".forum_groups_id_seq;
 DROP TRIGGER IF EXISTS "groups_ad" ON "public"."forum_groups" CASCADE;
 
 CREATE SEQUENCE "public".forum_groups_id_seq;
+ALTER SEQUENCE "forum_groups_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_groups" (
 "id" int4 DEFAULT nextval('forum_groups_id_seq'::regclass) NOT NULL,
@@ -15,7 +16,6 @@ CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_groups" OWNER TO "troll";
-ALTER SEQUENCE "forum_groups_pkey" RESTART WITH 1;
 
 ---функция (рекурсивное удаление тем группы)
 CREATE OR REPLACE FUNCTION "public"."groups_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$
@@ -37,6 +37,7 @@ DROP TABLE IF EXISTS "public"."forum_messages";
 DROP SEQUENCE IF EXISTS "public".forum_messages_id_seq; 
 
 CREATE SEQUENCE "public".forum_messages_id_seq;
+ALTER SEQUENCE "forum_messages_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_messages" (
 "id" int4 DEFAULT nextval('forum_messages_id_seq'::regclass) NOT NULL,
@@ -52,7 +53,6 @@ CONSTRAINT "forum_messages_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_messages" OWNER TO "troll";
-ALTER SEQUENCE "forum_messages_pkey" RESTART WITH 1;
 ---------------------
 
 DROP TABLE IF EXISTS "public"."forum_rates";
@@ -65,7 +65,6 @@ CONSTRAINT "forum_rates_pkey" PRIMARY KEY ("user_id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_rates" OWNER TO "troll";
-ALTER SEQUENCE "forum_rates_pkey" RESTART WITH 1;
 ---------------------
 
 DROP TABLE IF EXISTS "public"."forum_themes";
@@ -73,6 +72,7 @@ DROP SEQUENCE IF EXISTS "public".forum_themes_id_seq;
 DROP TRIGGER IF EXISTS "themes_ad" ON "public"."forum_themes" CASCADE;
 
 CREATE SEQUENCE "public".forum_themes_id_seq;
+ALTER SEQUENCE "forum_themes_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_themes" (
 "id" int4 DEFAULT nextval('forum_themes_id_seq'::regclass) NOT NULL,
@@ -88,7 +88,6 @@ CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."forum_themes" OWNER TO "troll";
-ALTER SEQUENCE "forum_themes_pkey" RESTART WITH 1;
 
 
 ---функция (рекурсивное удаление сообщений темы)

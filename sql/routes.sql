@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS "public"."routes";
 
 DROP SEQUENCE IF EXISTS "public".routes_id_seq; 
 CREATE SEQUENCE "public".routes_id_seq;
+ALTER SEQUENCE "routes_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."routes" (
 "id" int4 DEFAULT nextval('routes_id_seq'::regclass) NOT NULL,

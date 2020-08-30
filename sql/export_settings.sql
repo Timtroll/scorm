@@ -4,6 +4,7 @@ CREATE SEQUENCE export_settings_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+ALTER SEQUENCE "export_settings_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."export_settings" (
     "id" int4 DEFAULT nextval('export_settings_id_seq'::regclass) NOT NULL,
@@ -14,4 +15,3 @@ CREATE TABLE "public"."export_settings" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."export_settings" OWNER TO "troll";
-ALTER SEQUENCE "export_settings_pkey" RESTART WITH 1;

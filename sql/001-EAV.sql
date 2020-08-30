@@ -11,6 +11,8 @@ CREATE SEQUENCE "public".eav_items_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+ALTER SEQUENCE "eav_fields_id_seq" RESTART WITH 1;
+ALTER SEQUENCE "eav_items_id_seq" RESTART WITH 1;
 
 CREATE TYPE "public"."EAV_field_type" AS ENUM (
     'blob',
@@ -110,31 +112,24 @@ CREATE TABLE "public"."EAV_links" (
 
 ALTER TABLE ONLY "public"."EAV_data_boolean"
     ADD CONSTRAINT "EAV_data_boolean_pkey" PRIMARY KEY (id, field_id);
-ALTER SEQUENCE "EAV_data_boolean_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_data_datetime"
     ADD CONSTRAINT "EAV_data_datetime_pkey" PRIMARY KEY (id, field_id);
-ALTER SEQUENCE "EAV_data_datetime_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_data_int4"
     ADD CONSTRAINT "EAV_data_int4_pkey" PRIMARY KEY (id, field_id);
-ALTER SEQUENCE "EAV_data_int4_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_data_string"
     ADD CONSTRAINT "EAV_data_string_pkey" PRIMARY KEY (id, field_id);
-ALTER SEQUENCE "EAV_data_string_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_fields"
     ADD CONSTRAINT "EAV_fields_pkey" PRIMARY KEY (id);
-ALTER SEQUENCE "EAV_fields_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_items"
     ADD CONSTRAINT "EAV_items_pkey" PRIMARY KEY (id);
-ALTER SEQUENCE "EAV_items_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_links"
     ADD CONSTRAINT "EAV_links_pkey" PRIMARY KEY (parent, id);
-ALTER SEQUENCE "EAV_links_pkey" RESTART WITH 1;
 
 ALTER TABLE ONLY "public"."EAV_fields"
    ADD CONSTRAINT unique_field UNIQUE (alias, set);

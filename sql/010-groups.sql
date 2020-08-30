@@ -4,6 +4,7 @@ DROP TRIGGER IF EXISTS "groups_ad" ON "public"."groups" CASCADE;
 DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
 
 CREATE SEQUENCE "public".groups_id_seq;
+ALTER SEQUENCE "groups_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."groups" (
     "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
@@ -16,7 +17,6 @@ WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."groups" OWNER TO "troll";
 ALTER TABLE "public"."groups" ADD CONSTRAINT name UNIQUE (name);
-ALTER SEQUENCE "groups_pkey" RESTART WITH 1;
 
 -- ----------------------------
 -- Records of groups
