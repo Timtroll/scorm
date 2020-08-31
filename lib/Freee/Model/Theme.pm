@@ -9,61 +9,48 @@ use Data::Dumper;
 ###################################################################
 
 # Добавлением новой темы в EAV
-# $id = $self->model('theme')->_insert_theme( $data );
-# $data = {
-#    'parent'      => 0,                                # кладется в EAV
-#    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
-#    'description' => 'Краткое описание',               # кладется в EAV
-#    'content'     => 'Полное описание',                # кладется в EAV
-#    'attachment'  => '[345,577,643],                   # кладется в EAV
-#    'keywords'    => 'ключевые слова',                 # кладется в EAV
-#    'url'         => 'как должен выглядеть url',       # кладется в EAV
-#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
-# }
-sub _insert_theme {
-    my ( $self, $data ) = @_;
+# $id = $self->model('Theme')->_empty_theme();
+sub _empty_theme {
+    my ( $self ) = @_;
 
-    my ( $sth, $theme, $id );
+    my ( $theme, $eav, $id );
 
-    # проверка входных данных
-    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @!, "no data for insert";
-    }
-    else {
-        # делаем запись в EAV
-        $theme = Freee::EAV->new( 'Theme',
-            {
-                'parent'    => $$data{'parent'},
-                'title'     => $$data{'name'},
-                'publish'   => $$data{'status'},
-                'Theme' => {
-                    'parent'       => $$data{'parent'},
-                    'label'        => $$data{'label'},
-                    'description'  => $$data{'description'},
-                    'content'      => $$data{'content'},
-                    'keywords'     => $$data{'keywords'},
-                    'import_source'=> '',
-                    'url'          => $$data{'url'},
-                    'seo'          => $$data{'seo'},
-                    'attachment'   => $$data{'attachment'}
-                }
-            }
-        );
-        $id = $theme->id();
-        unless ( $id ) {
-            push @!, "Could not insert theme into EAV";
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->begin_work;
+
+    # делаем запись в EAV
+    $eav = {
+        'parent'    => 0,
+        'title'     => 'New theme',
+        'publish'   => \0,
+        'Theme' => {
+            'parent'       => 0,
+            'label'        => '',
+            'description'  => '',
+            'content'      => '',
+            'keywords'     => '',
+            'import_source'=> '',
+            'url'          => '',
+            'seo'          => '',
+            'attachment'   => '[]'
         }
+    };
+    $theme = Freee::EAV->new( 'Discipline', $eav );
+    $id = $theme->id();
+    unless ( scalar( $id ) ) {
+        push @!, "Could not insert theme into EAV";
     }
+
+    # закрытие транзакции
+    $self->{'app'}->pg_dbh->commit;
 
     return $id;
 }
 
 # удалить тему
-# $result = $self->model('theme')->_delete_theme( $$data{'id'} );
+# $result = $self->model('theme')->_delete_theme( <id> );
 # $data = {
-# 'id'    - id темы
+#   'id'    - id темы
 # }
 sub _delete_theme {
     my ( $self, $id ) = @_;
@@ -87,6 +74,7 @@ sub _delete_theme {
 
 # получить список тем
 # my $list = $self->model('Theme')->_list_theme();
+# возвращается:
 # my $list = {
 #     "folder"      => 1,                               # EAV_items
 #     "id"          => $self->param('id'),              # EAV_items
@@ -141,9 +129,10 @@ sub _list_theme {
     return $list;
 }
 
-#  получить данные для редактирования темы
-#  $result = $self->model('Theme')->_get_theme( $$data{'id'} );
-# my $data = {
+# получить данные для редактирования темы
+# $list = $self->model('Theme')->_get_theme( <id> );
+# возвращается:
+# my $list = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
 #     "label" => "Предмет 1",

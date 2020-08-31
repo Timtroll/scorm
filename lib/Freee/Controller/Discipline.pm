@@ -97,23 +97,11 @@ sub edit {
 }
 
 # Добавление нового предмета в EAV
-# $self->add( $data );
-# $data = {
-#    'parent'      => 0,                                # кладется в EAV
-#    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
-#    'description' => 'Краткое описание',               # кладется в EAV
-#    'content'     => 'Полное описание',                # кладется в EAV
-#    'attachment'  => '[345,577,643],                   # кладется в EAV
-#    'keywords'    => 'ключевые слова',                 # кладется в EAV
-#    'url'         => 'как должен выглядеть url',       # кладется в EAV
-#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
-# }
+# $self->add();
 sub add {
     my $self = shift;
 
-    my ( $data, $attachment, $resp, $id );
+    my ( $resp, $id );
 
     # создание пустого объекта предмета
     $id = $self->model('Discipline')->_empty_discipline();

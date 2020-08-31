@@ -9,41 +9,29 @@ use Data::Dumper;
 ###################################################################
 
 # Добавлением нового предмета в EAV
-# $id = $self->model('Discipline')->_empty_discipline( $data );
-# $data = {
-#    'parent'      => 0,                                # кладется в EAV
-#    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
-#    'description' => 'Краткое описание',               # кладется в EAV
-#    'content'     => 'Полное описание',                # кладется в EAV
-#    'attachment'  => '[345,577,643],                   # кладется в EAV
-#    'keywords'    => 'ключевые слова',                 # кладется в EAV
-#    'url'         => 'как должен выглядеть url',       # кладется в EAV
-#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
-# }
+# $id = $self->model('Discipline')->_empty_discipline();
 sub _empty_discipline {
-    my ( $self, $data ) = @_;
+    my ( $self ) = @_;
 
-    my ( $rc, $discipline, $id );
+    my ( $discipline, $eav, $id );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
     # делаем запись в EAV
-    my $eav = {
+    $eav = {
         'parent'    => 0,
-        'title'     => $$data{'name'} ? $$data{'name'} : '',
+        'title'     => 'New discipline',
         'publish'   => \0,
         'Discipline' => {
             'parent'       => 0,
-            'label'        => $$data{'label'} ? $$data{'label'} : '',
-            'description'  => $$data{'description'} ? $$data{'description'} : '',
-            'content'      => $$data{'content'} ? $$data{'content'} : '',
-            'keywords'     => $$data{'keywords'} ? $$data{'keywords'} : '',
+            'label'        => '',
+            'description'  => '',
+            'content'      => '',
+            'keywords'     => '',
             'import_source'=> '',
-            'url'          => $$data{'url'} ? $$data{'url'} : '',
-            'seo'          => $$data{'seo'} ? $$data{'seo'} : '',
+            'url'          => '',
+            'seo'          => '',
             'attachment'   => '[]'
         }
     };
@@ -58,44 +46,6 @@ sub _empty_discipline {
 
     return $id;
 }
-
-# sub _insert_discipline {
-#     my ( $self, $data ) = @_;
-
-#     my ( $sth, $discipline, $id );
-
-#     # проверка входных данных
-#     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-#         push @!, "no data for insert";
-#     }
-#     else {
-#         # делаем запись в EAV
-#         $discipline = Freee::EAV->new( 'Discipline',
-#             {
-#                 'parent'    => $$data{'parent'},
-#                 'title'     => $$data{'name'},
-#                 'publish'   => $$data{'status'},
-#                 'Discipline' => {
-#                     'parent'       => $$data{'parent'},
-#                     'label'        => $$data{'label'},
-#                     'description'  => $$data{'description'},
-#                     'content'      => $$data{'content'},
-#                     'keywords'     => $$data{'keywords'},
-#                     'import_source'=> '',
-#                     'url'          => $$data{'url'},
-#                     'seo'          => $$data{'seo'},
-#                     'attachment'   => $$data{'attachment'}
-#                 }
-#             }
-#         );
-#         $id = $discipline->id();
-#         unless ( scalar( $id ) ) {
-#             push @!, "Could not insert discipline into EAV";
-#         }
-#     }
-
-#     return $id;
-# }
 
 # удалить предмет
 # $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );

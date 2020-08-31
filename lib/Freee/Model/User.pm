@@ -165,23 +165,11 @@ sub _get_user {
 }
 
 # Добавлением пустой объект пользователя в EAV и таблицу users
-# ( $user_id ) = $self->model('User')->_empty_user( $data );
-# $data = {
-#     'place'       => 'place',                         # кладется в EAV
-#     'country'     => 'country',                       # кладется в EAV
-#     'birthday'    => '1972-01-06 00:00:00',           # кладется в EAV
-#     'surname'     => 'test',                          # кладется в EAV
-#     'name'        => 'name',                          # кладется в EAV
-#     'patronymic'  => 'patronymic',                    # кладется в EAV
-#     'email'       => 'test@test.com',                 # кладется в users
-#     'phone'       => '+7(999) 222-2222',              # кладется в users
-#     'password'    => 'password',                      # кладется в users
-#     'timezone'    => '10',                            # кладется в users
-# }
+# ( $user_id ) = $self->model('User')->_empty_user();
 sub _empty_user {
-    my ( $self, $data ) = @_;
+    my ( $self ) = @_;
 
-    my ( $rc, $sth, $user, $user_id, $result, $sql, $unaproved, $groups, @user_keys );
+    my ( $sth, $user, $user_id, $data, $result, $sql, $unaproved );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
@@ -205,25 +193,24 @@ sub _empty_user {
         'title'  => 'New user',
         'User' => {
             'parent'       => 0, 
-            'surname'      => $$data{'surname'} ? $$data{'surname'} : '',
-            'name'         => $$data{'name'} ? $$data{'name'} : '',
-            'patronymic'   => $$data{'patronymic'} ? $$data{'patronymic'} : '',
-            'place'        => $$data{'place'} ? $$data{'place'} : '',
-            'country'      => $$data{'country'} ? $$data{'country'} : 'RU',
-            'birthday'     => $$data{'birthday'} ? $$data{'birthday'} : strftime( "%F %T", localtime() ),
+            'surname'      => '',
+            'name'         => '',
+            'patronymic'   => '',
+            'place'        => '',
+            'country'      => 'RU',
+            'birthday'     => strftime( "%F %T", localtime() ),
             'import_source'=> '',
             'publish'      => \0
         }
     };
     $user = Freee::EAV->new( 'User', $eav );
-    $$data{'eav_id'} = $user->id();
 
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
         'publish'   => 0,
-        'email'     => $$data{'email'} ? $$data{'email'} : '',
-        'phone'     => $$data{'phone'} ? $$data{'phone'} : '',
-        'password'  => $$data{'password'} ? $$data{'password'} : '',
+        'email'     => '',
+        'phone'     => '',
+        'password'  => '',
         'eav_id'    => $user->id(),
         'timezone'  => $$data{'timezone'} ? $$data{'timezone'} : $timezone,
         'groups'    => '["' . $$unaproved{id} . '"]'
@@ -248,7 +235,7 @@ sub _empty_user {
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
 
         unless ( $user_id ) {
-            push @!, "Can not insert $$data{'title'} into users". DBI->errstr;
+            push @!, "Can not insert 'New user' into users table ". DBI->errstr;
             $self->{'app'}->pg_dbh->rollback;
             return;
         }
@@ -256,7 +243,6 @@ sub _empty_user {
 
     #### заполнение таблицы user_groups
     unless ( @! ) {
-        # $groups = from_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':user_id', $user_id );

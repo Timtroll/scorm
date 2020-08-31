@@ -96,57 +96,14 @@ sub edit {
 }
 
 # Добавление новой темы в EAV
-# $self->add( $data );
-# $data = {
-#    'parent'      => 0,                                # кладется в EAV
-#    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
-#    'description' => 'Краткое описание',               # кладется в EAV
-#    'content'     => 'Полное описание',                # кладется в EAV
-#    'attachment'  => '[345,577,643],                   # кладется в EAV
-#    'keywords'    => 'ключевые слова',                 # кладется в EAV
-#    'url'         => 'как должен выглядеть url',       # кладется в EAV
-#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
-# }
+# $self->add();
 sub add {
     my $self = shift;
 
-    my ( $data, $attachment, $resp, $id );
+    my ( $resp, $id );
 
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверка существования вложенных файлов
-        $attachment = from_json( $$data{'attachment'} );
-        foreach ( @$attachment ) {
-            unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
-                push @!, "file with id '$_' doesn't exist";
-                last;
-            }
-        }
-    }
-
-    unless ( @! ) {
-        # проверка родителя
-        unless ( $$data{'parent'} ) {
-            push @!, "theme must have a nonzero parent";
-        }
-        elsif(
-            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
-            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
-        ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist";
-        }
-    }
-
-    unless ( @! ) {
-        # добавляем тему в EAV
-        $$data{'status'} = 1 unless defined $$data{'status'};
-
-        $id = $self->model('Theme')->_insert_theme( $data );
-    }
+    # создание пустого объекта предмета
+    $id = $self->model('Theme')->_empty_theme();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
