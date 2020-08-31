@@ -25,7 +25,7 @@ sub index {
                 "edit"   => '/theme/edit',     # разрешает редактировать тему
                 "remove" => '/theme/remove',   # разрешает удалять тему
             },
-            "current" =>  {
+            "child" =>  {
                 "add"    => '/lesson/add',     # разрешает добавлять урок
             },
             "list" => $list

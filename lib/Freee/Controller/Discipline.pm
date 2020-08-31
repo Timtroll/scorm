@@ -26,7 +26,7 @@ sub index {
                 "edit"   => '/discipline/edit',     # разрешает редактировать предмет
                 "remove" => '/discipline/remove',   # разрешает удалять предмет
             },
-            "current" =>  {
+            "child" =>  {
                 "add"    => '/theme/add',           # разрешает добавлять тему
             },
             "list" => $list
