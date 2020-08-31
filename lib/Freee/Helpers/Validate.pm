@@ -407,7 +407,7 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/discipline/add'  => {
-                # "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 # "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 # "label"         => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 # "description"   => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -449,7 +449,7 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/theme/add'  => {
-                # "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 # "name"          => [ 'required', qr/^[\w0-9_]+$/os, 256 ],
                 # "label"         => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 # "description"   => [ 'required', qr/^[\w\ \-0-9~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
