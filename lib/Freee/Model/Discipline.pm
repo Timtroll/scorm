@@ -56,7 +56,7 @@ sub _empty_discipline {
     # закрытие транзакции
     $self->{'app'}->pg_dbh->commit;
 
-    return $user_id;
+    return $id;
 }
 
 # sub _insert_discipline {
