@@ -9,7 +9,7 @@ use Data::Dumper;
 ###################################################################
 
 # Добавлением нового предмета в EAV
-# $id = $self->model('Discipline')->_insert_discipline( $data );
+# $id = $self->model('Discipline')->_empty_discipline( $data );
 # $data = {
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
@@ -22,43 +22,80 @@ use Data::Dumper;
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
 #    'status'      => 1                                 # кладется в EAV
 # }
-sub _insert_discipline {
+sub _empty_discipline {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $discipline, $id );
+    my ( $rc, $discipline, $id );
 
-    # проверка входных данных
-    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
-        push @!, "no data for insert";
-    }
-    else {
-        # делаем запись в EAV
-        $discipline = Freee::EAV->new( 'Discipline',
-            {
-                'parent'    => $$data{'parent'},
-                'title'     => $$data{'name'},
-                'publish'   => $$data{'status'},
-                'Discipline' => {
-                    'parent'       => $$data{'parent'},
-                    'label'        => $$data{'label'},
-                    'description'  => $$data{'description'},
-                    'content'      => $$data{'content'},
-                    'keywords'     => $$data{'keywords'},
-                    'import_source'=> '',
-                    'url'          => $$data{'url'},
-                    'seo'          => $$data{'seo'},
-                    'attachment'   => $$data{'attachment'}
-                }
-            }
-        );
-        $id = $discipline->id();
-        unless ( scalar( $id ) ) {
-            push @!, "Could not insert discipline into EAV";
+    # открываем транзакцию
+    $self->{'app'}->pg_dbh->begin_work;
+
+    # делаем запись в EAV
+    my $eav = {
+        'parent'    => 0,
+        'title'     => $$data{'name'} ? $$data{'name'} : '',
+        'publish'   => \0,
+        'Discipline' => {
+            'parent'       => 0,
+            'label'        => $$data{'label'} ? $$data{'label'} : '',
+            'description'  => $$data{'description'} ? $$data{'description'} : '',
+            'content'      => $$data{'content'} ? $$data{'content'} : '',
+            'keywords'     => $$data{'keywords'} ? $$data{'keywords'} : '',
+            'import_source'=> '',
+            'url'          => $$data{'url'} ? $$data{'url'} : '',
+            'seo'          => $$data{'seo'} ? $$data{'seo'} : '',
+            'attachment'   => '[]'
         }
+    };
+    $discipline = Freee::EAV->new( 'Discipline', $eav );
+    $id = $discipline->id();
+    unless ( scalar( $id ) ) {
+        push @!, "Could not insert discipline into EAV";
     }
 
-    return $id;
+    # закрытие транзакции
+    $self->{'app'}->pg_dbh->commit;
+
+    return $user_id;
 }
+
+# sub _insert_discipline {
+#     my ( $self, $data ) = @_;
+
+#     my ( $sth, $discipline, $id );
+
+#     # проверка входных данных
+#     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+#         push @!, "no data for insert";
+#     }
+#     else {
+#         # делаем запись в EAV
+#         $discipline = Freee::EAV->new( 'Discipline',
+#             {
+#                 'parent'    => $$data{'parent'},
+#                 'title'     => $$data{'name'},
+#                 'publish'   => $$data{'status'},
+#                 'Discipline' => {
+#                     'parent'       => $$data{'parent'},
+#                     'label'        => $$data{'label'},
+#                     'description'  => $$data{'description'},
+#                     'content'      => $$data{'content'},
+#                     'keywords'     => $$data{'keywords'},
+#                     'import_source'=> '',
+#                     'url'          => $$data{'url'},
+#                     'seo'          => $$data{'seo'},
+#                     'attachment'   => $$data{'attachment'}
+#                 }
+#             }
+#         );
+#         $id = $discipline->id();
+#         unless ( scalar( $id ) ) {
+#             push @!, "Could not insert discipline into EAV";
+#         }
+#     }
+
+#     return $id;
+# }
 
 # удалить предмет
 # $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
