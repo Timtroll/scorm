@@ -9,7 +9,7 @@
 
       <!--Add Tree root el -->
       <div class="uk-width-auto"
-           v-if="data.add">
+           v-if="data.current.add">
         <button type="button"
                 class="uk-button uk-button-success pos-border-radius-none pos-border-none"
                 @click.prevent="addEl()">
@@ -94,7 +94,7 @@
 
             <!--Редактировать раздел-->
             <a @click.prevent="editChildren(item)"
-               v-if="data.child.edit"
+               v-if="data.current.edit"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
                class="pos-finder-list-item-actions__edit">
               <img src="/img/icons/icon__edit.svg"
@@ -106,7 +106,7 @@
 
             <!--Удалить раздел-->
             <a @click.prevent="removeChildren(item)"
-               v-if="data.child.remove"
+               v-if="data.current.remove"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
                class="pos-finder-list-item-actions__remove">
               <img src="/img/icons/icon__trash.svg"
@@ -155,10 +155,8 @@ export default {
 
     // Поиск по полю label && keywords
     filterSearch () {
-
       if (!this.data) return null
       if (!this.data.list) return null
-
       return this.data.list.filter(item => !this.searchInput || this.filterProp(item.search))
     }
   },
@@ -183,13 +181,25 @@ export default {
       this.$emit('open', this.data)
     },
 
-    addEl () {},
+    async addEl () {
+      const elId   = await this.$store.dispatch('courses/add', {
+        route: this.data.current.add
+      })
+      const editEl = await this.editEl(elId)
+    },
 
-    addChildren (item) {},
+    async addChildren (id) {
+      await this.$store.dispatch('courses/add', {route: this.data.child.add, parent: id})
 
-    removeChildren (item) {},
+    },
 
-    editChildren (item) {}
+    async removeEl (id) {
+      await this.$store.dispatch('courses/add', {route: this.data.current.remove, id: id})
+    },
+
+    async editEl (id) {
+      await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: id})
+    }
 
   }
 }

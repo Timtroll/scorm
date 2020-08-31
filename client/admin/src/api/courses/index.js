@@ -6,7 +6,7 @@ let apiProxy = ''
 if (!Vue.config.productionTip) {
   apiProxy = 'https://cors-c.herokuapp.com/https://freee.su' // для Localhost  https://cors-c.herokuapp.com
 }
-const apiUrl = apiProxy + '/'
+const apiUrl = apiProxy + ''
 
 export default class files {
 
@@ -21,6 +21,18 @@ export default class files {
       formData.append('parent', id)
     }
     return await this.serverHttp(`${route}`, formData)
+  }
+
+  async edit (route, id) {
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+    }
+    return await this.serverHttp(`${route}`, formData)
+  }
+
+  async add (route) {
+    return await this.serverHttp(`${route}`)
   }
 
   async serverHttp (url, params, notifyOk = false, notifyFail = true) {

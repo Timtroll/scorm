@@ -42,6 +42,10 @@ export default {
 
   methods: {
 
+    async addEl (route) {
+      await this.$store.dispatch('courses/add', {route: route})
+    },
+
     getColumns () {
       if (!this.dataFiltered) return []
       if (!this.dataFiltered.selected) return []
