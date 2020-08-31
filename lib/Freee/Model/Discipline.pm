@@ -105,10 +105,9 @@ sub _list_discipline {
 
     my ( $discipline, $result, $list );
 
-use DDP;
     # инициализация EAV
     $discipline = Freee::EAV->new( 'Discipline' );
-p $discipline;
+
     unless ( $discipline ) {
         push @!, "Tree has not any branches";
         return;
@@ -122,7 +121,6 @@ p $discipline;
             { 'items.id' => 'ASC' }
         ]
     });
-p $list;
 
     foreach my $row ( @$list ) {
         my $EAV_discipline = Freee::EAV->new( 'Discipline', { id => $row->{id} } );

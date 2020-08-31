@@ -24,12 +24,12 @@ sub index {
             "current" =>  {
                 "add"    => '/discipline/add',      # разрешает добавлять предмет
                 "edit"   => '/discipline/edit',     # разрешает редактировать предмет
-                "remove" => '/discipline/remove',   # разрешает удалять предмет
+                "remove" => '/discipline/remove'    # разрешает удалять предмет
             },
             "child" =>  {
-                "add"    => '/theme/add',           # разрешает добавлять тему
+                "add"    => '/theme/add'            # разрешает добавлять тему
             },
-            "list" => $list
+            "list" => $list ? $list : []
         };
     }
 

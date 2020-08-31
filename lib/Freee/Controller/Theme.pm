@@ -23,12 +23,12 @@ sub index {
             "current" =>  {
                 "add"    => '/theme/add',      # разрешает добавлять тему
                 "edit"   => '/theme/edit',     # разрешает редактировать тему
-                "remove" => '/theme/remove',   # разрешает удалять тему
+                "remove" => '/theme/remove'    # разрешает удалять тему
             },
             "child" =>  {
-                "add"    => '/lesson/add',     # разрешает добавлять урок
+                "add"    => '/lesson/add'      # разрешает добавлять урок
             },
-            "list" => $list
+            "list" => $list ? $list : []
         };
     }
 
