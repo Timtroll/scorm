@@ -119,7 +119,7 @@ treeJSON = d3.json("/manage_eav/root", function(error, treeData) {
           links = treeData.descendants().slice(1);
 
       // Normalize for fixed-depth.
-      nodes.forEach(function(d){ d.y = d.depth * 180});
+      nodes.forEach(function(d){ d.y = d.depth * 80});
 
       // ****************** Nodes section ***************************
 

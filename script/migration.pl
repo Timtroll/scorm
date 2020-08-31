@@ -162,7 +162,7 @@ foreach ( @list ) {
 $host = $config->{'host'};
 $url = $host . '/settings/load_default';
 # --spider - не загружать файл с ответом
-`wget --wait=1 --tries=10 --retry-connrefused --spider $url`;
+`wget --wait=2 --tries=10 --retry-connrefused --spider $url`;
 
 exit;
 

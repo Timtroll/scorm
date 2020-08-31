@@ -24,8 +24,22 @@ sub index {
 sub root {
     my $self = shift;
 
-        $theme = Freee::EAV->new( 'Theme', { 'parent' => 0 } );
-print Dumper($theme);
+        my $theme = Freee::EAV->new( 'User' );
+print Dumper($theme->_sets);
+my $root = {
+    "name"      => "Sets",
+    "parent"    => 0,
+    "children"  => []
+};
+foreach ( keys %{$theme->_sets}) {
+    my $item = {
+        "name"  => $_,
+        "size"  => 1
+    };
+    push @{$root->{"children"}}, $item;
+}
+use DDP;
+p $root;
         # unless ( $theme ) {
         #     push @!, "theme with id '$id' doesn't exist";
         #     return;
@@ -52,66 +66,6 @@ print Dumper($theme);
         #     return;
         # }
 
-    my $root = {
-        "name" => "root",
-        "parent" => 11,
-        "children" => [
-            {
-                "name" => "set",
-                "parent" => 111,
-                "children" => [
-                    {
-                        "name" => "cluster",
-                        "children" => [
-                            {
-                                "name" => "AgglomerativeCluster",
-                                "size" => 1
-                            }, {
-                                "name" => "CommunityStructure",
-                                "size" => 1
-                            }, {
-                                "name" => "HierarchicalCluster",
-                                "size" => 1
-                            }, {
-                                "name" => "MergeEdge",
-                                "size" => 1
-                            }
-                        ]
-                    },
-                    {
-                        "name" => "graph",
-                        "children" => [
-                            {
-                                "name" => "BetweennessCentrality",
-                                "size" => 1
-                            }, {
-                                "name" => "LinkDistance",
-                                "size" => 1
-                            }, {
-                                "name" => "MaxFlowMinCut",
-                                "size" => 1
-                            }, {
-                                "name" => "ShortestPaths",
-                                "size" => 1
-                            }, {
-                                "name" => "SpanningTree",
-                                "size" => 1
-                            }
-                        ]
-                    },
-                    {
-                        "name" => "optimization",
-                        "children" => [
-                            {
-                                "name" => "AspectRatioBanker",
-                                "size" => 1
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    };
 
     $self->render( 'json' => $root );
 }

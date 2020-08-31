@@ -747,4 +747,10 @@ sub Search {
     return $Result;
 }
 
+sub _sets {
+    my ( $Self, $Params ) = @_;
+
+    return $Self->{Fields};
+}
+
 1;

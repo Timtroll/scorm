@@ -17,17 +17,19 @@ sub index {
 
     $list = $self->model('Discipline')->_list_discipline();
 
+    $result = {};
     unless ( @! ) {
         $result = {
             "label" =>  "Предметы",
-            "add"   => 1,              # разрешает добавлять предметы
-            "child" =>  {
-                "add"    => 1,         # разрешает добавлять детей
-                "edit"   => 1,         # разрешает редактировать детей
-                "remove" => 1,         # разрешает удалять детей
-                "route"  => "/theme"   # роут для получения детей
+            "current" =>  {
+                "add"    => '/discipline/add',      # разрешает добавлять предмет
+                "edit"   => '/discipline/edit',     # разрешает редактировать предмет
+                "remove" => '/discipline/remove'    # разрешает удалять предмет
             },
-            "list" => $list
+            "child" =>  {
+                "add"    => '/theme/add'            # разрешает добавлять тему
+            },
+            "list" => $list ? $list : []
         };
     }
 
@@ -41,7 +43,7 @@ sub index {
 # получить данные для редактирования предмета
 # $self->edit( $data );
 # $data = {
-# id - id предмета
+#   id - id предмета
 # }
 sub edit {
     my $self = shift;
@@ -113,33 +115,8 @@ sub add {
 
     my ( $data, $attachment, $resp, $id );
 
-    # проверка данных
-    $data = $self->_check_fields();
-
-    unless ( @! ) {
-        # проверка существования вложенных файлов
-        $attachment = from_json( $$data{'attachment'} );
-        foreach ( @$attachment ) {
-            unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
-                push @!, "file with id '$_' doesn't exist";
-                last;
-            }
-        }
-    }
-
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
-        }
-    }
-
-    unless ( @! ) {
-        # добавляем предмет в EAV
-        $$data{'status'} = 1 unless defined $$data{'status'};
-
-        $id = $self->model('Discipline')->_insert_discipline( $data );
-    }
+    # создание пустого объекта предмета
+    $id = $self->model('Discipline')->_empty_discipline();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';

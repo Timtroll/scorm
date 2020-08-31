@@ -162,6 +162,14 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION "public"."EAV_items_trigger_ai"() RETURNS trigger
+    AS $$
+BEGIN
+    INSERT INTO "public"."EAV_links" ( parent, id, distance ) VALUES (0, NEW.id, 0);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE FUNCTION "public"._is_column_exists(_schema character varying, _table character varying, _field character varying) RETURNS boolean
     LANGUAGE plpgsql
     AS $$
@@ -230,6 +238,8 @@ CREATE INDEX "EAV_links_parent_idx" ON "public"."EAV_links" USING btree (parent)
 CREATE INDEX "EAV_lower_data_string_field_id_data_idx" ON "public"."EAV_data_string" USING btree (field_id, lower((data)::text));
 
 CREATE TRIGGER "EAV_links_trigger_ai" AFTER INSERT ON "public"."EAV_links" FOR EACH ROW EXECUTE PROCEDURE "public"."EAV_links_trigger_ai"();
+
+CREATE TRIGGER "EAV_items_trigger_ai" AFTER INSERT ON "public"."EAV_items" FOR EACH ROW EXECUTE PROCEDURE "public"."EAV_items_trigger_ai"();
 
 CREATE INDEX "EAV_data_string_field_id_data_gin_idx" ON "public"."EAV_data_string" USING gin (field_id, lower((data)::text) "public".gin_trgm_ops);
 

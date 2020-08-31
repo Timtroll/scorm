@@ -165,7 +165,7 @@ sub _get_user {
 }
 
 # Добавлением пустой объект пользователя в EAV и таблицу users
-# ( $user_id ) = $self->model('User')->_insert_user( $data );
+# ( $user_id ) = $self->model('User')->_empty_user( $data );
 # $data = {
 #     'place'       => 'place',                         # кладется в EAV
 #     'country'     => 'country',                       # кладется в EAV
