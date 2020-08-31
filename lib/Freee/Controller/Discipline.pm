@@ -41,7 +41,7 @@ sub index {
 # получить данные для редактирования предмета
 # $self->edit( $data );
 # $data = {
-# id - id предмета
+#   id - id предмета
 # }
 sub edit {
     my $self = shift;
