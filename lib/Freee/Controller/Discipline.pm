@@ -17,15 +17,17 @@ sub index {
 
     $list = $self->model('Discipline')->_list_discipline();
 
+    $result = {};
     unless ( @! ) {
         $result = {
             "label" =>  "Предметы",
-            "add"   => 1,              # разрешает добавлять предметы
-            "child" =>  {
-                "add"    => 1,         # разрешает добавлять детей
-                "edit"   => 1,         # разрешает редактировать детей
-                "remove" => 1,         # разрешает удалять детей
-                "route"  => "/theme"   # роут для получения детей
+            "current" =>  {
+                "add"    => '/discipline/add',      # разрешает добавлять предмет
+                "edit"   => '/discipline/edit',     # разрешает редактировать предмет
+                "remove" => '/discipline/remove',   # разрешает удалять предмет
+            },
+            "current" =>  {
+                "add"    => '/theme/add',           # разрешает добавлять тему
             },
             "list" => $list
         };
