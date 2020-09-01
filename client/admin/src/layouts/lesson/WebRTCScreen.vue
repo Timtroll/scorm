@@ -90,11 +90,10 @@
 
 <script>
 import {WebRTC}   from 'vue-webrtc'
-import connect    from '@/api/socket/webRtc'
 import * as io    from 'socket.io-client'
 
 window.io    = io
-//const socket = new connect('wss://freee.su/wschannel/')
+
 
 export default {
   name: 'WebRTCScreen',

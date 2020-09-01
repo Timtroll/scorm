@@ -25,6 +25,9 @@
 <script>
 import main     from '@/store/modules/main'
 import settings from '@/store/modules/settings'
+import wssConnect  from '@/api/socket'
+
+const socket = new wssConnect('wss://freee.su/wschannel/')
 
 export default {
 
@@ -36,8 +39,9 @@ export default {
   },
 
   async beforeCreate () {
+    socket.connect()
+
     // Регистрация Vuex модулей
-    // Регистрация Vuex модуля settings
     await this.$store.registerModule('main', main)
     await this.$store.registerModule('settings', settings)
   },

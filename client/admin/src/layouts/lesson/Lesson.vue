@@ -38,7 +38,7 @@
 
     </div>
 
-    <!--    <ListUsers :users="users"/>-->
+        <ListUsers :users="users"/>
 
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">
@@ -70,7 +70,7 @@
 
 <script>
 import lessons         from './store'
-//import ListUsers    from './ListUsers'
+import ListUsers    from './ListUsers'
 import WebRtcInitMulti from '@/api/webRTC/index'
 
 import * as io from 'socket.io-client'
@@ -82,7 +82,7 @@ export default {
 
   components: {
     //WebRTCScreen,
-    //ListUsers
+    ListUsers
     //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
 
