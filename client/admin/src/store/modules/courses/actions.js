@@ -11,7 +11,21 @@ const actions = {
 
       const response = await courses.load(data.route)
       if (response.status === 'ok') {
-        commit('setListRoot', response.data)
+        commit('setList', response.data)
+      }
+    }
+    catch (e) {_showError(e)}
+  },
+
+  async getLevel ({commit}, data) {
+    try {
+      console.log(data)
+      const response = await courses.load(data.route, data.parent)
+      if (response.status === 'ok') {
+        commit('setList', {
+          level: data.level,
+          data:  response.data
+        })
       }
     }
     catch (e) {_showError(e)}
@@ -35,6 +49,7 @@ const actions = {
     try {
       const response = await courses.add(data.route)
       if (response.status === 'ok') {
+
         return response.id
       }
     }
@@ -52,22 +67,14 @@ const actions = {
     catch (e) {_showError(e)}
   },
 
-  async remove ({commit}, data) {
+  async delete ({commit}, data) {
     try {
-      const response = await courses.remove(data.route)
+      const confirm = window.confirm('Удалить?')
+      if (!confirm) return
+
+      const response = await courses.delete(data.route, data.id)
       if (response.status === 'ok') {
         console.log(response.data)
-      }
-    }
-    catch (e) {_showError(e)}
-  },
-
-  async getLevel ({commit, state}, data) {
-    try {
-      console.log(data)
-      const response = await courses.load(data.route, data.id)
-      if (response.status === 'ok') {
-
       }
     }
     catch (e) {_showError(e)}

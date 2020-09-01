@@ -1,8 +1,8 @@
 <template>
   <div class="pos-finder">
 
-    <FinderColumn :data="root"
-                  @open="open($event)"/>
+<!--    <FinderColumn :data="root"-->
+<!--                  @open="open($event)"/>-->
 
     <FinderColumn v-for="(item, index) in levels"
                   :data="item"
@@ -31,10 +31,10 @@ export default {
 
   computed: {
 
-    root () {
-      if(!this.$store.state.courses) return
-      return this.$store.state.courses.listRoot
-    },
+    //root () {
+    //  if(!this.$store.state.courses) return
+    //  return this.$store.state.courses.listRoot
+    //},
 
     levels () {
       if(!this.$store.state.courses) return
@@ -60,7 +60,6 @@ export default {
 
       function _getColumn (item) {
         if (item.hasOwnProperty('selected')) {
-          console.log('--- i', item)
           columns.push(item.selected)
           _getColumn(item)
         }

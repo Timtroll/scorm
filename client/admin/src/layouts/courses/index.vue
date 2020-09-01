@@ -8,7 +8,7 @@
     <!-- // Body // -->
     <template #body>
 
-      <Finder :data="rootList"/>
+      <Finder/>
 
     </template>
 
@@ -37,7 +37,7 @@ export default {
 
   components: {
     Card:   () => import(/* webpackChunkName: "Card" */ '@/components/ui/card/Card'),
-    List:    () => import(/* webpackChunkName: "List" */ '@/components/ui/cmsList/List'),
+    List:   () => import(/* webpackChunkName: "List" */ '@/components/ui/cmsList/List'),
     Finder: () => import(/* webpackChunkName: "Finder" */ '@/components/ui/finder/Finder')
   },
 
@@ -71,7 +71,7 @@ export default {
     await this.$store.commit('editPanel_size', false)
     this.$store.commit('card_right_show', false)
 
-    await this.getFinderRoot()
+    await this.getFinderLevel('/discipline/', 'discipline')
   },
 
   beforeDestroy () {
@@ -107,24 +107,16 @@ export default {
 
   methods: {
 
-    async getFinderRoot () {
-      await this.$store.dispatch('courses/getRoot', {route: '/discipline/'})
-    },
+    //async getFinderRoot () {
+    //  await this.$store.dispatch('courses/getRoot', {route: '/discipline/'})
+    //},
 
-    async getFinderLevel (route, id) {
-
-      try {
-        const response = await this.$store.dispatch('courses/getLevel', {
-          route: route,
-          id:    id
-        })
-        console.log(await response)
-
-        //this.list = list
-      }
-      catch (e) {
-        console.log(e)
-      }
+    async getFinderLevel (route, level, parent) {
+      await this.$store.dispatch('courses/getLevel', {
+        route:  route,
+        level:  level,
+        parent: parent
+      })
     },
 
     save (data) {

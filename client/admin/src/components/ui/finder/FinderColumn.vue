@@ -105,8 +105,8 @@
             </a>
 
             <!--Удалить раздел-->
-            <a @click.prevent="deleteEl(item)"
-               v-if="data.current.remove"
+            <a @click.prevent="deleteEl(item.id)"
+               v-if="data.current.delete"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
                class="pos-finder-list-item-actions__remove">
               <img src="/img/icons/icon__trash.svg"
@@ -185,20 +185,20 @@ export default {
       const elId   = await this.$store.dispatch('courses/add', {
         route: this.data.current.add
       })
-      const editEl = await this.editEl(elId)
+      await this.editEl(elId)
     },
 
     async addChildren (id) {
       await this.$store.dispatch('courses/add', {route: this.data.child.add, parent: id})
-
     },
 
     async deleteEl (id) {
-      await this.$store.dispatch('courses/remove', {route: this.data.current.delete, id: id})
+      await this.$store.dispatch('courses/delete', {route: this.data.current.delete, id: id})
     },
 
-    async editEl (item) {
-      await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: item.id})
+    async editEl (id) {
+      await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: id})
+      this.$emit('update')
     }
 
   }

@@ -4,8 +4,12 @@ import getters   from './getters'
 
 const state = {
 
-  listRoot: null,
-  list:     null
+  list: {
+    discipline: null,
+    theme:      null,
+    lessons:    null,
+    tasks:      null
+  }
 }
 
 export default {
