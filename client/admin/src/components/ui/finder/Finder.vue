@@ -32,10 +32,12 @@ export default {
   computed: {
 
     root () {
+      if(!this.$store.state.courses) return
       return this.$store.state.courses.listRoot
     },
 
     levels () {
+      if(!this.$store.state.courses) return
       return this.$store.state.courses.list
     }
   },

@@ -31,6 +31,14 @@ export default class files {
     return await this.serverHttp(`${route}`, formData)
   }
 
+  async delete (route, id) {
+    const formData = new FormData()
+    if (id) {
+      formData.append('id', id)
+    }
+    return await this.serverHttp(`${route}`, formData)
+  }
+
   async add (route) {
     return await this.serverHttp(`${route}`)
   }

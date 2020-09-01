@@ -1,6 +1,6 @@
 import coursesClass                   from '@/api/courses'
 import {clone, groupedFields, notify} from '@/store/methods'
-import store                                    from '@/store/store'
+import store                          from '@/store/store'
 
 const courses = new coursesClass
 
@@ -14,10 +14,7 @@ const actions = {
         commit('setListRoot', response.data)
       }
     }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
-    }
+    catch (e) {_showError(e)}
   },
 
   async edit ({commit}, data) {
@@ -25,49 +22,44 @@ const actions = {
       store.commit('editPanel_status_request')
       const response = await courses.edit(data.route, data.id)
       if (response.status === 'ok') {
-        const resp  = await response.data
-        const proto = clone(store.getters.editPanel_proto)
-        console.log('--- response', response.data)
-        //const groups =_groupedFields({})
+        const resp   = await response.data
+        const proto  = clone(store.getters.editPanel_proto)
         const groups = groupedFields(resp, proto)
-
-        store.commit('editPanel_data', groups) // запись данных во VUEX
-        store.commit('editPanel_status_success') // статус - успех
-        store.commit('card_right_show', true) // открытие правой панели
+        _openPanel(groups)
       }
     }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
-    }
+    catch (e) {_showError(e)}
   },
 
   async add ({commit}, data) {
-    console.log('--- data', data)
     try {
       const response = await courses.add(data.route)
       if (response.status === 'ok') {
         return response.id
       }
     }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
+    catch (e) {_showError(e)}
+  },
+
+  async save ({commit}, data) {
+    try {
+      store.commit('editPanel_status_request')
+      const response = await courses.save(data.route, items)
+      if (response.status === 'ok') {
+        _closePanel(response.status)
+      }
     }
+    catch (e) {_showError(e)}
   },
 
   async remove ({commit}, data) {
     try {
-      const response = await courses.add(data.route)
+      const response = await courses.remove(data.route)
       if (response.status === 'ok') {
         console.log(response.data)
-        //commit('setListRoot', response.data)
       }
     }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
-    }
+    catch (e) {_showError(e)}
   },
 
   async getLevel ({commit, state}, data) {
@@ -78,11 +70,28 @@ const actions = {
 
       }
     }
-    catch (e) {
-      notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
-    }
+    catch (e) {_showError(e)}
   }
 
 }
+
+// helpers
+function _showError (e) {
+  notify('ERROR: ' + e, 'danger')
+  throw 'ERROR: ' + e
+}
+
+function _openPanel (groups) {
+  store.commit('editPanel_data', groups) // запись данных во VUEX
+  store.commit('editPanel_status_success') // статус - успех
+  store.commit('card_right_show', true) // открытие правой панели
+}
+
+function _closePanel (status) {
+  store.commit('card_right_show', false)
+  store.commit('editPanel_data', []) // очистка данных VUEX
+  store.commit('editPanel_status_success') // статус - успех
+  notify(status, 'success') // уведомление об ошибке
+}
+
 export default actions

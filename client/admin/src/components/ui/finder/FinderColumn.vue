@@ -93,7 +93,7 @@
             </a>
 
             <!--Редактировать раздел-->
-            <a @click.prevent="editChildren(item)"
+            <a @click.prevent="editEl(item)"
                v-if="data.current.edit"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
                class="pos-finder-list-item-actions__edit">
@@ -105,7 +105,7 @@
             </a>
 
             <!--Удалить раздел-->
-            <a @click.prevent="removeChildren(item)"
+            <a @click.prevent="deleteEl(item)"
                v-if="data.current.remove"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.remove')"
                class="pos-finder-list-item-actions__remove">
@@ -193,12 +193,12 @@ export default {
 
     },
 
-    async removeEl (id) {
-      await this.$store.dispatch('courses/add', {route: this.data.current.remove, id: id})
+    async deleteEl (id) {
+      await this.$store.dispatch('courses/remove', {route: this.data.current.delete, id: id})
     },
 
-    async editEl (id) {
-      await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: id})
+    async editEl (item) {
+      await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: item.id})
     }
 
   }
