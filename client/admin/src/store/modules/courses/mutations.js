@@ -19,6 +19,10 @@ const mutations = {
 
     console.log('setList', data)
     state.list[data.level] = data.data
+  },
+
+  setSaveRoute (state, data) {
+    state.saveRoute = data
   }
 
 }

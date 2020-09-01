@@ -46,6 +46,8 @@ const actions = {
   },
 
   async add ({commit}, data) {
+
+    console.log('--- data', data)
     try {
       const response = await courses.add(data.route)
       if (response.status === 'ok') {
@@ -59,7 +61,7 @@ const actions = {
   async save ({commit}, data) {
     try {
       store.commit('editPanel_status_request')
-      const response = await courses.save(data.route, items)
+      const response = await courses.save(data.route, data.items)
       if (response.status === 'ok') {
         _closePanel(response.status)
       }
@@ -98,6 +100,7 @@ function _closePanel (status) {
   store.commit('card_right_show', false)
   store.commit('editPanel_data', []) // очистка данных VUEX
   store.commit('editPanel_status_success') // статус - успех
+  store.commit('courses/setSaveRoute', null)
   notify(status, 'success') // уведомление об ошибке
 }
 

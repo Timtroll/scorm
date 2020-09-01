@@ -31,6 +31,19 @@ export default class files {
     return await this.serverHttp(`${route}`, formData)
   }
 
+  async save (route, items) {
+    const formData = new FormData()
+
+    console.log('items', items)
+
+    items.forEach(i => {
+      console.log(i.name, i.value)
+      formData.append(i.name, i.value || '')
+    })
+
+    return await this.serverHttp(`${route}`, formData)
+  }
+
   async delete (route, id) {
     const formData = new FormData()
     if (id) {

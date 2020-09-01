@@ -14,7 +14,7 @@
 
     <!--bodyRight-->
     <template #bodyRight>
-      <List :labels="'Добавить пользователя'"
+      <List :labels="'Добавить'"
             :data="editPanel_data"
             :variable-type-tield="'value'"
             :add="false"
@@ -53,8 +53,15 @@ export default {
 
   data () {
     return {
-      rootList: null,
-      list:     null
+      //rootList: null,
+      //list:     null,
+      //editPanel: {
+      //  get:            'users/leafEdit',
+      //  save:           'users/leafSave',
+      //  addProto:       'users/leafAdd',
+      //  //addFolderProto: 'users/folderProto',
+      //  add:            'users/leafSave'
+      //}
     }
   },
 
@@ -82,6 +89,11 @@ export default {
   },
 
   computed: {
+
+    saveRoute () {
+      if (!this.$store.state.courses.saveRoute) return
+      return this.$store.state.courses.saveRoute + '/save'
+    },
 
     loader () {
       return this.$store.getters.tree_status
@@ -119,8 +131,10 @@ export default {
       })
     },
 
-    save (data) {
-
+    async save (data) {
+      console.log(data)
+      if (!this.saveRoute) return
+      await this.$store.dispatch('courses/save', {route: this.saveRoute, items: data})
     },
 
     closeAddGroup () {

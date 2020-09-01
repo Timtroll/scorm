@@ -4,6 +4,8 @@ import getters   from './getters'
 
 const state = {
 
+  saveRoute: null,
+
   list: {
     discipline: null,
     theme:      null,

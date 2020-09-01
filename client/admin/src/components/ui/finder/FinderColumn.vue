@@ -182,14 +182,18 @@ export default {
     },
 
     async addEl () {
-      const elId   = await this.$store.dispatch('courses/add', {
+      const elId = await this.$store.dispatch('courses/add', {
         route: this.data.current.add
       })
       await this.editEl(elId)
     },
 
     async addChildren (id) {
-      await this.$store.dispatch('courses/add', {route: this.data.child.add, parent: id})
+      const elId = await this.$store.dispatch('courses/add', {
+        route:  this.data.child.add,
+        parent: id
+      })
+      await this.editEl(elId)
     },
 
     async deleteEl (id) {
@@ -197,6 +201,7 @@ export default {
     },
 
     async editEl (id) {
+      this.$store.commit('courses/setSaveRoute', this.data.current.route)
       await this.$store.dispatch('courses/edit', {route: this.data.current.edit, id: id})
       this.$emit('update')
     }
