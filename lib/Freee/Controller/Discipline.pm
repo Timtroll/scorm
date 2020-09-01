@@ -22,6 +22,7 @@ sub index {
         $result = {
             "label" =>  "Предметы",
             "current" =>  {
+                "route"  => '/discipline',
                 "add"    => '/discipline/add',      # разрешает добавлять предмет
                 "edit"   => '/discipline/edit',     # разрешает редактировать предмет
                 "delete" => '/discipline/delete'    # разрешает удалять предмет
