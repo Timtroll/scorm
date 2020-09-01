@@ -46,8 +46,6 @@ const actions = {
   },
 
   async add ({commit}, data) {
-
-    console.log('--- data', data)
     try {
       const response = await courses.add(data.route)
       if (response.status === 'ok') {
