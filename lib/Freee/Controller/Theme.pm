@@ -23,7 +23,7 @@ sub index {
             "current" =>  {
                 "add"    => '/theme/add',      # разрешает добавлять тему
                 "edit"   => '/theme/edit',     # разрешает редактировать тему
-                "remove" => '/theme/remove'    # разрешает удалять тему
+                "delete" => '/theme/delete'    # разрешает удалять тему
             },
             "child" =>  {
                 "add"    => '/lesson/add'      # разрешает добавлять урок
@@ -154,8 +154,8 @@ sub save {
             push @!, "theme must have a nonzero parent";
         }
         elsif(
-            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} ) 
-            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) 
+            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} )
+            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} )
         ) {
             push @!, "parent with id '$$data{'parent'}' doesn't exist";
         }
@@ -183,7 +183,7 @@ sub save {
 # изменить статус темы (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
-# 'id'    - id записи 
+# 'id'    - id записи
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
 #}
@@ -214,7 +214,7 @@ sub toggle {
 # $self->delete( $data );
 # $data = {
 # 'id'    - id темы
-#} 
+#}
 sub delete {
     my $self = shift;
 
