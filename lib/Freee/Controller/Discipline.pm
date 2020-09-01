@@ -24,7 +24,7 @@ sub index {
             "current" =>  {
                 "add"    => '/discipline/add',      # разрешает добавлять предмет
                 "edit"   => '/discipline/edit',     # разрешает редактировать предмет
-                "remove" => '/discipline/remove'    # разрешает удалять предмет
+                "delete" => '/discipline/delete'    # разрешает удалять предмет
             },
             "child" =>  {
                 "add"    => '/theme/add'            # разрешает добавлять тему
@@ -178,7 +178,7 @@ sub save {
 # изменить статус предмета (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
-# 'id'    - id записи 
+# 'id'    - id записи
 # 'field' - имя поля в таблице
 # 'val'   - 1/0
 #}
@@ -209,7 +209,7 @@ sub toggle {
 # $self->delete( $data );
 # $data = {
 # 'id'    - id предмета
-#} 
+#}
 sub delete {
     my $self = shift;
 
