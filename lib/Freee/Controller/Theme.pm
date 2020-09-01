@@ -21,6 +21,7 @@ sub index {
         $result = {
             "label" =>  "Предметы",
             "current" =>  {
+                "route"  => '/theme',
                 "add"    => '/theme/add',      # разрешает добавлять тему
                 "edit"   => '/theme/edit',     # разрешает редактировать тему
                 "delete" => '/theme/delete'    # разрешает удалять тему
