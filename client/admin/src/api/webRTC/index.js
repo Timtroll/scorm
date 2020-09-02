@@ -85,7 +85,7 @@ export default class WebRtcInitMulti {
           width:       {min: 50, max: 50},
           height:      {min: 50, max: 50},
           aspectRatio: 1,
-          frameRate:   {min: 0.1, max: 0.5},
+          frameRate:   {min: 0.5, max: 1.0},
           //sampleRate:  1000,
           resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
         }
