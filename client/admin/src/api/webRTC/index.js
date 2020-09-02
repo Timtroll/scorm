@@ -36,6 +36,7 @@ export default class WebRtcInitMulti {
   constructor (role, roomId, socketURL, stunServer, turnServer) {
     this.roomId    = 'multi-chat'
     //'https://rtcmulticonnection.herokuapp.com:443/'
+    //this.socketURL = socketURL || 'wss://freee.su/api/channel/' // https://scorm.site:443/
     this.socketURL = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/' // https://scorm.site:443/
     //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/'
     this.stunServer     = null
@@ -48,18 +49,46 @@ export default class WebRtcInitMulti {
     this.enableLogs  = true
     this.role        = role || 'listener'
     this.constraints = {
-      audio: {
-        echoCancellation: true
-        //noiseSuppression: true,
-        //autoGainControl:  true
+      hd:    {
+        audio: {
+          echoCancellation: true
+          //noiseSuppression: true,
+          //autoGainControl:  true
+        },
+        video: {
+          width:       {min: 640, max: 1280},
+          height:      {min: 360, max: 720},
+          aspectRatio: 16 / 9,
+          frameRate:   {min: 15.0, max: 25.0},
+          //sampleRate:  1000,
+          resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+        }
       },
-      video: {
-        width:       {min: 1280, max: 1280},
-        height:      {min: 720, max: 720},
-        aspectRatio: 16 / 9,
-        frameRate:   {min: 12.0, max: 24.0},
-        //sampleRate:  1000,
-        resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+      sd:    {
+        audio: {
+          echoCancellation: true
+          //noiseSuppression: true,
+          //autoGainControl:  true
+        },
+        video: {
+          width:       {min: 640, max: 640},
+          height:      {min: 360, max: 320},
+          aspectRatio: 16 / 9,
+          frameRate:   {min: 15.0, max: 25.0},
+          //sampleRate:  1000,
+          resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+        }
+      },
+      thumb: {
+        audio: false,
+        video: {
+          width:       {min: 60, max: 60},
+          height:      {min: 60, max: 60},
+          aspectRatio: 16 / 9,
+          frameRate:   {min: 1.0, max: 2.0},
+          //sampleRate:  1000,
+          resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
+        }
       }
     }
 
@@ -69,12 +98,13 @@ export default class WebRtcInitMulti {
     this.screenshotFormat = 'image/jpeg'
 
     this.rtcmConnection                        = new RTCMultiConnection()
+    this.rtcmConnection.autoCloseEntireSession = true
     this.rtcmConnection.socketURL              = this.socketURL
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
     //this.rtcmConnection.session                = this.constraints
 
-    this.rtcmConnection.mediaConstraints = this.constraints
+    this.rtcmConnection.mediaConstraints = this.constraints.thumb
     //this.rtcmConnection.mediaConstraints = {
     //  audio: {
     //    mandatory: {
@@ -136,6 +166,12 @@ export default class WebRtcInitMulti {
     //}
   }
 
+  changeRes (res) {
+    console.log(res)
+    if (!res) return
+    this.rtcmConnection.mediaConstraints = this.constraints[res]
+  }
+
   async init () {
 
     this.rtcmConnection.sdpConstraints.mandatory = {
@@ -178,16 +214,33 @@ export default class WebRtcInitMulti {
   }
 
   leave () {
+    this.rtcmConnection
+        .getAllParticipants()
+        .forEach((pid) => {
+      this.rtcmConnection.disconnectWith(pid)
+    })
     this.rtcmConnection.attachStreams
         .forEach((localStream) => {
           localStream.stop()
         })
+    this.rtcmConnection.closeSocket()
     this.videoList = []
   }
 
   capture () {
     return this.getCanvas()
                .toDataURL(this.screenshotFormat)
+  }
+
+  // Change between camera and screen or two cameras seamlessly across all users
+  replaceTrack(track, userId){
+    // var track = screenStream.getVideoTracks()[0];
+    this.rtcmConnection.replaceTrack(track, userId)
+  }
+
+  // resetTrack which resets back to original track.
+  resetTrack(userId){
+    this.rtcmConnection.resetTrack(userId)
   }
 
   getCanvas () {
@@ -262,23 +315,22 @@ export default class WebRtcInitMulti {
     }
   }
 
-  //setConstraints (connection) {
-  //  const supports = navigator.mediaDevices.getSupportedConstraints()
-  //  console.log('getSupportedConstraints', supports)
-  //  let constraints = {}
-  //  if (supports.width && supports.height) {
-  //    constraints = {
-  //      width:            128,
-  //      height:           72,
-  //      aspectRatio:      16 / 9,
-  //      echoCancellation: true,
-  //      facingMode:       'face',
-  //      frameRate:        1
-  //    }
-  //  }
-  //  connection.applyConstraints({
-  //    video: constraints
-  //  })
-  //}
+  setConstraints (connection) {
+    const supports = navigator.mediaDevices.getSupportedConstraints()
+    console.log('getSupportedConstraints', supports)
+    let constraints = {}
+    if (supports.width && supports.height) {
+      constraints = {
+        width:       60,
+        height:      60,
+        aspectRatio: 1,
+        facingMode:  'face',
+        frameRate:   1
+      }
+    }
+    connection.applyConstraints({
+      video: constraints
+    })
+  }
 
 }

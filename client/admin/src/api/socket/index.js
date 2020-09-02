@@ -1,6 +1,8 @@
 export default class Socket {
 
-  constructor (wsUrl = 'wss://freee.su/wschannel/') {
+  // wss://freee.su/api/channel
+  // wss://freee.su/wschannel/
+  constructor (wsUrl = 'wss://freee.su/api/channel') {
 
     this.authorized       = false
     this.needReconnect    = true
@@ -16,6 +18,7 @@ export default class Socket {
       this.socket = new WebSocket(wsUrl)
 
       this.socket.onopen = async (event) => {
+        console.log(`[onopen] connect to server: ${wsUrl}`)
         console.log(`[onopen] Data received from server: ${JSON.stringify(event)} ${event.data}`)
       }
 
@@ -29,6 +32,7 @@ export default class Socket {
         }
         else {
           console.error('[close] Connection died')
+          this.reconnect()
         }
       }
 
@@ -45,7 +49,7 @@ export default class Socket {
     this.reconnectTimeout = setTimeout(() => {
       this.clear()
       this.connect()
-    }, 1000)
+    }, 5000)
   }
 
   auth (token) {

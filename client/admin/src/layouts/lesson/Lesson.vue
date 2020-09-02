@@ -13,6 +13,7 @@
           <video width="1920"
                  ref="local"
                  height="1080"
+                 style="object-fit: cover"
                  autoplay
                  playsinline
                  muted
@@ -36,9 +37,59 @@
 
       </div>
 
+      <div class="pos-lesson-video__controls">
+
+        <div class="uk-flex-none"
+             v-if="selectedPosition">
+
+          <a class="uk-icon-link">
+            <img :src="selectedPosition.icon"
+                 width="20"
+                 height="20"
+                 uk-svg>
+          </a>
+
+          <div ref="filter"
+               class="uk-dropdown-small"
+               uk-dropdown="mode: click; pos: top-left; animation: uk-animation-slide-top-small">
+            <ul class="uk-grid-small"
+                uk-grid>
+              <li :class="{'uk-active': selectedPosition === item}"
+                  v-for="item in position">
+                <a href="#"
+                   :class="{'uk-text-danger' : selectedPosition === item, 'uk-link-muted' : selectedPosition !== item}"
+                   @click="selectPosition(item)">
+                  <img :src="item.icon"
+                       width="20"
+                       height="20"
+                       uk-svg>
+                </a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="uk-flex-1 uk-text-right">
+          <button type="button"
+                  :class="{'uk-active' : selectedRes === 'hd'}"
+                  @click="changeRes('hd')"
+                  class="uk-button uk-button-default uk-button-small">hd
+          </button>
+          <button type="button"
+                  :class="{'uk-active' : selectedRes === 'sd'}"
+                  @click="changeRes('sd')"
+                  class="uk-button uk-button-default uk-button-small">sd
+          </button>
+          <button type="button"
+                  :class="{'uk-active' : selectedRes === 'thumb'}"
+                  @click="changeRes('thumb')"
+                  class="uk-button uk-button-default uk-button-small">thumb
+          </button>
+        </div>
+      </div>
+
     </div>
 
-        <ListUsers :users="users"/>
+    <ListUsers :users="users"/>
 
     <!--CONTENT-->
     <div class="pos-lesson-teach-content">
@@ -70,7 +121,7 @@
 
 <script>
 import lessons         from './store'
-import ListUsers    from './ListUsers'
+import ListUsers       from './ListUsers'
 import WebRtcInitMulti from '@/api/webRTC/index'
 
 import * as io from 'socket.io-client'
@@ -106,6 +157,8 @@ export default {
   data () {
     return {
 
+      img: null,
+
       rtc: null,
 
       stream: {
@@ -114,7 +167,43 @@ export default {
       },
 
       users:  null,
-      socket: null
+      socket: null,
+
+      selectedPosition: null,
+
+      position: [
+        {
+          v:    'none',
+          h:    'none',
+          icon: 'img/icons/pos_none.svg'
+        },
+        {
+          v:    'right',
+          h:    'top',
+          icon: 'img/icons/pos_top-right.svg'
+        }, {
+          v:    'right',
+          h:    'bottom',
+          icon: 'img/icons/pos_bottom-right.svg'
+        }, {
+          v:    'left',
+          h:    'bottom',
+          icon: 'img/icons/pos_bottom-left.svg'
+        }, {
+          v:    'left',
+          h:    'top',
+          icon: 'img/icons/pos_top-left.svg'
+        }
+      ],
+
+      selectedRes: 'hd',
+
+      secondScreen: {
+        position: {
+          v: 'right',
+          h: 'top'
+        }
+      }
     }
   },
 
@@ -124,21 +213,29 @@ export default {
   },
 
   async mounted () {
+
+    this.selectedPosition = this.position[0]
+
     this.leave()
     this.$store.commit('navBarLeftActionShow', false)
-
+    this.startRTC()
     this.$nextTick(() => {
-      this.startRTC()
+      //this.startRTC()
     })
 
     // показать кнопку меню в navBar
-    //await this.getUsers()
+    await this.getUsers()
   },
 
-  beforeDestroy () {
-    this.leave()
+  async beforeDestroy () {
+    await this.leave()
     // выгрузка Vuex модуля settings
     this.$store.unregisterModule('lessons')
+  },
+
+  async beforeRouteLeave (to, from, next) {
+    await this.leave()
+    next()
   },
 
   watch: {
@@ -150,6 +247,12 @@ export default {
   },
 
   methods: {
+
+    // selectedRes
+    changeRes (res) {
+      this.rtc.changeRes(res)
+      this.selectedRes = res
+    },
 
     startRTC () {
       this.rtc = new WebRtcInitMulti('lector')
@@ -232,6 +335,47 @@ export default {
     getCanvas () {
       if (!this.rtc) return
       this.rtc.getCanvas()
+    },
+
+    // move second Video
+    moveVideo (direction) {
+      switch (direction) {
+        case ('none'):
+          this.secondScreen.position.v = 'left'
+          this.changePositionIndicator('h', 'none')
+          break
+        case ('left'):
+          this.secondScreen.position.v = 'left'
+          this.changePositionIndicator('v', 'left')
+          break
+        case ('right'):
+          this.secondScreen.position.v = 'right'
+          this.changePositionIndicator('v', 'right')
+          break
+        case ('top'):
+          this.secondScreen.position.h = 'top'
+          this.changePositionIndicator('h', 'top')
+          break
+        case ('bottom'):
+          this.secondScreen.position.h = 'bottom'
+          this.changePositionIndicator('h', 'bottom')
+          break
+      }
+    },
+
+    changePositionIndicator (direction, pos) {
+      if (direction === 'v') {
+        this.selectedPosition = this.position.find(i => i.v === pos && i.h === this.secondScreen.position.h)
+      }
+      else {
+        this.selectedPosition = this.position.find(i => i.h === pos && i.v === this.secondScreen.position.v)
+      }
+    },
+
+    selectPosition (item) {
+      this.selectedPosition        = item
+      this.secondScreen.position.v = item.v
+      this.secondScreen.position.h = item.h
     },
 
     getUsers () {
