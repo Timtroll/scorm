@@ -82,10 +82,10 @@ export default class WebRtcInitMulti {
       thumb: {
         audio: false,
         video: {
-          width:       {min: 60, max: 60},
-          height:      {min: 60, max: 60},
-          aspectRatio: 16 / 9,
-          frameRate:   {min: 1.0, max: 2.0},
+          width:       {min: 50, max: 50},
+          height:      {min: 50, max: 50},
+          aspectRatio: 1,
+          frameRate:   {min: 0.1, max: 0.5},
           //sampleRate:  1000,
           resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
         }

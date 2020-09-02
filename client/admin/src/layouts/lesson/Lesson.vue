@@ -224,7 +224,7 @@ export default {
     })
 
     // показать кнопку меню в navBar
-    await this.getUsers()
+    //await this.getUsers()
   },
 
   async beforeDestroy () {
