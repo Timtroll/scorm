@@ -266,8 +266,12 @@ export default {
         'lector',
         'lesson_123',
         'https://scorm-rtc-multi-server.herokuapp.com:443/',
-        'stun:stun.freee.su:5349%brucewayne@12345',
-        'turn:turn.freee.su:5349%brucewayne@12345'
+        'stun:stun.freee.su:5349',
+        {
+          urls:       'turn:turn.freee.su:5349',
+          credential: '12345',
+          username:   'brucewayne'
+        }
       )
       this.rtc.init(this.$refs.local, this.$refs.video)
       this.getStream()

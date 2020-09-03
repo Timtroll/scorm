@@ -41,7 +41,7 @@ export default class WebRtcInitMulti {
 
     this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/'
     this.stunServer     = stunServer
-    this.turnServer     = stunServer
+    this.turnServer     = turnServer
     this.rtcmConnection = null
 
     this.localVideo  = null
@@ -185,17 +185,25 @@ export default class WebRtcInitMulti {
     }
 
     if (this.turnServer !== null) {
-      const parse    = this.turnServer.split('%')
-      const username = parse[0].split('@')[0]
-      const password = parse[0].split('@')[1]
-      const turn     = parse[1]
-
+      //const parse    = this.turnServer.split('%')
+      //const username = parse[0].split('@')[0]
+      //const password = parse[0].split('@')[1]
+      //const turn     = parse[1]
+      //
+      //console.log({
+      //  urls:       turn,
+      //  credential: password,
+      //  username:   username
+      //})
+      //this.rtcmConnection.iceServers
+      //    .push({
+      //      urls:       turn,
+      //      credential: password,
+      //      username:   username
+      //    })
       this.rtcmConnection.iceServers
-          .push({
-            urls:       turn,
-            credential: password,
-            username:   username
-          })
+          .push(this.turnServer)
+      console.log('turn', this.rtcmConnection.iceServers)
     }
 
   }
