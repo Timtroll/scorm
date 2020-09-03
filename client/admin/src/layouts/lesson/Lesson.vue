@@ -70,6 +70,14 @@
 
         <div class="uk-flex-1 uk-text-right">
           <button type="button"
+                  @click="shareScreen()"
+                  class="uk-button uk-button-default uk-button-small">Screen
+          </button>
+          <button type="button"
+                  @click="getCanvas()"
+                  class="uk-button uk-button-default uk-button-small">Canvas
+          </button>
+          <button type="button"
                   :class="{'uk-active' : selectedRes === 'hd'}"
                   @click="changeRes('hd')"
                   class="uk-button uk-button-default uk-button-small">hd
@@ -214,12 +222,11 @@ export default {
 
   async mounted () {
 
-    this.selectedPosition = this.position[0]
-
-    this.leave()
-    this.$store.commit('navBarLeftActionShow', false)
-    this.startRTC()
     this.$nextTick(() => {
+      this.selectedPosition = this.position[0]
+      this.leave()
+      this.$store.commit('navBarLeftActionShow', false)
+      this.startRTC()
       //this.startRTC()
     })
 
@@ -255,7 +262,13 @@ export default {
     },
 
     startRTC () {
-      this.rtc = new WebRtcInitMulti('lector')
+      this.rtc = new WebRtcInitMulti(
+        'lector',
+        'lesson_123',
+        'https://scorm-rtc-multi-server.herokuapp.com:443/',
+        'stun:stun.freee.su:5349%brucewayne@12345',
+        'turn:turn.freee.su:5349%brucewayne@12345'
+      )
       this.rtc.init(this.$refs.local, this.$refs.video)
       this.getStream()
       this.join()
@@ -334,7 +347,7 @@ export default {
 
     getCanvas () {
       if (!this.rtc) return
-      this.rtc.getCanvas()
+      this.rtc.getCanvas(this.$refs.local)
     },
 
     // move second Video

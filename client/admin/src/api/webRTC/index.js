@@ -34,13 +34,14 @@ export default class WebRtcInitMulti {
 
   // role: lector, listener
   constructor (role, roomId, socketURL, stunServer, turnServer) {
-    this.roomId    = 'multi-chat'
+    this.roomId = 'multi-chat'
     //'https://rtcmulticonnection.herokuapp.com:443/'
     //this.socketURL = socketURL || 'wss://freee.su/api/channel/' // https://scorm.site:443/
-    this.socketURL = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/' // https://scorm.site:443/
-    //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/'
-    this.stunServer     = null
-    this.turnServer     = null
+    //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/' // https://scorm.site:443/
+
+    this.socketURL      = socketURL || 'https://scorm-rtc-multi-server.herokuapp.com:443/'
+    this.stunServer     = stunServer
+    this.turnServer     = stunServer
     this.rtcmConnection = null
 
     this.localVideo  = null
@@ -85,7 +86,7 @@ export default class WebRtcInitMulti {
           width:       {min: 50, max: 50},
           height:      {min: 50, max: 50},
           aspectRatio: 1,
-          frameRate:   {min: 0.5, max: 1.0},
+          frameRate:   {min: 1.0, max: 1.0},
           //sampleRate:  1000,
           resizeMode:  'crop-and-scale' //'crop-and-scale' // 'none'
         }
@@ -104,7 +105,7 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.enableLogs             = this.enableLogs
     //this.rtcmConnection.session                = this.constraints
 
-    this.rtcmConnection.mediaConstraints = this.constraints.thumb
+    this.rtcmConnection.mediaConstraints = this.constraints.hd
     //this.rtcmConnection.mediaConstraints = {
     //  audio: {
     //    mandatory: {
@@ -166,12 +167,6 @@ export default class WebRtcInitMulti {
     //}
   }
 
-  changeRes (res) {
-    console.log(res)
-    if (!res) return
-    this.rtcmConnection.mediaConstraints = this.constraints[res]
-  }
-
   async init () {
 
     this.rtcmConnection.sdpConstraints.mandatory = {
@@ -195,11 +190,12 @@ export default class WebRtcInitMulti {
       const password = parse[0].split('@')[1]
       const turn     = parse[1]
 
-      this.rtcmConnection.iceServers.push({
-        urls:       turn,
-        credential: password,
-        username:   username
-      })
+      this.rtcmConnection.iceServers
+          .push({
+            urls:       turn,
+            credential: password,
+            username:   username
+          })
     }
 
   }
@@ -217,8 +213,8 @@ export default class WebRtcInitMulti {
     this.rtcmConnection
         .getAllParticipants()
         .forEach((pid) => {
-      this.rtcmConnection.disconnectWith(pid)
-    })
+          this.rtcmConnection.disconnectWith(pid)
+        })
     this.rtcmConnection.attachStreams
         .forEach((localStream) => {
           localStream.stop()
@@ -233,19 +229,35 @@ export default class WebRtcInitMulti {
   }
 
   // Change between camera and screen or two cameras seamlessly across all users
-  replaceTrack(track, userId){
+  replaceTrack (track, userId) {
     // var track = screenStream.getVideoTracks()[0];
     this.rtcmConnection.replaceTrack(track, userId)
   }
 
+  // https://www.rtcmulticonnection.org/docs/streamEvents/
+  mute (streamId) {
+    if (!streamId) return
+    this.rtcmConnection.streamEvents[streamId].stream.mute('both')
+  }
+
+  unmute (streamId) {
+    if (!streamId) return
+    this.rtcmConnection.streamEvents[streamId].stream.unmute('both')
+  }
+
+  changeRes (res) {
+    if (!res) return
+    this.rtcmConnection.mediaConstraints = this.constraints[res]
+  }
+
   // resetTrack which resets back to original track.
-  resetTrack(userId){
+  resetTrack (userId) {
     this.rtcmConnection.resetTrack(userId)
   }
 
-  getCanvas () {
-    let video = this.getCurrentVideo()
-
+  getCanvas (video) {
+    //let video = this.getCurrentVideo()
+    console.log('video', video)
     if (video !== null && !this.ctx) {
       let canvas    = document.createElement('canvas')
       canvas.height = video.clientHeight
@@ -256,6 +268,7 @@ export default class WebRtcInitMulti {
     const {ctx, canvas} = this
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
+    console.log(canvas)
     return canvas
   }
 
@@ -274,6 +287,12 @@ export default class WebRtcInitMulti {
 
   shareScreen () {
     if (navigator.getDisplayMedia || navigator.mediaDevices.getDisplayMedia) {
+
+      console.log(
+        'mediaDevices.getDisplayMedia', !!navigator.mediaDevices.getDisplayMedia,
+        'getDisplayMedia', !!navigator.getDisplayMedia
+      )
+
       const addStreamStopListener = (stream, callback) => {
         let streamEndedEvent = 'ended'
 
@@ -300,17 +319,20 @@ export default class WebRtcInitMulti {
       const getDisplayMediaError = (error) => console.log('Media error: ' + JSON.stringify(error))
 
       if (navigator.mediaDevices.getDisplayMedia) {
-        navigator.mediaDevices.getDisplayMedia({video: this.constraints.video, audio: false})
+        navigator.mediaDevices
+                 .getDisplayMedia({video: this.constraints.hd.video, audio: false})
                  .then(stream => {
                    onGettingSteam(stream)
                  }, getDisplayMediaError)
                  .catch(getDisplayMediaError)
       }
       else if (navigator.getDisplayMedia) {
-        navigator.getDisplayMedia({video: this.constraints.video})
-                 .then(stream => {
-                   onGettingSteam(stream)
-                 }, getDisplayMediaError).catch(getDisplayMediaError)
+        navigator
+          .getDisplayMedia({video: this.constraints.hd.video})
+          .then(stream => {
+            onGettingSteam(stream)
+          }, getDisplayMediaError)
+          .catch(getDisplayMediaError)
       }
     }
   }
