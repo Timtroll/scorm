@@ -93,7 +93,7 @@
             </a>
 
             <!--Редактировать раздел-->
-            <a @click.prevent="editEl(item)"
+            <a @click.prevent="editEl(item.id)"
                v-if="data.current.edit"
                :uk-tooltip="'pos: top-right; delay: 1000; title:' + $t('actions.edit')"
                class="pos-finder-list-item-actions__edit">
