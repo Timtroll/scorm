@@ -34,7 +34,7 @@ export default class WebRtcInitMulti {
 
   // role: lector, listener
   constructor (role, roomId, socketURL, stunServer, turnServer) {
-    this.roomId = 'multi-chat'
+    this.roomId = roomId
     //'https://rtcmulticonnection.herokuapp.com:443/'
     //this.socketURL = socketURL || 'wss://freee.su/api/channel/' // https://scorm.site:443/
     //this.socketURL      = socketURL || 'https://free-webrtc-server.herokuapp.com:443/' // https://scorm.site:443/
