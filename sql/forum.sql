@@ -3,7 +3,7 @@ DROP SEQUENCE IF EXISTS "public".forum_groups_id_seq;
 DROP TRIGGER IF EXISTS "groups_ad" ON "public"."forum_groups" CASCADE;
 
 CREATE SEQUENCE "public".forum_groups_id_seq;
-ALTER SEQUENCE "forum_groups_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "forum_groups_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_groups" (
 "id" int4 DEFAULT nextval('forum_groups_id_seq'::regclass) NOT NULL,
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS "public"."forum_messages";
 DROP SEQUENCE IF EXISTS "public".forum_messages_id_seq; 
 
 CREATE SEQUENCE "public".forum_messages_id_seq;
-ALTER SEQUENCE "forum_messages_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "forum_messages_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_messages" (
 "id" int4 DEFAULT nextval('forum_messages_id_seq'::regclass) NOT NULL,
@@ -72,7 +72,7 @@ DROP SEQUENCE IF EXISTS "public".forum_themes_id_seq;
 DROP TRIGGER IF EXISTS "themes_ad" ON "public"."forum_themes" CASCADE;
 
 CREATE SEQUENCE "public".forum_themes_id_seq;
-ALTER SEQUENCE "forum_themes_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "forum_themes_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."forum_themes" (
 "id" int4 DEFAULT nextval('forum_themes_id_seq'::regclass) NOT NULL,

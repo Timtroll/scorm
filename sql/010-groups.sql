@@ -4,7 +4,7 @@ DROP TRIGGER IF EXISTS "groups_ad" ON "public"."groups" CASCADE;
 DROP SEQUENCE IF EXISTS "public".groups_id_seq; 
 
 CREATE SEQUENCE "public".groups_id_seq;
-ALTER SEQUENCE "groups_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "groups_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."groups" (
     "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,

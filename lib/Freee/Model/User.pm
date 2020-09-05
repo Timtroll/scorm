@@ -192,10 +192,10 @@ sub _empty_user {
 
     # делаем запись в EAV
     my $eav = {
-        'parent' => 0, 
+        'parent' => 1, 
         'title'  => 'New user',
         'User' => {
-            'parent'       => 0, 
+            'parent'       => 1, 
             'surname'      => '',
             'name'         => '',
             'patronymic'   => '',

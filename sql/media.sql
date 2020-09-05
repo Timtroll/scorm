@@ -5,7 +5,7 @@ CREATE SEQUENCE media_id_seq
     NO MAXVALUE
     CACHE 1;
 ;
-ALTER SEQUENCE "media_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "media_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."media" (
     "id" int4 DEFAULT nextval('media_id_seq'::regclass) NOT NULL,

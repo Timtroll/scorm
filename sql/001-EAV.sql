@@ -11,8 +11,8 @@ CREATE SEQUENCE "public".eav_items_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE "eav_fields_id_seq" RESTART WITH 1;
-ALTER SEQUENCE "eav_items_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "eav_fields_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "eav_items_id_seq" RESTART WITH 1;
 
 CREATE TYPE "public"."EAV_field_type" AS ENUM (
     'blob',

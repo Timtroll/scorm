@@ -12,7 +12,7 @@ CREATE SEQUENCE users_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE "users_id_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "users_id_seq" RESTART WITH 1;
 
 CREATE TABLE "public"."users" (
     "id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,

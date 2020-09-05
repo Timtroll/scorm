@@ -16,7 +16,7 @@ CREATE TABLE "public"."universal_links" (
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."universal_links" OWNER TO "troll";
-ALTER SEQUENCE "universal_links_types_seq" RESTART WITH 1;
+-- ALTER SEQUENCE "universal_links_types_seq" RESTART WITH 1;
 
 
 CREATE TABLE "public"."universal_links_types" (

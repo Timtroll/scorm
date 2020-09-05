@@ -6,7 +6,7 @@ export default {
 
   login (params) {
     return Api()({
-      url:    'api/login',
+      url:    'auth/login',
       method: 'post',
       params: params,
     })
@@ -30,7 +30,7 @@ export default {
 
   logout () {
     return Api()({
-      url:    'api/logout',
+      url:    'auth/logout',
       method: 'post',
     })
   }
