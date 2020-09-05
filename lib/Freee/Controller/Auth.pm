@@ -6,7 +6,7 @@ binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
-use Digest::MD5 qw/md5_hex/;
+use Digest::SHA qw( sha256 );
 
 use Data::Dumper;
 
@@ -28,37 +28,27 @@ use common;
 #     "status": "fail"
 # }
 sub login {
-    my ($self, $json, $token, $user, %data, %in);
-    $self = shift;
+    my $self = shift;
 
-    $json = { 'status' => 'ok' };
+    my ($data, $resp, $token );
 
-    # clear input data
-    $in{'login'} = $self->param('login');
-    $in{'pass'} = $self->param('pass');
-    # $in{'capcha'} = $self->validate('chars', 'capcha');
+    # проверка данных
+    $data = $self->_check_fields();
 
-    if ($in{'login'} && $in{'pass'}) {
-        $token = $self->check_login(\%in);
-
-        if ($token->{'status'} eq 'ok') {
-            $json->{'token'} = $token->{'token'};
-        }
-        else {
-            $json = {
-                'status'  => 'fail',
-                'mess'    => $token->{'mess'}
-            };
-        }
+    if ($$data{'login'} && $$data{'pass'}) {
+        $token = $self->check_login( $$data{'login'}, $$data{'pass'} );
     }
     else {
-        $json = {
-            'status'  => 'fail',
-            'mess'    => 'Login or password or both are missing'
-        };
+        push @!, 'Login or password or both are missing';
     }
 
-    $self->render( json => $json );
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = { 'token' => $token->{'token'} } unless @!;
+
+    @! = ();
+
+    $self->render( json => $resp );
 }
 
 # route /logout
@@ -139,75 +129,76 @@ warn "check permissions\n";
 
 ################## Subs ##################
 
-# create temp session if login-pass ot token success
-sub _get_token {
-    my ($self, $user, $token, $expires, $error, %data, %in);
-    $self = shift;
-    $user = shift;
-
-    $in{'token'} = $self->param('token');
-
-    # create token
-    $error = 0;
-    if ($$user{'login'} && $$user{'pass'}) {
-        $token = $$user{'login'}.time().$$user{'pass'};
-    }
-    elsif ($in{'token'}) {
-        $token = time().$$config{'hardcore_token'};
-    }
-    else {
-        $error = 1;
-    }
-
-    unless ($error) {
-        $token = md5_hex($token);
-        $expires = time() + $$config{'expires'};
-
-        %data = (
-            'status'    => 'ok',
-            'token'     => $token,
-            'expires'   => $expires
-        );
-
-        # store token
-        $tokens->{$token} = {
-            'expires'   => $expires,
-            'login'     => $$user{'login'},
-            'role_id'   => $$user{'role_id'},
-            'id'        => $$user{'id'}
-        };
-
-        # store token in cookie
-        $self->session(token => $token);
-    }
-    else {
-        %data = (
-            'status'    => 'fail'
-        );
-    }
-
-    return \%data;
-}
-
+# проверяем наличие пользователя по базе users
+#  $self->check_login(\%in);
+# %in = (
+#    'login' => 'login',
+#    'pass'  => 'passord',
+# );
+# возвращает token если пользователь есть и он единственный
+# возвращает undef если пользователя нет или их много
 sub check_login {
-    my ($self, $token, $in);
-    $self = shift;
-    $in = shift;
+    my ($self, $login, $pass) = @_;
 
-    $token = {
-        'status'  => 'fail',
-        'mess'    => 'Login or password is wrong',
-    };
+    my ($user, $token, $salt);
 
-    if ($$in{'login'} && $$in{'pass'}) {
-# ?????? need to change
-        if ($$in{'login'} eq $$in{'pass'}) {
-            $token = $self->_get_token($in);
+    if ( $login && $pass ) {
+         # получение соли из конфига
+        $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+
+       # шифрование пароля
+        $pass = sha256( $pass, $salt );
+
+        # проверяем наличие пользователя
+        $user = $self->model('Auth')->_exists_in_users( $login, $pass );
+
+        # делаем token для пользователя
+        if ($user) {
+            $token = $self->_create_token( $user );
         }
+    }
+    else {
+        push @!, "Empty login or password for checking";
     }
 
     return $token;
 }
 
+# возвращает token 
+sub _create_token {
+    my ($self, $user) = @_;
+
+    my ($salt, $token, $expires, %data);
+
+    # create token
+    $token = $$user{'login'}.$$user{'password'};
+    $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+    $token = sha256( $token, $salt );
+
+    $expires = time() + $$config{'expires'};
+
+    # %data = (
+    #     'status'    => 'ok',
+    #     'token'     => $token,
+    #     'expires'   => $expires
+    # );
+
+# ?????????????? добавить проверку permission, role_id
+
+    # сохраняем токен в глобальном хранилище
+    $tokens->{$token} = {
+        'expires'   => $expires,
+        'login'     => $$user{'login'},
+#???????? добавить пермишенов
+        # 'groups'   => $$user{'groups'},
+        'permission'=> 0,
+        'id'        => $$user{'id'}
+    };
+
+    # store token in cookie
+    $self->session(token => $token);
+
+    return $token;
+}
 
 1;

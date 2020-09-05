@@ -89,24 +89,24 @@ INSERT INTO "public"."EAV_items" (
 ) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 0, 0 );
 
 -----------
-INSERT INTO "public"."EAV_items" (
-        publish,
-        import_id,
-        type,
-        date_created,
-        title,
-        parent,
-        has_childs
-) VALUES (TRUE, 0, 'Lesson', NOW(), 'lesson_root', 0, 0 );
+-- INSERT INTO "public"."EAV_items" (
+--         publish,
+--         import_id,
+--         type,
+--         date_created,
+--         title,
+--         parent,
+--         has_childs
+-- ) VALUES (TRUE, 0, 'Lesson', NOW(), 'lesson_root', 0, 0 );
 
----------
-INSERT INTO "public"."EAV_items" (
-        publish,
-        import_id,
-        type,
-        date_created,
-        title,
-        parent,
-        has_childs
-) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
+-- ---------
+-- INSERT INTO "public"."EAV_items" (
+--         publish,
+--         import_id,
+--         type,
+--         date_created,
+--         title,
+--         parent,
+--         has_childs
+-- ) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
 

@@ -12,17 +12,19 @@ use Mojo::JSON qw( from_json );
 ####################################################################
 # поля которые лежат в EAV
 my %eav_fields = (
-    'surname'     => 1,
-    'name'        => 1,
-    'patronymic'  => 1,
-    'place'       => 1,
-    'country'     => 1,
-    'birthday'    => 1
+    'surname'       => 1,
+    'name'          => 1,
+    'patronymic'    => 1,
+    'place'         => 1,
+    'country'       => 1,
+    'birthday'      => 1
 );
 
 # поля которые лежат в таблице users
 my %users_fields = (
     'id'            => 1,
+    'publish'       => 1,
+    'login'         => 1,
     'email'         => 1,
     'phone'         => 1,
     'password'      => 1,
@@ -30,23 +32,24 @@ my %users_fields = (
     'time_create'   => 1,
     'time_access'   => 1,
     'time_update'   => 1,
-    'timezone'      => 1
+    'timezone'      => 1,
+    'groups'        => 1
 );
 
 # поля которые лежат в таблице users_social
 my %social_fields = (
-    'user_id'        => 1,
-    'social'         => 1,
-    'access_token'   => 1,
-    'social_id'      => 1,
-    'social_profile' => 1
+    'user_id'       => 1,
+    'social'        => 1,
+    'access_token'  => 1,
+    'social_id'     => 1,
+    'social_profile'=> 1
 );
 
 # поля которые лежат в таблице users_masks
 my %masks_fields = (
-    'user_id' => 1,
-    'key'     => 1,
-    'mask'    => 1
+    'user_id'       => 1,
+    'key'           => 1,
+    'mask'          => 1
 );
 
 

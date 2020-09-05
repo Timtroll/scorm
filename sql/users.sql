@@ -17,6 +17,7 @@ ALTER SEQUENCE "users_id_seq" RESTART WITH 1;
 CREATE TABLE "public"."users" (
     "id" int4 DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
     "publish" boolean DEFAULT false NOT NULL,
+    "login" varchar(16) COLLATE "default" DEFAULT NULL::character varying,
     "email" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
     "phone" varchar(16) COLLATE "default" DEFAULT NULL::character varying,
     "password" varchar(32) COLLATE "default" DEFAULT NULL::character varying,

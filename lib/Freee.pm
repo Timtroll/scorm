@@ -68,9 +68,6 @@ sub startup {
 
     # Router
     $r = $self->routes;
-    $r->post('/api/login')              ->to('auth#login');
-    $r->any('/api/logout')              ->to('auth#logout');
-
     $r->any('/api/doc')                 ->to('index#doc');
 
     $r->any('/api/test')                ->to('websocket#test');
@@ -86,6 +83,11 @@ sub startup {
 
     # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
     $r->any('/error/')                  ->to('index#error');
+
+    # Вход-выход в/из системы
+# ????? нафиг
+    $r->post('/auth/login')              ->to('auth#login');
+    $r->any('/auth/logout')              ->to('auth#logout');
 
     $auth = $r->under()->to('auth#check_token');
 
