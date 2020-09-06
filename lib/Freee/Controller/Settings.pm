@@ -296,7 +296,7 @@ sub load_default {
     # добавление valid_extensions из extensions.json
 
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
@@ -359,7 +359,7 @@ sub add {
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
@@ -469,7 +469,7 @@ sub save {
     }
 
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok' ;
@@ -497,7 +497,7 @@ sub delete {
         push @!, "Could not delete '$$data{'id'}'" unless ( $del || @! );
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
@@ -538,7 +538,7 @@ sub toggle {
         }
     }
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';

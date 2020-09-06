@@ -42,9 +42,9 @@ sub login {
         push @!, 'Login or password or both are missing';
     }
 
+    $resp = $token unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'data'} = { 'token' => $token } unless @!;
 
     @! = ();
 

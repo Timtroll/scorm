@@ -57,7 +57,7 @@ sub startup {
     );
 
     # обновление объекта с настройками
-    $self->{'settings'} = $self->model('Settings')->_get_config();
+    $settings = $self->model('Settings')->_get_config();
 
     # init Beanstalk connection
     $self->_beans_init();

@@ -4,10 +4,12 @@ use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
-use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 use Digest::SHA qw( sha256_hex );
+use common;
+
+use Data::Dumper;
 
 # список юзеров по группам (обязательно id группы)
 # $self->index($data)
@@ -23,11 +25,10 @@ sub index {
 
     # проверка данных
     $data = $self->_check_fields();
-    
+
     unless ( @! ) {
         $$data{'page'} = 1 unless $$data{'page'};
-
-        $$data{'limit'}  = $self->{'app'}->{'settings'}->{'per_page'};
+        $$data{'limit'}  = $settings->{'per_page'};
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
 
         # получаем список пользователей группы

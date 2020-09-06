@@ -6,6 +6,7 @@ use JSON::XS;
 use Encode qw( _utf8_off );
 
 use Data::Dumper;
+use common;
 
 ###################################################################
 # таблица настроек
@@ -356,9 +357,7 @@ sub _all_settings {
 sub _get_config {
     my $self = shift;
 
-    my ( $sql, $sth, $result, $settings );
-
-
+    my ( $sql, $sth, $result, $set );
 
     # получение настроек из бд
     $sql = 'SELECT "name", "value" FROM "public"."settings" WHERE "folder" = 0';
@@ -395,13 +394,13 @@ sub _get_config {
             # присвоение значения
             $val = \@tmp;
             $val = \%hash if $flag;
-            $$settings{ $$setting[ 0 ] } = $val;
+            $$set{ $$setting[ 0 ] } = $val;
         }
         else {
-            $$settings{ $$setting[ 0 ] } = $$setting[ 1 ];
+            $$set{ $$setting[ 0 ] } = $$setting[ 1 ];
         }
     }
-    $self->{app}->{'settings'} = $settings;
+    $settings = $set;
 }
 
 # очистка дефолтных настроек

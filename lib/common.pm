@@ -7,11 +7,12 @@ use strict;
 use Mojo::Home;
 
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $config $clear $tokens $log $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+use vars qw( @ISA @EXPORT @EXPORT_OK $config $settings $clear $tokens $log $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 use Data::Dumper;
 
 my $config = {};
+my $settings = {};
 my $tokens = {};
 my $permissions = {};
 my $websockets = {};
@@ -40,8 +41,8 @@ BEGIN {
 };
 
 @ISA = qw( Exporter );
-@EXPORT = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
-@EXPORT_OK = qw( &rel_file $config $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+@EXPORT = qw( &rel_file $config $settings $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
+@EXPORT_OK = qw( &rel_file $config $settings $clear $tokens $log $sockevnt $wsclients $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
 
 # Find and manage the project root directory
 my $home = Mojo::Home->new;

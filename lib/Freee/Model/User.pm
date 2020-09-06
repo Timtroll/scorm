@@ -61,7 +61,7 @@ my %masks_fields = (
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
 # id - Id группы
-# status - показывать группы только с этим статусом
+# status - показывать пользователей только с этим статусом
 # }
 sub _get_list {
     my ( $self, $data ) = @_;
@@ -92,6 +92,7 @@ sub _get_list {
         $sth->bind_param( ':offset', $$data{'offset'} );
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
+print Dumper($list);
 
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
