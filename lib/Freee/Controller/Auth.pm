@@ -74,25 +74,12 @@ print "route = ", $self->url_for, "\n";
     # проверка токена
     # ???????????????
 
-    # валидируем входные параметры, если есть соответствующие правила
-    if (defined $$vfields{$self->url_for}) {
-        # my ($res, $err) = $self->_check( $$routs{$self->url_for} );
-#??????????????????????????????????????????????????????????????????
-#         my ( $res, $error ) = $self->_check_fields( $self->url_for );
-# # print "check_token $res, error:\n";
-# # print Dumper($err);
-#         unless ($res) {
-#             # выводим ошибки, если валидация html данных не прошла
-#             $self->render( json => { 'status' => 'fail', message => join("\n", @$error) } );
-#             return;
-#         }
+    # если ли такой роут
+    unless (defined $$vfields{$self->url_for}) {
+        return;
     }
 
-    # проверка пермишенов
-    # ????????
 
-# для отладки
-return 1;
 
 # ????????? удаляем?
     # delete old tokens
@@ -107,6 +94,11 @@ return 1;
         }
     } (keys %{$tokens});
 
+# для отладки
+return 1;
+
+# проверка пермишенов
+# ????????
     if ( $self->session('token') ) {
         if ( exists( $$tokens{$self->session('token')} ) ) {
             if ( $$tokens{$self->session('token')} ) {

@@ -92,7 +92,6 @@ sub _get_list {
         $sth->bind_param( ':offset', $$data{'offset'} );
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
-print Dumper($list);
 
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
