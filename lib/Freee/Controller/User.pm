@@ -7,7 +7,7 @@ use Freee::EAV;
 use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
-use Digest::SHA qw( sha256 );
+use Digest::SHA qw( sha256_hex );
 
 # список юзеров по группам (обязательно id группы)
 # $self->index($data)
@@ -255,7 +255,7 @@ sub save {
             $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
 
             # шифрование пароля
-            $$data{'password'} = sha256( $$data{'newpassword'}, $salt );
+            $$data{'password'} = sha256_hex( $$data{'newpassword'}, $salt );
         }
 
         # переводим секунды в дату рождения
@@ -334,7 +334,7 @@ sub registration {
             $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
 
             # шифрование пароля
-            $$data{'password'} = sha256( $$data{'password'}, $salt );
+            $$data{'password'} = sha256_hex( $$data{'password'}, $salt );
         }
 
         # переводим секунды в дату рождения

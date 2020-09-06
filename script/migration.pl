@@ -9,10 +9,15 @@
 use utf8;
 use strict;
 use warnings;
+use lib './lib';
 use File::Slurp::Unicode qw(slurp);
-use DBI;
+use Freee::EAV;
+use Digest::SHA qw( sha256_hex );
+use DBI qw(:sql_types);
 
-my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $dbh, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, @list );
+use DDP;
+
+my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $self, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, @list );
 
 # проверка тестового режима
 if ( @ARGV ) {
@@ -65,11 +70,11 @@ if (
     $db->{'options'} &&
     $db->{'options'}->{'RaiseError'} 
 ) {
-    $db->{'options'}->{'RaiseError'} = 0;
+    $db->{'options'}->{'RaiseError'} = 1;
 }
 
 # подключение к базе данных
-$dbh = DBI->connect(
+$self->{dbh} = DBI->connect(
     'dbi:Pg:dbname=postgres;host=localhost;port=5432',
     $db->{'username'},
     $db->{'password'},
@@ -92,7 +97,7 @@ if ( check_db( $database ) ) {
 $create_db = $test ? '/_create_test_db.sql' : '/_create_db.sql';
 $filename = $path_sql . $create_db;
 $sql = slurp( $filename, encoding => 'utf8' );
-$sth = $dbh->prepare( $sql );
+$sth = $self->{dbh}->prepare( $sql );
 $res = $sth->execute();
 if ( DBI->errstr ) {
     warn "execute doesn't work " . DBI->errstr . " in $filename script";
@@ -102,7 +107,7 @@ if ( DBI->errstr ) {
 warn 'Db created';
 
 # подключение к базе данных
-$dbh = DBI->connect(
+$self->{dbh} = DBI->connect(
     $db->{'dsn'},
     $db->{'username'},
     $db->{'password'},
@@ -116,7 +121,7 @@ if ( DBI->errstr ) {
 # создание расширения
 $filename = $path_sql . '/_create_extiention.sql';
 $sql = slurp( $filename, encoding => 'utf8' );
-$sth = $dbh->prepare( $sql );
+$sth = $self->{dbh}->prepare( $sql );
 $res = $sth->execute();
 if ( DBI->errstr ) {
     warn "execute doesn't work " . DBI->errstr . " in $filename script";
@@ -146,7 +151,7 @@ foreach ( @list ) {
     };
 
     # выполение скриптов
-    $sth = $dbh->prepare( $sql );
+    $sth = $self->{dbh}->prepare( $sql );
     $res = $sth->execute();
     if ( DBI->errstr ) {
         warn "execute doesn't work " . DBI->errstr . " in $filename script";
@@ -155,14 +160,67 @@ foreach ( @list ) {
     }
 }
 
-# старт демона
-`./starting.sh start`;
+# # старт демона
+# `./starting.sh start`;
 
-# загрузка дефолтных настроек
-$host = $config->{'host'};
-$url = $host . '/settings/load_default';
-# --spider - не загружать файл с ответом
-`wget --wait=2 --tries=10 --retry-connrefused --spider $url`;
+# # загрузка дефолтных настроек
+# $host = $config->{'host'};
+# $url = $host . '/settings/load_default';
+# # --spider - не загружать файл с ответом
+# `wget --wait=3 --tries=5 --retry-connrefused --spider $url`;
+
+####################################################################
+
+# получаем id группы unaproved
+$sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
+$sth = $self->{dbh}->prepare( $sql );
+$sth->execute();
+
+my $groups = $sth->fetchrow_hashref();
+unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
+    push @!, 'Could not get Groups';
+    $self->{dbh}->rollback;
+    return;
+}
+
+# добавляем пользователя
+my $fu = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
+my $user =    {
+    'publish' => \1,
+    'parent' => 1, 
+    'title' => 'admin',
+    'User' => {
+        'place'         => "scorm",
+        'country'       => "scorm",
+        'birthday'      => "2020-04-04 20:00:00",
+        'patronymic'    => "admin",
+        'name'          => "admin",
+        'surname'       => "admin",
+    }
+};
+my $eav = Freee::EAV->new( 'User', $user );
+my $eav_id = $eav->id(); 
+
+# получение соли из конфига
+my $salt = $config->{'secrets'}->[0];
+$user = {
+    'publish'     => 't', 
+    'email'       => 'admin@admin',
+    'login'       => 'admin',
+    'password'    => sha256_hex( 'admin', $salt ),
+    'groups'      => "[$groups->{id}]",
+    'timezone'    => 3,
+    'eav_id'      => $eav_id
+};
+
+$sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$user ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$user ).' )';
+$sth = $self->{'dbh'}->prepare( $sql );
+foreach ( keys %$user ) {
+    my $type = /publish/ ? SQL_BOOLEAN : undef();
+    $sth->bind_param( ':'.$_, $$user{$_}, $type );
+}
+
+my $result = $sth->execute();
 
 exit;
 
@@ -188,7 +246,7 @@ sub check_db {
     my $database = shift;
 
     my $check_db = 'SELECT datname FROM pg_database WHERE datname = ?';
-    $sth = $dbh->prepare( $check_db );
+    $sth = $self->{dbh}->prepare( $check_db );
     $sth->bind_param( 1, $database );
     $res = $sth->execute();
     $res = 0 if $res == '0E0';

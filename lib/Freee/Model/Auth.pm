@@ -3,6 +3,7 @@ package Freee::Model::Auth;
 use Mojo::Base 'Freee::Model::Base';
 
 use Data::Dumper;
+use DDP;
 
 ###################################################################
 # Предметы
@@ -23,12 +24,11 @@ sub _exists_in_users {
         $sth->bind_param( ':login', $login );
         $sth->bind_param( ':password', $pass );
         $sth->execute();
-        $row = $sth->fetchall_hashref('id');
-use DDP;
-p $row;
+        $row = $sth->fetchall_hashref('login');
+
         if ( ref($row) eq 'HASH' && keys %$row ) {
             if (keys %$row == 1) {
-                return 1;
+                return $$row{$login};
             }
             else {
                 push @!, "Exists more then one user";

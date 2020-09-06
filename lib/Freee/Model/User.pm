@@ -172,7 +172,7 @@ sub _get_user {
 sub _empty_user {
     my ( $self ) = @_;
 
-    my ( $sth, $user, $user_id, $data, $result, $sql, $unaproved );
+    my ( $sth, $user, $user_id, $data, $result, $sql, $unaproved, $parent );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
@@ -189,6 +189,9 @@ sub _empty_user {
         $self->{'app'}->pg_dbh->rollback;
         return;
     }
+
+    # Получаем id User сета
+    # $parent = 
 
     # делаем запись в EAV
     my $eav = {
@@ -313,7 +316,7 @@ sub _save_user {
 
     unless ( @! ) {
         # обновление полей в users
-        @user_keys = ( "publish", "email", "phone", "time_access", "time_update", "timezone", "groups" );
+        @user_keys = ( "publish", "login", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
         if ( $$data{'password'} ) {
             push @user_keys, 'password';

@@ -134,6 +134,40 @@ ALTER TABLE ONLY "public"."EAV_links"
 ALTER TABLE ONLY "public"."EAV_fields"
    ADD CONSTRAINT unique_field UNIQUE (alias, set);
 
+---------------------------------------------------------------------------------
+--- ##########################################################
+---------------------------------------------------------------------------------
+-- CREATE TABLE "public"."EAV_sets" (
+--     "eav_id" int4 DEFAULT 0 NOT NULL,
+--     "alias" varchar(255) COLLATE "default" NOT NULL,
+--     "title" varchar(255) COLLATE "default" NOT NULL,
+--     CONSTRAINT "EAV_sets_pkey" PRIMARY KEY ("alias")
+--     -- UNIQUE(eav_id, alias, title)
+-- );
+
+-- ALTER TABLE ONLY "public"."EAV_sets"
+--     ADD CONSTRAINT unique_set UNIQUE (eav_id, alias, title);
+
+-- CREATE FUNCTION "public"."EAV_sets_trigger_ai"() RETURNS trigger
+--     LANGUAGE plpgsql
+--     AS $$
+-- DECLARE
+-- BEGIN
+--     IF ( NEW.parent = 0 ) THEN
+--         INSERT INTO "public"."EAV_sets" ( eav_id, alias, title ) VALUES ( NEW.id, NEW.type, NEW.type ) ON CONFLICT (eav_id) DO UPDATE SET "alias" = NEW.type, "title" = NEW.type;
+--     END IF;
+--     RETURN NEW;
+-- END;
+-- $$;
+
+-- CREATE INDEX "EAV_sets_eav_id_alias_idx" ON "public"."EAV_sets" USING btree (eav_id, alias, title);
+
+-- CREATE TRIGGER "EAV_sets_trigger_ai" AFTER INSERT ON "public"."EAV_items" FOR EACH ROW EXECUTE PROCEDURE "public"."EAV_sets_trigger_ai"();
+
+---------------------------------------------------------------------------------
+--- ##########################################################
+---------------------------------------------------------------------------------
+
 CREATE FUNCTION "public"."EAV_links_trigger_ai"() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -234,6 +268,7 @@ CREATE INDEX "EAV_links_id_idx" ON "public"."EAV_links" USING btree (id);
 CREATE INDEX "EAV_links_parent_distance_idx" ON "public"."EAV_links" USING btree (parent, distance);
 
 CREATE INDEX "EAV_links_parent_idx" ON "public"."EAV_links" USING btree (parent);
+
 
 CREATE INDEX "EAV_lower_data_string_field_id_data_idx" ON "public"."EAV_data_string" USING btree (field_id, lower((data)::text));
 

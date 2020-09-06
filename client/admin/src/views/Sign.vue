@@ -48,7 +48,7 @@ export default {
 
       user: {
         login: '',
-        pass:  ''
+        password:  ''
       },
 
       background: {

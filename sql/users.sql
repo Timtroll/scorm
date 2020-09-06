@@ -20,7 +20,7 @@ CREATE TABLE "public"."users" (
     "login" varchar(16) COLLATE "default" DEFAULT NULL::character varying,
     "email" varchar(255) COLLATE "default" DEFAULT NULL::character varying,
     "phone" varchar(16) COLLATE "default" DEFAULT NULL::character varying,
-    "password" varchar(32) COLLATE "default" DEFAULT NULL::character varying,
+    "password" varchar(64) COLLATE "default" DEFAULT NULL::character varying,
     "eav_id" int4 DEFAULT 0 NOT NULL,
     "time_create" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
     "time_access" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,

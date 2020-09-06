@@ -47,7 +47,7 @@
           <input class="uk-input"
                  :disabled="status === 'loading'"
                  autocomplete="current-password"
-                 v-model="user.pass"
+                 v-model="user.password"
                  type="password"
                  :placeholder="$t('auth.fields.password')"
                  @keyup="keyMove">
@@ -104,7 +104,7 @@ export default {
 
       user: {
         login: '',
-        pass:  ''
+        password:  ''
       },
 
       background: {
@@ -121,7 +121,7 @@ export default {
     },
 
     validateUser () {
-      return this.user.pass !== '' && this.user.login !== ''
+      return this.user.password !== '' && this.user.login !== ''
     }
   },
 
@@ -131,8 +131,8 @@ export default {
     login () {
       if (this.validateUser) {
         let login = this.user.login
-        let pass  = this.user.pass
-        this.$store.dispatch('login', {login, pass})
+        let password  = this.user.password
+        this.$store.dispatch('login', {login, password})
             .then(() => this.$router.push({
               name: 'Main'
             }))

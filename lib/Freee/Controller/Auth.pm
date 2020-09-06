@@ -6,7 +6,7 @@ binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
-use Digest::SHA qw( sha256 );
+use Digest::SHA qw( sha256_hex );
 
 use Data::Dumper;
 
@@ -14,8 +14,8 @@ use common;
 
 # route /login
 # POST:
-#   login   - 'chars' string
-#   pass    - 'symbchars' string
+#   login    - 'chars' string
+#   password - 'symbchars' string
 #
 # Return:
 # {
@@ -35,8 +35,8 @@ sub login {
     # проверка данных
     $data = $self->_check_fields();
 
-    if ($$data{'login'} && $$data{'pass'}) {
-        $token = $self->check_login( $$data{'login'}, $$data{'pass'} );
+    if ($$data{'login'} && $$data{'password'}) {
+        $token = $self->check_login( $$data{'login'}, $$data{'password'} );
     }
     else {
         push @!, 'Login or password or both are missing';
@@ -44,7 +44,7 @@ sub login {
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'data'} = { 'token' => $token->{'token'} } unless @!;
+    $resp->{'data'} = { 'token' => $token } unless @!;
 
     @! = ();
 
@@ -147,13 +147,13 @@ sub check_login {
         $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
 
        # шифрование пароля
-        $pass = sha256( $pass, $salt );
+        $pass = sha256_hex( $pass, $salt );
 
         # проверяем наличие пользователя
         $user = $self->model('Auth')->_exists_in_users( $login, $pass );
 
         # делаем token для пользователя
-        if ($user) {
+        if ( $user ) {
             $token = $self->_create_token( $user );
         }
     }
@@ -173,7 +173,7 @@ sub _create_token {
     # create token
     $token = $$user{'login'}.$$user{'password'};
     $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-    $token = sha256( $token, $salt );
+    $token = sha256_hex( $token, $salt );
 
     $expires = time() + $$config{'expires'};
 
@@ -189,6 +189,7 @@ sub _create_token {
     $tokens->{$token} = {
         'expires'   => $expires,
         'login'     => $$user{'login'},
+        'token'     => $token,
 #???????? добавить пермишенов
         # 'groups'   => $$user{'groups'},
         'permission'=> 0,
@@ -198,7 +199,7 @@ sub _create_token {
     # store token in cookie
     $self->session(token => $token);
 
-    return $token;
+    return $tokens->{$token};
 }
 
 1;
