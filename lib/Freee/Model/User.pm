@@ -151,13 +151,14 @@ sub _get_user {
         $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
         if ( $usr ) {
             $result->{'id'}            = $usr->id();
-            $result->{'name'}          = $usr->name();
-            $result->{'patronymic'}    = $usr->patronymic();
-            $result->{'surname'}       = $usr->surname();
-            $result->{'birthday'}      = $usr->birthday();
+            $result->{'name'}          = $usr->name()       ? $usr->name() : '';
+            $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
+            $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
+            $result->{'birthday'}      = $usr->birthday()   ? $usr->birthday() : '';
             $result->{'import_source'} = $usr->import_source();
-            $result->{'country'}       = $usr->country();
-            $result->{'place'}         = $usr->place();
+            $result->{'country'}       = $usr->country()    ? $usr->country() : '';
+            $result->{'place'}         = $usr->place()      ? $usr->place() : '';
+            $result->{'phone'}         = $usr->phone()      ? $usr->phone() : '';
         }
         else {
             push @!, "object with id 'data{'id'} doesn't exist";

@@ -9,6 +9,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Digest::SHA qw( sha256_hex );
 
 use Data::Dumper;
+use DDP;
 
 use common;
 
@@ -30,24 +31,30 @@ use common;
 sub login {
     my $self = shift;
 
-    my ($data, $resp, $token );
+    my ($data, $resp, $token, $user );
 
     # проверка данных
     $data = $self->_check_fields();
 
     if ($$data{'login'} && $$data{'password'}) {
         $token = $self->check_login( $$data{'login'}, $$data{'password'} );
+
+        # берем данные пользователя, если токен получен
+        if ( $token && $token->{'id'} && $token->{'token'} ) {
+            ( $user ) = $self->model('User')->_get_user( { id => $token->{'id'} } );
+        }
     }
     else {
         push @!, 'Login or password or both are missing';
     }
 
-    $resp = $token unless @!;
+    $resp->{'data'}->{'profile'} = $user if $user;
+    $resp->{'data'}->{'token'} = $token->{'token'} unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
-
+p $resp;
     $self->render( json => $resp );
 }
 
