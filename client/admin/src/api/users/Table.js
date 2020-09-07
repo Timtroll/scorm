@@ -8,7 +8,7 @@ export default {
       url:    'user/',
       method: 'post',
       params: {
-        id: id
+        group_id: id
       }
     })
   },
