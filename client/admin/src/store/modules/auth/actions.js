@@ -17,16 +17,18 @@ const actions = {
          .then(response => {
            const resp = response.data
            if (resp.status === 'ok') {
-             const token = resp.token
-             localStorage.setItem('token', token)
-             axios.defaults.headers.common['Authorization'] = token
-             commit('auth_success', token, user)
+             const user   = resp.data
+             localStorage.setItem('token', user.token)
+             localStorage.setItem('profile', JSON.stringify(user.profile))
+             axios.defaults.headers.common['Authorization'] = user.token
+             commit('auth_success', user)
              resolve(response)
            }
            else {
              notify(resp.mess, 'danger')
              commit('auth_error')
              localStorage.removeItem('token')
+             localStorage.removeItem('profile')
            }
          })
          .catch(err => {
@@ -90,6 +92,7 @@ const actions = {
            if (response.data.status === 'ok') {
              commit('logout')
              localStorage.removeItem('token')
+             localStorage.removeItem('profile')
              delete axios.defaults.headers.common['Authorization']
              notify('До встречи!', 'success')
              router.push({name: 'Login'}).catch(e => {})

@@ -7,7 +7,7 @@ const state = {
   user: {
     status:  '',
     token:   localStorage.getItem('token') || '',
-    profile: null
+    profile: JSON.parse(localStorage.getItem('profile')) || ''
   }
 
 }

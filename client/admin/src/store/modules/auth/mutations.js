@@ -6,10 +6,10 @@ const mutations = {
   },
 
   // статус - успешная авторизация
-  auth_success (state, token, user) {
-    state.user.status = 'success'
-    state.user.token  = token
-    state.user.user   = user
+  auth_success (state, user) {
+    state.user.status  = 'success'
+    state.user.token   = user.token
+    state.user.profile = user.profile
   },
 
   // статус - ошибка авторизации
@@ -18,8 +18,9 @@ const mutations = {
   },
 
   logout (state) {
-    state.user.status = ''
-    state.user.token  = ''
+    state.user.status  = ''
+    state.user.token   = ''
+    state.user.profile = ''
   }
 
 }
