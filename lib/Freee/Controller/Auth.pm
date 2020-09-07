@@ -79,8 +79,6 @@ print "route = ", $self->url_for, "\n";
         return;
     }
 
-
-
 # ????????? удаляем?
     # delete old tokens
     map {

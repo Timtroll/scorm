@@ -184,6 +184,7 @@ sub _empty_user {
     $sth->execute();
 
     $unaproved = $sth->fetchrow_hashref();
+warn Dumper( $unaproved );
     unless ( (ref($unaproved) eq 'HASH') && $$unaproved{id} ) {
         push @!, 'Could not get Groups';
         $self->{'app'}->pg_dbh->rollback;

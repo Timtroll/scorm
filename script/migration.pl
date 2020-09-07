@@ -160,14 +160,14 @@ foreach ( @list ) {
     }
 }
 
-# # старт демона
-# `./starting.sh start`;
+# старт демона
+`./starting.sh start`;
 
-# # загрузка дефолтных настроек
-# $host = $config->{'host'};
-# $url = $host . '/settings/load_default';
-# # --spider - не загружать файл с ответом
-# `wget --wait=3 --tries=5 --retry-connrefused --spider $url`;
+# загрузка дефолтных настроек
+$host = $config->{'host'};
+$url = $host . '/settings/load_default';
+# --spider - не загружать файл с ответом
+`wget --wait=3 --tries=5 --retry-connrefused --spider $url`;
 
 ####################################################################
 

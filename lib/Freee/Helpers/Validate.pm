@@ -490,6 +490,10 @@ sub register {
 ################
 
             # роуты groups/*
+            '/groups'  => {
+                "page"          => [ '', qr/^[\w]+$/os, 256 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
