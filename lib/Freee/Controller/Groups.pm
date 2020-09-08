@@ -24,7 +24,7 @@ sub index {
     my $self = shift;
 
     my ( $list, $set, $row, $resp, $keywords );
-warn 1;
+
     # читаем группы из базы
     $list = $self->model('Groups')->_all_groups();
 
@@ -49,14 +49,12 @@ warn 1;
             push @{$set}, $row;
         }
     }
-warn 2;
 
     $resp->{'message'} = join( "\n", @! ) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $set unless @!;
 
     @! = ();
-warn 3;
 
     $self->render( 'json' => $resp );
 }
