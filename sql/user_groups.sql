@@ -7,5 +7,3 @@ CONSTRAINT "user_groups_pkey" PRIMARY KEY ("user_id", "group_id")
 WITH (OIDS=FALSE);
 
 ALTER TABLE "public"."user_groups" OWNER TO "troll";
-
-INSERT INTO "public"."user_groups" VALUES ('1', '1');
