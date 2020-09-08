@@ -237,7 +237,7 @@ sub register {
 ################
             # роуты user/*
             '/user'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "group_id"      => [ 'required', qr/^\d+$/os, 9 ],
                 "status"        => [ '', qr/^[01]$/os, 1 ],
                 "page"          => [ '', qr/^\d+$/os, 9 ]
             },

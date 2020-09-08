@@ -86,6 +86,7 @@ sub _get_list {
         else {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
+warn $sql;
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':group_id', $$data{'id'} );
         $sth->bind_param( ':limit', $$data{'limit'} );
@@ -158,7 +159,7 @@ sub _get_user {
             $result->{'import_source'} = $usr->import_source();
             $result->{'country'}       = $usr->country()    ? $usr->country() : '';
             $result->{'place'}         = $usr->place()      ? $usr->place() : '';
-            $result->{'phone'}         = $usr->phone()      ? $usr->phone() : '';
+            $result->{'phone'}         = $result->{'phone'} ? $result->{'phone'} : '';
         }
         else {
             push @!, "object with id 'data{'id'} doesn't exist";

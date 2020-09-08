@@ -33,7 +33,7 @@ sub index {
 
         # получаем список пользователей группы
         $result = $self->model('User')->_get_list( $data );
-
+warn Dumper $result;
         unless ( @! ) {
             $list = {
                 'settings' => {

@@ -9,7 +9,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Digest::SHA qw( sha256_hex );
 
 use Data::Dumper;
-use DDP;
 
 use common;
 
@@ -32,7 +31,7 @@ sub login {
     my $self = shift;
 
     my ($data, $resp, $token, $user );
-
+warn '===';
     # проверка данных
     $data = $self->_check_fields();
 
@@ -48,13 +47,15 @@ sub login {
         push @!, 'Login or password or both are missing';
     }
 
+# пока не поправили фронт
+$resp->{'token'} = $token->{'token'} unless @!;
+
     $resp->{'data'}->{'profile'} = $user if $user;
     $resp->{'data'}->{'token'} = $token->{'token'} unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
-p $resp;
     $self->render( json => $resp );
 }
 
@@ -78,35 +79,30 @@ sub check_token {
     $self = shift;
 
 print "route = ", $self->url_for, "\n";
-    # проверка токена
-    # ???????????????
 
     # если ли такой роут
     unless (defined $$vfields{$self->url_for}) {
         return;
     }
 
-# ????????? удаляем?
-    # delete old tokens
-    map {
-        if (exists($$tokens{$_})) {
-            unless ($$tokens{$_}{'expires'}) {
-                delete $$tokens{$_};
-            }
-            elsif ($$tokens{$_}{'expires'} <= time()) {
-                delete $$tokens{$_};
-            }
-        }
-    } (keys %{$tokens});
+    # проверка токена
+    if ( $self->session('token') ) {
+        if ( exists( $$tokens{ $self->session('token') } ) ) {
+            if ( $$tokens{ $self->session('token') } ) {
 
-# для отладки
-return 1;
+                # delete old tokens
+                map {
+                    if (exists($$tokens{$_})) {
+                        unless ($$tokens{$_}{'expires'}) {
+                            delete $$tokens{$_};
+                        }
+                        elsif ($$tokens{$_}{'expires'} <= time()) {
+                            delete $$tokens{$_};
+                        }
+                    }
+                } (keys %{$tokens});
 
 # проверка пермишенов
-# ????????
-    if ( $self->session('token') ) {
-        if ( exists( $$tokens{$self->session('token')} ) ) {
-            if ( $$tokens{$self->session('token')} ) {
 # ????????? доработать?
 warn "check permissions\n";
                 # if ($$tokens{$self->session('token')}{'role_id'}) {
@@ -121,7 +117,7 @@ warn "check permissions\n";
         }
     }
 
-    return 0;
+    return;
 }
 
 ################## Subs ##################
@@ -183,7 +179,7 @@ sub _create_token {
 # ?????????????? добавить проверку permission, role_id
 
     # сохраняем токен в глобальном хранилище
-    $tokens->{$token} = {
+    $$tokens{$token} = {
         'expires'   => $expires,
         'login'     => $$user{'login'},
         'token'     => $token,
@@ -194,9 +190,9 @@ sub _create_token {
     };
 
     # store token in cookie
-    $self->session(token => $token);
+    $self->session( { token => $token } );
 
-    return $tokens->{$token};
+    return $$tokens{$token};
 }
 
 1;
