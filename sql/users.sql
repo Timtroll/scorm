@@ -86,4 +86,73 @@ FOR EACH ROW
 WHEN ( ( OLD.publish IS DISTINCT FROM NEW.publish ) AND ( pg_trigger_depth() = 0 ) )
 EXECUTE PROCEDURE "users_trigger_set_EAV_items"();
 
+
+---функция ( запись отношений user_groups после добавления нового пользователя )
+-- CREATE OR REPLACE FUNCTION "public"."users_trigger_insert_into_user_groups"() RETURNS "pg_catalog"."trigger" AS $BODY$
+-- BEGIN
+--     INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( OLD.id, NEW.groups );
+-- RETURN OLD;
+-- END;
+-- $BODY$
+-- LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+---триггер для вызова функции обновление user_groups после обновления групп в users
+-- CREATE TRIGGER "insert_into_user_groups"
+-- AFTER UPDATE OF "groups" ON "public"."users"
+-- FOR EACH ROW
+-- WHEN ( ( OLD.groups IS DISTINCT FROM NEW.groups ) AND ( pg_trigger_depth() = 0 ) )
+-- EXECUTE PROCEDURE "users_trigger_insert_into_user_groups"();
+
+---функция ( запись отношений user_groups после добавления нового пользователя )
+-- CREATE OR REPLACE FUNCTION "public"."users_trigger_insert_into_user_groups"() RETURNS "pg_catalog"."trigger" AS $BODY$
+-- BEGIN
+--     IF (TG_OP = 'DELETE') THEN
+--         DELETE FROM "public"."user_groups" WHERE "user_id" = OLD.id;
+--         RETURN NEW;
+--     ELSIF (TG_OP = 'UPDATE') THEN
+--         INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( OLD.id, NEW.groups::json->>1 );
+--         RETURN NEW;
+--     ELSIF (TG_OP = 'INSERT') THEN
+--         INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( OLD.id, NEW.groups::json->>1 );
+--         RETURN NEW;
+--     END IF;
+--     RETURN NULL;
+-- END;
+-- $BODY$
+-- LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+
+
+
+-- функция ( удаление записей из user_groups после удаления пользователя )
+CREATE OR REPLACE FUNCTION "public"."users_trigger_delete_from_user_groups"() RETURNS "pg_catalog"."trigger" AS $BODY$
+BEGIN
+    DELETE FROM "public"."user_groups" WHERE "user_id" = OLD.id;
+    RETURN NULL;
+END;
+$BODY$
+LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+---триггер для вызова функции обновление user_groups после удаления пользователя из users
+CREATE TRIGGER "delete_from_user_groups"
+AFTER DELETE ON "public"."users"
+    FOR EACH ROW
+    EXECUTE PROCEDURE "users_trigger_delete_from_user_groups"();
+
+-- -- функция ( добавление записей в user_groups после добавления пользователя )
+-- CREATE OR REPLACE FUNCTION "public"."users_trigger_insert_into_user_groups"() RETURNS "pg_catalog"."trigger" AS $BODY$
+-- BEGIN
+--     INSERT INTO "public"."user_groups" WHERE "user_id" = OLD.id;
+--     RETURN NULL;
+-- END;
+-- $BODY$
+-- LANGUAGE 'plpgsql' VOLATILE COST 100;
+
+-- ---триггер для вызова функции обновление user_groups после добавления пользователя в users
+-- CREATE TRIGGER "insert_into_user_groups"
+-- AFTER INSERT ON "public"."users"
+--     FOR EACH ROW
+--     EXECUTE PROCEDURE "users_trigger_insert_into_user_groups"();
+
+-- SELECT groups::json-»1 from "public"."users" where id = 1
 ---------------------
