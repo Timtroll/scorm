@@ -1,8 +1,8 @@
 import axios    from 'axios'
-import router   from '../../../router'
-import {notify} from './../../methods'
-import Api      from './../../../api/Auth'
-import store    from '@/store/store'
+import router   from '@/router'
+import {notify} from '@/store/methods'
+import Api      from '@/api/Auth'
+import {appConfig}      from '@/main'
 
 const actions = {
 
@@ -17,9 +17,8 @@ const actions = {
          .then(response => {
            const resp = response.data
            if (resp.status === 'ok') {
-             const user   = resp.data
-             localStorage.setItem('token', user.token)
-             localStorage.setItem('profile', JSON.stringify(user.profile))
+             const user = resp.data
+             appConfig.setToken(user)
              axios.defaults.headers.common['Authorization'] = user.token
              commit('auth_success', user)
              resolve(response)
@@ -27,8 +26,7 @@ const actions = {
            else {
              notify(resp.mess, 'danger')
              commit('auth_error')
-             localStorage.removeItem('token')
-             localStorage.removeItem('profile')
+             appConfig.removeToken()
            }
          })
          .catch(err => {
@@ -91,8 +89,7 @@ const actions = {
          .then(response => {
            if (response.data.status === 'ok') {
              commit('logout')
-             localStorage.removeItem('token')
-             localStorage.removeItem('profile')
+             appConfig.removeToken()
              delete axios.defaults.headers.common['Authorization']
              notify('До встречи!', 'success')
              router.push({name: 'Login'}).catch(e => {})

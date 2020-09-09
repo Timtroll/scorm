@@ -7,12 +7,12 @@
       <div class="uk-section">
         <div class="uk-container uk-text-center pos-login-logo-left"
              :class="[status === 'loading' ? 'uk-text-danger' : '']">
-          <img src="/img/logo__bw.svg"
+          <img :src="appConfig.logo"
                width="100"
                class=""
                uk-svg>
           <div class="uk-margin-small-top"
-               v-text="$t('app.title')"></div>
+               v-text="appConfig.title"></div>
         </div>
       </div>
     </div>
@@ -34,6 +34,7 @@
   </div>
 </template>
 <script>
+import {appConfig} from '@/main'
 
 export default {
 
@@ -42,13 +43,14 @@ export default {
   data () {
 
     return {
+      appConfig: null,
 
       direction: false,
       motion:    false,
 
       user: {
-        login: '',
-        password:  ''
+        login:    '',
+        password: ''
       },
 
       background: {
@@ -58,6 +60,10 @@ export default {
 
     }
 
+  },
+
+  beforeMount () {
+    this.appConfig = appConfig
   },
 
   computed: {
