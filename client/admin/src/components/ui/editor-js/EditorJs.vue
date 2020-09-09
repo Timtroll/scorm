@@ -8,30 +8,26 @@
 <script>
 export const PLUGIN_PROPS = ['header', 'personality', 'list', 'code', 'inlineCode', 'embed', 'linkTool', 'marker', 'table', 'raw', 'delimiter', 'quote', 'image', 'warning', 'paragraph', 'checklist']
 
-const PLUGINS = {
-  header:      require('@editorjs/header'),
-  list:        require('@editorjs/list'),
-  image:       require('@editorjs/image'),
-  personality: require('@editorjs/personality'),
-  inlineCode:  require('@editorjs/inline-code'),
-  embed:       require('@editorjs/embed'),
-  quote:       require('@editorjs/quote'),
-  marker:      require('@editorjs/marker'),
-  code:        require('@editorjs/code'),
-  linkTool:    require('@editorjs/link'),
-  delimiter:   require('@editorjs/delimiter'),
-  raw:         require('@editorjs/raw'),
-  table:       require('@editorjs/table'),
-  warning:     require('@editorjs/warning'),
-  paragraph:   require('@editorjs/paragraph'),
-  checklist:   require('@editorjs/checklist'),
-  //textSpoiler:  require('editorjs-inline-spoiler-tool'),
-  //attachesTool: require('@editorjs/attaches'),
-  underline:   require('@editorjs/underline'),
-  img:         require('./plugins/freee-img')
-}
+import EditorJS     from '@editorjs/editorjs'
+import header       from '@editorjs/header'
+import list         from '@editorjs/list'
+import image        from '@editorjs/image'
+import personality  from '@editorjs/personality'
+import inlineCode   from '@editorjs/inline-code'
+import table        from '@editorjs/table'
+import embed        from '@editorjs/header'
+import quote        from '@editorjs/quote'
+import marker       from '@editorjs/marker'
+import code         from '@editorjs/code'
+import linkTool     from '@editorjs/link'
+import delimiter    from '@editorjs/delimiter'
+import raw          from '@editorjs/raw'
+import warning      from '@editorjs/warning'
+import paragraph    from '@editorjs/paragraph'
+import checklist    from '@editorjs/checklist'
+import underline    from '@editorjs/underline'
+import attachesTool from '@editorjs/attaches'
 
-import EditorJS from '@editorjs/editorjs'
 //import DragDrop from 'editorjs-drag-drop'
 //import Undo     from 'editorjs-undo'
 
@@ -73,31 +69,48 @@ export default {
   data () {
     return {
       editor: null,
+
       tools:  {
+
         header:     {
-          class:  PLUGINS.header,
+          class:  header,
           config: {
             placeholder:  'Напишите заголовок',
             levels:       [2, 3, 4, 5, 6],
             defaultLevel: 3
           }
         },
+
         img:        {
-          class:         PLUGINS.img,
+          class:         image,
           inlineToolbar: true
         },
+
+        image:        {
+          class:         image,
+          config: {
+            endpoints: {
+              byFile: 'https://editor-upload.herokuapp.com/image',
+              byUrl: 'https://editor-upload.herokuapp.com/image-by-url',
+            }
+          }
+        },
+
         list:       {
-          class:         PLUGINS.list,
+          class:         list,
           inlineToolbar: true
         },
+
         code:       {
-          class: PLUGINS.code
+          class: code
         },
+
         paragraph:  {
-          class: PLUGINS.paragraph
+          class: paragraph
         },
+
         embed:      {
-          class:  PLUGINS.embed,
+          class:  embed,
           config: {
             services: {
               youtube: true,
@@ -106,8 +119,9 @@ export default {
             }
           }
         },
+
         table:      {
-          class:         PLUGINS.table,
+          class:         table,
           inlineToolbar: true,
           config:        {
             rows: 2,
@@ -115,14 +129,16 @@ export default {
           }
         },
         checklist:  {
-          class: PLUGINS.checklist
+          class: checklist
         },
-        Marker:     {
-          class:    PLUGINS.marker,
+
+        marker:     {
+          class:    marker,
           shortcut: 'CMD+SHIFT+M'
         },
+
         warning:    {
-          class:         PLUGINS.warning,
+          class:         warning,
           inlineToolbar: true,
           shortcut:      'CMD+SHIFT+W',
           config:        {
@@ -130,9 +146,10 @@ export default {
             messagePlaceholder: 'Message'
           }
         },
-        raw:        PLUGINS.raw,
+
+        raw:        raw,
         quote:      {
-          class:         PLUGINS.quote,
+          class:         quote,
           inlineToolbar: true,
           shortcut:      'CMD+SHIFT+O',
           config:        {
@@ -140,14 +157,18 @@ export default {
             captionPlaceholder: 'Quote\'s author'
           }
         },
+
         inlineCode: {
-          class:    PLUGINS.inlineCode,
+          class:    inlineCode,
           shortcut: 'CMD+SHIFT+M'
         },
-        delimiter:  PLUGINS.delimiter,
-        image:      PLUGINS.image,
-        //textSpolier: PLUGINS.textSpolier,
-        underline:  PLUGINS.underline
+
+        delimiter:  delimiter,
+
+        //textSpolier: textSpolier,
+
+        underline:  underline
+
         //attaches: {
         //  class: attachesTool,
         //  config: {
@@ -155,6 +176,7 @@ export default {
         //  }
         //}
       },
+
       value:  null
     }
   },
@@ -218,7 +240,7 @@ export default {
 
     async save () {
       const response = await this.editor.save()
-      //this.$emit('update', response)
+      this.$emit('update', response)
     },
 
     destroy () {
