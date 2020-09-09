@@ -23,9 +23,10 @@
 </template>
 
 <script>
-import main     from '@/store/modules/main'
-import settings from '@/store/modules/settings'
-import wssConnect  from '@/api/socket'
+import main       from '@/store/modules/main'
+import settings   from '@/store/modules/settings'
+import wssConnect from '@/api/socket'
+
 
 const socket = new wssConnect('wss://freee.su/wschannel/:type')
 
@@ -53,17 +54,10 @@ export default {
   },
 
   async mounted () {
-    await this.getConfig()
   },
 
   methods: {
-    async getConfig () {
-      const webRTC = await import('@/../public/config/web-rtc')
-      this.$store.commit('setConfig', {
-        webRTC: webRTC.default
-      })
 
-    }
   }
 }
 </script>

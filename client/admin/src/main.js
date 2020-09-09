@@ -32,6 +32,10 @@ Vue.use(Vue2TouchEvents, {
 Vue.config.productionTip = false
 Vue.config.performance   = true
 
+import AppConfig from '../public/config'
+
+export let appConfig = new AppConfig()
+
 new Vue({
   router,
   store,

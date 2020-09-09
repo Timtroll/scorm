@@ -135,6 +135,7 @@ import WebRtcInitMulti from '@/api/webRTC/index'
 import * as io from 'socket.io-client'
 
 window.io = io
+import {appConfig}  from '@/main'
 
 export default {
   name: 'Lesson',
@@ -263,15 +264,11 @@ export default {
 
     startRTC () {
       this.rtc = new WebRtcInitMulti(
-        'lector',
+        appConfig.role,
         'lesson_123',
-        'https://scorm-rtc-multi-server.herokuapp.com:443/',
-        'stun:stun.freee.su:5349',
-        {
-          urls:       'turn:turn.freee.su:5349',
-          credential: '12345',
-          username:   'brucewayne'
-        }
+        appConfig.wssWebRTC,
+        appConfig.stunServer,
+        appConfig.turnServer
       )
       this.rtc.init(this.$refs.local, this.$refs.video)
       this.getStream()
