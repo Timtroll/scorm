@@ -22,18 +22,12 @@ my %eav_fields = (
 
 # поля которые лежат в таблице users
 my %users_fields = (
-    'id'            => 1,
     'publish'       => 1,
     'login'         => 1,
     'email'         => 1,
     'phone'         => 1,
-    'password'      => 1,
-    'eav_id'        => 1,
-    'time_create'   => 1,
-    'time_access'   => 1,
-    'time_update'   => 1,
-    'timezone'      => 1,
-    'groups'        => 1
+    # 'eav_id'        => 1,
+    'timezone'      => 1
 );
 
 # поля которые лежат в таблице users_social
@@ -130,27 +124,30 @@ sub _get_list {
 sub _get_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $sql, $usr, $result );
+    my ( $sth, $sql, $usr, $result, $EAV_id );
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for get";
     }
-
     unless ( @! ) {
-        # взять весь объект из таблицы users
-        $sql = 'SELECT publish, email, phone, password, timezone, groups FROM "public"."users" WHERE "id" = :id';
+        # взять пользователей
+        $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups"
+            FROM "users" AS u  
+            INNER JOIN "user_groups" AS g ON g."user_id" = u."id"
+            WHERE u."id" = :user_id
+            GROUP BY u."id");
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':id', $$data{'id'} );
+        $sth->bind_param( ':user_id', $$data{'id'} );
         $sth->execute();
 
         $result = $sth->fetchrow_hashref();
-        push @!, "can't get object from users" unless $result;
+        push @!, "can't get groups" unless $result;
     }
-
     unless ( @! ) {
         # взять весь объект из EAV
-        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
+        $EAV_id = $$data{'id'} + 3;
+        $usr = Freee::EAV->new( 'User', { 'id' => $EAV_id } );
         if ( $usr ) {
-            $result->{'id'}            = $usr->id();
+            $result->{'id'}            = $usr->id()-3;
             $result->{'name'}          = $usr->name()       ? $usr->name() : '';
             $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
             $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
@@ -164,7 +161,6 @@ sub _get_user {
             push @!, "object with id 'data{'id'} doesn't exist";
         }
     }
-
     return $result;
 }
 
@@ -212,7 +208,7 @@ sub _empty_user {
         }
     };
     $user = Freee::EAV->new( 'User', $eav );
-
+########################################################???????????? добавить добавление в user groups
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
         'publish'   => 0,
@@ -220,8 +216,8 @@ sub _empty_user {
         'phone'     => '',
         'password'  => '',
         'eav_id'    => $user->id(),
-        'timezone'  => $$data{'timezone'} ? $$data{'timezone'} : $timezone,
-        'groups'    => '["' . $$unaproved{id} . '"]'
+        'timezone'  => $$data{'timezone'} ? $$data{'timezone'} : $timezone
+        # 'groups'    => '["' . $$unaproved{id} . '"]'
     };
     unless ( $$data{'eav_id'} ) {
         push @!, "Could not insert user into EAV";
@@ -318,13 +314,12 @@ sub _save_user {
 
     unless ( @! ) {
         # обновление полей в users
-        @user_keys = ( "publish", "login", "email", "phone", "time_access", "time_update", "timezone", "groups" );
 
         if ( $$data{'password'} ) {
-            push @user_keys, 'password';
+            %users_fields = ( 'password' => 1 );
         }
 
-        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} @user_keys ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } @user_keys ).') WHERE "id" = :id RETURNING "id"';
+        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} keys %users_fields ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %users_fields ).') WHERE "id" = :id RETURNING "id"';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
 
@@ -508,7 +503,7 @@ sub _delete_user {
 # проверка существования пользователя
 # my $true = $self->model('User')->_exists_in_user( $$data{'parent'} );
 # 'id'    - id пользователя
-sub _exists_in_user {
+sub _exists_user_in_EAV {
     my ( $self, $id ) = @_;
 
     my ( $user, $result );
