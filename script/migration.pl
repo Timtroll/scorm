@@ -176,12 +176,12 @@ $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
 $sth = $self->{dbh}->prepare( $sql );
 $sth->execute();
 
-my $groups = $sth->fetchrow_hashref();
-unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
-    push @!, 'Could not get Groups';
-    $self->{dbh}->rollback;
-    return;
-}
+# my $groups = $sth->fetchrow_hashref();
+# unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
+#     push @!, 'Could not get Groups';
+#     $self->{dbh}->rollback;
+#     return;
+# }
 
 # добавляем пользователя
 my $fu = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
@@ -191,8 +191,8 @@ my $user =    {
     'title' => 'admin',
     'User' => {
         'place'         => "scorm",
-        'country'       => "scorm",
-        'birthday'      => "2020-04-04 20:00:00",
+        'country'       => "RU",
+        'birthday'      => "19950803 00:00:00",
         'patronymic'    => "admin",
         'name'          => "admin",
         'surname'       => "admin",
@@ -208,7 +208,6 @@ $user = {
     'email'       => 'admin@admin',
     'login'       => 'admin',
     'password'    => sha256_hex( 'admin', $salt ),
-    'groups'      => "[$groups->{id}]",
     'timezone'    => 3,
     'eav_id'      => $eav_id
 };
@@ -219,8 +218,12 @@ foreach ( keys %$user ) {
     my $type = /publish/ ? SQL_BOOLEAN : undef();
     $sth->bind_param( ':'.$_, $$user{$_}, $type );
 }
-
 my $result = $sth->execute();
+
+# ввод в user_groups
+$sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( 1,1 )';
+$sth = $self->{'dbh'}->prepare( $sql );
+$result = $sth->execute();
 
 exit;
 
