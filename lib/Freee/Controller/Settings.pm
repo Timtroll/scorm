@@ -249,7 +249,8 @@ sub load_default {
     $self->model('Settings')->_reset_settings();
 
     my ( $id, $sub, $resp );
-    foreach my $folder ( @{$settings->{'settings'}} ) {
+
+    foreach my $folder ( @{$mock_settings->{'settings'}} ) {
         $sub = {
             "name"          => $$folder{'name'},
             "placeholder"   => $$folder{'placeholder'} // '',

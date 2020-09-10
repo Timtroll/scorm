@@ -22,11 +22,13 @@ my %eav_fields = (
 
 # поля которые лежат в таблице users
 my %users_fields = (
+    'id'            => 0,
     'publish'       => 1,
     'login'         => 1,
     'email'         => 1,
     'phone'         => 1,
-    # 'eav_id'        => 1,
+    'password'      => 0,
+    'eav_id'        => 1,
     'timezone'      => 1
 );
 
@@ -63,12 +65,11 @@ sub _get_list {
     my ( $sql, $fields, $sth, @list );
     my $list = {};
 
-    push @!, "no data for list" unless ( $$data{'id'} );
+    push @!, "no data for list" unless ( $$data{'group_id'} );
 
     unless ( @! ) {
         # выбираемые поля
-        my $masks_fields;
-        $fields = ' id, publish, email, phone, eav_id, timezone, groups ';
+        $fields = ' id, login, publish, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
         unless ( defined $$data{'status'} ) {
@@ -80,9 +81,8 @@ sub _get_list {
         else {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
-warn $sql;
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':group_id', $$data{'id'} );
+        $sth->bind_param( ':group_id', $$data{'group_id'} );
         $sth->bind_param( ':limit', $$data{'limit'} );
         $sth->bind_param( ':offset', $$data{'offset'} );
         $sth->execute();
@@ -125,7 +125,7 @@ warn $sql;
 sub _get_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $sql, $usr, $result, $EAV_id );
+    my ( $sth, $sql, $usr, $result, $eav_id );
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for get";
     }
@@ -145,10 +145,10 @@ sub _get_user {
     }
     unless ( @! ) {
         # взять весь объект из EAV
-        $EAV_id = $$data{'id'} + 3;
-        $usr = Freee::EAV->new( 'User', { 'id' => $EAV_id } );
+        $eav_id = $result->{'eav_id'};
+        $usr = Freee::EAV->new( 'User', { 'id' => $eav_id } );
         if ( $usr ) {
-            $result->{'id'}            = $usr->id()-3;
+            $result->{'id'}            = $usr->id();
             $result->{'name'}          = $usr->name()       ? $usr->name() : '';
             $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
             $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
@@ -159,7 +159,7 @@ sub _get_user {
             $result->{'phone'}         = $result->{'phone'} ? $result->{'phone'} : '';
         }
         else {
-            push @!, "object with id 'data{'id'} doesn't exist";
+            push @!, "object with id $$data{'id'} doesn't exist";
         }
     }
     return $result;
@@ -314,13 +314,16 @@ sub _save_user {
     };
 
     unless ( @! ) {
-        # обновление полей в users
-
+        # сохраняем пароль, если он передан в данных
         if ( $$data{'password'} ) {
             %users_fields = ( 'password' => 1 );
         }
 
-        $sql = 'UPDATE "public"."users" SET ('.join( ',', map { "\"$_\""} keys %users_fields ).') = ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %users_fields ).') WHERE "id" = :id RETURNING "id"';
+        # обновление полей в users
+        $sql = 'UPDATE "public"."users" SET (' . 
+            join( ',', map { if ( $users_fields{$_} ) { "\"$_\"" } } keys %users_fields ) . ') = (' .
+            join( ',', map { if ( $users_fields{$_} ) { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } } keys %users_fields ) .
+            ') WHERE "id" = :id RETURNING "id"';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
 

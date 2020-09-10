@@ -13,11 +13,14 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-
-    # $self->redirect_to( '/forum/list_messages' );
+warn "asdasd";
+    # $self->render(
+    #     'template'  => 'manage_eav',
+    #     'title'     => 'Работа с EAV'
+    # );
     $self->render(
-        'template'  => 'manage_eav',
-        'title'     => 'Работа с EAV'
+        'template'    => 'index',
+        'title'       => 'Описание роутов'
     );
 }
 
@@ -25,7 +28,7 @@ sub root {
     my $self = shift;
 
         my $theme = Freee::EAV->new( 'User' );
-print Dumper($theme->_sets);
+warn Dumper($theme->_sets);
 my $root = {
     "name"      => "Sets",
     "parent"    => 0,
@@ -38,8 +41,8 @@ foreach ( keys %{$theme->_sets}) {
     };
     push @{$root->{"children"}}, $item;
 }
-use DDP;
-p $root;
+warn Dumper($root);
+
         # unless ( $theme ) {
         #     push @!, "theme with id '$id' doesn't exist";
         #     return;

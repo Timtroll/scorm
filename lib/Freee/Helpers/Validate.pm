@@ -56,8 +56,11 @@ sub register {
 
         my $url_for = $self->url_for;
         my %data = ();
+warn "++";
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
+next unless keys %{ $$vfields{$url_for} };
+
             my $param = $self->param($field);
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
@@ -213,6 +216,9 @@ sub register {
 
         $vfields = {
             # валидация роутов
+################
+            '/manage_eav' => {},
+            '/manage_eav/root' => {},
 ################
             '/auth/login'  => {
                 'login'       => [ 'required', qr/^[\w\-]+$/os, 32 ],

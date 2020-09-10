@@ -47,7 +47,7 @@ warn '===';
         push @!, 'Login or password or both are missing';
     }
 
-# пока не поправили фронт
+    # пока не поправили фронт
 $resp->{'token'} = $token->{'token'} unless @!;
 
     $resp->{'data'}->{'profile'} = $user if $user;
@@ -55,6 +55,8 @@ $resp->{'token'} = $token->{'token'} unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
 
+use DDP;
+p $resp;
     @! = ();
     $self->render( json => $resp );
 }
@@ -62,7 +64,7 @@ $resp->{'token'} = $token->{'token'} unless @!;
 # route /logout
 # POST or GET поля не передаются (удаляется кука sessions)
 sub logout {
-    my ($self, %data);
+    my ($self);
     $self = shift;
 
     if ($self->session('token')) {
@@ -78,11 +80,12 @@ sub check_token {
     my ($self, %data);
     $self = shift;
 
-print "route = ", $self->url_for, "\n";
+warn "route = ", $self->url_for, "\n";
 
     # если ли такой роут
-    unless (defined $$vfields{$self->url_for}) {
-        return;
+    unless (exists $$vfields{$self->url_for}) {
+warn "logout";
+         $self->logout();
     }
 
     # проверка токена
@@ -117,7 +120,7 @@ warn "check permissions\n";
         }
     }
 
-    return;
+    $self->logout();
 }
 
 ################## Subs ##################

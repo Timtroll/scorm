@@ -18,8 +18,11 @@ sub _exists_in_users {
     my ($sql, $sth, $row);
 
     if ( $login && $pass ) {
-        $sql = 'SELECT id, login, password, groups FROM "public"."users" WHERE "login" = :login AND "password" = :password';
-
+        $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups"
+            FROM "users" AS u  
+            INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
+            WHERE u."login"  = :login AND u."password"  = :password 
+            GROUP BY u."id");
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':login', $login );
         $sth->bind_param( ':password', $pass );

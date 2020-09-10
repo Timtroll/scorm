@@ -4,15 +4,15 @@ package Freee::Mock::Settings;
 use utf8;
 use Encode qw( encode );
 use Exporter();
-use vars qw( @ISA @EXPORT @EXPORT_OK $settings );
+use vars qw( @ISA @EXPORT @EXPORT_OK $mock_settings );
 use FindBin;
 
 our @ISA = qw( Exporter );
-our @EXPORT = qw( $settings );
-our @EXPORT_OK = qw( $settings );
+our @EXPORT = qw( $mock_settings );
+our @EXPORT_OK = qw( $mock_settings );
 our $pref;
 
-$settings = {
+$mock_settings = {
   "settings"=> [
     {
       "name"        => "core",
