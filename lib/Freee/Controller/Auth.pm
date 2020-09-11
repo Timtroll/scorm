@@ -192,7 +192,17 @@ sub _create_token {
     };
 
     # store token in cookie
-    $self->session( { token => $token } );
+use Mojolicious::Sessions;
+my $sessions = Mojolicious::Sessions->new;
+$sessions->cookie_name( { token => $token } );
+$sessions->default_expiration($config->{'expires'});
+$sessions->samesite('none');
+
+    # $self->session( { token => $token } );
+    # $self->samesite('None');
+
+    # my $samesite = $sessions->samesite;
+    # $sessions    = $sessions->samesite('None');
 
     return $$tokens{$token};
 }

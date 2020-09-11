@@ -33,9 +33,15 @@ sub startup {
     $host = $config->{'host'};
 
     # set life-time fo session (second)
-    $self->sessions->cookie_name('token');
-    $self->sessions->default_expiration($config->{'expires'});
+    # $self->sessions->cookie_name('token');
+    # $self->sessions->default_expiration($config->{'expires'});
+    # $self->session->samesite('None');
+use Mojolicious::Sessions;
 
+my $sessions = Mojolicious::Sessions->new;
+$sessions->cookie_name('token');
+$sessions->default_expiration($config->{'expires'});
+$sessions->samesite('none');
 
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
