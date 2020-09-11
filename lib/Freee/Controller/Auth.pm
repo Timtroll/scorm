@@ -66,8 +66,6 @@ sub logout {
     $self = shift;
 
 warn "logout";
-use DDP;
-p $self->res->headers;
     if ($self->session('token')) {
         $self->session(expires => -1);
     }
@@ -83,15 +81,17 @@ sub check_token {
 
 warn "route = ", $self->url_for, "\n";
 
+use DDP;
+p $self->req->headers->header('token');#->{token};
+p $tokens;
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
         $self->redirect_to('/#/login');
     }
 
     # проверка токена
-    if ( $self->session('token') ) {
-        if ( exists( $$tokens{ $self->session('token') } ) ) {
-            if ( $$tokens{ $self->session('token') } ) {
+    if ( $self->req->headers->header('token') ) {
+        if ( exists( $$tokens{ $self->req->headers->header('token') } ) && $$tokens{ $self->req->headers->header('token') } ) {
 
                 # delete old tokens
                 map {
@@ -117,7 +117,6 @@ warn "check permissions\n";
                 # }
 warn "checked";
                 return 1;
-            }
         }
     }
 
@@ -192,12 +191,14 @@ sub _create_token {
         'permission'=> 0,
         'id'        => $$user{'id'}
     };
+use DDP;
+p $tokens;
 
     # store token in cookie
-use Mojolicious::Sessions;
-my $sessions = Mojolicious::Sessions->new;
-$sessions->cookie_name( { token => $token } );
-$sessions->default_expiration($config->{'expires'});
+# use Mojolicious::Sessions;
+# my $sessions = Mojolicious::Sessions->new;
+# $sessions->cookie_name( { token => $token } );
+# $sessions->default_expiration($config->{'expires'});
 # $sessions->samesite('none');
 
     # $self->session( { token => $token } );

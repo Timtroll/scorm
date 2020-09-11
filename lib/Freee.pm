@@ -36,11 +36,10 @@ sub startup {
     # $self->sessions->cookie_name('token');
     # $self->sessions->default_expiration($config->{'expires'});
     # $self->session->samesite('None');
-use Mojolicious::Sessions;
-
-my $sessions = Mojolicious::Sessions->new;
-$sessions->cookie_name('token');
-$sessions->default_expiration($config->{'expires'});
+# use Mojolicious::Sessions;
+# my $sessions = Mojolicious::Sessions->new;
+# $sessions->cookie_name('token');
+# $sessions->default_expiration($config->{'expires'});
 # $sessions->samesite('none');
 
     $self->plugin('Freee::Helpers::Utils');
