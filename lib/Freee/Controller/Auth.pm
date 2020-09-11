@@ -40,7 +40,8 @@ warn '===';
 
         # берем данные пользователя, если токен получен
         if ( $token && $token->{'id'} && $token->{'token'} ) {
-            ( $user ) = $self->model('User')->_get_user( { id => $token->{'id'} } );
+            $user = $self->model('User')->_get_user( { id => $token->{'id'} } );
+            delete $$user{'password'};
         }
     }
     else {
@@ -139,9 +140,12 @@ sub check_login {
 
        # шифрование пароля
         $pass = sha256_hex( $pass, $salt );
+warn "$login--$pass";
 
         # проверяем наличие пользователя
-        $user = $self->model('Auth')->_exists_in_users( $login, $pass );
+        $user = $self->model('User')->_exists_in_users( $login, $pass );
+use DDP;
+p $user;
 
         # делаем token для пользователя
         if ( $user ) {
@@ -160,7 +164,8 @@ sub _create_token {
     my ($self, $user) = @_;
 
     my ($salt, $token, $expires, %data);
-
+warn $$user{'login'};
+warn $$user{'password'};
     # create token
     $token = $$user{'login'}.$$user{'password'};
     $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];

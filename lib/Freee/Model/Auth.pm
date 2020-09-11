@@ -61,7 +61,6 @@ sub _exists_in_users {
                 $row = $sth->fetchall_hashref('login');
 
                 unless ( @! ) {
-                    delete $$row{$login}{'password'};
                     return $$row{$login};
                 }
                 else {
