@@ -32,16 +32,6 @@ sub startup {
     $self->secrets($config->{secrets});
     $host = $config->{'host'};
 
-    # set life-time fo session (second)
-    # $self->sessions->cookie_name('token');
-    # $self->sessions->default_expiration($config->{'expires'});
-    # $self->session->samesite('None');
-# use Mojolicious::Sessions;
-# my $sessions = Mojolicious::Sessions->new;
-# $sessions->cookie_name('token');
-# $sessions->default_expiration($config->{'expires'});
-# $sessions->samesite('none');
-
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
@@ -87,8 +77,6 @@ sub startup {
 # ??? требуется переписать так,чтобы можно было использовать безопасно
     $r->get('/settings/load_default')   ->to('settings#load_default');    # загрузка дефолтных настроек
 
-    # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
-    $r->any('/error/')                  ->to('index#error');
 
     # Вход-выход в/из системы
 # ????? нафиг
@@ -295,7 +283,8 @@ sub startup {
     $auth->post('/forum/delete')        ->to('forum#delete');        # удаление сообщения
     $auth->post('/forum/toggle')        ->to('forum#toggle');        # изменение статуса
 
-    $r->any('/*')->to('index#index');
+    # роут на который происходит редирект, для вывода ошибок при валидации и в других случаях
+    $r->any('/*')->to('index#error');
 
     # сохраняем все роуты
     foreach (@{$auth->{children}} ) {

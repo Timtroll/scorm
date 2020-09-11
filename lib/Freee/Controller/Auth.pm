@@ -81,9 +81,6 @@ sub check_token {
 
 warn "route = ", $self->url_for, "\n";
 
-use DDP;
-p $self->req->headers->header('token');#->{token};
-p $tokens;
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
         $self->redirect_to('/#/login');
@@ -147,9 +144,11 @@ sub check_login {
 
         # проверяем наличие пользователя
         $user = $self->model('Auth')->_exists_in_users( $login, $pass );
-
+use DDP;
+p $user;
         # делаем token для пользователя
         if ( $user ) {
+
             $token = $self->_create_token( $user );
         }
     }
@@ -173,14 +172,6 @@ sub _create_token {
 
     $expires = time() + $$config{'expires'};
 
-    # %data = (
-    #     'status'    => 'ok',
-    #     'token'     => $token,
-    #     'expires'   => $expires
-    # );
-
-# ?????????????? добавить проверку permission, role_id
-
     # сохраняем токен в глобальном хранилище
     $$tokens{$token} = {
         'expires'   => $expires,
@@ -191,21 +182,6 @@ sub _create_token {
         'permission'=> 0,
         'id'        => $$user{'id'}
     };
-use DDP;
-p $tokens;
-
-    # store token in cookie
-# use Mojolicious::Sessions;
-# my $sessions = Mojolicious::Sessions->new;
-# $sessions->cookie_name( { token => $token } );
-# $sessions->default_expiration($config->{'expires'});
-# $sessions->samesite('none');
-
-    # $self->session( { token => $token } );
-    # $self->samesite('None');
-
-    # my $samesite = $sessions->samesite;
-    # $sessions    = $sessions->samesite('None');
 
     return $$tokens{$token};
 }
