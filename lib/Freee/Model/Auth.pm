@@ -3,7 +3,6 @@ package Freee::Model::Auth;
 use Mojo::Base 'Freee::Model::Base';
 
 use Data::Dumper;
-use DDP;
 
 ###################################################################
 # Предметы

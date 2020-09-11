@@ -33,6 +33,7 @@ sub startup {
     $host = $config->{'host'};
 
     # set life-time fo session (second)
+    $self->sessions->cookie_name('token');
     $self->sessions->default_expiration($config->{'expires'});
 
 

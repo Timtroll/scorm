@@ -13,14 +13,10 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-warn "asdasd";
-    # $self->render(
-    #     'template'  => 'manage_eav',
-    #     'title'     => 'Работа с EAV'
-    # );
+
     $self->render(
-        'template'    => 'index',
-        'title'       => 'Описание роутов'
+        'template'  => 'manage_eav',
+        'title'     => 'Работа с EAV'
     );
 }
 

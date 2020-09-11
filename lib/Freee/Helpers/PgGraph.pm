@@ -27,7 +27,7 @@ sub register {
         my $database = 'pg_main';
         $database = 'pg_main_test' if ($config->{'test'});
         unless ($dbh) {
-print "db connect\n";
+warn "db connect\n";
             $dbh = DBI->connect(
                 $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
                 $config->{'dbs'}->{'databases'}->{$database}->{'username'},
@@ -36,7 +36,7 @@ print "db connect\n";
             );
         }
         $self->{errstr} = sub {
-            print "Error received: $DBI::errstr\n";
+            warn "Error received: $DBI::errstr\n";
         };
 
         return $dbh;

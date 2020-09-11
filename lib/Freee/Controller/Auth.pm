@@ -55,8 +55,6 @@ $resp->{'token'} = $token->{'token'} unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
 
-use DDP;
-p $resp;
     @! = ();
     $self->render( json => $resp );
 }
@@ -67,6 +65,7 @@ sub logout {
     my ($self);
     $self = shift;
 
+warn "logout";
     if ($self->session('token')) {
         $self->session(expires => -1);
     }
@@ -84,8 +83,7 @@ warn "route = ", $self->url_for, "\n";
 
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
-warn "logout";
-         $self->logout();
+        $self->redirect_to('/#/login');
     }
 
     # проверка токена
@@ -115,12 +113,13 @@ warn "check permissions\n";
                 #         return 1;
                 #     }
                 # }
+warn "checked";
                 return 1;
             }
         }
     }
 
-    $self->logout();
+    $self->redirect_to('/#/login');
 }
 
 ################## Subs ##################
