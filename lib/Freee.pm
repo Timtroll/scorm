@@ -41,7 +41,7 @@ use Mojolicious::Sessions;
 my $sessions = Mojolicious::Sessions->new;
 $sessions->cookie_name('token');
 $sessions->default_expiration($config->{'expires'});
-$sessions->samesite('none');
+# $sessions->samesite('none');
 
     $self->plugin('Freee::Helpers::Utils');
     $self->plugin('Freee::Helpers::PgGraph');

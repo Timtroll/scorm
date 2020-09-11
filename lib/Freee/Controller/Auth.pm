@@ -66,6 +66,8 @@ sub logout {
     $self = shift;
 
 warn "logout";
+use DDP;
+p $self->res->headers;
     if ($self->session('token')) {
         $self->session(expires => -1);
     }
@@ -196,7 +198,7 @@ use Mojolicious::Sessions;
 my $sessions = Mojolicious::Sessions->new;
 $sessions->cookie_name( { token => $token } );
 $sessions->default_expiration($config->{'expires'});
-$sessions->samesite('none');
+# $sessions->samesite('none');
 
     # $self->session( { token => $token } );
     # $self->samesite('None');
