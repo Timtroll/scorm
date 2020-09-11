@@ -83,41 +83,39 @@ warn "route = ", $self->url_for, "\n";
 
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
-        $self->redirect_to('/#/login');
+        $self->redirect_to('/error/');
     }
 
     # проверка токена
-    if ( $self->req->headers->header('token') ) {
-        if ( exists( $$tokens{ $self->req->headers->header('token') } ) && $$tokens{ $self->req->headers->header('token') } ) {
+    if ( exists( $$tokens{ $self->req->headers->header('token') } ) && $$tokens{ $self->req->headers->header('token') } ) {
 
-                # delete old tokens
-                map {
-                    if (exists($$tokens{$_})) {
-                        unless ($$tokens{$_}{'expires'}) {
-                            delete $$tokens{$_};
-                        }
-                        elsif ($$tokens{$_}{'expires'} <= time()) {
-                            delete $$tokens{$_};
-                        }
-                    }
-                } (keys %{$tokens});
+        # delete old tokens
+        map {
+            if (exists($$tokens{$_})) {
+                unless ($$tokens{$_}{'expires'}) {
+                    delete $$tokens{$_};
+                }
+                elsif ($$tokens{$_}{'expires'} <= time()) {
+                    delete $$tokens{$_};
+                }
+            }
+        } (keys %{$tokens});
 
 # проверка пермишенов
 # ????????? доработать?
 warn "check permissions\n";
-                # if ($$tokens{$self->session('token')}{'role_id'}) {
-                #     my $route = $self->url_for;
+        # if ($$tokens{$self->session('token')}{'role_id'}) {
+        #     my $route = $self->url_for;
 
-                #     if ($$permissions{$$tokens{$self->session('token')}{'role_id'}}{$route}) {
-                #         return 1;
-                #     }
-                # }
+        #     if ($$permissions{$$tokens{$self->session('token')}{'role_id'}}{$route}) {
+        #         return 1;
+        #     }
+        # }
 warn "checked";
-                return 1;
-        }
+        return 1;
     }
 
-    $self->redirect_to('/#/login');
+    $self->redirect_to('/error/');
 }
 
 ################## Subs ##################
@@ -144,11 +142,9 @@ sub check_login {
 
         # проверяем наличие пользователя
         $user = $self->model('Auth')->_exists_in_users( $login, $pass );
-use DDP;
-p $user;
+
         # делаем token для пользователя
         if ( $user ) {
-
             $token = $self->_create_token( $user );
         }
     }
