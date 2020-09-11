@@ -75,8 +75,9 @@ sub startup {
     $r->websocket('/wschannel/:type')   ->to('wschannel#type');
 
 # ??? требуется переписать так,чтобы можно было использовать безопасно
-    $r->get('/settings/load_default')   ->to('settings#load_default');    # загрузка дефолтных настроек
+    $r->get('/settings/load_default')   ->to('settings#load_default');  # загрузка дефолтных настроек
 
+    $r->post('/user/registration')   ->to('user#registration');         # регистрация пользователя
 
     # Вход-выход в/из системы
 # ????? нафиг
@@ -211,7 +212,6 @@ sub startup {
     $auth->post('/user/')               ->to('user#index');         # список юзеров по группам (обязательно id группы)
     $auth->post('/user/add')            ->to('user#add');           # заполнение пустышки юзера (регистрация юзера)
     $auth->post('/user/edit')           ->to('user#edit');          # редактирование юзера
-    $auth->post('/user/registration')   ->to('user#registration');  # регистрация пользователя
     $auth->post('/user/save')           ->to('user#save');          # обновление данных юзера
     $auth->post('/user/toggle')         ->to('user#toggle');        # включение юзера
     $auth->post('/user/profile')        ->to('user#profile');       # пермишены и профиль юзера

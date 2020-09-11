@@ -29,30 +29,46 @@ use common;
 # }
 sub login {
     my $self = shift;
+warn '=login=';
 
-    my ($data, $resp, $token, $user );
-warn '===';
-    # проверка данных
+    my ($data, $resp, $token, $salt, $user, $expires );
+
+    # проверка данных   
     $data = $self->_check_fields();
 
     if ($$data{'login'} && $$data{'password'}) {
-        $token = $self->check_login( $$data{'login'}, $$data{'password'} );
+        # получение соли из конфига
+        $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
 
-        # берем данные пользователя, если токен получен
-        if ( $token && $token->{'id'} && $token->{'token'} ) {
-            $user = $self->model('User')->_get_user( { id => $token->{'id'} } );
+        # шифрование пароля
+        $$data{'password'} = sha256_hex( $$data{'password'}, $salt );
+
+        # проверяем наличие пользователя
+        $user = $self->model('User')->_exists_in_users( $$data{'login'}, $$data{'password'} );
+
+        if ( $user ) {
+            # делаем token для пользователя
+            $token = $$user{'login'} . time() . $$user{'password'};
+            $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
+            $token = sha256_hex( $token, $salt );
+
+            # устанавливаем время жизни
+            $expires = time() + $$config{'expires'};
+
+            # удаляем пароль из сессии
             delete $$user{'password'};
+
+            # сохраняем токен в глобальном хранилище
+            $$tokens{$token} = $user;
+            $$tokens{$token}{'expires'} = $expires;
         }
     }
     else {
         push @!, 'Login or password or both are missing';
     }
 
-    # пока не поправили фронт
-$resp->{'token'} = $token->{'token'} unless @!;
-
     $resp->{'data'}->{'profile'} = $user if $user;
-    $resp->{'data'}->{'token'} = $token->{'token'} unless @!;
+    $resp->{'data'}->{'token'} = $token unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
 
@@ -66,9 +82,10 @@ sub logout {
     my ($self);
     $self = shift;
 
-warn "logout";
-    if ($self->session('token')) {
-        $self->session(expires => -1);
+warn '=logout=';
+    # удаляем сессию, если она есть
+    if ( $self->req->headers->header('token') ) {
+        delete $$tokens{ $self->req->headers->header('token') };
     }
 
     $self->render( json => { 'status' => 'ok' } );
@@ -76,20 +93,31 @@ warn "logout";
 
 # check_token /check_token
 # служебный роут для проверки наличия куки сессии
+# Возвращает 1 - если все ок,
+# редиректит на 666 ошибку, если все плохо
 sub check_token {
     my ($self, %data);
     $self = shift;
 
+warn '=check_token=';
+
 warn "route = ", $self->url_for, "\n";
+warn $self->req->headers->header('token');
+use DDP;
+p $tokens;
 
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
+        # return;
         $self->redirect_to('/error/');
     }
 
     # проверка токена
-    if ( exists( $$tokens{ $self->req->headers->header('token') } ) && $$tokens{ $self->req->headers->header('token') } ) {
-
+    if (
+        $self->req->headers->header('token') && 
+        exists( $$tokens{ $self->req->headers->header('token') } ) && 
+        $$tokens{ $self->req->headers->header('token') } 
+    ) {
         # delete old tokens
         map {
             if (exists($$tokens{$_})) {
@@ -116,75 +144,8 @@ warn "checked";
         return 1;
     }
 
+    # return;
     $self->redirect_to('/error/');
-}
-
-################## Subs ##################
-
-# проверяем наличие пользователя по базе users
-#  $self->check_login(\%in);
-# %in = (
-#    'login' => 'login',
-#    'pass'  => 'passord',
-# );
-# возвращает token если пользователь есть и он единственный
-# возвращает undef если пользователя нет или их много
-sub check_login {
-    my ($self, $login, $pass) = @_;
-
-    my ($user, $token, $salt);
-
-    if ( $login && $pass ) {
-         # получение соли из конфига
-        $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-
-       # шифрование пароля
-        $pass = sha256_hex( $pass, $salt );
-warn "$login--$pass";
-
-        # проверяем наличие пользователя
-        $user = $self->model('User')->_exists_in_users( $login, $pass );
-use DDP;
-p $user;
-
-        # делаем token для пользователя
-        if ( $user ) {
-            $token = $self->_create_token( $user );
-        }
-    }
-    else {
-        push @!, "Empty login or password for checking";
-    }
-
-    return $token;
-}
-
-# возвращает token 
-sub _create_token {
-    my ($self, $user) = @_;
-
-    my ($salt, $token, $expires, %data);
-warn $$user{'login'};
-warn $$user{'password'};
-    # create token
-    $token = $$user{'login'}.$$user{'password'};
-    $salt = $self->{'app'}->{'config'}->{'secrets'}->[0];
-    $token = sha256_hex( $token, $salt );
-
-    $expires = time() + $$config{'expires'};
-
-    # сохраняем токен в глобальном хранилище
-    $$tokens{$token} = {
-        'expires'   => $expires,
-        'login'     => $$user{'login'},
-        'token'     => $token,
-#???????? добавить пермишенов
-        # 'groups'   => $$user{'groups'},
-        'permission'=> 0,
-        'id'        => $$user{'id'}
-    };
-
-    return $$tokens{$token};
 }
 
 1;

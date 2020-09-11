@@ -10,27 +10,6 @@ use Mojo::JSON qw( from_json );
 ####################################################################
 # Поля пользователя
 ####################################################################
-# поля которые лежат в EAV
-my %eav_fields = (
-    'surname'       => 1,
-    'name'          => 1,
-    'patronymic'    => 1,
-    'place'         => 1,
-    'country'       => 1,
-    'birthday'      => 1
-);
-
-# поля которые лежат в таблице users
-my %users_fields = (
-    'id'            => 0,
-    'publish'       => 1,
-    'login'         => 1,
-    'email'         => 1,
-    'phone'         => 1,
-    'password'      => 0,
-    'eav_id'        => 1,
-    'timezone'      => 1
-);
 
 # поля которые лежат в таблице users_social
 my %social_fields = (
@@ -243,7 +222,7 @@ sub _exists_in_users {
 sub _empty_user {
     my ( $self ) = @_;
 
-    my ( $sth, $user, $user_id, $data, $result, $sql, $unaproved, $parent );
+    my ( $sth, $user, $user_id, $eav_id, $data, $result, $sql, $unaproved, $parent );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
@@ -282,16 +261,16 @@ sub _empty_user {
         }
     };
     $user = Freee::EAV->new( 'User', $eav );
-########################################################???????????? добавить добавление в user groups
+    $eav_id = $user->id();
+
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
         'publish'   => 0,
         'email'     => '',
         'phone'     => '',
         'password'  => '',
-        'eav_id'    => $user->id(),
+        'eav_id'    => $eav_id,
         'timezone'  => $$data{'timezone'} ? $$data{'timezone'} : $timezone
-        # 'groups'    => '["' . $$unaproved{id} . '"]'
     };
     unless ( $$data{'eav_id'} ) {
         push @!, "Could not insert user into EAV";
@@ -337,7 +316,7 @@ sub _empty_user {
     # закрытие транзакции
     $self->{'app'}->pg_dbh->commit;
 
-    return $user_id;
+    return $user_id, $eav_id;
 }
 
 # сохранение данных о пользователе
@@ -351,7 +330,8 @@ sub _empty_user {
 #     'country'           => 'Россия',             # страна
 #     'timezone'          => '+3',                 # часовой пояс
 #     'birthday'          => '1972-01-06 00:00:00',# дата рождения
-#     'email'             => 'username@ya.ru',     # email пользователя
+#     'login'             => 'username@ya.ru',     # email пользователя
+#     'email'             => 'login',              # login пользователя
 #     'emailconfirmed'    => 1,                    # email подтвержден
 #     'phone'             => 79312445646,          # номер телефона
 #     'phoneconfirmed'    => 1,                    # телефон подтвержден
@@ -386,20 +366,29 @@ sub _save_user {
         "flags"     => 0
     };
 
-    unless ( @! ) {
-        # сохраняем пароль, если он передан в данных
-        if ( $$data{'password'} ) {
-            %users_fields = ( 'password' => 1 );
-        }
-
-        # обновление полей в users
-        $sql = 'UPDATE "public"."users" SET (' . 
-            join( ',', map { if ( $users_fields{$_} ) { "\"$_\"" } } keys %users_fields ) . ') = (' .
-            join( ',', map { if ( $users_fields{$_} ) { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } } keys %users_fields ) .
-            ') WHERE "id" = :id RETURNING "id"';
+    # выгребаем 'eav_id', если его не передали
+    unless ( $$data{'eav_id'} ) {
+        $sql = 'SELECT eav_id FROM "public"."users" WHERE "id" = :id';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
+        $$data{'eav_id'} = $sth->execute();
+    }
 
+    unless ( @! ) {
+        # обновление полей в users
+        $sql = 'UPDATE "public"."users" SET ' .
+            join( ', ', map { 
+                my $val;
+                if ( /publish/ ) {
+                    $val = $$data{'data_user'}{$_};
+                }
+                else {
+                    $val = $self->{'app'}->pg_dbh->quote( $$data{'data_user'}{$_} );
+                }
+                "\"$_\" = " . $val
+            } keys %{ $$data{'data_user'} } ) . ' WHERE "id" = :id';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
 
         if ( $result eq '0E0' ) {
@@ -410,27 +399,24 @@ sub _save_user {
     }
 
     unless ( @! ) {
-        $$data{'title'} = join(' ', ( $$data{'surname'}, $$data{'name'}, $$data{'patronymic'} ) );
+        $$data{'data_eav'}{'title'} = join(' ', ( $$data{'data_eav'}{'surname'}, $$data{'data_eav'}{'name'}, $$data{'data_eav'}{'patronymic'} ) );
 
         # обновление полей в EAV
-        $usr = Freee::EAV->new( 'User',
-            {
-                'id'      => $$data{'id'},
-                'parent'  => 0
-            }
-        );
+        $usr = Freee::EAV->new( 'User', {
+            'id'      => $$data{'eav_id'},
+            'parent'  => 0
+        });
 
         $result = $usr->_MultiStore( {                 
             'User' => {
-                'title'   => $$data{'title'},
-                'surname'      => $$data{'surname'},
-                'name'         => $$data{'name'},
-                'patronymic'   => $$data{'patronymic'},
-                'place'        => $$data{'place'},
-                'country'      => $$data{'country'},
-                'birthday'     => $$data{'birthday'},
-                'import_source'=> $$data{'avatar'},
-                'date_updated' => $$data{'time_update'}
+                'title'        => $$data{'data_eav'}{'title'},
+                'surname'      => $$data{'data_eav'}{'surname'},
+                'name'         => $$data{'data_eav'}{'name'},
+                'patronymic'   => $$data{'data_eav'}{'patronymic'},
+                'place'        => $$data{'data_eav'}{'place'},
+                'country'      => $$data{'data_eav'}{'country'},
+                'birthday'     => $$data{'data_eav'}{'birthday'},
+                'import_source'=> $$data{'data_eav'}{'avatar'},
             }
         });
 
@@ -485,9 +471,9 @@ sub _save_user {
 # изменение поля на 1/0
 # my $true = $self->toggle( $data );
 # $data = {
-# 'id'    - id записи 
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#     'id'    - id записи 
+#     'field' - имя поля в таблице
+#     'val'   - 1/0
 # }
 sub _toggle_user {
     my ( $self, $data ) = @_;
@@ -515,7 +501,7 @@ sub _toggle_user {
 # удаление пользователя
 # $result = $self->model('User')->_delete_user( $data );
 # $data = {
-# id - Id пользователя
+#     id => <Id> пользователя
 # }
 sub _delete_user {
     my ( $self, $data ) = @_;
@@ -590,11 +576,7 @@ sub _exists_user_in_EAV {
     }
     else {
         # поиск объекта с таким id
-        $user = Freee::EAV->new( 'User',
-            {
-                'id'      => $id
-            }
-        );
+        $user = Freee::EAV->new( 'User', { 'id' => $id } );
     }
 
     return $user ? 1 : 0;

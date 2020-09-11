@@ -5,8 +5,9 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
 use Data::Dumper;
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( from_json to_json );
 use Digest::SHA qw( sha256_hex );
+use DBI qw(:sql_types);
 use common;
 
 use Data::Dumper;
@@ -215,13 +216,16 @@ sub save {
 
     unless ( @! ) {
         unless ( $$data{'phone'} || $$data{'email'} ) {
-            push @!, 'No email or no phone';
+            push @!, 'Empty email or no phone';
+        }
+        elsif ( ! $$data{'login'} ) {
+            push @!, 'Empty login';
         }
         elsif ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
-            push @!, 'No newpassword';
+            push @!, 'Empty newpassword';
         }
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
-            push @!, 'No password';
+            push @!, 'Empty password';
         }
         elsif ( $$data{'password'} && $$data{'password'} ne $$data{'newpassword'} ) {
             push @!, 'Password and newpassword are not the same';
@@ -235,6 +239,10 @@ sub save {
             # проверяем, используется ли телефон другим пользователем
             elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
                 push @!, "phone '$$data{ phone }' already used"; 
+            }
+            # проверяем, используется ли логин другим пользователем
+            elsif ( $$data{'login'} && $self->model('Utils')->_exists_in_table('users', 'login', $$data{'login'}, $$data{'id'} ) ) {
+                push @!, "login '$$data{ login }' already used"; 
             }
 
             unless ( @! ) {
@@ -263,16 +271,28 @@ sub save {
         if ( $$data{'birthday'} ) {
             $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
         }
-        else {
-            $$data{'birthday'}    = '';
-        }
 
-        $$data{'time_access'} = 'now';
-        $$data{'time_update'} = 'now';
-        $$data{'publish'}     =  $$data{'status'};
-        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
-        $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'avatar'}      = '' unless $$data{'avatar'};
+        $data = {
+            'id'     => $$data{'id'},
+            'groups' => $$data{'groups'},
+            'data_user' => {
+                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'login'         => $$data{'login'},
+                'email'         => $$data{'email'},
+                'phone'         => $$data{'phone'},
+                'password'      => $$data{'password'}
+            },
+            'data_eav' => {
+                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'birthday'      => $$data{'birthday'},
+                'surname'       => $$data{'surname'}    // '',
+                'name'          => $$data{'name'}       // '',
+                'patronymic'    => $$data{'patronymic'} // '',
+                'place'         => $$data{'place'}      // '',
+                'country'       => $$data{'country'}    // 'RU',
+                'import_source' => $$data{'avatar'}     // ''
+            }
+        };
 
         $result = $self->model('User')->_save_user( $data );
     }
@@ -304,7 +324,7 @@ sub save {
 sub registration {
     my $self = shift;
 
-    my ( $data, $salt, $resp, $groups, $result );
+    my ( $data, $salt, $resp, $groups, $id, $result );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -326,6 +346,10 @@ sub registration {
             elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
                 push @!, "phone '$$data{ phone }' already used"; 
             }
+            # проверяем, используется ли логин другим пользователем
+            elsif ( $$data{'login'} && $self->model('Utils')->_exists_in_table('users', 'login', $$data{'login'}, $$data{'id'} ) ) {
+                push @!, "login '$$data{ login }' already used"; 
+            }
         }
     }
 
@@ -342,24 +366,40 @@ sub registration {
         if ( $$data{'birthday'} ) {
             $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
         }
-        else {
-            $$data{'birthday'}    = '';
+
+        $data = {
+            'groups' => to_json( [ 5 ] ),
+            'data_user' => {
+                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'login'         => $$data{'login'},
+                'email'         => $$data{'email'},
+                'phone'         => $$data{'phone'},
+                'password'      => $$data{'password'}
+            },
+            'data_eav' => {
+                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'birthday'      => $$data{'birthday'},
+                'surname'       => $$data{'surname'}    // '',
+                'name'          => $$data{'name'}       // '',
+                'patronymic'    => $$data{'patronymic'} // '',
+                'place'         => $$data{'place'}      // '',
+                'country'       => $$data{'country'}    // 'RU',
+                'import_source' => $$data{'avatar'}     // ''
+            }
+        };
+        # добавляем пустышку с группой "Нераспределенные"
+        ( $$data{'id'}, $$data{'eav_id'} ) = $self->model('User')->_empty_user( $data );
+
+        # если пустышка добавлена успешно, сохраняем данные пользователя
+        if ( $$data{'id'} && ! @! ) {
+            # добавляем в пустышку регистрационные данные не меняя группу
+            $result = $self->model('User')->_save_user( $data );
         }
-
-        $$data{'time_access'} = 'now';
-        $$data{'time_update'} = 'now';
-        $$data{'publish'}     =  $$data{'status'};
-        $$data{'patronymic'}  = '' unless $$data{'patronymic'};
-        $$data{'place'}       = '' unless $$data{'place'};
-        $$data{'avatar'}      = '';
-        $$data{'status'}      = 0;
-
-        $result = $self->model('User')->_empty_user( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @!;
+    $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
 

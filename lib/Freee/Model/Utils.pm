@@ -9,14 +9,14 @@ use Time::Local;
 use Data::Dumper;
 
 # проверяем наличие таблицы и указанное поле на дубликат
-# my $row = $self->model('Utils')->_exists_in_table(<table>, '<id>', <value>, <excude_id>);
+# my $row = $self->model('Utils')->_exists_in_table(<table>, '<id>', <value>, <exclude_id>);
 #  <table>       - имя таблицы, где будем искать
 #  <id>         - название поле, которое будем искать
 #  <value>      - значение поля, которое будем искать
-#  <excude_id>  - исключаем указанный id
+#  <exclude_id>  - исключаем указанный id
 # возвращается 1/undef
 sub _exists_in_table {
-    my ($self, $table,  $name, $val, $excude_id) = @_;
+    my ($self, $table,  $name, $val, $exclude_id) = @_;
 
     return unless $name;
 
@@ -31,7 +31,7 @@ sub _exists_in_table {
     # проверяем поле name на дубликат
     $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
     # исключаем из поиска id
-    $sql .='AND "id"<>'.$excude_id if $excude_id;
+    $sql .='AND "id" <> '.$exclude_id if $exclude_id;
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
