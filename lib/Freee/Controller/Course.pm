@@ -1,4 +1,4 @@
-package Freee::Controller::Discipline;
+package Freee::Controller::Cource;
 
 use utf8;
 
@@ -8,7 +8,7 @@ use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
-# получить список предметов
+# получить список курсов
 # $self->index( $data );
 sub index {
     my $self = shift;
@@ -17,29 +17,29 @@ sub index {
 
     # проверка данных
     $data = $self->_check_fields();
-
+warn '++++++++++++';
     unless ( @! ) {
-        # получаем список предметов
-        $list = $self->model('Discipline')->_list_discipline($data);
+        # получаем список курсов
+        $list = $self->model('Course')->_list_course($data);
 
         $result = {};
         unless ( @! ) {
             $result = {
-                "label" =>  "Предметы",
+                "label" =>  "курсы",
                 "current" =>  {
-                    "route"  => '/discipline',
-                    "add"    => '/discipline/add',      # разрешает добавлять предмет
-                    "edit"   => '/discipline/edit',     # разрешает редактировать предмет
-                    "delete" => '/discipline/delete'    # разрешает удалять предмет
+                    "route"  => '/course',
+                    "add"    => '/course/add',      # разрешает добавлять курс
+                    "edit"   => '/course/edit',     # разрешает редактировать курс
+                    "delete" => '/course/delete'    # разрешает удалять курс
                 },
                 "child" =>  {
-                    "add"    => '/discipline/add'       # разрешает добавлять предмет
+                    "add"    => '/course/add'       # разрешает добавлять курс
                 },
                 "list" => $list ? $list : []
             };
         }
         else {
-            push @!, "Could not get list of discipline";
+            push @!, "Could not get list of course";
         }
     }
 
@@ -50,10 +50,10 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
-# получить данные для редактирования предмета
+# получить данные для редактирования курса
 # $self->edit( $data );
 # $data = {
-#   id - id предмета
+#   id - id курса
 # }
 sub edit {
     my $self = shift;
@@ -65,7 +65,7 @@ sub edit {
 
     unless ( @! ) {
         # получение объекта EAV
-        $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
+        $result = $self->model('Course')->_get_course( $$data{'id'} );
 
         unless ( @! ) {
             $list = {
@@ -96,7 +96,7 @@ sub edit {
             };
         }
         else {
-            push @!, "Could not get discipline";
+            push @!, "Could not get course";
         }
     }
 
@@ -109,15 +109,15 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
-# Добавление нового предмета в EAV
+# Добавление нового курса в EAV
 # $self->add();
 sub add {
     my $self = shift;
 
     my ( $resp, $id );
 
-    # создание пустого объекта предмета
-    $id = $self->model('Discipline')->_empty_discipline();
+    # создание пустого объекта курса
+    $id = $self->model('Course')->_empty_course();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
@@ -128,13 +128,13 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-# сохранить предмет
+# сохранить курс
 # $self->save( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'label'       => 'курс 1',                      # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
 #    'content'     => 'Полное описание',                # кладется в EAV
 #    'attachment'  => '[345,577,643],                   # кладется в EAV
@@ -164,8 +164,8 @@ sub save {
 
     unless ( @! || !$$data{'parent'} ) {
         # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+        unless( $self->model('Course')->_exists_in_course( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in course";
         }
     }
 
@@ -174,8 +174,8 @@ sub save {
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_save_discipline( $data );
+        # добавляем курс в EAV
+        $result = $self->model('Course')->_save_course( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -188,7 +188,7 @@ sub save {
     $self->render( 'json' => $resp );
 }
 
-# изменить статус предмета (вкл/выкл)
+# изменить статус курса (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
 # 'id'    - id записи
@@ -204,8 +204,8 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_toggle_discipline( $data );
+        # добавляем курс в EAV
+        $result = $self->model('Course')->_toggle_course( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -218,10 +218,10 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
-# удалить предмет
+# удалить курс
 # $self->delete( $data );
 # $data = {
-# 'id'    - id предмета
+# 'id'    - id курса
 #}
 sub delete {
     my $self = shift;
@@ -232,8 +232,8 @@ sub delete {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+        # добавляем курс в EAV
+        $result = $self->model('Course')->_delete_course( $$data{'id'} );
         push @!, 'can\'t delete EAV object' unless $result;
     }
 

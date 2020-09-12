@@ -13,32 +13,40 @@ use Data::Dumper;
 sub _empty_discipline {
     my ( $self ) = @_;
 
-    my ( $discipline, $eav, $id );
+    my ( $discipline, $eav, $id, $parent );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
-    # делаем запись в EAV
-    $eav = {
-        'parent'    => 0,
-        'title'     => 'New discipline',
-        'publish'   => \0,
-        'Discipline' => {
-            'parent'       => 0,
-            'label'        => '',
-            'description'  => '',
-            'content'      => '',
-            'keywords'     => '',
-            'import_source'=> '',
-            'url'          => '',
-            'seo'          => '',
-            'attachment'   => '[]'
+    # получаем id перента для предметов
+    $discipline = Freee::EAV->new( 'Discipline' );
+    $parent = $discipline->root();
+
+    if ( $parent ) {
+        # делаем запись в EAV
+        $eav = {
+            'parent'    => $parent,
+            'title'     => 'New discipline',
+            'publish'   => \0,
+            'Discipline' => {
+                'label'        => '',
+                'description'  => '',
+                'content'      => '',
+                'keywords'     => '',
+                'import_source'=> '',
+                'url'          => '',
+                'seo'          => '',
+                'attachment'   => '[]'
+            }
+        };
+        $discipline = Freee::EAV->new( 'Discipline', $eav );
+        $id = $discipline->id();
+        unless ( scalar( $id ) ) {
+            push @!, "Could not insert discipline into EAV";
         }
-    };
-    $discipline = Freee::EAV->new( 'Discipline', $eav );
-    $id = $discipline->id();
-    unless ( scalar( $id ) ) {
-        push @!, "Could not insert discipline into EAV";
+    }
+    else {
+        push @!, "Empty parent for discipline EAV";
     }
 
     # закрытие транзакции
@@ -48,9 +56,9 @@ sub _empty_discipline {
 }
 
 # удалить предмет
-# $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+# $result = $self->model('Discipline')->_delete_discipline( <id> );
 # $data = {
-# 'id'    - id предмета
+#     'id'    - id предмета
 # }
 sub _delete_discipline {
     my ( $self, $id ) = @_;
@@ -62,7 +70,7 @@ sub _delete_discipline {
     }
     else {
         # удаление из EAV
-        $discipline = Freee::EAV->new( 'User', { 'id' => $id } );
+        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $id } );
 
         return unless $discipline;
 
@@ -88,45 +96,46 @@ sub _delete_discipline {
 #     "attachment"  => [345,577,643]                    # EAV_data_string
 # };
 sub _list_discipline {
-    my $self = shift;
+    my ( $self, $data ) = @_;
 
     my ( $discipline, $result, $list );
 
     # инициализация EAV
     $discipline = Freee::EAV->new( 'Discipline' );
-
     unless ( $discipline ) {
         push @!, "Tree has not any branches";
         return;
     }
 
     $list = $discipline->_list({
-        Parents     => 0,
+        Parents     => [ $discipline->root() ],
         ShowHidden  => 1,
-        FIELDS      => "has_childs, publish, parent, id", 
+        FIELDS      => "*", 
         Order => [
-            { 'items.id' => 'ASC' }
+            { 'items.title' => $$data{'order'} }
         ]
     });
 
-    foreach my $row ( @$list ) {
-        my $EAV_discipline = Freee::EAV->new( 'Discipline', { id => $row->{id} } );
-        $row->{'folder'}      = $row->{'has_childs'};
-        $row->{'label'}       = $EAV_discipline->label();
-        $row->{'description'} = $EAV_discipline->description();
-        $row->{'content'}     = $EAV_discipline->content();
-        $row->{'keywords'}    = $EAV_discipline->keywords();
-        $row->{'url'}         = $EAV_discipline->url();
-        $row->{'seo'}         = $EAV_discipline->seo();
-        $row->{'route'}       = '/discipline/';
-        $row->{'parent'}      = $row->{'parent'};
-        $row->{'status'}      = $row->{'publish'};
-        $row->{'attachment'}  = $EAV_discipline->attachment();
-        delete $$row{'has_childs'};
-        delete $$row{'publish'};
-    }
+    my @disciplines = ();
+    map {
+        my $item = {
+            'id'          => $_->{'id'},
+            'folder'      => $_->{'has_childs'},
+            'label'       => $_->{'title'},
+            'description' => $_->{'description'},
+            'content'     => $_->{'content'},
+            'keywords'    => $_->{'keywords'},
+            'url'         => $_->{'url'},
+            'seo'         => $_->{'seo'},
+            'route'       => $_->{'route'},
+            'parent'      => $_->{'parent'},
+            'status'      => $_->{'status'},
+            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
+        };
+        push @disciplines, $item;
+    } ( @$list );
 
-    return $list;
+    return \@disciplines;
 }
 
 #  получить данные для редактирования предмета
@@ -213,18 +222,12 @@ sub _save_discipline {
     }
     else {
         # обновление полей в EAV
-        $discipline = Freee::EAV->new( 'Discipline',
-            {
-                'id'      => $$data{'id'}
-            }
-        );
+        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $$data{'id'} } );
 
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {                 
             'Discipline' => {
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -233,8 +236,11 @@ sub _save_discipline {
                 'import_source'=> '',
                 'url'          => $$data{'url'},
                 'date_updated' => $$data{'time_update'},
-                'publish'      => $$data{'status'},
-                'seo'          => $$data{'seo'}
+                'seo'          => $$data{'seo'},
+# ???
+                'title'        => $$data{'title'},
+                'parent'       => $$data{'parent'}, 
+                'publish'      => $$data{'status'}
             }
         });
     }
@@ -245,40 +251,31 @@ sub _save_discipline {
 # изменить статус предмета (вкл/выкл)
 # $result = $self->model('Discipline')->_toggle_discipline( $data );
 # $data = {
-# 'id'    - id записи 
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#    'id'    => <id>, - id записи 
+#    'status'=> 1     - новый статус 1/0
 # }
 sub _toggle_discipline {
     my ( $self, $data ) = @_;
 
     my ( $discipline, $result );
 
-    unless ( scalar( $$data{'id'} ) && defined $$data{'value'} ) {
+    unless ( $$data{'id'} || $$data{'status'} ) {
         return;
     }
     else {
         # обновление поля в EAV
-        $discipline = Freee::EAV->new( 'Discipline',
-            {
-                'id' => $$data{'id'},
-            }
-        );
+        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $$data{'id'} } );
 
         return unless $discipline;
 
-        $result = $discipline->_MultiStore( {
-            'Discipline' => {
-                'publish' => $$data{'value'}, 
-            }
-        });
+        $result = $discipline->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
     }
 
     return $result;
 }
 
 # проверка существования предмета
-# my $true = $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} );
+# my $true = $self->model('Discipline')->_exists_in_discipline( <id> );
 # 'id'    - id предмета
 sub _exists_in_discipline {
     my ( $self, $id ) = @_;
@@ -290,11 +287,7 @@ sub _exists_in_discipline {
     }
     else {
         # поиск объекта с таким id
-        $discipline = Freee::EAV->new( 'Discipline',
-            {
-                'id' => $id
-            }
-        );
+        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $id } );
     }
 
     return $discipline ? 1 : 0;

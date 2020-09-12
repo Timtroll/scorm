@@ -136,6 +136,14 @@ sub startup {
     $auth->post('/discipline/toggle')   ->to('discipline#toggle');      # Изменить статус предмета (вкл/выкл)
     $auth->post('/discipline/delete')   ->to('discipline#delete');      # Удалить предмет
 
+    # управление курсами
+    $auth->post('/course/')             ->to('course#index');           # Список курсов
+    $auth->post('/course/add')          ->to('course#add');             # Добавить курс
+    $auth->post('/course/edit')         ->to('course#edit');            # Получить данные для редактирования курса
+    $auth->post('/course/save')         ->to('course#save');            # Сохранить курс
+    $auth->post('/course/toggle')       ->to('course#toggle');          # Изменить статус курса (вкл/выкл)
+    $auth->post('/course/delete')       ->to('course#delete');          # Удалить курс
+
     # управление темами
     $auth->post('/theme/')              ->to('theme#index');            # Список тем
     $auth->post('/theme/add')           ->to('theme#add');              # Добавить тему

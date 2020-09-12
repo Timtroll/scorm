@@ -747,10 +747,10 @@ sub Search {
     return $Result;
 }
 
-sub _sets {
-    my ( $Self, $Params ) = @_;
+sub root {
+    my ( $Self ) = @_;
 
-    return $Self->{Fields};
+    return $Self->{Root}->{_item}->{id};
 }
 
 1;

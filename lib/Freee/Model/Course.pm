@@ -1,34 +1,34 @@
-package Freee::Model::Theme;
+package Freee::Model::Course;
 
 use Mojo::Base 'Freee::Model::Base';
 
 use Data::Dumper;
 
 ###################################################################
-# Темы
+# Курсы
 ###################################################################
 
-# Добавлением новой темы в EAV
-# $id = $self->model('Theme')->_empty_theme();
-sub _empty_theme {
+# Добавлением нового курса в EAV
+# $id = $self->model('Course')->_empty_course();
+sub _empty_course {
     my ( $self ) = @_;
 
-    my ( $theme, $eav, $id, $parent );
+    my ( $course, $eav, $id, $parent );
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
-    # получаем id перента для тем
-    $theme = Freee::EAV->new( 'Theme' );
-    $parent = $theme->root();
+    # получаем id перента для курсов
+    $course = Freee::EAV->new( 'Course' );
+    $parent = $course->root();
 
     if ( $parent ) {
         # делаем запись в EAV
         $eav = {
             'parent'    => $parent,
-            'title'     => 'New theme',
+            'title'     => 'New course',
             'publish'   => \0,
-            'Theme' => {
+            'Course' => {
                 'label'        => '',
                 'description'  => '',
                 'content'      => '',
@@ -39,14 +39,14 @@ sub _empty_theme {
                 'attachment'   => '[]'
             }
         };
-        $theme = Freee::EAV->new( 'Theme', $eav );
-        $id = $theme->id();
+        $course = Freee::EAV->new( 'Course', $eav );
+        $id = $course->id();
         unless ( scalar( $id ) ) {
-            push @!, "Could not insert theme into EAV";
+            push @!, "Could not insert course into EAV";
         }
     }
     else {
-        push @!, "Empty parent for theme EAV";
+        push @!, "Empty parent for course EAV";
     }
 
     # закрытие транзакции
@@ -55,109 +55,108 @@ sub _empty_theme {
     return $id;
 }
 
-# удалить тему
-# $result = $self->model('theme')->_delete_theme( <id> );
+# удалить курс
+# $result = $self->model('Course')->_delete_course( <id> );
 # $data = {
-#     'id'    - id темы
+#     'id'    - id курса
 # }
-sub _delete_theme {
+sub _delete_course {
     my ( $self, $id ) = @_;
 
-    my ( $theme, $result );
+    my ( $course, $result );
 
     unless ( scalar( $id ) ) {
         push @!, 'no id for delete';
     }
     else {
         # удаление из EAV
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $id } );
+        $course = Freee::EAV->new( 'Course', { 'id' => $id } );
 
-        return unless $theme;
+        return unless $course;
 
-        $result = $theme->_RealDelete();
+        $result = $course->_RealDelete();
     }
 
     return $result;
 }
 
-# получить список тем
-# my $list = $self->model('Theme')->_list_theme();
-# возвращается:
+# получить список курсов
+# my $list = $self->model('Course')->_list_course();
 # my $list = {
 #     "folder"      => 1,                               # EAV_items
 #     "id"          => $self->param('id'),              # EAV_items
-#     "label"       => "Предмет 1",                     # EAV_data_string
+#     "label"       => "Курс 1",                     # EAV_data_string
 #     "description" => "Краткое описание",              # EAV_data_string
 #     "content"     => "Полное описание",               # EAV_data_string
 #     "keywords"    => "ключевые слова",                # EAV_data_string
 #     "url"         => "как должен выглядеть url",      # EAV_data_string
 #     "seo"         => "дополнительное поле для seo",   # EAV_data_string
-#     "route"       => "/theme/",
+#     "route"       => "/course/",
 #     "parent"      => $self->param('parent'),          # EAV_items
 #     "attachment"  => [345,577,643]                    # EAV_data_string
 # };
-sub _list_theme {
-    my $self = shift;
+sub _list_course {
+    my ( $self, $data ) = @_;
 
-    my ( $theme, $result, $list );
+    my ( $course, $result, $list );
 
     # инициализация EAV
-    $theme = Freee::EAV->new( 'Theme' );
-    unless ( $theme ) {
+    $course = Freee::EAV->new( 'Course' );
+    unless ( $course ) {
         push @!, "Tree has not any branches";
         return;
     }
 
-    $list = $theme->_list( {
-        Parents     => 0,
+    $list = $course->_list({
+        Parents     => [ $course->root() ],
         ShowHidden  => 1,
-        FIELDS      => "'has_childs', 'publish', 'parent', 'id'",
+        FIELDS      => "*", 
         Order => [
-            { 'items.id' => 'ASC' }
+            { 'items.title' => $$data{'order'} }
         ]
     });
 
-    my %themes = ();
-    foreach my $row ( @$list ) {
-        my $EAV_theme = Freee::EAV->new( 'Theme', { id => $row->{id} } );
-        $row->{'folder'}      = $row->{'has_childs'};
-        $row->{'label'}       = $EAV_theme->label();
-        $row->{'description'} = $EAV_theme->description();
-        $row->{'content'}     = $EAV_theme->content();
-        $row->{'keywords'}    = $EAV_theme->keywords();
-        $row->{'url'}         = $EAV_theme->url();
-        $row->{'seo'}         = $EAV_theme->seo();
-        $row->{'route'}       = '/theme/';
-        $row->{'parent'}      = $row->{'parent'};
-        $row->{'status'}      = $row->{'publish'};
-        $row->{'attachment'}  = $EAV_theme->attachment();
-        delete $$row{'has_childs'};
-        delete $$row{'publish'}; # отдаем 'status' вместо 'publish'
-    }
+    my @courses = ();
+    map {
+        my $item = {
+            'id'          => $_->{'id'},
+            'folder'      => $_->{'has_childs'},
+            'label'       => $_->{'title'},
+            'description' => $_->{'description'},
+            'content'     => $_->{'content'},
+            'keywords'    => $_->{'keywords'},
+            'url'         => $_->{'url'},
+            'seo'         => $_->{'seo'},
+            'route'       => $_->{'route'},
+            'parent'      => $_->{'parent'},
+            'status'      => $_->{'status'},
+            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
+        };
+        push @courses, $item;
+    } ( @$list );
 
-    return $list;
+    return \@courses;
 }
 
-# получить данные для редактирования темы
-# $list = $self->model('Theme')->_get_theme( <id> );
-# возвращается:
-# my $list = {
+#  получить данные для редактирования курса
+#  my $result = $self->model('Course')->_get_course( $$data{'id'} );
+#  $result = {
 #     "folder" => 1,
 #     "id" => $self->param('id'),
-#     "label" => "Предмет 1",
+#     "label" => "Курс 1",
 #     "description" => "Краткое описание",
 #     "content" => "Полное описание",
 #     "keywords" => "ключевые слова",
 #     "url" => "как должен выглядеть url",
 #     "seo" => "дополнительное поле для seo",
-#     "route" => "/theme/",
+#     "route" => "/course/",
 #     "parent" => $self->param('parent'),
 #     "attachment" => [345,577,643]
 # };
-sub _get_theme {
+sub _get_course {
     my ( $self, $id ) = @_;
 
-    my ( $theme, $result, $list );
+    my ( $course, $result, $list );
 
     unless ( scalar( $id ) ) {
         push @!, "no data for get";
@@ -165,14 +164,14 @@ sub _get_theme {
     }
     else {
         # взять весь объект из EAV
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $id } );
+        $course = Freee::EAV->new( 'Course', { 'id' => $id } );
 
-        unless ( $theme ) {
-            push @!, "theme with id '$id' doesn't exist";
+        unless ( $course ) {
+            push @!, "course with id '$id' doesn't exist";
             return;
         }
 
-        $result = $theme->_getAll();
+        $result = $course->_getAll();
         if ( $result ) {
             $list = {
                "id"          => $$result{'id'},
@@ -182,7 +181,7 @@ sub _get_theme {
                "keywords"    => $$result{'keywords'},
                "url"         => $$result{'url'},
                "seo"         => $$result{'seo'},
-               "route"       => '/theme',
+               "route"       => '/course',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
                "status"      => $$result{'publish'}
@@ -197,13 +196,13 @@ sub _get_theme {
     return $list;
 }
 
-# сохранить тему
-# $result = $self->model('Theme')->_save_theme( $data );
+# сохранить курс
+# $result = $self->model('Course')->_save_course( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'label'       => 'Курс 1',                      # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
 #    'content'     => 'Полное описание',                # кладется в EAV
 #    'attachment'  => '[345,577,643],                   # кладется в EAV
@@ -212,10 +211,10 @@ sub _get_theme {
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
 #    'status'      => 1                                 # кладется в EAV
 # }
-sub _save_theme {
+sub _save_course {
     my ( $self, $data ) = @_;
 
-    my ( $theme, $result );
+    my ( $course, $result );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -223,14 +222,12 @@ sub _save_theme {
     }
     else {
         # обновление полей в EAV
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $$data{'id'} } );
+        $course = Freee::EAV->new( 'Course', { 'id' => $$data{'id'} } );
 
-        return unless $theme;
+        return unless $course;
 
-        $result = $theme->_MultiStore( {                 
-            'Theme' => {
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
+        $result = $course->_MultiStore( {                 
+            'Course' => {
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -239,8 +236,11 @@ sub _save_theme {
                 'import_source'=> '',
                 'url'          => $$data{'url'},
                 'date_updated' => $$data{'time_update'},
-                'publish'      => $$data{'status'},
-                'seo'          => $$data{'seo'}
+                'seo'          => $$data{'seo'},
+# ???
+                'title'        => $$data{'title'},
+                'parent'       => $$data{'parent'}, 
+                'publish'      => $$data{'status'}
             }
         });
     }
@@ -248,51 +248,49 @@ sub _save_theme {
     return $result;
 }
 
-# изменить статус темы (вкл/выкл)
-# $result = $self->model('theme')->_toggle_theme( $data );
+# изменить статус курса (вкл/выкл)
+# $result = $self->model('Course')->_toggle_course( $data );
 # $data = {
-# $result = $self->model('Theme')->_toggle_theme( $data );
-# 'id'    - id записи 
 #    'id'    => <id>, - id записи 
 #    'status'=> 1     - новый статус 1/0
 # }
-sub _toggle_theme {
+sub _toggle_course {
     my ( $self, $data ) = @_;
 
-    my ( $theme, $result );
+    my ( $course, $result );
 
-    unless ( $$data{'id'} && $$data{'status'} ) {
+    unless ( $$data{'id'} || $$data{'status'} ) {
         return;
     }
     else {
         # обновление поля в EAV
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $$data{'id'} } );
+        $course = Freee::EAV->new( 'Course', { 'id' => $$data{'id'} } );
 
-        return unless $theme;
+        return unless $course;
 
-        $result = $theme->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
+        $result = $course->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
     }
 
     return $result;
 }
 
-# проверка существования темы
-# my $true = $self->model('theme')->_exists_in_theme( <td> );
-# 'id' - id темы
-sub _exists_in_theme {
+# проверка существования курса
+# my $true = $self->model('Course')->_exists_in_course( <id> );
+# 'id'    - id курса
+sub _exists_in_course {
     my ( $self, $id ) = @_;
 
-    my ( $theme, $result );
+    my ( $course, $result );
 
     unless ( scalar( $id ) ) {
         push @!, 'no id for check';
     }
     else {
         # поиск объекта с таким id
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $id } );
+        $course = Freee::EAV->new( 'Course', { 'id' => $id } );
     }
 
-    return $theme ? 1 : 0;
+    return $course ? 1 : 0;
 }
 
 1;

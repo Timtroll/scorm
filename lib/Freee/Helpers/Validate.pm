@@ -56,10 +56,10 @@ sub register {
 
         my $url_for = $self->url_for;
         my %data = ();
-warn "++";
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
-next unless keys %{ $$vfields{$url_for} };
+            # пропускаем роуты, которых нет в хэше валидации
+            next unless keys %{ $$vfields{$url_for} };
 
             my $param = $self->param($field);
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
@@ -76,7 +76,7 @@ next unless keys %{ $$vfields{$url_for} };
                 'status' => 1,
                 'timezone' => 1,
             );
-            # проверка обязательных полей
+            # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
                 if ( exists( $exclude_fields{$field} ) ) {
                     $param = 0 unless $param;
@@ -84,43 +84,11 @@ next unless keys %{ $$vfields{$url_for} };
                 else {
                     if ( !defined $param || $param eq '' ) {
                         push @!, "$url_for _check_fields: didn't has required data in '$field' = ''";
+                        last;
                     }
                 }
             }
-##########################     переделать на проверку на хэш
-#             # проверка заполнения обязательного поля parent, оно не undef и не пустая строка
-#             if ( ( $required eq 'required' ) && $field eq 'parent' && ( !defined $param || $param eq '' ) ) {
-#                 push @!, "_check_fields: didn't has required -parent- data in '$field'";
-#                 last;
-#             }
-#             # проверка заполнения обязательного поля status, оно не undef и не пустая строка
-#             elsif ( ( $required eq 'required' ) && $field eq 'status' && ( !defined $param || $param eq '' ) ) {
-#                 push @!, "_check_fields: didn't has required -status- data in '$field'";
-#                 last;
-#             }
-#             # проверка заполнения обязательного поля id роута get_leafs, оно не undef и не пустая строка
-#             elsif ( ( $required eq 'required' ) && $url_for =~ /get_leafs/ && ( !defined $param || $param eq '' ) ) {
-#                 push @!, "_check_fields: didn't has required -get_leafs- data in '$field'";
-#                 last;
-#             }
-#             # проверка заполнения обязательных полей роута \/routes\/save, они не undef и не пустая строка
-#             elsif ( ( $required eq 'required' ) && $url_for =~ /\/routes\/save/ && ( !defined $param || $param eq '' ) ) {
-#                 push @!, "_check_fields: didn't has required -\/routes\/save- data in '$field'";
-#                 last;
-#             }
-#             # проверка заполнения обязательного поля timezone, они не undef и не пустая строка
-#             elsif ( ( $required eq 'required' ) && $field eq 'timezone' && ( !defined $param || $param eq '' ) ) {
-#                 push @!, "_check_fields: didn't has required -timezone- data in '$field'";
-#                 last;
-#             }
-#             # проверка обязательности заполнения ( исключение - 0 для toggle, get_leafs, parent, /routes/save )
-#             elsif ( ( $required eq 'required' ) && $url_for !~ /(toggle|get_leafs|\/routes\/save)/ && $field ne 'parent' && $field ne 'status' 
-# && $field ne 'timezone' && !$param ) {
-#                 push @!, "_check_fields: didn't has required -toggle|get_leafs|\/routes\/save- data in '$field'";
-#                 last;
-#             }
-############################
-            # отдельная проверка для загружаемых файлов
+            # проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
                 unless ( $param->{'asset'}->{'content'} ) {
@@ -161,23 +129,23 @@ next unless keys %{ $$vfields{$url_for} };
                 last;
             }
 
-            # проверка на toggle
-            if ( $url_for =~ /toggle/ ) {
-                if ( ( $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
-                    unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
-                        push @!, "$url_for _check_fields: '$field' didn't match required in check array";
-                        last;
-                    }
-                }
-                else {
-                    unless ( $regexp && defined $param && ( $param =~ /$regexp/ ) ) {
-                        push @!, "$url_for _check_fields: '$field' didn't match regular expression";
-                        last;
-                    }
+            # проверка для роута toggle по списку значений
+            if ( ( $url_for =~ /toggle/ && $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
+                unless ( $param && grep( /^$param$/, @{$regexp} ) ) {
+                    push @!, "$url_for _check_fields: '$field' didn't match required in check array";
+                    last;
                 }
             }
+            # проверка по списку значений
+            elsif ( defined $regexp && ref($regexp) eq 'ARRAY' ) {
+                unless ( defined $param && grep( /^$param$/, @{$regexp} ) ) {
+                    push @!, "$url_for _check_fields: '$field' did not match required in check array";
+                    last;
+                }
+            }
+            # проверка по регэкспу
             else {
-                unless ( !defined $param || $param eq '' || ( $regexp && ( $param =~ /$regexp/ ) ) ) {
+                if ( !$regexp && ! defined $param && ( $param =~ /$regexp/ ) ) {
                     push @!, "$url_for _check_fields: '$field' didn't match regular expression";
                     last;
                 }
@@ -371,22 +339,14 @@ next unless keys %{ $$vfields{$url_for} };
 ################
             # роуты discipline/*
             '/discipline'  => {
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
             },
             '/discipline/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/discipline/add'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ],
-                # "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                # "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                # "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                # "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                # "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
-                # "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                # "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                # "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                # "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/discipline/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
@@ -406,8 +366,7 @@ next unless keys %{ $$vfields{$url_for} };
             },
             '/discipline/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
-                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################

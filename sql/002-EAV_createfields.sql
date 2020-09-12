@@ -72,6 +72,8 @@ INSERT INTO "public"."EAV_items" (
 ) VALUES (TRUE, 0, 'Discipline', NOW(), 'discipline_root', 0, 0 );
 
 -----------
+--- подчинено дисциплинам
+-----------
 INSERT INTO "public"."EAV_items" (
         publish,
         import_id,
@@ -80,7 +82,20 @@ INSERT INTO "public"."EAV_items" (
         title,
         parent,
         has_childs
-) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 0, 0 );
+) VALUES (TRUE, 0, 'Course', NOW(), 'course_root', 2, 0 );
+
+-----------
+--- подчинено курсам
+-----------
+INSERT INTO "public"."EAV_items" (
+        publish,
+        import_id,
+        type,
+        date_created,
+        title,
+        parent,
+        has_childs
+) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 3, 0 );
 
 -----------
 -- INSERT INTO "public"."EAV_items" (
