@@ -14,9 +14,11 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
+    $self->res->headers->append( 'token' => $self->req->headers->header('token') );
     $self->render(
         'template'  => 'manage_eav',
-        'title'     => 'Работа с EAV'
+        'title'     => 'Работа с EAV',
+        'token'     => $self->req->headers->header('token')
     );
 }
 

@@ -2,6 +2,7 @@
 <head>
     <title><%= $title %></title>
     <meta charset="UTF-8">
+    <meta content="<%= $token %>" name="token" />
 </head>
 <style>
 html {
