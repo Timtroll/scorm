@@ -370,6 +370,39 @@ sub register {
             },
 
 ################
+            # роуты course/*
+            '/course'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+            },
+            '/course/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/course/add'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+            },
+            '/course/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/course/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/course/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
             # роуты theme/*
             '/theme'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
