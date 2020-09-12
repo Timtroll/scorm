@@ -13,24 +13,34 @@ use Mojo::JSON qw( from_json );
 sub index {
     my $self = shift;
 
-    my ( $list, $result, $resp );
+    my ( $list, $result, $data, $resp );
 
-    $list = $self->model('Theme')->_list_theme();
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
-        $result = {
-            "label" =>  "Предметы",
-            "current" =>  {
-                "route"  => '/theme',
-                "add"    => '/theme/add',      # разрешает добавлять тему
-                "edit"   => '/theme/edit',     # разрешает редактировать тему
-                "delete" => '/theme/delete'    # разрешает удалять тему
-            },
-            "child" =>  {
-                "add"    => '/lesson/add'      # разрешает добавлять урок
-            },
-            "list" => $list ? $list : []
-        };
+        # получаем список тем
+        $list = $self->model('Theme')->_list_theme($data);
+
+        $result = {};
+        unless ( @! ) {
+            $result = {
+                "label" =>  "Темы",
+                "current" =>  {
+                    "route"  => '/theme',
+                    "add"    => '/theme/add',      # разрешает добавлять тему
+                    "edit"   => '/theme/edit',     # разрешает редактировать тему
+                    "delete" => '/theme/delete'    # разрешает удалять тему
+                },
+                "child" =>  {
+                    "add"    => '/theme/add'       # разрешает добавлять тему
+                },
+                "list" => $list ? $list : []
+            };
+        }
+        else {
+            push @!, "Could not get list of theme";
+        }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -40,10 +50,10 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
-# получить данные для редактирования предмета
+# получить данные для редактирования темы
 # $self->edit( $data );
 # $data = {
-# id - id предмета
+#   id - id темы
 # }
 sub edit {
     my $self = shift;
@@ -83,7 +93,10 @@ sub edit {
                         ]
                     }
                 ]
-            }
+            };
+        }
+        else {
+            push @!, "Could not get theme";
         }
     }
 
@@ -103,7 +116,7 @@ sub add {
 
     my ( $resp, $id );
 
-    # создание пустого объекта предмета
+    # создание пустого объекта темы
     $id = $self->model('Theme')->_empty_theme();
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -121,7 +134,7 @@ sub add {
 #    'id'          => 3,                                # кладется в EAV
 #    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'Предмет 1',                      # кладется в EAV
+#    'label'       => 'Тема 1',                         # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
 #    'content'     => 'Полное описание',                # кладется в EAV
 #    'attachment'  => '[345,577,643],                   # кладется в EAV
@@ -149,16 +162,10 @@ sub save {
         }
     }
 
-    unless ( @! ) {
-        # проверка родителя
-        unless ( $$data{'parent'} ) {
-            push @!, "theme must have a nonzero parent";
-        }
-        elsif(
-            !$self->model('Theme')->_exists_in_theme( $$data{'parent'} )
-            && !$self->model('Discipline')->_exists_in_discipline( $$data{'parent'} )
-        ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist";
+    unless ( @! || !$$data{'parent'} ) {
+        # проверка существования родителя
+        unless( $self->model('Theme')->_exists_in_theme( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in theme";
         }
     }
 
