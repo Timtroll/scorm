@@ -120,14 +120,6 @@ sub startup {
     $auth->post('/settings/toggle')     ->to('settings#toggle');        # включение/отключение поля в строке настройки
     $auth->post('/settings/delete')     ->to('settings#delete');        # удаление фолдера или настройки
 
-    # управление контентом
-    $auth->post('/cms/article')         ->to('cmsarticle#index');
-    $auth->post('/cms/article_add')     ->to('cmsarticle#add');
-    $auth->post('/cms/article_edit')    ->to('cmsarticle#edit');
-    $auth->post('/cms/article_save')    ->to('cmsarticle#save');
-    $auth->post('/cms/article_toggle')  ->to('cmsarticle#toggle');
-    $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
-
     # управление предметами
     $auth->post('/discipline/')         ->to('discipline#index');       # Список предметов
     $auth->post('/discipline/add')      ->to('discipline#add');         # Добавить предмет
@@ -152,27 +144,29 @@ sub startup {
     $auth->post('/theme/toggle')        ->to('theme#toggle');           # Изменить статус темы (вкл/выкл)
     $auth->post('/theme/delete')        ->to('theme#delete');           # Удалить тему
 
-    $auth->post('/cms/subject')         ->to('cmssubject#index');
-    $auth->post('/cms/subject_add')     ->to('cmssubject#add');
-    $auth->post('/cms/subject_edit')    ->to('cmssubject#edit');
-    $auth->post('/cms/subject_save')    ->to('cmssubject#save');
-    $auth->post('/cms/subject_toggle')  ->to('cmssubject#toggle');
-    $auth->post('/cms/subject_delete')  ->to('cmssubject#delete');
+    # управление уроками
+    $auth->post('/lesson/')             ->to('lesson#index');           # Список уроков
+    $auth->post('/lesson/add')          ->to('lesson#add');             # Добавить урок
+    $auth->post('/lesson/edit')         ->to('lesson#edit');            # Получить данные для редактирования урока
+    $auth->post('/lesson/save')         ->to('lesson#save');            # Сохранить урок
+    $auth->post('/lesson/toggle')       ->to('lesson#toggle');          # Изменить статус урока (вкл/выкл)
+    $auth->post('/lesson/delete')       ->to('lesson#delete');          # Удалить урок
+    # обучение
+    $auth->post('/lesson/video')        ->to('lesson#video');
+    $auth->post('/lesson/text')         ->to('lesson#text');
+    $auth->post('/lesson/examples')     ->to('lesson#examples');
+    $auth->post('/lesson/tasks')        ->to('lesson#tasks');           # возможно дублирует /tasks/list ?????????
+    $auth->post('/lesson/finished')     ->to('lesson#finished');
 
-    $auth->post('/cms/item')            ->to('cmsitems#index');
-    $auth->post('/cms/item_add')        ->to('cmsitems#add');
-    $auth->post('/cms/item_edit')       ->to('cmsitems#edit');
-    $auth->post('/cms/item_save')       ->to('cmsitems#saveitem');
-    $auth->post('/cms/item_toggle')     ->to('cmsitems#toggle');
-    $auth->post('/cms/item_delete')     ->to('cmsitems#delete');
-
-    # управление почтовыми сообщениями, рассылками
-    $auth->post('/cms/mail')            ->to('cmsmail#index');
-    $auth->post('/cms/mail_add')        ->to('cmsmail#add');
-    $auth->post('/cms/mail_edit')       ->to('cmsmail#edit');
-    $auth->post('/cms/mail_save')       ->to('cmsmail#save');
-    $auth->post('/cms/mail_toggle')     ->to('cmsmail#toggle');
-    $auth->post('/cms/mail_delete')     ->to('cmsmail#delete');
+    # управление уроками
+    $auth->post('/task/')               ->to('task#index');             # Список уроков
+    $auth->post('/task/add')            ->to('task#add');               # Добавить урок
+    $auth->post('/task/edit')           ->to('task#edit');              # Получить данные для редактирования урока
+    $auth->post('/task/save')           ->to('task#save');              # Сохранить урок
+    $auth->post('/task/toggle')         ->to('task#toggle');            # Изменить статус урока (вкл/выкл)
+    $auth->post('/task/delete')         ->to('task#delete');            # Удалить урок
+    # управление заданиями
+    $auth->post('/tasks/finished')      ->to('tasks#finished');
 
     # управление библиотекой
     $auth->post('/library/')            ->to('library#index');
@@ -239,30 +233,7 @@ sub startup {
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
     $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
 
-    # управление заданиями
-    $auth->post('/tasks/')              ->to('tasks#index');
-    $auth->post('/tasks/add')           ->to('tasks#add');
-    $auth->post('/tasks/edit')          ->to('tasks#edit');
-    $auth->post('/tasks/save')          ->to('tasks#save');
-    $auth->post('/tasks/toggle')        ->to('tasks#toggle');
-    $auth->post('/tasks/delete')        ->to('tasks#delete');
-    $auth->post('/tasks/finished')      ->to('tasks#finished');
-
-    # экзамены
-    $auth->post('/exam/')               ->to('exam#index');
-    $auth->post('/exam/start')          ->to('exam#start');
-    $auth->post('/exam/edit')           ->to('exam#edit');
-    $auth->post('/exam/save')           ->to('exam#save');
-    $auth->post('/exam/finish')         ->to('exam#finish');
 # возможно еще что-то ?????????
-
-    # обучение
-    $auth->post('/lesson/')             ->to('lesson#index');
-    $auth->post('/lesson/video')        ->to('lesson#video');
-    $auth->post('/lesson/text')         ->to('lesson#text');
-    $auth->post('/lesson/examples')     ->to('lesson#examples');
-    $auth->post('/lesson/tasks')        ->to('lesson#tasks');       # возможно дублирует /tasks/list ?????????
-    $auth->post('/lesson/finished')     ->to('lesson#finished');
 
     # учет успеваемости
     $auth->post('/accounting/')         ->to('accounting#index');
@@ -270,6 +241,45 @@ sub startup {
     $auth->post('/accounting/add')      ->to('accounting#add');
     $auth->post('/accounting/stat')     ->to('accounting#stat');
 
+####################
+    # управление контентом
+    $auth->post('/cms/article')         ->to('cmsarticle#index');
+    $auth->post('/cms/article_add')     ->to('cmsarticle#add');
+    $auth->post('/cms/article_edit')    ->to('cmsarticle#edit');
+    $auth->post('/cms/article_save')    ->to('cmsarticle#save');
+    $auth->post('/cms/article_toggle')  ->to('cmsarticle#toggle');
+    $auth->post('/cms/article_delete')  ->to('cmsarticle#delete');
+
+    $auth->post('/cms/subject')         ->to('cmssubject#index');
+    $auth->post('/cms/subject_add')     ->to('cmssubject#add');
+    $auth->post('/cms/subject_edit')    ->to('cmssubject#edit');
+    $auth->post('/cms/subject_save')    ->to('cmssubject#save');
+    $auth->post('/cms/subject_toggle')  ->to('cmssubject#toggle');
+    $auth->post('/cms/subject_delete')  ->to('cmssubject#delete');
+
+    $auth->post('/cms/item')            ->to('cmsitems#index');
+    $auth->post('/cms/item_add')        ->to('cmsitems#add');
+    $auth->post('/cms/item_edit')       ->to('cmsitems#edit');
+    $auth->post('/cms/item_save')       ->to('cmsitems#saveitem');
+    $auth->post('/cms/item_toggle')     ->to('cmsitems#toggle');
+    $auth->post('/cms/item_delete')     ->to('cmsitems#delete');
+
+    # управление почтовыми сообщениями, рассылками
+    $auth->post('/cms/mail')            ->to('cmsmail#index');
+    $auth->post('/cms/mail_add')        ->to('cmsmail#add');
+    $auth->post('/cms/mail_edit')       ->to('cmsmail#edit');
+    $auth->post('/cms/mail_save')       ->to('cmsmail#save');
+    $auth->post('/cms/mail_toggle')     ->to('cmsmail#toggle');
+    $auth->post('/cms/mail_delete')     ->to('cmsmail#delete');
+
+    # экзамены
+    $auth->post('/exam/')               ->to('exam#index');
+    $auth->post('/exam/start')          ->to('exam#start');
+    $auth->post('/exam/edit')           ->to('exam#edit');
+    $auth->post('/exam/save')           ->to('exam#save');
+    $auth->post('/exam/finish')         ->to('exam#finish');
+
+################
     # форум
     $auth->any('/forum/')               ->to('forum#index');        # стартовая страница
     $auth->post('/forum/list_themes')   ->to('forum#list_themes');

@@ -1,4 +1,4 @@
-package Freee::Controller::Discipline;
+package Freee::Controller::Task;
 
 use utf8;
 
@@ -8,7 +8,7 @@ use common;
 use Data::Dumper;
 use Mojo::JSON qw( from_json );
 
-# получить список предметов
+# получить список заданий
 # $self->index( $data );
 sub index {
     my $self = shift;
@@ -19,27 +19,27 @@ sub index {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # получаем список предметов
-        $list = $self->model('Discipline')->_list_discipline($data);
+        # получаем список заданий
+        $list = $self->model('Task')->_list_lesson($data);
 
         $result = {};
         unless ( @! ) {
             $result = {
-                "label" =>  "Предметы",
+                "label" =>  "Задания",
                 "current" =>  {
-                    "route"  => '/discipline',
-                    "add"    => '/discipline/add',      # разрешает добавлять предмет
-                    "edit"   => '/discipline/edit',     # разрешает редактировать предмет
-                    "delete" => '/discipline/delete'    # разрешает удалять предмет
+                    "route"  => '/task',
+                    "add"    => '/task/add',      # разрешает добавлять задание
+                    "edit"   => '/task/edit',     # разрешает редактировать задание
+                    "delete" => '/task/delete'    # разрешает удалять задание
                 },
                 "child" =>  {
-                    "add"    => '/discipline/add'       # разрешает добавлять предмет
+                    "add"    => '/task/add'       # разрешает добавлять задание
                 },
                 "list" => $list ? $list : []
             };
         }
         else {
-            push @!, "Could not get list of discipline";
+            push @!, "Could not get list of task";
         }
     }
 
@@ -50,10 +50,10 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
-# получить данные для редактирования предмета
+# получить данные для редактирования задания
 # $self->edit( $data );
 # $data = {
-#   id => <id> - id предмета
+#   id => <id> - id задания
 # }
 sub edit {
     my $self = shift;
@@ -65,7 +65,7 @@ sub edit {
 
     unless ( @! ) {
         # получение объекта EAV
-        $result = $self->model('Discipline')->_get_discipline( $$data{'id'} );
+        $result = $self->model('Task')->_get_task( $$data{'id'} );
 
         unless ( @! ) {
             $list = {
@@ -96,7 +96,7 @@ sub edit {
             };
         }
         else {
-            push @!, "Could not get discipline";
+            push @!, "Could not get task";
         }
     }
 
@@ -109,15 +109,15 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
-# Добавление нового предмета в EAV
+# Добавление нового задания в EAV
 # $self->add();
 sub add {
     my $self = shift;
 
     my ( $resp, $id );
 
-    # создание пустого объекта предмета
-    $id = $self->model('Discipline')->_empty_discipline();
+    # создание пустого объекта задания
+    $id = $self->model('Task')->_empty_task();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
@@ -128,13 +128,13 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
-# сохранить предмет
+# сохранить задание
 # $self->save( $data );
 # $data = {
 #    'id'          => 3,
 #    'parent'      => 0,
 #    'name'        => 'Название',
-#    'label'       => 'Предмет 1',
+#    'label'       => 'задание 1',
 #    'description' => 'Краткое описание',
 #    'content'     => 'Полное описание',
 #    'attachment'  => '[345,577,643],
@@ -164,8 +164,8 @@ sub save {
 
     unless ( @! || !$$data{'parent'} ) {
         # проверка существования родителя
-        unless( $self->model('Discipline')->_exists_in_discipline( $$data{'parent'} ) ) {
-            push @!, "parent with id '$$data{'parent'}' doesn't exist in discipline";
+        unless( $self->model('Task')->_exists_in_task( $$data{'parent'} ) ) {
+            push @!, "parent with id '$$data{'parent'}' doesn't exist in task";
         }
     }
 
@@ -174,8 +174,8 @@ sub save {
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_save_discipline( $data );
+        # добавляем задание в EAV
+        $result = $self->model('Task')->_save_task( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -188,7 +188,7 @@ sub save {
     $self->render( 'json' => $resp );
 }
 
-# изменить статус предмета (вкл/выкл)
+# изменить статус задания (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
 #   'id'    => <id> - id записи
@@ -204,8 +204,8 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_toggle_discipline( $data );
+        # добавляем задание в EAV
+        $result = $self->model('Task')->_toggle_task( $data );
         push @!, "can't update EAV" unless $result;
     }
 
@@ -218,10 +218,10 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
-# удалить предмет
+# удалить задание
 # $self->delete( $data );
 # $data = {
-#   'id' => <id>   - id предмета
+#   'id' => <id>    - id задания
 #}
 sub delete {
     my $self = shift;
@@ -232,8 +232,8 @@ sub delete {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_delete_discipline( $$data{'id'} );
+        # добавляем задание в EAV
+        $result = $self->model('Task')->_delete_task( $$data{'id'} );
         push @!, 'can\'t delete EAV object' unless $result;
     }
 

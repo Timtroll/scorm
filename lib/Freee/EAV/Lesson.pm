@@ -1,4 +1,4 @@
-package Freee::EAV::Theme;
+package Freee::EAV::Lesson;
 
 use parent 'Freee::EAV::Base';
 use strict;

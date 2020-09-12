@@ -34,23 +34,23 @@ BEGIN
     PERFORM eav_createfield( 'Theme', 'seo', 'поле для seo темы', 'string', NULL );
     PERFORM eav_createfield( 'Theme', 'status', 'Статус темы', 'string', NULL );
 
-    -- PERFORM eav_createfield( 'Lesson', 'label', 'Описание для отображения', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'description', 'Краткое содержание', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'content', 'Полное содержание', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'attachment', 'ID файлов', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'keywords', 'ключевые слова', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'url', 'url страницы', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'seo', 'поле для seo', 'string', NULL );
-    -- PERFORM eav_createfield( 'Lesson', 'status', 'Статус поля', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'label', 'Описание для отображения', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'description', 'Краткое содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'content', 'Полное содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'attachment', 'ID файлов', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'keywords', 'ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'seo', 'поле для seo', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'status', 'Статус поля', 'string', NULL );
 
-    -- PERFORM eav_createfield( 'Task', 'label', 'Описание для отображения', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'description', 'Краткое содержание', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'content', 'Полное содержание', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'attachment', 'ID файлов', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'keywords', 'ключевые слова', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'url', 'url страницы', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'seo', 'поле для seo', 'string', NULL );
-    -- PERFORM eav_createfield( 'Task', 'status', 'Статус поля', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'label', 'Описание для отображения', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'description', 'Краткое содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'content', 'Полное содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'attachment', 'ID файлов', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'keywords', 'ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'seo', 'поле для seo', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'status', 'Статус поля', 'string', NULL );
 
     -- PERFORM eav_createfield( 'Default', 'folder', 'Признак категории', 'boolean', NULL );
 END;
@@ -107,24 +107,24 @@ INSERT INTO "public"."EAV_items" (
 ) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 3, 0 );
 
 -----------
--- INSERT INTO "public"."EAV_items" (
---     publish,
---     import_id,
---     type,
---     date_created,
---     title,
---     parent,
---     has_childs
--- ) VALUES (TRUE, 0, 'Lesson', NOW(), 'lesson_root', 0, 0 );
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Lesson', NOW(), 'lesson_root', 0, 0 );
 
 -- ---------
--- INSERT INTO "public"."EAV_items" (
---     publish,
---     import_id,
---     type,
---     date_created,
---     title,
---     parent,
---     has_childs
--- ) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
 

@@ -1,4 +1,4 @@
-package Freee::Controller::Cource;
+package Freee::Controller::Course;
 
 use utf8;
 
@@ -17,7 +17,7 @@ sub index {
 
     # проверка данных
     $data = $self->_check_fields();
-warn '++++++++++++';
+
     unless ( @! ) {
         # получаем список курсов
         $list = $self->model('Course')->_list_course($data);
@@ -53,7 +53,7 @@ warn '++++++++++++';
 # получить данные для редактирования курса
 # $self->edit( $data );
 # $data = {
-#   id - id курса
+#   id => <id> - id курса
 # }
 sub edit {
     my $self = shift;
@@ -131,17 +131,17 @@ sub add {
 # сохранить курс
 # $self->save( $data );
 # $data = {
-#    'id'          => 3,                                # кладется в EAV
-#    'parent'      => 0,                                # кладется в EAV
-#    'name'        => 'Название',                       # кладется в EAV
-#    'label'       => 'курс 1',                      # кладется в EAV
-#    'description' => 'Краткое описание',               # кладется в EAV
-#    'content'     => 'Полное описание',                # кладется в EAV
-#    'attachment'  => '[345,577,643],                   # кладется в EAV
-#    'keywords'    => 'ключевые слова',                 # кладется в EAV
-#    'url'         => 'как должен выглядеть url',       # кладется в EAV
-#    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
+#    'id'          => 3,
+#    'parent'      => 0,
+#    'name'        => 'Название',
+#    'label'       => 'курс 1',
+#    'description' => 'Краткое описание',
+#    'content'     => 'Полное описание',
+#    'attachment'  => '[345,577,643],
+#    'keywords'    => 'ключевые слова',
+#    'url'         => 'как должен выглядеть url',
+#    'seo'         => 'дополнительное поле для seo',
+#    'status'      => 1
 # }
 sub save {
     my $self = shift;
@@ -191,9 +191,9 @@ sub save {
 # изменить статус курса (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
-# 'id'    - id записи
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#    'id'    => - <id>m записи
+#    'field' => - имя поля в таблице
+#    'val'   => - 1/0
 #}
 sub toggle {
     my $self = shift;
@@ -221,7 +221,7 @@ sub toggle {
 # удалить курс
 # $self->delete( $data );
 # $data = {
-# 'id'    - id курса
+#   'id' => <id> - id курса
 #}
 sub delete {
     my $self = shift;

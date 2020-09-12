@@ -403,6 +403,72 @@ sub register {
             },
 
 ################
+            # роуты lesson/*
+            '/lesson'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+            },
+            '/lesson/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/lesson/add'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+            },
+            '/lesson/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/lesson/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/lesson/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
+            # роуты task/*
+            '/task'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+            },
+            '/task/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/task/add'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+            },
+            '/task/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/task/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/task/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
             # роуты theme/*
             '/theme'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
