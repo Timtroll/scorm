@@ -9,7 +9,7 @@ export default class files {
    */
   async upload (upload) {
     if (!upload) return null
-    return await this.serverHttp('/', upload)
+    return await this.serverHttp('/upload/', upload)
   }
 
   /**
@@ -22,7 +22,7 @@ export default class files {
     if (string) {
       formData.append('search', string)
     }
-    return await this.serverHttp('/search/', formData)
+    return await this.serverHttp('/upload/search/', formData)
   }
 
   /**
@@ -36,7 +36,7 @@ export default class files {
     if (id) {
       formData.append('id', id)
     }
-    return await this.serverHttp('/delete/', formData, true)
+    return await this.serverHttp('/upload/delete/', formData, true)
   }
 
   /**
@@ -52,7 +52,7 @@ export default class files {
       formData.append('id', id)
       formData.append('description', description)
     }
-    return await this.serverHttp('/update/', formData, true)
+    return await this.serverHttp('/upload/update/', formData, true, true)
   }
 
   async serverHttp (url, params, notifyOk, notifyFail) {

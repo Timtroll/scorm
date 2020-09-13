@@ -18,7 +18,7 @@ const actions = {
         appConfig.setToken(user)
         commit('auth_success', user)
 
-        //dispatch('getGroups')
+        dispatch('getGroups')
       }
       else {
         notify(response.message, 'danger')
