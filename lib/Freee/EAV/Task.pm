@@ -1,0 +1,7 @@
+package Freee::EAV::Task;
+
+use parent 'Freee::EAV::Base';
+use strict;
+use warnings;
+
+1;
