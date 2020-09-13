@@ -1,8 +1,8 @@
-import coursesClass                   from '@/api/courses'
+import CoursesClass                   from '@/api/courses'
 import {clone, groupedFields, notify} from '@/store/methods'
 import store                          from '@/store/store'
 
-const courses = new coursesClass
+const courses = new CoursesClass
 
 const actions = {
 
@@ -49,7 +49,6 @@ const actions = {
     try {
       const response = await courses.add(data.route)
       if (response.status === 'ok') {
-
         return response.id
       }
     }
