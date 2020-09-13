@@ -340,7 +340,7 @@ sub register {
             # роуты discipline/*
             '/discipline'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ],
-                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
             },
             '/discipline/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -373,7 +373,7 @@ sub register {
             # роуты course/*
             '/course'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ],
-                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
             },
             '/course/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -403,10 +403,44 @@ sub register {
             },
 
 ################
+            # роуты theme/*
+            '/theme'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ]
+            },
+            '/theme/edit'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/theme/add'  => {
+                "parent"        => [ '', qr/^\d+$/os, 9 ],
+            },
+            '/theme/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
+                "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
+                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
+                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
+                "status"        => [ '', qr/^[01]$/os, 1 ]
+            },
+            '/theme/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/theme/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
             # роуты lesson/*
             '/lesson'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ],
-                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
             '/lesson/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -439,7 +473,7 @@ sub register {
             # роуты task/*
             '/task'  => {
                 "parent"        => [ '', qr/^\d+$/os, 9 ],
-                "order"         => [ 'required', ['ASC', 'DESC'], 4 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
             '/task/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -466,48 +500,6 @@ sub register {
             '/task/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "status"        => [ 'required', qr/^[01]$/os, 1 ]
-            },
-
-################
-            # роуты theme/*
-            '/theme'  => {
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
-            },
-            '/theme/edit'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ]
-            },
-            '/theme/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-                # "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                # "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                # "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                # "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                # "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
-                # "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                # "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                # "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                # "status"        => [ '', qr/^[01]$/os, 1 ]
-            },
-            '/theme/save'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
-                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
-                "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
-                "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
-            },
-            '/theme/delete'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ]
-            },
-            '/theme/toggle'  => {
-                "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
-                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
