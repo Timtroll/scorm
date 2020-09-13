@@ -127,7 +127,7 @@ sub _get_user {
         $eav_id = $result->{'eav_id'};
         $usr = Freee::EAV->new( 'User', { 'id' => $eav_id } );
         if ( $usr ) {
-            $result->{'id'}            = $usr->id();
+            $result->{'id'}            = $result->id();
             $result->{'name'}          = $usr->name()       ? $usr->name() : '';
             $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
             $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
@@ -390,7 +390,10 @@ sub _save_user {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
-
+use DDP;
+p $result;
+p $sql;
+p $$data{'id'};
         if ( $result eq '0E0' ) {
             push @!, "can't update $$data{'id'} in users";
             $self->{'app'}->pg_dbh->rollback;
