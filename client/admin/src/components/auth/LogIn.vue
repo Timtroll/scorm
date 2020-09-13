@@ -133,7 +133,7 @@ export default {
         let login = this.user.login
         let password  = this.user.password
         this.$store.dispatch('login', {login, password})
-            .then(() => this.$router.push({
+            .then(() => this.$router.replace({
               name: 'Main'
             }))
             .catch((err) => {})

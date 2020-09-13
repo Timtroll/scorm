@@ -49,7 +49,6 @@ export default () => {
 
     validateStatus: function (status) {
       if (status === 666) {
-
         router.replace({name: 'Login'}).then()
         return status
       }

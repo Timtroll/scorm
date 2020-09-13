@@ -17,7 +17,7 @@ export default {
 
     if (!token) {
       appConfig.removeToken()
-      router.push({name: 'Login'}).catch(e => {})
+      router.replace({name: 'Login'}).catch(e => {})
     }
     const response = await fetch(apiUrl + url, {
       method:   'POST',

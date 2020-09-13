@@ -65,7 +65,7 @@ const actions = {
         appConfig.removeToken()
         delete axios.defaults.headers.common['token']
         notify('До встречи!', 'success')
-        router.push({name: 'Login'}).catch(e => {})
+        router.replace({name: 'Login'}).catch(e => {})
       }
     }
     catch (err) {
@@ -79,9 +79,10 @@ const actions = {
   async getGroups () {
     try {
       const response = await Api.getGroup()
-      console.log(response.data)
-      appConfig.setGroups(response.data.list)
-      if (response.data.status === 'ok') {}
+
+      if (response.data.status === 'ok') {
+        appConfig.setGroups(response.data.list)
+      }
     }
     catch (err) {
       notify(err, 'danger')
