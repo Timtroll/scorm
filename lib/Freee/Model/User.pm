@@ -127,7 +127,7 @@ sub _get_user {
         $eav_id = $result->{'eav_id'};
         $usr = Freee::EAV->new( 'User', { 'id' => $eav_id } );
         if ( $usr ) {
-            $result->{'id'}            = $result->id();
+            $result->{'id'}            = $result->{id};
             $result->{'name'}          = $usr->name()       ? $usr->name() : '';
             $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
             $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
