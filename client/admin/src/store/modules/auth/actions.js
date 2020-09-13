@@ -18,7 +18,7 @@ const actions = {
         appConfig.setToken(user)
         commit('auth_success', user)
 
-        dispatch('getGroups')
+        await dispatch('getGroups')
       }
       else {
         notify(response.message, 'danger')
@@ -80,7 +80,7 @@ const actions = {
     try {
       const response = await Api.getGroup()
       console.log(response.data)
-      appConfig.setGroups(response.data.data)
+      appConfig.setGroups(response.data.list)
       if (response.data.status === 'ok') {}
     }
     catch (err) {

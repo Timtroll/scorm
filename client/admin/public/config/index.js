@@ -14,22 +14,24 @@ export default class AppConfig {
       credential: '12345',
       username:   'brucewayne'
     }
-    this.role        = null
+    this.profile     = null
     this.token       = null
-    this.groups      = null
+    this.userGroups  = null
   }
 
   setToken (user) {
     if (!user) return
     localStorage.setItem('token', user.token)
     localStorage.setItem('profile', JSON.stringify(user.profile))
-    this.token = user.token
-    this.role  = user.profile.role
+    this.token   = user.token
+    this.profile = user.profile
   }
 
   setGroups (groups) {
     if (!groups) return
-    localStorage.setItem('groups', JSON.stringify(groups))
+    this.userGroups = groups
+    const userGroups = this._getGroups(groups, this.profile)
+    localStorage.setItem('groups', JSON.stringify(userGroups))
   }
 
   removeToken () {
@@ -38,6 +40,17 @@ export default class AppConfig {
     localStorage.removeItem('groups')
     this.token = null
     this.role  = null
+  }
+
+  _getGroups (groups, profile) {
+    const userGroups    = JSON.parse(profile.groups)
+    const userGroupsObj = []
+    groups.forEach(i => {
+      if (userGroups.includes(i.id)) {
+        userGroupsObj.push(i)
+      }
+    })
+    return userGroupsObj
   }
 
 }
