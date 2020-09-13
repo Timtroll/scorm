@@ -1,5 +1,7 @@
-import Vue   from 'vue'
-import axios from 'axios'
+import Vue         from 'vue'
+import axios       from 'axios'
+import {appConfig} from '@/main'
+import router      from '@/router'
 
 Vue.prototype.$http = axios
 const token         = localStorage.getItem('token')
@@ -7,17 +9,13 @@ const token         = localStorage.getItem('token')
 if (token) {
   Vue.prototype.$http.defaults.headers.common['token'] = token
 }
-//Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://cors-c.herokuapp.com'
-//Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://freee.su'
-//Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8080'
+//else {
+//  appConfig.removeToken()
+//  router.push({name: 'Login'}).catch(e => {})
+//}
 
 let apiProxy = ''
 if (Vue.config.productionTip) {
-  //Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://freee.su'
-  //Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://cors-c.herokuapp.com'
-  //Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8080'
-  //Vue.prototype.$http.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true'
-  apiProxy = '' // для Localhost  https://cors-c.herokuapp.com
   apiProxy = 'https://cors-c.herokuapp.com/https://freee.su/' // для Localhost  https://cors-c.herokuapp.com
 }
 axios.defaults.withCredentials = false
@@ -35,6 +33,29 @@ export default () => {
       'Accept':       'application/json',
       'Content-type': 'application/x-www-form-urlencoded',
       'Content-Type': 'application/json'
+    },
+
+    //transformRequest:  [(data, headers) => data],
+    //transformResponse: [(data) => data],
+
+    onUploadProgress: (progressEvent) => {
+      // Do whatever you want with the native progress event
+    },
+
+    // `onDownloadProgress` allows handling of progress events for downloads
+    onDownloadProgress: (progressEvent) => {
+      // Do whatever you want with the native progress event
+    },
+
+    validateStatus: function (status) {
+      if (status === 666) {
+
+        router.replace({name: 'Login'}).then()
+        return status
+      }
+      else {
+        return status
+      }
     }
   })
 }
