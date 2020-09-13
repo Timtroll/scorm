@@ -4,8 +4,9 @@ use Mojo::Base 'Freee::Model::Base';
 
 use POSIX qw(strftime);
 use DBI qw(:sql_types);
-use Data::Dumper;
 use Mojo::JSON qw( from_json );
+
+use Data::Dumper;
 
 ####################################################################
 # Поля пользователя
@@ -355,15 +356,15 @@ sub _save_user {
     # загружаем аватарку
     # таблица media (аватарка)
     my $media_data = {
-        "path"      => 'local',
-        "filename"  => 'local',
-        "title"     => 'Название файла',
-        "size"      => 'local',
+        "path"          => 'local',
+        "filename"      => 'local',
+        "title"         => 'Название файла',
+        "size"          => 'local',
 #?                "type" varchar(32) COLLATE "default",
-        "mime"      => 'local',
-        "description"      => 'local',
-        "order"      => 'local',
-        "flags"     => 0
+        "mime"          => 'local',
+        "description"   => 'local',
+        "order"         => 'local',
+        "flags"         => 0
     };
 
     # выгребаем 'eav_id', если его не передали
@@ -371,7 +372,9 @@ sub _save_user {
         $sql = 'SELECT eav_id FROM "public"."users" WHERE "id" = :id';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
-        $$data{'eav_id'} = $sth->execute();
+        $sth->execute();
+        my $row = $sth->fetchrow_hashref();
+        $$data{'eav_id'} = $$row{'eav_id'}
     }
 
     unless ( @! ) {
@@ -390,10 +393,7 @@ sub _save_user {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
-use DDP;
-p $result;
-p $sql;
-p $$data{'id'};
+
         if ( $result eq '0E0' ) {
             push @!, "can't update $$data{'id'} in users";
             $self->{'app'}->pg_dbh->rollback;

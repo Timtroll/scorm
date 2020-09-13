@@ -218,13 +218,7 @@ sub save {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        unless ( $$data{'phone'} || $$data{'email'} ) {
-            push @!, 'Empty email or no phone';
-        }
-        elsif ( ! $$data{'login'} ) {
-            push @!, 'Empty login';
-        }
-        elsif ( $$data{'password'} && !$$data{'newpassword'} && !scalar(@!) ) {
+        if ( $$data{'password'} && !$$data{'newpassword'} ) {
             push @!, 'Empty newpassword';
         }
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
@@ -235,17 +229,17 @@ sub save {
         }
 
         unless ( @! ) {
+            # проверяем, используется ли логин другим пользователем
+            if ( $$data{'login'} && $self->model('Utils')->_exists_in_table('users', 'login', $$data{'login'}, $$data{'id'} ) ) {
+                push @!, "login '$$data{ login }' already used"; 
+            }
             # проверяем, используется ли емэйл другим пользователем
-            if ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
+            elsif ( $$data{'email'} && $self->model('Utils')->_exists_in_table('users', 'email', $$data{'email'}, $$data{'id'} ) ) {
                 push @!, "email '$$data{ email }' already used"; 
             }
             # проверяем, используется ли телефон другим пользователем
             elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
                 push @!, "phone '$$data{ phone }' already used"; 
-            }
-            # проверяем, используется ли логин другим пользователем
-            elsif ( $$data{'login'} && $self->model('Utils')->_exists_in_table('users', 'login', $$data{'login'}, $$data{'id'} ) ) {
-                push @!, "login '$$data{ login }' already used"; 
             }
 
             unless ( @! ) {
@@ -282,8 +276,7 @@ sub save {
                 'publish'       => $$data{'status'} ? 'true' : 'false',
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
-                'phone'         => $$data{'phone'},
-                'password'      => $$data{'password'}
+                'phone'         => $$data{'phone'}
             },
             'data_eav' => {
                 'publish'       => $$data{'status'} ? 'true' : 'false',
@@ -296,6 +289,7 @@ sub save {
                 'import_source' => $$data{'avatar'}     // ''
             }
         };
+        $data->{'password'} = $$data{'password'} if $$data{'password'};
 
         $result = $self->model('User')->_save_user( $data );
     }
