@@ -3,6 +3,7 @@ import Api                                      from '@/api/users/Table'
 import store                                    from '@/store/store'
 import {clone, flatTree, groupedFields, notify} from '@/store/methods'
 import Api_EditPanel                            from '@/api/users/EditPanel'
+import router                                   from '@/router'
 
 const actions = {
 
@@ -189,9 +190,11 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       let response
+
       if (item.add) {
         response = await Api_EditPanel.list_add(item.fields)
       }
+
       else {
         response = await Api_EditPanel.list_save(item.fields)
       }
@@ -201,7 +204,8 @@ const actions = {
         const resp = await response.data
         if (resp.status === 'ok') {
 
-          await dispatch('getTable', item.fields.parent)
+          // item.fields.parent
+          await dispatch('getTable', router.currentRoute.params.id)
           store.commit('card_right_show', false)
           store.commit('editPanel_data', []) // очистка данных VUEX
           store.commit('editPanel_status_success') // статус - успех
