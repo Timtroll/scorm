@@ -1,17 +1,8 @@
-import Vue      from 'vue'
-import {notify} from '@/store/methods'
-
-let apiProxy = ''
-
-if (!Vue.config.productionTip) {
-  apiProxy = 'https://cors-c.herokuapp.com/https://freee.su'
-}
-const apiUrl = apiProxy + '/'
+import serverHttp from '@/api/serverHttp'
 
 export default class auth {
 
   constructor () {
-    this.url     = apiUrl
     this.profile = null
     this.token   = null
   }
@@ -36,33 +27,8 @@ export default class auth {
     return result
   }
 
-  async serverHttp (url, params, notifyOk = false) {
-    const response = await fetch(this.url + url, {
-      method:   'POST',
-      body:     params,
-      redirect: 'follow'
-    })
-
-    const result = await response.json()
-
-    if (result.status === 'ok') {
-      if (notifyOk) {
-        notify(result.status, 'success')
-      }
-      return result
-    }
-    else if (result.status === 'warn') {
-      if (notifyOk) {
-        notify(result.message, 'warning')
-      }
-      return result
-    }
-    else if (result.status === 'fail') {
-      notify('ERROR: ' + result.message, 'danger')
-      return result
-      //throw (result.message)
-    }
-
+  async serverHttp (url, params, notifyOk, notifyFail) {
+    await serverHttp.query(url, params, notifyOk, notifyFail)
   }
 
 }

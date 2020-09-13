@@ -1,8 +1,8 @@
-import axios    from 'axios'
-import router   from '@/router'
-import {notify} from '@/store/methods'
-import Api      from '@/api/Auth'
-import {appConfig}      from '@/main'
+import axios       from 'axios'
+import router      from '@/router'
+import {notify}    from '@/store/methods'
+import Api         from '@/api/Auth'
+import {appConfig} from '@/main'
 
 const actions = {
 
@@ -19,7 +19,6 @@ const actions = {
            if (resp.status === 'ok') {
              const user = resp.data
              appConfig.setToken(user)
-             axios.defaults.headers.common['Authorization'] = user.token
              commit('auth_success', user)
              resolve(response)
            }
@@ -60,26 +59,6 @@ const actions = {
     }
   },
 
-  // signUpEmail
-  //async signUpEmail ({}, fields) {
-  //  console.log(fields)
-  //  try {
-  //    const response = await Api.signUpEmail(fields)
-  //    if (response.status === 200) {
-  //      const resp = await response.data
-  //      if (resp.status === 'ok') {
-  //        router
-  //          .push({name: 'Login'})
-  //          .catch(e => {})
-  //      }
-  //    }
-  //  }
-  //  catch (e) {
-  //    notify('ERROR: ' + e, 'danger') // уведомление об ошибке
-  //    throw 'ERROR: ' + e
-  //  }
-  //},
-
   // logout
   logout ({commit}) {
 
@@ -90,7 +69,7 @@ const actions = {
            if (response.data.status === 'ok') {
              commit('logout')
              appConfig.removeToken()
-             delete axios.defaults.headers.common['Authorization']
+             delete axios.defaults.headers.common['token']
              notify('До встречи!', 'success')
              router.push({name: 'Login'}).catch(e => {})
              resolve(response)
