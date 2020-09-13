@@ -6,7 +6,6 @@ export default {
   get_leafs (id) {
     return Api()({
       url:    'settings/get_leafs',
-      method: 'post',
       params: {
         id: id
       }
@@ -17,7 +16,6 @@ export default {
   leafs_save (params) {
     return Api()({
       url:    'settings/save',
-      method: 'post',
       params: params
     })
   },
@@ -26,7 +24,6 @@ export default {
   leafs_delete (id) {
     return Api()({
       url:    'settings/delete',
-      method: 'post',
       params: id
     })
   }

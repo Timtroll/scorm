@@ -2,10 +2,6 @@ import serverHttp from '@/api/serverHttp'
 
 export default class files {
 
-  constructor () {
-    this.token = localStorage.getItem('token')
-  }
-
   /**
    * Загрузить файл, добавить запись в таблицу
    * @returns {Promise<void>}

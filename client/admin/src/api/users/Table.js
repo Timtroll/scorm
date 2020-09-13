@@ -6,7 +6,6 @@ export default {
   get_leafs (id) {
     return Api()({
       url:    'user/',
-      method: 'post',
       params: {
         group_id: id
       }
@@ -17,7 +16,6 @@ export default {
   list_delete (id) {
     return Api()({
       url:    'user/delete',
-      method: 'post',
       params: {
         id: id
       }

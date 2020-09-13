@@ -6,7 +6,6 @@ export default {
   list_edit (id) {
     return Api()({
       url:    'user/edit',
-      method: 'post',
       params: {
         id: id
       }
@@ -17,7 +16,6 @@ export default {
   list_save (data) {
     return Api()({
       url:    'user/save',
-      method: 'post',
       params: data
     })
   },
@@ -25,7 +23,6 @@ export default {
   list_activate (params) {
     return Api()({
       url:    'user/activate',
-      method: 'post',
       params: params
     })
   },
@@ -33,7 +30,6 @@ export default {
   list_toggle (params) {
     return Api()({
       url:    'user/toggle',
-      method: 'post',
       params: params
     })
   },
@@ -42,7 +38,6 @@ export default {
   list_add (parent) {
     return Api()({
       url:    'user/add',
-      method: 'post',
       params: {
         parent: parent
       }

@@ -6,7 +6,6 @@ export default {
   get_tree () {
     return Api()({
       url:    'groups/',
-      method: 'post'
     })
   }
 
