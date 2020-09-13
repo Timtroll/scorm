@@ -60,7 +60,7 @@ sub get_folder {
 # получить дерево без листьев
 sub get_tree {
     my $self = shift;
-
+warn '+++++++++';
     # передаем 1, чтобы получить дерево без листьев
     my $list = $self->model('Settings')->_get_tree( 1 );
 

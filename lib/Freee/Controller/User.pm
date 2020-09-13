@@ -106,6 +106,7 @@ sub edit {
                 {
                     'label' => 'Основные',
                     'fields'=> [
+                        {"login"      => $$user_data{'login'} },
                         {"name"       => $$user_data{'name'} },
                         {"patronymic" => $$user_data{'patronymic'} },
                         {"surname"    => $$user_data{'surname'} },

@@ -261,6 +261,7 @@ sub register {
             },
 ################
             # роуты settings/*
+            '/settings/get_tree'  => {},
             '/settings/add_folder'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],

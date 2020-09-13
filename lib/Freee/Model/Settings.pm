@@ -31,8 +31,6 @@ sub _get_tree {
     $list = $self->{app}->_list_to_tree( $list, 'id', 'parent', 'children' );
 
     return $list;
-
-    # return $self->app->config;
 }
 
 # читаем фолдер
