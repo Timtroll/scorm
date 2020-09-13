@@ -31,13 +31,13 @@ export default class AppConfig {
     if (!groups) return
     this.userGroups = groups
     const userGroups = this._getGroups(groups, this.profile)
-    localStorage.setItem('groups', JSON.stringify(userGroups))
+    localStorage.setItem('userGroups', JSON.stringify(userGroups))
   }
 
   removeToken () {
     localStorage.removeItem('token')
     localStorage.removeItem('profile')
-    localStorage.removeItem('groups')
+    localStorage.removeItem('userGroups')
     this.token = null
     this.role  = null
   }
