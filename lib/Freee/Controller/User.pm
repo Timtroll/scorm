@@ -167,19 +167,21 @@ sub edit {
 # после добавления пустышки должен вызываться сразу роут /user/edit
 # Добавляется новый пользователь в EAV и таблицу users
 # $self->add();
-# возвращается id пользователя:
-
+# возвращается:
+#   id пользователя:
+#   eav_id пользователя:
 sub add {
     my $self = shift;
 
-    my ( $resp, $result );
+    my ( $resp, $id, $eav_id );
 
     # создание пустого объекта пользователя
-    $result = $self->model('User')->_empty_user();
+    ( $id, $eav_id ) = $self->model('User')->_empty_user();
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $result unless @!;
+    $resp->{'id'} = $id unless @!;
+    $resp->{'eav_id'} = $eav_id unless @!;
 
     @! = ();
 

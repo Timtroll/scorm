@@ -114,7 +114,7 @@ sub edit {
 sub add {
     my $self = shift;
 
-    my ( $resp, $id );
+    my ( $resp, $id, $eav_id );
 
     # создание пустого объекта курса
     $id = $self->model('Course')->_empty_course();
