@@ -14,7 +14,6 @@ export default {
   save_folder (params) {
     return Api()({
       url:    'settings/save_folder',
-      method: 'post',
       params: params
     })
   },
@@ -23,7 +22,6 @@ export default {
   add_folder (params) {
     return Api()({
       url:    'settings/add_folder',
-      method: 'post',
       params: params
     })
   },
@@ -32,7 +30,6 @@ export default {
   delete_folder (id) {
     return Api()({
       url:    'settings/delete',
-      method: 'post',
       params: id
     })
   }

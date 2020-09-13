@@ -6,7 +6,6 @@ export default {
   get_tree () {
     return Api()({
       url:    'groups/',
-      method: 'post'
     })
   },
 
@@ -14,7 +13,6 @@ export default {
   save_folder (params) {
     return Api()({
       url:    'groups/save',
-      method: 'post',
       params: params
     })
   },
@@ -23,7 +21,6 @@ export default {
   add_folder (params) {
     return Api()({
       url:    'groups/add',
-      method: 'post',
       params: params
     })
   },
@@ -32,7 +29,6 @@ export default {
   delete_folder (id) {
     return Api()({
       url:    'groups/delete',
-      method: 'post',
       params: id
     })
   }

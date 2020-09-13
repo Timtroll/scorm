@@ -6,7 +6,6 @@ export default {
   list_edit (id) {
     return Api()({
       url:    'settings/edit',
-      method: 'post',
       params: {
         id: id
       }
@@ -17,7 +16,6 @@ export default {
   list_save (data) {
     return Api()({
       url:    'settings/save',
-      method: 'post',
       params: data
     })
   },
@@ -25,7 +23,6 @@ export default {
   list_toggle (params) {
     return Api()({
       url:    'settings/toggle',
-      method: 'post',
       params: params
     })
   },
@@ -34,7 +31,6 @@ export default {
   list_proto (parent) {
     return Api()({
       url:    'settings/proto_leaf',
-      method: 'post',
       params: {
         parent: parent
       }
@@ -45,7 +41,6 @@ export default {
   folder_proto (parent) {
     return Api()({
       url:    'settings/proto_folder',
-      method: 'post',
       params: {
         parent: parent
       }
@@ -56,7 +51,6 @@ export default {
   list_add (data) {
     return Api()({
       url:    'settings/add',
-      method: 'post',
       params: data
     })
   },
@@ -65,7 +59,6 @@ export default {
   list_delete (id) {
     return Api()({
       url:    'settings/delete',
-      method: 'post',
       params: {
         id: id
       }
