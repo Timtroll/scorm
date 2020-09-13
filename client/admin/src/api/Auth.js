@@ -20,5 +20,12 @@ export default {
     return Api()({
       url:    'auth/logout',
     })
-  }
+  },
+
+  // получить дерево
+  getGroup () {
+    return Api()({
+      url:    'groups/',
+    })
+  },
 }

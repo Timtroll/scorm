@@ -7,34 +7,31 @@ import {appConfig} from '@/main'
 const actions = {
 
   // login
-  login ({commit}, user) {
+  async login ({commit, dispatch}, user) {
 
-    return new Promise((resolve, reject) => {
+    try {
+      const response = await Api.login(user)
+      console.log(response)
+      if (response.data.status === 'ok') {
+        const user                             = response.data.data
+        axios.defaults.headers.common['token'] = user.token
+        appConfig.setToken(user)
+        commit('auth_success', user)
 
-      commit('auth_request')
+        //dispatch('getGroups')
+      }
+      else {
+        notify(response.message, 'danger')
+        commit('auth_error')
+        appConfig.removeToken()
+      }
+    }
+    catch (err) {
+      notify(err, 'danger')
+      commit('auth_error')
+      throw new Error(err)
+    }
 
-      Api.login(user)
-         .then(response => {
-           const resp = response.data
-           if (resp.status === 'ok') {
-             const user = resp.data
-             appConfig.setToken(user)
-             commit('auth_success', user)
-             resolve(response)
-           }
-           else {
-             notify(resp.mess, 'danger')
-             commit('auth_error')
-             appConfig.removeToken()
-           }
-         })
-         .catch(err => {
-           notify(err, 'danger')
-           commit('auth_error')
-           reject(err)
-         })
-
-    })
   },
 
   // signUpPhone
@@ -60,28 +57,36 @@ const actions = {
   },
 
   // logout
-  logout ({commit}) {
+  async logout ({commit}) {
+    try {
+      const response = await Api.logout()
+      if (response.data.status === 'ok') {
+        commit('logout')
+        appConfig.removeToken()
+        delete axios.defaults.headers.common['token']
+        notify('До встречи!', 'success')
+        router.push({name: 'Login'}).catch(e => {})
+      }
+    }
+    catch (err) {
+      notify(err, 'danger')
+      throw new Error(err)
+    }
 
-    return new Promise((resolve, reject) => {
+  },
 
-      Api.logout()
-         .then(response => {
-           if (response.data.status === 'ok') {
-             commit('logout')
-             appConfig.removeToken()
-             delete axios.defaults.headers.common['token']
-             notify('До встречи!', 'success')
-             router.push({name: 'Login'}).catch(e => {})
-             resolve(response)
-           }
-         })
-         .catch(err => {
-           notify(err, 'danger')
-           reject(err)
-         })
-
-      resolve()
-    })
+  // logout
+  async getGroups () {
+    try {
+      const response = await Api.getGroup()
+      console.log(response.data)
+      appConfig.setGroups(response.data.data)
+      if (response.data.status === 'ok') {}
+    }
+    catch (err) {
+      notify(err, 'danger')
+      throw new Error(err)
+    }
   }
 
 }

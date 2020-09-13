@@ -16,6 +16,7 @@ export default class AppConfig {
     }
     this.role        = null
     this.token       = null
+    this.groups      = null
   }
 
   setToken (user) {
@@ -26,9 +27,15 @@ export default class AppConfig {
     this.role  = user.profile.role
   }
 
+  setGroups (groups) {
+    if (!groups) return
+    localStorage.setItem('groups', JSON.stringify(groups))
+  }
+
   removeToken () {
     localStorage.removeItem('token')
     localStorage.removeItem('profile')
+    localStorage.removeItem('groups')
     this.token = null
     this.role  = null
   }
