@@ -1,5 +1,7 @@
-import Vue      from 'vue'
-import {notify} from '@/store/methods'
+import Vue         from 'vue'
+import {notify}    from '@/store/methods'
+import router      from '@/router'
+import {appConfig} from '@/main'
 
 let apiProxy = ''
 
@@ -11,14 +13,20 @@ const apiUrl = apiProxy + ''
 export default {
 
   async query (url, params, notifyOk = false, notifyFail = true) {
+    const token = localStorage.getItem('token')
+
+    if (!token) {
+      appConfig.removeToken()
+      router.push({name: 'Login'}).catch(e => {})
+    }
     const response = await fetch(apiUrl + url, {
       method:   'POST',
-      mode: 'cors',
+      mode:     'cors',
       //referrerPolicy: 'unsafe-url', // no-referrer,
       headers:  {
         //'credentials': 'include',
         'Content-Type': 'application/json',
-        'token':        localStorage.getItem('token')
+        'token':        token
       },
       body:     params,
       redirect: 'follow'
@@ -46,7 +54,6 @@ export default {
     else if (result.status === 'fail') {
       notify('ERROR: ' + result.message, 'danger')
       return result
-      //throw (result.message)
     }
 
   }
