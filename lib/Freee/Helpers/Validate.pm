@@ -237,7 +237,7 @@ sub register {
                 'password'      => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ '', qr/^\d+$/os, 9 ],
-                'groups'        => [ 'required', qr/^\[(\d+\,)*\d+\]$/os, 255 ]
+                'groups'        => [ 'required', qr/^\[(\d+|\,)*\]$/os, 255 ]
             },
             '/user/registration'  => {
                 "login"         => [ 'required', qr/^\w+$/os, 16 ],
