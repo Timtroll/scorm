@@ -45,7 +45,7 @@ export default {
   name: 'InputCheckboxes',
 
   props: {
-    value:       {type: Array, default: []},
+    value:       {type: [Array, String], default: []},
     name:        '',
     label:       {default: '', type: String},
     placeholder: {default: '', type: String},
@@ -68,7 +68,7 @@ export default {
   computed: {
 
     isChanged () {
-      return JSON.parse(JSON.stringify(this.valueInput)) !== JSON.parse(JSON.stringify(this.value))
+      return JSON.stringify(this.valueInput) !== JSON.stringify(this.value)
     },
 
     listParents () {
@@ -81,7 +81,8 @@ export default {
 
     update () {
       this.$emit('change', this.isChanged)
-      this.$emit('value', JSON.stringify(this.valueInput))
+      this.$emit('value', this.valueInput)
+      //this.$emit('value', JSON.stringify(this.valueInput))
     }
 
     //validate () {
