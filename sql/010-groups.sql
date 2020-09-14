@@ -21,27 +21,28 @@ ALTER TABLE "public"."groups" ADD CONSTRAINT name UNIQUE (name);
 -- ----------------------------
 -- Records of groups
 -- ----------------------------
-INSERT INTO "public"."groups" VALUES ('1', 'Администратор', 'admin', '1');
-INSERT INTO "public"."groups" VALUES ('2', 'Студенты', 'students', '1');
-INSERT INTO "public"."groups" VALUES ('3', 'Ректоры', 'rectors', '1');
-INSERT INTO "public"."groups" VALUES ('4', 'Менеджеры', 'managers', '1');
-INSERT INTO "public"."groups" VALUES ('5', 'Нераспределенные', 'unaproved', '1');
-
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Администратор', 'admin', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Ректоры', 'rectors', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Преподаватель', 'teacher', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Студенты', 'students', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Менеджеры', 'managers', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Нераспределенные', 'unaproved', '1' );
 
 CREATE UNIQUE INDEX "groups_name_idx" ON "public"."groups" USING btree ("name");
 
----функция (рекурсивное удаление детей)
+--- ??????? паренты для групп не нужны
+--- функция (рекурсивное удаление детей)
 CREATE OR REPLACE FUNCTION "public"."groups_trigger_ad"() RETURNS "pg_catalog"."trigger" AS $BODY$
 BEGIN
-DELETE FROM "public"."routes" WHERE "parent" = OLD.id;
-
-RETURN OLD;
+    DELETE FROM "public"."routes" WHERE "parent" = OLD.id;
+    RETURN OLD;
 END;
 $BODY$
 LANGUAGE 'plpgsql' VOLATILE COST 100;
 
 ---триггер
 CREATE TRIGGER "groups_ad" AFTER DELETE ON "public"."groups"
-FOR EACH ROW
-EXECUTE PROCEDURE "groups_trigger_ad"();
+    FOR EACH ROW
+    EXECUTE PROCEDURE "groups_trigger_ad"();
 
+--- ????? дописать триггер удаления

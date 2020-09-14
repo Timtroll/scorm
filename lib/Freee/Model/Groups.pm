@@ -129,11 +129,16 @@ sub _insert_group {
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
-
+use DDP;
+p $data;
     unless ( @! ) {
-        $sql = 'INSERT INTO "public"."groups" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
-
+        $sql = 'INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( :label, :name, :status )';
+        # ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
+warn $sql;
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':label', $$data{'label'} );
+        $sth->bind_param( ':name', $$data{'name'} );
+        $sth->bind_param( ':status', ( $$data{'status'} ? 1 : 0 ) );
         $sth->execute();
 
         $id = $sth->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );

@@ -407,9 +407,9 @@ sub registration {
 # изменение поля на 1/0
 # $data = {
 # $self->toggle( $data );
-# 'id'    - id записи 
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#   'id'    => <id>,        - id записи 
+#   'field' =>'<имя_поля>', - имя поля в таблице
+#   'val'   1,              - 1/0
 #}
 sub toggle {
     my $self = shift;
@@ -427,7 +427,7 @@ sub toggle {
         unless ( @! ) {
             $$data{'table'}     = 'users';
             $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'status'} ? 'true' : 'false';
+            $$data{'value'}     = $$data{'value'} ? 'true' : 'false';
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
@@ -445,7 +445,7 @@ sub toggle {
 # удаление пользователя
 # $self->delete( $data );
 # $data = {
-# 'id'    - id записи
+#   'id' => <id>   - id записи
 #} 
 sub delete {
     my $self = shift;

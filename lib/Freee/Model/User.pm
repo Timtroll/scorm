@@ -483,7 +483,7 @@ sub _toggle_user {
 
     my ( $sth, $usr, $result, $sql );
 
-    unless ( $$data{'id'} && defined $$data{'status'} ) {
+    unless ( $$data{'id'} && defined $$data{'value'} ) {
         push @!, 'no data for toggle';
     }
 
@@ -491,7 +491,7 @@ sub _toggle_user {
         # смена значений publish (EAV меняется триггером)
         $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':publish', $$data{'status'} );
+        $sth->bind_param( ':publish', $$data{'value'} );
         $sth->bind_param( ':id', $$data{'id'} );
 
         $result = $sth->execute();
