@@ -4,6 +4,700 @@
     {
       "entity": {
         "type": "Project",
+        "description": "",
+        "id": "351d7db1-dc6c-4754-bcfe-a36a59a948bb",
+        "name": "Lesson_sc"
+      },
+      "children": [
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "login",
+                    "value": "admin"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "password",
+                    "value": "admin"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/auth/login"
+            },
+            "id": "40e3ae50-69bf-4ac2-8875-761d1b42723c",
+            "name": "1 Login",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "order",
+                    "value": "DESC"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/lesson/"
+            },
+            "id": "e8c6eb48-b2bc-41e0-9740-31611cd488d0",
+            "name": "2 lesson",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "${getEntityById(\"40e3ae50-69bf-4ac2-8875-761d1b42723c\").\"response\".\"body\".\"data\".\"token\"}"
+              }
+            ],
+            "assertions": []
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/course/add"
+            },
+            "id": "14861419-ed6e-4b45-85ce-cb1b6343a69d",
+            "name": "3 course/add",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "${getEntityById(\"40e3ae50-69bf-4ac2-8875-761d1b42723c\").\"response\".\"body\".\"data\".\"token\"}"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "order",
+                    "value": "DESC"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/course/"
+            },
+            "id": "b2317bd0-89d8-4471-b233-06a79f0ef50c",
+            "name": "4 course/",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "${getEntityById(\"40e3ae50-69bf-4ac2-8875-761d1b42723c\").\"response\".\"body\".\"data\".\"token\"}"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "id",
+                    "value": "${getEntityById(\"14861419-ed6e-4b45-85ce-cb1b6343a69d\").\"response\".\"body\".\"id\"}46"
+                  },
+                  {
+                    "name": "parent",
+                    "value": ""
+                  },
+                  {
+                    "enabled": true,
+                    "name": "name",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "label",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "description",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "content",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "attachment",
+                    "value": ""
+                  },
+                  {
+                    "enabled": true,
+                    "name": "keywords",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "url",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "seo",
+                    "value": "test"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "status",
+                    "value": "1"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/course/save"
+            },
+            "id": "234c28d1-1432-42cc-8ab9-f0c5dc416a84",
+            "name": "5 course/save",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "${getEntityById(\"40e3ae50-69bf-4ac2-8875-761d1b42723c\").\"response\".\"body\".\"data\".\"token\"}"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "id",
+                    "value": "${getEntityById(\"14861419-ed6e-4b45-85ce-cb1b6343a69d\").\"response\".\"body\".\"id\"}46"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "status",
+                    "value": "1"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/course/toggle"
+            },
+            "id": "f025e482-83fc-46e4-8ed7-916aaf991540",
+            "name": "6 course/toggle",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "1e6454811014209e89524c52d1b32231f99ed89ea1142e804faa66b72346cb85"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "id",
+                    "value": "${getEntityById(\"14861419-ed6e-4b45-85ce-cb1b6343a69d\").\"response\".\"body\".\"id\"}46"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/course/delete"
+            },
+            "id": "3173b95b-6e0e-4c3f-9a25-27b51f8b0762",
+            "name": "7 course/delete",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "token",
+                "value": "${getEntityById(\"40e3ae50-69bf-4ac2-8875-761d1b42723c\").\"response\".\"body\".\"data\".\"token\"}"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "freee",
+              "path": "/auth/logout"
+            },
+            "id": "a4845402-b935-4e16-aa61-44d4298098e4",
+            "name": "8 auth/logout",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "entity": {
+        "type": "Project",
+        "id": "6ea43ba2-9aa3-48d2-a051-2db890ad69a0",
+        "name": "OTRS"
+      },
+      "children": [
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n\t\"UserLogin\": \"admin\",\n\t\"Password\": \"admin\",\n  \t\"CustomerLogin\": \"Igor.Reno@rt.ru\",\n  \t\"ApprovalRequestID\": \"1989\",\n  \t\"ApprovalRequestState\": \"reject\",\n  \t\"Comment\": \"Decision\"\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "otrs",
+              "path": "/otrs/nph-genericinterface.pl/Webservice/HelpMe/ApprovalDecision"
+            },
+            "id": "7efe01a5-9e3e-4f4f-adb6-1e96a81b81ca",
+            "name": "/HelpMe/ApprovalDecision",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": ""
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "Action",
+                    "value": "AdminCloseCode"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "ChallengeToken",
+                    "value": "TlBe71ICgP9M29iaYUtwpslh6a2oMiop"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "CodeIDs",
+                    "value": "158"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "CodeIDs",
+                    "value": "156"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "QueueID",
+                    "value": "8"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "ServiceIDs",
+                    "value": "4"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "Subaction",
+                    "value": "AddCodeLinkAction"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "TypeIDs",
+                    "value": "2"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "TypeIDs",
+                    "value": "7"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "otrs",
+              "path": "/otrs/index.pl"
+            },
+            "id": "4e46dded-4610-4bb2-8095-15f5769e5c1e",
+            "name": "AdminCloseCode",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n\t\"UserLogin\": \"admin\",\n\t\"Password\": \"admin\",\n\t\"Ticket\": {\n\t\t\"Title\": \"Work Trip\",\n\t\t\"Type\": \"Запрос на обслуживание\",\n\t\t\"QueueID\": \"3\",\n        \"Service\":\"BusinessTrip::Заказ командировок\",\n\t\t\"State\": \"new\", \n\t\t\"Priority\": \"normal\", \n\t\t\"CustomerUser\": \"Vyacheslav_Simakov@south.rt.ru\",\n\t\t\"OwnerID\": \"1\",\n\t\t\"UserID\": \"1\"\n\t},\n\t\"Article\": {\n      \t\"SenderType\":\"customer\",\n\t\t\"CommunicationChannel\": \"Email\",\n\t\t\"Subject\": \"Заявка на командировку\",\n\t\t\"Body\": \"Заявка на командировку\",\n\t\t\"MimeType\": \"text/html\",\n\t\t\"Charset\": \"utf-8\"\n\t},\n    \"DynamicField\":{\n        \"Name\":\"UserFormData\",\n        \"Value\":\"[{\\\"labelEn\\\":\\\"Requisition Number\\\",\\\"value\\\":\\\"14763\\\",\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Номер заявки в R12\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Номер заявки в R12\\\",\\\"readOnly\\\":1},\\\"id\\\":\\\"requisitionNumber\\\"},{\\\"labelEn\\\":\\\"Worktrip summ total\\\",\\\"value\\\":\\\"12160,01\\\",\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Лимит командировки\\\",\\\"config\\\":{\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Лимит командировки\\\",\\\"hidden\\\":1,\\\"readOnly\\\":1},\\\"id\\\":\\\"totalSummByR12\\\"},{\\\"valueName\\\":\\\"Симаков Вячеслав Геннадьевич\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"302824\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Сотрудник\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Сотрудник\\\",\\\"id\\\":\\\"employeeNumber\\\"},{\\\"valueName\\\":\\\"Плановая\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Плановая\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Тип\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Тип\\\",\\\"id\\\":\\\"type\\\"},{\\\"valueName\\\":\\\"Ведущий инженер электросвязи\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Ведущий инженер электросвязи\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Должность\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Должность\\\",\\\"id\\\":\\\"userPosition\\\"},{\\\"valueName\\\":\\\"Блок технической инфраструктуры\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Блок технической инфраструктуры\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Блок\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Блок\\\",\\\"id\\\":\\\"userBlock\\\"},{\\\"valueName\\\":\\\"Межрайонный центр технической эксплуатации телекоммуникаций г.Николаевск\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Межрайонный центр технической эксплуатации телекоммуникаций г.Николаевск\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Отдел\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Отдел\\\",\\\"id\\\":\\\"userOrganization\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Департамент\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Департамент\\\",\\\"id\\\":\\\"userDepartment\\\"},{\\\"valueName\\\":\\\"Vyacheslav_Simakov@south.rt.ru\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Vyacheslav_Simakov@south.rt.ru\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Электронная почта\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Электронная почта\\\",\\\"id\\\":\\\"userEmail\\\"},{\\\"valueName\\\":\\\"0\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"false\\\",\\\"config\\\":{\\\"hidden\\\":1,\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"VIP Грейд\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"VIP Грейд\\\",\\\"id\\\":\\\"isVIPGrade\\\"},{\\\"valueName\\\":\\\"Симаков Вячеслав Геннадьевич\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"302824\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Создатель заявки\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Создатель заявки\\\",\\\"id\\\":\\\"initiatorEmployeeNumber\\\"},{\\\"valueName\\\":\\\"361850\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"361850\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Идентификатор назначения\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Идентификатор назначения\\\",\\\"id\\\":\\\"assignmentId\\\"},{\\\"valueName\\\":\\\"Волгоградский филиал ПАО \\\\\\\"Ростелеком\\\\\\\"\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"01403\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Бюджетная единица\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Бюджетная единица\\\",\\\"id\\\":\\\"budgetUnit\\\"},{\\\"valueName\\\":\\\"005 Блок технической инфраструктуры\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"005\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"ЦФО-потребителя\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"ЦФО-потребителя\\\",\\\"id\\\":\\\"cfoConsumer\\\"},{\\\"valueName\\\":\\\"Командировки, связанные с обучением работников (проезд)\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"E105010102\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Статья\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Статья\\\",\\\"id\\\":\\\"expenseItem\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Инвестиционный проект\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Инвестиционный проект\\\",\\\"id\\\":\\\"projectCode\\\"},{\\\"valueName\\\":\\\"001107 Решение технических проблем/клиентских ТТ (3-я линия ТП) *005*\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"001107\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Бизнес-процесс\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Бизнес-процесс\\\",\\\"id\\\":\\\"businessProcessCode\\\"},{\\\"valueName\\\":\\\"+7(902)-313-0138\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"+7(902)-313-0138\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Мобильный телефон\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Мобильный телефон\\\",\\\"id\\\":\\\"mobilePhone\\\"},{\\\"valueName\\\":\\\"Обучение\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Обучение\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Цель командировки\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Цель командировки\\\",\\\"id\\\":\\\"aim\\\"},{\\\"valueName\\\":\\\"Обучение по программе «Подготовка и аттестация по программе «Работники 3 группа по безопасности работ на высоте»\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Обучение по программе «Подготовка и аттестация по программе «Работники 3 группа по безопасности работ на высоте»\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Детали командировки\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Детали командировки\\\",\\\"id\\\":\\\"aimDescription\\\"},{\\\"valueName\\\":\\\"Щупкин Эдуард Викторович\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"307346\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Руководитель\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Руководитель\\\",\\\"id\\\":\\\"chiefEmployeeNumber\\\"},{\\\"valueName\\\":\\\"ООО «Учебный центр»\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"ООО «Учебный центр»\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Место назначения\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Место назначения\\\",\\\"id\\\":\\\"destinationOrganization\\\"},{\\\"valueName\\\":\\\"18.08.2020\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"18.08.2020\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Дата начала командировки\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Дата начала командировки\\\",\\\"id\\\":\\\"startDate\\\"},{\\\"valueName\\\":\\\"18.08.2020\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"18.08.2020\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Дата окончания командировки\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Дата окончания командировки\\\",\\\"id\\\":\\\"endDate\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сумма аванса\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сумма аванса\\\",\\\"id\\\":\\\"avansAmount\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Комментарий к авансу\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Комментарий к авансу\\\",\\\"id\\\":\\\"avansAmountComment\\\"},{\\\"valueName\\\":\\\"нет\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"нет\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Нужна помощь в подборе билета\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Нужна помощь в подборе билета\\\",\\\"id\\\":\\\"isNeedHelpFindingTicket\\\"},{\\\"valueName\\\":\\\"нет\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"нет\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Групповое бронирование\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Групповое бронирование\\\",\\\"id\\\":\\\"groupBooking\\\"},{\\\"valueName\\\":\\\"12160.01\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"12160.01\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Общая стоимость командировки\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Общая стоимость командировки\\\",\\\"id\\\":\\\"tripSum\\\"},{\\\"valueName\\\":null,\\\"oldValue\\\":null,\\\"value\\\":\\\"366944,65\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сумма свободных фондов\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сумма свободных фондов\\\",\\\"id\\\":\\\"freeFundsAmount\\\"},{\\\"valueName\\\":\\\"Российская Федерация\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Российская Федерация\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Территориальная зона места назначения\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Территориальная зона места назначения\\\",\\\"id\\\":\\\"destinationPlaceTerritory\\\"},{\\\"valueName\\\":\\\"Волгоградская обл\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Волгоградская обл\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Регион места назначения\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Регион места назначения\\\",\\\"id\\\":\\\"destinationPlaceRegion\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":1,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Район места назначения\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Район места назначения\\\",\\\"id\\\":\\\"destinationPlaceArea\\\"},{\\\"valueName\\\":\\\"Волгоград г\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Волгоград г\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Город места назначения\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Город места назначения\\\",\\\"id\\\":\\\"destinationPlaceTown\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":1,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Посёлок места назначения\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Посёлок места назначения\\\",\\\"id\\\":\\\"destinationPlaceSettlement\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"label\\\":\\\"Место назначения\\\",\\\"id\\\":\\\"place\\\",\\\"groupValue\\\":[]},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"label\\\":\\\"Отели\\\",\\\"id\\\":\\\"hotels\\\",\\\"groupValue\\\":[[{\\\"valueName\\\":\\\"Остальные города РФ\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0003\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"id\\\":\\\"territoryZone\\\"},{\\\"valueName\\\":\\\"Волгоград\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Волгоград\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Место назначения\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Место назначения\\\",\\\"id\\\":\\\"city\\\"},{\\\"valueName\\\":\\\"2020-08-18\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"2020-08-18\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Заезд\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Заезд\\\",\\\"id\\\":\\\"residenceFrom\\\"},{\\\"valueName\\\":\\\"2020-08-18\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"2020-08-18\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Выезд\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Выезд\\\",\\\"id\\\":\\\"residenceTo\\\"},{\\\"valueName\\\":\\\"Park Inn By Radisson Volgograd\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Park Inn By Radisson Volgograd\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отель\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отель\\\",\\\"id\\\":\\\"name\\\"},{\\\"valueName\\\":\\\"Согласно грейду\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Согласно грейду\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Категория\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Категория\\\",\\\"id\\\":\\\"category\\\"},{\\\"valueName\\\":\\\"0\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Ранее прибытие\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Ранее прибытие\\\",\\\"id\\\":\\\"earlyArrive\\\"},{\\\"valueName\\\":\\\"0\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Поздний вылет/отправление\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Поздний вылет/отправление\\\",\\\"id\\\":\\\"lateDeparture\\\"},{\\\"valueName\\\":\\\"1\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"1\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"id\\\":\\\"taxService\\\"},{\\\"valueName\\\":\\\"0\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Требуется подбор\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Требуется подбор\\\",\\\"id\\\":\\\"requireMatch\\\"}]]},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"label\\\":\\\"Билеты\\\",\\\"id\\\":\\\"tickets\\\",\\\"groupValue\\\":[[{\\\"valueName\\\":\\\"Автобус\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Автобус\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"radio\\\",\\\"label\\\":\\\"Тип проезда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"radio\\\",\\\"label\\\":\\\"Тип проезда\\\",\\\"id\\\":\\\"ticketForm\\\"},{\\\"valueName\\\":\\\"Остальные города РФ\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0003\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"id\\\":\\\"territoryZone\\\"},{\\\"valueName\\\":\\\"Эконом\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Эконом\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Класс\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Класс\\\",\\\"id\\\":\\\"tripClass\\\"},{\\\"valueName\\\":\\\"2020-08-18\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"2020-08-18\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Когда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Когда\\\",\\\"id\\\":\\\"ticketStartDate\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Номер рейса/поезда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Номер рейса/поезда\\\",\\\"id\\\":\\\"tripNumber\\\"},{\\\"valueName\\\":\\\"Палласовка\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Палласовка\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Откуда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Откуда\\\",\\\"id\\\":\\\"departureFrom\\\"},{\\\"valueName\\\":\\\"Волгоград\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Волгоград\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Куда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Куда\\\",\\\"id\\\":\\\"departureTo\\\"},{\\\"valueName\\\":\\\"1\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"1\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"id\\\":\\\"taxService\\\"},{\\\"valueName\\\":\\\"Утро\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Утро\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отправление\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отправление\\\",\\\"id\\\":\\\"timeOfDay\\\"}],[{\\\"valueName\\\":\\\"Автобус\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Автобус\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"radio\\\",\\\"label\\\":\\\"Тип проезда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"radio\\\",\\\"label\\\":\\\"Тип проезда\\\",\\\"id\\\":\\\"ticketForm\\\"},{\\\"valueName\\\":\\\"Остальные города РФ\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"0003\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Территориальная зона\\\",\\\"id\\\":\\\"territoryZone\\\"},{\\\"valueName\\\":\\\"Эконом\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Эконом\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Класс\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"checkbox\\\",\\\"label\\\":\\\"Класс\\\",\\\"id\\\":\\\"tripClass\\\"},{\\\"valueName\\\":\\\"2020-08-18\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"2020-08-18\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Когда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"date\\\",\\\"label\\\":\\\"Когда\\\",\\\"id\\\":\\\"ticketStartDate\\\"},{\\\"oldValue\\\":null,\\\"value\\\":null,\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Номер рейса/поезда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"input\\\",\\\"label\\\":\\\"Номер рейса/поезда\\\",\\\"id\\\":\\\"tripNumber\\\"},{\\\"valueName\\\":\\\"Волгоград\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Волгоград\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Откуда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Откуда\\\",\\\"id\\\":\\\"departureFrom\\\"},{\\\"valueName\\\":\\\"Палласовка\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"Палласовка\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Куда\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Куда\\\",\\\"id\\\":\\\"departureTo\\\"},{\\\"valueName\\\":\\\"1\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"1\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"readOnly\\\":1},\\\"classType\\\":\\\"text\\\",\\\"label\\\":\\\"Сервисный сбор\\\",\\\"id\\\":\\\"taxService\\\"},{\\\"valueName\\\":\\\"День\\\",\\\"oldValue\\\":null,\\\"value\\\":\\\"День\\\",\\\"config\\\":{\\\"hidden\\\":0,\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отправление\\\",\\\"readOnly\\\":0},\\\"classType\\\":\\\"select\\\",\\\"label\\\":\\\"Отправление\\\",\\\"id\\\":\\\"timeOfDay\\\"}]]}]\"\n    }\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "otrs",
+              "path": "/otrs/nph-genericinterface.pl/Webservice/HelpMe/TicketCreate"
+            },
+            "id": "b5b2e5a6-c9c1-444b-a707-b43a7b9af03c",
+            "name": "TicketCreate",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+              "name": "GET"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": ""
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "UserLogin",
+                    "value": "admin"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "Password",
+                    "value": "admin"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "TicketID",
+                    "value": "1012429"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "CustomerLogin",
+                    "value": "Igor.Reno@rt.ru"
+                  }
+                ]
+              },
+              "scheme": {
+                "secure": true,
+                "name": "https",
+                "version": "V11"
+              },
+              "host": "otrs",
+              "path": "/otrs/nph-genericinterface.pl/Webservice/HelpMe/old/TicketGet"
+            },
+            "id": "b5c0781e-7bde-4bfc-ba8d-5565872a45e5",
+            "name": "TicketGet",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "",
+                "value": ""
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "entity": {
+        "type": "Project",
         "id": "45495802-735f-43f3-b222-b3a706e4d170",
         "name": "scorm"
       },
@@ -587,6 +1281,11 @@
                   },
                   "bodyType": "Text"
                 },
+                "retryConfiguration": {
+                  "enabled": true,
+                  "intervalInSeconds": 10,
+                  "retryCount": 1
+                },
                 "uri": {
                   "query": {
                     "delimiter": "&",
@@ -733,10 +1432,368 @@
         {
           "entity": {
             "type": "Service",
+            "id": "370df7dd-8162-4503-8fcb-b2762c0c93f6",
+            "name": "Lesson"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "order",
+                        "value": "DESC"
+                      }
+                    ]
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/lesson/"
+                },
+                "id": "190491dc-8d59-482f-b061-e55b1317ce50",
+                "name": "/lesson/",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "13e47711e1b0f549b4ddeec81a8dc998f4fc4cfb9bc654512bc78bd6a9938717"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/lesson/add"
+                },
+                "id": "e999ede1-cdbc-4515-9cce-c95b0c8fd683",
+                "name": "/lesson/add",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "1097385d1aac92bdc72b31b8c11893e6c9af74e2b6c2985f9772201177781413"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "id",
+                        "value": "46"
+                      }
+                    ]
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/lesson/delete"
+                },
+                "id": "bec8ac3f-6c42-448f-a776-d6feb6980781",
+                "name": "/lesson/delete",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "454cc393b93a3474bc245e7b20316906569e2f9a4b4b0093813deb2d131dae56"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "id",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "parent",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "name",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "label",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "description",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "content",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "attachment",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "keywords",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "url",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "seo",
+                        "value": ""
+                      },
+                      {
+                        "enabled": true,
+                        "name": "status",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/lesson/save"
+                },
+                "id": "d7404f2e-d1cf-40f3-bea2-b2e35d0f392a",
+                "name": "/lesson/save",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "282e22a611411cfb606358e2932d0db42076af6021f512c07ba9568cb4cb6def"
+                  }
+                ]
+              }
+            },
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "id",
+                        "value": "59"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "status",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/lesson/toggle"
+                },
+                "id": "6d2c2403-2248-4a3b-927b-bb02e7b77928",
+                "name": "/lesson/toggle",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "1e6454811014209e89524c52d1b32231f99ed89ea1142e804faa66b72346cb85"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Service",
             "id": "d395919f-389e-49cd-9ef5-257a25d3909c",
             "name": "Settings"
           },
           "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": []
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/settings/get_tree"
+                },
+                "id": "6b3356e2-5f31-4cab-a076-e08de45073d5",
+                "name": "/settings/get_tree",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "5f289d249c2eb0ef7f3e75db5da68e0dbc25f782c6cfc61b7d337c86e642e9df"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              }
+            },
             {
               "entity": {
                 "type": "Request",
@@ -825,7 +1882,7 @@
                   {
                     "enabled": true,
                     "name": "token",
-                    "value": "13e47711e1b0f549b4ddeec81a8dc998f4fc4cfb9bc654512bc78bd6a9938717"
+                    "value": "1097385d1aac92bdc72b31b8c11893e6c9af74e2b6c2985f9772201177781413"
                   }
                 ]
               }
@@ -1446,6 +2503,11 @@
                     "enabled": true,
                     "name": "parent",
                     "value": "1"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "16b3054d4b20fa904c195802a9b8cf11f686baf5f18a7ba0b8282fa9b670cac6"
                   }
                 ]
               }
@@ -1640,7 +2702,7 @@
                       {
                         "enabled": true,
                         "name": "id",
-                        "value": "19"
+                        "value": "1"
                       }
                     ]
                   },
@@ -1658,6 +2720,11 @@
                   {
                     "name": "Content-Type",
                     "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "612cd02bdad1ab3168405607b3bc51a37dc280fc0088a765e8ed84afbae9c51f"
                   }
                 ]
               }
@@ -1924,7 +2991,7 @@
               "path": "/manage_eav/"
             },
             "id": "4a614d9f-ea61-493e-85f5-4d3b4ce4cb6c",
-            "name": "Copy of /error",
+            "name": "/manage_eav",
             "headers": [
               {
                 "enabled": true,
