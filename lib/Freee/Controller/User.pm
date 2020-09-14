@@ -427,7 +427,7 @@ sub toggle {
         unless ( @! ) {
             $$data{'table'}     = 'users';
             $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'value'} ? 'true' : 'false';
+            $$data{'value'}     = $$data{'status'} ? 'true' : 'false';
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
