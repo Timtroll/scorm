@@ -11,17 +11,15 @@ const actions = {
 
     try {
       const response = await Api.login(user)
-      console.log(response)
       if (response.data.status === 'ok') {
         const user                             = response.data.data
         axios.defaults.headers.common['token'] = user.token
         appConfig.setToken(user)
         commit('auth_success', user)
-
         await dispatch('getGroups')
       }
       else {
-        notify(response.message, 'danger')
+        notify(response.data.message, 'danger')
         commit('auth_error')
         appConfig.removeToken()
       }
@@ -39,6 +37,7 @@ const actions = {
     try {
       const response = await Api.signUp(fields)
       if (response.status === 200) {
+
         const resp = await response.data
         if (resp.status === 'ok') {
           router
@@ -46,6 +45,7 @@ const actions = {
             .catch(e => {})
         }
         else {
+          console.log(resp)
           notify(resp.message, 'danger') // уведомление об ошибке
         }
       }
