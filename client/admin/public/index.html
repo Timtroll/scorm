@@ -118,6 +118,21 @@
         href="<%= BASE_URL %>manifest.json">
   <meta name="theme-color"
         content="#258711"/>
+
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
+          async=""></script>
+  <script>
+    window.OneSignal = window.OneSignal || []
+    OneSignal.push(function () {
+      OneSignal.init({
+        appId:        '02253d3b-8e3b-4053-bd29-2e3aeb3ea219',
+        safari_web_id:'web.onesignal.auto.67c39979-7446-4274-a748-fcdf2406257a',
+        notifyButton: {
+          enable: true
+        }
+      })
+    })
+  </script>
 </head>
 <body>
 <noscript>
