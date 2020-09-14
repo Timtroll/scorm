@@ -57,6 +57,7 @@ export default {
 
   mounted () {
     this.valueInput = clone(this.value)
+    this.$emit('value', JSON.stringify(this.valueInput))
   },
 
   data () {
