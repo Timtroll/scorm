@@ -20,7 +20,7 @@ sub index {
 
     unless ( @! ) {
         # получаем список заданий
-        $list = $self->model('Task')->_list_lesson($data);
+        $list = $self->model('Task')->_list_task($data);
 
         $result = {};
         unless ( @! ) {

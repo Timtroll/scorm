@@ -105,15 +105,17 @@ warn "route = ", $self->url_for, "\n";
 warn $self->req->headers->header('token');
 use DDP;
 p $tokens;
-warn '===========';
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
+warn 'redirect_to 1';
         # return;
         $self->redirect_to('/error/');
     }
+warn '===========';
 
     # проверка токена
     if (
+        $tokens &&
         $self->req->headers->header('token') && 
         exists( $$tokens{ $self->req->headers->header('token') } ) && 
         $$tokens{ $self->req->headers->header('token') } 
@@ -143,6 +145,7 @@ warn "check permissions\n";
 warn "checked";
         return 1;
     }
+warn 'redirect_to 2';
 
     # return;
     $self->redirect_to('/error/');

@@ -34,7 +34,7 @@ sub index {
 
         # получаем список пользователей группы
         $result = $self->model('User')->_get_list( $data );
-warn Dumper $result;
+
         unless ( @! ) {
             $list = {
                 'settings' => {
@@ -367,14 +367,14 @@ sub registration {
         $data = {
             'groups' => to_json( [ 5 ] ),
             'data_user' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'publish'       => 'false',
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'publish'       => 'false',
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',

@@ -151,7 +151,7 @@ sub save {
     # проверка данных
     $data = $self->_check_fields();
 
-    unless ( @! ) {
+    if ( ! @! && $$data{'attachment'} ) {
         # проверка существования вложенных файлов
         $attachment = from_json( $$data{'attachment'} );
         foreach ( @$attachment ) {
