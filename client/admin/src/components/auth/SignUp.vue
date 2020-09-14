@@ -216,6 +216,16 @@ export default {
             required:     true
           },
           {
+            placeholder:  'Login',
+            label:        'Login',
+            autocomplete: false,
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'login',
+            required:     true
+          },
+          {
             placeholder:  'Иванов',
             label:        'Фамилия',
             autocomplete: 'family-name',
@@ -306,6 +316,16 @@ export default {
             select:       null,
             value:        '',
             name:         'phone',
+            required:     true
+          },
+          {
+            placeholder:  'Login',
+            label:        'Login',
+            autocomplete: false,
+            type:         'text',
+            select:       null,
+            value:        '',
+            name:         'login',
             required:     true
           },
           {
