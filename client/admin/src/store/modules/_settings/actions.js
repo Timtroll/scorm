@@ -1,6 +1,6 @@
-import router from '../../../router'
+import router from '@/router'
 import UIkit from 'uikit/dist/js/uikit.min'
-import Api from '../../../api/_Settings'
+import Api from '@/api/_Settings'
 
 // Notify
 const notify = (message, status = 'primary', timeout = '4000', pos = 'top-center') => {
