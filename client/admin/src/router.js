@@ -217,6 +217,20 @@ const router = new Router({
               }
             }
           ]
+        },
+
+        {
+          path:           '/manage-eav',
+          name:           'ManageEAV',
+          component:      () => import(/* webpackChunkName: "Settings" */ './layouts/manage-eav/ManageEAV'),
+          showInSideBar:  false,
+          showInSettings: true,
+          meta:           {
+            root:         true,
+            authRequired: true,
+            icon:         'img/icons/pos_none.svg',
+            breadcrumb:   'Управление EAV'
+          }
         }
       ]
     },

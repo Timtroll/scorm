@@ -32,19 +32,19 @@
             </router-link>
           </li>
 
-          <li class="uk-nav-divider"/>
+<!--          <li class="uk-nav-divider"/>-->
 
-          <li>
-            <a @click.prevent="goToGraphUrl">
-              <img :uk-img="'data-src:img/icons/pos_none.svg'"
-                   uk-svg
-                   class="pos-sidebar-dropdown-nav--icon"
-                   width="18"
-                   height="18">
-              <span class="pos-sidebar-dropdown-nav--label"
-                    v-text="'граф EAV'"/>
-            </a>
-          </li>
+<!--          <li>-->
+<!--            <a @click.prevent="goToGraphUrl">-->
+<!--              <img :uk-img="'data-src:img/icons/pos_none.svg'"-->
+<!--                   uk-svg-->
+<!--                   class="pos-sidebar-dropdown-nav&#45;&#45;icon"-->
+<!--                   width="18"-->
+<!--                   height="18">-->
+<!--              <span class="pos-sidebar-dropdown-nav&#45;&#45;label"-->
+<!--                    v-text="'граф EAV'"/>-->
+<!--            </a>-->
+<!--          </li>-->
 
         </ul>
       </div>
