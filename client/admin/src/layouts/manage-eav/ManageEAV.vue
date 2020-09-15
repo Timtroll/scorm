@@ -1,10 +1,10 @@
 <template>
-
+  <div class="Content"></div>
 </template>
 
 <script>
 
-import * as d3 from  '../../../public/d3/d3.v4.min'
+import * as d3 from '../../../public/d3/d3.v4.min'
 
 export default {
   name: 'ManageEAV',
@@ -13,7 +13,9 @@ export default {
     return {
       title:         'ManageEAV',
       titleTemplate: '%s - ' + this.$t('app.title'),
-      token:         localStorage.getItem('token'),
+      meta:          [{
+        name: 'token', content: localStorage.getItem('token')
+      }],
       htmlAttrs:     {
         lang: this.$t('app.lang')
       }
@@ -21,8 +23,17 @@ export default {
   },
 
   mounted () {
+
+    // proxy for localhost
+    const host   = window.location.hostname
+    let apiProxy = ''
+    if (host === 'localhost') {
+      apiProxy = 'https://cors-c.herokuapp.com/https://freee.su'
+    }
+    const url = apiProxy + '/manage_eav/root'
+
     // treeJSON = d3.json("/d3/root.json", function(error, treeData) {
-    const treeJSON = d3.json('/manage_eav/root', function (error, treeData) {
+    const treeJSON = d3.json(url, (error, treeData) => {
       // Set the dimensions and margins of the diagram
       let radius = 8
       // Set the dimensions and margins of the diagram
@@ -52,7 +63,7 @@ export default {
       let treemap = d3.tree().size([height, width])
 
       // Assigns parent, children, height, depth
-      root    = d3.hierarchy(treeData, function (d) { return d.children })
+      root    = d3.hierarchy(treeData, (d) => d.children)
       root.x0 = height / 2
       root.y0 = 0
 
