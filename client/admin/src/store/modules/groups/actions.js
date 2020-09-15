@@ -1,9 +1,9 @@
 import Api_EditPanel             from '../../../api/groups/EditPanel'
 import Api_Tree                  from '../../../api/groups/Tree'
 import store                     from '../../store'
-import router                    from '../../../router'
-import {clone, flatTree, notify} from '../../methods'
-import Api                       from '../../../api/groups/Table'
+import router                                   from '../../../router'
+import {clone, flatTree, groupedFields, notify} from '../../methods'
+import Api                                      from '../../../api/groups/Table'
 
 const actions = {
 
@@ -146,6 +146,33 @@ const actions = {
     }
   },
 
+  async editFolder ({dispatch}, params) {
+    try {
+      store.commit('editPanel_status_request') // статус - запрос
+      store.commit('editPanel_data', []) // очистка данных VUEX
+      store.commit('card_right_show', true)
+
+      const response = await Api_Tree.edit_folder({id: params.id})
+
+      if (response.status === 200) {
+
+        const resp  = response.data
+        const proto = clone(store.getters.tree_proto)
+
+        const groups = groupedFields(resp.data, proto)
+        store.commit('editPanel_data', groups) // запись данных во VUEX
+        store.commit('editPanel_status_success') // статус - успех
+      }
+
+    }
+    catch (e) {
+      store.commit('editPanel_status_error') // статус - ошибка
+      store.commit('card_right_show', false)
+      notify('ERROR: ' + e, 'danger') // уведомление об ошибке
+      throw 'ERROR: ' + e
+    }
+  },
+
   /**
    * Удалить Folder
    * @param dispatch
@@ -193,7 +220,6 @@ const actions = {
     store.commit('card_right_show', false)
     store.commit('editPanel_data', []) // очистка данных VUEX
     store.commit('editPanel_status_success') // статус - успех
-
   },
 
   // ***************************************
@@ -293,7 +319,6 @@ const actions = {
     try {
       store.commit('editPanel_status_request') // статус - запрос
       store.commit('editPanel_data', []) // очистка данных VUEX
-
       store.commit('card_right_show', true)
       //commit('editPanel_show', true, {root: true}) // открытие правой панели
 

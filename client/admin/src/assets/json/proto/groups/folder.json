@@ -22,7 +22,7 @@
     "mask":        null,
     "add":         true,
     "selected":    [],
-    "type":        "InputInfo",
+    "type":        "InputText",
     "value":       "",
     "inline":      0,
     "show":        1

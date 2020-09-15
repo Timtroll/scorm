@@ -73,6 +73,7 @@ export default {
 
         tree: {
           get:                'groups/getTree',
+          edit:               'groups/editFolder',
           add:                'groups/addFolder',
           save:               'groups/saveFolder',
           remove:             'groups/removeFolder',
@@ -90,7 +91,7 @@ export default {
         editPanel: {
           addFolderProto: 'settings/folderProto',
           get:            '',
-          save:           ''
+          save:           'groups/saveFolder'
 
         }
       }
@@ -98,7 +99,7 @@ export default {
     }
   },
 
-  async created () {
+  async beforeMount () {
 
     await this.$store.registerModule('groups', groups)
 
@@ -130,6 +131,10 @@ export default {
     this.$store.commit('table_addChildren', false)
 
   },
+
+  //mounted () {
+  //
+  //},
 
   beforeDestroy () {
     this.$store.commit('editPanel_show', false)

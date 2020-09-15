@@ -18,6 +18,14 @@ export default {
   },
 
   // Обновление / добавление
+  edit_folder (id) {
+    return Api()({
+      url:    'groups/edit',
+      params: id
+    })
+  },
+
+  // Обновление / добавление
   add_folder (params) {
     return Api()({
       url:    'groups/add',
