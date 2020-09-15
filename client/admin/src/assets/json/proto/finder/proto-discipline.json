@@ -121,7 +121,7 @@
   },
   {
     "label":       "Статус",
-    "name":        "status",
+    "name":        "publish",
     "placeholder": "",
     "readonly":    0,
     "required":    1,
