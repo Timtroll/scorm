@@ -170,7 +170,7 @@ sub _exists_in_users {
     my ($sql, $sth, $row);
 
     if ( $login && $pass ) {
-        # ищем польщователя
+        # ищем пользователя
         $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups" FROM "users" AS u  
             INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
             WHERE u."login"  = :login AND u."password"  = :password 
@@ -180,31 +180,10 @@ sub _exists_in_users {
         $sth->bind_param( ':password', $pass );
         $sth->execute();
         $row = $sth->fetchall_hashref('login');
-use DDP;
-p $row;
-p $pass;
+
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
-                # получаем список групп
-
-
-                # выгребаем группу пользователя
-                $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups" FROM "users" AS u  
-                    INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
-                    WHERE u."login"  = :login AND u."password"  = :password 
-                    GROUP BY u."id");
-                $sth = $self->{app}->pg_dbh->prepare( $sql );
-                $sth->bind_param( ':login', $login );
-                $sth->bind_param( ':password', $pass );
-                $sth->execute();
-                $row = $sth->fetchall_hashref('login');
-
-                unless ( @! ) {
-                    return $$row{$login};
-                }
-                else {
-                    push @!, "Can not get user groups";
-                }
+                return $$row{$login};
             }
             else {
                 push @!, "Exists more then one user";
