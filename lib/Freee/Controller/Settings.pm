@@ -66,7 +66,7 @@ warn '+++++++++';
 
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;
-    $resp->{'publish'} = $list ? 'ok' : 'fail';
+    $resp->{'status'} = $list ? 'ok' : 'fail';
     $resp->{'list'} = $list if $list;
 
     @! = ();
@@ -129,7 +129,7 @@ sub save_folder {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "publish",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
+#     "status",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
 # }
 sub add_folder {
     my $self = shift;
@@ -261,7 +261,7 @@ sub load_default {
             "selected"      => $$folder{'selected'} // '',
             "required"      => $$folder{'required'} // 0,
             "readonly"      => 0,
-            "publish"        => 1,
+            "publish"       => 1,
             "folder"        => 1,
             "parent"        => 0
         };
@@ -281,7 +281,7 @@ sub load_default {
                     "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
                     "folder"        => 0,
-                    "publish"        => 1,
+                    "publish"       => 1,
                     "parent"        => $id  # указываем родительский id
                 };
                 # значение valid_extensions берётся из Mock/extensions.pm
@@ -309,18 +309,18 @@ sub load_default {
 
 # создание настройки
 # my $id = $self->add();
-# "folder"      => 0,             - это запись настроек
-# "parent"      => 0,             - обязательно (должно быть натуральным числом)
-# "label"       => 'название',    - обязательно (название для отображения)
-# "name",       => 'name'         - обязательно (системное название, латиница)
-# "publish",     => 0/1            - обязательно (системное название, латиница)
-# "readonly"    => 0,             - не обязательно, по умолчанию 0
-# "value"       => "",            - строка или json
-# "type"        => "InputNumber", - тип поля из конфига
-# "placeholder" => 'это название',- название для отображения в форме
-# "mask"        => '\d+',         - регулярное выражение
-# "selected"    => "CKEditor",    - значение по-умолчанию для select
-# "required"    => 1              - обязательное поле
+#     "folder"      => 0,             - это запись настроек
+#     "parent"      => 0,             - обязательно (должно быть натуральным числом)
+#     "label"       => 'название',    - обязательно (название для отображения)
+#     "name",       => 'name'         - обязательно (системное название, латиница)
+#     "status",     => 0/1            - обязательно (системное название, латиница)
+#     "readonly"    => 0,             - не обязательно, по умолчанию 0
+#     "value"       => "",            - строка или json
+#     "type"        => "InputNumber", - тип поля из конфига
+#     "placeholder" => 'это название',- название для отображения в форме
+#     "mask"        => '\d+',         - регулярное выражение
+#     "selected"    => "CKEditor",    - значение по-умолчанию для select
+#     "required"    => 1              - обязательное поле
 sub add {
     my $self = shift;
 
@@ -342,7 +342,7 @@ sub add {
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
             unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
             unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-            unless ( defined $$data{'publish'} )      { $$data{'publish'}      = 1 };
+            unless ( defined $$data{'publish'} )     { $$data{'publish'}      = 1 };
 
             # проверяем поле name на дубликат
             if ( $self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
@@ -373,7 +373,7 @@ sub add {
 
 # получение настройки по id
 # my $row = $self->edit()
-# 'id' - id настрокйи
+#   'id' - id настрокйи
 sub edit {
     my $self = shift;
 
@@ -452,7 +452,7 @@ sub save {
         unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
         unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
         unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-        unless ( defined $$data{'publish'} )      { $$data{'publish'}      = 0 };
+        unless ( defined $$data{'publish'} )     { $$data{'publish'}      = 0 };
 
         # проверяем поле name на дубликат
         if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
@@ -473,7 +473,7 @@ sub save {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok' ;
+    $resp->{'status'} = @! ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -758,7 +758,7 @@ sub list_export {
         $list = \@list;
     }
 
-    $resp->{'publish'} = 'ok';
+    $resp->{'status'} = 'ok';
     $resp->{'list'} = $list;
 
     @! = ();

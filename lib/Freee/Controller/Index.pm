@@ -9,13 +9,13 @@ use Mojo::Base 'Mojolicious::Controller';
 sub error {
     my $self = shift;
 
-    $self->render( 'json' => { 'publish' => 'fail', 'message' => $self->param('message') }, publish => 666 );
+    $self->render( 'json' => { 'status' => 'fail', 'message' => $self->param('message') }, status => 666 );
 }
 
 sub doc {
     my $self = shift;
 
-#     $self->render( 'json' => { 'publish' => 'ok', 'routes' => $routs });
+#     $self->render( 'json' => { 'status' => 'ok', 'routes' => $routs });
 # return;    # Postgres Работа с полями
 
     # очистка базы 
@@ -61,7 +61,7 @@ sub doc {
     # {
     #     type => 'lesson',
     #     parent      => 0,
-    #     publish     => \1,
+    #     status     => \1,
     #     import_id   => 1,
     #     title       => 'Математика',
 
@@ -77,7 +77,7 @@ sub doc {
     # сохранение записи
     # print Dumper( $self->pg_store('lesson',
     # {
-    #     publish => \1,
+    #     status => \1,
     #     import_id => 1,
     #     title => 'Математика',
     # }

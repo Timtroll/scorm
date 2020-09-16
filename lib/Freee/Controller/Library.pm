@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'index',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash,
             'test'          => $test
         }
@@ -29,7 +29,7 @@ sub add {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'add',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -43,7 +43,7 @@ sub edit {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'edit',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -57,7 +57,7 @@ sub save {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'save',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -71,7 +71,7 @@ sub activate {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'activate',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -85,7 +85,7 @@ sub hide {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'hide',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -99,7 +99,7 @@ sub delete {
         'json'    => {
             'controller'    => 'Library',
             'route'         => 'delete',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'exam',
             'route'         => 'index',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -28,7 +28,7 @@ sub start {
         'json'    => {
             'controller'    => 'exam',
             'route'         => 'start',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -42,7 +42,7 @@ sub edit {
         'json'    => {
             'controller'    => 'exam',
             'route'         => 'edit',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,7 +56,7 @@ sub save {
         'json'    => {
             'controller'    => 'exam',
             'route'         => 'save',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -70,7 +70,7 @@ sub finish {
         'json'    => {
             'controller'    => 'exam',
             'route'         => 'finish',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

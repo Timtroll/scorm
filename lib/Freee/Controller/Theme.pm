@@ -140,7 +140,7 @@ sub add {
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'publish'      => 1                                 # кладется в EAV
+#    'status'      => 1                                 # кладется в EAV
 # }
 sub save {
     my $self = shift;

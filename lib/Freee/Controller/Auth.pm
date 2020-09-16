@@ -19,13 +19,13 @@ use common;
 #
 # Return:
 # {
-#     'publish' : 'ok',
+#     'status' : 'ok',
 #     'token'  : '72ade14d2d30c88f082f0410499fed05'
 # }
 # or
 # {
 #     "mess": "Login or password is wrong",
-#     "publish": "fail"
+#     "status": "fail"
 # }
 sub login {
     my $self = shift;
@@ -88,7 +88,7 @@ warn '=logout=';
         delete $$tokens{ $self->req->headers->header('token') };
     }
 
-    $self->render( json => { 'publish' => 'ok' } );
+    $self->render( json => { 'status' => 'ok' } );
 }
 
 # check_token /check_token

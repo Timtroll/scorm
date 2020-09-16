@@ -140,7 +140,7 @@ sub add {
 #    'keywords'    => 'ключевые слова',
 #    'url'         => 'как должен выглядеть url',
 #    'seo'         => 'дополнительное поле для seo',
-#    'publish'      => 1
+#    'status'      => 1
 # }
 sub save {
     my $self = shift;

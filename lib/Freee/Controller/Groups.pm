@@ -34,7 +34,7 @@ use Data::Dumper;
 #             "opened":0
 #         }
 #     ],
-#     "publish":"ok"
+#     "status":"ok"
 # }
 sub index {
     my $self = shift;
@@ -78,7 +78,7 @@ sub index {
 # my $id = $self->insert_group();
 # "label"  - 'название',      - название для отображения
 # "name",  - 'name',          - системное название, латиница
-# "publish" - 0 или 1,         - активна ли группа
+# "status" - 0 или 1,         - активна ли группа
 sub add {
     my $self = shift;
 
@@ -147,7 +147,7 @@ sub edit {
 # "id"        => 1            - id обновляемого элемента ( >0 )
 # "label"     => 'название'   - обязательно (название для отображения)
 # "name",     => 'name'       - обязательно (системное название, латиница)
-# "publish"    => 0 или 1      - активна ли группа
+# "status"    => 0 или 1      - активна ли группа
 sub save {
     my ( $self ) = shift;
 

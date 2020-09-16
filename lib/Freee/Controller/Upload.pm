@@ -165,7 +165,7 @@ sub search {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'publish'} = @! ? 'warn' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = \@data unless @!;
 
     @! = ();

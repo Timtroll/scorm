@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'accounting',
             'route'         => 'index',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -28,7 +28,7 @@ sub search {
         'json'    => {
             'controller'    => 'accounting',
             'route'         => 'search',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -42,7 +42,7 @@ sub add {
         'json'    => {
             'controller'    => 'accounting',
             'route'         => 'add',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,7 +56,7 @@ sub stat {
         'json'    => {
             'controller'    => 'accounting',
             'route'         => 'stat',
-            'publish'        => 'ok',
+            'status'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
