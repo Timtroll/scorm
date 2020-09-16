@@ -59,7 +59,7 @@ warn Dumper($root);
         #        "route"       => '/theme',
         #        "parent"      => $$result{'parent'},
         #        "attachment"  => $$result{'attachment'},
-        #        "status"      => $$result{'publish'}
+        #        "publish"      => $$result{'publish'}
         #     }
         # } 
         # else {

@@ -26,7 +26,7 @@ my $data = {
     'name'      => 'testName',
     'label'     => 'testLabel',
     'parent'    => 0,
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -36,7 +36,7 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->content_type_is('application/json;charset=UTF-8');
 
 my $result = {
-    'status' => 'ok',
+    'publish' => 'ok',
     'list' => [
         {
             'label'     => 'testLabel',

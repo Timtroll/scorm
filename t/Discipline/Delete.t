@@ -47,12 +47,12 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'status'      => 1,
+    'publish'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 1,
-    'status'    => 'ok'
+    'publish'    => 'ok'
 };
 
 $t->post_ok( $host.'/discipline/add' => form => $data );
@@ -71,7 +71,7 @@ my $test_data = {
             'id' => 1
         },
         'result' => {
-            'status' => 'ok',
+            'publish' => 'ok',
             'id' => 1
         },
         'comment' => 'All fields:' 
@@ -83,14 +83,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "can't delete EAV object",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -100,7 +100,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

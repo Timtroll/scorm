@@ -21,12 +21,12 @@
 ответ:
 ```
 {
-  "status": "ok",
+  "publish": "ok",
   "id": "123"
 }
 
 {
-  "status": "fail",
+  "publish": "fail",
   "message":"причина ошибки"
 }
 ```

@@ -3,7 +3,7 @@
 #     "id"        => 1            - id обновляемого элемента ( >0 )
 #     "label"     => 'название'   - обязательно (название для отображения)
 #     "name",     => 'name'       - обязательно (системное название, латиница)
-#     "status"    => 0 или 1      - активна ли группа
+#     "publish"    => 0 или 1      - активна ли группа
 # });
 use Mojo::Base -strict;
 
@@ -34,14 +34,14 @@ $t->post_ok( $host.'/settings/add_folder' => form => {
     "name"      => 'folder',
     "label"     => 'folder',
     "parent"    => 0,
-    "status"    => 1
+    "publish"    => 1
 });
 diag "Add folder:";
 $t->post_ok( $host.'/settings/add' => form => {
     "name"      => 'setting',
     "label"     => 'setting',
     "parent"    => 1,
-    "status"    => 1
+    "publish"    => 1
 });
 diag "";
 
@@ -53,11 +53,11 @@ my $test_data = {
             'name'        => 'name1',
             'label'       => 'label1',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -67,11 +67,11 @@ my $test_data = {
             'name'        => 'name2',
             'label'       => 'label2',
             'parent'      => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Status 1:' 
     },
@@ -84,9 +84,9 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
-        'comment' => 'No status:' 
+        'comment' => 'No publish:' 
     },
 
     # отрицательные тесты
@@ -95,11 +95,11 @@ my $test_data = {
             'id'          => 1,
             'label'       => 'label3',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -108,11 +108,11 @@ my $test_data = {
             'id'          => 1,
             'name'        => 'name4',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'label'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No label:' 
     },
@@ -121,11 +121,11 @@ my $test_data = {
             'name'        => 'name6',
             'label'       => 'label6',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -134,11 +134,11 @@ my $test_data = {
             'id'          => 1,
             'name'        => 'name',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'label'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'Same name:'
     },
@@ -148,11 +148,11 @@ my $test_data = {
             'name'        => 'name8',
             'label'       => 'label8',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => "Wrong id type:"
     },
@@ -162,11 +162,11 @@ my $test_data = {
             'name'        => 'name9',
             'label'       => 'label9',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Id do not exist:'
     },
@@ -176,11 +176,11 @@ my $test_data = {
             'name'        => 'name10',
             'label'       => 'label10',
             'parent'      => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "Id '2' is not a folder",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Save as not folder:'
     },
@@ -189,11 +189,11 @@ my $test_data = {
             'id'          => 2,
             'name'        => 'name10',
             'label'       => 'label10',
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'parent'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Parent does not exist:'
     },

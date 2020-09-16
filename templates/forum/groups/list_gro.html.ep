@@ -3,7 +3,7 @@
         <h3><a href= "<%= "http://freee/forum/list_themes?group_id=".$$group{'id'} %>" >
 %           my $group_title = $$group{'title'};
 %           $group_title = "(edited)".$group_title unless $$group{'date_edited'} == $$group{'date_created'};
-%           $group_title = "(hidden)".$group_title unless $$group{'status'}      == 1;
+%           $group_title = "(hidden)".$group_title unless $$group{'publish'}      == 1;
 %=          $group_title;        
         </a></h3>
         <form method="post" action="http://freee/forum/del_group" onsubmit='return confirm("Вы действительно хотите удалить эту группу?")' class="control">
@@ -15,7 +15,7 @@
             <input type="submit" value="edit"/>
         </form>
         <form method="post" action="http://freee/forum/toggle" class="control">
-            <input type="hidden" name="value"  value= "<%= $$group{'status'} %>"/>
+            <input type="hidden" name="value"  value= "<%= $$group{'publish'} %>"/>
             <input type="hidden" name="table"  value= 'forum_groups'/>
             <input type="hidden" name="id"  value= "<%= $$group{'id'} %>"/>
             <input type="submit" value="toggle"/>

@@ -6,7 +6,7 @@
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "status",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
+#     "publish",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
 # });
 
 # создание настройки
@@ -85,7 +85,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'can\'t get data from settings',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'export - empty table' 
     },
@@ -97,11 +97,11 @@ $test_data = {
             'name'      => 'test',
             'label'     => 'first test',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'add_folder - new folder' 
     },
@@ -120,11 +120,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'add - all fields:' 
     },
@@ -140,11 +140,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 3,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'add - no placeholder:' 
     },
@@ -160,11 +160,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 4,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'add - no type:' 
     },
@@ -178,7 +178,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'export - all right:' 
     },
@@ -189,7 +189,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'export - same description:' 
     },
@@ -200,7 +200,7 @@ $test_data = {
         },
         'result' => {
             'message'   => '_check_fields: didn\'t has required data in \'title\'',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'export - no title:' 
     },
@@ -214,7 +214,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'del_export - all right:' 
     },
@@ -226,7 +226,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Id \'404\' doesn\'t exist',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'del_export - id doesn\'t exist:' 
     },
@@ -235,7 +235,7 @@ $test_data = {
         'data' => {},
         'result' => {
             'message'   => '_check_fields: didn\'t has required data in \'id\'',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'del_export - no id:' 
     },
@@ -248,7 +248,7 @@ $test_data = {
             'id'     => 1,
         },
         'result' => {
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'import - all right:' 
     },
@@ -260,7 +260,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Id \'2\' doesn\'t exist',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'import - id doesn\'t exist:' 
     },
@@ -269,7 +269,7 @@ $test_data = {
         'data' => {},
         'result' => {
             'message'   => '_check_fields: didn\'t has required data in \'id\'',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'import - no id:' 
     }
@@ -304,7 +304,7 @@ $result = {
             "title"        => "description"
         }
     ],
-    'status'    => 'ok'
+    'publish'    => 'ok'
 };
 
 $t->post_ok( $host.'/settings/list_export' );

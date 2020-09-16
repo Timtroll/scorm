@@ -9,13 +9,13 @@ use Mojo::Base 'Mojolicious::Controller';
 sub error {
     my $self = shift;
 
-    $self->render( 'json' => { 'status' => 'fail', 'message' => $self->param('message') }, status => 666 );
+    $self->render( 'json' => { 'publish' => 'fail', 'message' => $self->param('message') }, publish => 666 );
 }
 
 sub doc {
     my $self = shift;
 
-#     $self->render( 'json' => { 'status' => 'ok', 'routes' => $routs });
+#     $self->render( 'json' => { 'publish' => 'ok', 'routes' => $routs });
 # return;    # Postgres Работа с полями
 
     # очистка базы 

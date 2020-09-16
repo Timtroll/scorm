@@ -13,7 +13,7 @@ CREATE TABLE "public"."routes" (
 "add" int2 DEFAULT 1 NOT NULL,
 "edit" int2 DEFAULT 1 NOT NULL,
 "delete" int2 DEFAULT 1 NOT NULL,
-"status" int2 DEFAULT 1 NOT NULL
+"publish" int2 DEFAULT 1 NOT NULL
 )
 WITH (OIDS=FALSE);
 

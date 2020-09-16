@@ -44,7 +44,7 @@ sub list_themes {
     );
 
     # $resp->{'message'} = join("\n", @mess) if @mess;
-    # $resp->{'status'} = @mess ? 'fail' : 'ok';
+    # $resp->{'publish'} = @mess ? 'fail' : 'ok';
     # $resp->{'list'} = $list unless @mess;
 
     # $self->render( 'json' => $resp );
@@ -74,7 +74,7 @@ sub save_add_theme {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -111,7 +111,7 @@ sub save_edit_theme {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -137,7 +137,7 @@ sub edit_theme {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'theme'} = $data if $data;
 
     $self->render( 'json' => $resp );
@@ -161,7 +161,7 @@ sub del_theme {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
     $self->render( 'json' => $resp );
@@ -178,7 +178,7 @@ sub list_groups {
     push @mess, "Could not get list Groups" unless $list_groups;
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'list'} = $list_groups unless @mess;
 
     $self->render( 'json' => $resp );
@@ -206,7 +206,7 @@ sub save_add_group {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -241,7 +241,7 @@ sub save_edit_group {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->render( 'json' => $resp );
@@ -265,7 +265,7 @@ sub edit_group {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'group'} = $edit if $edit;
 
     $self->render( 'json' => $resp );
@@ -289,7 +289,7 @@ sub del_group {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
     $self->render( 'json' => $resp );
@@ -340,7 +340,7 @@ sub save_add {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->redirect_to( '/forum/list_messages' ) unless @mess;
@@ -378,7 +378,7 @@ sub save_edit {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     $self->redirect_to( '/forum/list_messages' );
@@ -432,7 +432,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @mess) if @mess;
-    $resp->{'status'} = @mess ? 'fail' : 'ok';
+    $resp->{'publish'} = @mess ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
     $self->redirect_to( '/forum/list_messages' );
@@ -456,7 +456,7 @@ sub toggle {
         push @mess, $error unless $data;
 
 
-        $current_value = $self->_status_check( $$data{'id'} ) unless @mess;
+        $current_value = $self->_publish_check( $$data{'id'} ) unless @mess;
         if ( $current_value ) {
             $$data{'value'} = 0;
         }
@@ -465,7 +465,7 @@ sub toggle {
         }
         # $$data{'table'} = 'forum_themes' ? $self->param('themes'): 'forum_messages';
         $$data{'table'} = 'forum_messages';
-        $$data{'fieldname'} = 'status';
+        $$data{'fieldname'} = 'publish';
 
         $toggle = $self->model('Utils')->_toggle( $data ) unless @mess;
         push @mess, "Could not toggle field '$$data{'id'}'" unless $toggle;

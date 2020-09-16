@@ -63,7 +63,7 @@ sub _get_folder {
         $$row{'value'}      = '';
         $$row{'selected'}   = '';
         $$row{'folder'}     = $$row{'folder'} // 0;
-        $$row{'status'}     = $$row{'status'} // 0;
+        $$row{'publish'}     = $$row{'publish'} // 0;
     }
     
     return $row;
@@ -326,7 +326,7 @@ sub _get_setting {
                     { "readonly"    => $$row{'readonly'} // 0 },
                     { "required"    => $$row{'required'} // 0 },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "status"      => $$row{'status'} // 0 }
+                    { "publish"      => $$row{'publish'} // 0 }
                 ]
             }
         ]
@@ -480,7 +480,7 @@ sub _import_setting {
 
     return unless( $data );
 
-    $sql = 'INSERT INTO "public"."settings" ("parent", "name", "label", "placeholder", "type", "mask", "value", "selected", "required", "readonly", "status", "folder") VALUES (:parent, :name, :label, :placeholder, :type, :mask, :value, :selected, :required, :readonly, :status, :folder)';
+    $sql = 'INSERT INTO "public"."settings" ("parent", "name", "label", "placeholder", "type", "mask", "value", "selected", "required", "readonly", "publish", "folder") VALUES (:parent, :name, :label, :placeholder, :type, :mask, :value, :selected, :required, :readonly, :publish, :folder)';
 
     foreach my $row ( sort {$a->{'id'} <=> $b->{'id'}} @$data ) {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -494,7 +494,7 @@ sub _import_setting {
         $sth->bind_param( ':selected', $$row{'selected'} );
         $sth->bind_param( ':required', $$row{'required'} );
         $sth->bind_param( ':readonly', $$row{'readonly'} );
-        $sth->bind_param( ':status', $$row{'status'} );
+        $sth->bind_param( ':publish', $$row{'publish'} );
         $sth->bind_param( ':folder', $$row{'folder'} );
         $result = $sth->execute();
         return unless $result;

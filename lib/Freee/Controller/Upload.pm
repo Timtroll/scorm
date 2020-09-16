@@ -76,7 +76,7 @@ sub index {
     $resp->{'id'} = $result if $result;
     $resp->{'mime'} = $$data{'mime'} if $result;
     $resp->{'url'} = $url if $url;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -130,7 +130,7 @@ sub delete {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -165,7 +165,7 @@ sub search {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'warn' : 'ok';
+    $resp->{'publish'} = @! ? 'warn' : 'ok';
     $resp->{'data'} = \@data unless @!;
 
     @! = ();
@@ -216,7 +216,7 @@ sub update {
     $resp->{'id'} = $$data{'id'} unless @!;
     $resp->{'mime'} = $$data{'mime'} unless @!;
     $resp->{'url'} = $url unless @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 

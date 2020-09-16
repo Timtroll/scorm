@@ -72,7 +72,7 @@ sub _all_groups {
                         "add"    => 0,
                         "edit"   => 0,
                         "delete" => 0,
-                        "status" => 1
+                        "publish" => 1
                     };
                     $sql = 'INSERT INTO "public"."routes" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
 
@@ -117,7 +117,7 @@ sub _get_group {
 #     "id"          => '1',             - id элемента
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
-#     "status"      => 0                - статус группы
+#     "publish"      => 0                - статус группы
 # });
 # возвращается id записи    
 sub _insert_group {
@@ -129,16 +129,13 @@ sub _insert_group {
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
         push @!, "no data for insert";
     }
-use DDP;
-p $data;
+
     unless ( @! ) {
-        $sql = 'INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( :label, :name, :status )';
-        # ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ('.join( ',', map { $self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ).')';
-warn $sql;
+        $sql = 'INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( :label, :name, :publish )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':label', $$data{'label'} );
         $sth->bind_param( ':name', $$data{'name'} );
-        $sth->bind_param( ':status', ( $$data{'status'} ? 1 : 0 ) );
+        $sth->bind_param( ':publish', ( $$data{'publish'} ? 1 : 0 ) );
         $sth->execute();
 
         $id = $sth->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
@@ -158,7 +155,7 @@ warn $sql;
 #     "id"          => '1',             - id элемента
 #     "label"       => 'название',      - название для отображения
 #     "name",       => 'name',          - системное название, латиница
-#     "status"      => 0,               - по умолчанию 1
+#     "publish"      => 0,               - по умолчанию 1
 # });
 # возвращается true/false
 sub _update_group {
@@ -177,7 +174,7 @@ sub _update_group {
         $sth->execute();
         $result = $sth->fetchrow_array();
 
-        push @!, "Can not update $$data{'label'}" if $result eq '0E0';
+        push @!, "Error by update $$data{'label'}" if ! defined $result;
     }
 
     return $result;

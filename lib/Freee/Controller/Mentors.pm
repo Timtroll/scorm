@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'index',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -28,7 +28,7 @@ sub setmentor {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'setmentor',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -42,7 +42,7 @@ sub unsetmentor {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'unsetmentor',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,7 +56,7 @@ sub tasks {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'tasks',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -70,7 +70,7 @@ sub viewtask {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'viewtask',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -84,7 +84,7 @@ sub addcomment {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'addcomment',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -98,7 +98,7 @@ sub savecomment {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'savecomment',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -112,7 +112,7 @@ sub setmark {
         'json'    => {
             'controller'    => 'Mentors',
             'route'         => 'setmark',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

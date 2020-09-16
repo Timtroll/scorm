@@ -3,7 +3,7 @@
 <div class="messages"><h3><a class="title" >
 %   my $message_content = $$message{'msg'};
 %   $message_content = "(edited)".$message_content unless $$message{'date_edited'} == $$message{'date_created'};
-%   $message_content = "(hidden)".$message_content unless $$message{'status'}      == 1;
+%   $message_content = "(hidden)".$message_content unless $$message{'publish'}      == 1;
 %=  $message_content;
 </a></h3></div>
 <div class="messages">
@@ -19,7 +19,7 @@
     </form>
     <form method="post" action="http://freee/forum/toggle" class="control">
         <input type="hidden" name="parent_id"  value= "<%= $$message{'theme_id'} %>"/>
-        <input type="hidden" name="value"  value= "<%= $$message{'status'} %>"/>
+        <input type="hidden" name="value"  value= "<%= $$message{'publish'} %>"/>
         <input type="hidden" name="table"  value= 'forum_messages'/>
         <input type="hidden" name="id"  value= "<%= $$message{'id'} %>"/>
         <input type="submit" value="toggle"/>

@@ -11,7 +11,7 @@
     "country": "Россия",
     "timezone": "+3",
     "birthday": 123132131,
-    "status": 1,
+    "publish": 1,
     "groups": [1, 2, 3],
     "password": "khasdf",
     "avatar": "https://thispersondoesnotexist.com/image",

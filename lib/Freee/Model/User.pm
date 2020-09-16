@@ -37,7 +37,7 @@ my %masks_fields = (
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
 # id - Id группы
-# status - показывать пользователей только с этим статусом
+# publish - показывать пользователей только с этим статусом
 # }
 sub _get_list {
     my ( $self, $data ) = @_;
@@ -52,10 +52,10 @@ sub _get_list {
         $fields = ' id, login, publish, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        unless ( defined $$data{'status'} ) {
+        unless ( defined $$data{'publish'} ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
-        elsif ( $$data{'status'} ) {
+        elsif ( $$data{'publish'} ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?:group_id AND grp."publish" = true ORDER BY "id" LIMIT :limit OFFSET :offset';
         }
         else {
@@ -71,7 +71,7 @@ sub _get_list {
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
                 $list->{ $_ }->{'password'} = '';
-                $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
+                $list->{ $_ }->{'publish'} = $list->{ $_ }->{'publish'} ? 1 : 0;
                 delete $list->{ $_ }->{'publish'};
                 push @list, $$list{ $_ };
             }
@@ -180,7 +180,9 @@ sub _exists_in_users {
         $sth->bind_param( ':password', $pass );
         $sth->execute();
         $row = $sth->fetchall_hashref('login');
-
+use DDP;
+p $row;
+p $pass;
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
                 # получаем список групп
@@ -336,7 +338,7 @@ sub _empty_user {
 #     'emailconfirmed'    => 1,                    # email подтвержден
 #     'phone'             => 79312445646,          # номер телефона
 #     'phoneconfirmed'    => 1,                    # телефон подтвержден
-#     'status'            => 1,                    # активный / не активный пользователь
+#     'publish'            => 1,                    # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],            # список ID групп
 #     'password'          => 'khasdf',             # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -526,8 +528,8 @@ sub _delete_user {
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
 
-        if ( $result eq '0E0' ) {
-            push @!, "could not delete '$$data{'id'}' from users";
+        if ( ! defined $result ) {
+            push @!, "Error by delete '$$data{'id'}' from users";
             $self->{'app'}->pg_dbh->rollback;
             return;
         }
@@ -553,7 +555,7 @@ sub _delete_user {
 
         $result = $sth->execute();
 
-        if ( $result eq '0E0' ) {
+        if ( ! defined $result ) {
             push @!, "Could not delete '$$data{'id'}' from user_groups";
             $self->{'app'}->pg_dbh->rollback;
             return;

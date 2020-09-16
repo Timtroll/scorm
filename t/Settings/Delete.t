@@ -26,7 +26,7 @@ my $data = {
     'name'      => 'test',
     'label'     => 'test',
     'parent'    => 0,
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -41,7 +41,7 @@ diag "Add setting:";
 $data = {
     'name'      => 'name',
     'label'     => 'label',
-    'status'    => 1,
+    'publish'    => 1,
     'parent'    => 1
 };
 $t->post_ok( $host.'/settings/add' => form => $data );
@@ -67,14 +67,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not delete '404'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     2 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -84,7 +84,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     },
@@ -96,7 +96,7 @@ my $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -106,7 +106,7 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'That is a folder:' 
     },

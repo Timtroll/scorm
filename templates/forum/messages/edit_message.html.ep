@@ -3,7 +3,7 @@
     <input type="hidden" name="id"  value= "<%= $$message{'id'} %>"/>
     <BR>Message:
     <BR><textarea name="msg" rows=5 cols=40/><%= $$message{'msg'} %></textarea>
-    <BR><input type="radio" name="status" value=1 >Status active
-    <BR><input type="radio" name="status" value=0 >Status unactive
+    <BR><input type="radio" name="publish" value=1 >Status active
+    <BR><input type="radio" name="publish" value=0 >Status unactive
     <BR><BR><input type="submit" value="Save"/>
 </form>

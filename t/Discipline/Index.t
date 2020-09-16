@@ -49,12 +49,12 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'status'      => 1,
+            'publish'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -68,12 +68,12 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'status'      => 0,
+            'publish'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     }
 };
@@ -114,7 +114,7 @@ my $result = {
                 "seo"         => "дополнительное поле для seo",
                 "route"       => "/discipline/",  # роут для работы с элементами
                 "parent"      => 0,
-                "status"      => 1,
+                "publish"      => 1,
                 "attachment"  => '[1]'
             },
             {
@@ -128,12 +128,12 @@ my $result = {
                 "seo"         => "дополнительное поле для seo",
                 "route"       => "/discipline/",
                 "parent"      => 0,
-                "status"      => 0,
+                "publish"      => 0,
                 "attachment"  => '[1]'
             }
         ]
     },
-    "status" => "ok"
+    "publish" => "ok"
 };
 
 $t->post_ok( $host.'/discipline/' );

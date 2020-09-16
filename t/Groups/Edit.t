@@ -23,7 +23,7 @@ diag "Add group:";
 my $data = {
     'name'    => 'test',
     'label'   => 'test',
-    'status'  => 1
+    'publish'  => 1
 };
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -44,9 +44,9 @@ my $test_data = {
                 'id'        => 1,
                 'label'     => 'test',
                 'name'      => 'test',
-                'status'    => 1
+                'publish'    => 1
             },
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -58,14 +58,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not get Group '404'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "/groups/edit _check_fields: didn't has required data in 'id' = ''",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -75,7 +75,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "/groups/edit _check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
     },

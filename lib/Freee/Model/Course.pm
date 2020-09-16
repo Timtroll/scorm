@@ -129,7 +129,7 @@ sub _list_course {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'status'      => $_->{'status'},
+            'publish'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @courses, $item;
@@ -184,7 +184,7 @@ sub _get_course {
                "route"       => '/course',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "status"      => $$result{'publish'}
+               "publish"      => $$result{'publish'}
             }
         } 
         else {
@@ -209,7 +209,7 @@ sub _get_course {
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
+#    'publish'      => 1                                 # кладется в EAV
 # }
 sub _save_course {
     my ( $self, $data ) = @_;
@@ -226,23 +226,35 @@ sub _save_course {
 
         return unless $course;
 
-        $result = $course->_MultiStore( {                 
-            'Course' => {
-                'title'        => $$data{'name'},
-                'label'        => $$data{'label'},
-                'description'  => $$data{'description'},
-                'content'      => $$data{'content'},
-                'keywords'     => $$data{'keywords'},
-                'import_source'=> '',
-                'url'          => $$data{'url'},
-                'date_updated' => $$data{'time_update'},
-                'seo'          => $$data{'seo'},
-# ???
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'status'}
-            }
-        });
+        $course->title( $$data{'title'} );
+        $course->label( $$data{'label'} );
+        $course->description( $$data{'description'} );
+        $course->content( $$data{'content'} );
+        $course->keywords( $$data{'keywords'} );
+        $course->url( $$data{'url'} );
+        $course->seo( $$data{'seo'} );
+        $course->url( $$data{'url'} );
+
+        $course->parent( $$data{'parent'} );
+        $course->publish( $$data{'url'} );
+
+#         $result = $course->_MultiStore( {                 
+#             'Course' => {
+#                 'title'        => $$data{'name'},
+#                 'label'        => $$data{'label'},
+#                 'description'  => $$data{'description'},
+#                 'content'      => $$data{'content'},
+#                 'keywords'     => $$data{'keywords'},
+#                 'import_source'=> '',
+#                 'url'          => $$data{'url'},
+#                 'date_updated' => $$data{'time_update'},
+#                 'seo'          => $$data{'seo'},
+# # ???
+#                 'title'        => $$data{'title'},
+#                 'parent'       => $$data{'parent'}, 
+#                 'publish'      => $$data{'publish'}
+#             }
+#         });
     }
 
     return $result;
@@ -252,14 +264,14 @@ sub _save_course {
 # $result = $self->model('Course')->_toggle_course( $data );
 # $data = {
 #    'id'    => <id>, - id записи 
-#    'status'=> 1     - новый статус 1/0
+#    'publish'=> 1     - новый статус 1/0
 # }
 sub _toggle_course {
     my ( $self, $data ) = @_;
 
     my ( $course, $result );
 
-    unless ( $$data{'id'} || $$data{'status'} ) {
+    unless ( $$data{'id'} || $$data{'publish'} ) {
         return;
     }
     else {
@@ -268,7 +280,7 @@ sub _toggle_course {
 
         return unless $course;
 
-        $result = $course->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
+        $result = $course->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
     }
 
     return $result;

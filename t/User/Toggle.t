@@ -30,33 +30,33 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '3',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -85,7 +85,7 @@ $data = {
     'avatar'       => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+7(921)2222222',
-    'status'       => 1,
+    'publish'       => 1,
     'groups'       => "[1,2,3]"
 };
 $t->post_ok( $host.'/user/add_user' => form => $data );
@@ -99,22 +99,22 @@ my $test_data = {
     1 => {
         'data' => {
             'id'     => 1,
-            'status' => 1
+            'publish' => 1
         },
         'result' => {
             'id'     => 1,
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
             'id'     => 1,
-            'status' => 0
+            'publish' => 0
         },
         'result' => {
             'id'     => 1,
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -122,32 +122,32 @@ my $test_data = {
     3 => {
         'data' => {
             'id'        => 404,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "user with '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     4 => {
         'data' => {
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
     5 => {
         'data' => {
             'id'        => - 404,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     },

@@ -2,7 +2,7 @@
 # my $id = $self->insert_group({
 #     "label"        => 'название',    - название для отображения, обязательное поле
 #     "name",      => 'name',           - системное название, латиница, обязательное поле
-#     "status"      => 0 или 1,          - активна ли группа
+#     "publish"      => 0 или 1,          - активна ли группа
 # });
 use Mojo::Base -strict;
 
@@ -30,11 +30,11 @@ my $test_data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -42,11 +42,11 @@ my $test_data = {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok',
+            'publish'    => 'ok',
         },
         'comment' => 'Status zero:' 
     },
@@ -55,22 +55,22 @@ my $test_data = {
     3 => {
         'data' => {
             'name'      => 'name3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'label'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No label:' 
     },
     4 => {
         'data' => {
             'label'     => 'label4',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -80,20 +80,20 @@ my $test_data = {
             'label'     => 'label5'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'status'",
-            'status'    => 'fail'
+            'message'   => "_check_fields: didn't has required data in 'publish'",
+            'publish'    => 'fail'
         },
-        'comment' => 'No status:' 
+        'comment' => 'No publish:' 
     },
     6 => {
         'data' => {
             'name'      => 'label 6',
             'label'     => 'label6',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'name' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
     },
@@ -101,11 +101,11 @@ my $test_data = {
         'data' => {
             'name'       => 'name1',
             'label'      => 'label7',
-            'status'     => 1
+            'publish'     => 1
         },
         'result' => {
             'message'    => "name 'name1' already exists",
-            'status'     => 'fail'
+            'publish'     => 'fail'
         },
         'comment' => 'Same name:' 
     },
@@ -113,11 +113,11 @@ my $test_data = {
         'data' => {
             'name'       => 'name8',
             'label'      => 'label1',
-            'status'     => 1
+            'publish'     => 1
         },
         'result' => {
             'message'    => "label 'label1' already exists",
-            'status'     => 'fail'
+            'publish'     => 'fail'
         },
         'comment' => 'Same label:' 
     }

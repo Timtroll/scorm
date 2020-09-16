@@ -12,7 +12,7 @@ our @EXPORT_OK = qw( $get_tree );
 our $pref;
 
 $get_tree = {
-  "status" => "ok",
+  "publish" => "ok",
   "list" => [
   {
     "component"=> "Settings",

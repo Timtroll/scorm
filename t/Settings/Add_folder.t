@@ -32,11 +32,11 @@ my $test_data = {
             'name'      => 'name1',
             'label'     => 'label1',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -48,20 +48,20 @@ my $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
-        'comment' => 'Default status:' 
+        'comment' => 'Default publish:' 
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
             'parent'    => 1,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => 3,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Folder in folder:' 
     },
@@ -71,11 +71,11 @@ my $test_data = {
         'data' => {
             'name'      => 'name4',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'label'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No label:' 
     },
@@ -83,11 +83,11 @@ my $test_data = {
         'data' => {
             'label'     => 'label5',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -96,11 +96,11 @@ my $test_data = {
             'name'      => 'label*',
             'label'     => 'label6',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'name' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
     },
@@ -109,11 +109,11 @@ my $test_data = {
             'name'      => 'name1',
             'label'     => 'label7',
             'parent'    => 0,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "Folder item named 'name1' is exists",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Same name:' 
     },
@@ -122,11 +122,11 @@ my $test_data = {
             'name'      => 'name8',
             'label'     => 'label8',
             'parent'    => 404,
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'message'   => "Parent folder with id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Parent doesnt exist:' 
     },

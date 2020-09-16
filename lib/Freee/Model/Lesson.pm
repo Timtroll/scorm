@@ -129,7 +129,7 @@ sub _list_lesson {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'status'      => $_->{'status'},
+            'publish'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @lessons, $item;
@@ -184,7 +184,7 @@ sub _get_lesson {
                "route"       => '/lesson',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "status"      => $$result{'publish'}
+               "publish"      => $$result{'publish'}
             }
         } 
         else {
@@ -209,7 +209,7 @@ sub _get_lesson {
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
+#    'publish'      => 1                                 # кладется в EAV
 # }
 sub _save_lesson {
     my ( $self, $data ) = @_;
@@ -240,7 +240,7 @@ sub _save_lesson {
 # ???
                 'title'        => $$data{'title'},
                 'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'status'}
+                'publish'      => $$data{'publish'}
             }
         });
     }
@@ -252,14 +252,14 @@ sub _save_lesson {
 # $result = $self->model('Lesson')->_toggle_lesson( $data );
 # $data = {
 #    'id'    => <id>, - id записи 
-#    'status'=> 1     - новый статус 1/0
+#    'publish'=> 1     - новый статус 1/0
 # }
 sub _toggle_lesson {
     my ( $self, $data ) = @_;
 
     my ( $lesson, $result );
 
-    unless ( $$data{'id'} || $$data{'status'} ) {
+    unless ( $$data{'id'} || $$data{'publish'} ) {
         return;
     }
     else {
@@ -268,7 +268,7 @@ sub _toggle_lesson {
 
         return unless $lesson;
 
-        $result = $lesson->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
+        $result = $lesson->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
     }
 
     return $result;

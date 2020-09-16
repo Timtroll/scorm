@@ -29,7 +29,7 @@ my $data = {
     'name'      => 'test',
     'label'     => 'test',
     'parent'    => 0,
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -44,7 +44,7 @@ diag "Add setting:";
 $data = {
     'name'      => 'name',
     'label'     => 'label',
-    'status'    => 1,
+    'publish'    => 1,
     'parent'    => 1
 };
 $t->post_ok( $host.'/settings/add' => form => $data );
@@ -62,7 +62,7 @@ my $test_data = {
             'id' => 0
         },
         'result' => {
-           'status' => 'ok',
+           'publish' => 'ok',
            'list' => {
                 'body' => [
                     {
@@ -74,7 +74,7 @@ my $test_data = {
                         'readonly'      => 0,
                         'mask'          => '',
                         'required'      => 0,
-                        'status'        => 1,
+                        'publish'        => 1,
                         'value'         => '',
                         'type'          => '',
                         'label'         => 'test',
@@ -121,7 +121,7 @@ my $test_data = {
                     'massEdit' => 0
                 }
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Folder without leafs:'
     },
@@ -159,11 +159,11 @@ my $test_data = {
                         'mask' => '',
                         'value' => '',
                         'selected' => '',
-                        'status' => 1
+                        'publish' => 1
                     }
                 ]
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Folder with leaf:'
     },
@@ -175,7 +175,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Folder id '404' does not exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
@@ -185,14 +185,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
     6 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     }

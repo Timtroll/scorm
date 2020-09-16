@@ -19,13 +19,13 @@ use common;
 #
 # Return:
 # {
-#     'status' : 'ok',
+#     'publish' : 'ok',
 #     'token'  : '72ade14d2d30c88f082f0410499fed05'
 # }
 # or
 # {
 #     "mess": "Login or password is wrong",
-#     "status": "fail"
+#     "publish": "fail"
 # }
 sub login {
     my $self = shift;
@@ -70,7 +70,7 @@ warn '=login=';
     $resp->{'data'}->{'profile'} = $user if $user;
     $resp->{'data'}->{'token'} = $token unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
     $self->render( json => $resp );
@@ -88,7 +88,7 @@ warn '=logout=';
         delete $$tokens{ $self->req->headers->header('token') };
     }
 
-    $self->render( json => { 'status' => 'ok' } );
+    $self->render( json => { 'publish' => 'ok' } );
 }
 
 # check_token /check_token

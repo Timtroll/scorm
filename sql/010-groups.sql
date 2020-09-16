@@ -10,7 +10,7 @@ CREATE TABLE "public"."groups" (
     "id" int4 DEFAULT nextval('groups_id_seq'::regclass) NOT NULL,
     "label" varchar(255) COLLATE "default" NOT NULL,
     "name" varchar(255) COLLATE "default" NOT NULL,
-    "status" int2 DEFAULT 1 NOT NULL,
+    "publish" int2 DEFAULT 1 NOT NULL,
     CONSTRAINT "groups_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
@@ -21,12 +21,12 @@ ALTER TABLE "public"."groups" ADD CONSTRAINT name UNIQUE (name);
 -- ----------------------------
 -- Records of groups
 -- ----------------------------
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Администратор', 'admin', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Ректоры', 'rectors', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Преподаватель', 'teacher', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Студенты', 'students', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Менеджеры', 'managers', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "status" ) VALUES ( 'Нераспределенные', 'unaproved', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Администратор', 'admin', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Ректоры', 'rectors', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Преподаватель', 'teacher', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Студенты', 'students', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Менеджеры', 'managers', '1' );
+INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Нераспределенные', 'unaproved', '1' );
 
 CREATE UNIQUE INDEX "groups_name_idx" ON "public"."groups" USING btree ("name");
 

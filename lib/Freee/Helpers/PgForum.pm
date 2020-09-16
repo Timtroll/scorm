@@ -114,7 +114,7 @@ sub register {
     #     "readonly"    => 0,           - не обязательно, по умолчанию 0
     #     "value"       => "",          - строка или json
     #     "required"    => 0,           - не обязательно, по умолчанию 0
-    #     "status"      => 0            - по умолчанию 1
+    #     "publish"      => 0            - по умолчанию 1
     # });
     # возвращается true/false
     $app->helper( '_update_theme' => sub {
@@ -141,7 +141,7 @@ sub register {
     #     "readonly"    => 0,           - не обязательно, по умолчанию 0
     #     "value"       => "",          - строка или json
     #     "required"    => 0,           - не обязательно, по умолчанию 0
-    #     "status"      => 0            - по умолчанию 1
+    #     "publish"      => 0            - по умолчанию 1
     # });
     # возвращается true/false
     $app->helper( '_update_group' => sub {
@@ -165,7 +165,7 @@ sub register {
     #     "label"       => 'название',      - название для отображения
     #     "name",       => 'name',          - системное название, латиница
     #     "value"       => '{"/theme":1}',  - строка или json для записи или '' - для фолдера
-    #     "status"      => 0                - активность элемента, по умолчанию 1
+    #     "publish"      => 0                - активность элемента, по умолчанию 1
     # });
     # возвращается id роута
     $app->helper( '_insert_group' => sub {
@@ -189,7 +189,7 @@ sub register {
     #     "label"       => 'название',      - название для отображения
     #     "name",       => 'name',          - системное название, латиница
     #     "value"       => '{"/theme":1}',  - строка или json для записи или '' - для фолдера
-    #     "status"      => 0                - активность элемента, по умолчанию 1
+    #     "publish"      => 0                - активность элемента, по умолчанию 1
     # });
     # возвращается id роута
     $app->helper( '_insert_theme' => sub {
@@ -218,7 +218,7 @@ sub register {
     # "date_created"
     # "msg"
     # "rate"
-    # "status"
+    # "publish"
     $app->helper( '_insert_message' => sub {
         my ($self, $data) = @_;
 
@@ -244,7 +244,7 @@ sub register {
     # "date_created"
     # "msg"
     # "rate"
-    # "status"
+    # "publish"
     # });
     # возвращается true/false
     $app->helper( '_update_message' => sub {
@@ -333,7 +333,7 @@ sub register {
 
         return unless $id;
 
-        my $sql = 'SELECT id, msg, status, theme_id FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $sql = 'SELECT id, msg, publish, theme_id FROM "public"."forum_messages" WHERE "id"='.$id;
         my $row;
         eval {
             $row = $self->pg_dbh->selectrow_hashref($sql);
@@ -344,17 +344,17 @@ sub register {
         return $row;
     });
 
-    # получение значения поля status по id
+    # получение значения поля publish по id
     # my $true = folder_check( <id> );
     # возвращается 1/0
-    $app->helper('_status_check' => sub {
+    $app->helper('_publish_check' => sub {
         # my $id = shift;
         my ($self, $id) = @_;
 
         return unless $id;
 
         my $result;
-        my $sql = 'SELECT status FROM "public"."forum_messages" WHERE "id"='.$id;
+        my $sql = 'SELECT publish FROM "public"."forum_messages" WHERE "id"='.$id;
         eval {
             $result = $self->pg_dbh->selectrow_array($sql);
         };

@@ -24,7 +24,7 @@ diag "Add group:";
 my $data = {
     'name'      => 'test',
     'label'     => 'test',
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -42,7 +42,7 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All right:' 
     },
@@ -54,14 +54,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not delete Group '404'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -71,7 +71,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
     },

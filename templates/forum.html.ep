@@ -107,8 +107,8 @@ html, body {
             var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
             xhr.open('POST', url);
             xhr.onreadystatechange = function() {
-                if (xhr.readyState > 3 && xhr.status == 200) { success(xhr.responseText); }
-                else if (xhr.readyState > 3 && xhr.status != 200) { error(xhr); }
+                if (xhr.readyState > 3 && xhr.publish == 200) { success(xhr.responseText); }
+                else if (xhr.readyState > 3 && xhr.publish != 200) { error(xhr); }
             };
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -148,14 +148,14 @@ html, body {
                 msg : document.getElementById('msg').value,
                 id : document.getElementById('id').value,
                 theme_id : document.getElementById('theme_id').value,
-                status : document.getElementById('status').value,
+                publish : document.getElementById('publish').value,
             }, function(data){
                 var res = JSON.parse(data);
-                if (res.status == 'ok') {
+                if (res.publish == 'ok') {
                     document.getElementById('msg').value = '';
                     document.getElementById('id').value = '';
 // >????????
-                    document.getElementById('status').checked   =  res.status ? true : false;
+                    document.getElementById('publish').checked   =  res.publish ? true : false;
                     document.getElementById('btn').innerHTML = 'Добавить';
     console.log(res.id);
     console.log(res.msg);
@@ -173,7 +173,7 @@ html, body {
             //     var res = JSON.parse(data);
                 document.getElementById('msg').value        = '';
                 document.getElementById('id').value         = '';
-                document.getElementById('status').checked = true;
+                document.getElementById('publish').checked = true;
                 document.getElementById('btn').innerHTML    = 'Добавить';
     // console.log(res.id);
     // console.log(res.msg);
@@ -188,7 +188,7 @@ html, body {
                 document.getElementById('msg').value        = res.msg;
                 document.getElementById('id').value         = res.id;
                 document.getElementById('theme_id').value   = res.theme_id;
-                document.getElementById('status').checked   =  res.status ? true : false;
+                document.getElementById('publish').checked   =  res.publish ? true : false;
                 document.getElementById('btn').innerHTML    = 'Сохранить';
     console.log(res.id);
     console.log(res.msg);
@@ -224,7 +224,7 @@ html, body {
             <input type="hidden" name="id" id="id">
             <BR>Message:
             <BR><textarea name="msg" id="msg" rows=5 cols=40/></textarea>
-            <BR><label><input type="checkbox" name="status" id="status" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
+            <BR><label><input type="checkbox" name="publish" id="publish" value="1" checked="checked">Статус <button class="btn" id="btn">Добавить</button></label>
         <div id="messages"></div>
         <% include ()listt %>
     </div>

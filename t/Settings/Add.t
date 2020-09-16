@@ -40,11 +40,11 @@ my $folder = {
         'name'      => 'test',
         'label'     => 'first test',
         'parent'    => 0,
-        'status'    => 1
+        'publish'    => 1
     },
     'result' => {
         'id'        => '1',
-        'status'    => 'ok'
+        'publish'    => 'ok'
     },
     'comment' => 'New folder' 
 };
@@ -71,11 +71,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -90,11 +90,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 3,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No placeholder:' 
     },
@@ -109,11 +109,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 4,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No type:' 
     },
@@ -128,11 +128,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 5,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No mask:' 
     },
@@ -147,11 +147,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 6,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No value:' 
     },
@@ -166,11 +166,11 @@ my $test_data = {
             'value'       => 'value',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 7,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No selected:' 
     },
@@ -186,11 +186,11 @@ my $test_data = {
             'selected'    => '[[1,2]]',
             'required'    => 0,
             'readonly'    => 0,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 8,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Selected is array of arrrays:' 
     },
@@ -205,11 +205,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 1,
-            'status'      => 1
+            'publish'      => 1
         },
         'result' => {
             'id'        => 9,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No required:' 
     },
@@ -224,11 +224,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'required'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'id'        => 10,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No readonly:' 
     },
@@ -246,9 +246,9 @@ my $test_data = {
     },
     'result' => {
         'id'        => 11,
-        'status'    => 'ok',
+        'publish'    => 'ok',
     },
-    'comment' => 'No status:' 
+    'comment' => 'No publish:' 
 },
 
     # отрицательные тесты
@@ -262,11 +262,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'parent'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No parent:' 
     },
@@ -280,11 +280,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No name:' 
     },
@@ -298,11 +298,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'label'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No label:' 
     },
@@ -317,11 +317,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "Setting named 'name3' is exists",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'Same name:'
     },
@@ -336,11 +336,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "_check_fields: 'type' didn't match regular expression",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'Wrong field type:'
     },
@@ -355,11 +355,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 2",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Parent isn't folder:"
     },
@@ -374,11 +374,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 0",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'Parent is root:'
     },
@@ -393,11 +393,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'status'      => 0
+            'publish'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 404",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Parent doesn't exist:"
     }

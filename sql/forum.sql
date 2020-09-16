@@ -11,7 +11,7 @@ CREATE TABLE "public"."forum_groups" (
 "title" varchar(255) COLLATE "default" NOT NULL,
 "date_created" int4 NOT NULL,
 "date_edited" int4 NOT NULL,
-"status" int2 DEFAULT 1 NOT NULL,
+"publish" int2 DEFAULT 1 NOT NULL,
 CONSTRAINT "forum_groups_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
@@ -48,7 +48,7 @@ CREATE TABLE "public"."forum_messages" (
 "date_edited" int4 NOT NULL,
 "msg" varchar(255) COLLATE "default" NOT NULL,
 "rate" int4 NOT NULL,
-"status" int2 DEFAULT 1 NOT NULL,
+"publish" int2 DEFAULT 1 NOT NULL,
 CONSTRAINT "forum_messages_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
@@ -83,7 +83,7 @@ CREATE TABLE "public"."forum_themes" (
 "rate" int4 NOT NULL,
 "date_created" int4 NOT NULL,
 "date_edited" int4 NOT NULL,
-"status" int2 DEFAULT 1 NOT NULL,
+"publish" int2 DEFAULT 1 NOT NULL,
 CONSTRAINT "forum_themes_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);

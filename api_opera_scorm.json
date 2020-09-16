@@ -278,7 +278,7 @@
                   },
                   {
                     "enabled": true,
-                    "name": "status",
+                    "name": "publish",
                     "value": "1"
                   }
                 ]
@@ -334,7 +334,7 @@
                   },
                   {
                     "enabled": true,
-                    "name": "status",
+                    "name": "publish",
                     "value": "1"
                   }
                 ]
@@ -1028,7 +1028,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -1084,7 +1084,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -1342,7 +1342,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -1398,7 +1398,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "0"
                       }
                     ]
@@ -1655,7 +1655,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -1711,7 +1711,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -2055,7 +2055,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -2111,7 +2111,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -2368,7 +2368,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -2424,7 +2424,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": "1"
                       }
                     ]
@@ -2574,7 +2574,7 @@
                       },
                       {
                         "enabled": true,
-                        "name": "status",
+                        "name": "publish",
                         "value": ""
                       },
                       {

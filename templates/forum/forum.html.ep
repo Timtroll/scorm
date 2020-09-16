@@ -40,7 +40,7 @@
                 <textarea id="groupTitle" name="title" rows="1" cols="40"></textarea>
                 <BR>
                 <label>
-                    <input id="groupStatus" type="checkbox" name="status" checked="checked">
+                    <input id="groupStatus" type="checkbox" name="publish" checked="checked">
                     <button id="formGroupButton"></button>
                 </label>
             </div>
@@ -55,7 +55,7 @@
                 <textarea id="url" name="url" rows="1" cols="40"></textarea>
                 <BR>
                 <label>
-                    <input id="themeStatus" type="checkbox" name="status" checked="checked">
+                    <input id="themeStatus" type="checkbox" name="publish" checked="checked">
                     <button id="formThemeButton">Добавить</button>
                 </label>
                 <input id="parentGroupId" type="hidden" name="parentId">
@@ -69,7 +69,7 @@
                 <textarea id="msg" name="msg" rows="5" cols="40"></textarea>
                 <BR>
                 <label>
-                    <input id="messageStatus" type="checkbox" name="status" checked="checked">
+                    <input id="messageStatus" type="checkbox" name="publish" checked="checked">
                     <button id="formMessageButton"></button>
                 </label>
                 <input id="parentThemeId" type="hidden" name="parentId">

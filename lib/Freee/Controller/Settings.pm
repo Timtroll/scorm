@@ -49,7 +49,7 @@ sub get_folder {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     @! = ();
@@ -66,7 +66,7 @@ warn '+++++++++';
 
     my $resp;
     $resp->{'message'} = 'Tree has not any branches' unless $list;
-    $resp->{'status'} = $list ? 'ok' : 'fail';
+    $resp->{'publish'} = $list ? 'ok' : 'fail';
     $resp->{'list'} = $list if $list;
 
     @! = ();
@@ -108,14 +108,14 @@ sub save_folder {
         $$data{'required'} = 0;
         $$data{'readonly'} = 0;
         $$data{'folder'} = $self->param('folder') // 1;
-        $$data{'status'} = $self->param('status') // 0;
+        $$data{'publish'} = $self->param('publish') // 0;
 
         $id = $self->model('Settings')->_save_folder( $data );
         push @!, "Could not save folder item '$$data{'id'}'" unless $id;
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -129,7 +129,7 @@ sub save_folder {
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "status",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
+#     "publish",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
 # }
 sub add_folder {
     my $self = shift;
@@ -165,7 +165,7 @@ sub add_folder {
         $$data{'selected'} = '';
         $$data{'required'} = 0;
         $$data{'readonly'} = 0;
-        $$data{'status'} = 1;
+        $$data{'publish'} = 1;
         $$data{'folder'} = 1;
 
         # добавление фолдера
@@ -175,7 +175,7 @@ sub add_folder {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -232,7 +232,7 @@ sub get_leafs {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $table if $table;
 
     @! = ();
@@ -261,7 +261,7 @@ sub load_default {
             "selected"      => $$folder{'selected'} // '',
             "required"      => $$folder{'required'} // 0,
             "readonly"      => 0,
-            "status"        => 1,
+            "publish"        => 1,
             "folder"        => 1,
             "parent"        => 0
         };
@@ -281,7 +281,7 @@ sub load_default {
                     "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
                     "folder"        => 0,
-                    "status"        => 1,
+                    "publish"        => 1,
                     "parent"        => $id  # указываем родительский id
                 };
                 # значение valid_extensions берётся из Mock/extensions.pm
@@ -300,7 +300,7 @@ sub load_default {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -313,7 +313,7 @@ sub load_default {
 # "parent"      => 0,             - обязательно (должно быть натуральным числом)
 # "label"       => 'название',    - обязательно (название для отображения)
 # "name",       => 'name'         - обязательно (системное название, латиница)
-# "status",     => 0/1            - обязательно (системное название, латиница)
+# "publish",     => 0/1            - обязательно (системное название, латиница)
 # "readonly"    => 0,             - не обязательно, по умолчанию 0
 # "value"       => "",            - строка или json
 # "type"        => "InputNumber", - тип поля из конфига
@@ -342,7 +342,7 @@ sub add {
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
             unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
             unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-            unless ( defined $$data{'status'} )      { $$data{'status'}      = 1 };
+            unless ( defined $$data{'publish'} )      { $$data{'publish'}      = 1 };
 
             # проверяем поле name на дубликат
             if ( $self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
@@ -363,7 +363,7 @@ sub add {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -398,7 +398,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result if $result;
 
     @! = ();
@@ -452,7 +452,7 @@ sub save {
         unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
         unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
         unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-        unless ( defined $$data{'status'} )      { $$data{'status'}      = 0 };
+        unless ( defined $$data{'publish'} )      { $$data{'publish'}      = 0 };
 
         # проверяем поле name на дубликат
         if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {
@@ -473,7 +473,7 @@ sub save {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok' ;
+    $resp->{'publish'} = @! ? 'fail' : 'ok' ;
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -501,7 +501,7 @@ sub delete {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
     @! = ();
@@ -542,7 +542,7 @@ sub toggle {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $toggle;
 
     @! = ();
@@ -618,7 +618,7 @@ sub export {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -679,7 +679,7 @@ sub import {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -734,7 +734,7 @@ sub del_export {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -758,7 +758,7 @@ sub list_export {
         $list = \@list;
     }
 
-    $resp->{'status'} = 'ok';
+    $resp->{'publish'} = 'ok';
     $resp->{'list'} = $list;
 
     @! = ();

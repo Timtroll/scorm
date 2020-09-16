@@ -44,7 +44,7 @@ sub index {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     $self->render( 'json' => $resp );
@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'status'      => $$result{'status'} }
+                            { 'publish'      => $$result{'publish'} }
                         ]
                     },
                     {
@@ -101,7 +101,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $list unless @!;
 
     @! = ();
@@ -120,7 +120,7 @@ sub add {
     $id = $self->model('Theme')->_empty_theme();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -132,7 +132,6 @@ sub add {
 # $self->save( $data );
 # $data = {
 #    'id'          => 3,                                # кладется в EAV
-#    'parent'      => 0,                                # кладется в EAV
 #    'name'        => 'Название',                       # кладется в EAV
 #    'label'       => 'Тема 1',                         # кладется в EAV
 #    'description' => 'Краткое описание',               # кладется в EAV
@@ -141,7 +140,7 @@ sub add {
 #    'keywords'    => 'ключевые слова',                 # кладется в EAV
 #    'url'         => 'как должен выглядеть url',       # кладется в EAV
 #    'seo'         => 'дополнительное поле для seo',    # кладется в EAV
-#    'status'      => 1                                 # кладется в EAV
+#    'publish'      => 1                                 # кладется в EAV
 # }
 sub save {
     my $self = shift;
@@ -170,7 +169,7 @@ sub save {
     }
 
     unless ( @! ) {
-        $$data{'status'} = 1 unless defined $$data{'status'};
+        $$data{'publish'} = 1 unless defined $$data{'publish'};
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
@@ -180,7 +179,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -191,9 +190,9 @@ sub save {
 # изменить статус темы (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
-# 'id'    - id записи
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
 #}
 sub toggle {
     my $self = shift;
@@ -210,7 +209,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -238,7 +237,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

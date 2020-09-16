@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'index',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -28,7 +28,7 @@ sub add {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'add',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -42,7 +42,7 @@ sub edit {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'edit',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -56,7 +56,7 @@ sub save {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'save',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -70,7 +70,7 @@ sub move {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'move',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -84,7 +84,7 @@ sub activate {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'activate',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -98,7 +98,7 @@ sub hide {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'hide',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -112,7 +112,7 @@ sub delete {
         'json'    => {
             'controller'    => 'Scheduler',
             'route'         => 'delete',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

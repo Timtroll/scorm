@@ -148,7 +148,7 @@ warn "type";
 
     $self->on(finish => sub {
         my ($self, $code, $reason) = @_;
-        $self->app->log->debug("WebSocket closed with status $code.");
+        $self->app->log->debug("WebSocket closed with publish $code.");
         Mojo::IOLoop->remove($id);
         unlink("/tmp/sdp.$type");
     });

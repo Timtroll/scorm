@@ -6,8 +6,8 @@
         <BR>
         <BR>Name:
         <BR><textarea name="name" rows=5 cols=40/><%= $$group{'name'} %></textarea>
-        <BR><input type="radio" name="status" value=1 >Status active
-        <BR><input type="radio" name="status" value=0 >Status unactive
+        <BR><input type="radio" name="publish" value=1 >Status active
+        <BR><input type="radio" name="publish" value=0 >Status unactive
         <BR><BR><input type="submit" value="Save"/>
     </form>
 </div>

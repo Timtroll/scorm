@@ -12,11 +12,11 @@
 ответ:
 ```
 {
-  "status": "ok"
+  "publish": "ok"
 }
 
 {
-  "status": "fail",
+  "publish": "fail",
   "message":"причина ошибки"
 }
 ```
@@ -47,12 +47,12 @@
     "title":            "eye-slash-solid.svg",
     "type":             ""
   },
-  "status":"ok"
+  "publish":"ok"
 }
 
 
 {
-  "status": "fail",
+  "publish": "fail",
   "message":"причина ошибки"
 }
 ```
@@ -68,11 +68,11 @@
 ответ:
 ```
 {
-  "status": "ok"
+  "publish": "ok"
 }
 
 {
-  "status": "fail",
+  "publish": "fail",
   "message":"причина ошибки"
 }
 ```
@@ -89,11 +89,11 @@
 ответ:
 ```
 {
-  "status": "ok"
+  "publish": "ok"
 }
 
 {
-  "status": "fail",
+  "publish": "fail",
   "message":"причина ошибки"
 }
 ```

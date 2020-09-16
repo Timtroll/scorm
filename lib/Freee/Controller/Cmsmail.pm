@@ -14,7 +14,7 @@ sub index {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'index',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash,
             'test'          => $test
         }
@@ -29,7 +29,7 @@ sub add {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'add',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -43,7 +43,7 @@ sub edit {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'edit',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -57,7 +57,7 @@ sub save {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'save',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -71,7 +71,7 @@ sub activate {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'activate',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -85,7 +85,7 @@ sub hide {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'hide',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );
@@ -99,7 +99,7 @@ sub delete {
         'json'    => {
             'controller'    => 'Cmsmail',
             'route'         => 'delete',
-            'status'        => 'ok',
+            'publish'        => 'ok',
             'params'        => $self->req->params->to_hash
         }
     );

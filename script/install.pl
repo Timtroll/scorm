@@ -207,7 +207,7 @@ $user = {
     'publish'     => 't', 
     'email'       => 'admin@admin',
     'login'       => 'admin',
-    'password'    => sha256_hex( 'admin', $salt ),
+    'password'    => sha256_hex( 'yfenbkec', $salt ),
     'timezone'    => 3,
     'eav_id'      => $eav_id
 };

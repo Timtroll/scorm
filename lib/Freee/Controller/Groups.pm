@@ -12,14 +12,30 @@ use common;
 use Data::Dumper;
 
 # вывод списка групп в виде объекта как в Mock
-#    "label"       => "scorm",
-#    "id"          => 1,
-#    "component"   => "Groups",
-#    "opened"      => 0,
-#    "folder"      => 1,
-#    "keywords"    => "",
-#    "children"    => [],
-#    "table"       => {}
+# {
+#     "list":[
+#         {
+#             "children":[],
+#             "component":"Groups",
+#             "folder":0,
+#             "id":"1",
+#             "keywords":"Администратор",
+#             "label":"Администратор",
+#             "opened":0
+#         },
+# ...
+#         {
+#             "children":[],
+#             "component":"Groups",
+#             "folder":0,
+#             "id":"2",
+#             "keywords":"Менеджер",
+#             "label":"Менеджер",
+#             "opened":0
+#         }
+#     ],
+#     "publish":"ok"
+# }
 sub index {
     my $self = shift;
 
@@ -30,7 +46,6 @@ sub index {
 
     $set = [];
     unless ( @! ) {
-
 
         # формируем данные для вывода
         foreach (sort {$a <=> $b} keys %$list) {
@@ -51,7 +66,7 @@ sub index {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $set unless @!;
 
     @! = ();
@@ -63,7 +78,7 @@ sub index {
 # my $id = $self->insert_group();
 # "label"  - 'название',      - название для отображения
 # "name",  - 'name',          - системное название, латиница
-# "status" - 0 или 1,         - активна ли группа
+# "publish" - 0 или 1,         - активна ли группа
 sub add {
     my $self = shift;
 
@@ -92,7 +107,7 @@ sub add {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -119,7 +134,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     @! = ();
@@ -132,7 +147,7 @@ sub edit {
 # "id"        => 1            - id обновляемого элемента ( >0 )
 # "label"     => 'название'   - обязательно (название для отображения)
 # "name",     => 'name'       - обязательно (системное название, латиница)
-# "status"    => 0 или 1      - активна ли группа
+# "publish"    => 0 или 1      - активна ли группа
 sub save {
     my ( $self ) = shift;
 
@@ -164,7 +179,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -190,7 +205,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -200,21 +215,18 @@ sub delete {
 
 # изменение поля на 1/0
 # my $true = $self->toggle();
-# 'id'    - id записи 
-# 'field' - имя поля в таблице
-# 'val'   - 1/0
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
 sub toggle {
     my $self = shift;
 
     my ( $toggle, $resp, $data );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
-    # проверка существования элемента для изменения
+    # Группа существует?
     unless ( @! ) {
         unless ( $self->model('Utils')->_exists_in_table( 'groups', 'id', $$data{'id'} ) ) {
             push @!, "Id '$$data{'id'}' doesn't exist";
@@ -228,7 +240,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

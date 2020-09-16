@@ -7,7 +7,7 @@
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
 # 'timezone'     => -12,             # 2-4 буквы кода часового пояса, обязательное поле
 # 'birthday'     => 807393600,      # 12 цифр, обязательное поле
-# 'status'       => '1',               # 0 или 1, обязательное поле
+# 'publish'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
 # 'avatar'       => 1,              # До 9 цифр, обязательное поле
 # 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
@@ -41,33 +41,33 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '3',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -96,12 +96,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)2222222',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -117,12 +117,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)2222221',
-            'status'       => 0,
+            'publish'       => 0,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -139,12 +139,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No surname:' 
     },
@@ -159,12 +159,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No name:' 
     },
@@ -179,12 +179,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'country'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No country:'
     },
@@ -199,12 +199,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'timezone'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No timezone:'
     },
@@ -219,12 +219,12 @@ my $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'password'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No password:'
     },
@@ -239,12 +239,12 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'phone'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No phone:'
     },
@@ -263,10 +263,10 @@ my $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'status'",
-            'status'    => 'fail',
+            'message'   => "_check_fields: didn't has required data in 'publish'",
+            'publish'    => 'fail',
         },
-        'comment' => 'No status:'
+        'comment' => 'No publish:'
     },
     10 => {
         'data' => {
@@ -280,12 +280,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)2222222',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "phone '+7(921)2222222' already used",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Telephone already used:"
     },
@@ -301,12 +301,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'phone'        => '+7(921)2222224',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,404,405]"
         },
         'result' => {
             'message'   => "group with id '404' doesn't exist",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
     }

@@ -26,11 +26,11 @@ my $group = {
     'data' => {
         'name'      => 'test',
         'label'     => 'first test',
-        'status'    => 1
+        'publish'    => 1
     },
     'result' => {
         'id'        => '1',
-        'status'    => 'ok'
+        'publish'    => 'ok'
     },
     'comment' => 'New group' 
 };
@@ -95,9 +95,9 @@ my $test_data = {
                 'add'       => 0,
                 'edit'      => 0,
                 'delete'    => 0,
-                'status'    => 1
+                'publish'    => 1
             },
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -109,14 +109,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not get Route '404'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -126,7 +126,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },

@@ -129,7 +129,7 @@ sub _list_task {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'status'      => $_->{'status'},
+            'publish'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @tasks, $item;
@@ -184,7 +184,7 @@ sub _get_task {
                "route"       => '/task',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "status"      => $$result{'publish'}
+               "publish"      => $$result{'publish'}
             }
         } 
         else {
@@ -209,7 +209,7 @@ sub _get_task {
 #    'keywords'    => 'ключевые слова',
 #    'url'         => 'как должен выглядеть url',
 #    'seo'         => 'дополнительное поле для seo',
-#    'status'      => 1
+#    'publish'      => 1
 # }
 sub _save_task {
     my ( $self, $data ) = @_;
@@ -240,7 +240,7 @@ sub _save_task {
 # ???
                 'title'        => $$data{'title'},
                 'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'status'}
+                'publish'      => $$data{'publish'}
             }
         });
     }
@@ -252,14 +252,14 @@ sub _save_task {
 # $result = $self->model('Task')->_toggle_task( $data );
 # $data = {
 #    'id'    => <id>, - id записи 
-#    'status'=> 1     - новый статус 1/0
+#    'publish'=> 1     - новый статус 1/0
 # }
 sub _toggle_task {
     my ( $self, $data ) = @_;
 
     my ( $task, $result );
 
-    unless ( $$data{'id'} || $$data{'status'} ) {
+    unless ( $$data{'id'} || $$data{'publish'} ) {
         return;
     }
     else {
@@ -268,7 +268,7 @@ sub _toggle_task {
 
         return unless $task;
 
-        $result = $task->_store( 'publish', $$data{'status'} ? 'true' : 'false' );
+        $result = $task->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
     }
 
     return $result;

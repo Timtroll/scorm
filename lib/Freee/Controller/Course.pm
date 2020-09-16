@@ -44,7 +44,7 @@ sub index {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     $self->render( 'json' => $resp );
@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'status'      => $$result{'status'} }
+                            { 'publish'      => $$result{'publish'} }
                         ]
                     },
                     {
@@ -101,7 +101,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $list unless @!;
 
     @! = ();
@@ -120,7 +120,7 @@ sub add {
     $id = $self->model('Course')->_empty_course();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -132,7 +132,6 @@ sub add {
 # $self->save( $data );
 # $data = {
 #    'id'          => 3,
-#    'parent'      => 0,
 #    'name'        => 'Название',
 #    'label'       => 'курс 1',
 #    'description' => 'Краткое описание',
@@ -141,7 +140,7 @@ sub add {
 #    'keywords'    => 'ключевые слова',
 #    'url'         => 'как должен выглядеть url',
 #    'seo'         => 'дополнительное поле для seo',
-#    'status'      => 1
+#    'publish'      => 1
 # }
 sub save {
     my $self = shift;
@@ -162,15 +161,15 @@ sub save {
         }
     }
 
-    unless ( @! || !$$data{'parent'} ) {
-        # проверка существования родителя
+    unless ( @! ) {
+        # проверка существования связи с Предметом (таблица universal_links)
         unless( $self->model('Course')->_exists_in_course( $$data{'parent'} ) ) {
             push @!, "parent with id '$$data{'parent'}' doesn't exist in course";
         }
     }
 
     unless ( @! ) {
-        $$data{'status'} = 1 unless defined $$data{'status'};
+        $$data{'publish'} = 1 unless defined $$data{'publish'};
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
@@ -180,7 +179,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -191,9 +190,9 @@ sub save {
 # изменить статус курса (вкл/выкл)
 # $self->toggle( $data );
 # $data = {
-#    'id'    => - <id>m записи
-#    'field' => - имя поля в таблице
-#    'val'   => - 1/0
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
 #}
 sub toggle {
     my $self = shift;
@@ -204,13 +203,13 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем курс в EAV
-        $result = $self->model('Course')->_toggle_course( $data );
+        # включаем/выключаем курс в EAV
+        $result = $self->model('Course')->_toggle_course( { id => $data{id}, 'publish' => $data{value} } );
         push @!, "can't update EAV" unless $result;
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -238,7 +237,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

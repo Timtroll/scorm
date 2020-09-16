@@ -20,7 +20,7 @@ $mock_settings = {
       "opened"      => 0,
       "parent"      => 0,
       "folder"      => 1,
-      "status"      => 1,
+      "publish"      => 1,
       "keywords"    => "режим обновления список доступных редакторов редактор по умолчанию не имеет названия список доступных редакторов редактор по умолчанию не имеет названия поддержка более 2-х авто-превью включение многоязычной поддержки чтобы включить многоязычность необходимо ввести записи вида Русский rus default English eng Espanol esp дни недели русские именительный падеж емайл администратора",
       "children"    => [
           {
@@ -37,7 +37,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -51,7 +51,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -65,7 +65,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -79,7 +79,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -93,7 +93,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -107,7 +107,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -121,7 +121,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -136,7 +136,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -150,7 +150,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
 
           {
@@ -165,7 +165,7 @@ $mock_settings = {
             "selected"      => ["CKEditor", "EditorJs"],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -179,7 +179,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -193,7 +193,7 @@ $mock_settings = {
             "selected"      => ["rus", "en", "esp", "ch"],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -207,7 +207,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -221,7 +221,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -235,7 +235,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -249,7 +249,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -266,7 +266,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -283,7 +283,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -300,7 +300,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -317,7 +317,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -331,7 +331,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -345,7 +345,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -358,7 +358,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -371,7 +371,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -385,7 +385,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 1,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -396,7 +396,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  => "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -410,7 +410,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -424,7 +424,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -438,7 +438,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -452,7 +452,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -466,7 +466,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -480,7 +480,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -494,7 +494,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -508,7 +508,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -522,7 +522,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -536,7 +536,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -550,7 +550,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 2,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -561,7 +561,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  =>  "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -575,7 +575,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -589,7 +589,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -603,7 +603,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -617,7 +617,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -631,7 +631,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -645,7 +645,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 3,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -656,7 +656,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  => "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -670,7 +670,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 4,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -684,7 +684,7 @@ $mock_settings = {
             "selected"      => [12, 30, 50],
             "parent"        => 4,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "type"          => "InputNumber",
@@ -696,7 +696,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 4,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -707,7 +707,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  => "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -721,7 +721,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -735,7 +735,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -749,7 +749,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -763,7 +763,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -777,7 +777,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -791,7 +791,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -805,7 +805,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -819,7 +819,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -833,7 +833,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -847,7 +847,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -861,7 +861,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           },
           {
             "readonly"      => 0,
@@ -875,7 +875,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 5,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -886,7 +886,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  => "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
           {
             "readonly"      => 0,
@@ -900,7 +900,7 @@ $mock_settings = {
             "selected"      => [],
             "parent"        => 6,
             "folder"        => 0,
-            "status"        => 1
+            "publish"        => 1
           }
         ]
     },
@@ -911,7 +911,7 @@ $mock_settings = {
       "parent"    => 0,
       "keywords"  => "",
       "folder"    => 1,
-      "status"    => 1,
+      "publish"    => 1,
       "children"  => [
         {
           "readonly"      => 0,

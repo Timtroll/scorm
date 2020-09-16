@@ -31,22 +31,22 @@ my $test_data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -83,7 +83,7 @@ my $result = {
             'keywords'  => 'label2'
         }
     ],
-    'status' => 'ok'
+    'publish' => 'ok'
 };
 
 diag "All groups:";

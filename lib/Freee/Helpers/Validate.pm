@@ -73,7 +73,7 @@ sub register {
             # поля которые не могут быть undef
             my %exclude_fields = (
                 'parent' => 1,
-                'status' => 1,
+                'publish' => 1,
                 'timezone' => 1,
             );
             # проверка обязательных полей и исключения
@@ -185,7 +185,7 @@ sub register {
         $vfields = {
             # валидация роутов
 ################
-            '/manage_eav' => {},
+            '/manage_eav'      => {},
             '/manage_eav/root' => {},
 ################
             '/auth/login'  => {
@@ -212,12 +212,10 @@ sub register {
             # роуты user/*
             '/user'  => {
                 "group_id"      => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ],
+                "publish"        => [ '', qr/^[01]$/os, 1 ],
                 "page"          => [ '', qr/^\d+$/os, 9 ]
             },
-            '/user/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ]
-            },
+            '/user/add'   => {},
             '/user/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
@@ -233,7 +231,7 @@ sub register {
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'status'        => [ 'required', qr/^[01]$/os, 1 ],
+                'publish'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ '', qr/^\d+$/os, 9 ],
@@ -254,7 +252,8 @@ sub register {
             },
             '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/user/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -266,7 +265,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -276,7 +275,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -301,7 +300,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
@@ -315,7 +314,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -325,7 +324,7 @@ sub register {
             },
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
+                "fieldname"     => [ 'required', ['publish'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/export'  => {
@@ -340,18 +339,14 @@ sub register {
 ################
             # роуты discipline/*
             '/discipline'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 "order"         => [ '', ['ASC', 'DESC'], 4 ],
             },
             '/discipline/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/discipline/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-            },
-            '/discipline/save'  => {
+            '/discipline/add'  => {},
+            '/discipline/save' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -360,31 +355,28 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"       => [ '', qr/^[01]$/os, 1 ]
             },
-            '/discipline/delete'  => {
+            '/discipline/delete' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/discipline/toggle'  => {
+            '/discipline/toggle' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
             # роуты course/*
             '/course'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 "order"         => [ '', ['ASC', 'DESC'], 4 ],
             },
             '/course/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/course/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-            },
+            '/course/add'   => {},
             '/course/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -393,31 +385,28 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/course/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/course/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
             # роуты theme/*
             '/theme'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
             '/theme/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/theme/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-            },
+            '/theme/add'   => {},
             '/theme/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -426,32 +415,28 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/theme/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/theme/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required', 'readonly', 'status'], 8 ],
+                "fieldname"     => [ 'required', ['publish'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
             # роуты lesson/*
             '/lesson'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
             '/lesson/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/lesson/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-            },
+            '/lesson/add'   => {},
             '/lesson/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -460,31 +445,28 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/lesson/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/lesson/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
             # роуты task/*
             '/task'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
             '/task/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/task/add'  => {
-                "parent"        => [ '', qr/^\d+$/os, 9 ],
-            },
+            '/task/add'   => {},
             '/task/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -493,14 +475,15 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/task/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/task/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
@@ -508,12 +491,12 @@ sub register {
             # роуты groups/*
             '/groups'  => {
                 "page"          => [ '', qr/^[\w]+$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/edit'  => {
                  "id"           => [ 'required', qr/^\d+$/os, 9 ]
@@ -522,14 +505,14 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/groups/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['status'], 6 ],
+                "fieldname"     => [ 'required', ['publish'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
@@ -546,11 +529,11 @@ sub register {
                 "add"           => [ 'required', qr/^[01]$/os, 1 ],
                 "edit"          => [ 'required', qr/^[01]$/os, 1 ],
                 "delete"        => [ 'required', qr/^[01]$/os, 1 ],
-                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'], 6],
+                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'publish'], 6],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################
@@ -565,14 +548,14 @@ sub register {
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_theme'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
@@ -585,18 +568,18 @@ sub register {
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ]
@@ -610,13 +593,13 @@ sub register {
             '/forum/save_add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "publish"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/delete'  => {
                 "parent_id"     => [ '', qr/^\d+$/os, 9 ],

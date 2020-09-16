@@ -63,58 +63,58 @@ $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-                        'search'    => 1,
+            'search'    => 1,
         },
         'result' => {
-                        'data'      => [
-                                            {
-                                              "description" => "description",
-                                              "id"          =>  1,
-                                              "mime"        =>  'image/svg+xml',
-                                              "size"        =>  $size,
-                                              "title"       =>  'all_right.svg',
-                                              "url"         =>  $url
-                                            }
-                                        ],
-                        'status'    => 'ok'
+            'data'      => [
+                {
+                  "description" => "description",
+                  "id"          =>  1,
+                  "mime"        =>  'image/svg+xml',
+                  "size"        =>  $size,
+                  "title"       =>  'all_right.svg',
+                  "url"         =>  $url
+                }
+            ],
+            'publish'    => 'ok'
         },
         'comment'         => 'Search for id' 
     },
     2 => {
         'data' => {
-                        'search'    => $1,
+            'search'    => $1,
         },
         'result' => {
-                        'data'      => [
-                                            {
-                                              "description" => "description",
-                                              "id"          =>  1,
-                                              "mime"        =>  'image/svg+xml',
-                                              "size"        =>  $size,
-                                              "title"       =>  'all_right.svg',
-                                              "url"         =>  $url
-                                            }
-                                        ],
-                        'status'    => 'ok'
+            'data'      => [
+                {
+                  "description" => "description",
+                  "id"          =>  1,
+                  "mime"        =>  'image/svg+xml',
+                  "size"        =>  $size,
+                  "title"       =>  'all_right.svg',
+                  "url"         =>  $url
+                }
+            ],
+            'publish'    => 'ok'
         },
         'comment'         => 'Search for filename:' 
     },
     3 => {
         'data' => {
-                        'search'    => 'desc',
+             'search'    => 'desc',
         },
         'result' => {
-                        'data'      => [
-                                            {
-                                              "description" => "description",
-                                              "id"          =>  1,
-                                              "mime"        =>  'image/svg+xml',
-                                              "size"        =>  $size,
-                                              "title"       =>  'all_right.svg',
-                                              "url"         =>  $url
-                                            }
-                                        ],
-                        'status'    => 'ok'
+            'data'      => [
+                {
+                  "description" => "description",
+                  "id"          =>  1,
+                  "mime"        =>  'image/svg+xml',
+                  "size"        =>  $size,
+                  "title"       =>  'all_right.svg',
+                  "url"         =>  $url
+                }
+            ],
+            'publish'    => 'ok'
         },
         'comment' => "Search for description:" 
     },
@@ -125,7 +125,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "can not get data from database",
-            'status'    => 'warn'
+            'publish'    => 'warn'
         },
         'comment' => "Id doesn't exist:" 
     },
@@ -134,7 +134,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'search'",
-            'status'    => 'warn'
+            'publish'    => 'warn'
         },
         'comment' => 'No search:' 
     },

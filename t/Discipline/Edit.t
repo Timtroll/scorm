@@ -47,12 +47,12 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'status'      => 1,
+    'publish'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 1,
-    'status'    => 'ok'
+    'publish'    => 'ok'
 };
 
 $t->post_ok( $host.'/discipline/add' => form => $data );
@@ -85,7 +85,7 @@ my $test_data = {
                             {"url" => "https://test.com"},
                             {"seo" => "дополнительное поле для seo"},
                             {"route" => "/discipline"},
-                            {"status" => 1},
+                            {"publish" => 1},
 
                         ],
                     },
@@ -98,7 +98,7 @@ my $test_data = {
                     }
                 ]
             },
-            "status" => "ok"
+            "publish" => "ok"
         },
         'comment' => 'All fields:' 
     },
@@ -109,14 +109,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "discipline with id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -126,7 +126,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

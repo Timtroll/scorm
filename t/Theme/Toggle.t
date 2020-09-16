@@ -1,8 +1,8 @@
 # изменить полепредмета предмет
 # my $id = $self->_toggle_theme({
 # 'id'          => 1,                               # До 9 цифр, обязательное поле
-# 'fieldname'   => 'название поля',                 # status, обязательное поле
-# 'status'      => '1'                              # 0 или 1, обязательное поле
+# 'fieldname'   => 'название поля',                 # publish, обязательное поле
+# 'publish'      => '1'                              # 0 или 1, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -49,7 +49,7 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'status'      => 1,
+    'publish'      => 1,
     'attachment'  => '[1]'
 };
 diag "Insert media:";
@@ -70,12 +70,12 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 1,
-    'status'      => 1,
+    'publish'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 2,
-    'status'    => 'ok'
+    'publish'    => 'ok'
 };
 
 $t->post_ok( $host.'/theme/add' => form => $data );
@@ -92,11 +92,11 @@ my $test_data = {
     1 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'All right:' 
@@ -106,22 +106,22 @@ my $test_data = {
     2 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status'
+            'fieldname' => 'publish'
         },
         'result' => {
             'message'   => "_check_fields: 'value' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No value:'
     },
     3 => {
         'data' => {
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'    => 1,
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -132,31 +132,31 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'fieldname' didn't match required in check array",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No fieldname:' 
     },
     5 => {
         'data' => {
             'id'        => 404,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "can't update EAV",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     6 => {
         'data' => {
             'id'        => 0,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "can't update EAV",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => '0 id:' 
     }

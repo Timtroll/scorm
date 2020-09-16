@@ -26,7 +26,7 @@ my $data = {
     'name'      => 'test',
     'label'     => 'test',
     'parent'    => 0,
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -41,7 +41,7 @@ diag "Add setting:";
 $data = {
     'name'      => 'name',
     'label'     => 'label',
-    'status'    => 1,
+    'publish'    => 1,
     'parent'    => 1
 };
 $t->post_ok( $host.'/settings/add' => form => $data );
@@ -71,10 +71,10 @@ my $test_data = {
                 'selected'    => '',
                 'required'    => 0,
                 'readonly'    => 0,
-                'status'      => 1,
+                'publish'      => 1,
                 'folder'      => 1
             },
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Edit folder:'
     },
@@ -86,7 +86,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Id '2' is not a folder",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Get leaf:'
     },
@@ -96,14 +96,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
     4 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -113,7 +113,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

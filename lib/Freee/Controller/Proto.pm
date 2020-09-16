@@ -48,7 +48,7 @@ sub proto_leaf {
                             { "placeholder"   => '' },
                             { "readonly"      => 0 },
                             { "required"      => 0 },
-                            { "status"        => 1 }
+                            { "publish"        => 1 }
                         ]
                     },
                     {
@@ -67,7 +67,7 @@ sub proto_leaf {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
@@ -93,13 +93,13 @@ sub proto_folder {
                 "parent"  => $data->{'parent'} * 1,
                 "name"    => '',
                 "label"   => '',
-                "status"  => 1
+                "publish"  => 1
             };
         }
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
@@ -150,7 +150,7 @@ sub proto_folder {
 #                                 }
 #                             },
 #                             {'birthday'      => ''}, # дата рождения (в секундах)
-#                             {'status'        => ''}, # активный / не активный пользователь
+#                             {'publish'        => ''}, # активный / не активный пользователь
 #                             {'avatar'        => ''},
 #                             {'type'          => ''}                        # тип
 #                         ]
@@ -180,7 +180,7 @@ sub proto_folder {
 #     }
 
 #     $resp->{'message'} = join("\n", @!) if @!;
-#     $resp->{'status'} = @! ? 'fail' : 'ok';
+#     $resp->{'publish'} = @! ? 'fail' : 'ok';
 #     $resp->{'data'} = $data unless @!;
 
 #     $self->render( 'json' => $resp );

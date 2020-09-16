@@ -9,7 +9,7 @@
 # 'keywords'    => 'ключевые слова и фразы',        # До 2048 символов, слова, разделенные запятыми, обязательное поле
 # 'url'         => 'https://test.com',                  # До 256 символов, электронный адрес, обязательное поле
 # 'seo'         => 'дополнительное поле для seo',   # До 2048 букв, цифр и знаков, обязательное поле
-# 'status'      => '1'                              # 0 или 1, обязательное поле
+# 'publish'      => '1'                              # 0 или 1, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -58,12 +58,12 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'status'      => 1,
+            'publish'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -77,12 +77,12 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'status'      => 0,
+            'publish'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -100,9 +100,9 @@ my $test_data = {
         },
         'result' => {
             'id'        => 3,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
-        'comment' => 'No status:' 
+        'comment' => 'No publish:' 
     },
 
     # отрицательные тесты
@@ -119,7 +119,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No required field:' 
     },
@@ -137,7 +137,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "file with id '404' doesn't exist",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Attachment doesn't exist:"
     },
@@ -155,7 +155,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'attachment' didn't match regular expression",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Validation error:"
     },
@@ -173,7 +173,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "parent with id '404' doesn't exist in discipline",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "No parent:"
     }

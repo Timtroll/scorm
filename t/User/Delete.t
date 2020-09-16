@@ -30,33 +30,33 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '3',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -85,7 +85,7 @@ $data = {
     'avatar'       => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+7(921)2222222',
-    'status'       => 1,
+    'publish'       => 1,
     'groups'       => "[1,2,3]"
 };
 $t->post_ok( $host.'/user/add_user' => form => $data );
@@ -101,7 +101,7 @@ my $test_data = {
             'id' => 1
         },
         'result' => {
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -112,14 +112,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "could not delete '404' from users",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -129,7 +129,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

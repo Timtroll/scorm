@@ -4,7 +4,7 @@
 # 'add'       => 0 или 1  -    
 # 'edit'      => 0 или 1  -   
 # 'delete'    => 0 или 1  -   
-# 'status'    => 0 или 1  -  активен ли роут
+# 'publish'    => 0 или 1  -  активен ли роут
 use Mojo::Base -strict;
 
 use Test::More;
@@ -27,7 +27,7 @@ my $host = $t->app->config->{'host'};
 
 #  Вводим группу родителя
 diag "Create group: ";
-my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
+my $data = {'name' => 'test', 'label' => 'test', 'publish' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't create group");
@@ -50,7 +50,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Routes for Group id '404' is not exists",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong parent:' 
     },
@@ -60,14 +60,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'parent' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'parent'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },

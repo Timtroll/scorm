@@ -68,7 +68,7 @@ sub index {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $table unless @!;
 
     @! = ();
@@ -96,7 +96,7 @@ sub edit {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     @! = ();
@@ -110,7 +110,7 @@ sub edit {
 # "parent"      => 5,           - обязательно id родителя (должно быть натуральным числом)
 # "label"       => 'название',  - обязательно (название для отображения)
 # "name",       => 'name'       - обязательно (системное название, латиница)
-# "status"      => 0,           - по умолчанию 1
+# "publish"      => 0,           - по умолчанию 1
 # "readonly"    => 0,           - не обязательно, по умолчанию 0
 # "value"       => "",          - строка или json
 # "required"    => 0            - не обязательно, по умолчанию 0
@@ -138,7 +138,7 @@ sub save {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -175,7 +175,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

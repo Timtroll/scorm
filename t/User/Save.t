@@ -8,7 +8,7 @@
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
 # 'timezone'     => -3.5,             # 2-4 буквы кода часового пояса, обязательное поле
 # 'birthday'     => 807393600,      # 12 цифр, обязательное поле
-# 'status'       => '1',               # 0 или 1, обязательное поле
+# 'publish'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
 # 'avatar'       => 1,              # До 9 цифр, обязательное поле
 # 'email'        => 'email@email.ru'   # До 100 букв, цифр с @, обязательное поле
@@ -42,33 +42,33 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '3',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -99,12 +99,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
@@ -120,12 +120,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '2@email.ru',
             'phone'        => '+7(921)1111112',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     }
 };
@@ -158,12 +158,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -181,12 +181,12 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No email:' 
     },
@@ -204,12 +204,12 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No phone:' 
     },
@@ -228,12 +228,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -250,12 +250,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '6@email.ru',
             'phone'        => '+7(921)1111116',
-            'status'       => 0,
+            'publish'       => 0,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'No password and no newpassword:' 
     },
@@ -275,12 +275,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111119',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No required field surname:' 
     },
@@ -299,12 +299,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '2@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "email '2\@email.ru' already used",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Email already used:"
     },
@@ -323,12 +323,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111112',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "phone '+7(921)1111112' already used",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Telephone already used:"
     },
@@ -347,12 +347,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '3@email.ru',
             'phone'        => '+7(921)1111113',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "can't update 404 in users",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Wrong id:"
     },
@@ -371,12 +371,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "Password and newpassword are the same",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Password and newpassword are the same:" 
     },
@@ -394,12 +394,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => 'No newpassword',
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No newpassword:' 
     },
@@ -417,12 +417,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => 'No password',
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No password:' 
     },
@@ -439,12 +439,12 @@ $test_data = {
             'password'  => 'password1',
             'newpassword'  => 'password2',
             'avatar'       => 1,
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "No email and no phone",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'No email and no phone:' 
     },
@@ -463,12 +463,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => 'Wrong id validation:'
     },
@@ -485,12 +485,12 @@ $test_data = {
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
             'phone'        => '+7(921)1111114',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2,404,405]"
         },
         'result' => {
             'message'   => "group with id '404' doesn't exist",
-            'status'    => 'fail',
+            'publish'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
     }

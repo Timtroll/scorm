@@ -28,11 +28,11 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     }
 };
@@ -53,7 +53,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'status' => 'ok',
+            'publish' => 'ok',
             'id'        => 1
         },
         'comment' => 'No parent:' 
@@ -63,7 +63,7 @@ my $test_data = {
             'parent' => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'All right:' 
@@ -76,7 +76,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "parent with id '404' doesn't exist in user",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
@@ -86,7 +86,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'parent' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

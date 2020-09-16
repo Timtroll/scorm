@@ -32,13 +32,13 @@
 		<li>pass - 'symbchars' string</li>
 		<h4>Return</h4>
 		<div>{<br>
-		    'status' : 'ok',<br>
+		    'publish' : 'ok',<br>
 		    'token'  : '72ade14d2d30c88f082f0410499fed05'<br>
 		}<br>
 		or<br>
 		{<br>
 		    "mess": "Login or password is wrong",<br>
-		    "status": "fail"<br>
+		    "publish": "fail"<br>
 		}</div>
 <hr>
 		<h2>/logout</h2>

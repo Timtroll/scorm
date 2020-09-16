@@ -16,7 +16,7 @@ use Data::Dumper;
 # $self->index($data)
 # $data = { 
 #   id - Id группы
-#   status - показывать группы только с этим статусом
+#   publish - показывать группы только с этим статусом
 #   page - вывести список начиная с этой страницы ( по умолчанию 1 )
 # }
 sub index {
@@ -58,7 +58,7 @@ sub index {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $list unless @!;
 
     @! = ();
@@ -119,7 +119,7 @@ sub edit {
                             }
                         },
                         {"place"      => $$user_data{'place'} },
-                        {"status"     => $$user_data{'publish'} ? 1 : 0 },
+                        {"publish"     => $$user_data{'publish'} ? 1 : 0 },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
@@ -156,7 +156,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     @! = ();
@@ -180,7 +180,7 @@ sub add {
     ( $id, $eav_id ) = $self->model('User')->_empty_user();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
     $resp->{'eav_id'} = $eav_id unless @!;
 
@@ -204,7 +204,7 @@ sub add {
 #     'emailconfirmed'    => 1,                   # email подтвержден
 #     'phone'             => 79312445646,         # номер телефона
 #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-#     'status'            => 1,                   # активный / не активный пользователь
+#     'publish'            => 1,                   # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],           # список ID групп
 #     'password'          => 'khasdf',            # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -273,13 +273,13 @@ sub save {
             'id'     => $$data{'id'},
             'groups' => $$data{'groups'},
             'data_user' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'publish'       => $$data{'publish'} ? 'true' : 'false',
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'}
             },
             'data_eav' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'publish'       => $$data{'publish'} ? 'true' : 'false',
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
@@ -295,7 +295,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $result unless @!;
 
     @! = ();
@@ -395,7 +395,7 @@ sub registration {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -427,14 +427,14 @@ sub toggle {
         unless ( @! ) {
             $$data{'table'}     = 'users';
             $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'status'} ? 'true' : 'false';
+            $$data{'value'}     = $$data{'publish'} ? 'true' : 'false';
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -461,7 +461,7 @@ sub delete {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'publish'} = @! ? 'fail' : 'ok';
 
     @! = ();
 

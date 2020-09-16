@@ -68,10 +68,10 @@ $test_data = {
             'description' => 'description'
         },
         'result' => {
-                        'id'        => 1,
-                        'mime'      => 'image/svg+xml',
-                        'status'    => 'ok',
-                        'url'       => $url
+            'id'        => 1,
+            'mime'      => 'image/svg+xml',
+            'publish'    => 'ok',
+            'url'       => $url
         },
         'comment'         => 'All right:' 
     },
@@ -81,10 +81,10 @@ $test_data = {
             'description' => ''
         },
         'result' => {
-                        'id'        => 1,
-                        'mime'      => 'image/svg+xml',
-                        'status'    => 'ok',
-                        'url'       => $url
+            'id'        => 1,
+            'mime'      => 'image/svg+xml',
+            'publish'    => 'ok',
+            'url'       => $url
         },
         'comment'         => 'Empty description:' 
     },
@@ -97,7 +97,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Can not get file info',
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => "File with id doesn't exist:" 
     },
@@ -107,7 +107,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -118,7 +118,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
     },
@@ -140,7 +140,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     ok( Compare( $result, $response ), "Response is correct" );
 
     # проверка содержимого файла описания
-    if ( $$result{'status'} eq 'ok' ) {
+    if ( $$result{'publish'} eq 'ok' ) {
         $description = read_file( $desc_path );
         $description = decode_json $description;
         ok( 

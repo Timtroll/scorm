@@ -28,7 +28,7 @@ my $data = {
     'name'    => 'test',
     'label'   => 'test',
     'parent'  => 0,
-    'status'  => 1
+    'publish'  => 1
 };
 $t->post_ok( $host.'/settings/add_folder' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -43,7 +43,7 @@ diag "Add setting:";
 $data = {
     'name'      => 'name',
     'label'     => 'label',
-    'status'    => 1,
+    'publish'    => 1,
     'parent'    => 1
 };
 $t->post_ok( $host.'/settings/add' => form => $data );
@@ -63,7 +63,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Required -> 0:' 
@@ -75,7 +75,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Required -> 1:' 
@@ -87,7 +87,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Readonly -> 0:' 
@@ -99,7 +99,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Readonly -> 1:' 
@@ -107,11 +107,11 @@ my $test_data = {
     5 => {
         'data' => {
             'id'        => 2,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Status -> 0:' 
@@ -119,11 +119,11 @@ my $test_data = {
     6 => {
         'data' => {
             'id'        => 2,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 2
         },
         'comment' => 'Status -> 1:' 
@@ -131,11 +131,11 @@ my $test_data = {
     7 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'Status for folder:' 
@@ -148,7 +148,7 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Readonly for folder:' 
     },
@@ -160,7 +160,7 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         },
         'comment' => 'Required for folder:'
     },
@@ -169,22 +169,22 @@ my $test_data = {
     10 => {
         'data' => {
             'id'        => 2,
-            'fieldname' => 'status'
+            'fieldname' => 'publish'
         },
         'result' => {
             'message'   => "_check_fields: 'value' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No value:'
     },
     11 => {
         'data' => {
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'    => 1,
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -195,31 +195,31 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'fieldname' didn't match required in check array",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No fieldname:' 
     },
     13 => {
         'data' => {
             'id'        => 404,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Id do not exist:' 
     },
     14 => {
         'data' => {
             'id'        => 'mistake',
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Validation mistake:' 
     }

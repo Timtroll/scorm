@@ -27,7 +27,7 @@ diag "Add Group";
 my $data = {
     'name'      => 'test',
     'label'     => 'test',
-    'status'    => 1
+    'publish'    => 1
 };
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
@@ -58,7 +58,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'list -> 1:' 
@@ -70,7 +70,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'list -> 0:' 
@@ -82,7 +82,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'add -> 1:' 
@@ -94,7 +94,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'add -> 0:' 
@@ -106,7 +106,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'edit -> 1:' 
@@ -118,7 +118,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'edit -> 0:' 
@@ -130,7 +130,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'delete -> 1:' 
@@ -142,7 +142,7 @@ my $test_data = {
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
         'comment' => 'delete -> 0:' 
@@ -150,48 +150,48 @@ my $test_data = {
     9 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
-        'comment' => 'status -> 1:' 
+        'comment' => 'publish -> 1:' 
     },
     10 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 0
         },
         'result' => {
-            'status'    => 'ok',
+            'publish'    => 'ok',
             'id'        => 1
         },
-        'comment' => 'status -> 0:' 
+        'comment' => 'publish -> 0:' 
     },
 
     # отрицательные тесты
     11 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'status'
+            'fieldname' => 'publish'
         },
         'result' => {
             'message'   => "_check_fields: 'value' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No value:'
     },
     12 => {
         'data' => {
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1,
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -202,31 +202,31 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'fieldname' didn't match required in check array",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No fieldname:' 
     },
     14 => {
         'data' => {
             'id'        => 404,
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Id do not exist:' 
     },
     15 => {
         'data' => {
             'id'        => 'mistake',
-            'fieldname' => 'status',
+            'fieldname' => 'publish',
             'value'     => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },

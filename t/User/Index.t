@@ -30,44 +30,44 @@ my $data = {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '1',
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '2',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '3',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     },
     4 => {
         'data' => {
             'name'      => 'name4',
             'label'     => 'label4',
-            'status'    => 1
+            'publish'    => 1
         },
         'result' => {
             'id'        => '4',
-            'status'    => 'ok' 
+            'publish'    => 'ok' 
         }
     }
 };
@@ -98,12 +98,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1]"
         },
         'result' => {
             'id'        => 1,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     2 => {
@@ -119,12 +119,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '2@email.ru',
             'phone'        => '+7(921)1111112',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[1,2]"
         },
         'result' => {
             'id'        => 2,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     3 => {
@@ -140,12 +140,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '3@email.ru',
             'phone'        => '+7(921)1111113',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[2,1,3]"
         },
         'result' => {
             'id'        => 3,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     4 => {
@@ -161,12 +161,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '4@email.ru',
             'phone'        => '+7(921)1111114',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[3,2,1]"
         },
         'result' => {
             'id'        => 4,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     },
     5 => {
@@ -182,12 +182,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '5@email.ru',
             'phone'        => '+7(921)1111115',
-            'status'       => 1,
+            'publish'       => 1,
             'groups'       => "[3,2,4]"
         },
         'result' => {
             'id'        => 5,
-            'status'    => 'ok'
+            'publish'    => 'ok'
         }
     }
 };
@@ -218,7 +218,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  1,
                         "groups" => "[1]"
                     },
@@ -228,7 +228,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  2,
                         "groups" => "[1,2]"
                     },
@@ -238,7 +238,7 @@ $test_data = {
                         "password" => '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  3,
                         "groups" => "[2,1,3]"
                     },
@@ -248,7 +248,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  4,
                         "groups" => "[3,2,1]"
                     }
@@ -268,14 +268,14 @@ $test_data = {
                     }
                 }
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
-        'comment' => 'No status:' 
+        'comment' => 'No publish:' 
     },    
     2 => {
         'data' => {
             'id'     => 1,
-            'status' => 1
+            'publish' => 1
         },
         'result' => {
             "list" => {
@@ -286,7 +286,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  1,
                         "groups" => "[1]"
                     },
@@ -296,7 +296,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  2,
                         "groups" => "[1,2]"
                     },
@@ -306,7 +306,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  3,
                         "groups" => "[2,1,3]"
                     },
@@ -316,7 +316,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
-                        "status" =>  1,
+                        "publish" =>  1,
                         "eav_id" =>  4,
                         "groups" => "[3,2,1]"
                     }
@@ -336,14 +336,14 @@ $test_data = {
                     }
                 }
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Status 1:' 
     },
     3 => {
         'data' => {
             'id'     => 1,
-            'status' => 0
+            'publish' => 0
         },
         'result' => {
             "list" => {
@@ -363,7 +363,7 @@ $test_data = {
                     }
                 }
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Status 0:' 
     },
@@ -390,7 +390,7 @@ $test_data = {
                     }
                 }
             },
-            'status' => 'ok'
+            'publish' => 'ok'
         },
         'comment' => 'Page 404:' 
     },
@@ -398,7 +398,7 @@ $test_data = {
     5 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -408,7 +408,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'status'    => 'fail'
+            'publish'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     },
