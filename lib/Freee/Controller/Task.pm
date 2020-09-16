@@ -44,7 +44,7 @@ sub index {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     $self->render( 'json' => $resp );
@@ -101,7 +101,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $list unless @!;
 
     @! = ();
@@ -120,7 +120,7 @@ sub add {
     $id = $self->model('Task')->_empty_task();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -180,7 +180,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -210,7 +210,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -238,7 +238,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'staus'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

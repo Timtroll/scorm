@@ -49,7 +49,7 @@ sub get_folder {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     @! = ();
@@ -115,7 +115,7 @@ sub save_folder {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -175,7 +175,7 @@ sub add_folder {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -232,7 +232,7 @@ sub get_leafs {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $table if $table;
 
     @! = ();
@@ -300,7 +300,7 @@ sub load_default {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -363,7 +363,7 @@ sub add {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id if $id;
 
     @! = ();
@@ -398,7 +398,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result if $result;
 
     @! = ();
@@ -501,7 +501,7 @@ sub delete {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $del;
 
     @! = ();
@@ -542,7 +542,7 @@ sub toggle {
     $settings = $self->model('Settings')->_get_config();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} if $toggle;
 
     @! = ();
@@ -618,7 +618,7 @@ sub export {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -679,7 +679,7 @@ sub import {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
 
@@ -734,7 +734,7 @@ sub del_export {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();

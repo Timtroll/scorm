@@ -198,7 +198,7 @@ sub _delete_group {
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
 
-        push @!, "Could not delete Group '$$data{'id'}'" if $result eq '0E0';
+        push @!, "Could not delete Group '$$data{'id'}'" if ! defined $result;
     }
 
     return $result;

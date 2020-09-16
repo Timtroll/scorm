@@ -67,7 +67,7 @@ sub proto_leaf {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
@@ -99,7 +99,7 @@ sub proto_folder {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $data unless @!;
 
     $self->render( 'json' => $resp );
@@ -180,7 +180,7 @@ sub proto_folder {
 #     }
 
 #     $resp->{'message'} = join("\n", @!) if @!;
-#     $resp->{'publish'} = @! ? 'fail' : 'ok';
+#     $resp->{'status'} = @! ? 'fail' : 'ok';
 #     $resp->{'data'} = $data unless @!;
 
 #     $self->render( 'json' => $resp );

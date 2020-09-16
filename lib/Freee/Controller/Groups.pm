@@ -66,7 +66,7 @@ sub index {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $set unless @!;
 
     @! = ();
@@ -107,7 +107,7 @@ sub add {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -134,7 +134,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     @! = ();
@@ -179,7 +179,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -205,7 +205,7 @@ sub delete {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
 
     @! = ();
@@ -240,7 +240,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();

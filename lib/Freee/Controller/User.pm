@@ -58,7 +58,7 @@ sub index {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'list'} = $list unless @!;
 
     @! = ();
@@ -156,7 +156,7 @@ sub edit {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
 
     @! = ();
@@ -180,7 +180,7 @@ sub add {
     ( $id, $eav_id ) = $self->model('User')->_empty_user();
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
     $resp->{'eav_id'} = $eav_id unless @!;
 
@@ -295,7 +295,7 @@ sub save {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $result unless @!;
 
     @! = ();
@@ -395,7 +395,7 @@ sub registration {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -434,7 +434,7 @@ sub toggle {
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
@@ -461,7 +461,7 @@ sub delete {
     }
 
     $resp->{'message'} = join( "\n", @! ) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
 

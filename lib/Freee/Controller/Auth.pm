@@ -70,7 +70,7 @@ warn '=login=';
     $resp->{'data'}->{'profile'} = $user if $user;
     $resp->{'data'}->{'token'} = $token unless @!;
     $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'publish'} = @! ? 'fail' : 'ok';
+    $resp->{'status'} = @! ? 'fail' : 'ok';
 
     @! = ();
     $self->render( json => $resp );
