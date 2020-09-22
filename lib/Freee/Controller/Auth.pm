@@ -113,6 +113,11 @@ warn 'redirect_to 1';
     }
 warn '===========';
 
+warn ( $tokens );
+warn ( $self->req->headers->header('token') );
+warn ( exists( $$tokens{ $self->req->headers->header('token') } ) );
+warn ( $$tokens{ $self->req->headers->header('token') } );
+
     # проверка токена
     if (
         $tokens &&

@@ -2,26 +2,32 @@
 
 # должен вызываться только из корневой директории для не существующей базы данных
 # миграция: чтение и запуск sql файлов из scorm/sql
+# для миграции обязателен параметр с адресом конфигурации, которая находится вне git
 # для миграции тестовой базы данных добавить при вызове параметр test
-# ./script/migration.pl      - создание базы данных scorm при её отсутствии
-# ./script/migration.pl test - создание базы данных scorm_test при её отсутствии
+# ./script/install.pl ~/Documents/Other/temp_freee.conf      - создание базы данных scorm при её отсутствии
+# ./script/install.pl ~/Documents/Other/temp_freee.conf test - создание базы данных scorm_test при её отсутствии
 
 use utf8;
 use strict;
 use warnings;
 use lib './lib';
+use File::Slurp;
 use File::Slurp::Unicode qw(slurp);
 use Freee::EAV;
 use Digest::SHA qw( sha256_hex );
 use DBI qw(:sql_types);
-
+use Data::Dumper;
 use DDP;
+use Freee::Mock::Install;
 
-my ( $path_sql, $path_conf, $path_log, $config, $test, $db, $self, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, @list );
+my ( $path_sql, $path_conf, $new_conf, $path_log, $text, $config_update, $test, $db, $self, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, @list );
 
-# проверка тестового режима
 if ( @ARGV ) {
-    $test = shift @ARGV;
+    # путь к директории с начальной конфигурацией
+    $new_conf = shift @ARGV;
+
+    # проверка тестового режима
+    $test     = shift @ARGV;
 }
 
 # путь к директории со скриптами миграции
@@ -31,31 +37,46 @@ $path_sql = './sql';
 $path_conf = './freee.conf';
 
 # путь к директории с логированием
-unless ( $test ) {
-    $path_log = './log/migration.log';
-}
-else {
-    $path_log = './log/migration_test.log';
+$path_log = './log/migration.log';
+
+# проверка параметра test
+if ( $test &&  $test ne 'test' ) {
+    logging( "wrong format '$test' of 'test' parameter" ); 
+    exit;    
 }
 
 # остановка демона
 `./starting.sh stop`;
 
-# поиск и чтение конфигурации 
-if ( -e $path_conf ) {
-    $config = slurp( $path_conf, encoding => 'utf8' );
-    unless ( $config ) {
-        logging( "can't read config file from $path_conf" ); 
+# поиск и чтение шаблона конфигурации
+if ( -e $new_conf ) {
+    $text = slurp( $new_conf, encoding => 'utf8' );
+    unless ( $text ) {
+        logging( "can't read config file from '$new_conf'" ); 
         exit; 
     }
 }
 
-# преобразование текста файла конфигурации в объект
-$config = eval( $config );
-unless ( $config->{'dbs'}->{'databases'}->{'pg_main'} ){
-    logging( "wrong format of config" );
-    exit;
-}
+$config_update = eval( $text );
+
+# обновление конфигурации
+$$config{ 'login' }                                             = $$config_update{ 'login' }                 if $$config_update{ 'login' };
+$$config{ 'password' }                                          = $$config_update{ 'password' }              if $$config_update{ 'password' };
+$$config{ 'expires' }                                           = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
+$$config{ 'export_settings_path' }                              = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
+$config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'}      = $$config_update{ 'pg_main_username' }      if $$config_update{ 'pg_main_username' }; 
+$config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'}      = $$config_update{ 'pg_main_password' }      if $$config_update{ 'pg_main_password' };
+$config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} = $$config_update{ 'pg_main_test_username' } if $$config_update{ 'pg_main_test_username' };
+$config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} = $$config_update{ 'pg_main_test_password' } if $$config_update{ 'pg_main_test_password' };
+
+# настройка dumper, чтобы не было лишнего 'var='
+$Data::Dumper::Terse = 1;
+
+# запись конфигурации в файл
+my $result = write_file(
+    $path_conf,
+    Dumper( $config )
+);
 
 unless ( $test ) {
     $db = $config->{'dbs'}->{'databases'}->{'pg_main'};
@@ -206,8 +227,8 @@ my $salt = $config->{'secrets'}->[0];
 $user = {
     'publish'     => 't', 
     'email'       => 'admin@admin',
-    'login'       => 'admin',
-    'password'    => sha256_hex( 'yfenbkec', $salt ),
+    'login'       => $config->{'login'},
+    'password'    => sha256_hex( $config->{'password'}, $salt ),
     'timezone'    => 3,
     'eav_id'      => $eav_id
 };
@@ -218,7 +239,7 @@ foreach ( keys %$user ) {
     my $type = /publish/ ? SQL_BOOLEAN : undef();
     $sth->bind_param( ':'.$_, $$user{$_}, $type );
 }
-my $result = $sth->execute();
+$result = $sth->execute();
 
 # ввод в user_groups
 $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( 1,1 )';

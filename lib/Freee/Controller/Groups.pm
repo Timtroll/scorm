@@ -83,7 +83,7 @@ sub add {
     my $self = shift;
 
     my ( $id, $data, $resp );
-    push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
+    # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless ( @! ) {
         # проверка данных
@@ -91,12 +91,12 @@ sub add {
     }
 
     unless ( @! ) {
-        # проверяем, используется ли емэйл другим пользователем
+        # проверяем, используется ли имя другой группой
         if ( $self->model('Utils')->_exists_in_table('groups', 'name', $$data{'name'} ) ) {
             push @!, "name '$$data{ name }' already exists"; 
         }
 
-        # проверяем, используется ли телефон другим пользователем
+        # проверяем, используется ли название другой группой
         if ( $self->model('Utils')->_exists_in_table('groups', 'label', $$data{'label'} ) ) {
             push @!, "label '$$data{ label }' already exists"; 
         }

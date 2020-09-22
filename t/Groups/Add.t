@@ -42,13 +42,13 @@ my $test_data = {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'publish'    => 0
         },
         'result' => {
             'id'        => '2',
             'publish'    => 'ok',
         },
-        'comment' => 'Status zero:' 
+        'comment' => 'Publish zero:' 
     },
 
     # отрицательные тесты
@@ -137,6 +137,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->json_is( $result );
     diag "";
 };
+clear_db();
 
 done_testing();
 
