@@ -1,4 +1,4 @@
-package Freee::EAV::Task;
+package Freee::EAV::SEO;
 
 use parent 'Freee::EAV::Base';
 use strict;

@@ -60,14 +60,17 @@ if ( -e $new_conf ) {
 $config_update = eval( $text );
 
 # обновление конфигурации
-$$config{ 'login' }                                             = $$config_update{ 'login' }                 if $$config_update{ 'login' };
-$$config{ 'password' }                                          = $$config_update{ 'password' }              if $$config_update{ 'password' };
+$$config{ 'debug' }                                             = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
+$$config{ 'test' }                                              = $$config_update{ 'test' }                  if $$config_update{ 'test' };
 $$config{ 'expires' }                                           = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
 $$config{ 'export_settings_path' }                              = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
 $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'}      = $$config_update{ 'pg_main_username' }      if $$config_update{ 'pg_main_username' }; 
 $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'}      = $$config_update{ 'pg_main_password' }      if $$config_update{ 'pg_main_password' };
 $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} = $$config_update{ 'pg_main_test_username' } if $$config_update{ 'pg_main_test_username' };
 $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} = $$config_update{ 'pg_main_test_password' } if $$config_update{ 'pg_main_test_password' };
+
+$$config{ 'login' }                                             = $$config_update{ 'login' }                 if $$config_update{ 'login' };
+$$config{ 'password' }                                          = $$config_update{ 'password' }              if $$config_update{ 'password' };
 
 # настройка dumper, чтобы не было лишнего 'var='
 $Data::Dumper::Terse = 1;
@@ -227,8 +230,8 @@ my $salt = $config->{'secrets'}->[0];
 $user = {
     'publish'     => 't', 
     'email'       => 'admin@admin',
-    'login'       => $config->{'login'},
-    'password'    => sha256_hex( $config->{'password'}, $salt ),
+    'login'       => $$config_update{'login'},
+    'password'    => sha256_hex( $$config_update{'password'}, $salt ),
     'timezone'    => 3,
     'eav_id'      => $eav_id
 };
