@@ -74,7 +74,7 @@ sub startup {
     $r->get('/wschannel/index')         ->to('wschannel#index');
     $r->websocket('/wschannel/:type')   ->to('wschannel#type');
 
-    $r->post('/user/registration')   ->to('user#registration');         # регистрация пользователя
+    $r->post('/user/registration')      ->to('user#registration');         # регистрация пользователя
 
 # ??? требуется переписать так,чтобы можно было использовать безопасно
     $r->get('/settings/load_default')   ->to('settings#load_default');  # загрузка дефолтных настроек

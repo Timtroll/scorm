@@ -19,7 +19,7 @@ sub _empty_discipline {
     $self->{'app'}->pg_dbh->begin_work;
 
     # получаем id перента для предметов
-    $discipline = Freee::EAV->new( 'Discipline' );
+    $discipline = Freee::EAV->new( 'Learning' );
     $parent = $discipline->root();
 
     if ( $parent ) {
@@ -28,7 +28,17 @@ sub _empty_discipline {
             'parent'    => $parent,
             'title'     => 'New discipline',
             'publish'   => \0,
-            'Discipline' => {
+            'Learning' => {
+                'label'        => '',
+                'description'  => '',
+                'content'      => '',
+                'keywords'     => '',
+                'import_source'=> '',
+                'url'          => '',
+                'seo'          => '',
+                'attachment'   => '[]'
+            },
+            'Default' => {
                 'label'        => '',
                 'description'  => '',
                 'content'      => '',
@@ -39,7 +49,7 @@ sub _empty_discipline {
                 'attachment'   => '[]'
             }
         };
-        $discipline = Freee::EAV->new( 'Discipline', $eav );
+        $discipline = Freee::EAV->new( 'Learning', $eav );
         $id = $discipline->id();
         unless ( scalar( $id ) ) {
             push @!, "Could not insert discipline into EAV";
@@ -222,12 +232,14 @@ sub _save_discipline {
     }
     else {
         # обновление полей в EAV
-        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $$data{'id'} } );
+        $discipline = Freee::EAV->new( 'Learning', { 'id' => $$data{'id'} } );
 
         return unless $discipline;
 
-        $result = $discipline->_MultiStore( {                 
-            'Discipline' => {
+        $result = $discipline->_MultiStore( {
+            'publish' => $$data{'publish'},
+            'title'   => $$data{'title'},
+            'Learning' => {
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -236,11 +248,18 @@ sub _save_discipline {
                 'import_source'=> '',
                 'url'          => $$data{'url'},
                 'date_updated' => $$data{'time_update'},
-                'seo'          => $$data{'seo'},
-# ???
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'publish'}
+                'seo'          => $$data{'seo'}
+            },
+            'Default' => {
+                'title'        => $$data{'name'},
+                'label'        => $$data{'label'},
+                'description'  => $$data{'description'},
+                'content'      => $$data{'content'},
+                'keywords'     => $$data{'keywords'},
+                'import_source'=> '',
+                'url'          => $$data{'url'},
+                'date_updated' => $$data{'time_update'},
+                'seo'          => $$data{'seo'}
             }
         });
     }

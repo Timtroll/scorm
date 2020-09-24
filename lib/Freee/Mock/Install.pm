@@ -20,7 +20,7 @@ $config = {
     'log'                   =>'/log/mojo.log',
     'host'                  =>'http://127.0.0.1:4444',
     'expires'               =>'6000',
-    'export_settings_path'  =>'',
+    'export_settings_path'  =>'./settings',
     # it belongs to the first default admin user
     'login'                 => '',
     'password'              => '',

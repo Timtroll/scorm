@@ -206,8 +206,6 @@ if ( $hash{'rebuild'} ) {
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
 
-    ####################################################################
-
     # получаем id группы unaproved
     $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     $sth = $self->{dbh}->prepare( $sql );
