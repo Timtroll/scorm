@@ -113,10 +113,10 @@ warn 'redirect_to 1';
     }
 warn '===========';
 
-warn ( $tokens );
-warn ( $self->req->headers->header('token') );
-warn ( exists( $$tokens{ $self->req->headers->header('token') } ) );
-warn ( $$tokens{ $self->req->headers->header('token') } );
+# warn ( $tokens );
+# warn ( $self->req->headers->header('token') );
+# warn ( exists( $$tokens{ $self->req->headers->header('token') } ) );
+# warn ( $$tokens{ $self->req->headers->header('token') } );
 
     # проверка токена
     if (
@@ -151,7 +151,7 @@ warn "checked";
         return 1;
     }
 warn 'redirect_to 2';
-
+# return 1;
     # return;
     $self->redirect_to('/error/');
 }

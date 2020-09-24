@@ -15,7 +15,7 @@ our $pref;
 
 $config = {
     'debug'                 => 1,
-    'test'                  => 1,
+    'test'                  => 0,
     'secrets'               => ['187be8b67d3b264a5c536a7f2b13a8557103769b'],
     'log'                   =>'/log/mojo.log',
     'host'                  =>'http://127.0.0.1:4444',
