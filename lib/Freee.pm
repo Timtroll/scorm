@@ -144,14 +144,17 @@ sub startup {
     $auth->post('/theme/toggle')        ->to('theme#toggle');           # Изменить статус темы (вкл/выкл)
     $auth->post('/theme/delete')        ->to('theme#delete');           # Удалить тему
 
-    # управление уроками
+    # управление шаблонами уроков
     $auth->post('/lesson/')             ->to('lesson#index');           # Список уроков
     $auth->post('/lesson/add')          ->to('lesson#add');             # Добавить урок
     $auth->post('/lesson/edit')         ->to('lesson#edit');            # Получить данные для редактирования урока
     $auth->post('/lesson/save')         ->to('lesson#save');            # Сохранить урок
     $auth->post('/lesson/toggle')       ->to('lesson#toggle');          # Изменить статус урока (вкл/выкл)
     $auth->post('/lesson/delete')       ->to('lesson#delete');          # Удалить урок
-    $auth->post('/lesson/lesson_users') ->to('lesson#lesson_users');    # Список участников урока (учитель - обязателен)
+
+    # уроки
+    $auth->post('/events/') -           ->to('events#index');           # Расписание уроков
+    $auth->post('/events/event_users')  ->to('events#event_users');     # Список участников урока (учитель - обязателен)
 
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');
@@ -191,15 +194,6 @@ sub startup {
     $auth->post('/mentors/savecomment') ->to('mentors#savecomment');
     $auth->post('/mentors/setmark')     ->to('mentors#setmark');    # возможно не нужно ?????????
  # возможно еще что-то ?????????
-
-    # управление календарями/расписанием
-    $auth->post('/scheduler/')          ->to('scheduler#index');
-    $auth->post('/scheduler/add')       ->to('scheduler#add');
-    $auth->post('/scheduler/edit')      ->to('scheduler#edit');
-    $auth->post('/scheduler/save')      ->to('scheduler#save');
-    $auth->post('/scheduler/move')      ->to('scheduler#move');
-    $auth->post('/scheduler/toggle')    ->to('scheduler#toggle');
-    $auth->post('/scheduler/delete')    ->to('scheduler#delete');
 
     # согласование программы предмета
     $auth->post('/agreement/')          ->to('agreement#index');
