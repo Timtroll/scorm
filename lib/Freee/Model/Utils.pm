@@ -26,6 +26,8 @@ sub _exists_in_table {
     my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     my $row = $sth->fetchrow_hashref();
+    $sth->finish();
+
     return unless $row->{'count'};
 
     # проверяем поле name на дубликат
@@ -36,6 +38,7 @@ sub _exists_in_table {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     $row = $sth->fetchrow_hashref();
+    $sth->finish();
 
     return $row->{'id'} ? 1 : 0;
 }
@@ -73,6 +76,7 @@ sub _folder_check {
     my $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
     my $result = $sth->fetchrow_hashref();
+    $sth->finish();
 
     return $result->{'folder'} ? 1 : 0;
 }

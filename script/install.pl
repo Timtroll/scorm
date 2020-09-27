@@ -136,6 +136,8 @@ if ( $hash{'rebuild'} ) {
     $sql = slurp( $filename, encoding => 'utf8' );
     $sth = $self->{dbh}->prepare( $sql );
     $res = $sth->execute();
+    $sth->finish();
+
     if ( DBI->errstr ) {
         warn "execute doesn't work " . DBI->errstr . " in $filename script";
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -160,6 +162,8 @@ if ( $hash{'rebuild'} ) {
     $sql = slurp( $filename, encoding => 'utf8' );
     $sth = $self->{dbh}->prepare( $sql );
     $res = $sth->execute();
+    $sth->finish();
+
     if ( DBI->errstr ) {
         warn "execute doesn't work " . DBI->errstr . " in $filename script";
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -190,6 +194,8 @@ if ( $hash{'rebuild'} ) {
         # выполение скриптов
         $sth = $self->{dbh}->prepare( $sql );
         $res = $sth->execute();
+        $sth->finish();
+
         if ( DBI->errstr ) {
             warn "execute doesn't work " . DBI->errstr . " in $filename script";
             logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -210,6 +216,7 @@ if ( $hash{'rebuild'} ) {
     $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
+    $sth->finish();
 
     # my $groups = $sth->fetchrow_hashref();
     # unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
@@ -254,11 +261,13 @@ if ( $hash{'rebuild'} ) {
         $sth->bind_param( ':'.$_, $$user{$_}, $type );
     }
     $result = $sth->execute();
+    $sth->finish();
 
     # ввод в user_groups
     $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( 1,1 )';
     $sth = $self->{'dbh'}->prepare( $sql );
     $result = $sth->execute();
+    $sth->finish();
 }
 exit;
 
@@ -287,6 +296,8 @@ sub check_db {
     $sth = $self->{dbh}->prepare( $check_db );
     $sth->bind_param( 1, $database );
     $res = $sth->execute();
+    $sth->finish();
+
     $res = 0 if $res == '0E0';
 
     return $res;

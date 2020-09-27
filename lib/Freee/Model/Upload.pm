@@ -35,8 +35,10 @@ sub _insert_media {
         $sth->bind_param( ':order', 0 );
         $sth->bind_param( ':flags', 0 );
         $sth->execute();
+        $sth->finish();
 
         $result = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'media_id_seq' } );
+        $sth->finish();
         push @!, "Can not insert $$data{'title'}" unless $result;
     }
 
@@ -61,8 +63,8 @@ sub _check_media {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $id );
         $sth->execute();
-
         $result = $sth->fetchrow_hashref();
+        $sth->finish();
         push @!, "Can not get file info" unless ( $result );
     }
 
@@ -86,8 +88,8 @@ sub _delete_media {
         $sql = 'DELETE FROM "public"."media" WHERE "id" = :id';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $id );
-
         $result = $sth->execute();
+        $sth->finish();
         push @!, "Can not delete record $id from db" . DBI->errstr unless ( $result );
     }
 
@@ -128,8 +130,8 @@ sub _get_media {
             $count++;
         }
         $sth->execute();
-
         $result = $sth->fetchall_hashref('id');
+        $sth->finish();
         push @!, "can not get data from database" unless %{$result};
     }
 
@@ -152,8 +154,8 @@ sub _update_media {
         $sth = $self->{app}->pg_dbh->prepare( 'UPDATE "public"."media" SET "description" = :description WHERE "id" = :id RETURNING "id"' );
         $sth->bind_param( ':description', $$data{'description'} );
         $sth->bind_param( ':id', $$data{'id'} );
-
         $result = $sth->execute();
+        $sth->finish();
         push @!, "Can not update media" unless $result;
     }
 
@@ -163,8 +165,8 @@ sub _update_media {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
-
         $data = $sth->fetchrow_hashref();
+        $sth->finish();
         push @!, "Can not get file info" unless ( $data );
     }
 

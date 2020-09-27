@@ -6,6 +6,8 @@ use POSIX qw(strftime);
 use DBI qw(:sql_types);
 use Mojo::JSON qw( from_json );
 
+DBI->trace(1);
+
 use Data::Dumper;
 
 ####################################################################
@@ -67,6 +69,7 @@ sub _get_list {
         $sth->bind_param( ':offset', $$data{'offset'} );
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
+        $sth->finish();
 
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
@@ -119,8 +122,8 @@ sub _get_user {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':user_id', $$data{'id'} );
         $sth->execute();
-
         $result = $sth->fetchrow_hashref();
+        $sth->finish();
         push @!, "can't get groups" unless $result;
     }
     unless ( @! ) {
@@ -170,17 +173,26 @@ sub _exists_in_users {
     my ($sql, $sth, $row);
 
     if ( $login && $pass ) {
+$self->{app}->pg_dbh->trace(
+    $self->{app}->pg_dbh->parse_trace_flags('SQL|1|test')
+);
+warn "$login && $pass";
         # ищем пользователя
         $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups" FROM "users" AS u  
             INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
-            WHERE u."login"  = :login AND u."password"  = :password 
+            WHERE u."login"  = :login AND u."password"  = :password
             GROUP BY u."id");
+# warn $sql;
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':login', $login );
-        $sth->bind_param( ':password', $pass );
+        $sth->bind_param( ':password', $pass);
         $sth->execute();
         $row = $sth->fetchall_hashref('login');
-
+        # $row = $sth->fetchall_arrayref({});
+        $sth->finish();
+use DDP;
+warn $sth;
+p $row;
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
                 return $$row{$login};
@@ -214,8 +226,8 @@ sub _empty_user {
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
-
     $unaproved = $sth->fetchrow_hashref();
+    $sth->finish();
 
     unless ( (ref($unaproved) eq 'HASH') && $$unaproved{id} ) {
         push @!, 'Could not get Groups';
@@ -270,8 +282,10 @@ sub _empty_user {
             $sth->bind_param( ':'.$_, $$data{$_}, $type );
         }
         $sth->execute();
+        $sth->finish();
 
         $user_id = $sth->last_insert_id( undef, 'public', 'users', undef, { sequence => 'users_id_seq' } );
+        $sth->finish();
 
         unless ( $user_id ) {
             push @!, "Can not insert 'New user' into users table ". DBI->errstr;
@@ -287,6 +301,7 @@ sub _empty_user {
         $sth->bind_param( ':user_id', $user_id );
         $sth->bind_param( ':group_id', $$unaproved{id} );
         $result = $sth->execute();
+        $sth->finish();
 
         unless ( $result ) {
             push @!, "Can not insert into 'user_groups'";
@@ -355,6 +370,7 @@ sub _save_user {
         $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
         my $row = $sth->fetchrow_hashref();
+        $sth->finish();
         $$data{'eav_id'} = $$row{'eav_id'}
     }
 
@@ -374,6 +390,7 @@ sub _save_user {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
+        $sth->finish();
 
         if ( $result eq '0E0' ) {
             push @!, "can't update $$data{'id'} in users";
@@ -425,6 +442,7 @@ sub _save_user {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':user_id', $$data{'id'} );
         $result = $sth->execute();
+        $sth->finish();
     }
 
     unless ( @! ) {
@@ -438,6 +456,7 @@ sub _save_user {
             $sth->bind_param( ':group_id', $group_id );
             $sth->execute();
             $result = $sth->fetchrow_array();
+            $sth->finish();
             unless ( $result ) {
                 push @!, "Can not update 'user_groups'";
                 $self->{'app'}->pg_dbh->rollback;
@@ -474,8 +493,8 @@ sub _toggle_user {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':publish', $$data{'value'} );
         $sth->bind_param( ':id', $$data{'id'} );
-
         $result = $sth->execute();
+        $sth->finish();
         push @!, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
     }
 
@@ -506,6 +525,7 @@ sub _delete_user {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
+        $sth->finish();
 
         if ( ! defined $result ) {
             push @!, "Error by delete '$$data{'id'}' from users";
@@ -531,8 +551,8 @@ sub _delete_user {
         $sql = 'DELETE FROM "public"."user_groups" WHERE "user_id" = :user_id RETURNING "user_id"';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':user_id', $$data{'id'} );
-
         $result = $sth->execute();
+        $sth->finish();
 
         if ( ! defined $result ) {
             push @!, "Could not delete '$$data{'id'}' from user_groups";

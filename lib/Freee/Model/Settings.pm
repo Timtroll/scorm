@@ -47,8 +47,8 @@ sub _get_folder {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $sth->execute();
-
     $row = $self->{app}->pg_dbh->selectrow_hashref($sql);
+    $sth->finish();
 
     # десериализуем поля vaue и selected
     if ($row) {
@@ -104,7 +104,9 @@ sub _insert_folder {
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
+    $sth->finish();
     $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
+    $sth->finish();
 
     return $id;
 }
@@ -142,6 +144,7 @@ sub _save_folder {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $$data{'id'} );
     $sth->execute();
+    $sth->finish();
 
     return 1;
 }
@@ -160,6 +163,7 @@ sub _get_leafs {
     $sth->bind_param( ':id', $id );
     $sth->execute();
     $list = $sth->fetchall_arrayref({});
+    $sth->finish();
 
     return $list;
 }
@@ -211,7 +215,9 @@ sub _insert_setting {
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
+    $sth->finish();
     $id = $sth->last_insert_id( undef, 'public', 'settings', undef, { sequence => 'settings_id_seq' } );
+    $sth->finish();
 
     return $id;
 }
@@ -262,6 +268,7 @@ sub _save_setting {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $$data{'id'} );
     $sth->execute();
+    $sth->finish();
 
     return $$data{'id'};
 }
@@ -281,6 +288,7 @@ sub _delete_setting {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $result = $sth->execute();
+    $sth->finish();
 
     return $result + 0;
 }
@@ -299,6 +307,7 @@ sub _get_setting {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $sth->execute();
+    $sth->finish();
 
     $row = $sth->fetchrow_hashref();
 
@@ -360,8 +369,9 @@ sub _get_config {
     # получение настроек из бд
     $sql = 'SELECT "name", "value" FROM "public"."settings" WHERE "folder" = 0';
     $sth = $self->{app}->pg_dbh->prepare( $sql );
-    $sth->execute;
+    $sth->execute();
     $result = $sth->fetchall_arrayref();
+    $sth->finish();
 
     # создание хэша настроек
     foreach my $setting ( @$result ) {
@@ -425,8 +435,8 @@ sub _get_all_settings {
     $sql = 'SELECT * FROM "public"."settings"';
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->execute();
-
     $result = $sth->fetchall_hashref("id");
+    $sth->finish();
 
     return $result;
 }
@@ -447,8 +457,11 @@ sub _insert_export_setting {
     $sth->bind_param( ':filename', $filename );
     $sth->bind_param( ':time', $time );
     $sth->execute();
+    $sth->finish();
 
     $id = $sth->last_insert_id( undef, 'public', 'export_settings', undef, { sequence => 'export_settings_id_seq' } );
+    $sth->finish();
+
     return $id;
 }
 
@@ -467,6 +480,7 @@ sub _get_export_setting {
     $sth->bind_param( ':id', $id );
     $sth->execute();
     $result = $sth->fetchrow_hashref();
+    $sth->finish();
 
     return $$result{'filename'};
 }
@@ -497,6 +511,7 @@ sub _import_setting {
         $sth->bind_param( ':publish', $$row{'publish'} );
         $sth->bind_param( ':folder', $$row{'folder'} );
         $result = $sth->execute();
+        $sth->finish();
         return unless $result;
     }
 
@@ -521,6 +536,7 @@ sub _delete_export_setting {
         $sth->bind_param( ':id', $id );
         $sth->execute();
         $result = $sth->fetchrow_hashref();
+        $sth->finish();
 
         return $$result{'id'};
     }
@@ -536,6 +552,7 @@ sub _get_list_exports {
     $sth = $self->{'app'}->pg_dbh->prepare( $sql );
     $sth->execute();
     $list = $sth->fetchall_hashref("id");
+    $sth->finish();
 
     return $list;
 }

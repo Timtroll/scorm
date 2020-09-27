@@ -29,6 +29,7 @@ sub _all_groups {
     $sth->execute();
 
     $groups = $sth->fetchall_hashref( 'id' );
+    $sth->finish();
     push @!, "couldn't get list of groups" unless $groups;
 
     # синхронизация реальных роутов и роутов в группах
@@ -40,8 +41,8 @@ sub _all_groups {
             $sth = $self->{app}->pg_dbh->prepare( $sql );
             $sth->bind_param( ':parent', $parent );
             $sth->execute();
-
             $list = $sth->fetchall_hashref( 'name' );
+            $sth->finish();
 
             unless ( $list ) {
                 push @!, "couldn't get list of routes";
@@ -57,6 +58,7 @@ sub _all_groups {
                     $sth = $self->{app}->pg_dbh->prepare( $sql );
                     $sth->bind_param( ':id', $$list{$route}{'id'} );
                     $sth->execute();
+                    $sth->finish();
                 }
             }
 
@@ -78,6 +80,7 @@ sub _all_groups {
 
                     $sth = $self->{app}->pg_dbh->prepare( $sql );
                     $sth->execute();
+                    $sth->finish();
                 }
             }
         }
@@ -104,8 +107,8 @@ sub _get_group {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $sth->execute();
-
         $result = $sth->fetchrow_hashref();
+        $sth->finish();
         push @!, "Could not get Group '$$data{'id'}'" unless $result;
     }
 
@@ -136,8 +139,10 @@ sub _insert_group {
         $sth->bind_param( ':name', $$data{'name'} );
         $sth->bind_param( ':publish', ( $$data{'publish'} ? 1 : 0 ) );
         $sth->execute();
+        $sth->finish();
 
         $id = $sth->last_insert_id( undef, 'public', 'groups', undef, { sequence => 'groups_id_seq' } );
+        $sth->finish();
         push @!, "Can not insert $$data{'label'} into groups" unless $id;
     }
 
@@ -172,6 +177,7 @@ sub _update_group {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
         $result = $sth->fetchrow_array();
+        $sth->finish();
 
         push @!, "Error by update $$data{'label'}" if ! defined $result;
     }
@@ -196,6 +202,7 @@ sub _delete_group {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
+        $sth->finish();
 
         push @!, "Could not delete Group '$$data{'id'}'" if ! defined $result;
     }

@@ -151,6 +151,8 @@ sub startup {
     $auth->post('/lesson/save')         ->to('lesson#save');            # Сохранить урок
     $auth->post('/lesson/toggle')       ->to('lesson#toggle');          # Изменить статус урока (вкл/выкл)
     $auth->post('/lesson/delete')       ->to('lesson#delete');          # Удалить урок
+    $auth->post('/lesson/lesson_users') ->to('lesson#lesson_users');    # Список участников урока (учитель - обязателен)
+
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');
     $auth->post('/lesson/text')         ->to('lesson#text');
