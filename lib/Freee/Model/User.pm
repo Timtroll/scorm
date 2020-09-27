@@ -126,6 +126,7 @@ sub _get_user {
         $sth->finish();
         push @!, "can't get groups" unless $result;
     }
+
     unless ( @! ) {
         # взять весь объект из EAV
         $eav_id = $result->{'eav_id'};
@@ -173,26 +174,18 @@ sub _exists_in_users {
     my ($sql, $sth, $row);
 
     if ( $login && $pass ) {
-$self->{app}->pg_dbh->trace(
-    $self->{app}->pg_dbh->parse_trace_flags('SQL|1|test')
-);
-warn "$login && $pass";
         # ищем пользователя
         $sql = q(SELECT u.*, '[ ' || string_agg( g.group_id::varchar , ', ' ) || ' ]' AS "groups" FROM "users" AS u  
             INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
             WHERE u."login"  = :login AND u."password"  = :password
             GROUP BY u."id");
-# warn $sql;
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':login', $login );
         $sth->bind_param( ':password', $pass);
         $sth->execute();
         $row = $sth->fetchall_hashref('login');
-        # $row = $sth->fetchall_arrayref({});
         $sth->finish();
-use DDP;
-warn $sth;
-p $row;
+
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
                 return $$row{$login};
@@ -356,7 +349,6 @@ sub _save_user {
         "filename"      => 'local',
         "title"         => 'Название файла',
         "size"          => 'local',
-#?                "type" varchar(32) COLLATE "default",
         "mime"          => 'local',
         "description"   => 'local',
         "order"         => 'local',
@@ -509,7 +501,7 @@ sub _toggle_user {
 sub _delete_user {
     my ( $self, $data ) = @_;
 
-    my ( $sth, $usr, $result, $sql );
+    my ( $sth, $eav_id, $usr, $result, $sql );
 
     unless ( $$data{'id'} ) {
         push @!, 'no data for delete';
@@ -519,6 +511,14 @@ sub _delete_user {
     $self->{'app'}->pg_dbh->begin_work;
 
     unless ( @! ) {
+        # для полного удаления получаем 'eav_id'
+        $sql = 'SELECT eav_id FROM "public"."users" WHERE "id" = :id';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $sth->execute();
+        $eav_id = $sth->fetchrow_hashref();
+        $sth->finish();
+
         # удаление из users
         $sql = 'DELETE FROM "public"."users" WHERE "id" = :id RETURNING "id"';
 
@@ -534,13 +534,13 @@ sub _delete_user {
         }
     }
 
-    unless ( @! ) {
+    unless ( @! && !$$eav_id{'eav_id'} ) {
         # удаление из EAV
-        $usr = Freee::EAV->new( 'User', { 'id' => $$data{'id'} } );
+        $usr = Freee::EAV->new( 'User', { 'id' => $$eav_id{'eav_id'} } );
         $result = $usr->_RealDelete();
 
         unless ($result) {
-            push @!, "can't delete from EAV";
+            push @!, "can't delete from EAV '$$eav_id{'eav_id'}'";
             $self->{'app'}->pg_dbh->rollback;
             return;
         }

@@ -276,7 +276,8 @@ sub save {
                 'publish'       => $$data{'publish'} ? 'true' : 'false',
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
-                'phone'         => $$data{'phone'}
+                'phone'         => $$data{'phone'},
+                'password'      => $$data{'password'}
             },
             'data_eav' => {
                 'publish'       => $$data{'publish'} ? 'true' : 'false',
@@ -289,7 +290,6 @@ sub save {
                 'import_source' => $$data{'avatar'}     // ''
             }
         };
-        $data->{'password'} = $$data{'password'} if $$data{'password'};
 
         $result = $self->model('User')->_save_user( $data );
     }
