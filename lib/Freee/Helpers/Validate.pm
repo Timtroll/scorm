@@ -455,6 +455,9 @@ sub register {
                 "fieldname"     => [ 'required', ['publish'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
+            '/lesson/lesson_users'  => {
+                "id"           => [ 'required', qr/^[\w-]+$/os, 36 ]
+            },
 
 ################
             # роуты task/*
