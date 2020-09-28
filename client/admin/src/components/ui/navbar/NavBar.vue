@@ -16,7 +16,8 @@
     </div>
 
     <div class="pos-navbar-left">
-      <div class="pos-navbar-left-time" title="Текущее время">
+      <div class="pos-navbar-left-time"
+           title="Текущее время">
         <div class="pos-navbar-left-time__item"
              v-text="currentTime.hour"></div>
         <div class="pos-navbar-left-time__item"
@@ -77,6 +78,12 @@ export default {
       const date              = new Date(this.currentDate)
       this.currentTime.hour   = this.setZero(date.getHours())
       this.currentTime.minute = this.setZero(date.getMinutes())
+      if (!this.time) {
+        this.$store.commit('set_time', this.currentTime)
+      }
+    },
+    'currentTime.minutes' () {
+      this.$store.commit('set_time', this.currentTime)
     }
   },
 
@@ -91,6 +98,10 @@ export default {
   },
 
   computed: {
+
+    time () {
+      return this.$store.state.main.time
+    },
 
     leftToggle () {
       return this.$store.getters.navBarLeftAction

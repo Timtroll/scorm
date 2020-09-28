@@ -1,5 +1,6 @@
 const mutations = {
 
+  set_time (state, data) {state.time = data},
 
   page_title (state, data) {state.pageTitle = data},
 

@@ -4,6 +4,8 @@ import getters   from './getters'
 
 const state = {
 
+  time: null,
+
   pageTitle: '',
 
   navBarLeftAction: {
