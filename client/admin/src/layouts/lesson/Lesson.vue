@@ -68,7 +68,21 @@
           </div>
         </div>
 
-        <div class="uk-flex-none">
+        <div class="uk-flex-none pos-lesson-video__controls-group">
+
+          <a class="uk-icon-link"
+             @click.prevent="mute">
+            <img src="/img/icons/icon__video-mute.svg"
+                 width="20"
+                 height="20"
+                 uk-svg></a>
+
+          <a class="uk-icon-link"
+             @click.prevent="mute">
+            <img src="/img/icons/icon__video.svg"
+                 width="20"
+                 height="20"
+                 uk-svg></a>
 
           <a class="uk-icon-link"
              @click.prevent="mute">

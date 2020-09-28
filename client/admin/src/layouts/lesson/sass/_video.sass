@@ -61,3 +61,16 @@
   padding: $global-margin
   @media (max-width: $breakpoint-large)
     padding: $global-small-margin
+
+  & > *
+    &:not(:last-child)
+      margin-right: $global-margin
+
+.pos-lesson-video__controls-group
+  display: flex
+
+  & > *
+    display: block
+
+    &:not(:last-child)
+      margin-right: $global-margin

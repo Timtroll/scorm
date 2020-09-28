@@ -1,5 +1,6 @@
 const mutations = {
 
+
   page_title (state, data) {state.pageTitle = data},
 
   // акшин для левой кнопки в navbar
