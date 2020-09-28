@@ -68,23 +68,6 @@
           </div>
         </div>
 
-        <div class="uk-flex-none">
-
-          <a class="uk-icon-link"
-             @click.prevent="mute">
-            <img src="/img/icons/icon__mute.svg"
-                 width="20"
-                 height="20"
-                 uk-svg></a>
-
-          <a class="uk-icon-link"
-             @click.prevent="unMute">
-            <img src="/img/icons/icon__unmute.svg"
-                 width="20"
-                 height="20"
-                 uk-svg></a>
-        </div>
-
         <div class="uk-flex-1 uk-text-right">
           <button type="button"
                   @click="shareScreen()"
@@ -145,22 +128,22 @@
 </template>
 
 <script>
-import {appConfig}     from '@/main'
 import lessons         from './store'
+import ListUsers       from './ListUsers'
 import WebRtcInitMulti from '@/api/webRTC/index'
-import lessonApi       from '@/api/lessons'
-import * as io         from 'socket.io-client'
+
+import * as io from 'socket.io-client'
 
 window.io = io
+import {appConfig}  from '@/main'
 
 export default {
-  name: 'Lesson',
+  name: 'LessonTeach',
 
   components: {
     //WebRTCScreen,
-    LessonStudent: () => import(/* webpackChunkName: "LessonStudent" */ './LessonStudent'),
-    LessonTeach:   () => import(/* webpackChunkName: "ListUsers" */ './LessonTeach'),
-    ListUsers:     () => import(/* webpackChunkName: "ListUsers" */ './ListUsers')
+    ListUsers
+    //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
   },
 
   metaInfo () {
@@ -182,14 +165,6 @@ export default {
 
   data () {
     return {
-
-      lessonApi: null,
-
-      lessonUsers: null,
-
-      classStudents: null,
-
-      lessonNote: null,
 
       img: null,
 
@@ -248,32 +223,16 @@ export default {
 
   async mounted () {
 
-    if (!this.participantProfile) return
-    this.lessonApi = new lessonApi(this.participantProfile.id)
-    const users    = await this.getClassStudents()
-
-    Promise.all([users])
-           .then(() => {
-             this.selectedPosition = this.position[0]
-             this.leave()
-             this.$store.commit('navBarLeftActionShow', false)
-             this.startRTC()
-           })
-
     this.$nextTick(() => {
-
+      this.selectedPosition = this.position[0]
+      this.leave()
+      this.$store.commit('navBarLeftActionShow', false)
+      this.startRTC()
       //this.startRTC()
     })
 
     // показать кнопку меню в navBar
     //await this.getUsers()
-  },
-
-  computed: {
-
-    participantProfile () {
-      return this.$store.state.auth.user.profile
-    }
   },
 
   async beforeDestroy () {
@@ -296,15 +255,6 @@ export default {
   },
 
   methods: {
-
-    // Список участников
-    async getClassStudents () {
-      if (!this.participantProfile) return
-      this.lessonUsers = await this.lessonApi.loadUsers()
-    },
-
-    // Заметки урока
-    async getLessonNote () {},
 
     // selectedRes
     changeRes (res) {
@@ -384,16 +334,6 @@ export default {
     leave () {
       if (!this.rtc) return
       this.rtc.leave()
-    },
-
-    mute () {
-      if (!this.rtc) return
-      this.rtc.mute()
-    },
-
-    unMute () {
-      if (!this.rtc) return
-      this.rtc.unmute()
     },
 
     join () {

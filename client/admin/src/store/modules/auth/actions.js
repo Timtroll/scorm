@@ -10,6 +10,7 @@ const actions = {
   async login ({commit, dispatch}, user) {
 
     try {
+      commit('auth_request')
       const response = await Api.login(user)
       if (response.data.status === 'ok') {
         const user                             = response.data.data
