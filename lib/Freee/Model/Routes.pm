@@ -31,8 +31,8 @@ sub _routes_list {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $parent );
         $sth->execute();
-
         $list = $sth->fetchall_hashref( 'id' );
+        $sth->finish();
     }
 
     return $list;
@@ -56,8 +56,8 @@ sub _get_route {
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( 1, $id );
         $sth->execute();
-
         $row = $sth->fetchrow_hashref();
+        $sth->finish();
     }
 
     return $row;
@@ -88,8 +88,10 @@ sub _insert_route {
 
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
+        $sth->finish();
 
         $id = $sth->last_insert_id( undef, 'public', 'routes', undef, { sequence => 'routes_id_seq' } );
+        $sth->finish();
         push @!, "Can not insert $$data{'label'} into routes" unless $id;
     }
 
@@ -123,6 +125,7 @@ sub _update_route {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
         $result = $sth->fetchrow_array();
+        $sth->finish();
     }
 
     return $result;

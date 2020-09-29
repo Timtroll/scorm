@@ -457,6 +457,12 @@ sub register {
             },
 
 ################
+            '/events'     => {},
+            '/events/event_users'  => {
+                "id"           => [ 'required', qr/^[\w-]+$/os, 36 ]
+            },
+
+################
             # роуты task/*
             '/task'  => {
                 "order"         => [ '', ['ASC', 'DESC'], 4 ]

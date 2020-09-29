@@ -12,7 +12,8 @@
 
       <div class="pos-dashboard">
 
-        <Calendar :data="calendar" :time="currentTime" :date="currentDate"/>
+        <Calendar :data="calendar"
+                  :date="currentDate"/>
 
         <div class="pos-dashboard-tasks"></div>
       </div>
@@ -67,7 +68,6 @@ export default {
   },
 
   beforeDestroy () {
-    clearInterval(time)
     // выгрузка Vuex модуля
     this.$store.unregisterModule('dashboard')
   },
@@ -80,18 +80,11 @@ export default {
         options: null
       },
 
-      currentDate: null,
-      currentTime: null
+      currentDate: null
     }
   },
 
-  watch: {
 
-    currentDate () {
-      const date       = new Date(this.currentDate)
-      this.currentTime = `${this.setZero(date.getHours())}:${this.setZero(date.getMinutes())}`
-    }
-  },
 
   computed: {
 
@@ -103,16 +96,8 @@ export default {
 
   methods: {
 
-    setZero (number) {
-      return (number < 10) ? `0${number}` : number
-    },
-
     getCurrentDate () {
-      time = setInterval(() => {
-        this.currentDate = new Date()
-        //.toISOString()
-        //.toLocaleString('ru')
-      }, 1000)
+      this.currentDate = new Date()
     }
   }
 }

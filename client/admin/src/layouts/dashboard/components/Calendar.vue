@@ -3,8 +3,6 @@
 
     <div class="pos-calendar-header">
 
-      <div class="pos-calendar-header-time"> {{ time }}</div>
-
       <div class="pos-calendar-header-week">
 
         <div class="pos-calendar-header-week-item">
@@ -58,7 +56,6 @@ import {Calendar}     from '@fullcalendar/core'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import {getTime}      from '@/store/methods'
 
-let time
 export default {
   name: 'Calendar',
 
@@ -76,10 +73,6 @@ export default {
       default: () => {
         return new Date()
       }
-    },
-    time: {
-      type:    String,
-      default: () => {}
     }
   },
 

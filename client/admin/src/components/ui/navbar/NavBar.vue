@@ -1,5 +1,6 @@
 <template>
   <div class="pos-navbar">
+
     <div class="pos-navbar-left"
          v-if="leftToggle.visibility">
       <div class="pos-navbar-item">
@@ -13,6 +14,17 @@
         </a>
       </div>
     </div>
+
+    <div class="pos-navbar-left">
+      <div class="pos-navbar-left-time"
+           title="Текущее время">
+        <div class="pos-navbar-left-time__item"
+             v-text="currentTime.hour"></div>
+        <div class="pos-navbar-left-time__item"
+             v-text="currentTime.minute"></div>
+      </div>
+    </div>
+
     <div class="pos-navbar-middle">
       <div class="pos-navbar__title"
            v-html="pageTitle"></div>
@@ -42,47 +54,95 @@
 </template>
 
 <script>
+let time
 
-  export default {
+export default {
 
-    name: 'NavBar',
+  name: 'NavBar',
 
-    components: {
-      NavBarUserMenu: () => import(/* webpackChunkName: "NavBarUserMenu" */ './NavBarUserMenu')
-    },
+  components: {
+    NavBarUserMenu: () => import(/* webpackChunkName: "NavBarUserMenu" */ './NavBarUserMenu')
+  },
 
-    data () {
-      return {}
-    },
+  mounted () {
+    this.getCurrentDate()
+  },
 
-    computed: {
+  beforeDestroy () {
+    clearInterval(time)
+  },
 
-      leftToggle () {
-        return this.$store.getters.navBarLeftAction
-      },
+  watch: {
 
-      leftToggleState () {
-        return this.$store.getters.cardLeftState
-      },
-
-      // заголовок страницы
-      pageTitle () {
-        if (this.$route.params.title) {
-          return '<span class="uk-text-success">' +
-            this.$route.meta.breadcrumb + ' - </span> '
-            + this.$route.params.title
-        } else {
-          return this.$route.meta.breadcrumb
-        }
-
+    currentDate () {
+      const date              = new Date(this.currentDate)
+      this.currentTime.hour   = this.setZero(date.getHours())
+      this.currentTime.minute = this.setZero(date.getMinutes())
+      if (!this.time) {
+        this.$store.commit('set_time', this.currentTime)
       }
-
     },
+    'currentTime.minutes' () {
+      this.$store.commit('set_time', this.currentTime)
+    }
+  },
 
-    methods: {
-      leftToggleAction () {
-        this.$store.commit('card_left_show', !this.leftToggleState)
+  data () {
+    return {
+      currentDate: null,
+      currentTime: {
+        hour:   null,
+        minute: null
       }
     }
+  },
+
+  computed: {
+
+    time () {
+      return this.$store.state.main.time
+    },
+
+    leftToggle () {
+      return this.$store.getters.navBarLeftAction
+    },
+
+    leftToggleState () {
+      return this.$store.getters.cardLeftState
+    },
+
+    // заголовок страницы
+    pageTitle () {
+      if (this.$route.params.title) {
+        return '<span class="uk-text-success">' +
+          this.$route.meta.breadcrumb + ' - </span> '
+          + this.$route.params.title
+      }
+      else {
+        return this.$route.meta.breadcrumb
+      }
+
+    }
+
+  },
+
+  methods: {
+
+    setZero (number) {
+      return (number < 10) ? `0${number}` : number
+    },
+
+    getCurrentDate () {
+      time = setInterval(() => {
+        this.currentDate = new Date()
+        //.toISOString()
+        //.toLocaleString('ru')
+      }, 1000)
+    },
+
+    leftToggleAction () {
+      this.$store.commit('card_left_show', !this.leftToggleState)
+    }
   }
+}
 </script>

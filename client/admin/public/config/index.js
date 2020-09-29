@@ -16,6 +16,7 @@ export default class AppConfig {
     }
     this.profile     = null
     this.token       = null
+    this.role        = null
     this.userGroups  = null
   }
 
@@ -29,8 +30,9 @@ export default class AppConfig {
 
   setGroups (groups) {
     if (!groups) return
-    this.userGroups = groups
-    const userGroups = this._getGroups(groups, this.profile)
+    this.userGroups  = groups
+    //const userGroups = this.profile.groups
+    const userGroups = this.setGroups(groups, this.profile)
     localStorage.setItem('userGroups', JSON.stringify(userGroups))
   }
 
@@ -42,7 +44,7 @@ export default class AppConfig {
     this.role  = null
   }
 
-  _getGroups (groups, profile) {
+  static getGroups (groups, profile) {
     const userGroups    = JSON.parse(profile.groups)
     const userGroupsObj = []
     groups.forEach(i => {

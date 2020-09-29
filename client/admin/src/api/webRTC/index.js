@@ -48,7 +48,7 @@ export default class WebRtcInitMulti {
     this.videoList   = []
     this.canvas      = null
     this.enableLogs  = true
-    this.role        = role || 'listener'
+    this.role        = role || 'listener' // ['teacher', 'listener']
     this.constraints = {
       hd:    {
         audio: {
@@ -103,9 +103,43 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.socketURL              = this.socketURL
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
+    this.rtcmConnection.autoCloseEntireSession = true
+
+    // /node_modules/fbr/FileBufferReader.js
+    // https://www.rtcmulticonnection.org/docs/send/
+    this.rtcmConnection.enableFileSharing = true
+
+    this.rtcmConnection.extra = {
+      fullName: 'Your full name',
+      email:    'Your email',
+      photo:    'http://site.com/profile.png'
+    }
+
+    this.rtcmConnection.codecs = {
+      video: 'H264', // Video codecs e.g. "h264", "vp9", "vp8" etc.
+      audio: 'G722' // Audio codecs e.g. "opus", "G722", "ISAC" etc.
+    }
     //this.rtcmConnection.session                = this.constraints
 
-    this.rtcmConnection.mediaConstraints = this.constraints.hd
+    this.rtcmConnection.mediaConstraints = (this.role === 'listener')
+      ? this.constraints.hd
+      : this.constraints.thumb
+
+    /**
+     * проверка пользователей
+     * @param stream
+     * @param peer
+     * @returns {*}
+     */
+    this.rtcmConnection.autoCloseEntireSession = (stream, peer) => {
+      if (peer.userid === 'xyz') {
+        // do not share any stream with user "XYZ"
+        return
+      }
+
+      return stream
+    }
+
     //this.rtcmConnection.mediaConstraints = {
     //  audio: {
     //    mandatory: {
@@ -231,15 +265,24 @@ export default class WebRtcInitMulti {
     this.videoList = []
   }
 
+  // отключение пользователя по его ID
+  disconnectUser (participantId) {
+    this.rtcmConnection.disconnectWith(participantId)
+  }
+
+  // удаление peer пользователя по его ID
+  deletePeer (participantId) {
+    this.rtcmConnection.deletePeer(participantId)
+  }
+
+  // Направление трансляции
+  direction (direction) {
+    this.rtcmConnection.direction = direction // 'one-to-one' 'one-to-many' 'many-to-many';
+  }
+
   capture () {
     return this.getCanvas()
                .toDataURL(this.screenshotFormat)
-  }
-
-  // Change between camera and screen or two cameras seamlessly across all users
-  replaceTrack (track, userId) {
-    // var track = screenStream.getVideoTracks()[0];
-    this.rtcmConnection.replaceTrack(track, userId)
   }
 
   // https://www.rtcmulticonnection.org/docs/streamEvents/
@@ -261,6 +304,13 @@ export default class WebRtcInitMulti {
   // resetTrack which resets back to original track.
   resetTrack (userId) {
     this.rtcmConnection.resetTrack(userId)
+  }
+
+  // Change between camera and screen or two cameras seamlessly across all users
+  replaceTrack (track, userId) {
+    // var track = screenStream.getVideoTracks()[0];
+    // resetTrack which resets back to original track.
+    this.rtcmConnection.replaceTrack(track, userId)
   }
 
   getCanvas (video) {

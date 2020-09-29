@@ -221,6 +221,8 @@ sub create_db {
     $sql = slurp( $filename, encoding => 'utf8' );
     $sth = $self->{dbh}->prepare( $sql );
     $res = $sth->execute();
+    $sth->finish();
+
     if ( DBI->errstr ) {
         warn "execute doesn't work " . DBI->errstr . " in $filename script";
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -274,6 +276,8 @@ sub create_tables {
     $sql = slurp( $filename, encoding => 'utf8' );
     $sth = $self->{dbh}->prepare( $sql );
     $res = $sth->execute();
+    $sth->finish();
+
     if ( DBI->errstr ) {
         warn "execute doesn't work " . DBI->errstr . " in $filename script";
         logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -304,6 +308,8 @@ sub create_tables {
         # выполение скриптов
         $sth = $self->{dbh}->prepare( $sql );
         $res = $sth->execute();
+        $sth->finish();
+
         if ( DBI->errstr ) {
             warn "execute doesn't work " . DBI->errstr . " in $filename script";
             logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
@@ -324,6 +330,7 @@ sub load_defaults {
     $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
+    $sth->finish();
 
     # my $groups = $sth->fetchrow_hashref();
     # unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
@@ -368,11 +375,13 @@ sub load_defaults {
         $sth->bind_param( ':'.$_, $$user{$_}, $type );
     }
     $result = $sth->execute();
+    $sth->finish();
 
     # ввод в user_groups
     $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( 1,1 )';
     $sth = $self->{'dbh'}->prepare( $sql );
     $result = $sth->execute();
+    $sth->finish();
 }
 
 # запись конфигурации в файл freee.conf
