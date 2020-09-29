@@ -24,6 +24,7 @@ use Data::Dumper;
 use DDP;
 use Freee::Mock::Install;
 
+#??????????????
 my ( $path_sql, $path_conf, $path_log, $text, $rebuild, $config_update, $db, $self, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, $result, @bd_array, @list );
 
 # чтение параметров
@@ -56,22 +57,24 @@ if ( $hash{'mode'} &&  $hash{'mode'} ne 'test' || $hash{'start'} &&  $hash{'star
     exit;    
 }
 
-# поиск и чтение шаблона конфигурации
-if ( -s $hash{'path'} ) {
-    $text = slurp( $hash{'path'}, encoding => 'utf8' );
-    unless ( $text ) {
-        logging( "can't read config file from '$hash{'path'}'" ); 
-        exit; 
-    }
-}
-else {
-    logging( 'file doesnt exist');
-    exit;
-}
+# !!!!!!!!!!!!!
+                # поиск и чтение шаблона конфигурации
+                if ( -s $hash{'path'} ) {
+                    $text = slurp( $hash{'path'}, encoding => 'utf8' );
+                    unless ( $text ) {
+                        logging( "can't read config file from '$hash{'path'}'" ); 
+                        exit; 
+                    }
+                }
+                else {
+                    logging( 'file doesnt exist');
+                    exit;
+                }
 
-$config_update = eval( $text );
+                # заменить на reqiire !!!!!!!!!!!
+                $config_update = eval( $text );
 
-# проверка параметра rebuild
+# проверка параметра rebuild ?????????????????
 if ( $hash{'rebuild'} ) {
     # подключение к базе postgres
     $self->{dbh} = DBI->connect(
@@ -152,6 +155,8 @@ if ( $hash{'rebuild'} ) {
     }
 }
 else {
+# !!!!!!!!!!! моджо работает со старым конфигом
+
     # заполнение параметров конфига для основной базы scorm
     $$config{ 'expires' }                                           = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
     $$config{ 'debug' }                                             = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
@@ -171,7 +176,7 @@ else {
     # запись конфигурации в файл freee.conf
     write_config();
 }
-
+#???????????
 
 ####################################################################
 
@@ -198,6 +203,7 @@ sub check_db {
     $sth = $self->{dbh}->prepare( $check_db );
     $sth->bind_param( 1, $database );
     $res = $sth->execute();
+# finish
     $res = 0 if $res == '0E0';
 
     return $res;

@@ -427,7 +427,7 @@ sub register {
             },
 
 ################
-            # роуты lesson/*
+            # роуты шаблонов уроков /lesson/*
             '/lesson'  => {
                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
@@ -457,6 +457,7 @@ sub register {
             },
 
 ################
+            # роуты расписания уроков и уроков
             '/events'     => {},
             '/events/event_users'  => {
                 "id"           => [ 'required', qr/^[\w-]+$/os, 36 ]
