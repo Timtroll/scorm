@@ -22,8 +22,6 @@ $config = {
     'expires'               =>'6000',
     'export_settings_path'  =>'./settings',
     # it belongs to the first default admin user
-    'login'                 => '',
-    'password'              => '',
 
     #  Extension of description file (for uploaded files)
     'desc_extension' => 'desc',

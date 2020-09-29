@@ -24,8 +24,7 @@ use Data::Dumper;
 use DDP;
 use Freee::Mock::Install;
 
-#??????????????
-my ( $path_sql, $path_conf, $path_log, $text, $rebuild, $config_update, $db, $self, $res, $sth, $database, $filename, $create_db, $sql, $host, $url, $result, @bd_array, @list );
+my ( $path_sql, $path_conf, $path_log, $text, $config_update, $self, @bd_array );
 
 # чтение параметров
 my %hash;
@@ -57,24 +56,23 @@ if ( $hash{'mode'} &&  $hash{'mode'} ne 'test' || $hash{'start'} &&  $hash{'star
     exit;    
 }
 
-# !!!!!!!!!!!!!
-                # поиск и чтение шаблона конфигурации
-                if ( -s $hash{'path'} ) {
-                    $text = slurp( $hash{'path'}, encoding => 'utf8' );
-                    unless ( $text ) {
-                        logging( "can't read config file from '$hash{'path'}'" ); 
-                        exit; 
-                    }
-                }
-                else {
-                    logging( 'file doesnt exist');
-                    exit;
-                }
+# поиск и чтение шаблона конфигурации
+if ( -s $hash{'path'} ) {
+    $text = slurp( $hash{'path'}, encoding => 'utf8' );
+    unless ( $text ) {
+        logging( "can't read config file from '$hash{'path'}'" ); 
+        exit; 
+    }
+}
+else {
+    logging( 'file doesnt exist');
+    exit;
+}
 
-                # заменить на reqiire !!!!!!!!!!!
-                $config_update = eval( $text );
+# заменить на reqiire !!!!!!!!!!!
+$config_update = eval( $text );
 
-# проверка параметра rebuild ?????????????????
+# проверка параметра создания бд
 if ( $hash{'rebuild'} ) {
     # подключение к базе postgres
     $self->{dbh} = DBI->connect(
@@ -125,9 +123,8 @@ if ( $hash{'rebuild'} ) {
 
     # для каждого эл-та массива
     foreach( @bd_array ) {
-
         # остановка mojo
-        mojo_do( 'stop ');
+        mojo_do( 'stop' );
 
         # если это тестовая база
         if ( $_ eq 'scorm_test' ) {
@@ -144,18 +141,19 @@ if ( $hash{'rebuild'} ) {
         # запись конфигурации в файл freee.conf
         write_config();
 
-        # запуск скриптов
+        # запуск скриптов, создающих таблицы
         create_tables();
 
         # старт mojo
-        mojo_do( 'start ');
+        mojo_do( 'start' );
 
         # загрузка дефолтных значений
         load_defaults();
     }
 }
 else {
-# !!!!!!!!!!! моджо работает со старым конфигом
+    # остановка mojo
+    mojo_do( 'stop' );
 
     # заполнение параметров конфига для основной базы scorm
     $$config{ 'expires' }                                           = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
@@ -175,8 +173,12 @@ else {
 
     # запись конфигурации в файл freee.conf
     write_config();
+
+    # старт mojo
+    mojo_do( 'start');
 }
-#???????????
+# конец программы
+exit;
 
 ####################################################################
 
@@ -191,6 +193,7 @@ sub logging {
         open( $log, '>>', $path_log ) or warn "Can't open log file!";
             print $log "$logdata\n";
         close( $log );
+        warn "$logdata\n";
     }
 }
 
@@ -200,10 +203,11 @@ sub check_db {
     my $database = shift;
 
     my $check_db = 'SELECT datname FROM pg_database WHERE datname = ?';
-    $sth = $self->{dbh}->prepare( $check_db );
+    my $sth = $self->{dbh}->prepare( $check_db );
     $sth->bind_param( 1, $database );
-    $res = $sth->execute();
-# finish
+    my $res = $sth->execute();
+    $sth->finish();
+
     $res = 0 if $res == '0E0';
 
     return $res;
@@ -214,19 +218,24 @@ sub check_db {
 sub mojo_do {
     my $do = shift;
 
-    $res = `./starting.sh $do`;
+    unless ( -s $path_conf || $do eq 'stop' ) {
+        logging 'config doesnt exist';
+        exit;
+    }
+
+    my $res = `./starting.sh $do`;
     return $res;
 }
 
 # my true = create_db(  );
 # создание базы данных
 sub create_db {
-    $create_db = shift;
+    my $create_db = shift;
 
-    $filename = $path_sql . $create_db;
-    $sql = slurp( $filename, encoding => 'utf8' );
-    $sth = $self->{dbh}->prepare( $sql );
-    $res = $sth->execute();
+    my $filename = $path_sql . $create_db;
+    my $sql = slurp( $filename, encoding => 'utf8' );
+    my $sth = $self->{dbh}->prepare( $sql );
+    my $res = $sth->execute();
     $sth->finish();
 
     if ( DBI->errstr ) {
@@ -253,7 +262,7 @@ sub connect_db {
     $config->{'dbs'}->{'databases'}->{$main}->{'password'}      = $$config_update{ $main . '_password' }     if $$config_update{ $main . '_password' };
     $config->{'dbs'}->{'databases'}->{$main}->{'options'}       = $$config_update{ $main . '_options' }      if $$config_update{ $main . '_options' };
 
-    $db = $config->{'dbs'}->{'databases'}->{$main};
+    my $db = $config->{'dbs'}->{'databases'}->{$main};
 
     # редактирование параметра обработки ошибок
     if (
@@ -278,10 +287,10 @@ sub connect_db {
 
 sub create_tables {
     # создание расширения
-    $filename = $path_sql . '/_create_extiention.sql';
-    $sql = slurp( $filename, encoding => 'utf8' );
-    $sth = $self->{dbh}->prepare( $sql );
-    $res = $sth->execute();
+    my $filename = $path_sql . '/_create_extiention.sql';
+    my $sql = slurp( $filename, encoding => 'utf8' );
+    my $sth = $self->{dbh}->prepare( $sql );
+    my $res = $sth->execute();
     $sth->finish();
 
     if ( DBI->errstr ) {
@@ -291,7 +300,7 @@ sub create_tables {
     }
 
     # чтение файлов директории скриптов
-    @list = `ls $path_sql 2>&1`;
+    my @list = `ls $path_sql 2>&1`;
     if ( $? ) {
         logging( "can't read directory $path_sql: @list" ); 
         exit;
@@ -327,14 +336,14 @@ sub create_tables {
 # загрузка дефолтных значений
 sub load_defaults {
     # загрузка дефолтных настроек
-    $host = $config->{'host'};
-    $url = $host . '/settings/load_default';
+    my $host = $config->{'host'};
+    my $url = $host . '/settings/load_default';
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
-
+warn ('12 после спайдер мода');
     # получаем id группы unaproved
-    $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
-    $sth = $self->{dbh}->prepare( $sql );
+    my $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
+    my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
     $sth->finish();
 
@@ -380,7 +389,7 @@ sub load_defaults {
         my $type = /publish/ ? SQL_BOOLEAN : undef();
         $sth->bind_param( ':'.$_, $$user{$_}, $type );
     }
-    $result = $sth->execute();
+    my $result = $sth->execute();
     $sth->finish();
 
     # ввод в user_groups

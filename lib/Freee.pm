@@ -153,7 +153,7 @@ sub startup {
     $auth->post('/lesson/delete')       ->to('lesson#delete');          # Удалить урок
 
     # уроки
-    $auth->post('/events/') -           ->to('events#index');           # Расписание уроков
+    $auth->post('/events/')             ->to('events#index');           # Расписание уроков
     $auth->post('/events/event_users')  ->to('events#event_users');     # Список участников урока (учитель - обязателен)
 
     # обучение
