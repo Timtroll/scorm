@@ -24,7 +24,7 @@ use Data::Dumper;
 use DDP;
 use Freee::Mock::Install;
 
-my ( $path_sql, $path_conf, $path_log, $text, $config_update, $self, @bd_array );
+my ( $path_sql, $path_conf, $path_log, $path_module, $self, @bd_array );
 
 # чтение параметров
 my %hash;
@@ -56,21 +56,29 @@ if ( $hash{'mode'} &&  $hash{'mode'} ne 'test' || $hash{'start'} &&  $hash{'star
     exit;    
 }
 
+# # поиск и чтение шаблона конфигурации
+# if ( -s $hash{'path'} ) {
+#     $text = slurp( $hash{'path'}, encoding => 'utf8' );
+#     unless ( $text ) {
+#         logging( "can't read config file from '$hash{'path'}'" ); 
+#         exit; 
+#     }
+# }
+# else {
+#     logging( 'file doesnt exist');
+#     exit;
+# }
+# # заменить на reqiire !!!!!!!!!!!
+# $config_update = eval( $text );
+
 # поиск и чтение шаблона конфигурации
 if ( -s $hash{'path'} ) {
-    $text = slurp( $hash{'path'}, encoding => 'utf8' );
-    unless ( $text ) {
-        logging( "can't read config file from '$hash{'path'}'" ); 
-        exit; 
-    }
+    require "$hash{'path'}" or die( 'error in opened config' );
 }
 else {
     logging( 'file doesnt exist');
     exit;
 }
-
-# заменить на reqiire !!!!!!!!!!!
-$config_update = eval( $text );
 
 # проверка параметра создания бд
 if ( $hash{'rebuild'} ) {
@@ -156,19 +164,19 @@ else {
     mojo_do( 'stop' );
 
     # заполнение параметров конфига для основной базы scorm
-    $$config{ 'expires' }                                           = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
-    $$config{ 'debug' }                                             = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
-    $$config{ 'test' }                                              = $$config_update{ 'test' }                  if $$config_update{ 'test' };
-    $$config{ 'export_settings_path' }                              = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'}      = $$config_update{ 'pg_main_username' }      if $$config_update{ 'pg_main_username' }; 
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'}      = $$config_update{ 'pg_main_password' }      if $$config_update{ 'pg_main_password' };
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}       = $$config_update{ 'pg_main_options' }       if $$config_update{ 'pg_main_options' };
+    $$config{ 'expires' }                                           = $$temp_freee::config_update{ 'expires' }               if $$temp_freee::config_update{ 'expires' };
+    $$config{ 'debug' }                                             = $$temp_freee::config_update{ 'debug' }                 if $$temp_freee::config_update{ 'debug' };
+    $$config{ 'test' }                                              = $$temp_freee::config_update{ 'test' }                  if $$temp_freee::config_update{ 'test' };
+    $$config{ 'export_settings_path' }                              = $$temp_freee::config_update{ 'export_settings_path' }  if $$temp_freee::config_update{ 'export_settings_path' };
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'}      = $$temp_freee::config_update{ 'pg_main_username' }      if $$temp_freee::config_update{ 'pg_main_username' }; 
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'}      = $$temp_freee::config_update{ 'pg_main_password' }      if $$temp_freee::config_update{ 'pg_main_password' };
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}       = $$temp_freee::config_update{ 'pg_main_options' }       if $$temp_freee::config_update{ 'pg_main_options' };
 
     # если тест
     if ( $hash{'mode'} ) {
-        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} = $$config_update{ 'pg_main_test_username' } if $$config_update{ 'pg_main_test_username' };
-        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} = $$config_update{ 'pg_main_test_password' } if $$config_update{ 'pg_main_test_password' };
-        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'}  = $$config_update{ 'pg_main_test_options' }  if $$config_update{ 'pg_main_test_options' };
+        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} = $$temp_freee::config_update{ 'pg_main_test_username' } if $$temp_freee::config_update{ 'pg_main_test_username' };
+        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} = $$temp_freee::config_update{ 'pg_main_test_password' } if $$temp_freee::config_update{ 'pg_main_test_password' };
+        $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'}  = $$temp_freee::config_update{ 'pg_main_test_options' }  if $$temp_freee::config_update{ 'pg_main_test_options' };
     }
 
     # запись конфигурации в файл freee.conf
@@ -254,13 +262,13 @@ sub connect_db {
     # обновление конфигурации
     $$config{ 'test' }                                          = $main eq 'pg_main_test' ? 1 : 0;
 
-    $$config{ 'expires' }                                       = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
-    $$config{ 'debug' }                                         = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
-    $$config{ 'export_settings_path' }                          = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
+    $$config{ 'expires' }                                       = $$temp_freee::config_update{ 'expires' }               if $$temp_freee::config_update{ 'expires' };
+    $$config{ 'debug' }                                         = $$temp_freee::config_update{ 'debug' }                 if $$temp_freee::config_update{ 'debug' };
+    $$config{ 'export_settings_path' }                          = $$temp_freee::config_update{ 'export_settings_path' }  if $$temp_freee::config_update{ 'export_settings_path' };
 
-    $config->{'dbs'}->{'databases'}->{$main}->{'username'}      = $$config_update{ $main . '_username' }     if $$config_update{ $main . '_username' }; 
-    $config->{'dbs'}->{'databases'}->{$main}->{'password'}      = $$config_update{ $main . '_password' }     if $$config_update{ $main . '_password' };
-    $config->{'dbs'}->{'databases'}->{$main}->{'options'}       = $$config_update{ $main . '_options' }      if $$config_update{ $main . '_options' };
+    $config->{'dbs'}->{'databases'}->{$main}->{'username'}      = $$temp_freee::config_update{ $main . '_username' }     if $$temp_freee::config_update{ $main . '_username' }; 
+    $config->{'dbs'}->{'databases'}->{$main}->{'password'}      = $$temp_freee::config_update{ $main . '_password' }     if $$temp_freee::config_update{ $main . '_password' };
+    $config->{'dbs'}->{'databases'}->{$main}->{'options'}       = $$temp_freee::config_update{ $main . '_options' }      if $$temp_freee::config_update{ $main . '_options' };
 
     my $db = $config->{'dbs'}->{'databases'}->{$main};
 
@@ -340,7 +348,7 @@ sub load_defaults {
     my $url = $host . '/settings/load_default';
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
-warn ('12 после спайдер мода');
+
     # получаем id группы unaproved
     my $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     my $sth = $self->{dbh}->prepare( $sql );
@@ -377,8 +385,8 @@ warn ('12 после спайдер мода');
     $user = {
         'publish'     => 't', 
         'email'       => 'admin@admin',
-        'login'       => $config_update->{'login'},
-        'password'    => sha256_hex( $config_update->{'password'}, $salt ),
+        'login'       => $temp_freee::config_update->{'login'},
+        'password'    => sha256_hex( $temp_freee::config_update->{'password'}, $salt ),
         'timezone'    => 3,
         'eav_id'      => $eav_id
     };
