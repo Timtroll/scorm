@@ -56,21 +56,6 @@ if ( $hash{'mode'} &&  $hash{'mode'} ne 'test' || $hash{'start'} &&  $hash{'star
     exit;    
 }
 
-# # поиск и чтение шаблона конфигурации
-# if ( -s $hash{'path'} ) {
-#     $text = slurp( $hash{'path'}, encoding => 'utf8' );
-#     unless ( $text ) {
-#         logging( "can't read config file from '$hash{'path'}'" ); 
-#         exit; 
-#     }
-# }
-# else {
-#     logging( 'file doesnt exist');
-#     exit;
-# }
-# # заменить на reqiire !!!!!!!!!!!
-# $config_update = eval( $text );
-
 # поиск и чтение шаблона конфигурации
 if ( -s $hash{'path'} ) {
     require "$hash{'path'}" or die( 'error in opened config' );
