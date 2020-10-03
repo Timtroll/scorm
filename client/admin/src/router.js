@@ -62,7 +62,7 @@ const router = new Router({
           name:          'Events',
           component:     () => import(/* webpackChunkName: "Events" */ './layouts/events/Events'),
           showInSideBar: false,
-          redirect:       {name: 'DashBoard'},
+          redirect:      {name: 'DashBoard'},
           meta:          {
             authRequired: true,
             icon:         'img/icons/sidebar_dashboard.svg',
@@ -287,6 +287,9 @@ const router = new Router({
 router.beforeEach(
   (to, from, next) => {
 
+    if (store.state.main) {
+      store.commit('page_title', '')
+    }
     const isAuthorised = store.getters.isLoggedIn
 
     if (to.matched.some(record => record.meta.authRequired)) {

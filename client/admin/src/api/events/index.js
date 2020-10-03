@@ -8,8 +8,7 @@ export default class Event {
 
   async loadUsers (eventId) {
     if (!eventId) return
-    return await serverHttp
-      .query('/events/lesson_users', {id: eventId}, false, true)
+    return await serverHttp.query('/events/lesson_users', {'id': eventId}, false, true)
   }
 
 }

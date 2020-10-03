@@ -1,6 +1,8 @@
 <template>
   <div class="pos-lesson-teach">
-    EventTeacher
+    Event Teacher
+    <IconConnect :status="connectStatus"
+                 :size="32"/>
   </div>
 </template>
 
@@ -9,7 +11,7 @@ export default {
   name: 'EventTeacher',
 
   components: {
-    //componentName: () => import(/* webpackChunkName: "componentName" */ './componentName')
+    IconConnect: () => import(/* webpackChunkName: "IconConnect" */  '@/components/ui/icons/IconConnect')
   },
 
   props: {
@@ -20,7 +22,9 @@ export default {
   },
 
   data () {
-    return {}
+    return {
+      connectStatus: 'progress'
+    }
   }
 }
 </script>

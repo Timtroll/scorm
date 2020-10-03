@@ -134,8 +134,7 @@ export default {
 }
 </script>
 
-<style lang="sass"
-       scoped>
+<style lang="sass">
 svg
   transition: transform .3s ease
 
@@ -152,16 +151,31 @@ svg
 
 .male
   &.progress
-    animation: progress .6s ease-in-out infinite
+    animation: progressMale .6s ease-out infinite
 
   &.success
     transform: translateY(8px)
 
-@keyframes progress
+.female
+  &.progress
+    animation: progressFemale .6s ease-in infinite
+
+  &.success
+    transform: translateY(8px)
+
+@keyframes progressMale
   0%
     transform: translateY(0)
   50%
-    transform: translateY(8px)
+    transform: translateY(5px)
+  100%
+    transform: translateY(0)
+
+@keyframes progressFemale
+  0%
+    transform: translateY(0)
+  50%
+    transform: translateY(-4px)
   100%
     transform: translateY(0)
 

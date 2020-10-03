@@ -82,9 +82,11 @@ export default {
         this.$store.commit('set_time', this.currentTime)
       }
     },
+
     'currentTime.minutes' () {
       this.$store.commit('set_time', this.currentTime)
     }
+
   },
 
   data () {
@@ -94,6 +96,7 @@ export default {
         hour:   null,
         minute: null
       }
+
     }
   },
 
@@ -111,9 +114,25 @@ export default {
       return this.$store.getters.cardLeftState
     },
 
-    // заголовок страницы
+    title () {
+      return this.$store.state.main.pageTitle
+    },
+
     pageTitle () {
-      if (this.$route.params.title) {
+      if (this.title) {
+        return this.title
+      }
+      else {
+        return this.titleRoute
+      }
+    },
+
+    // заголовок страницы
+    titleRoute () {
+      if (this.$store.state.pageTitle) {
+        return this.$store.state.pageTitle
+      }
+      else if (this.$route.params.title) {
         return '<span class="uk-text-success">' +
           this.$route.meta.breadcrumb + ' - </span> '
           + this.$route.params.title
@@ -121,7 +140,6 @@ export default {
       else {
         return this.$route.meta.breadcrumb
       }
-
     }
 
   },

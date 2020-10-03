@@ -23,7 +23,7 @@ export default {
 
   metaInfo () {
     return {
-      title:         'Урок',
+      title:         this.eventMeta,
       titleTemplate: '%s - ' + this.$t('app.title'),
       htmlAttrs:     {
         lang: this.$t('app.lang')
@@ -33,10 +33,12 @@ export default {
 
   data () {
     return {
-      loading: 'loading',
-      eventApi:      null,
+      loading:  'loading',
+      eventApi: null,
 
-      participants:  null,
+      eventMeta:  null,
+      eventUsers: null,
+
       eventRole:     null,
       eventRoleList: {
         teacher: {
@@ -58,12 +60,19 @@ export default {
   },
 
   async mounted () {
-    this.eventApi      = new Event()
-    const participants = ''
-    //const participants = await this.eventApi.loadUsers(this.$route.params.id)
-    Promise.all([participants])
+    this.$store.commit('navBarLeftActionShow', false)
+    this.eventApi  = new Event()
+    //const participants = ''
+    const event    = await this.eventApi.loadUsers(this.$route.params.id)
+    this.eventMeta = event.meta
+    const meta     = `<strong class="uk-text-muted">${event.meta.discipline}:</strong>
+      <span class="uk-text-muted">${event.meta.theme} - </span>
+      ${event.meta.lesson}`
+    this.$store.commit('page_title', meta)
+    Promise.all([event])
            .then(() => {
-             this.checkRoleUI(participants)
+
+             this.checkRoleUI(event)
              this.loading = 'success'
            })
   },

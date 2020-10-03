@@ -19,16 +19,20 @@ export default {
       appConfig.removeToken()
       router.replace({name: 'Login'}).catch(e => {})
     }
+    const formData = new FormData()
+
+    for (const [key, value] of Object.entries(params)) {
+      formData.append(key, value)
+    }
+
     const response = await fetch(apiUrl + url, {
       method:   'POST',
       mode:     'cors',
       //referrerPolicy: 'unsafe-url', // no-referrer,
       headers:  {
-        //'credentials': 'include',
-        'Content-Type': 'application/json',
-        'token':        token
+        'token': token
       },
-      body:     params,
+      body:     formData,
       redirect: 'follow'
     })
 
