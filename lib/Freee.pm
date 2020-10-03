@@ -154,7 +154,7 @@ sub startup {
 
     # уроки
     $auth->post('/events/')             ->to('events#index');           # Расписание уроков
-    $auth->post('/events/event_users')  ->to('events#event_users');     # Список участников урока (учитель - обязателен)
+    $auth->post('/events/lesson_users') ->to('events#lesson_users');     # Список участников урока (учитель - обязателен)
 
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');
