@@ -289,6 +289,7 @@ router.beforeEach(
 
     if (store.state.main) {
       store.commit('page_title', '')
+      store.commit('page_sub_title', '')
     }
     const isAuthorised = store.getters.isLoggedIn
 

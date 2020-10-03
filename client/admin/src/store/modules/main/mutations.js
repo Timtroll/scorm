@@ -3,6 +3,7 @@ const mutations = {
   set_time (state, data) {state.time = data},
 
   page_title (state, data) {state.pageTitle = data},
+  page_sub_title (state, data) {state.pageSubTitle = data},
 
   // акшин для левой кнопки в navbar
   card_left_show (state, data) {

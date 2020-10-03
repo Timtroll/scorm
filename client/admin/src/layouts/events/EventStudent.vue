@@ -2,7 +2,7 @@
   <div class="pos-lesson-teach">
     Event Student
     <IconConnect :status="connectStatus"
-                 :size="32"/>
+                 :size="48"/>
   </div>
 </template>
 

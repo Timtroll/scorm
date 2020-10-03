@@ -60,19 +60,24 @@ export default {
   },
 
   async mounted () {
+
     this.$store.commit('navBarLeftActionShow', false)
-    this.eventApi  = new Event()
+    this.eventApi = new Event(this.participantProfile.id)
+
     //const participants = ''
     const event    = await this.eventApi.loadUsers(this.$route.params.id)
-    this.eventMeta = event.meta
-    const meta     = `<strong class="uk-text-muted">${event.meta.discipline}:</strong>
-      <span class="uk-text-muted">${event.meta.theme} - </span>
-      ${event.meta.lesson}`
-    this.$store.commit('page_title', meta)
+    const meta     = event.meta
+    const users    = event.list
+    this.eventMeta = meta
+    const title    = `${meta.lesson}`
+    const subTitle    = `<strong>${meta.discipline}: </strong>${meta.theme}`
+    this.$store.commit('page_title', title)
+    this.$store.commit('page_sub_title', subTitle)
+
     Promise.all([event])
            .then(() => {
 
-             this.checkRoleUI(event)
+             this.checkRoleUI(users)
              this.loading = 'success'
            })
   },
@@ -91,6 +96,12 @@ export default {
   },
 
   methods: {
+
+    checkRole (users) {
+      //TODO: переделать - ХАРДКОД!!!!
+
+    },
+
     checkRoleUI (role) {
       // teacher / student
       const participantsRole = this.eventRoleList[role]

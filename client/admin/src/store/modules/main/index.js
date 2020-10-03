@@ -6,7 +6,8 @@ const state = {
 
   time: null,
 
-  pageTitle: '',
+  pageTitle:    '',
+  pageSubTitle: '',
 
   navBarLeftAction: {
     visibility: true,
