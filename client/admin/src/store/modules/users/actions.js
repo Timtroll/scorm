@@ -63,8 +63,6 @@ const actions = {
 
     try {
       store.commit('table_status_request')
-
-      console.log('Api', Api)
       const response = await Api.get_leafs(id)
 
       if (response.status === 200) {
