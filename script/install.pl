@@ -75,8 +75,8 @@ if ( $hash{'rebuild'} ) {
     # подключение к базе postgres
     $self->{dbh} = DBI->connect(
         'dbi:Pg:dbname=postgres;host=localhost;port=5432',
-        $$temp_freee::config_update{ 'pglogin' }
-        $$temp_freee::config_update{ 'pgpassword' }
+        $$temp_freee::config_update{ 'pglogin' },
+        $$temp_freee::config_update{ 'pgpassword' },
         { 
             'pg_enable_utf8' => 1, 
             'pg_auto_escape' => 1, 
