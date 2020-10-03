@@ -6,7 +6,7 @@ use POSIX qw(strftime);
 use DBI qw(:sql_types);
 use Mojo::JSON qw( from_json );
 
-DBI->trace(1);
+# DBI->trace(1);
 
 use Data::Dumper;
 
@@ -38,8 +38,10 @@ my %masks_fields = (
 # список юзеров по группам (обязательно id группы)
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
-# id - Id группы
-# publish - показывать пользователей только с этим статусом
+#   group_id => <id>, - Id группы
+#   publish  => 1,    - показывать пользователей только с этим статусом
+#   limit    => 10,   - количество записей
+#   offset   => 0,    - смещение от начала списка
 # }
 sub _get_list {
     my ( $self, $data ) = @_;
@@ -55,18 +57,20 @@ sub _get_list {
 
         # взять объекты из таблицы users
         unless ( defined $$data{'publish'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
         elsif ( $$data{'publish'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?:group_id AND grp."publish" = true ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
         else {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id"';
         }
+        $sql .= ' LIMIT :limit' if $$data{'limit'};
+        $sql .= ' OFFSET :offset' if $$data{'offset'};
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':group_id', $$data{'group_id'} );
-        $sth->bind_param( ':limit', $$data{'limit'} );
-        $sth->bind_param( ':offset', $$data{'offset'} );
+        $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
+        $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
         $sth->execute();
         $list = $sth->fetchall_hashref('id');
         $sth->finish();
@@ -394,7 +398,9 @@ sub _save_user {
     }
 
     unless ( @! ) {
-        $$data{'data_eav'}{'title'} = join(' ', ( $$data{'data_eav'}{'surname'}, $$data{'data_eav'}{'name'}, $$data{'data_eav'}{'patronymic'} ) );
+        $$data{'data_eav'}{'title'} = join(
+            ' ', ( $$data{'data_eav'}{'surname'}, $$data{'data_eav'}{'name'}, $$data{'data_eav'}{'patronymic'} )
+        );
 
         # обновление полей в EAV
         $usr = Freee::EAV->new( 'User', {

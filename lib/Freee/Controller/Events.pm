@@ -43,53 +43,30 @@ sub lesson_users {
     # проверка данных
     $data = $self->_check_fields();
 
+    # получаем список учителей
+    my $group_id = $self->model('Groups')->_get_group_id( 'teacher' );
+
+    my $teachers = $self->model('User')->_get_list({
+        group_id => $$group_id{'id'},
+        limit    => 1,
+        offset   => 0,
+        publish  => 0 #?????????? почему-то при добавлении учителя publush- false
+    });
+
+    # получаем список учеников
+    $group_id = $self->model('Groups')->_get_group_id( 'students' );
+
+    my $students = $self->model('User')->_get_list({
+        group_id => $$group_id{'id'},
+        limit    => 1,
+        offset   => 0,
+        publish  => 0
+    });
+
+
     unless ( @! ) {
-        $list = [
-            # УЧИТЕЛЬ
-            {
-                "id"        => 10,
-                "surname"   => "Шестаков",
-                "name"      => "Сергей",
-                "patronymic"=> "Петрович",
-                "place"     => "Москва",
-                "timezone"  => 3,
-                "status"    => 1,
-                "avatar"    => 1556,
-                "email"     => 'teacher@teacher.ru',
-                "phone"     => 79338765643,
-                "groups"    => [3], 
-                "role"      => "teacher"
-            },
-            # УЧЕНИКИ
-            {
-                "id"        => 35,
-                "surname"   => "Шестаков",
-                "name"      => "Сергей",
-                "patronymic"=> "Петрович",
-                "place"     => "Москва",
-                "timezone"  => 3,
-                "status"    => 1,
-                "avatar"    => 1556,
-                "email"     => 'student@student.ru',
-                "phone"     => 79338765643,
-                "groups"    => [4], 
-                "role"      => "student"
-            },
-            {
-                "id"        => 36,
-                "surname"   => "Шестаков",
-                "name"      => "Сергей",
-                "patronymic"=> "Петрович",
-                "place"     => "Москва",
-                "timezone"  => 3,
-                "status"    => 1,
-                "avatar"    => 1556,
-                "email"     => 'student@student.ru',
-                "phone"     => 79338765643,
-                "groups"    => [4], 
-                "role"      => "student"
-            }
-        ];
+        $list = [ @$teachers, @$students ];
+
         $meta = {
             "desciption"    => "описание урока",
             "discipline"    => "История",
