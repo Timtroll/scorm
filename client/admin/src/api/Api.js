@@ -47,9 +47,10 @@ export default () => {
       // Do whatever you want with the native progress event
     },
 
-    validateStatus: function (status) {
+    validateStatus: (status) => {
       if (status === 666) {
-        router.replace({name: 'Login'}).then()
+        appConfig.removeToken()
+        router.replace({name: 'Login'}).catch(e => console.log(e))
         return status
       }
       else {

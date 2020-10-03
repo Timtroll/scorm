@@ -162,7 +162,7 @@
 import {appConfig}     from '@/main'
 import lessons         from './store'
 import WebRtcInitMulti from '@/api/webRTC/index'
-import lessonApi       from '@/api/lessons'
+import lessonApi       from '@/api/events'
 import * as io         from 'socket.io-client'
 
 window.io = io
