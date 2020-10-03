@@ -220,7 +220,7 @@
 
       // loader
       loader: {
-        default: '',
+        default: '', // [loading, success, error]
         type:    String
       }
     },

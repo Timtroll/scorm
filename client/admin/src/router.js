@@ -9,13 +9,13 @@ const router = new Router({
   base:   process.env.BASE_URL,
   routes: [
     {
-      path:     '/login',
-      name:     'Start',
-      component:     () => import(/* webpackChunkName: "login" */ './views/Sign'),
-      meta:     {
+      path:      '/login',
+      name:      'Start',
+      component: () => import(/* webpackChunkName: "login" */ './views/Sign'),
+      meta:      {
         authRequired: false
       },
-      children: [
+      children:  [
         {
           path:          '/login',
           name:          'Login',
@@ -40,16 +40,16 @@ const router = new Router({
       path:           '/',
       name:           'Main',
       component:      () => import(/* webpackChunkName: "main" */ './views/Main'),
-      redirect:       {name: 'Dashboard'},
+      redirect:       {name: 'Events'},
       sideMenuParent: true,
       meta:           {
         authRequired: true
       },
       children:       [
         {
-          path:          '/dashboard',
-          name:          'Dashboard',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
+          path:          '/dashBoard',
+          name:          'DashBoard',
+          component:     () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard/DashBoard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -58,18 +58,45 @@ const router = new Router({
           }
         },
         {
-          path:      '/pages',
-          name:      'Pages',
-          component: () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
-
-          showInSideBar: true,
+          path:          '/events',
+          name:          'Events',
+          component:     () => import(/* webpackChunkName: "Events" */ './layouts/events/Events'),
+          showInSideBar: false,
+          redirect:       {name: 'DashBoard'},
           meta:          {
-            root:         true,
             authRequired: true,
-            icon:         'img/icons/sidebar_pages.svg',
-            breadcrumb:   'Контент'
-          }
+            icon:         'img/icons/sidebar_dashboard.svg',
+            breadcrumb:   'Уроки'
+          },
+          children:      [
+            {
+              path:           '/events/:id',
+              name:           'Event',
+              component:      () => import(/* webpackChunkName: "Event" */ './layouts/events/Event'),
+              showInSideBar:  false,
+              showInSettings: false,
+              meta:           {
+                root:         false,
+                parentName:   'Events',
+                authRequired: true,
+                breadcrumb:   'Урок'
+              }
+            }
+          ]
         },
+        //{
+        //  path:      '/pages',
+        //  name:      'Pages',
+        //  component: () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
+        //
+        //  showInSideBar: true,
+        //  meta:          {
+        //    root:         true,
+        //    authRequired: true,
+        //    icon:         'img/icons/sidebar_pages.svg',
+        //    breadcrumb:   'Контент'
+        //  }
+        //},
         {
           path:          '/courses',
           name:          'Courses',

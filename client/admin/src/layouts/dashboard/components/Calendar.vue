@@ -3,7 +3,8 @@
 
     <div class="pos-calendar-header">
 
-      <div class="pos-calendar-header-week">
+      <div class="pos-calendar-header-week"
+           :style="{'grid-template-columns': `repeat(${calendarHeaderGrisSize}, 1fr)`}">
 
         <div class="pos-calendar-header-week-item">
           <svg xmlns="http://www.w3.org/2000/svg"
@@ -19,13 +20,11 @@
           </svg>
         </div>
 
-        <div class="pos-calendar-header-week-item">Пн</div>
-        <div class="pos-calendar-header-week-item">Вт</div>
-        <div class="pos-calendar-header-week-item">Ср</div>
-        <div class="pos-calendar-header-week-item">Чт</div>
-        <div class="pos-calendar-header-week-item active">Пт</div>
-        <div class="pos-calendar-header-week-item">Сб</div>
-        <div class="pos-calendar-header-week-item">Вс</div>
+        <div class="pos-calendar-header-week-item"
+             v-for="(day, index) of activeDaysOfWeek"
+             :key="index"
+             :class="{active: day.name === currentWeekDay}"
+             v-text="day.name"></div>
 
         <div class="pos-calendar-header-week-item">
           <svg xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +90,38 @@ export default {
 
   data () {
     return {
+
       fullCalendar: null,
+      daysOfWeek:   [
+        {
+          name:   'Пн',
+          active: true
+        },
+        {
+          name:   'Вт',
+          active: true
+        },
+        {
+          name:   'Ср',
+          active: true
+        },
+        {
+          name:   'Чт',
+          active: true
+        },
+        {
+          name:   'Пт',
+          active: true
+        },
+        {
+          name:   'Сб',
+          active: false
+        },
+        {
+          name:   'Вс',
+          active: false
+        }
+      ],
 
       //currentTime: null,
 
@@ -142,7 +172,18 @@ export default {
     }
   },
 
-  computed: {},
+  computed: {
+    currentWeekDay () {},
+
+    calendarHeaderGrisSize () {
+      if (!this.activeDaysOfWeek) return
+      return this.activeDaysOfWeek.length + 2
+    },
+
+    activeDaysOfWeek () {
+      return this.daysOfWeek.filter(day => day.active)
+    }
+  },
 
   methods: {
 
@@ -197,7 +238,6 @@ export default {
         eventClassNames: 'pos-calendar-event',
 
         eventContent: (arg) => {
-          console.log(arg.event)
           const event = arg.event
           return {
             html: `
@@ -226,8 +266,13 @@ export default {
         },
 
         eventClick: (info) => {
-          info.jsEvent.preventDefault()
-          //console.log(info.event)
+          //info.jsEvent.preventDefault()
+          this.$router.replace({
+            name:   'Event',
+            params: {
+              id: info.event.id
+            }
+          }).catch(e => console.log(e))
           info.el.classList.add('clicked')
         },
 

@@ -1,0 +1,118 @@
+@import "./../../../assets/sass/uikit/variables"
+@import "./../../../assets/sass/mixins"
+
+$avaSize: 80px
+$gap: 10px
+$avaBorder: 3px
+$transition-duration: 0.2s
+
+/** USERS
+.pos-lesson-users
+  grid-area: user
+  padding: $global-margin
+
+  @media (max-width: $breakpoint-large)
+    padding: $global-small-margin
+
+.pos-lesson-users-header
+  display: flex
+  align-items: center
+
+.pos-lesson-users-header__title
+  flex: 1
+  min-width: 100px
+
+.pos-lesson-users-body
+  @media (max-width: $breakpoint-small)
+    overflow-x: auto
+    overflow-y: visible
+
+.pos-lesson-users-list
+  margin-top: $global-medium-margin
+  display: grid
+  grid-gap: $gap
+  grid-template-columns: repeat(auto-fill, $avaSize)
+
+  @media (max-width: $breakpoint-small)
+    grid-auto-flow: column
+    width: auto
+    padding: $gap*4 $gap
+
+.pos-lesson-user
+  position: relative
+  cursor: pointer
+
+  &.active
+    z-index: 10
+
+    .pos-lesson-user__info
+      opacity: 1
+
+  &.online
+    .pos-lesson-user__status
+      background-color: $global-success-background
+
+.pos-lesson-user__ava
+  width: $avaSize
+  height: $avaSize
+  //background-color: $global-muted-color
+  overflow: hidden
+  border-radius: 500px
+  background: $global-muted-color 50% 50% no-repeat
+  background-size: cover
+  transform-origin: center center
+  transition: transform .3s ease
+  position: relative
+  z-index: 1
+
+.pos-lesson-user__status,
+.pos-lesson-user__ball
+  position: absolute
+  background-color: $global-danger-background
+  border-radius: 500px
+  z-index: 2
+  box-sizing: content-box
+  left: 75%
+
+.pos-lesson-user__status
+  width: $gap*1.2
+  height: $gap*1.2
+  top: 75%
+  border: 3px solid $global-background
+
+
+.pos-lesson-user__ball
+  width: $gap*2
+  height: $gap*2
+  bottom: 75%
+  border: 2px solid $global-background
+  text-align: center
+  font-size: .8rem
+  font-weight: bold
+  color: $global-inverse-color
+  line-height: $gap*2
+  &.warning
+    background-color: $global-warning-background
+  &.primary
+    background-color: $global-primary-background
+  &.success
+    background-color: $global-success-background
+
+.pos-lesson-user__info
+  transition: opacity $transition-duration ease-in-out
+  opacity: 0
+  text-align: center
+  font-size: .8rem
+  line-height: 1.3
+  position: absolute
+  z-index: 0
+  background: $global-background
+  left: -$gap
+  right: -$gap
+  bottom: -$gap
+  padding: $gap $gap/2 $gap*2 + $avaSize $gap/2
+  border-radius: $gap $gap ($avaSize+$gap/2) ($avaSize+$gap/2)
+  box-shadow: 0 4px 5px rgba(0, 0, 0, .1)
+
+//.pos-lesson-user__info--meta
+

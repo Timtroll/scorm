@@ -32,28 +32,34 @@ export default {
       redirect: 'follow'
     })
 
-    const result = await response.json()
+    if (response.status === 666) {
+      appConfig.removeToken()
+      router.replace({name: 'Login'}).catch(e => console.log(e))
+    }
+    else {
+      const result = await response.json()
 
-    if (result.status === 'ok') {
-      if (notifyOk) {
-        notify(result.status, 'success')
+      if (result.status === 'ok') {
+        if (notifyOk) {
+          notify(result.status, 'success')
+        }
+        console.log(
+          `query: ${url}`,
+          `params:   ${JSON.stringify(params)}`,
+          'result', result
+        )
+        return result
       }
-      console.log(
-        `query: ${url}`,
-        `params:   ${JSON.stringify(params)}`,
-        'result', result
-      )
-      return result
-    }
-    else if (result.status === 'warn') {
-      if (notifyFail) {
-        notify(result.message, 'warning')
+      else if (result.status === 'warn') {
+        if (notifyFail) {
+          notify(result.message, 'warning')
+        }
+        return result
       }
-      return result
-    }
-    else if (result.status === 'fail') {
-      notify('ERROR: ' + result.message, 'danger')
-      return result
+      else if (result.status === 'fail') {
+        notify('ERROR: ' + result.message, 'danger')
+        return result
+      }
     }
 
   }

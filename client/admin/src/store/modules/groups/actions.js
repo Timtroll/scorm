@@ -54,7 +54,7 @@ const actions = {
     catch (e) {
       store.commit('tree_status_error')
       notify('ERROR: ' + e, 'danger')
-      throw 'ERROR: ' + e
+      //throw 'ERROR: ' + e
     }
   },
 
