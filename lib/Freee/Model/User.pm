@@ -74,7 +74,7 @@ sub _get_list {
         if ( ref($list) eq 'HASH' ) {
             foreach ( sort keys %$list ) {
                 $list->{ $_ }->{'password'} = '';
-                $list->{ $_ }->{'publish'} = $list->{ $_ }->{'publish'} ? 1 : 0;
+                $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
                 delete $list->{ $_ }->{'publish'};
                 push @list, $$list{ $_ };
             }
@@ -188,6 +188,8 @@ sub _exists_in_users {
 
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
+                $$row{$login}{'status'} = $$row{$login}{'publish'} ? 1 : 0;
+                delete $$row{$login}{'publish'};
                 return $$row{$login};
             }
             else {

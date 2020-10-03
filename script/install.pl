@@ -458,6 +458,10 @@ our $config_update = {
     'login'                 => 'login',
     'password'              => 'password',
 
+    # данные доступа к базе postgres
+    'pglogin'               => 'loginPG',
+    'pgpassword'            => 'passwordPG',
+
     # данные доступа к базам данных
     'expires'               => '6000',
     'pg_main_username'      => 'username1',
