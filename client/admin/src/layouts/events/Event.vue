@@ -65,12 +65,14 @@ export default {
     this.eventApi = new Event(this.participantProfile.id)
 
     //const participants = ''
-    const event    = await this.eventApi.loadUsers(this.$route.params.id)
+    const event = await this.eventApi.loadUsers(this.$route.params.id)
+    if (!event) return
+
     const meta     = event.meta
     const users    = event.list
     this.eventMeta = meta
     const title    = `${meta.lesson}`
-    const subTitle    = `<strong>${meta.discipline}: </strong>${meta.theme}`
+    const subTitle = `<strong>${meta.discipline}: </strong>${meta.theme}`
     this.$store.commit('page_title', title)
     this.$store.commit('page_sub_title', subTitle)
 

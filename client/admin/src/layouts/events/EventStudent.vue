@@ -1,8 +1,12 @@
 <template>
   <div class="pos-lesson-teach">
-    Event Student
-    <IconConnect :status="connectStatus"
-                 :size="48"/>
+
+    <div class="pos-lesson-loader">
+      <IconConnect :status="connectStatus"
+                   :size="48"/>
+      Student
+    </div>
+
   </div>
 </template>
 
