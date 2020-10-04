@@ -101,17 +101,17 @@
                 class="uk-button uk-button-default uk-button-small">Canvas
         </button>
         <button type="button"
-                :class="{'uk-active' : selectedRes === 'hd'}"
+                :class="{'uk-button-primary' : selectedRes === 'hd'}"
                 @click="changeRes('hd')"
                 class="uk-button uk-button-default uk-button-small">hd
         </button>
         <button type="button"
-                :class="{'uk-active' : selectedRes === 'sd'}"
+                :class="{'uk-button-primary' : selectedRes === 'sd'}"
                 @click="changeRes('sd')"
                 class="uk-button uk-button-default uk-button-small">sd
         </button>
         <button type="button"
-                :class="{'uk-active' : selectedRes === 'thumb'}"
+                :class="{'uk-button-primary' : selectedRes === 'thumb'}"
                 @click="changeRes('thumb')"
                 class="uk-button uk-button-default uk-button-small">thumb
         </button>
@@ -193,8 +193,8 @@ export default {
 
     // selectedRes
     changeRes (res) {
-      this.rtc.changeRes(res)
-      this.selectedRes = res
+      //this.rtc.changeRes(res)
+      //this.selectedRes = res
     },
 
     // move second Video
