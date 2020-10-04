@@ -45,27 +45,27 @@ sub lesson_users {
 
     # получаем список учителей
     my $group_id = $self->model('Groups')->_get_group_id( 'teacher' );
-
-    my $teachers = $self->model('User')->_get_list({
+    my $teacher = $self->model('User')->_get_list({
         group_id => $$group_id{'id'},
         limit    => 1,
         offset   => 0,
-        publish  => 1 #?????????? почему-то при добавлении учителя publush- false
+        publish  => 1,      #?????????? почему-то при добавлении учителя publush- false
+        mode     => 'full'
     });
+    $teacher = shift @$teacher;
 
     # получаем список учеников
     $group_id = $self->model('Groups')->_get_group_id( 'students' );
-
     my $students = $self->model('User')->_get_list({
         group_id => $$group_id{'id'},
         limit    => 1,
         offset   => 0,
-        publish  => 1
+        publish  => 1,
+        mode     => 'full'
     });
 
-
     unless ( @! ) {
-        $list = [ @$teachers, @$students ];
+        # $list = [ @$teachers, @$students ];
 
         $meta = {
             "desciption"    => "описание урока",
@@ -79,7 +79,8 @@ sub lesson_users {
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'list'} = $list unless @!;
+    $resp->{'students'} = $students unless @!;
+    $resp->{'teacher'} = $teacher unless @!;
     $resp->{'meta'} = $meta unless @!;
     $resp->{'id'} = $$data{'id'} unless @!;
 

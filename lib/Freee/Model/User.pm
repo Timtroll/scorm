@@ -42,18 +42,19 @@ my %masks_fields = (
 #   publish  => 1,    - показывать пользователей только с этим статусом
 #   limit    => 10,   - количество записей
 #   offset   => 0,    - смещение от начала списка
+#   mode     => 'full'- список с базовыми данными, если указать 'full' (опция необязательна по)
 # }
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $fields, $sth, @list );
+    my ( $sql, $fields, $sth, $usr, @list );
     my $list = {};
 
     push @!, "no data for list" unless ( $$data{'group_id'} );
 
     unless ( @! ) {
         # выбираемые поля
-        $fields = ' id, login, publish, email, phone, eav_id, timezone ';
+        $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
         unless ( defined $$data{'publish'} ) {
@@ -72,17 +73,25 @@ sub _get_list {
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
         $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
         $sth->execute();
-        $list = $sth->fetchall_hashref('id');
+        # $list = $sth->fetchall_hashref('id');
+        $list = $sth->fetchall_arrayref({});
         $sth->finish();
 
-        if ( ref($list) eq 'HASH' ) {
-            foreach ( sort keys %$list ) {
-                $list->{ $_ }->{'password'} = '';
-                $list->{ $_ }->{'status'} = $list->{ $_ }->{'publish'} ? 1 : 0;
-                delete $list->{ $_ }->{'publish'};
-                push @list, $$list{ $_ };
+        if ( ref($list) eq 'ARRAY' ) {
+            if ( $$data{'mode'} ) {
+                foreach ( @$list ) {
+                    $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
+                    # $_->{'id'}            = $_->{id};
+                    $_->{'name'}          = $usr->name()       ? $usr->name() : '';
+                    $_->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
+                    $_->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
+                    $_->{'birthday'}      = $usr->birthday()   ? $usr->birthday() : '';
+                    $_->{'import_source'} = $usr->import_source();
+                    $_->{'country'}       = $usr->country()    ? $usr->country() : '';
+                    $_->{'place'}         = $usr->place()      ? $usr->place() : '';
+                    $_->{'phone'}         = $_->{'phone'}   ? $_->{'phone'} : '';
+                }
             }
-            $list = \@list;
         }
     }
 
