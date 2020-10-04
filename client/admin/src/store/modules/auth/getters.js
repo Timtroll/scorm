@@ -1,7 +1,8 @@
 const getters = {
 
   isLoggedIn: state => !!state.user.token,
-  authStatus: state => state.user.status
+  authStatus: state => state.user.status,
+  profile:    state => state.user.profile
 
 }
 

@@ -16,8 +16,7 @@
                  style="object-fit: cover"
                  autoplay
                  playsinline
-                 muted
-                 loop>
+                 muted>
           </video>
         </div>
 
@@ -161,7 +160,7 @@
 <script>
 import {appConfig}     from '@/main'
 import lessons         from './store'
-import WebRtcInitMulti from '@/api/webRTC/index'
+import WebRtcInitMulti from '@/api/webRTC'
 import lessonApi       from '@/api/events'
 import * as io         from 'socket.io-client'
 

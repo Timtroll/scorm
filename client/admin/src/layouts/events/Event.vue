@@ -48,6 +48,10 @@ export default {
         student: {
           name:      'student',
           component: () => import(/* webpackChunkName: "EventStudent" */ './EventStudent')
+        },
+        guest:   {
+          name:      'guest',
+          component: () => import(/* webpackChunkName: "EventGuest" */ './EventGuest')
         }
       }
     }
@@ -64,12 +68,18 @@ export default {
     this.$store.commit('navBarLeftActionShow', false)
     this.eventApi = new Event(this.participantProfile.id)
 
-    //const participants = ''
     const event = await this.eventApi.loadUsers(this.$route.params.id)
-    if (!event) return
+    if (!event) {
+      this.loading = 'error'
+      return
+    }
 
-    const meta     = event.meta
-    const users    = event.list
+    const meta      = event.meta
+    this.eventUsers = {
+      teacher:  event.teacher,
+      students: event.students
+    }
+
     this.eventMeta = meta
     const title    = `${meta.lesson}`
     const subTitle = `<strong>${meta.discipline}: </strong>${meta.theme}`
@@ -78,8 +88,7 @@ export default {
 
     Promise.all([event])
            .then(() => {
-
-             this.checkRoleUI(users)
+             this.checkRoleUI(this.eventUsers)
              this.loading = 'success'
            })
   },
@@ -99,16 +108,24 @@ export default {
 
   methods: {
 
-    checkRole (users) {
-      //TODO: переделать - ХАРДКОД!!!!
-
+    checkRoleTeacher () {
+      return (this.participantProfile.id === this.eventUsers.teacher.id) ? this.eventRoleList.teacher : false
     },
 
-    checkRoleUI (role) {
-      // teacher / student
-      const participantsRole = this.eventRoleList[role]
-      const studentRole      = this.eventRoleList.student
-      this.eventRole         = (participantsRole) ? participantsRole : studentRole
+    checkRoleStudent () {
+      return (this.eventUsers.students.find(user => user.id === this.participantProfile.id)) ? this.eventRoleList.students : false
+    },
+
+    checkRoleUI () {
+      if (this.checkRoleTeacher()) {
+        this.eventRole = this.checkRoleTeacher()
+      }
+      else if (this.checkRoleStudent()) {
+        this.eventRole = this.checkRoleStudent()
+      }
+      else {
+        this.eventRole = this.eventRoleList.guest
+      }
     }
   }
 
