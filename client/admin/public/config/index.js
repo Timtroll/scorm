@@ -5,7 +5,7 @@ export default class AppConfig {
     this.description = 'Онлайн система обучения'
     this.lang        = 'ru'
     this.logo        = '/img/logo__bw.svg'
-    this.version     = ''
+    this.version     = '1.0.0 alfa'
     this.wssWebRTC   = 'https://scorm-rtc-multi-server.herokuapp.com:443/'
     this.wssEvent    = 'wss://freee.su/api/channel' // 'wss://freee.su/wschannel/'
     this.stunServer  = 'stun:stun.freee.su:5349'
@@ -16,7 +16,6 @@ export default class AppConfig {
     }
     this.profile     = null
     this.token       = null
-    this.role        = null
     this.userGroups  = null
   }
 
@@ -41,7 +40,6 @@ export default class AppConfig {
     localStorage.removeItem('profile')
     localStorage.removeItem('userGroups')
     this.token = null
-    this.role  = null
   }
 
   static getGroups (groups, profile) {

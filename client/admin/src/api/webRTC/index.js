@@ -33,7 +33,7 @@ console.log(adapter.browserDetails)
 export default class WebRtcInitMulti {
 
   // role: lector, listener
-  constructor (role, roomId, socketURL, stunServer, turnServer) {
+  constructor (role, roomId, socketURL, stunServer, turnServer, userProfile) {
     this.roomId = roomId
     //'https://rtcmulticonnection.herokuapp.com:443/'
     //this.socketURL = socketURL || 'wss://freee.su/api/channel/' // https://scorm.site:443/
@@ -48,7 +48,8 @@ export default class WebRtcInitMulti {
     this.videoList   = []
     this.canvas      = null
     this.enableLogs  = true
-    this.role        = role || 'listener' // ['teacher', 'listener']
+    this.role        = role || 'student' // ['teacher', 'student', ]
+    this.profile     = userProfile
     this.constraints = {
       hd:    {
         audio: {
@@ -105,15 +106,13 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.enableLogs             = this.enableLogs
     this.rtcmConnection.autoCloseEntireSession = true
 
+    this.rtcmConnection.extra = {
+      userId: this.profile.id
+    }
+
     // /node_modules/fbr/FileBufferReader.js
     // https://www.rtcmulticonnection.org/docs/send/
     this.rtcmConnection.enableFileSharing = true
-
-    this.rtcmConnection.extra = {
-      fullName: 'Your full name',
-      email:    'Your email',
-      photo:    'http://site.com/profile.png'
-    }
 
     this.rtcmConnection.codecs = {
       video: 'H264', // Video codecs e.g. "h264", "vp9", "vp8" etc.
@@ -121,7 +120,7 @@ export default class WebRtcInitMulti {
     }
     //this.rtcmConnection.session                = this.constraints
 
-    this.rtcmConnection.mediaConstraints = (this.role === 'listener')
+    this.rtcmConnection.mediaConstraints = (this.role === 'teacher')
       ? this.constraints.hd
       : this.constraints.thumb
 
@@ -243,10 +242,12 @@ export default class WebRtcInitMulti {
   }
 
   join () {
+
     this.rtcmConnection
         .openOrJoin(this.roomId, (isRoomExist, roomId) => {
           if (isRoomExist === false && this.rtcmConnection.isInitiator === true) {
             console.log('opened-room', roomId)
+
           }
         })
   }
