@@ -157,24 +157,20 @@ export default {
     // проверка на учителя
     checkRoleTeacher () {
       return (this.participantProfile.id === this.eventUsers.teacher.id)
-        ? this.eventRoleList.teacher
-        : false
     },
 
     // проверка на ученика
     checkRoleStudent () {
-      return (this.eventUsers.students.find(user => user.id === this.participantProfile.id))
-        ? this.eventRoleList.students
-        : false
+      return !!(this.eventUsers.students.find(user => user.id === this.participantProfile.id))
     },
 
     // проверка пользователя для отображения необходимого интерфейса
     checkRoleUI () {
       if (this.checkRoleTeacher()) {
-        this.eventRole = this.checkRoleTeacher()
+        this.eventRole = this.eventRoleList.teacher
       }
       else if (this.checkRoleStudent()) {
-        this.eventRole = this.checkRoleStudent()
+        this.eventRole = this.eventRoleList.student
       }
       else {
         this.eventRole = this.eventRoleList.guest
