@@ -50,7 +50,7 @@ sub lesson_users {
         group_id => $$group_id{'id'},
         limit    => 1,
         offset   => 0,
-        publish  => 0 #?????????? почему-то при добавлении учителя publush- false
+        publish  => 1 #?????????? почему-то при добавлении учителя publush- false
     });
 
     # получаем список учеников
@@ -60,7 +60,7 @@ sub lesson_users {
         group_id => $$group_id{'id'},
         limit    => 1,
         offset   => 0,
-        publish  => 0
+        publish  => 1
     });
 
 
