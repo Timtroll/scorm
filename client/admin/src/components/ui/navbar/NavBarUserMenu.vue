@@ -1,13 +1,33 @@
 <template>
   <div class="uk-navbar-dropdown uk-dropdown-small"
        uk-dropdown="mode: click; offset: 10; pos: bottom-right; animation: uk-animation-slide-right-medium">
+
+    <div class="uk-grid-small"
+         uk-grid>
+
+      <div class="uk-width-auto">
+        <canvas width="60"
+                height="60"
+                class="uk-border-circle uk-background-warning"></canvas>
+      </div>
+      <div class="uk-width-expand pos-navbar-user-info">
+        <div>Иванов</div>
+        <div>Сергей</div>
+        <div>Николаевич</div>
+        <div class="uk-text-muted"><small>Преподаватель</small></div>
+      </div>
+
+    </div>
+
+    <hr class="uk-divider-small"/>
+
     <ul class="uk-nav uk-navbar-dropdown-nav">
       <router-link tag="li"
                    :to="{name: 'Profile'}"
                    active-class="uk-active"
                    exact>
         <a>
-          <img src="../../../../public/img/icons/user_profile.svg"
+          <img src="img/icons/user_profile.svg"
                uk-svg
                width="16"
                height="16"
@@ -26,7 +46,7 @@
       </li>
       <li>
         <a @click.prevent="signOut">
-          <img src="../../../../public/img/icons/user_logout.svg"
+          <img src="img/icons/user_logout.svg"
                uk-svg
                width="16"
                height="16"
@@ -39,7 +59,6 @@
 </template>
 <script>
 import UIkit from 'uikit/dist/js/uikit'
-//import IconSetting from '../icons/IconSetting'
 
 export default {
 

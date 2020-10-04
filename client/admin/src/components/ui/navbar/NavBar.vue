@@ -134,11 +134,11 @@ export default {
       if (this.$store.state.pageTitle) {
         return this.$store.state.pageTitle
       }
-      else if (this.$route.params.title) {
-        return '<span class="uk-text-success">' +
-          this.$route.meta.breadcrumb + ' - </span> '
-          + this.$route.params.title
-      }
+      //else if (this.$route.params.title) {
+      //  return '<span class="uk-text-success">' +
+      //    this.$route.meta.breadcrumb + ' - </span> '
+      //    + this.$route.params.title
+      //}
       else {
         return this.$route.meta.breadcrumb
       }
