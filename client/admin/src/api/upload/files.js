@@ -9,7 +9,7 @@ export default class files {
    */
   async upload (upload) {
     if (!upload) return null
-    return await this.serverHttp('/upload/', upload)
+    return await this.serverHttp('/upload/', upload, true, true, true)
   }
 
   /**
@@ -18,11 +18,7 @@ export default class files {
    * @param string
    */
   async search (string) {
-    const formData = new FormData()
-    if (string) {
-      formData.append('search', string)
-    }
-    return await this.serverHttp('/upload/search/', formData)
+    return await this.serverHttp('/upload/search/', {'search': string}, false, true, false)
   }
 
   /**
@@ -32,11 +28,7 @@ export default class files {
    */
   async delete (id) {
     if (!id) return
-    const formData = new FormData()
-    if (id) {
-      formData.append('id', id)
-    }
-    return await this.serverHttp('/upload/delete/', formData, true)
+    return await this.serverHttp('/upload/delete/', {'id': id}, true, true, false)
   }
 
   /**
@@ -47,16 +39,15 @@ export default class files {
    */
   async update (id, description) {
     if (!id && !description) return
-    const formData = new FormData()
-    if (id) {
-      formData.append('id', id)
-      formData.append('description', description)
+    const formData = {
+      id:          id,
+      description: description
     }
-    return await this.serverHttp('/upload/update/', formData, true, true)
+    return await this.serverHttp('/upload/update/', formData, true, true, false)
   }
 
-  async serverHttp (url, params, notifyOk, notifyFail) {
-    await serverHttp.query(url, params, notifyOk, notifyFail)
+  async serverHttp (url, params, notifyOk, notifyFail, file) {
+    await serverHttp.query(url, params, notifyOk, notifyFail, file)
   }
 
 }

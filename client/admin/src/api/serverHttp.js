@@ -12,7 +12,7 @@ const apiUrl = apiProxy + ''
 
 export default {
 
-  async query (url, params, notifyOk = false, notifyFail = true) {
+  async query (url, params, notifyOk = false, notifyFail = true, file = false) {
     const token = localStorage.getItem('token')
 
     if (!token) {
@@ -25,13 +25,18 @@ export default {
       formData.append(key, value)
     }
 
+    const header = new Headers()
+    header.append('token', token)
+
+    if (file) {
+      header.append('Content-Type', 'multipart/form-data')
+    }
+
     const response = await fetch(apiUrl + url, {
       method:   'POST',
       mode:     'cors',
       //referrerPolicy: 'unsafe-url', // no-referrer,
-      headers:  {
-        'token': token
-      },
+      headers:  header,
       body:     formData,
       redirect: 'follow'
     })
