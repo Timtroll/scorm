@@ -109,11 +109,15 @@ export default {
   methods: {
 
     checkRoleTeacher () {
-      return (this.participantProfile.id === this.eventUsers.teacher.id) ? this.eventRoleList.teacher : false
+      return (this.participantProfile.id === this.eventUsers.teacher.id)
+        ? this.eventRoleList.teacher
+        : false
     },
 
     checkRoleStudent () {
-      return (this.eventUsers.students.find(user => user.id === this.participantProfile.id)) ? this.eventRoleList.students : false
+      return (this.eventUsers.students.find(user => user.id === this.participantProfile.id))
+        ? this.eventRoleList.students
+        : false
     },
 
     checkRoleUI () {
