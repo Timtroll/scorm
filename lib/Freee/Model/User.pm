@@ -73,7 +73,6 @@ sub _get_list {
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
         $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
         $sth->execute();
-        # $list = $sth->fetchall_hashref('id');
         $list = $sth->fetchall_arrayref({});
         $sth->finish();
 
@@ -81,15 +80,14 @@ sub _get_list {
             if ( $$data{'mode'} ) {
                 foreach ( @$list ) {
                     $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
-                    # $_->{'id'}            = $_->{id};
-                    $_->{'name'}          = $usr->name()       ? $usr->name() : '';
-                    $_->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
-                    $_->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
-                    $_->{'birthday'}      = $usr->birthday()   ? $usr->birthday() : '';
-                    $_->{'import_source'} = $usr->import_source();
-                    $_->{'country'}       = $usr->country()    ? $usr->country() : '';
-                    $_->{'place'}         = $usr->place()      ? $usr->place() : '';
-                    $_->{'phone'}         = $_->{'phone'}   ? $_->{'phone'} : '';
+                    $_->{'name'}          = $usr->name()          ? $usr->name() : '';
+                    $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
+                    $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
+                    $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
+                    $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
+                    $_->{'country'}       = $usr->country()       ? $usr->country() : '';
+                    $_->{'place'}         = $usr->place()         ? $usr->place() : '';
+                    $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
                 }
             }
         }
