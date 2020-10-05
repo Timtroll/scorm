@@ -97,21 +97,22 @@ export default {
       return
     }
 
-    const meta        = event.meta
-    this.eventUsers   = {
-      teacher:  event.teacher,
-      students: event.students
-    }
-    this.allEvenUsers = [...event.students, event.teacher]
-
-    this.eventMeta = meta
-    const title    = `${meta.lesson}`
-    const subTitle = `<strong>${meta.discipline}: </strong>${meta.theme}`
-    this.$store.commit('page_title', title)
-    this.$store.commit('page_sub_title', subTitle)
-
     Promise.all([event])
            .then(() => {
+
+             const meta        = event.meta
+             this.eventUsers   = {
+               teacher:  event.teacher,
+               students: event.students
+             }
+             this.allEvenUsers = [...event.students, event.teacher]
+
+             this.eventMeta = meta
+             const title    = `${meta.lesson}`
+             const subTitle = `<strong>${meta.discipline}: </strong>${meta.theme}`
+             this.$store.commit('page_title', title)
+             this.$store.commit('page_sub_title', subTitle)
+
              this.checkRoleUI(this.eventUsers)
              this.loading = 'success'
              this.startRTC()
@@ -156,11 +157,13 @@ export default {
 
     // проверка на учителя
     checkRoleTeacher () {
+      if (!this.eventUsers) return
       return (this.participantProfile.id === this.eventUsers.teacher.id)
     },
 
     // проверка на ученика
     checkRoleStudent () {
+      if (!this.eventUsers) return
       return !!(this.eventUsers.students.find(user => user.id === this.participantProfile.id))
     },
 

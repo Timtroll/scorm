@@ -2,37 +2,42 @@
   <div class="pos-lesson-video">
 
     <div class="pos-lesson-video-outer">
+
+      <!--main-screen-->
       <div class="pos-lesson-video-screen main-screen">
         <video width="1920"
                ref="teacher"
                height="1080"
-               style="object-fit: cover"
                autoplay
                playsinline
                muted>
         </video>
       </div>
 
-      <!--        <div class="pos-lesson-video-screen second-screen">-->
-      <!--          <video width="1920"-->
-      <!--                 height="1080"-->
-      <!--                 ref="remote"-->
-      <!--                 autoplay-->
-      <!--                 playsinline-->
-      <!--                 muted-->
-      <!--                 loop-->
-      <!--                 preload="auto"-->
-      <!--                 :muted="item.muted"-->
-      <!--                 :id="item.id">-->
-      <!--          </video>-->
-      <!--        </div>-->
+      <!--second-screen-->
+      <div class="pos-lesson-video-screen second-screen"
+           v-if="showSecondScreen"
+           :class="[secondScreen.position.v, secondScreen.position.h]"
+           v-touch:swipe="moveVideo">
+        <video width="1920"
+               height="1080"
+               ref="remote"
+               autoplay
+               playsinline
+               muted
+               loop
+               preload="auto">
+          <!--          :muted="item.muted"-->
+          <!--          :id="item.id"-->
+        </video>
+      </div>
 
     </div>
 
     <div class="pos-lesson-video__controls">
 
       <div class="uk-flex-none"
-           v-if="selectedPosition">
+           v-if="showSecondScreen">
 
         <a class="uk-icon-link">
           <img :src="selectedPosition.icon"
@@ -44,6 +49,7 @@
         <div ref="filter"
              class="uk-dropdown-small"
              uk-dropdown="mode: click; pos: top-left; animation: uk-animation-slide-top-small">
+
           <ul class="uk-grid-small"
               uk-grid>
             <li :class="{'uk-active': selectedPosition === item}"
@@ -60,7 +66,7 @@
         </div>
       </div>
 
-      <div class="uk-flex-none pos-lesson-video__controls-group">
+      <div class="uk-flex-1 pos-lesson-video__controls-group">
 
         <a class="uk-icon-link"
            @click.prevent="mute">
@@ -91,7 +97,7 @@
                uk-svg></a>
       </div>
 
-      <div class="uk-flex-1 uk-text-right">
+      <div class="uk-flex-none uk-text-right">
         <button type="button"
                 @click="shareScreen()"
                 class="uk-button uk-button-default uk-button-small">Screen
@@ -100,21 +106,22 @@
                 @click="getCanvas()"
                 class="uk-button uk-button-default uk-button-small">Canvas
         </button>
-        <button type="button"
-                :class="{'uk-button-primary' : selectedRes === 'hd'}"
-                @click="changeRes('hd')"
-                class="uk-button uk-button-default uk-button-small">hd
-        </button>
-        <button type="button"
-                :class="{'uk-button-primary' : selectedRes === 'sd'}"
-                @click="changeRes('sd')"
-                class="uk-button uk-button-default uk-button-small">sd
-        </button>
-        <button type="button"
-                :class="{'uk-button-primary' : selectedRes === 'thumb'}"
-                @click="changeRes('thumb')"
-                class="uk-button uk-button-default uk-button-small">thumb
-        </button>
+
+        <!--        <button type="button"-->
+        <!--                :class="{'uk-button-primary' : selectedRes === 'hd'}"-->
+        <!--                @click="changeRes('hd')"-->
+        <!--                class="uk-button uk-button-default uk-button-small">hd-->
+        <!--        </button>-->
+        <!--        <button type="button"-->
+        <!--                :class="{'uk-button-primary' : selectedRes === 'sd'}"-->
+        <!--                @click="changeRes('sd')"-->
+        <!--                class="uk-button uk-button-default uk-button-small">sd-->
+        <!--        </button>-->
+        <!--        <button type="button"-->
+        <!--                :class="{'uk-button-primary' : selectedRes === 'thumb'}"-->
+        <!--                @click="changeRes('thumb')"-->
+        <!--                class="uk-button uk-button-default uk-button-small">thumb-->
+        <!--        </button>-->
       </div>
     </div>
 
@@ -126,6 +133,12 @@ export default {
   name: 'VideoTeachers',
 
   props: {
+
+    showSecondScreen: {
+      type:    Boolean,
+      default: false
+    },
+
     stream: {
       type:    Object,
       default: () => {}
@@ -161,14 +174,18 @@ export default {
         }
       ],
 
-      selectedRes: 'hd',
-
       secondScreen: {
         position: {
           v: 'right',
           h: 'top'
         }
       }
+    }
+  },
+
+  mounted () {
+    if (this.showSecondScreen) {
+      this.selectedPosition = this.position[0]
     }
   },
 

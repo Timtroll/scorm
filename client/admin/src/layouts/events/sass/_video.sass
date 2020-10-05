@@ -13,26 +13,49 @@
 
 .pos-lesson-video-outer
   position: relative
-
+  background-color: $global-muted-background
 
 // screen
 .pos-lesson-video-screen
   object-fit: cover
+  position: relative
+  width: 100%
+  padding-top: calc(100% / 16 * 9)
+
+  & > video
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    max-width: 100%
+    max-height: 100%
+    object-fit: fill
 
   &.main-screen
-    min-height: 120px
-    position: static
+    //min-height: 120px
+
+    & > video
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      max-width: 100%
+      max-height: 100%
+      object-fit: fill
 
   &.second-screen
     z-index: 2
     position: absolute
-    //background-color: #555d67
+    background-color: $global-muted-color
     opacity: .8
     //display: flex
     width: 30%
+    padding-top: calc(30% / 16 * 9)
     overflow: hidden
     border-radius: $border-rounded-border-radius
-    margin: $global-xsmall-margin
+    margin: $global-small-margin
     box-shadow: $global-medium-box-shadow
     top: 0
     bottom: auto
