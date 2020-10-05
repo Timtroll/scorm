@@ -252,7 +252,7 @@ sub register {
             },
             '/user/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/user/delete'  => {
@@ -265,7 +265,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -275,7 +275,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -300,7 +300,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
@@ -314,7 +314,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -324,7 +324,7 @@ sub register {
             },
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['required','readonly','publish'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/export'  => {
@@ -362,7 +362,7 @@ sub register {
             },
             '/discipline/toggle' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -498,12 +498,12 @@ sub register {
             # роуты groups/*
             '/groups'  => {
                 "page"          => [ '', qr/^[\w]+$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/groups/add'  => {
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/edit'  => {
                  "id"           => [ 'required', qr/^\d+$/os, 9 ]
@@ -512,14 +512,14 @@ sub register {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
-                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/groups/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/groups/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################

@@ -182,7 +182,6 @@ sub add {
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $id unless @!;
-    $resp->{'eav_id'} = $eav_id unless @!;
 
     @! = ();
 
