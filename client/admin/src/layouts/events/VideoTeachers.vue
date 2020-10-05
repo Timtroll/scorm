@@ -16,9 +16,10 @@
 
       <!--second-screen-->
       <div class="pos-lesson-video-screen second-screen"
-           v-if="showSecondScreen"
+           v-if="secondScreen.position.v !== 'none'"
            :class="[secondScreen.position.v, secondScreen.position.h]"
            v-touch:swipe="moveVideo">
+
         <video width="1920"
                height="1080"
                ref="remote"
@@ -40,7 +41,7 @@
            v-if="showSecondScreen">
 
         <a class="uk-icon-link">
-          <img :src="selectedPosition.icon"
+          <img :src="selectedPosition.icon || null"
                width="20"
                height="20"
                uk-svg>
@@ -185,7 +186,7 @@ export default {
 
   mounted () {
     if (this.showSecondScreen) {
-      this.selectedPosition = this.position[0]
+      this.selectPosition(this.position[0])
     }
   },
 
