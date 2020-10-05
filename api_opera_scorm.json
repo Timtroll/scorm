@@ -1772,6 +1772,7 @@
         {
           "entity": {
             "type": "Service",
+            "description": "",
             "id": "3a5927ff-8bb1-447b-b75f-3a90f3e93186",
             "name": "User"
           },
@@ -1970,7 +1971,7 @@
                       {
                         "enabled": true,
                         "name": "country",
-                        "value": "country"
+                        "value": "RU"
                       },
                       {
                         "enabled": true,
@@ -2016,7 +2017,12 @@
                       {
                         "enabled": true,
                         "name": "groups",
-                        "value": "1"
+                        "value": "[1]"
+                      },
+                      {
+                        "enabled": true,
+                        "name": "login",
+                        "value": "user"
                       }
                     ]
                   },
@@ -2178,7 +2184,7 @@
                       {
                         "enabled": true,
                         "name": "id",
-                        "value": "${getEntityById(\"f9a03dda-7dd2-45b0-976c-75dee1d4f26d\").\"response\".\"body\".\"id\"}"
+                        "value": "8"
                       }
                     ]
                   },
@@ -2243,6 +2249,66 @@
                 },
                 "id": "733a26a9-5ea7-457d-bf8d-1dafe85edc0e",
                 "name": "8 /user/",
+                "headers": [
+                  {
+                    "enabled": true,
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "token",
+                    "value": "${getEntityById(\"53b45217-1db4-4f93-b24f-429bf0f95806\").\"response\".\"body\".\"data\".\"token\"}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "entity": {
+            "type": "Scenario",
+            "id": "b6421ef3-d150-4d17-b683-657f27c8a1ea",
+            "name": "Events"
+          },
+          "children": [
+            {
+              "entity": {
+                "type": "Request",
+                "method": {
+                  "requestBody": true,
+                  "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+                  "name": "POST"
+                },
+                "body": {
+                  "formBody": {
+                    "overrideContentType": true,
+                    "encoding": "application/x-www-form-urlencoded",
+                    "items": []
+                  },
+                  "bodyType": "Text"
+                },
+                "uri": {
+                  "query": {
+                    "delimiter": "&",
+                    "items": [
+                      {
+                        "enabled": true,
+                        "name": "id",
+                        "value": "123123"
+                      }
+                    ]
+                  },
+                  "scheme": {
+                    "secure": true,
+                    "name": "https",
+                    "version": "V11"
+                  },
+                  "host": "freee",
+                  "path": "/events/lesson_users"
+                },
+                "id": "86fe91f4-58dd-46a3-a707-c0244d94da10",
+                "name": "/events/lesson_users",
                 "headers": [
                   {
                     "enabled": true,

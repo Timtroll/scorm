@@ -16,8 +16,7 @@
                  style="object-fit: cover"
                  autoplay
                  playsinline
-                 muted
-                 loop>
+                 muted>
           </video>
         </div>
 
@@ -161,8 +160,8 @@
 <script>
 import {appConfig}     from '@/main'
 import lessons         from './store'
-import WebRtcInitMulti from '@/api/webRTC/index'
-import lessonApi       from '@/api/lessons'
+import WebRtcInitMulti from '@/api/webRTC'
+import lessonApi       from '@/api/events'
 import * as io         from 'socket.io-client'
 
 window.io = io
@@ -466,24 +465,24 @@ export default {
       this.secondScreen.position.h = item.h
     },
 
-    getUsers () {
-      const myHeaders = new Headers()
-      myHeaders.append('X-API-KEY', '34F47E32-4A194143-B9CAA132-11B6DCFD')
-
-      const formData = new FormData()
-
-      const requestOptions = {
-        method:   'POST',
-        headers:  myHeaders,
-        body:     formData,
-        redirect: 'follow'
-      }
-
-      fetch('https://uifaces.co/api?limit=25&from_age=8&to_age=16', requestOptions)
-        .then(response => response.json())
-        .then(result => this.users = result)
-        .catch(error => console.log('error', error))
-    }
+    //getUsers () {
+    //  const myHeaders = new Headers()
+    //  myHeaders.append('X-API-KEY', '34F47E32-4A194143-B9CAA132-11B6DCFD')
+    //
+    //  const formData = new FormData()
+    //
+    //  const requestOptions = {
+    //    method:   'POST',
+    //    headers:  myHeaders,
+    //    body:     formData,
+    //    redirect: 'follow'
+    //  }
+    //
+    //  fetch('https://uifaces.co/api?limit=25&from_age=8&to_age=16', requestOptions)
+    //    .then(response => response.json())
+    //    .then(result => this.users = result)
+    //    .catch(error => console.log('error', error))
+    //}
 
   }
 }

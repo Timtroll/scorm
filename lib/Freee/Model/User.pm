@@ -6,7 +6,7 @@ use POSIX qw(strftime);
 use DBI qw(:sql_types);
 use Mojo::JSON qw( from_json );
 
-DBI->trace(1);
+# DBI->trace(1);
 
 use Data::Dumper;
 
@@ -38,47 +38,58 @@ my %masks_fields = (
 # список юзеров по группам (обязательно id группы)
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
-# id - Id группы
-# publish - показывать пользователей только с этим статусом
+#   group_id => <id>, - Id группы
+#   publish  => 1,    - показывать пользователей только с этим статусом
+#   limit    => 10,   - количество записей
+#   offset   => 0,    - смещение от начала списка
+#   mode     => 'full'- список с базовыми данными, если указать 'full' (опция необязательна по)
 # }
 sub _get_list {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $fields, $sth, @list );
+    my ( $sql, $fields, $sth, $usr, @list );
     my $list = {};
 
     push @!, "no data for list" unless ( $$data{'group_id'} );
 
     unless ( @! ) {
         # выбираемые поля
-        $fields = ' id, login, publish, email, phone, eav_id, timezone ';
+        $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
         unless ( defined $$data{'publish'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
         elsif ( $$data{'publish'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = ?:group_id AND grp."publish" = true ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
         else {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id" LIMIT :limit OFFSET :offset';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id"';
         }
+        $sql .= ' LIMIT :limit' if $$data{'limit'};
+        $sql .= ' OFFSET :offset' if $$data{'offset'};
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':group_id', $$data{'group_id'} );
-        $sth->bind_param( ':limit', $$data{'limit'} );
-        $sth->bind_param( ':offset', $$data{'offset'} );
+        $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
+        $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
         $sth->execute();
-        $list = $sth->fetchall_hashref('id');
+        $list = $sth->fetchall_arrayref({});
         $sth->finish();
 
-        if ( ref($list) eq 'HASH' ) {
-            foreach ( sort keys %$list ) {
-                $list->{ $_ }->{'password'} = '';
-                $list->{ $_ }->{'publish'} = $list->{ $_ }->{'publish'} ? 1 : 0;
-                delete $list->{ $_ }->{'publish'};
-                push @list, $$list{ $_ };
+        if ( ref($list) eq 'ARRAY' ) {
+            if ( $$data{'mode'} ) {
+                foreach ( @$list ) {
+                    $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
+                    $_->{'name'}          = $usr->name()          ? $usr->name() : '';
+                    $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
+                    $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
+                    $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
+                    $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
+                    $_->{'country'}       = $usr->country()       ? $usr->country() : '';
+                    $_->{'place'}         = $usr->place()         ? $usr->place() : '';
+                    $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
+                }
             }
-            $list = \@list;
         }
     }
 
@@ -188,6 +199,8 @@ sub _exists_in_users {
 
         if ( ref($row) eq 'HASH' && keys %$row && !@! ) {
             if (keys %$row == 1) {
+                $$row{$login}{'status'} = $$row{$login}{'publish'} ? 1 : 0;
+                delete $$row{$login}{'publish'};
                 return $$row{$login};
             }
             else {
@@ -392,7 +405,9 @@ sub _save_user {
     }
 
     unless ( @! ) {
-        $$data{'data_eav'}{'title'} = join(' ', ( $$data{'data_eav'}{'surname'}, $$data{'data_eav'}{'name'}, $$data{'data_eav'}{'patronymic'} ) );
+        $$data{'data_eav'}{'title'} = join(
+            ' ', ( $$data{'data_eav'}{'surname'}, $$data{'data_eav'}{'name'}, $$data{'data_eav'}{'patronymic'} )
+        );
 
         # обновление полей в EAV
         $usr = Freee::EAV->new( 'User', {

@@ -61,7 +61,7 @@ sub startup {
     # загрузка правил валидации
     $self->plugin('Freee::Helpers::Validate');
     $vfields = $self->_param_fields();
-
+warn "+++++++++++";
     # Router
     $r = $self->routes;
     $r->any('/api/doc')                 ->to('index#doc');
@@ -154,7 +154,7 @@ sub startup {
 
     # уроки
     $auth->post('/events/')             ->to('events#index');           # Расписание уроков
-    $auth->post('/events/event_users')  ->to('events#event_users');     # Список участников урока (учитель - обязателен)
+    $auth->post('/events/lesson_users') ->to('events#lesson_users');    # Список участников урока (учитель - обязателен)
 
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');

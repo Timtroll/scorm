@@ -33,6 +33,10 @@ foreach my $parameter ( @ARGV ) {
     my @array = split(/=/, $parameter);
     $hash{$array[0]} = $array[1];
 }
+unless (keys %hash) {
+    helpme('help');
+    exit;
+}
 
 # путь к директории с логированием
 $path_log = './log/migration.log';
@@ -58,10 +62,11 @@ if ( $hash{'mode'} &&  $hash{'mode'} ne 'test' || $hash{'start'} &&  $hash{'star
 
 # поиск и чтение шаблона конфигурации
 if ( -s $hash{'path'} ) {
-    require "$hash{'path'}" or die( 'error in opened config' );
+    require "$hash{'path'}" or die( "error in opened config $!" );
 }
 else {
     logging( 'file doesnt exist');
+    helpme('need_config');
     exit;
 }
 
@@ -70,8 +75,8 @@ if ( $hash{'rebuild'} ) {
     # подключение к базе postgres
     $self->{dbh} = DBI->connect(
         'dbi:Pg:dbname=postgres;host=localhost;port=5432',
-        'troll',
-        'Yfenbkec_1',
+        $$temp_freee::config_update{ 'pglogin' },
+        $$temp_freee::config_update{ 'pgpassword' },
         { 
             'pg_enable_utf8' => 1, 
             'pg_auto_escape' => 1, 
@@ -94,7 +99,6 @@ if ( $hash{'rebuild'} ) {
 
     # создаём две базы или одну
     if ( $hash{'mode'} ) {
-
         # проверка отсутствия базы scorm_test
         if ( check_db( 'scorm_test' ) ) {
             logging( 'database scorm_test already exists' );
@@ -170,7 +174,9 @@ else {
     # старт mojo
     mojo_do( 'start');
 }
+
 # конец программы
+warn 'All setting required';
 exit;
 
 ####################################################################
@@ -182,11 +188,11 @@ sub logging {
     my $logdata = shift;
     my $log;
 
-    if ( -e $path_log ) {
-        open( $log, '>>', $path_log ) or warn "Can't open log file!";
+    if ( $logdata ) {
+        warn "$logdata\n";
+        open( $log, '>>', $path_log ) or warn "Can't open log file! $!";
             print $log "$logdata\n";
         close( $log );
-        warn "$logdata\n";
     }
 }
 
@@ -212,7 +218,7 @@ sub mojo_do {
     my $do = shift;
 
     unless ( -s $path_conf || $do eq 'stop' ) {
-        logging 'config doesnt exist';
+        logging( 'config doesnt exist' );
         exit;
     }
 
@@ -347,37 +353,56 @@ sub load_defaults {
     #     return;
     # }
 
-    # добавляем пользователя
-    my $fu = Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
-    my $user =    {
-        'publish' => \1,
-        'parent' => 1, 
-        'title' => 'admin',
+    # добавляем адимна
+    my $salt = $config->{'secrets'}->[0];
+    add_user({
+        'email'     => 'admin@admin',
+        'login'     => $temp_freee::config_update->{'login'},
+        'password'  => sha256_hex( $temp_freee::config_update->{'password'}, $salt ),
+
+        'user_id'   => 1,
+        'group_id'  => 1,
+
+        'title'     => 'admin',
         'User' => {
             'place'         => "scorm",
             'country'       => "RU",
             'birthday'      => "19950803 00:00:00",
             'patronymic'    => "admin",
             'name'          => "admin",
-            'surname'       => "admin",
+            'surname'       => "admin"
         }
+    });
+
+    # добавляем учителя
+}
+
+sub add_user {
+    my $data = shift;
+
+    Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
+    my $user =    {
+        'publish'   => \1,
+        'parent'    => 1,
+        'timezone'  => 3,
+        'title'     => $$data{'title'},
+        'User'      => $$data{'User'}
     };
     my $eav = Freee::EAV->new( 'User', $user );
     my $eav_id = $eav->id(); 
 
     # получение соли из конфига
-    my $salt = $config->{'secrets'}->[0];
     $user = {
         'publish'     => 't', 
-        'email'       => 'admin@admin',
-        'login'       => $temp_freee::config_update->{'login'},
-        'password'    => sha256_hex( $temp_freee::config_update->{'password'}, $salt ),
+        'email'       => $$data{'email'},
+        'login'       => $$data{'login'},
+        'password'    => $$data{'password'},
         'timezone'    => 3,
         'eav_id'      => $eav_id
     };
 
-    $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$user ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$user ).' )';
-    $sth = $self->{'dbh'}->prepare( $sql );
+    my $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$user ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$user ).' )';
+    my $sth = $self->{'dbh'}->prepare( $sql );
     foreach ( keys %$user ) {
         my $type = /publish/ ? SQL_BOOLEAN : undef();
         $sth->bind_param( ':'.$_, $$user{$_}, $type );
@@ -386,8 +411,10 @@ sub load_defaults {
     $sth->finish();
 
     # ввод в user_groups
-    $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( 1,1 )';
+    $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( :user_id, :group_id )';
     $sth = $self->{'dbh'}->prepare( $sql );
+    $sth->bind_param( ':user_id', $$data{'user_id'} );
+    $sth->bind_param( ':group_id', $$data{'group_id'} );
     $result = $sth->execute();
     $sth->finish();
 }
@@ -402,4 +429,53 @@ sub write_config {
         $path_conf,
         Dumper( $config )
     );
+}
+
+sub helpme {
+    my $swith = shift;
+
+    my %messages = (
+        'help' => q~
+You can use these options:
+    --path='./temp_freee.conf   - path to default data
+    --mode=test                 - create test DB if need
+    --rebuild=1/0               - create DB & config if '1', else create configuration only
+    --start=test                - start mojo with test DB if need (default - starting with man DB)
+~,
+        'need_config' => q~
+Default data config muse like this:
+
+package temp_freee;
+
+use Exporter;
+our @ISA = 'Exporter';
+our @EXPORT = qw( $config_update );
+
+our $config_update = {
+    # Данные добавляемого админа
+    'debug'                 => 1,
+    'test'                  => 0,
+    'login'                 => 'login',
+    'password'              => 'password',
+
+    # данные доступа к базе postgres
+    'pglogin'               => 'loginPG',
+    'pgpassword'            => 'passwordPG',
+
+    # данные доступа к базам данных
+    'expires'               => '6000',
+    'pg_main_username'      => 'username1',
+    'pg_main_password'      => 'password1',
+    'pg_main_test_username' => 'username2',
+    'pg_main_test_password' => 'password2,
+    'export_settings_path'  => '/home/<user>/settings'
+};~,
+    );
+
+    if ($swith && exists $messages{$swith} ) {
+        warn $messages{$swith};
+    }
+    else {
+        warn 'Message was not defined';
+    }
 }

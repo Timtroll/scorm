@@ -194,13 +194,14 @@ export default {
       this.$store.commit('tree_active', item.id)
       this.$store.dispatch(this.table_api.get, item.id)
 
-      this.$router.push({
+      this.$router.replace({
         name:   this.tree_api.childComponentName,
         params: {
           id:    item.id,
           title: item.label
         }
       }).catch(e => {})
+
     },
 
     filterProp (prop) {

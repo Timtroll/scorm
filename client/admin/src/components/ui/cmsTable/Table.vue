@@ -286,6 +286,12 @@ export default {
 
         }
       }
+    },
+
+    async tableId () {
+      this.$store.commit('card_right_show', false)
+      this.$store.commit('tree_active', this.tableId)
+      await this.$store.dispatch(this.table_api.get, this.tableId)
     }
 
   },

@@ -458,9 +458,9 @@ sub register {
 
 ################
             # роуты расписания уроков и уроков
-            '/events'     => {},
-            '/events/event_users'  => {
-                "id"           => [ 'required', qr/^[\w-]+$/os, 36 ]
+            '/events'         => {},
+            '/events/lesson_users'  => {
+                "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
             },
 
 ################

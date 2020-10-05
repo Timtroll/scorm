@@ -1,0 +1,99 @@
+@import "./../../../assets/sass/uikit/variables"
+@import "./../../../assets/sass/mixins"
+
+/** VIDEO
+.pos-lesson-video
+  grid-area: video
+
+  border-bottom: $global-border-width solid $global-border
+  @media (max-width: $breakpoint-large)
+    position: sticky
+    top: 0
+    z-index: 10
+
+.pos-lesson-video-outer
+  position: relative
+  background-color: $global-muted-background
+
+// screen
+.pos-lesson-video-screen
+  object-fit: cover
+  position: relative
+  width: 100%
+  padding-top: calc(100% / 16 * 9)
+
+  & > video
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    max-width: 100%
+    max-height: 100%
+    object-fit: fill
+
+  &.main-screen
+    //min-height: 120px
+
+    & > video
+      position: absolute
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      max-width: 100%
+      max-height: 100%
+      object-fit: fill
+
+  &.second-screen
+    z-index: 2
+    position: absolute
+    background-color: $global-muted-color
+    opacity: .8
+    //display: flex
+    width: 30%
+    padding-top: calc(30% / 16 * 9)
+    overflow: hidden
+    border-radius: $border-rounded-border-radius
+    margin: $global-small-margin
+    box-shadow: $global-medium-box-shadow
+    top: 0
+    bottom: auto
+    left: auto
+    right: 0
+
+    &.right
+      left: auto
+      right: 0
+
+    &.left
+      left: 0
+      right: auto
+
+    &.top
+      top: 0
+      bottom: auto
+
+    &.bottom
+      bottom: 0
+      top: auto
+
+.pos-lesson-video__controls
+  background-color: $global-background
+  display: flex
+  padding: $global-margin
+  @media (max-width: $breakpoint-large)
+    padding: $global-small-margin
+
+  & > *
+    &:not(:last-child)
+      margin-right: $global-margin
+
+.pos-lesson-video__controls-group
+  display: flex
+
+  & > *
+    display: block
+
+    &:not(:last-child)
+      margin-right: $global-margin

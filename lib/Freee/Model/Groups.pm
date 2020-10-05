@@ -98,10 +98,10 @@ sub _get_group {
     my ( $sql, $sth, $result );
 
     unless ( $$data{'id'} ) {
-        push @!, 'no id';
+        push @!, 'No group id';
     }
     else {
-        # взять запись о группе из таблицы groups
+        # получить запись о группе из таблицы groups
         $sql = 'SELECT * FROM "public"."groups" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -110,6 +110,32 @@ sub _get_group {
         $result = $sth->fetchrow_hashref();
         $sth->finish();
         push @!, "Could not get Group '$$data{'id'}'" unless $result;
+    }
+
+    return $result;
+}
+
+# получить id группы по названию
+# my $id = $self->get_group_id( 'name' );
+#   'get_group_id' - имя группы в таблице
+sub _get_group_id {
+    my ( $self, $name ) = @_;
+
+    my ( $sql, $sth, $result );
+
+    unless ( $name ) {
+        push @!, 'No group name';
+    }
+    else {
+        # получить имя группы
+        $sql = 'SELECT * FROM "public"."groups" WHERE "name" = :name';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':name', $name );
+        $sth->execute();
+        $result = $sth->fetchrow_hashref();
+        $sth->finish();
+        push @!, "Could not get Group name '$name'" unless $result;
     }
 
     return $result;

@@ -21,14 +21,16 @@ const actions = {
       }
       else {
         notify(response.data.message, 'danger')
+        console.warn(response.data.message)
         commit('auth_error')
         appConfig.removeToken()
       }
     }
     catch (err) {
       notify(err, 'danger')
+      console.error(err)
       commit('auth_error')
-      throw new Error(err)
+      //throw new Error(err)
     }
 
   },
@@ -87,7 +89,7 @@ const actions = {
     }
     catch (err) {
       notify(err, 'danger')
-      throw new Error(err)
+      //throw new Error(err)
     }
   }
 
