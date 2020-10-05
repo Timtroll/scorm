@@ -47,7 +47,7 @@ sub _get_folder {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $sth->execute();
-    $row = $self->{app}->pg_dbh->selectrow_hashref($sql);
+    $row = $sth->fetchrow_hashref();
     $sth->finish();
 
     # десериализуем поля vaue и selected
@@ -146,7 +146,7 @@ sub _save_folder {
     $sth->execute();
     $sth->finish();
 
-    return 1;
+    return $$data{'id'};
 }
 
 # выбираем листья ветки дерева по id парента
@@ -307,9 +307,8 @@ sub _get_setting {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $sth->execute();
-    $sth->finish();
-
     $row = $sth->fetchrow_hashref();
+    $sth->finish();
 
     # десериализуем поля vaue и selected
     if ( $row ) {
@@ -455,7 +454,7 @@ sub _insert_export_setting {
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':title', $title );
     $sth->bind_param( ':filename', $filename );
-    $sth->bind_param( ':time', $time );
+    $sth->bind_param( ':time_create', $time );
     $sth->execute();
     $sth->finish();
 

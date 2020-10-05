@@ -135,7 +135,7 @@ sub _get_user {
         $sth->execute();
         $result = $sth->fetchrow_hashref();
         $sth->finish();
-        push @!, "can't get groups" unless $result;
+        push @!, "can't get user" unless $result;
     }
 
     unless ( @! ) {
@@ -154,7 +154,7 @@ sub _get_user {
             $result->{'phone'}         = $result->{'phone'} ? $result->{'phone'} : '';
         }
         else {
-            push @!, "object with id $$data{'id'} doesn't exist";
+            push @!, "object with eav_id $$data{'id'} doesn't exist";
         }
     }
     return $result;
@@ -542,7 +542,7 @@ sub _delete_user {
         $result = $sth->execute();
         $sth->finish();
 
-        if ( ! defined $result ) {
+        if ( ! defined $result || $result eq '0E0') {
             push @!, "Error by delete '$$data{'id'}' from users";
             $self->{'app'}->pg_dbh->rollback;
             return;

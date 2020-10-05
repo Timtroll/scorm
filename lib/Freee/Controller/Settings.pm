@@ -108,7 +108,15 @@ sub save_folder {
         $$data{'required'} = 0;
         $$data{'readonly'} = 0;
         $$data{'folder'} = $self->param('folder') // 1;
-        $$data{'publish'} = $self->param('publish') // 0;
+
+        # смена поля status на publish
+        if ( defined $$data{'status'} ) {
+            $$data{'publish'} = $$data{'status'};
+        }
+        else {
+            $$data{'publish'} = 1;
+        };
+        delete $$data{'status'};
 
         $id = $self->model('Settings')->_save_folder( $data );
         push @!, "Could not save folder item '$$data{'id'}'" unless $id;
@@ -116,7 +124,7 @@ sub save_folder {
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $id if $id;
+    $resp->{'id'} = $id unless @!;
 
     @! = ();
 
@@ -165,8 +173,16 @@ sub add_folder {
         $$data{'selected'} = '';
         $$data{'required'} = 0;
         $$data{'readonly'} = 0;
-        $$data{'publish'} = 1;
         $$data{'folder'} = 1;
+
+        # смена поля status на publish
+        if ( defined $$data{'status'} ) {
+            $$data{'publish'} = $$data{'status'};
+        }
+        else {
+            $$data{'publish'} = 1;
+        };
+        delete $$data{'status'};
 
         # добавление фолдера
         $id = $self->model('Settings')->_insert_folder( $data );
@@ -342,7 +358,15 @@ sub add {
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
             unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
             unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-            unless ( defined $$data{'publish'} )     { $$data{'publish'}      = 1 };
+
+            # смена поля status на publish
+            if ( defined $$data{'status'} ) {
+                $$data{'publish'} = $$data{'status'};
+            }
+            else {
+                $$data{'publish'} = 1;
+            };
+            delete $$data{'status'};
 
             # проверяем поле name на дубликат
             if ( $self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'} ) ) {
@@ -452,7 +476,15 @@ sub save {
         unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
         unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
         unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
-        unless ( defined $$data{'publish'} )     { $$data{'publish'}      = 0 };
+
+        # смена поля status на publish
+        if ( defined $$data{'status'} ) {
+            $$data{'publish'} = $$data{'status'};
+        }
+        else {
+            $$data{'publish'} = 1;
+        };
+        delete $$data{'status'};
 
         # проверяем поле name на дубликат
         if ($self->model('Utils')->_exists_in_table('settings', 'name', $$data{'name'}, $$data{'id'})) {

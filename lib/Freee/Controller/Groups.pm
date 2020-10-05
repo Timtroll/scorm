@@ -174,6 +174,10 @@ sub save {
     }
 
     unless ( @! ) {
+        # смена поля status на publish
+        $$data{'publish'} = $$data{'status'};
+        delete $$data{'status'};
+
         # обновление данных группы
         $id = $self->model('Groups')->_update_group( $data );
     }
@@ -234,6 +238,7 @@ sub toggle {
     }
 
     unless ( @! ) {
+        $$data{'fieldname'} = 'publish';
         $$data{'table'} = 'groups';
         $toggle = $self->model('Utils')->_toggle( $data );
         push @!, "Could not toggle Group '$$data{'id'}'" unless $toggle;
