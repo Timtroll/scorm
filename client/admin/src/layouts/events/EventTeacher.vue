@@ -10,6 +10,7 @@
 
     <!--VideoTeachers-->
     <VideoTeachers v-if="connectStatus === 'success'"
+                   :show-second-screen="true"
                    :stream="streamTeacher"/>
     <!--VideoTeachers-->
 
