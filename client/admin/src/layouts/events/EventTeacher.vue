@@ -16,7 +16,8 @@
 
     <!--ListUsers-->
     <VideoStudents v-if="connectStatus === 'success'"
-                   :users="streamStudents"/>
+                   :users="users"
+                   :stream="streamStudents"/>
     <!--ListUsers-->
 
   </div>

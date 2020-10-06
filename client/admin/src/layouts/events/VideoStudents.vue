@@ -46,7 +46,15 @@
           </div>
 
           <div class="pos-lesson-user__ava"
-               :style="{backgroundImage: `url(${user.photo})`}"></div>
+               :style="{backgroundImage: `url(${user.photo})`}">
+
+            <video class="pos-lesson-user__video"
+                   :ref="`student_${user.id}`"
+                   autoplay
+                   playsinline
+                   muted></video>
+
+          </div>
 
           <div class="pos-lesson-user__status"></div>
           <div class="pos-lesson-user__ball"
@@ -72,6 +80,7 @@ export default {
   },
 
   props: {
+
     users: {
       type:    Array,
       default: () => {}
@@ -89,15 +98,44 @@ export default {
         {id: 3, label: 'Отсутствуют на занятии'},
         {id: 4, label: 'Уже отвечали'},
         {id: 5, label: 'Еще не отвечали'}]
-
     }
   },
 
   async mounted () {
     this.selectedFilter = this.userFilter[0]
+    this.setStream()
   },
 
+  watch: {
+    users: {
+      deep: true,
+      handler () {
+        if (this.users) {
+          this.setStream()
+        }
+      }
+    }
+  },
+
+  computed: {},
+
   methods: {
+
+    setStream () {
+      if (this.users) {
+
+        this.users.forEach(user => {
+
+          if (user.stream && user.stream.stream) {
+            console.log('student', this.$refs[`student_${user.id}`])
+            console.log('user.stream.stream', user.stream.stream)
+
+            this.$refs[`student_${user.id}`][0].srcObject = user.stream.stream
+          }
+        })
+
+      }
+    },
 
     ballColor (ball) {
       switch (ball) {
