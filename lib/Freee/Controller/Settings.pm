@@ -110,12 +110,7 @@ sub save_folder {
         $$data{'folder'} = $self->param('folder') // 1;
 
         # смена поля status на publish
-        if ( defined $$data{'status'} ) {
-            $$data{'publish'} = $$data{'status'};
-        }
-        else {
-            $$data{'publish'} = 1;
-        };
+        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
         delete $$data{'status'};
 
         $id = $self->model('Settings')->_save_folder( $data );
@@ -176,12 +171,7 @@ sub add_folder {
         $$data{'folder'} = 1;
 
         # смена поля status на publish
-        if ( defined $$data{'status'} ) {
-            $$data{'publish'} = $$data{'status'};
-        }
-        else {
-            $$data{'publish'} = 1;
-        };
+        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
         delete $$data{'status'};
 
         # добавление фолдера
@@ -478,12 +468,7 @@ sub save {
         unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
 
         # смена поля status на publish
-        if ( defined $$data{'status'} ) {
-            $$data{'publish'} = $$data{'status'};
-        }
-        else {
-            $$data{'publish'} = 1;
-        };
+        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
         delete $$data{'status'};
 
         # проверяем поле name на дубликат
@@ -558,6 +543,9 @@ sub toggle {
 
         unless ( @! ) {
             $$data{'table'} = 'settings';
+
+            # смена status на publish
+            $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
 
             # проверка существования элемента для изменения
             unless ($self->model('Utils')->_exists_in_table('settings', 'id', $$data{'id'})) {

@@ -48,7 +48,7 @@ sub proto_leaf {
                             { "placeholder"   => '' },
                             { "readonly"      => 0 },
                             { "required"      => 0 },
-                            { "publish"        => 1 }
+                            { "status"        => 1 }
                         ]
                     },
                     {
@@ -93,7 +93,7 @@ sub proto_folder {
                 "parent"  => $data->{'parent'} * 1,
                 "name"    => '',
                 "label"   => '',
-                "publish"  => 1
+                "status"  => 1
             };
         }
     }
