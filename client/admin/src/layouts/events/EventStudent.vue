@@ -16,7 +16,8 @@
 
     <!--ListUsers-->
     <VideoStudents v-if="connectStatus === 'success'"
-                   :users="streamStudents"/>
+                   :users="streamStudents"
+                   :connection="connection"/>
     <!--ListUsers-->
 
   </div>
@@ -36,6 +37,11 @@ export default {
   },
 
   props: {
+
+    connection: {
+      type:    Object,
+      default: () => {}
+    },
 
     teacher: {
       type:    Object,
@@ -93,6 +99,12 @@ export default {
 
     connectStatus () {
       return (this.stream) ? 'success' : 'progress'
+    }
+  },
+
+  methods: {
+    join () {
+      //this.$emit('join')
     }
   }
 }

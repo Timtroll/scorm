@@ -6,7 +6,9 @@
       <Component v-if="eventRole"
                  :stream="video"
                  :users="allEvenUsers"
+                 :connection="connection"
                  :teacher="eventUsers.teacher"
+                 @join="join"
                  :is="eventRole.component"/>
     </template>
 
@@ -192,7 +194,7 @@ export default {
       )
       //this.connection.init(this.$refs.local, this.$refs.video)
       this.getStream()
-      this.join()
+      //this.join()
     },
 
     join () {

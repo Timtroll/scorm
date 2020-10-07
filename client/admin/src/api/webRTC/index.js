@@ -253,6 +253,7 @@ export default class WebRtcInitMulti {
           if (isRoomExist === false && this.rtcmConnection.isInitiator === true) {
             console.log('opened-room', roomId)
 
+
           }
         })
   }

@@ -11,6 +11,7 @@
     <!--VideoTeachers-->
     <VideoTeachers v-if="connectStatus === 'success'"
                    :show-second-screen="true"
+                   :connection="connection"
                    :stream="streamTeacher"/>
     <!--VideoTeachers-->
 
@@ -37,6 +38,11 @@ export default {
   },
 
   props: {
+
+    connection: {
+      type:    Object,
+      default: () => {}
+    },
 
     teacher: {
       type:    Object,
@@ -94,6 +100,14 @@ export default {
 
     connectStatus () {
       return (this.stream) ? 'success' : 'progress'
+    }
+  },
+
+  methods: {
+
+    join () {
+      if (!this.connection) return
+      this.connection.join()
     }
   }
 }

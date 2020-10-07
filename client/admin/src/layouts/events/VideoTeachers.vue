@@ -144,6 +144,11 @@ export default {
 
   props: {
 
+    connection: {
+      type:    Object,
+      default: () => {}
+    },
+
     showSecondScreen: {
       type:    Boolean,
       default: false
@@ -200,6 +205,12 @@ export default {
   mounted () {
     if (this.showSecondScreen) {
       this.selectPosition(this.position[0])
+
+      if (this.streamTeacher) {
+        this.$refs.teacher.srcObject = this.streamTeacher
+
+      }
+    this.join()
     }
   },
 
@@ -207,6 +218,7 @@ export default {
     streamTeacher () {
       if (this.streamTeacher) {
         this.$refs.teacher.srcObject = this.streamTeacher
+        this.join()
       }
     }
   },
@@ -221,6 +233,11 @@ export default {
   },
 
   methods: {
+
+    join () {
+      if (!this.connection) return
+      this.connection.join()
+    },
 
     // selectedRes
     changeRes (res) {
@@ -287,7 +304,9 @@ export default {
     getCanvas () {
       //if (!this.rtc) return
       //this.rtc.getCanvas(this.$refs.local)
-    }
+    },
+
+
   }
 }
 </script>

@@ -81,6 +81,11 @@ export default {
 
   props: {
 
+    connection: {
+      type:    Object,
+      default: () => {}
+    },
+
     users: {
       type:    Array,
       default: () => {}
@@ -104,6 +109,7 @@ export default {
   async mounted () {
     this.selectedFilter = this.userFilter[0]
     this.setStream()
+    this.join()
   },
 
   watch: {
@@ -121,15 +127,19 @@ export default {
 
   methods: {
 
+    join () {
+      if (!this.connection) return
+      this.connection.join()
+    },
+
     setStream () {
       if (this.users) {
 
         this.users.forEach(user => {
 
           if (user.stream && user.stream.stream) {
-            console.log('student', this.$refs[`student_${user.id}`])
-            console.log('user.stream.stream', user.stream.stream)
 
+            console.log('user.stream.stream', user.stream.stream)
             this.$refs[`student_${user.id}`][0].srcObject = user.stream.stream
           }
         })
