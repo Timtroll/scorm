@@ -210,7 +210,7 @@ sub delete {
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $id unless @!;
+    $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
 

@@ -119,7 +119,7 @@ sub edit {
                             }
                         },
                         {"place"      => $$user_data{'place'} },
-                        {"publish"     => $$user_data{'publish'} ? 1 : 0 },
+                        {"status"     => $$user_data{'publish'} ? 1 : 0 },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
@@ -272,7 +272,7 @@ sub save {
             'id'     => $$data{'id'},
             'groups' => $$data{'groups'},
             'data_user' => {
-                'publish'       => $$data{'publish'} ? 'true' : 'false',
+                'publish'       => $$data{'status'} ? 'true' : 'false',
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},

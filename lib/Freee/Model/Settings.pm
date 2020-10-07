@@ -42,7 +42,7 @@ sub _get_folder {
     return unless $id;
 
     my ( $sql, $sth, $row );
-    $sql = 'SELECT * FROM "public"."settings" WHERE "id" = :id';
+    $sql = 'SELECT *, publish AS status FROM "public"."settings" WHERE "id" = :id';
 
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
@@ -63,7 +63,8 @@ sub _get_folder {
         $$row{'value'}      = '';
         $$row{'selected'}   = '';
         $$row{'folder'}     = $$row{'folder'} // 0;
-        $$row{'publish'}     = $$row{'publish'} // 0;
+        $$row{'status'}     = $$row{'status'} // 0;
+        delete $$row{'publish'};
     }
     
     return $row;
@@ -158,7 +159,7 @@ sub _get_leafs {
 
     my ( $list, $sql, $sth );
 
-    $sql = 'SELECT * FROM "public"."settings" WHERE "parent" = :id ORDER by id';
+    $sql = 'SELECT id, selected, type, label, required, folder, value, name, placeholder, mask, parent, readonly, publish AS status FROM "public"."settings" WHERE "parent" = :id ORDER by id';
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $id );
     $sth->execute();
@@ -334,7 +335,7 @@ sub _get_setting {
                     { "readonly"    => $$row{'readonly'} // 0 },
                     { "required"    => $$row{'required'} // 0 },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "publish"      => $$row{'publish'} // 0 }
+                    { "status"      => $$row{'publish'} // 0 }
                 ]
             }
         ]

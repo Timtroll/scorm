@@ -231,7 +231,7 @@ sub register {
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'publish'       => [ 'required', qr/^[01]$/os, 1 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ '', qr/^\d+$/os, 9 ],
@@ -324,7 +324,7 @@ sub register {
             },
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required','readonly','publish'], 8 ],
+                "fieldname"     => [ 'required', ['required','readonly','status'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/export'  => {

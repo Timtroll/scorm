@@ -102,7 +102,7 @@ sub _get_group {
     }
     else {
         # получить запись о группе из таблицы groups
-        $sql = 'SELECT * FROM "public"."groups" WHERE "id" = :id';
+        $sql = 'SELECT id, label, name, publish AS status FROM "public"."groups" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
@@ -230,7 +230,7 @@ sub _delete_group {
         $result = $sth->execute();
         $sth->finish();
 
-        push @!, "Could not delete Group '$$data{'id'}'" if ! defined $result;
+        push @!, "Could not delete Group '$$data{'id'}'" if $result eq '0E0';
     }
 
     return $result;
