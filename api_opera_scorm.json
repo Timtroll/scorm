@@ -3013,7 +3013,7 @@
                       {
                         "enabled": true,
                         "name": "id",
-                        "value": "1"
+                        "value": "${getEntityById(\"c638db7c-9844-41e2-ab10-c755bed85835\").\"response\".\"body\".\"id\"}"
                       },
                       {
                         "enabled": true,
@@ -3069,7 +3069,7 @@
                       {
                         "enabled": true,
                         "name": "search",
-                        "value": "1"
+                        "value": ""
                       }
                     ]
                   },
