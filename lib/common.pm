@@ -12,7 +12,7 @@ use vars qw( @ISA @EXPORT @EXPORT_OK $config $settings $clear $tokens $log $rout
 use Data::Dumper;
 
 my $config = {};
-my $settings = {};
+our $settings = {};
 my $tokens = {};
 my $permissions = {};
 my $websockets = {};

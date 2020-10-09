@@ -118,7 +118,7 @@ sub register {
                 }
 
                 # проверка того, что разрешено загружать файл с текущим расширением
-                unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
+                unless ( exists( $settings->{'valid_extensions'}->{ $data{'extension'} } ) ) {
                     push @!, "$url_for _check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
@@ -193,9 +193,9 @@ sub register {
                 'password'    => [ 'required', qr/^[\w\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
             },
 ################
-            # роуты upload/*
+            # роуты upload /*
             '/upload'  => {
-                "upload"        => [ 'file_required', undef, $app->{'settings'}->{'upload_max_size'} ],
+                "upload"        => [ 'file_required', undef, $settings->{'upload_max_size'} ],
                 "description"   => [ '', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
             '/upload/delete'  => {
@@ -260,7 +260,8 @@ sub register {
             },
 ################
             # роуты settings/*
-            '/settings/get_tree'  => {},
+            '/settings/get_tree'    => {},
+            '/settings/list_export' => {},
             '/settings/add_folder'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
