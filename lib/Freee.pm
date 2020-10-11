@@ -54,6 +54,7 @@ sub startup {
 
     # обновление объекта с настройками
     $settings = $self->model('Settings')->_get_config();
+# warn Dumper( keys %{$settings->{'upload_max_size'}} );
 
     # init Beanstalk connection
     $self->_beans_init();

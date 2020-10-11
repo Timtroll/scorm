@@ -23,7 +23,7 @@ sub _insert_media {
 ##### потом добавить заполнение полей type, mime, order, flags ???????????????????????????????????????????????????????
     unless ( @! ) {
         # запись данных в базу
-        $sth = $self->{'app'}->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (path, :filename, :extension, :title, :size, :type, :mime, :description, :order, :flags) RETURNING "id"' );
+        $sth = $self->{'app'}->pg_dbh->prepare( 'INSERT INTO "public"."media" ("path", "filename", "extension", "title", "size", "type", "mime", "description", "order", "flags") VALUES (:path, :filename, :extension, :title, :size, :type, :mime, :description, :order, :flags) RETURNING "id"' );
         $sth->bind_param( ':path', $$data{'path'} );
         $sth->bind_param( ':filename', $$data{'filename'} );
         $sth->bind_param( ':extension', $$data{'extension'} );
