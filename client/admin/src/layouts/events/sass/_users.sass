@@ -52,12 +52,23 @@ $transition-duration: 0.2s
     .pos-lesson-user__status
       background-color: $global-success-background
 
-.pos-lesson-user__ava
+.pos-lesson-user__ava,
+.pos-lesson-user__video
   width: $avaSize
   height: $avaSize
-  //background-color: $global-muted-color
   overflow: hidden
   border-radius: 500px
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+
+.pos-lesson-user__video
+  object-fit: fill
+  z-index: 3
+
+.pos-lesson-user__ava
   background: $global-muted-color 50% 50% no-repeat
   background-size: cover
   transform-origin: center center
@@ -91,10 +102,13 @@ $transition-duration: 0.2s
   font-weight: bold
   color: $global-inverse-color
   line-height: $gap*2
+
   &.warning
     background-color: $global-warning-background
+
   &.primary
     background-color: $global-primary-background
+
   &.success
     background-color: $global-success-background
 

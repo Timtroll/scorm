@@ -129,7 +129,7 @@ sub _list_course {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'publish'      => $_->{'publish'},
+            'status'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @courses, $item;
@@ -184,7 +184,7 @@ sub _get_course {
                "route"       => '/course',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "publish"      => $$result{'publish'}
+               "status"      => $$result{'publish'}
             }
         } 
         else {

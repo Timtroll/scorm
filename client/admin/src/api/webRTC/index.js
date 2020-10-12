@@ -84,8 +84,8 @@ export default class WebRtcInitMulti {
       thumb: {
         audio: false,
         video: {
-          width:       {min: 50, max: 50},
-          height:      {min: 50, max: 50},
+          width:       {min: 80, max: 80},
+          height:      {min: 80, max: 80},
           aspectRatio: 1,
           frameRate:   {min: 1.0, max: 1.0},
           //sampleRate:  1000,
@@ -104,7 +104,12 @@ export default class WebRtcInitMulti {
     this.rtcmConnection.socketURL              = this.socketURL
     this.rtcmConnection.autoCreateMediaElement = false
     this.rtcmConnection.enableLogs             = this.enableLogs
-    this.rtcmConnection.autoCloseEntireSession = true
+    //this.rtcmConnection.session = {
+    //  data: true
+    //}
+    //this.rtcmConnection.onopen = function(event) {
+    //  this.rtcmConnection.send('hello everyone');
+    //}
 
     this.rtcmConnection.extra = {
       userId: this.profile.id

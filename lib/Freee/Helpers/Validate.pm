@@ -118,7 +118,7 @@ sub register {
                 }
 
                 # проверка того, что разрешено загружать файл с текущим расширением
-                unless ( exists( $self->{'app'}->{'settings'}->{'valid_extensions'}->{ $data{'extension'} } ) ) {
+                unless ( exists( $settings->{'valid_extensions'}->{ $data{'extension'} } ) ) {
                     push @!, "$url_for _check_fields: extension $data{'extension'} is not valid";
                     last;
                 }
@@ -193,9 +193,9 @@ sub register {
                 'password'    => [ 'required', qr/^[\w\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
             },
 ################
-            # роуты upload/*
+            # роуты upload /*
             '/upload'  => {
-                "upload"        => [ 'file_required', undef, $app->{'settings'}->{'upload_max_size'} ],
+                "upload"        => [ 'file_required', undef, $settings->{'upload_max_size'} ],
                 "description"   => [ '', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ]
             },
             '/upload/delete'  => {
@@ -231,7 +231,7 @@ sub register {
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^\d+$/os, 12 ],
-                'publish'       => [ 'required', qr/^[01]$/os, 1 ],
+                'status'        => [ 'required', qr/^[01]$/os, 1 ],
                 'password'      => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'newpassword'   => [ '', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'avatar'        => [ '', qr/^\d+$/os, 9 ],
@@ -260,7 +260,8 @@ sub register {
             },
 ################
             # роуты settings/*
-            '/settings/get_tree'  => {},
+            '/settings/get_tree'    => {},
+            '/settings/list_export' => {},
             '/settings/add_folder'  => {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
@@ -324,7 +325,7 @@ sub register {
             },
             '/settings/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['required','readonly','publish'], 8 ],
+                "fieldname"     => [ 'required', ['required','readonly','status'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/export'  => {
@@ -355,14 +356,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"       => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/discipline/delete' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/discipline/toggle' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['status'], 6 ],
+                "fieldname"     => [ 'required', ['status', 'readonly', 'required'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -385,14 +386,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/course/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/course/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['required','readonly','status'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -415,7 +416,7 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/theme/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -482,14 +483,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/task/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/task/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status', 'required', 'readonly'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 

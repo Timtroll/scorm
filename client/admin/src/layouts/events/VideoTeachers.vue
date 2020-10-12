@@ -16,9 +16,10 @@
 
       <!--second-screen-->
       <div class="pos-lesson-video-screen second-screen"
-           v-if="showSecondScreen"
+           v-if="secondScreen.position.v !== 'none'"
            :class="[secondScreen.position.v, secondScreen.position.h]"
            v-touch:swipe="moveVideo">
+
         <video width="1920"
                height="1080"
                ref="remote"
@@ -40,10 +41,12 @@
            v-if="showSecondScreen">
 
         <a class="uk-icon-link">
-          <img :src="selectedPosition.icon"
+          <img v-if="selectedPosition.icon"
+               :src="selectedPosition.icon || null"
                width="20"
                height="20"
-               uk-svg>
+               uk-svg
+               alt="">
         </a>
 
         <div ref="filter"
@@ -52,15 +55,18 @@
 
           <ul class="uk-grid-small"
               uk-grid>
+
             <li :class="{'uk-active': selectedPosition === item}"
                 v-for="item in position">
               <a href="#"
                  :class="{'uk-text-danger' : selectedPosition === item, 'uk-link-muted' : selectedPosition !== item}"
                  @click="selectPosition(item)">
                 <img :src="item.icon"
+                     v-if="item.icon"
                      width="20"
                      height="20"
-                     uk-svg>
+                     uk-svg
+                     alt="">
               </a></li>
           </ul>
         </div>
@@ -73,28 +79,32 @@
           <img src="/img/icons/icon__video-mute.svg"
                width="20"
                height="20"
-               uk-svg></a>
+               uk-svg
+               alt=""></a>
 
         <a class="uk-icon-link"
            @click.prevent="mute">
           <img src="/img/icons/icon__video.svg"
                width="20"
                height="20"
-               uk-svg></a>
+               uk-svg
+               alt=""></a>
 
         <a class="uk-icon-link"
            @click.prevent="mute">
           <img src="/img/icons/icon__mute.svg"
                width="20"
                height="20"
-               uk-svg></a>
+               uk-svg
+               alt=""></a>
 
         <a class="uk-icon-link"
            @click.prevent="unMute">
           <img src="/img/icons/icon__unmute.svg"
                width="20"
                height="20"
-               uk-svg></a>
+               uk-svg
+               alt=""></a>
       </div>
 
       <div class="uk-flex-none uk-text-right">
@@ -147,7 +157,11 @@ export default {
 
   data () {
     return {
-      selectedPosition: null,
+      selectedPosition: {
+        v:    'none',
+        h:    'none',
+        icon: 'img/icons/pos_none.svg'
+      },
 
       position: [
         {
@@ -185,7 +199,7 @@ export default {
 
   mounted () {
     if (this.showSecondScreen) {
-      this.selectedPosition = this.position[0]
+      this.selectPosition(this.position[0])
     }
   },
 
