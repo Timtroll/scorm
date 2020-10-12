@@ -129,7 +129,7 @@ sub _list_task {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'publish'      => $_->{'publish'},
+            'status'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @tasks, $item;
@@ -184,7 +184,7 @@ sub _get_task {
                "route"       => '/task',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "publish"      => $$result{'publish'}
+               "status"      => $$result{'publish'}
             }
         } 
         else {

@@ -169,7 +169,10 @@ sub save {
     }
 
     unless ( @! ) {
-        $$data{'publish'} = 1 unless defined $$data{'publish'};
+        # смена поля status на publish
+        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
+        delete $$data{'status'};
+
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
