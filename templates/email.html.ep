@@ -1,0 +1,14 @@
+<!doctype html>
+
+<html>
+    <body>
+        <form form method="post" action="https://freee/email/send_mail">
+            <BR>Address:
+            <BR><input type="text" name="Address">
+            <BR>Email:
+            <BR><input type="text" name="Email">
+
+            <BR><input type="submit" value="Send"/>
+        </form>
+    </body>
+</html>
