@@ -18,7 +18,7 @@ sub index {
 
 sub send_mail {
     my $self = shift;
-    my ( $data, $files, $resp );
+    my ( $data, $files, $resp, $result );
 
     # # проверка данных
     # $data = $self->_check_fields();
@@ -45,11 +45,12 @@ sub send_mail {
         };
 
         # отправка письма
-        $resp->{'result'} = $self->model('Mail')->_send_mail( $data );
+        $result = $self->model('Mail')->_send_mail( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'result'} = $result unless @!;
 
     @! = ();
 
