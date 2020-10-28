@@ -139,7 +139,7 @@ sub _list_discipline {
             'seo'         => $_->{'seo'},
             'route'       => $_->{'route'},
             'parent'      => $_->{'parent'},
-            'publish'      => $_->{'publish'},
+            'status'      => $_->{'publish'},
             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
         };
         push @disciplines, $item;

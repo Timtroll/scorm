@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'publish'      => $$result{'publish'} }
+                            { 'status'      => $$result{'publish'} }
                         ]
                     },
                     {
@@ -169,7 +169,10 @@ sub save {
     }
 
     unless ( @! ) {
-        $$data{'publish'} = 1 unless defined $$data{'publish'};
+        # смена поля status на publish
+        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
+        delete $$data{'status'};
+
         $$data{'title'} = join(' ', ( $$data{'name'}, $$data{'label'} ) );
         $$data{'time_update'} = 'now';
 
@@ -204,7 +207,7 @@ sub toggle {
 
     unless ( @! ) {
         # включаем/выключаем курс в EAV
-        $result = $self->model('Course')->_toggle_course( { id => $data{id}, 'publish' => $data{value} } );
+        $result = $self->model('Course')->_toggle_course( { id => $$data{'id'}, 'publish' => $$data{'value'} } );
         push @!, "can't update EAV" unless $result;
     }
 

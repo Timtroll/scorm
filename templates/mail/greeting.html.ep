@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <form form method="post" action="https://freee/mail/send_mail">
+            <BR>to:
+            <BR><input type="text" name="to">
+            <BR>copy:
+            <BR><input type="text" name="copy">
+            <BR>from:
+            <BR><input type="text" name="from">
+            <BR>subject:
+            <BR><input type="text" name="subject">
+            <BR>body:
+            <BR><textarea name="body"></textarea>
+            <BR>files:
+            <BR><input type="text" name="files">
+
+            <BR><input type="submit" value="Send"/>
+        </form>
+    </body>
+</html>

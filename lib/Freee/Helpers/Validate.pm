@@ -356,14 +356,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"       => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/discipline/delete' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/discipline/toggle' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['status'], 6 ],
+                "fieldname"     => [ 'required', ['status', 'readonly', 'required'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -386,14 +386,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/course/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/course/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['required','readonly','status'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -416,7 +416,7 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/theme/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -483,14 +483,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/task/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/task/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status', 'required', 'readonly'], 8 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
