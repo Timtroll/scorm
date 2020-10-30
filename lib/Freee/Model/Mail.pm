@@ -15,29 +15,54 @@ sub _send_mail {
 
     $msg = Email::MIME->create(
       header_str => [
-        From    => $$data{'from'},
+        From    => $settings->{'Username'} . '@yandex.ru',
         To      => $$data{'to'},
         Subject => $$data{'subject'},
       ],
       attributes => {
-        encoding => 'quoted-printable',
-        charset  => 'utf-8',
+        content_type => 'text/html',
+        encoding     => 'quoted-printable',
+        charset      => 'utf-8',
       },
-      body_str => $$data{'body'}
+      body_str => $$data{'email_body'},
     );
 
     $user = $settings->{'Username'};
     $pass = $settings->{'Password'};
     $host = $settings->{'Host'};
 
-    $smtp = Net::SMTP::SSL->new($host, Port=>465) or die "Can't connect";
-    $smtp->auth($user, $pass) or die "Can't authenticate:".$smtp->message();
-    $smtp->mail( $$data{'from'} ) or die "Error:".$smtp->message();
-    $smtp->to( $$data{'to'} ) or die "Error:".$smtp->message();
-    $smtp->data() or die "Error:".$smtp->message();
-    $smtp->datasend($msg->as_string) or die "Error:".$smtp->message();
-    $smtp->dataend() or die "Error:".$smtp->message();
-    $smtp->quit() or die "Error:".$smtp->message();
+    unless ( $smtp = Net::SMTP::SSL->new($host, Port=>465) ) {
+        push @!, "Can't connect";
+        return;
+    }
+    unless (    $smtp->auth($user, $pass) ) {
+        push @!, "Can't authenticate:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->mail( $settings->{'Username'} . '@yandex.ru' ) ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->to( $$data{'to'} ) ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->data() ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->datasend($msg->as_string) ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->dataend() ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    }
+    unless ( $smtp->quit() ) {
+        push @!, "Error:".$smtp->message();
+        return;
+    };
 
     return 1;
 }

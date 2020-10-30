@@ -193,6 +193,19 @@ sub register {
                 'password'    => [ 'required', qr/^[\w\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
             },
 ################
+            # роуты reset_password /*
+            '/reset_password/send'  => {
+                'email'       => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
+            },
+            '/reset_password/confirmation'  => {
+                'code'        => [ 'required', qr/^[\w]{30}[\w\@\.]+$/os, 54 ],
+            },
+            '/reset_password/reset'  => {
+                'password'    => [ 'required', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'email'       => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
+            },
+
+################
             # роуты upload /*
             '/upload'  => {
                 "upload"        => [ 'file_required', undef, $settings->{'upload_max_size'} ],
