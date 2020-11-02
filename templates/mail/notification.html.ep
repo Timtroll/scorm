@@ -1,0 +1,13 @@
+<html>
+ <body>
+  <table border="1">
+   <caption>Dear <%= $$email_text{'to'} %></caption>
+   <tr>
+    <th>Be carefull,
+        <%= $$email_text{'body'} %>
+        </th>
+   </tr>
+<tr><td>With gratitude <%= $$email_text{'signature'} %></td></tr>
+  </table>
+ </body>
+</html>

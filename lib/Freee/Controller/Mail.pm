@@ -10,18 +10,39 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
+    #проверка данных
+    # my $data = $self->_check_fields();
+
+    # unless ( @! ) {
+    #     if (    $$data{'template'} eq 'welcome' ) {
+    #         $self->render(inline => 'welcome');
+    #     }
+    #     elsif ( $$data{'template'} eq 'notification' ) {
+    #         $self->render(inline => 'notification');
+    #     }
+    # }
+
+    # unless ( @! ) {
+    #     if (    $$data{'template'} eq 'welcome' ) {
+    #         $self->render(
+    #             'template'      => 'mail/welcome'
+    #         );
+    #     }
+    #     elsif ( $$data{'template'} eq 'notification' ) {
+    #         $self->render(
+    #             'template'      => 'mail/notification'
+    #         );
+    #     }
+    # }
+
     $self->render(
-        'template'      => 'mail/greeting'
-        # 'template'      => 'index'
+        'template' => 'mail/greeting'
     );
 }
 
 sub send_mail {
     my $self = shift;
-    my ( $data, $files, $resp, $result );
-
-    # # проверка данных
-    # $data = $self->_check_fields();
+    my ( $data, $files, $params, $email_body, $resp, $result );
 
     if ( $self->param( 'files' ) ) {
         # проверка существования загружаемых фото
@@ -35,14 +56,21 @@ sub send_mail {
     }
 
     unless ( @! ) {
-        $data = {
-            'to'       => $self->param( 'to' ),
-            'copy'     => $self->param( 'copy' ),         # не обязательно
-            'from'     => $self->param( 'from' ),         # по умолчанию из настроек
-            'subject'  => $self->param( 'subject' ),
-            'body'     => $self->param( 'body' ),
-            'files'    => $files                          # не обязательно
-        };
+        $$params{'body'}      = $self->param( 'body' );
+        $$params{'to'}        = $self->param( 'to' );
+        $$params{'signature'} = $self->param( 'signature' );
+        $$data{'email_body'} = $self->render_to_string(
+            'template'   => 'mail/' . $self->param( 'template' ),
+            'email_text' => $params
+        );
+        push @!, "can't render template" unless $$data{'email_body'};
+    }
+
+    unless ( @! ) {
+            $$data{'to'}       = $self->param( 'to' );
+            $$data{'subject'}  = $self->param( 'template' );
+            $$data{'body'}     = $self->param( 'body' );
+            $$data{'files'}    = $files;                          # не обязательно
 
         # отправка письма
         $result = $self->model('Mail')->_send_mail( $data );
