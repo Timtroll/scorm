@@ -1,15 +1,17 @@
-package Freee::Controller::Mail;
+package Freee::Controller::Reset;
 
 use utf8;
 use Encode;
 
+use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
+use Digest::SHA qw( sha256_hex );
 use common;
 
-sub send {
+sub index {
     my $self = shift;
 
-    my ( $data, $code, $expires, $param, $result, $resp );
+    my ( $data, $code, $expires, $paramess, $result, $resp );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -20,7 +22,6 @@ sub send {
             push @!, "email '$$data{ email }' doesn't exist"; 
         }
     }
-
     unless ( @! ) {
         # генерация случайного кода
         $code = $self->_random_string( 30 ) . '@' . $$data{'email'};
@@ -32,25 +33,29 @@ sub send {
         $$codes{$code} = $expires;
 
         # генерация темплейта
-        $$params{'email_body'} = $self->render_to_string(
+        $$paramess{'email_body'} = $self->render_to_string(
             'template'   => 'mail/reset_password_notification',
-            'email_text' => 'https://freee/reset_password/confirmation?code=' . $code
+            'email_text' => 'https://freee/reset/confirmation?code=' . $code
         );
-        push @!, "can't render template" unless $$params{'email_body'};
+        push @!, "can't render template" unless $$paramess{'email_body'};
     }
 
     unless ( @! ) {
         # отправка письма
-        $$params{'to'}       = $$data{'email'};
-        $$params{'subject'}  = '[Scorm] Please reset your password';
+        $$paramess{'to'}       = $$data{'email'};
+        $$paramess{'subject'}  = '[Scorm] Please reset your password';
 
         # отправка письма
-        $result = $self->model('Mail')->_send_mail( $params );
+        $result = $self->model('Mail')->_send_mail( $paramess );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'result'} = $result unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
 }
 
 sub confirmation {
@@ -92,9 +97,14 @@ sub confirmation {
         }
     }
 
-    $resp->{'message'} = join("\n", @!) if @!;
-    $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'result'} = $result unless @!;
+    if ( @! ) {
+        $resp->{'message'} = join("\n", @!);
+        $resp->{'status'} = 'fail';
+
+        @! = ();
+
+        $self->render( 'json' => $resp );
+    }
 }
 
 sub reset {
@@ -106,12 +116,17 @@ sub reset {
     $data = $self->_check_fields();
 
     # если пароль и подтверждение различны
-    unless ( $$data{'password'} eq $$data{'con_password'} ) {
+    unless ( @! || $$data{'password'} eq $$data{'con_password'} ) {
+
+        push @!, "password and con_password aren't the same";
+
         # отправка поля с заменой пароля
         $self->render(
             'template'   => 'mail/reset_password',
             'email_text' => $self->param( 'code' )
         );
+
+        return;
     }
 
     unless ( @! ) {
@@ -124,6 +139,16 @@ sub reset {
         # шифрование пароля
         $$data{'newpassword'} = sha256_hex( $$data{'password'}, $salt );
 
-        $data = $self->model('Reset_password')->_reset( $data );
+        $result = $self->model('Reset')->_reset( $data );
     }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'result'} = $result unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
 }
+
+1;

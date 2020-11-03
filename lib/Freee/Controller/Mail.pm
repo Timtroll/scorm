@@ -10,31 +10,6 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    #проверка данных
-    # my $data = $self->_check_fields();
-
-    # unless ( @! ) {
-    #     if (    $$data{'template'} eq 'welcome' ) {
-    #         $self->render(inline => 'welcome');
-    #     }
-    #     elsif ( $$data{'template'} eq 'notification' ) {
-    #         $self->render(inline => 'notification');
-    #     }
-    # }
-
-    # unless ( @! ) {
-    #     if (    $$data{'template'} eq 'welcome' ) {
-    #         $self->render(
-    #             'template'      => 'mail/welcome'
-    #         );
-    #     }
-    #     elsif ( $$data{'template'} eq 'notification' ) {
-    #         $self->render(
-    #             'template'      => 'mail/notification'
-    #         );
-    #     }
-    # }
-
     $self->render(
         'template' => 'mail/greeting'
     );
