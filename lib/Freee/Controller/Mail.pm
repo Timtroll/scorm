@@ -1,6 +1,9 @@
 package Freee::Controller::Mail;
 
 use utf8;
+use strict;
+use warnings;
+
 use Encode;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw( from_json to_json );

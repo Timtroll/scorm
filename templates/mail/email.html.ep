@@ -1,0 +1,11 @@
+<!doctype html>
+<head>
+    <title><%= $title %></title>
+</head>
+<body>
+    <form action="/mail/send">
+        <input type="text" value="text">
+        <input type="submit" value="text">
+    </form>
+</body>
+</html>
