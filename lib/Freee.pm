@@ -94,6 +94,15 @@ warn "+++++++++++";
     $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
     $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
 
+    # отправка сообщения
+    $r->get('/mail/')                     ->to('mail#index');          # вызов страницы
+    $r->post('/mail/send_mail')           ->to('mail#send_mail');      # отправка email
+
+    # смена пароля
+    $r->post('/reset/')                   ->to('reset#index');         # отправка сообщения о смене
+    $r->get('/reset/confirmation')       ->to('reset#confirmation');  # подтверждение смены пароля
+    $r->post('/reset/reset')              ->to('reset#reset');         # смена пароля
+
     # загрузка файлов
     $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла
     $auth->post('/upload/search/')        ->to('upload#search');        # поиск загруженного файла

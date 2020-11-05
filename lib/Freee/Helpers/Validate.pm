@@ -58,6 +58,7 @@ sub register {
         my %data = ();
 
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
+
             # пропускаем роуты, которых нет в хэше валидации
             next unless keys %{ $$vfields{$url_for} };
 
@@ -192,6 +193,20 @@ sub register {
                 'login'       => [ 'required', qr/^[\w\-]+$/os, 32 ],
                 'password'    => [ 'required', qr/^[\w\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
             },
+################
+            # роуты reset_password /*
+            '/reset'  => {
+                'email'       => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
+            },
+            '/reset/confirmation'  => {
+                'code'        => [ 'required', qr/^[\w]{30}[\w\@\.]+$/os, 55 ],
+            },
+            '/reset/reset'  => {
+                'password'    => [ 'required', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'con_password'=> [ 'required', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
+                'code'        => [ 'required', qr/^[\w]{30}[\w\@\.]+$/os, 55 ],
+            },
+
 ################
             # роуты upload /*
             '/upload'  => {

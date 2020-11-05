@@ -940,7 +940,58 @@ $mock_settings = {
           "folder"        => 0
         }
       ]
+    },
+    {
+      "name"      => "mail",
+      "label"     => "Почта",
+      "opened"    => 0,
+      "parent"    => 0,
+      "keywords"  => "",
+      "folder"    => 1,
+      "publish"    => 1,
+      "children"  => [
+        {
+          "readonly"      => 0,
+          "required"      => 1,
+          "type"          => "InputText",
+          "name"          => "Host",
+          "label"         => "Host",
+          "placeholder"   => "smtp.yandex.ru",
+          "mask"          => "",
+          "value"         => "smtp.yandex.ru",
+          "selected"      => [],
+          "parent"        => 8,
+          "folder"        => 0
+        },
+        {
+          "readonly"      => 0,
+          "required"      => 1,
+          "type"          => "InputText",
+          "name"          => "Username",
+          "label"         => "Username",
+          "placeholder"   => "scormscorm",
+          "mask"          => "",
+          "value"         => "scormscorm",
+          "selected"      => [],
+          "parent"        => 8,
+          "folder"        => 0
+        },
+        {
+          "readonly"      => 0,
+          "required"      => 1,
+          "type"          => "InputText",
+          "name"          => "Password",
+          "label"         => "Password",
+          "placeholder"   => "Yfenbkec_1",
+          "mask"          => "",
+          "value"         => "Yfenbkec_1",
+          "selected"      => [],
+          "parent"        => 8,
+          "folder"        => 0
+        }
+      ]
     }
+
   ]
 };
 

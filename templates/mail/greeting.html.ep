@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <form form method="post" action="https://freee/mail/send_mail">
+            <BR>to:
+            <BR><input type="text" name="to">
+            <BR>body:
+            <BR><textarea name="body">some text</textarea>
+            <BR>signature:
+            <BR><input type="text" name="signature">
+            <BR>files:
+            <BR><input type="text" name="files">
+            <BR><select name="template">
+              <option value="welcome">welcome</option>
+              <option value="notification">notification</option>
+            </select>
+
+            <BR><input type="submit" value="Send"/>
+        </form>
+    </body>
+</html>
