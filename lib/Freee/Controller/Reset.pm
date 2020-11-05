@@ -15,6 +15,7 @@ sub index {
 
     # проверка данных
     $data = $self->_check_fields();
+warn Dumper( $self->{'app'}->{'defaults'}->{'config'}->{'test'} );
 
     unless ( @! ) {
         # проверяем, используется ли email
@@ -41,12 +42,18 @@ sub index {
     }
 
     unless ( @! ) {
-        # отправка письма
-        $$paramess{'to'}       = $$data{'email'};
-        $$paramess{'subject'}  = '[Scorm] Please reset your password';
 
-        # отправка письма
-        $result = $self->model('Mail')->_send_mail( $paramess );
+        if ( $self->{'app'}->{'defaults'}->{'config'}->{'test'} ) {
+            $result = $code;
+        }
+        else {
+            # отправка письма
+            $$paramess{'to'}       = $$data{'email'};
+            $$paramess{'subject'}  = '[Scorm] Please reset your password';
+
+            # отправка письма
+            $result = $self->model('Mail')->_send_mail( $paramess );
+        }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;

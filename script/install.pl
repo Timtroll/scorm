@@ -75,8 +75,8 @@ if ( $hash{'rebuild'} ) {
     # подключение к базе postgres
     $self->{dbh} = DBI->connect(
         'dbi:Pg:dbname=postgres;host=localhost;port=5432',
-        $$temp_freee::config_update{ 'pglogin' },
-        $$temp_freee::config_update{ 'pgpassword' },
+        'troll',
+        'Yfenbkec_1',
         { 
             'pg_enable_utf8' => 1, 
             'pg_auto_escape' => 1, 
@@ -353,7 +353,7 @@ sub load_defaults {
     #     return;
     # }
 
-    # добавляем адимна
+    # добавляем админа
     my $salt = $config->{'secrets'}->[0];
     add_user({
         'email'     => 'admin@admin',
@@ -375,6 +375,44 @@ sub load_defaults {
     });
 
     # добавляем учителя
+    add_user({
+        'email'     => 'teacher@teacher',
+        'login'     => 'teacher',
+        'password'  => sha256_hex( $temp_freee::config_update->{'password'}, $salt ),
+
+        'user_id'   => 2,
+        'group_id'  => 2,
+
+        'title'     => 'teacher',
+        'User' => {
+            'place'         => "scorm",
+            'country'       => "RU",
+            'birthday'      => "19950803 00:00:00",
+            'patronymic'    => "teacher",
+            'name'          => "teacher",
+            'surname'       => "teacher"
+        }
+    });
+
+    # добавляем студента
+    add_user({
+        'email'     => 'student@student',
+        'login'     => 'student',
+        'password'  => sha256_hex( $temp_freee::config_update->{'password'}, $salt ),
+
+        'user_id'   => 3,
+        'group_id'  => 3,
+
+        'title'     => 'student',
+        'User' => {
+            'place'         => "scorm",
+            'country'       => "RU",
+            'birthday'      => "19950803 00:00:00",
+            'patronymic'    => "student",
+            'name'          => "student",
+            'surname'       => "student"
+        }
+    });
 }
 
 sub add_user {
