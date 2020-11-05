@@ -92,13 +92,13 @@ warn "+++++++++++";
     $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
 
     # отправка сообщения
-    $r->get('/mail/')                    ->to('mail#index');          # вызов страницы
-    $r->post('/mail/send_mail')          ->to('mail#send_mail');      # отправка email
+    $r->get('/mail/')                     ->to('mail#index');          # вызов страницы
+    $r->post('/mail/send_mail')           ->to('mail#send_mail');      # отправка email
 
     # смена пароля
-    $r->post('/reset_password/send`')         ->to('reset_password#send');          # отправка сообщения о смене
-    $r->post('/reset_password/confirmation`') ->to('reset_password#confirmation');  # подтверждение смены пароля
-    $r->post('/reset_password/reset')         ->to('reset_password#reset');         # смена пароля
+    $r->post('/reset/')                   ->to('reset#index');         # отправка сообщения о смене
+    $r->get('/reset/confirmation')       ->to('reset#confirmation');  # подтверждение смены пароля
+    $r->post('/reset/reset')              ->to('reset#reset');         # смена пароля
 
     # загрузка файлов
     $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла

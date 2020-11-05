@@ -1,4 +1,4 @@
-package Freee::EAV::Reset_password;
+package Freee::EAV::Reset;
 
 use parent 'Freee::EAV::Base';
 use strict;
