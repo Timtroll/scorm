@@ -15,7 +15,6 @@ sub index {
 
     # проверка данных
     $data = $self->_check_fields();
-warn Dumper( $self->{'app'}->{'defaults'}->{'config'}->{'test'} );
 
     unless ( @! ) {
         # проверяем, используется ли email
@@ -86,11 +85,13 @@ sub confirmation {
             # проверка наличия такого кода
             if ( exists $$codes{$$data{'code'}} ) {
 
+                $result = $$data{'code'};
+# переделать на json
                 # отправка поля с заменой пароля
-                $self->render(
-                    'template'   => 'mail/reset_password',
-                    'email_text' => $$data{'code'}
-                );
+                # $self->render(
+                #     'template'   => 'mail/reset_password',
+                #     'email_text' => $$data{'code'}
+                # );
 
                 # удаление кода
                 delete $$codes{$$data{'code'}};
@@ -104,14 +105,13 @@ sub confirmation {
         }
     }
 
-    if ( @! ) {
-        $resp->{'message'} = join("\n", @!);
-        $resp->{'status'} = 'fail';
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'result'} = $result unless @!;
 
-        @! = ();
+    @! = ();
 
-        $self->render( 'json' => $resp );
-    }
+    $self->render( 'json' => $resp );
 }
 
 sub reset {
@@ -127,13 +127,13 @@ sub reset {
 
         push @!, "password and con_password aren't the same";
 
-        # отправка поля с заменой пароля
-        $self->render(
-            'template'   => 'mail/reset_password',
-            'email_text' => $self->param( 'code' )
-        );
+        # # отправка поля с заменой пароля
+        # $self->render(
+        #     'template'   => 'mail/reset_password',
+        #     'email_text' => $self->param( 'code' )
+        # );
 
-        return;
+        # return;
     }
 
     unless ( @! ) {
