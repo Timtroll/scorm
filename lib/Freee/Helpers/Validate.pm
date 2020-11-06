@@ -199,12 +199,12 @@ sub register {
                 'email'       => [ 'required', qr/^[\w\@\.]+$/os, 24 ],
             },
             '/reset/confirmation'  => {
-                'code'        => [ 'required', qr/^[\w]{30}[\w\@\.]+$/os, 55 ],
+                'code'        => [ 'required', qr/^\w{30}\@[\w\@\.]+$/os, 55 ],
             },
             '/reset/reset'  => {
                 'password'    => [ 'required', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
                 'con_password'=> [ 'required', qr/^[\w\-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 32 ],
-                'code'        => [ 'required', qr/^[\w]{30}[\w\@\.]+$/os, 55 ],
+                'code'        => [ 'required', qr/^\w{30}[\w\@\.]+$/os, 55 ],
             },
 
 ################
