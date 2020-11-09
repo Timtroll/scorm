@@ -11,7 +11,7 @@ use Mojo::JSON qw(decode_json);
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-use File::Slurp 'read_file';
+use File::Slurp::Unicode 'read_file';
 
 use Data::Dumper;
 use Freee::Model::Utils;
@@ -77,6 +77,7 @@ sub register {
                 'publish' => 1,
                 'timezone' => 1,
             );
+
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
                 if ( exists( $exclude_fields{$field} ) ) {
@@ -129,6 +130,9 @@ sub register {
                 push @!, "$url_for _check_fields: didn't has required file data in '$field'";
                 last;
             }
+            elsif ( ! exists $exclude_fields{$field} ) {
+                next;
+            }
 
             # проверка для роута toggle по списку значений
             if ( ( $url_for =~ /toggle/ && $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
@@ -146,8 +150,8 @@ sub register {
             }
             # проверка по регэкспу
             else {
-                if ( !$regexp || ! defined $param || !( $param =~ /$regexp/ ) ) {
-                    push @!, "$url_for _check_fields: '$field' didn't match regular expression";
+                if ( !defined $param || !$regexp || !( $param =~ /$regexp/ ) ) {
+                    push @!, "$url_for _check_fields: empty field '$field', didn't match regular expression";
                     last;
                 }
             }

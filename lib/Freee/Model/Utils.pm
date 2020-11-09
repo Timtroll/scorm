@@ -2,7 +2,6 @@ package Freee::Model::Utils;
 
 use Mojo::Base 'Freee::Model::Base';
 use Mojo::JSON;
-use JSON::XS;
 use Encode qw( _utf8_off );
 use Time::Local;
 

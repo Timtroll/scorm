@@ -8,7 +8,6 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw( decode_json );
 use Data::Compare;
-use File::Slurp;
 use Data::Dumper;
 
 BEGIN {

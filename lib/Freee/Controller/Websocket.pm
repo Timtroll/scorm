@@ -5,7 +5,6 @@ binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
-use JSON::XS;
 
 use Mojo::EventEmitter;
 use Mojo::RabbitMQ::Client;

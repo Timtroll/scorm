@@ -1,8 +1,7 @@
 package Freee::Model::Settings;
 
 use Mojo::Base 'Freee::Model::Base';
-use Mojo::JSON;
-use JSON::XS;
+use Mojo::JSON qw( to_json from_json decode_json);
 use Encode qw( _utf8_off );
 
 use Data::Dumper;
@@ -195,10 +194,10 @@ sub _insert_setting {
 
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        $$data{'value'} = to_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
     }
     if (defined $$data{'selected'} ) {
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        $$data{'selected'} = to_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
     $sql ='INSERT INTO "public"."settings" ('.
@@ -254,10 +253,10 @@ sub _save_setting {
 
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
-        $$data{'value'} = JSON::XS->new->allow_nonref->encode($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        $$data{'value'} = to_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
     }
     if (defined $$data{'selected'} ) {
-        $$data{'selected'} = JSON::XS->new->allow_nonref->encode($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        $$data{'selected'} = to_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
     $fields = join( ', ', map {
@@ -323,9 +322,9 @@ sub _get_setting {
                     { "label"       => $$row{'label'} ? $$row{'label'} : '' },
                     { "name"        => $$row{'name'} ? $$row{'name'} : '' },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "selected"    => $$row{'selected'} ? JSON::XS->new->allow_nonref->decode($$row{'selected'}) : [] },
+                    { "selected"    => $$row{'selected'} ? from_json($$row{'selected'}) : [] },
                     { "type"        => $$row{'type'} ? $$row{'type'} : '' },
-                    { "value"       => $$row{'value'} =~ /^\[/ ? JSON::XS->new->allow_nonref->decode($$row{'value'}) : $$row{'value'} }
+                    { "value"       => $$row{'value'} =~ /^\[/ ? from_json($$row{'value'}) : $$row{'value'} }
                 ]
             },
             {
