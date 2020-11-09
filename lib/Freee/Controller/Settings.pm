@@ -4,7 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use JSON::XS;
+use Mojo::JSON qw( to_json );
 use Encode;
 
 use Freee::Mock::Settings;
@@ -12,7 +12,7 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
-use File::Slurp;
+use File::Slurp::Unicode qw( write_file );
 
 use Data::Dumper;
 use common;
@@ -282,8 +282,8 @@ sub load_default {
                     "label"         => $$children{'label'},
                     "mask"          => $$children{'mask'} // '',
                     "type"          => $$children{'type'} // '',
-                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'value'} ) : $$children{'value'},
-                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? JSON::XS->new->allow_nonref->encode( $$children{'selected'} ) : '[]',
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? to_json( $$children{'value'} ) : $$children{'value'},
+                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? to_json( $$children{'selected'} ) : '[]',
                     "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
                     "folder"        => 0,
@@ -602,7 +602,7 @@ sub export {
     # кодирование данных в json
     unless ( @! ) {
         # перевод настреок в json
-        $json = encode_json( $result );
+        $json = to_json( $result );
         push @!, "Can't encode into json" unless $json;
     }
 

@@ -5,9 +5,9 @@ binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
-# use JSON::XS;
-use JSON;
+use Mojo::JSON qw( from_json );
 use Mojo::File;
+use File::Slurp::Unicode qw( slurp );
 
 # use Mojo::EventEmitter;
 # use Mojo::RabbitMQ::Client;
@@ -31,7 +31,7 @@ sub type {
     my $self = shift;
 
     $self->inactivity_timeout(3600);
-warn "type";
+
     $self->on(
         json => sub {
             my $ws = shift;
@@ -64,7 +64,7 @@ warn "type";
                 my $path = Mojo::File->new("/tmp/sdp.answerer");
                 my $txt = $path->slurp;
 
-                my $ref = JSON::from_json($txt);
+                my $ref = from_json($txt);
                 $self->send({json => $ref});
                 unlink("/tmp/sdp.answerer");
                 # Mojo::File::spurt(scalar localtime(time), "/tmp/sdp.offerer.sent");
@@ -78,7 +78,7 @@ warn "type";
                 my $path = Mojo::File->new($f);
                 my $txt = $path->slurp;
 
-                my $ref = JSON::from_json($txt);
+                my $ref = from_json($txt);
                 $self->send({json => $ref});
                 unlink($f);
             }
@@ -89,7 +89,7 @@ warn "type";
                 my $path = Mojo::File->new("/tmp/sdp.offerer");
                 my $txt = $path->slurp;
 
-                my $ref = JSON::from_json($txt);
+                my $ref = from_json($txt);
                 $self->app->log->debug("Sending sdp: to answerer from offerer");
                 $self->send({json => $ref});
                 unlink("/tmp/sdp.offerer");
@@ -102,7 +102,7 @@ warn "type";
                     my $path = Mojo::File->new($f);
                     my $txt = $path->slurp;
 
-                    my $ref = JSON::from_json($txt);
+                    my $ref = from_json($txt);
                     $self->send({json => $ref});
                     unlink($f);
                 }
@@ -115,7 +115,7 @@ warn "type";
         my ($self, $msg) = @_;
 
         $self->app->log->debug("msg: $msg: type: $type");
-        my $ret = JSON::from_json($msg);
+        my $ret = from_json($msg);
 
         if ($$ret{sender} && "offerer" eq $$ret{sender} && $$ret{sdp}) {
             # Mojo::File::spurt($msg, "/tmp/sdp.offerer");

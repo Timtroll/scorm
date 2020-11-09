@@ -4,7 +4,6 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use JSON::XS;
 use Encode;
 
 # use Freee::Mock::Settings;

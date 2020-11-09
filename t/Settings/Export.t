@@ -58,7 +58,6 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 
-use File::Slurp;
 use Data::Dumper;
 
 use Data::Compare;
