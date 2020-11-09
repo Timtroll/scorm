@@ -101,7 +101,7 @@ export default {
 
     Promise.all([event])
            .then(() => {
-
+             this.leave()
              const meta        = event.meta
              this.eventUsers   = {
                teacher:  event.teacher,
@@ -135,6 +135,14 @@ export default {
     this.$store.unregisterModule('eventStore')
     this.leave()
     next()
+  },
+
+  watch: {
+    connection () {
+      if (!this.connection) {
+        this.startRTC()
+      }
+    }
   },
 
   computed: {
