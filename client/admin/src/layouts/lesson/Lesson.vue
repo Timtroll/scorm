@@ -45,6 +45,7 @@
             <img :src="selectedPosition.icon"
                  width="20"
                  height="20"
+                 alt=""
                  uk-svg>
           </a>
 
@@ -61,7 +62,8 @@
                   <img :src="item.icon"
                        width="20"
                        height="20"
-                       uk-svg>
+                       uk-svg
+                       alt="">
                 </a></li>
             </ul>
           </div>
@@ -74,28 +76,32 @@
             <img src="/img/icons/icon__video-mute.svg"
                  width="20"
                  height="20"
-                 uk-svg></a>
+                 uk-svg
+                 alt=""></a>
 
           <a class="uk-icon-link"
              @click.prevent="mute">
             <img src="/img/icons/icon__video.svg"
                  width="20"
                  height="20"
-                 uk-svg></a>
+                 uk-svg
+                 alt=""></a>
 
           <a class="uk-icon-link"
              @click.prevent="mute">
             <img src="/img/icons/icon__mute.svg"
                  width="20"
                  height="20"
-                 uk-svg></a>
+                 uk-svg
+                 alt=""></a>
 
           <a class="uk-icon-link"
              @click.prevent="unMute">
             <img src="/img/icons/icon__unmute.svg"
                  width="20"
                  height="20"
-                 uk-svg></a>
+                 uk-svg
+                 alt=""></a>
         </div>
 
         <div class="uk-flex-1 uk-text-right">
@@ -261,15 +267,15 @@ export default {
 
   async mounted () {
 
+    this.$store.commit('navBarLeftActionShow', false)
     if (!this.participantProfile) return
     this.lessonApi = new lessonApi(this.participantProfile.id)
     const users    = await this.getClassStudents()
+    this.leave()
 
     Promise.all([users])
            .then(() => {
              this.selectedPosition = this.position[0]
-             this.leave()
-             this.$store.commit('navBarLeftActionShow', false)
              this.startRTC()
            })
 
@@ -463,7 +469,7 @@ export default {
       this.selectedPosition        = item
       this.secondScreen.position.v = item.v
       this.secondScreen.position.h = item.h
-    },
+    }
 
     //getUsers () {
     //  const myHeaders = new Headers()
