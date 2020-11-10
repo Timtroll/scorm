@@ -10,7 +10,7 @@
     <!--               uk-svg>-->
     <!--        </div>-->
 
-    <!--auth-->
+    <!--recover-->
     <form class="pos-login">
 
       <!--KeyAnimations-->
@@ -21,7 +21,7 @@
       </div>
 
       <div class="uk-margin-small uk-text-center uk-text-large"
-           v-text="$t('auth.title')"></div>
+           v-text="$t('recover.title')"></div>
 
       <!--email-->
       <div class="uk-margin-small">
@@ -30,26 +30,11 @@
                       uk-icon="icon: user"></span>
           <input class="uk-input"
                  :disabled="status === 'loading'"
-                 type="text"
-                 :placeholder="$t('auth.fields.login')"
-                 autocomplete="username"
-                 v-model="user.login"
+                 type="email"
+                 :placeholder="$t('recover.fields.email')"
+                 autocomplete="email"
+                 v-model="user.email"
                  v-focus
-                 @keyup="keyMove">
-        </div>
-      </div>
-
-      <!--password-->
-      <div class="uk-margin-small">
-        <div class="uk-inline">
-                <span class="uk-form-icon uk-form-icon-flip"
-                      uk-icon="icon: lock"></span>
-          <input class="uk-input"
-                 :disabled="status === 'loading'"
-                 autocomplete="current-password"
-                 v-model="user.password"
-                 type="password"
-                 :placeholder="$t('auth.fields.password')"
                  @keyup="keyMove">
         </div>
       </div>
@@ -60,11 +45,49 @@
         <button type="submit"
                 :disabled="status === 'loading'"
                 class="uk-width-1-1 uk-button uk-button-default"
-                @click.prevent="login">
+                @click.prevent="recover">
                   <span uk-spinner="ratio: .6"
                         v-if="status==='loading'"></span>
           <span v-else
-                v-text="$t('auth.fields.submit')"></span>
+                v-text="$t('recover.fields.submit')"></span>
+        </button>
+      </div>
+
+    </form>
+
+    <!--confirm code-->
+    <form class="pos-login">
+
+      <div class="uk-margin-small uk-text-center uk-text-large"
+           v-text="$t('confirm.title')"></div>
+
+      <!--email-->
+      <div class="uk-margin-small">
+        <div class="uk-inline">
+                <span class="uk-form-icon uk-form-icon-flip"
+                      uk-icon="icon: user"></span>
+          <input class="uk-input"
+                 :disabled="status === 'loading'"
+                 type="email"
+                 :placeholder="$t('confirm.fields.text')"
+                 autocomplete="email"
+                 v-model="confirmCode"
+                 v-focus
+                 @keyup="keyMove">
+        </div>
+      </div>
+
+      <!--submit-->
+      <div class="uk-margin"
+           v-if="validateUser">
+        <button type="submit"
+                :disabled="status === 'loading'"
+                class="uk-width-1-1 uk-button uk-button-default"
+                @click.prevent="recover">
+                  <span uk-spinner="ratio: .6"
+                        v-if="status==='loading'"></span>
+          <span v-else
+                v-text="$t('confirm.fields.submit')"></span>
         </button>
       </div>
 
@@ -72,11 +95,11 @@
 
     <div class="uk-margin-small-top uk-flex uk-flex-between uk-text-small">
       <router-link class="uk-link-muted"
+                   :to="{name: 'Login'}"
+                   v-text="$t('auth.title')"/>
+      <router-link class="uk-link-muted"
                    :to="{name: 'SignUp'}"
                    v-text="$t('signUp.title')"/>
-      <router-link class="uk-link-muted"
-                   :to="{name: 'RecoverPassword'}"
-                   v-text="$t('recover.title')"/>
     </div>
 
   </div>
@@ -84,7 +107,7 @@
 
 <script>
 export default {
-  name: 'LogIn',
+  name: 'RecoverPassword',
 
   components: {
     KeyAnimations: () => import(/* webpackChunkName: "KeyAnimations" */ './KeyAnimations')
@@ -92,7 +115,7 @@ export default {
 
   metaInfo () {
     return {
-      title:         this.$t('auth.title'),
+      title:         this.$t('recover.title'),
       titleTemplate: '%s - Scorm',
       htmlAttrs:     {
         lang: this.$t('app.lang')
@@ -102,13 +125,14 @@ export default {
 
   data () {
     return {
-      direction: false,
-      motion:    false,
-
-      user: {
-        login: '',
-        password:  ''
+      direction:   false,
+      motion:      false,
+      confirmCode: null,
+      user:        {
+        email: ''
       },
+
+      emailRegExp: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
 
       background: {
         default: 'pos-login-background',
@@ -119,22 +143,22 @@ export default {
 
   computed: {
 
-    status () {
-      return this.$store.getters.authStatus
+    validateUser () {
+      return this.emailRegExp.test(this.user.email)
     },
 
-    validateUser () {
-      return this.user.password !== '' && this.user.login !== ''
+    status () {
+      return this.$store.getters.authStatus
     }
   },
 
   methods: {
 
     // авторизация
-    login () {
+    recover () {
       if (this.validateUser) {
-        let login = this.user.login
-        let password  = this.user.password
+        let login    = this.user.login
+        let password = this.user.password
         this.$store.dispatch('login', {login, password})
             .then(() => this.$router.replace({
               name: 'Main'

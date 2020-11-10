@@ -35,6 +35,27 @@ const actions = {
 
   },
 
+  // recover password
+  async recover ({commit, dispatch}, email) {
+
+    try {
+      const response = await Api.recover({email: email})
+      if (response.data.status === 'ok') {
+        await dispatch('getGroups')
+      }
+      else {
+        notify(response.data.message, 'danger')
+        console.warn(response.data.message)
+      }
+    }
+    catch (err) {
+      notify(err, 'danger')
+      console.error(err)
+      commit('auth_error')
+    }
+
+  },
+
   // signUpPhone
   async signUp ({}, fields) {
     try {

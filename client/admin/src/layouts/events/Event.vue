@@ -6,7 +6,9 @@
       <Component v-if="eventRole"
                  :stream="video"
                  :users="allEvenUsers"
+                 :connection="connection"
                  :teacher="eventUsers.teacher"
+                 @join="join"
                  :is="eventRole.component"/>
     </template>
 
@@ -99,7 +101,7 @@ export default {
 
     Promise.all([event])
            .then(() => {
-
+             this.leave()
              const meta        = event.meta
              this.eventUsers   = {
                teacher:  event.teacher,
@@ -133,6 +135,14 @@ export default {
     this.$store.unregisterModule('eventStore')
     this.leave()
     next()
+  },
+
+  watch: {
+    connection () {
+      if (!this.connection) {
+        this.startRTC()
+      }
+    }
   },
 
   computed: {
@@ -192,7 +202,7 @@ export default {
       )
       //this.connection.init(this.$refs.local, this.$refs.video)
       this.getStream()
-      this.join()
+      //this.join()
     },
 
     join () {

@@ -13,7 +13,21 @@
     "title":  "Войти",
     "logOut": "Покинуть матрицу"
   },
-  "signUp":         {
+  "recover":      {
+    "fields": {
+      "email":  "Email",
+      "submit": "Напомнить"
+    },
+    "title":  "Напомнить пароль"
+  },
+  "confirm":      {
+    "fields": {
+      "text":  "Код",
+      "submit": "Отправить"
+    },
+    "title":  "Код подтверждения"
+  },
+  "signUp":       {
     "fields": {
       "login":    "Email",
       "password": "Пароль",

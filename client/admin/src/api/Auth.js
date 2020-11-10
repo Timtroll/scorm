@@ -9,6 +9,13 @@ export default {
     })
   },
 
+  recover (params) {
+    return Api()({
+      url:    '/reset_password/send',
+      params: params
+    })
+  },
+
   signUp (params) {
     return Api()({
       url:    'user/registration',

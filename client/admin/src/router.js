@@ -20,7 +20,7 @@ const router = new Router({
           path:          '/login',
           name:          'Login',
           component:     () => import(/* webpackChunkName: "login" */ './components/auth/LogIn'),
-          showInSideBar: true,
+          showInSideBar: false,
           meta:          {
             authRequired: false
           }
@@ -29,6 +29,15 @@ const router = new Router({
           path:          '/sign-up',
           name:          'SignUp',
           component:     () => import(/* webpackChunkName: "login" */ './components/auth/SignUp'),
+          showInSideBar: false,
+          meta:          {
+            authRequired: false
+          }
+        },
+        {
+          path:          '/recover',
+          name:          'RecoverPassword',
+          component:     () => import(/* webpackChunkName: "login" */ './components/auth/RecoverPassword'),
           showInSideBar: true,
           meta:          {
             authRequired: false
