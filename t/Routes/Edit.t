@@ -6,6 +6,7 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 use Data::Dumper;
+use Mojo::JSON qw( decode_json );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -20,17 +21,29 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод данных для вывода
 diag "Add group:";
 my $group = {
     'data' => {
         'name'      => 'test',
         'label'     => 'first test',
-        'publish'    => 1
+        'status'    => 1
     },
     'result' => {
         'id'        => '1',
-        'publish'    => 'ok'
+        'status'    => 'ok'
     },
     'comment' => 'New group' 
 };
@@ -95,9 +108,9 @@ my $test_data = {
                 'add'       => 0,
                 'edit'      => 0,
                 'delete'    => 0,
-                'publish'    => 1
+                'status'    => 1
             },
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -109,14 +122,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not get Route '404'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -126,7 +139,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },

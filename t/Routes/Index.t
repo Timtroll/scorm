@@ -4,7 +4,7 @@
 # 'add'       => 0 или 1  -    
 # 'edit'      => 0 или 1  -   
 # 'delete'    => 0 или 1  -   
-# 'publish'    => 0 или 1  -  активен ли роут
+# 'status'    => 0 или 1  -  активен ли роут
 use Mojo::Base -strict;
 
 use Test::More;
@@ -25,9 +25,21 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 #  Вводим группу родителя
 diag "Create group: ";
-my $data = {'name' => 'test', 'label' => 'test', 'publish' => 1};
+my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't create group");
@@ -50,7 +62,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Routes for Group id '404' is not exists",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong parent:' 
     },
@@ -60,14 +72,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'parent' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'parent'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },

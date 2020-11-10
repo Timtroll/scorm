@@ -12,6 +12,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -24,45 +25,57 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод групп
 my $data = {
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '3',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     }
 };
 diag "Create groups:";
 foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$data{$test}{'data'} );
+    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -85,10 +98,10 @@ $data = {
     'avatar'       => 1,
     'email'        => 'emailright@email.ru',
     'phone'        => '+7(921)2222222',
-    'publish'       => 1,
+    'status'       => 1,
     'groups'       => "[1,2,3]"
 };
-$t->post_ok( $host.'/user/add_user' => form => $data );
+$t->post_ok( $host.'/user/add_user' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -99,55 +112,55 @@ my $test_data = {
     1 => {
         'data' => {
             'id'     => 1,
-            'publish' => 1
+            'status' => 1
         },
         'result' => {
             'id'     => 1,
-            'publish' => 'ok'
+            'status' => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
             'id'     => 1,
-            'publish' => 0
+            'status' => 0
         },
         'result' => {
             'id'     => 1,
-            'publish' => 'ok'
+            'status' => 'ok'
         },
-        'comment' => 'Status 0:' 
+        'comment' => 'status 0:' 
     },
     # отрицательные тесты
     3 => {
         'data' => {
             'id'        => 404,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "user with '404' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     4 => {
         'data' => {
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
     5 => {
         'data' => {
             'id'        => - 404,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     },
@@ -158,7 +171,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/toggle' => form => $data );
+    $t->post_ok( $host.'/user/toggle' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

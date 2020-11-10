@@ -12,6 +12,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -24,56 +25,68 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод групп
 my $data = {
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '3',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     },
     4 => {
         'data' => {
             'name'      => 'name4',
             'label'     => 'label4',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '4',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     }
 };
 diag "Create groups:";
 foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$data{$test}{'data'} );
+    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -98,12 +111,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '1@email.ru',
             'phone'        => '+7(921)1111111',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1]"
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
@@ -119,12 +132,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '2@email.ru',
             'phone'        => '+7(921)1111112',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2]"
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     3 => {
@@ -140,12 +153,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '3@email.ru',
             'phone'        => '+7(921)1111113',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[2,1,3]"
         },
         'result' => {
             'id'        => 3,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     4 => {
@@ -161,12 +174,12 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '4@email.ru',
             'phone'        => '+7(921)1111114',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[3,2,1]"
         },
         'result' => {
             'id'        => 4,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     5 => {
@@ -182,19 +195,19 @@ my $test_data = {
             'avatar'       => 1,
             'email'        => '5@email.ru',
             'phone'        => '+7(921)1111115',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[3,2,4]"
         },
         'result' => {
             'id'        => 5,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     }
 };
 
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
-    $t->post_ok( $host.'/user/add_user' => form => $$test_data{$test}{'data'} );
+    $t->post_ok( $host.'/user/add_user' => {token => $token} => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -218,7 +231,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  1,
                         "groups" => "[1]"
                     },
@@ -228,7 +241,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  2,
                         "groups" => "[1,2]"
                     },
@@ -238,7 +251,7 @@ $test_data = {
                         "password" => '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  3,
                         "groups" => "[2,1,3]"
                     },
@@ -248,7 +261,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  4,
                         "groups" => "[3,2,1]"
                     }
@@ -268,14 +281,14 @@ $test_data = {
                     }
                 }
             },
-            'publish' => 'ok'
+            'status' => 'ok'
         },
-        'comment' => 'No publish:' 
+        'comment' => 'No status:' 
     },    
     2 => {
         'data' => {
             'id'     => 1,
-            'publish' => 1
+            'status' => 1
         },
         'result' => {
             "list" => {
@@ -286,7 +299,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "+7(921)1111111",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  1,
                         "groups" => "[1]"
                     },
@@ -296,7 +309,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "+7(921)1111112",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  2,
                         "groups" => "[1,2]"
                     },
@@ -306,7 +319,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "+7(921)1111113",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  3,
                         "groups" => "[2,1,3]"
                     },
@@ -316,7 +329,7 @@ $test_data = {
                         "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "+7(921)1111114",
-                        "publish" =>  1,
+                        "status" =>  1,
                         "eav_id" =>  4,
                         "groups" => "[3,2,1]"
                     }
@@ -336,14 +349,14 @@ $test_data = {
                     }
                 }
             },
-            'publish' => 'ok'
+            'status' => 'ok'
         },
-        'comment' => 'Status 1:' 
+        'comment' => 'status 1:' 
     },
     3 => {
         'data' => {
             'id'     => 1,
-            'publish' => 0
+            'status' => 0
         },
         'result' => {
             "list" => {
@@ -363,9 +376,9 @@ $test_data = {
                     }
                 }
             },
-            'publish' => 'ok'
+            'status' => 'ok'
         },
-        'comment' => 'Status 0:' 
+        'comment' => 'status 0:' 
     },
     4 => {
         'data' => {
@@ -390,7 +403,7 @@ $test_data = {
                     }
                 }
             },
-            'publish' => 'ok'
+            'status' => 'ok'
         },
         'comment' => 'Page 404:' 
     },
@@ -398,7 +411,7 @@ $test_data = {
     5 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -408,7 +421,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     },
@@ -419,7 +432,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/' => form => $data );
+    $t->post_ok( $host.'/user/' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

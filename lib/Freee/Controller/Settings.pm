@@ -4,7 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw( to_json );
+use Mojo::JSON qw( to_json decode_json );
 use Encode;
 
 use Freee::Mock::Settings;
@@ -12,7 +12,7 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
-use File::Slurp::Unicode qw( write_file );
+use File::Slurp::Unicode qw( write_file read_file );
 
 use Data::Dumper;
 use common;

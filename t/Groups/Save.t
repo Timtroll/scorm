@@ -3,13 +3,14 @@
 #     "id"        => 1            - id обновляемого элемента ( >0 )
 #     "label"     => 'название'   - обязательно (название для отображения)
 #     "name",     => 'name'       - обязательно (системное название, латиница)
-#     "publish"    => 0 или 1      - активна ли группа
+#     "status"    => 0 или 1      - активна ли группа
 # });
 use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use Mojo::JSON qw( decode_json );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -24,34 +25,46 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод данных для редактирования
 my $test_data = {
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     }
 };
 diag "Add groups:";
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
+    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -67,10 +80,10 @@ $test_data = {
             'id'        => 1,
             'name'      => 'name',
             'label'     => 'label',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'All fields:' 
@@ -82,11 +95,11 @@ $test_data = {
             'id'        => 404,
             'name'      => 'name3',
             'label'     => 'label3',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "Group with id '404' does not exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
@@ -94,11 +107,11 @@ $test_data = {
         'data' => {
             'name'      => 'name',
             'label'     => 'label',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'message'   => "/groups/save _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -106,11 +119,11 @@ $test_data = {
         'data' => {
             'id'        => 1,
             'label'     => 'label',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail'
+            'message'   => "/groups/save _check_fields: didn't has required data in 'name' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -118,11 +131,11 @@ $test_data = {
         'data' => {
             'id'        => 1,
             'name'      => 'name',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'label'",
-            'publish'    => 'fail'
+            'message'   => "/groups/save _check_fields: didn't has required data in 'label' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No label:' 
     },
@@ -133,8 +146,8 @@ $test_data = {
             'label'     => 'label'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'publish'",
-            'publish'    => 'fail'
+            'message'   => "/groups/save _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No value:' 
     },
@@ -143,11 +156,11 @@ $test_data = {
             'id'        => 1,
             'name'      => 'name*',
             'label'     => 'label',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'name' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/groups/save _check_fields: empty field 'name', didn't match regular expression",
+            'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
@@ -156,11 +169,11 @@ $test_data = {
             'id'        => 1,
             'label'     => 'label2',
             'name'      => 'name8',            
-            'publish'    => 0
+            'status'    => 0
         },
         'result' => {
             'message'   => "Group with label 'label2' already exists",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Label already used:' 
     },
@@ -169,11 +182,11 @@ $test_data = {
             'id'        => 1,
             'label'     => 'label9',
             'name'      => 'name2',            
-            'publish'    => 0
+            'status'    => 0
         },
         'result' => {
             'message'   => "Group with name 'name2' already exists",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Name already used:' 
     }
@@ -183,7 +196,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ( $$test_data{$test}{'comment'} );
-    $t->post_ok($host.'/groups/save' => form => $data )
+    $t->post_ok($host.'/groups/save' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

@@ -12,6 +12,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -24,13 +25,25 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод файлов
 my $data = {
    'description' => 'description',
     upload => { file => './t/Discipline/all_right.svg' }
 };
 diag "Insert media:";
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
@@ -47,15 +60,15 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 1,
-    'publish'    => 'ok'
+    'status'    => 'ok'
 };
 
-$t->post_ok( $host.'/discipline/add' => form => $data );
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -85,7 +98,7 @@ my $test_data = {
                             {"url" => "https://test.com"},
                             {"seo" => "дополнительное поле для seo"},
                             {"route" => "/discipline"},
-                            {"publish" => 1},
+                            {"status" => 1},
 
                         ],
                     },
@@ -98,7 +111,7 @@ my $test_data = {
                     }
                 ]
             },
-            "publish" => "ok"
+            "status" => "ok"
         },
         'comment' => 'All fields:' 
     },
@@ -109,14 +122,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "discipline with id '404' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -126,7 +139,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }
@@ -137,7 +150,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/edit' => form => $data );
+    $t->post_ok( $host.'/discipline/edit' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

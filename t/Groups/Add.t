@@ -2,7 +2,7 @@
 # my $id = $self->insert_group({
 #     "label"        => 'название',    - название для отображения, обязательное поле
 #     "name",      => 'name',           - системное название, латиница, обязательное поле
-#     "publish"      => 0 или 1,          - активна ли группа
+#     "status"      => 0 или 1,          - активна ли группа
 # });
 use Mojo::Base -strict;
 
@@ -10,6 +10,7 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 
+use Mojo::JSON qw( decode_json );
 use Data::Dumper;
 
 BEGIN {
@@ -24,17 +25,28 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
 my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -42,35 +54,35 @@ my $test_data = {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 0
+            'status'    => 0
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok',
+            'status'    => 'ok',
         },
-        'comment' => 'Publish zero:' 
+        'comment' => 'status zero:' 
     },
 
     # отрицательные тесты
     3 => {
         'data' => {
             'name'      => 'name3',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'label'",
-            'publish'    => 'fail'
+            'message'   => "/groups/add _check_fields: didn't has required data in 'label' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No label:' 
     },
     4 => {
         'data' => {
             'label'     => 'label4',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail'
+            'message'   => "/groups/add _check_fields: didn't has required data in 'name' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -80,20 +92,20 @@ my $test_data = {
             'label'     => 'label5'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'publish'",
-            'publish'    => 'fail'
+            'message'   => "/groups/add _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail'
         },
-        'comment' => 'No publish:' 
+        'comment' => 'No status:' 
     },
     6 => {
         'data' => {
             'name'      => 'label 6',
             'label'     => 'label6',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'name' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/groups/add _check_fields: empty field 'name', didn't match regular expression",
+            'status'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
     },
@@ -101,11 +113,11 @@ my $test_data = {
         'data' => {
             'name'       => 'name1',
             'label'      => 'label7',
-            'publish'     => 1
+            'status'     => 1
         },
         'result' => {
             'message'    => "name 'name1' already exists",
-            'publish'     => 'fail'
+            'status'     => 'fail'
         },
         'comment' => 'Same name:' 
     },
@@ -113,11 +125,11 @@ my $test_data = {
         'data' => {
             'name'       => 'name8',
             'label'      => 'label1',
-            'publish'     => 1
+            'status'     => 1
         },
         'result' => {
             'message'    => "label 'label1' already exists",
-            'publish'     => 'fail'
+            'status'     => 'fail'
         },
         'comment' => 'Same label:' 
     }
@@ -128,7 +140,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/groups/add' => form => $data );
+    $t->post_ok( $host.'/groups/add' => {token => $token}  => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

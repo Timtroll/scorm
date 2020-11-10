@@ -7,7 +7,7 @@
 # 'country'      => 'RU',              # 2 буквы кода страны, обязательное поле
 # 'timezone'     => 12.75,             # 2-4 буквы кода часового пояса, обязательное поле
 # 'birthday'     => 807393600,      # 12 цифр, обязательное поле
-# 'publish'       => '1',               # 0 или 1, обязательное поле
+# 'status'       => '1',               # 0 или 1, обязательное поле
 # 'password'     => 'password1',       # До 64 букв, цифр и знаков, обязательное поле
 # 'avatar'       => 1,              # До 9 цифр, обязательное поле
 # 'type'         => 1,                 # Цифра 1-4, обязательное поле
@@ -23,6 +23,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -35,45 +36,57 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод групп
 my $data = {
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     },
     3 => {
         'data' => {
             'name'      => 'name3',
             'label'     => 'label3',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '3',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     }
 };
 diag "Create groups:";
 foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$data{$test}{'data'} );
+    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -97,12 +110,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -118,14 +131,14 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright2@email.ru',
-            'publish'       => 0,
+            'status'       => 0,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'Status 0:' 
+        'comment' => 'status 0:' 
     },
 
     # отрицательные тесты
@@ -141,12 +154,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'surname'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No surname:' 
     },
@@ -162,12 +175,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No name:' 
     },
@@ -182,12 +195,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'country'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No country:'
     },
@@ -203,12 +216,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'email@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'timezone'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No timezone:'
     },
@@ -224,12 +237,12 @@ my $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => 'email@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'password'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No password:'
     },
@@ -245,12 +258,12 @@ my $test_data = {
             'birthday'     => 807393600,
             'password'     => 'password1',
             'avatar'       => 1,
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'email'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No email:'
     },
@@ -267,12 +280,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '+++',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "_check_fields: 'email' didn't match regular expression",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'Wrong email:'
     },
@@ -289,12 +302,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
             'message'   => "email 'emailright\@email.ru' already used",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Email already used:"
     },
@@ -311,12 +324,12 @@ my $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
-            'publish'       => 1,
+            'status'       => 1,
             'groups'       => "[1,2,404,405]"
         },
         'result' => {
             'message'   => "group with id '404' doesn't exist",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
     }
@@ -327,7 +340,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/add_by_email' => form => $data );
+    $t->post_ok( $host.'/user/add_by_email' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

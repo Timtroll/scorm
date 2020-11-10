@@ -69,7 +69,7 @@ $test_data = {
         'result' => {
             'id'        => 1,
             'mime'      => 'image/svg+xml',
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'url'       => $url
         },
         'comment'         => 'All right:' 
@@ -82,7 +82,7 @@ $test_data = {
         'result' => {
             'id'        => 1,
             'mime'      => 'image/svg+xml',
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'url'       => $url
         },
         'comment'         => 'Empty description:' 
@@ -96,7 +96,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Can not get file info',
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => "File with id doesn't exist:" 
     },
@@ -106,7 +106,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -117,7 +117,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
     },
@@ -139,7 +139,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     ok( Compare( $result, $response ), "Response is correct" );
 
     # проверка содержимого файла описания
-    if ( $$result{'publish'} eq 'ok' ) {
+    if ( $$result{'status'} eq 'ok' ) {
         $description = read_file( $desc_path );
         $description = decode_json $description;
         ok( 

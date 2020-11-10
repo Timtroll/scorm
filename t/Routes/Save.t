@@ -4,12 +4,13 @@
 # 'add'       => 1,
 # 'edit'      => 1,
 # 'delete'    => 1,
-# 'publish'    => 1
+# 'status'    => 1
 use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use Mojo::JSON qw( decode_json );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -24,12 +25,24 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 #  Вводим группу родителя
 diag "Add Group" ;
 my $data = {
     'name'      => 'test',
     'label'     => 'test',
-    'publish'    => 1
+    'status'    => 1
 };
 $t->post_ok( $host.'/groups/add' => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200 ) {
@@ -60,10 +73,10 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'All fields = 1 :' 
@@ -75,10 +88,10 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'list = 0:' 
@@ -90,10 +103,10 @@ my $test_data = {
             'add'       => 0,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'add = 0:' 
@@ -105,10 +118,10 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 0,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'edit = 0:' 
@@ -120,10 +133,10 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 0,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
         'comment' => 'delete = 0 :' 
@@ -135,13 +148,13 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 0
+            'status'    => 0
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1,
         },
-        'comment' => 'publish = 0 :' 
+        'comment' => 'status = 0 :' 
     },
     # отрицательные тесты
     7 => {
@@ -151,11 +164,11 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "Route '404' is not exists",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
@@ -165,11 +178,11 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -179,11 +192,11 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'list'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No list:' 
     },
@@ -193,11 +206,11 @@ my $test_data = {
             'list'      => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'add'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No add:' 
     },
@@ -207,11 +220,11 @@ my $test_data = {
             'list'      => 1,
             'add'       => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'edit'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No edit:' 
     },
@@ -221,11 +234,11 @@ my $test_data = {
             'list'      => 1,
             'add'       => 1,
             'edit'      => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'delete'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No delete:' 
     },
@@ -238,10 +251,10 @@ my $test_data = {
             'delete'    => 1,
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'publish'",
-            'publish'    => 'fail'
+            'message'   => "_check_fields: didn't has required data in 'status'",
+            'status'    => 'fail'
         },
-        'comment' => 'No publish:' 
+        'comment' => 'No status:' 
     },
     14 => {
         'data' => {
@@ -250,11 +263,11 @@ my $test_data = {
             'add'       => 1,
             'edit'      => 1,
             'delete'    => 1,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     }

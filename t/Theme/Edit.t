@@ -12,6 +12,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -23,6 +24,18 @@ clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
 
 # Ввод файлов
 my $data = {
@@ -47,7 +60,7 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 diag "Insert media:";
@@ -68,12 +81,12 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 1,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 2,
-    'publish'    => 'ok'
+    'status'    => 'ok'
 };
 
 $t->post_ok( $host.'/theme/add' => form => $data );
@@ -106,7 +119,7 @@ my $test_data = {
                             {"url" => "https://test.com"},
                             {"seo" => "дополнительное поле для seo"},
                             {"route" => "/theme"},
-                            {"publish" => 1},
+                            {"status" => 1},
 
                         ],
                     },
@@ -119,7 +132,7 @@ my $test_data = {
                     }
                 ]
             },
-            "publish" => "ok"
+            "status" => "ok"
         },
         'comment' => 'All fields:' 
     },
@@ -130,14 +143,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "theme with id '404' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -147,7 +160,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
     }

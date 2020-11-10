@@ -56,7 +56,7 @@ $test_data = {
             'id'        => 1
         },
         'result' => {
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All right:' 
     },
@@ -68,7 +68,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Can not get file info',
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => "File with id doesn't exist:" 
     },
@@ -76,7 +76,7 @@ $test_data = {
         'data' => {},
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -86,7 +86,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
     },
@@ -105,7 +105,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
         ->json_is( $result );
 
     # проверка удаления файла и его описания
-    if ( $$result{'publish'} eq 'ok' ) {
+    if ( $$result{'status'} eq 'ok' ) {
         # путь к загруженному файлу
         $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . $2;
         ok( !-e $file_path, "file was deleted");

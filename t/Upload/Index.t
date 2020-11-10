@@ -39,7 +39,7 @@ $test_data = {
         'result' => {
                         'id'        => 1,
                         'mime'      => 'image/svg+xml',
-                        'publish'    => 'ok'
+                        'status'    => 'ok'
                     },
         'comment' => 'all right:' 
     },
@@ -51,7 +51,7 @@ $test_data = {
         'result' => {
                         'id'        => 2,
                         'mime'      => 'image/svg+xml',
-                        'publish'    => 'ok'
+                        'status'    => 'ok'
                     },
         'comment' => 'empty description:' 
     },
@@ -63,7 +63,7 @@ $test_data = {
                    },
         'result' => {
                     'message'   => "_check_fields: didn't has required data in 'upload'",
-                    'publish'    => 'fail'
+                    'status'    => 'fail'
         },
         'comment' => 'empty file:' 
     },
@@ -74,7 +74,7 @@ $test_data = {
                     },
         'result' => {
                         'message'   => '_check_fields: file is too large',
-                        'publish'    => 'fail'
+                        'status'    => 'fail'
         },
         'comment' => 'file is too large:' 
     },
@@ -85,7 +85,7 @@ $test_data = {
                     },
         'result' => {
                         'message'   => "_check_fields: can't read extension",
-                        'publish'    => 'fail'
+                        'status'    => 'fail'
         },
         'comment' => 'no extension:' 
     },
@@ -96,7 +96,7 @@ $test_data = {
                     },
         'result' => {
                         'message'   => '_check_fields: extension wrong_extension is not valid',
-                        'publish'    => 'fail'
+                        'status'    => 'fail'
         },
         'comment' => 'wrong extension:' 
     }
@@ -124,7 +124,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     ok( Compare( $result, $response ), "Response is correct" );
 
     # дополнительные проверки работы положительных запросов
-    if ( $$result{'publish'} eq 'ok' ) {
+    if ( $$result{'status'} eq 'ok' ) {
 
         # составление списка возможных расширений
         $extension = '(';

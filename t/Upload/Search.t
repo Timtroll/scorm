@@ -75,7 +75,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment'         => 'Search for id' 
     },
@@ -94,7 +94,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment'         => 'Search for filename:' 
     },
@@ -113,7 +113,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => "Search for description:" 
     },
@@ -124,7 +124,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "can not get data from database",
-            'publish'    => 'warn'
+            'status'    => 'warn'
         },
         'comment' => "Id doesn't exist:" 
     },
@@ -133,7 +133,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'search'",
-            'publish'    => 'warn'
+            'status'    => 'warn'
         },
         'comment' => 'No search:' 
     },

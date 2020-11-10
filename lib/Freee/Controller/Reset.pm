@@ -35,7 +35,7 @@ sub index {
         # генерация темплейта
         $$paramess{'email_body'} = $self->render_to_string(
             'template'   => 'mail/reset_password_notification',
-            'email_text' => 'https://freee/reset/confirmation?code=' . $code
+            'email_text' => $self->{'app'}->{'defaults'}->{'config'}->{'url'} . '/reset/confirmation?code=' . $code
         );
         push @!, "can't render template" unless $$paramess{'email_body'};
     }

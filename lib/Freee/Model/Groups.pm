@@ -163,7 +163,7 @@ sub _insert_group {
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':label', $$data{'label'} );
         $sth->bind_param( ':name', $$data{'name'} );
-        $sth->bind_param( ':publish', ( $$data{'publish'} ? 1 : 0 ) );
+        $sth->bind_param( ':publish', ( $$data{'status'} ? 1 : 0 ) );
         $sth->execute();
         $sth->finish();
 

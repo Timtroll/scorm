@@ -1,8 +1,8 @@
 # изменить полепредмета предмет
 # my $id = $self->_toggle_discipline({
 # 'id'          => 1,                               # До 9 цифр, обязательное поле
-# 'fieldname'   => 'название поля',                 # publish, обязательное поле
-# 'publish'      => '1'                              # 0 или 1, обязательное поле
+# 'fieldname'   => 'название поля',                 # status, обязательное поле
+# 'status'      => '1'                              # 0 или 1, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -14,6 +14,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -26,13 +27,25 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод файлов
 my $data = {
    'description' => 'description',
     upload => { file => './t/Discipline/all_right.svg' }
 };
 diag "Insert media:";
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
@@ -49,15 +62,15 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 1,
-    'publish'    => 'ok'
+    'status'    => 'ok'
 };
 
-$t->post_ok( $host.'/discipline/add' => form => $data );
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -71,11 +84,11 @@ my $test_data = {
     1 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 0
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1
         },
         'comment' => 'All right:' 
@@ -85,22 +98,22 @@ my $test_data = {
     2 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'publish'
+            'fieldname' => 'status'
         },
         'result' => {
             'message'   => "_check_fields: 'value' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No value:'
     },
     3 => {
         'data' => {
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'    => 1,
         },
         'result' => {
             'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -111,31 +124,31 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'fieldname' didn't match required in check array",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'No fieldname:' 
     },
     5 => {
         'data' => {
             'id'        => 404,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 1
         },
         'result' => {
             'message'   => "can't update EAV",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     6 => {
         'data' => {
             'id'        => 0,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 1
         },
         'result' => {
             'message'   => "can't update EAV",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => '0 id:' 
     }
@@ -146,7 +159,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/toggle' => form => $data );
+    $t->post_ok( $host.'/discipline/toggle' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

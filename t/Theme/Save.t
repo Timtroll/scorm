@@ -10,7 +10,7 @@
 # 'keywords'    => 'ключевые слова и фразы',        # До 2048 символов, слова, разделенные запятыми, обязательное поле
 # 'url'         => 'url страницы',                  # До 256 символов, электронный адрес, обязательное поле
 # 'seo'         => 'дополнительное поле для seo',   # До 2048 букв, цифр и знаков, обязательное поле
-# 'publish'      => '1'                              # 0 или 1, обязательное поле
+# 'status'      => '1'                              # 0 или 1, обязательное поле
 # });
 use Mojo::Base -strict;
 
@@ -22,6 +22,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -33,6 +34,18 @@ clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
 
 # Ввод файлов
 my $data = {
@@ -57,7 +70,7 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 0,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 diag "Insert media:";
@@ -78,12 +91,12 @@ $data = {
     'url'         => 'https://test.com',
     'seo'         => 'дополнительное поле для seo',
     'parent'      => 1,
-    'publish'      => 1,
+    'status'      => 1,
     'attachment'  => '[1]'
 };
 my $result = {
     'id'        => 2,
-    'publish'    => 'ok'
+    'status'    => 'ok'
 };
 
 $t->post_ok( $host.'/theme/add' => form => $data );
@@ -108,12 +121,12 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 1,
-            'publish'      => 1,
+            'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -128,14 +141,14 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 1,
-            'publish'      => 0,
+            'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'Status 0:' 
+        'comment' => 'status 0:' 
     },
     3 => {
         'data' => {
@@ -152,9 +165,9 @@ my $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'No publish:' 
+        'comment' => 'No status:' 
     },
 
     # отрицательные тесты
@@ -172,7 +185,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'No required field:' 
     },
@@ -191,7 +204,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "file with id '404' doesn't exist",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Attachment doesn't exist:"
     },
@@ -210,7 +223,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'attachment' didn't match regular expression",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Validation error:"
     },
@@ -229,7 +242,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "_check_fields: 'attachment' didn't match regular expression",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Validation error:"
     },
@@ -248,7 +261,7 @@ my $test_data = {
         },
         'result' => {
             'message'   => "parent with id '404' doesn't exist",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Validation error:"
     },

@@ -83,7 +83,6 @@ sub add {
     my $self = shift;
 
     my ( $id, $data, $resp );
-    # push @!, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless ( @! ) {
         # проверка данных

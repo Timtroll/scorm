@@ -3,13 +3,14 @@
 #     "id"        => 1            - id обновляемого элемента ( >0 )
 #     "label"     => 'название'   - обязательно (название для отображения)
 #     "name",     => 'name'       - обязательно (системное название, латиница)
-#     "publish"    => 0 или 1      - активна ли группа
+#     "status"    => 0 или 1      - активна ли группа
 # });
 use Mojo::Base -strict;
 
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -28,20 +29,32 @@ clear_db();
 # Ввод фолдера
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # добавляем тестовый раздел настроек
 diag "Add folder:";
-$t->post_ok( $host.'/settings/add_folder' => form => {
+$t->post_ok( $host.'/settings/add_folder' => {token => $token} => form => {
     "name"      => 'folder',
     "label"     => 'folder',
     "parent"    => 0,
-    "publish"    => 1
+    "status"    => 1
 });
 diag "Add folder:";
-$t->post_ok( $host.'/settings/add' => form => {
+$t->post_ok( $host.'/settings/add' => {token => $token} => form => {
     "name"      => 'setting',
     "label"     => 'setting',
     "parent"    => 1,
-    "publish"    => 1
+    "status"    => 1
 });
 diag "";
 
@@ -53,13 +66,13 @@ my $test_data = {
             'name'        => 'name1',
             'label'       => 'label1',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'Status 0:' 
+        'comment' => 'status 0:' 
     },
     2 => {
         'data' => {
@@ -67,13 +80,13 @@ my $test_data = {
             'name'        => 'name2',
             'label'       => 'label2',
             'parent'      => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'Status 1:' 
+        'comment' => 'status 1:' 
     },
     3 => {
         'data' => {
@@ -84,9 +97,9 @@ my $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
-        'comment' => 'No publish:' 
+        'comment' => 'No status:' 
     },
 
     # отрицательные тесты
@@ -95,11 +108,11 @@ my $test_data = {
             'id'          => 1,
             'label'       => 'label3',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail'
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'name' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No name:' 
     },
@@ -108,11 +121,11 @@ my $test_data = {
             'id'          => 1,
             'name'        => 'name4',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'label'",
-            'publish'    => 'fail'
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'label' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No label:' 
     },
@@ -121,11 +134,11 @@ my $test_data = {
             'name'        => 'name6',
             'label'       => 'label6',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -134,11 +147,11 @@ my $test_data = {
             'id'          => 1,
             'name'        => 'name',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'label'",
-            'publish'    => 'fail',
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'label' = ''",
+            'status'    => 'fail',
         },
         'comment' => 'Same name:'
     },
@@ -148,11 +161,11 @@ my $test_data = {
             'name'        => 'name8',
             'label'       => 'label8',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/settings/save_folder _check_fields: empty field 'id', didn't match regular expression",
+            'status'    => 'fail'
         },
         'comment' => "Wrong id type:"
     },
@@ -162,11 +175,11 @@ my $test_data = {
             'name'        => 'name9',
             'label'       => 'label9',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Id do not exist:'
     },
@@ -176,11 +189,11 @@ my $test_data = {
             'name'        => 'name10',
             'label'       => 'label10',
             'parent'      => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "Id '2' is not a folder",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Save as not folder:'
     },
@@ -189,11 +202,11 @@ my $test_data = {
             'id'          => 2,
             'name'        => 'name10',
             'label'       => 'label10',
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'parent'",
-            'publish'    => 'fail'
+            'message'   => "Id '2' is not a folder",
+            'status'    => 'fail'
         },
         'comment' => 'Parent does not exist:'
     },
@@ -204,7 +217,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/settings/save_folder' => form => $data );
+    $t->post_ok( $host.'/settings/save_folder' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

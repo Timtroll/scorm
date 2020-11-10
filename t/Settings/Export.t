@@ -6,7 +6,7 @@
 #     "parent"      => 0,           - обязательно (должно быть натуральным числом)
 #     "label"       => 'название',  - обязательно (название для отображения)
 #     "name",       => 'name'       - обязательно (системное название, латиница)
-#     "publish",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
+#     "status",     => 1            - статус поля (1 - включено (ставится по умолчанию), 0 - выключено)
 # });
 
 # создание настройки
@@ -63,7 +63,7 @@ use Data::Dumper;
 use Data::Compare;
 use Mojo::JSON qw( decode_json );
 
-my ( $t, $host, $test_data, $route, $data, $result, $comment, $response, $time_create, $filename, $regular, $file_path, $cmd );
+my ( $t, $host, $test_data, $route, $data, $result, $comment, $response, $token, $time_create, $filename, $regular, $file_path, $cmd );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
@@ -75,6 +75,17 @@ clear_db();
 # Установка адреса
 $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
+
 $test_data = {
     ### отрицательный тест - экспорт пустой таблицы
     1 => {
@@ -84,7 +95,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'can\'t get data from settings',
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'export - empty table' 
     },
@@ -96,11 +107,11 @@ $test_data = {
             'name'      => 'test',
             'label'     => 'first test',
             'parent'    => 0,
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'add_folder - new folder' 
     },
@@ -119,11 +130,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'add - all fields:' 
     },
@@ -139,11 +150,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 3,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'add - no placeholder:' 
     },
@@ -159,11 +170,11 @@ $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 4,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'add - no type:' 
     },
@@ -177,7 +188,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 1,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'export - all right:' 
     },
@@ -188,7 +199,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'export - same description:' 
     },
@@ -198,8 +209,8 @@ $test_data = {
         'data' => {
         },
         'result' => {
-            'message'   => '_check_fields: didn\'t has required data in \'title\'',
-            'publish'    => 'fail'
+            'message'   => "/settings/export _check_fields: didn't has required data in 'title' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'export - no title:' 
     },
@@ -213,7 +224,7 @@ $test_data = {
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'del_export - all right:' 
     },
@@ -225,7 +236,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Id \'404\' doesn\'t exist',
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'del_export - id doesn\'t exist:' 
     },
@@ -233,8 +244,8 @@ $test_data = {
         'route' => '/settings/del_export',
         'data' => {},
         'result' => {
-            'message'   => '_check_fields: didn\'t has required data in \'id\'',
-            'publish'    => 'fail'
+            'message'   => "/settings/del_export _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'del_export - no id:' 
     },
@@ -247,7 +258,7 @@ $test_data = {
             'id'     => 1,
         },
         'result' => {
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'import - all right:' 
     },
@@ -259,7 +270,7 @@ $test_data = {
         },
         'result' => {
             'message'   => 'Id \'2\' doesn\'t exist',
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'import - id doesn\'t exist:' 
     },
@@ -267,8 +278,8 @@ $test_data = {
         'route' => '/settings/import',
         'data' => {},
         'result' => {
-            'message'   => '_check_fields: didn\'t has required data in \'id\'',
-            'publish'    => 'fail'
+            'message'   => "/settings/import _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'import - no id:' 
     }
@@ -284,7 +295,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $comment );
 
     # проверка подключения
-    $t->post_ok( $host . $route => form => $data );
+    $t->post_ok( $host . $route => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -303,10 +314,10 @@ $result = {
             "title"        => "description"
         }
     ],
-    'publish'    => 'ok'
+    'status'    => 'ok'
 };
 
-$t->post_ok( $host.'/settings/list_export' );
+$t->post_ok( $host.'/settings/list_export' => {token => $token} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
