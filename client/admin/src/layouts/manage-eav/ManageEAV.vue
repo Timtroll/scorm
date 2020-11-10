@@ -4,7 +4,7 @@
 
 <script>
 
-import * as d3 from '../../../public/d3/d3.v4.min'
+import * as d3 from '/public/d3/d3.v4.min'
 
 export default {
   name: 'ManageEAV',

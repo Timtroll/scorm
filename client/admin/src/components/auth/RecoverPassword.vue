@@ -74,7 +74,7 @@
                  v-model="confirmCode"
                  v-focus
                  @keyup="keyMove">
-        </div> 
+        </div>
       </div>
 
       <!--submit-->
