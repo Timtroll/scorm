@@ -558,11 +558,11 @@ sub register {
                 "add"           => [ 'required', qr/^[01]$/os, 1 ],
                 "edit"          => [ 'required', qr/^[01]$/os, 1 ],
                 "delete"        => [ 'required', qr/^[01]$/os, 1 ],
-                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'publish'], 6],
+                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'], 6],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 ################

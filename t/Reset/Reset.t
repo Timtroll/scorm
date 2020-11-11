@@ -94,7 +94,7 @@ $test_data = {
     1 => {
         'data' => '?'.'code=qwerty',
         'result' => {
-            'message'   => '/reset/confirmation _check_fields: \'code\' didn\'t match regular expression',
+            'message'   => "/reset/confirmation _check_fields: empty field 'code', didn't match regular expression",
             'status'    => 'fail'
         },
         'address' => '/reset/confirmation',
@@ -173,7 +173,7 @@ my $test_data = {
             'con_password'  => 'password'
         },
         'result' => {
-            'message'   => "/reset/reset _check_fields: 'code' didn't match regular expression",
+            'message'   => "/reset/reset _check_fields: empty field 'code', didn't match regular expression",
             'status'    => 'fail',
         },
         'address' => '/reset/reset',

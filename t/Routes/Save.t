@@ -44,7 +44,7 @@ my $data = {
     'label'     => 'test',
     'status'    => 1
 };
-$t->post_ok( $host.'/groups/add' => form => $data );
+$t->post_ok( $host.'/groups/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200 ) {
     diag "Can't connect";
     exit;
@@ -55,7 +55,7 @@ diag "";
 # получаем список роутов, чтобы произошло автоматическое заполнение доступных роутов в добаленной группе
 diag "Add Routes" ;
 $data = {'parent' =>  1};
-$t->post_ok( $host.'/groups/' => form => $data );
+$t->post_ok( $host.'/groups/' => {token => $token} => form => $data );
 
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -181,7 +181,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -195,7 +195,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'list'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'list' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No list:' 
@@ -209,7 +209,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'add'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'add' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No add:' 
@@ -223,7 +223,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'edit'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'edit' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No edit:' 
@@ -237,7 +237,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'delete'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'delete' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No delete:' 
@@ -251,7 +251,7 @@ my $test_data = {
             'delete'    => 1,
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'status'",
+            'message'   => "/routes/save _check_fields: didn't has required data in 'status' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No status:' 
@@ -266,7 +266,7 @@ my $test_data = {
             'status'    => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/routes/save _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
@@ -277,7 +277,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
     diag ( $$test_data{$test}{'comment'} );
-    $t->post_ok($host.'/routes/save' => form => $data )
+    $t->post_ok($host.'/routes/save' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

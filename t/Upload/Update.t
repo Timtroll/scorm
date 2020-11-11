@@ -14,7 +14,7 @@ BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
 
-my ( $t, $host, $picture_path, $data, $test_data, $result, $response, $url, $regular, $desc_path, $file_path, $description, $cmd );
+my ( $t, $host, $picture_path, $data, $test_data, $result, $response, $token, $url, $regular, $desc_path, $file_path, $description, $cmd );
 
 $t = Test::Mojo->new('Freee');
 
@@ -24,6 +24,17 @@ clear_db();
 
 # Устанавливаем адрес
 $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
 
 # Путь к директории с файлами
 $picture_path = './t/Upload/files/';
@@ -36,7 +47,7 @@ $data = {
 };
 
 # проверка работы запросов
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     done_testing();
@@ -130,7 +141,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка подключения
-    $t->post_ok($host.'/upload/update/' => form => $data )
+    $t->post_ok($host.'/upload/update/' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8');
 

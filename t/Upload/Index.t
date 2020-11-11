@@ -13,7 +13,7 @@ use Data::Dumper;
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $url, $size, $description );
+my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $token, $url, $size, $description );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
@@ -22,6 +22,17 @@ clear_db();
 
 # установка адреса
 $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
 
 # путь к директории с файлами
 $picture_path = './t/Upload/files/';
@@ -109,7 +120,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка подключения
-    $t->post_ok( $host.'/upload/' => form => $data );
+    $t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

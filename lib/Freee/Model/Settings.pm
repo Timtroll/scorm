@@ -381,6 +381,7 @@ sub _get_config {
             my ( $flag, $val, $value, @tmp, %hash);
             # преобразование из json
             $value = decode_json $$setting[ 1 ];
+            # $value = from_json $$setting[ 1 ];
             map {
                 # объект является массивом
                 if ( ref($_) eq 'ARRAY') {
@@ -408,6 +409,7 @@ sub _get_config {
         }
     }
     $settings = $set;
+    warn Dumper( $settings );
 }
 
 # очистка дефолтных настроек

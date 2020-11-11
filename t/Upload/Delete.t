@@ -12,7 +12,7 @@ use Data::Dumper;
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $data, $test_data, $result, $response, $url, $regular, $file_path, $desc_path );
+my ( $t, $host, $picture_path, $data, $test_data, $result, $response, $token, $url, $regular, $file_path, $desc_path );
 $t = Test::Mojo->new('Freee');
 
 # включение режима работы с тестовой базой и очистка таблицы
@@ -21,6 +21,17 @@ clear_db();
 
 # установка адреса
 $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
 
 # путь к директории с файлами
 $picture_path = './t/Upload/files/';
@@ -33,7 +44,7 @@ $data = {
 };
 
 # проверка работы запросов
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -43,7 +54,7 @@ $t->content_type_is('application/json;charset=UTF-8');
 # получение url загруженного файла
 $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 $url = $$response{'url'};
-
+warn Dumper(  $t->app->{'settings'} );
 # проверка url, получение имени файла и расширения
 $regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . '.)(' . '[\w]+' . ')$';
 ok( $url =~ /$regular/, "Url is correct" );
@@ -75,7 +86,7 @@ $test_data = {
     3 => {
         'data' => {},
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/upload/delete _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -85,7 +96,7 @@ $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/upload/delete _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
@@ -99,7 +110,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка запроса и ответа
-    $t->post_ok($host.'/upload/delete/' => form => $data )
+    $t->post_ok($host.'/upload/delete/' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

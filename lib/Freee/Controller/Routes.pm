@@ -127,6 +127,11 @@ sub save {
         # проверка существования обновляемой строки
         unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'}) ) {
+
+                # смена поля status на publish
+                $$data{'publish'} = $$data{'status'};
+                delete $$data{'status'};
+
                 # обновление данных группы
                 $id = $self->model('Routes')->_update_route( $data );
                 push @!, "Could not update Route named '$$data{'name'}'" unless $id;
@@ -162,6 +167,7 @@ sub toggle {
 
     unless ( @! ) {
         $$data{'table'} = 'routes';
+        $$data{'fieldname'} = 'publish';
 
         # проверка существования элемента для изменения
         unless ($self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'})) {

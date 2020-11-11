@@ -40,7 +40,7 @@ my $token = $response->{'data'}->{'token'};
 #  Вводим группу родителя
 diag "Create group: ";
 my $data = {'name' => 'test', 'label' => 'test', 'status' => 1};
-$t->post_ok( $host.'/groups/add' => form => $data );
+$t->post_ok( $host.'/groups/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't create group");
     last;
@@ -49,7 +49,7 @@ $t->content_type_is('application/json;charset=UTF-8');
 diag "";
 
 diag "Get list groups and create routes: ";
-$t->post_ok( $host.'/groups/' )
+$t->post_ok( $host.'/groups/' => {token => $token}  )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
 diag "";
@@ -71,14 +71,14 @@ my $test_data = {
             'parent'    => 'mistake',
         },
         'result' => {
-            'message'   => "_check_fields: 'parent' didn't match regular expression",
+            'message'   => "/routes _check_fields: empty field 'parent', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong field type:' 
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'parent'",
+            'message'   => "Routes for Group id '0' is not exists",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -90,7 +90,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $result = $$test_data{$test}{'result'};
 
     diag ( $$test_data{$test}{'comment'} );
-    $t->post_ok($host.'/routes/' => form => $data )
+    $t->post_ok($host.'/routes/' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
@@ -98,7 +98,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 };
 
 diag "All right:";
-my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
+my $answer = $t->post_ok( $host.'/routes/' => {token => $token} => form => {'parent' => 1} )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
 

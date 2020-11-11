@@ -42,7 +42,7 @@ my $data = {
     'label'     => 'test',
     'status'    => 1
 };
-$t->post_ok( $host.'/groups/add' => form => $data );
+$t->post_ok( $host.'/groups/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -53,7 +53,7 @@ diag "";
 # Импорт доступных роутов
 diag "Add Routes";
 $data = {'parent' =>  1};
-$t->post_ok( $host.'/groups/' => form => $data );
+$t->post_ok( $host.'/groups/' => {token => $token} => form => $data );
 
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
@@ -192,7 +192,7 @@ my $test_data = {
             'fieldname' => 'status'
         },
         'result' => {
-            'message'   => "_check_fields: 'value' didn't match regular expression",
+            'message'   => "/routes/toggle _check_fields: didn't has required data in 'value' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No value:'
@@ -203,7 +203,7 @@ my $test_data = {
             'value'     => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/routes/toggle _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
@@ -214,7 +214,7 @@ my $test_data = {
             'value'     => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'fieldname' didn't match required in check array",
+            'message'   => "/routes/toggle _check_fields: didn't has required data in 'fieldname' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No fieldname:' 
@@ -238,7 +238,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/routes/toggle _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -251,7 +251,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/routes/toggle' => form => $data )
+    $t->post_ok($host.'/routes/toggle' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );
