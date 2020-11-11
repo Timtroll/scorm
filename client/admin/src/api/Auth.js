@@ -12,7 +12,21 @@ export default {
   recover (params) {
     return Api()({
       url:    '/reset_password/send',
-      params: params
+      params: {email: params}
+    })
+  },
+
+  confirm (params) {
+    return Api()({
+      url:    '/reset_password/confirmation',
+      params: {code: params}
+    })
+  },
+
+  newPassword (params) {
+    return Api()({
+      url:    '/reset_password/reset',
+      params: {password: params}
     })
   },
 
@@ -25,14 +39,14 @@ export default {
 
   logout () {
     return Api()({
-      url:    'auth/logout',
+      url: 'auth/logout'
     })
   },
 
   // получить дерево
   getGroup () {
     return Api()({
-      url:    'groups/',
+      url: 'groups/'
     })
-  },
+  }
 }

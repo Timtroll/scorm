@@ -3,6 +3,7 @@
 
   <div class="uk-container ">
 
+
     <!--recover-->
     <form class="pos-login">
 
@@ -14,70 +15,44 @@
       </div>
 
       <div class="uk-margin-small uk-text-center uk-text-large"
-           v-text="$t('recover.title')"></div>
+           v-text="$t('newPassword.title')"></div>
 
-      <!--email-->
+      <!--password-->
       <div class="uk-margin-small">
         <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip"
                       uk-icon="icon: user"></span>
           <input class="uk-input"
                  :disabled="status === 'loading'"
-                 type="email"
-                 :placeholder="$t('recover.fields.email')"
-                 autocomplete="email"
-                 v-model="user.email"
+                 type="password"
+                 :placeholder="$t('newPassword.fields.password')"
+                 v-model="user.password"
                  v-focus
                  @keyup="keyMove">
         </div>
       </div>
 
-      <!--submit-->
-      <div class="uk-margin"
-           v-if="validateUser">
-        <button type="submit"
-                :disabled="status === 'loading'"
-                class="uk-width-1-1 uk-button uk-button-default"
-                @click.prevent="recover">
-                  <span uk-spinner="ratio: .6"
-                        v-if="status==='loading'"></span>
-          <span v-else
-                v-text="$t('recover.fields.submit')"></span>
-        </button>
-      </div>
-
-    </form>
-
-    <!--confirm code-->
-    <form class="pos-login"
-          v-if="showConfirmCode">
-
-      <div class="uk-margin-small uk-text-center uk-text-large"
-           v-text="$t('confirm.title')"></div>
-
-      <!--email-->
+      <!--password-->
       <div class="uk-margin-small">
         <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip"
                       uk-icon="icon: user"></span>
           <input class="uk-input"
                  :disabled="status === 'loading'"
-                 type="email"
-                 :placeholder="$t('confirm.fields.text')"
-                 autocomplete="email"
-                 v-model="confirmCode"
+                 type="password"
+                 :placeholder="$t('newPassword.fields.repeatPassword')"
+                 v-model="user.repeatPassword"
                  v-focus
                  @keyup="keyMove">
         </div>
       </div>
 
       <!--submit-->
-      <div class="uk-margin"
-           v-if="validateUser">
+      <div class="uk-margin">
         <button type="submit"
                 :disabled="status === 'loading'"
                 class="uk-width-1-1 uk-button uk-button-default"
-                @click.prevent="recover">
+                @click.prevent="submit">
                   <span uk-spinner="ratio: .6"
                         v-if="status==='loading'"></span>
           <span v-else
@@ -101,7 +76,7 @@
 
 <script>
 export default {
-  name: 'RecoverPassword',
+  name: 'NewPassword',
 
   components: {
     KeyAnimations: () => import(/* webpackChunkName: "KeyAnimations" */ './KeyAnimations')
@@ -119,16 +94,12 @@ export default {
 
   data () {
     return {
-      direction:       false,
-      motion:          false,
-      confirmCode:     null,
-      showConfirmCode: false,
-      user:            {
-        email: ''
+      direction:  false,
+      motion:     false,
+      user:       {
+        password:       null,
+        repeatPassword: null
       },
-
-      emailRegExp: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-
       background: {
         default: 'pos-login-background',
         loading: 'uk-background-danger'
@@ -138,10 +109,9 @@ export default {
 
   computed: {
 
-    validateUser () {
-      return this.emailRegExp.test(this.user.email)
+    validPassword () {
+      return this.user.repeatPassword === this.user.password
     },
-
     status () {
       return this.$store.getters.authStatus
     }
@@ -150,11 +120,11 @@ export default {
   methods: {
 
     // авторизация
-    recover () {
-      if (this.validateUser) {
-        this.$store.dispatch('recover', this.user.email)
+    submit () {
+      if (this.validPassword) {
+        this.$store.dispatch('confirm', this.user.password)
             .then(() => this.$router.replace({
-              name: 'ConfirmCode'
+              name: 'Login'
             }))
             .catch((err) => {})
       }

@@ -20,9 +20,17 @@
     },
     "title":  "Напомнить пароль"
   },
+  "newPassword":  {
+    "fields": {
+      "password":       "Новый пароль",
+      "repeatPassword": "Повторите новый пароль",
+      "submit":         "Напомнить"
+    },
+    "title":  "Новый пароль"
+  },
   "confirm":      {
     "fields": {
-      "text":  "Код",
+      "text":   "Код",
       "submit": "Отправить"
     },
     "title":  "Код подтверждения"
