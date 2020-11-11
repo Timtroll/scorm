@@ -1,7 +1,7 @@
 <template>
   <!--login / recover form-->
 
-  <div class="uk-container ">
+  <div class="uk-container">
 
     <!--recover-->
     <form class="pos-login">
@@ -14,57 +14,17 @@
       </div>
 
       <div class="uk-margin-small uk-text-center uk-text-large"
-           v-text="$t('recover.title')"></div>
-
-      <!--email-->
-      <div class="uk-margin-small">
-        <div class="uk-inline">
-                <span class="uk-form-icon uk-form-icon-flip"
-                      uk-icon="icon: user"></span>
-          <input class="uk-input"
-                 :disabled="status === 'loading'"
-                 type="email"
-                 :placeholder="$t('recover.fields.email')"
-                 autocomplete="email"
-                 v-model="user.email"
-                 v-focus
-                 @keyup="keyMove">
-        </div>
-      </div>
-
-      <!--submit-->
-      <div class="uk-margin"
-           v-if="validateUser">
-        <button type="submit"
-                :disabled="status === 'loading'"
-                class="uk-width-1-1 uk-button uk-button-default"
-                @click.prevent="recover">
-                  <span uk-spinner="ratio: .6"
-                        v-if="status==='loading'"></span>
-          <span v-else
-                v-text="$t('recover.fields.submit')"></span>
-        </button>
-      </div>
-
-    </form>
-
-    <!--confirm code-->
-    <form class="pos-login"
-          v-if="showConfirmCode">
-
-      <div class="uk-margin-small uk-text-center uk-text-large"
            v-text="$t('confirm.title')"></div>
 
-      <!--email-->
+      <!--code-->
       <div class="uk-margin-small">
         <div class="uk-inline">
                 <span class="uk-form-icon uk-form-icon-flip"
                       uk-icon="icon: user"></span>
           <input class="uk-input"
                  :disabled="status === 'loading'"
-                 type="email"
+                 type="text"
                  :placeholder="$t('confirm.fields.text')"
-                 autocomplete="email"
                  v-model="confirmCode"
                  v-focus
                  @keyup="keyMove">
@@ -73,11 +33,11 @@
 
       <!--submit-->
       <div class="uk-margin"
-           v-if="validateUser">
+           v-if="confirmCode && confirmCode.length">
         <button type="submit"
                 :disabled="status === 'loading'"
                 class="uk-width-1-1 uk-button uk-button-default"
-                @click.prevent="recover">
+                @click.prevent="confirm">
                   <span uk-spinner="ratio: .6"
                         v-if="status==='loading'"></span>
           <span v-else
@@ -101,7 +61,7 @@
 
 <script>
 export default {
-  name: 'RecoverPassword',
+  name: 'ConfirmCode',
 
   components: {
     KeyAnimations: () => import(/* webpackChunkName: "KeyAnimations" */ './KeyAnimations')
@@ -109,7 +69,7 @@ export default {
 
   metaInfo () {
     return {
-      title:         this.$t('recover.title'),
+      title:         this.$t('confirm.title'),
       titleTemplate: '%s - Scorm',
       htmlAttrs:     {
         lang: this.$t('app.lang')
@@ -119,17 +79,10 @@ export default {
 
   data () {
     return {
-      direction:       false,
-      motion:          false,
-      confirmCode:     null,
-      showConfirmCode: false,
-      user:            {
-        email: ''
-      },
-
-      emailRegExp: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-
-      background: {
+      direction:   false,
+      motion:      false,
+      confirmCode: null,
+      background:  {
         default: 'pos-login-background',
         loading: 'uk-background-danger'
       }
@@ -137,10 +90,6 @@ export default {
   },
 
   computed: {
-
-    validateUser () {
-      return this.emailRegExp.test(this.user.email)
-    },
 
     status () {
       return this.$store.getters.authStatus
@@ -150,14 +99,13 @@ export default {
   methods: {
 
     // авторизация
-    recover () {
-      if (this.validateUser) {
-        this.$store.dispatch('recover', this.user.email)
-            .then(() => this.$router.replace({
-              name: 'ConfirmCode'
-            }))
-            .catch((err) => {})
-      }
+    confirm () {
+
+      this.$store.dispatch('confirm', this.confirmCode)
+          .then(() => this.$router.replace({
+            name: 'RecoverPassword'
+          }))
+          .catch((err) => {})
     },
 
     // анимация при вводе логина или пароля
