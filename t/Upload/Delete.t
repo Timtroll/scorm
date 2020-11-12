@@ -8,6 +8,8 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw( decode_json );
 use Data::Dumper;
+use lib "$FindBin::Bin/../../lib";
+use common;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -54,9 +56,9 @@ $t->content_type_is('application/json;charset=UTF-8');
 # получение url загруженного файла
 $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 $url = $$response{'url'};
-warn Dumper(  $t->app->{'settings'} );
+
 # проверка url, получение имени файла и расширения
-$regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . '.)(' . '[\w]+' . ')$';
+$regular = '^' . $settings->{'site_url'} . $settings->{'upload_url_path'} . '([\w]{48}' . '.)(' . '[\w]+' . ')$';
 ok( $url =~ /$regular/, "Url is correct" );
 diag "";
 
@@ -118,11 +120,11 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     # проверка удаления файла и его описания
     if ( $$result{'status'} eq 'ok' ) {
         # путь к загруженному файлу
-        $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . $2;
+        $file_path = $settings->{'upload_local_path'} . $1 . $2;
         ok( !-e $file_path, "file was deleted");
 
         # путь к описанию файла
-        $desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . $t->app->{'settings'}->{'desc_extension'};
+        $desc_path = $settings->{'upload_local_path'} . $1 . $settings->{'desc_extension'};
         ok( !-e $desc_path, "description was deleted");
     }
     diag "";

@@ -32,7 +32,6 @@ sub index {
 
         # путь файла
         $$data{'path'} = 'local';
-
         # присвоение пустого значения вместо null
         $$data{'description'} = '' unless ( $$data{'description'} );
 

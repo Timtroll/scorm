@@ -7,8 +7,11 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw( decode_json );
+use File::Slurp::Unicode qw( read_file );
 use Data::Compare;
 use Data::Dumper;
+use lib "$FindBin::Bin/../../lib";
+use common;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -60,13 +63,13 @@ $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'}
 
 # проверка url, получение имени файла и расширения
 $url = $$response{'url'};
-$regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . ').(' . '[\w]+' . ')$';
+$regular = '^' . $settings->{'site_url'} . $settings->{'upload_url_path'} . '([\w]{48}' . ').(' . '[\w]+' . ')$';
 ok( $url =~ /$regular/, "Url is correct" );
 
 # путь до загруженого файла
-$file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $2;
+$file_path = $settings->{'upload_local_path'} . $1 . '.' . $2;
 # путь до описания загруженного файла
-$desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $t->app->{'settings'}->{'desc_extension'};
+$desc_path = $settings->{'upload_local_path'} . $1 . '.' . $settings->{'desc_extension'};
 
 diag "";
 
@@ -116,7 +119,7 @@ $test_data = {
             'description' => 'description'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/upload/update _check_fields: didn\'t has required data in \'id\' = \'\'",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -127,7 +130,7 @@ $test_data = {
             'description' => 'description'
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/upload/update _check_fields: empty field \'id\', didn\'t match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 

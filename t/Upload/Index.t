@@ -6,9 +6,12 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use File::Slurp::Unicode qw( read_file );
 use Mojo::JSON qw( decode_json );
 use Data::Compare;
 use Data::Dumper;
+use lib "$FindBin::Bin/../../lib";
+use common;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -73,7 +76,7 @@ $test_data = {
                     'description' => 'description'
                    },
         'result' => {
-                    'message'   => "_check_fields: didn't has required data in 'upload'",
+                    'message'   => "/upload _check_fields: didn\'t has required file data in \'upload\'",
                     'status'    => 'fail'
         },
         'comment' => 'empty file:' 
@@ -84,7 +87,7 @@ $test_data = {
                         upload => { file => $picture_path . 'large_file.jpg' }
                     },
         'result' => {
-                        'message'   => '_check_fields: file is too large',
+                        'message'   => '/upload _check_fields: file is too large',
                         'status'    => 'fail'
         },
         'comment' => 'file is too large:' 
@@ -95,7 +98,7 @@ $test_data = {
                         upload => { file => $picture_path . 'no_extension' }
                     },
         'result' => {
-                        'message'   => "_check_fields: can't read extension",
+                        'message'   => "/upload _check_fields: can\'t read extension",
                         'status'    => 'fail'
         },
         'comment' => 'no extension:' 
@@ -106,7 +109,7 @@ $test_data = {
                         upload => { file => $picture_path . 'wrong_extension.wrong_extension' }
                     },
         'result' => {
-                        'message'   => '_check_fields: extension wrong_extension is not valid',
+                        'message'   => '/upload _check_fields: extension wrong_extension is not valid',
                         'status'    => 'fail'
         },
         'comment' => 'wrong extension:' 
@@ -139,23 +142,24 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
         # составление списка возможных расширений
         $extension = '(';
-        foreach ( keys %{$t->app->{'settings'}->{'valid_extensions'}} ) {
+        foreach ( keys %{$settings->{'valid_extensions'}} ) {
             $extension = $extension . $_ . '|';
         }
         $extension =~ s/\|$/)/;
 
         # регулярное выражение для проверки url
-        $regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . ').(' . $extension . ')$';
+        $regular = '^' . $settings->{'site_url'} . $settings->{'upload_url_path'} . '([\w]{48}' . ').(' . $extension . ')$';
         ok( $url =~ /$regular/, "Url is correct" );
 
         # проверка размера загруженного файла
-        $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $2;
+        $file_path = $settings->{'upload_local_path'} . $1 . '.' . $2;
         ok( -s $file_path == $size, "Download was successful");
 
         # проверка содержимого файла описания
-        $desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $t->app->{'settings'}->{'desc_extension'};
+        $desc_path = $settings->{'upload_local_path'} . $1 . '.' . $settings->{'desc_extension'};
         $description = read_file( $desc_path );
         $description = decode_json $description;
+
         ok( 
             $$description{'description'} eq $$data{'description'} &&
             $$description{'mime'} eq $$result{'mime'} &&

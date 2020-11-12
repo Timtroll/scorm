@@ -409,7 +409,6 @@ sub _get_config {
         }
     }
     $settings = $set;
-    warn Dumper( $settings );
 }
 
 # очистка дефолтных настроек

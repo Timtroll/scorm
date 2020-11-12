@@ -63,6 +63,7 @@ sub register {
             next unless keys %{ $$vfields{$url_for} };
 
             my $param = $self->param($field);
+
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
             # проверка длины
@@ -89,6 +90,9 @@ sub register {
                         last;
                     }
                 }
+            }
+            elsif ( $required eq '' && $param eq '' ) {
+                next;
             }
             # проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
@@ -129,9 +133,6 @@ sub register {
             elsif ( $required eq 'file_required' ) {
                 push @!, "$url_for _check_fields: didn't has required file data in '$field'";
                 last;
-            }
-            elsif ( ! exists $exclude_fields{$field} ) {
-                next;
             }
 
             # проверка для роута toggle по списку значений
