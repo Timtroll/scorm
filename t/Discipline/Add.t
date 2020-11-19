@@ -18,11 +18,12 @@ BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
 use Mojo::JSON qw( decode_json );
+use Test qw( reset_scorm_test );
 
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
-
+use DBI;
 use Data::Dumper;
 
 my $t = Test::Mojo->new('Freee');
@@ -33,6 +34,8 @@ clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
+
+reset_scorm_test();
 
 # получение токена для аутентификации
 $t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
@@ -45,150 +48,16 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод файлов
-my $data = {
-   'description' => 'description',
-    upload => { file => './t/Discipline/all_right.svg' }
-};
-diag "Insert media:";
-$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
-
 my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'name'        => 'Предмет1',
-            'label'       => 'Предмет 1',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'status'      => 1,
-            'attachment'  => '[1]'
         },
         'result' => {
             'id'        => 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
-    },
-    2 => {
-        'data' => {
-            'name'        => 'Предмет2',
-            'label'       => 'Предмет 2',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'status'      => 0,
-            'attachment'  => '[1]'
-        },
-        'result' => {
-            'id'        => 2,
-            'status'    => 'ok'
-        },
-        'comment' => 'status 0:' 
-    },
-    3 => {
-        'data' => {
-            'name'        => 'Предмет3',
-            'label'       => 'Предмет 3',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'attachment'  => '[1]'
-        },
-        'result' => {
-            'id'        => 3,
-            'status'    => 'ok'
-        },
-        'comment' => 'No status:' 
-    },
-
-    # отрицательные тесты
-    4 => {
-        'data' => {
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'attachment'  => '[1]'
-        },
-        'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
-            'status'    => 'fail',
-        },
-        'comment' => 'No required field:' 
-    },
-    5 => {
-        'data' => {
-            'name'        => 'Предмет',
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'attachment'  => '[1,404]'
-        },
-        'result' => {
-            'message'   => "file with id '404' doesn't exist",
-            'status'    => 'fail',
-        },
-        'comment' => "Attachment doesn't exist:"
-    },
-    6 => {
-        'data' => {
-            'name'        => 'Предмет',
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'attachment'  => 'error'
-        },
-        'result' => {
-            'message'   => "_check_fields: 'attachment' didn't match regular expression",
-            'status'    => 'fail',
-        },
-        'comment' => "Validation error:"
-    },
-    7 => {
-        'data' => {
-            'name'        => 'Предмет',
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 404,
-            'attachment'  => '[1]'
-        },
-        'result' => {
-            'message'   => "parent with id '404' doesn't exist in discipline",
-            'status'    => 'fail',
-        },
-        'comment' => "No parent:"
     }
 };
 

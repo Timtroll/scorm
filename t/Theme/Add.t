@@ -52,7 +52,7 @@ my $data = {
     upload => { file => './t/Theme/all_right.svg' }
 };
 diag "Insert media:";
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
@@ -73,7 +73,7 @@ $data = {
     'attachment'  => '[1]'
 };
 diag "Insert media:";
-$t->post_ok( $host.'/discipline/add' => form => $data );
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
@@ -236,7 +236,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/theme/add' => form => $data );
+    $t->post_ok( $host.'/theme/add' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
