@@ -83,9 +83,10 @@ sub mojo_do {
 sub delete_db_test {
     my $self = shift;
 
+    my $res = `perl starting.sh stop`;
     my $delete_db = 'DROP database scorm_test';
     my $sth = $self->{dbh}->prepare( $delete_db );
-    my $res = $sth->execute();
+    $res = $sth->execute();
     $sth->finish();
 
     $res = 0 if $res == '0E0';
@@ -121,8 +122,7 @@ sub connect_db {
     update_config( $config_update, $main );
 
     my $db = $config->{'dbs'}->{'databases'}->{$main};
-warn Dumper( $config_update );
-warn Dumper( $db );
+
     # редактирование параметра обработки ошибок
     if (
         $db &&
@@ -131,17 +131,16 @@ warn Dumper( $db );
     ) {
         $db->{'options'}->{'RaiseError'} = 1;
     }
-my @connect = (
-    $db->{'dsn'},
-    $db->{'username'},
-    $db->{'password'},
-    $db->{'options'}
-);
-warn Dumper( \@connect );
+    my @connect = (
+        $db->{'dsn'},
+        $db->{'username'},
+        $db->{'password'},
+        $db->{'options'}
+    );
+
     $self->{dbh} = DBI->connect(
         @connect
     );
-warn( DBI->errstr );
     if ( DBI->errstr ) {
         logging( "connection to database doesn't work:" . DBI->errstr );
         exit;
@@ -222,27 +221,28 @@ sub load_defaults {
     # }
 
     # добавляем админа
-    my $salt = $config->{'secrets'}->[0];
-    add_user(
-    $self,
-    {
-        'email'     => 'admin@admin',
-        'login'     => $config_update->{'login'},
-        'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    my $salt = $config_update->{'secrets'}->[0];
 
-        'user_id'   => 1,
-        'group_id'  => 1,
+    add_user( $self,
+        {
+            'email'     => 'admin@admin',
+            'login'     => $config_update->{'login'},
+            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-        'title'     => 'admin',
-        'User' => {
-            'place'         => "scorm",
-            'country'       => "RU",
-            'birthday'      => "19950803 00:00:00",
-            'patronymic'    => "admin",
-            'name'          => "admin",
-            'surname'       => "admin"
+            'user_id'   => 1,
+            'group_id'  => 1,
+
+            'title'     => 'admin',
+            'User' => {
+                'place'         => "scorm",
+                'country'       => "RU",
+                'birthday'      => "19950803 00:00:00",
+                'patronymic'    => "admin",
+                'name'          => "admin",
+                'surname'       => "admin"
+            }
         }
-    });
+    );
 
     # добавляем учителя
     add_user(
@@ -345,23 +345,49 @@ sub write_config {
 
 # заполнение параметров конфига
 sub update_config {
-    my ( $config_update, $main ) = @_;
+    my ( $config_update ) = @_;
 
     $$config{ 'url' }                                           = $$config_update{ 'url' }                   if $$config_update{ 'url' };
+    
+    push @{ $$config_update{ 'secrets' } }, generate_secret(40);
+    $$config{ 'secrets' }                                       = $$config_update{ 'secrets' };
 
     $$config{ 'expires' }                                       = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
     $$config{ 'debug' }                                         = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
     $$config{ 'export_settings_path' }                          = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
+    $$config{ 'host' }                                          = $$config_update{ 'host' }                  if $$config_update{ 'host' };
 
-    $config->{'dbs'}->{'databases'}->{$main}->{'dsn'} =
-        $config_update->{'dbs'}->{'databases'}->{$main}->{'dsn'} if $config_update->{'dbs'}->{'databases'}->{$main}->{'dsn'};
-    $config->{'dbs'}->{'databases'}->{$main}->{'username'} =
-        $config_update->{'dbs'}->{'databases'}->{$main}->{'username'} if $config_update->{'dbs'}->{'databases'}->{$main}->{'username'};
-    $config->{'dbs'}->{'databases'}->{$main}->{'password'} =
-        $config_update->{'dbs'}->{'databases'}->{$main}->{'password'} if $config_update->{'dbs'}->{'databases'}->{$main}->{'password'};
-    $config->{'dbs'}->{'databases'}->{$main}->{'options'}  =
-        $config_update->{'dbs'}->{'databases'}->{$main}->{'options'} if $config_update->{'dbs'}->{'databases'}->{$main}->{'options'};
+    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'};
+    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'};
+    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'};
+    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'}  =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'};
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'};
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'username'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'username'};
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'} =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'password'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'password'};
+    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}  =
+        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'options'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'options'};
+
 }
+
+# генерация строки из случайных букв и цифр
+# my $string = generate_secret( length );
+# возвращается строка
+sub generate_secret {
+    my $length = shift;
+
+    return unless $length =~ /^\d+$/;
+
+    my @chars = ( "A".."Z", "a".."z", 0..9 );
+    my $string = join("", @chars[ map { rand @chars } ( 1 .. $length ) ]);
+
+};
 
 sub helpme {
     my $swith = shift;
@@ -413,6 +439,8 @@ our $config_update = {
 }
 
 sub reset_scorm_test {
+    my ( $self, $config_update ) = @_;
+
     # остановка mojo
     mojo_do( 'stop' );
 
@@ -437,21 +465,21 @@ sub reset_scorm_test {
 
     if ( check_db( $self, 'scorm_test' ) ) {
         # удаление базы
-        delete_db_test();
+        delete_db_test( $self );
     }
 
     # заполнение параметров конфига для тестовой базы ---
-    create_db( '/_create_test_db.sql' );
-    connect_db( 'pg_main_test' );
+    create_db( $self, '/_create_test_db.sql' );
+    connect_db( $self, $config_update, 'pg_main_test' );
 
     # запуск скриптов, создающих таблицы
-    create_tables();
+    create_tables( $self );
 
     # старт mojo
     mojo_do( 'start' );
 
     # загрузка дефолтных значений
-    load_defaults();
+    load_defaults( $self, $config_update );
 }
 
 1;
