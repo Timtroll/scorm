@@ -1,3 +1,6 @@
+# Установка всех нужных модулей:
+# cpanm --installdeps .
+
 requires 'Beanstalk::Client';
 requires 'Carp';
 requires 'DDP';
@@ -10,6 +13,7 @@ requires 'Email::MIME';
 requires 'FindBin';
 requires 'File::Slurp::Unicode';
 requires 'HTML::Strip';
+requires 'IO::All';
 requires 'IO::Socket::SSL';
 requires 'JSON';
 requires 'Mojolicious::Plugin::Config';

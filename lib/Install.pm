@@ -15,11 +15,11 @@ use Data::Dumper;
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
     &logging &check_db &delete_db_test &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
-    &write_config &update_config &helpme &reset_scorm_test $path_log $path_sql $path_conf $self $config
+    &write_config &update_config &reset_scorm_test $path_log $path_sql $path_conf $self $config
 );
 our @EXPORT_OK = qw(
     &logging &check_db &delete_db_test &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user
-    &write_config &update_config &helpme &reset_scorm_test $path_log $path_sql $path_conf $self $config
+    &write_config &update_config &reset_scorm_test $path_log $path_sql $path_conf $self $config
 );
 
 our ( $path_log, $path_sql, $path_conf, $self, $config );
@@ -35,12 +35,17 @@ $path_conf = './freee.conf';
 # логирование ошибки
 # logging( "комментарий и текст ошибки" );
 sub logging {
-    my ( $logdata, $path_log ) = @_;
+    my ( $logdata ) = @_;
     my $log;
-
+print "$path_log\n";
     if ( $logdata ) {
         warn "$logdata\n";
-        open( $log, '>>', $path_log ) or warn "Can't open log file! $!";
+        if ( -e $path_log) {
+            open( $log, '>>', $path_log ) or warn "Can't open log file! $!";
+        }
+        else {
+            open( $log, '>', $path_log ) or warn "Can't open log file! $!";
+        }
             print $log "$logdata\n";
         close( $log );
     }
@@ -388,55 +393,6 @@ sub generate_secret {
     my $string = join("", @chars[ map { rand @chars } ( 1 .. $length ) ]);
 
 };
-
-sub helpme {
-    my $swith = shift;
-
-    my %messages = (
-        'help' => q~
-You can use these options:
-    --path='./temp_freee.conf   - path to default data
-    --mode=test                 - create test DB if need
-    --rebuild=1/0               - create DB & config if '1', else create configuration only
-    --start=test                - start mojo with test DB if need (default - starting with man DB)
-~,
-        'need_config' => q~
-Default data config muse like this:
-
-package temp_freee;
-
-use Exporter;
-our @ISA = 'Exporter';
-our @EXPORT = qw( $config_update );
-
-our $config_update = {
-    # Данные добавляемого админа
-    'debug'                 => 1,
-    'test'                  => 0,
-    'login'                 => 'login',
-    'password'              => 'password',
-
-    # данные доступа к базе postgres
-    'pglogin'               => 'loginPG',
-    'pgpassword'            => 'passwordPG',
-
-    # данные доступа к базам данных
-    'expires'               => '6000',
-    'pg_main_username'      => 'username1',
-    'pg_main_password'      => 'password1',
-    'pg_main_test_username' => 'username2',
-    'pg_main_test_password' => 'password2,
-    'export_settings_path'  => '/home/<user>/settings'
-};~,
-    );
-
-    if ($swith && exists $messages{$swith} ) {
-        warn $messages{$swith};
-    }
-    else {
-        warn 'Message was not defined';
-    }
-}
 
 sub reset_scorm_test {
     my ( $self, $config_update ) = @_;
