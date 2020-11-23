@@ -29,8 +29,10 @@ use Freee::Mock::Install;
 
 use DDP;
 
-my ( $path_sql, $path_conf, $path_log, $self, $check_scorm, $config_update, @bd_array );
-$config_update = 1;
+# binmode(STDOUT);
+# binmode(STDERR);
+
+my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, @bd_array );
 
 # чтение параметров
 my %options;
@@ -61,13 +63,19 @@ p $command;
 
 # читаем дефолтный конфиг
 $config_update < io $options{'path'};
-my $config_update = { eval $config_update }->{'config_update'};
+$config_update = { eval $config_update }->{'config_update'};
 helpme('need_config') if ( $@ );
+
+# генерируем secrets
+push @{$config_update->{'secrets'}}, generate_secret( 40 );
+
+# Соединяеся с базой для создания/удаления баз
+$self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
 
 # скрипт запущен как 
 my %command = (
     # ./script/install.pl mode=all start=test rebuild=1 path=../temp_freee.conf
-    'all1test' => \&all_one_test,
+    'all1test' => \&all_one_test(),
     # ./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf
     'scorn1test' => \&scorn_one_test,
     # ./script/install.pl mode=scorm start=test rebuild=1 path=../temp_freee.conf
@@ -95,10 +103,81 @@ my %command = (
     'scorm0scorm' => \&scorm_scorm,
 );
 
+warn 'All setting required';
 
+exit;
+
+# ./script/install.pl mode=all start=test rebuild=1 path=../temp_freee.conf
+# --rebuild=1   - создание базы и конфигурации (1)
+# --mode=all    - создание баз данных. all - все пересоздаются
+# --start=test  - по окончании работы скрипта, старт mojo с базой test
+sub all_one_test {
+
+    # проверяем наличие баз scorm,scorm_test удаляем и создаем заново, если нужно
+    # ( rebuild=1 ) -  персоздаем базу
+    my @bases = ('scorm', 'scorm_test');
+    if ( $options{'rebuild'} ) {
+        @bases = ('scorm') if $options{'mode'} eq 'scorm';
+        @bases = ('scorm_test') if $options{'mode'} eq 'test';
+
+        foreach my $db_name (@bases) {
+            if ( check_db( $self, $db_name ) ) {
+                # удаляем старую базу scorm
+                delete_db( $self, $db_name );
+            }
+
+            # создаем базу
+            create_db( $self, $db_name );
+
+            # создаем таблицы
+            # коннект к нужной базе
+            my $connect = ( $db_name =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
+            $self->{dbh} = connect_db( $connect );
+            create_tables( $self );
+
+            # для удаления и создания таблицы - коннект под юзером postgres
+            $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
+print "\n";
+        }
+    }
+
+
+    # перезаписываем конфиг mojo предварительной удалив лишнее и сгенерировав secrets
+    delete $config_update->{'databases'}->{'pg_postgres'};
+    delete $config_update->{'users'};
+    write_config( $config_update );
 
 die;
+    # стартуем mojo с базой scorm_test
+    mojo_do( 'stop' );
 
+    # загрузка дефолтных значений
+    load_defaults( $self, $config_update );
+}
+
+# ./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf
+# --rebuild=1   - создание базы и конфигурации (1)
+# --mode=test   - test  - только база данных scorm_test
+# --start=test  - по окончании работы скрипта, старт mojo с базой test
+sub scorn_one_test {
+    # пересоздаем базу scorm_test
+
+    # перезаписываем конфиг mojo
+
+    # стартуем mojo с базой scorm_test
+}
+
+# ./script/install.pl mode=scorm start=test rebuild=1 path=../temp_freee.conf
+# --rebuild=1   - создание базы и конфигурации (1)
+# --mode=scorm  - test  - только база данных scorm_test
+# --start=test  - по окончании работы скрипта, старт mojo с базой test
+sub scorm_one_test {
+    # пересоздаем базу scorm_test
+
+    # перезаписываем конфиг mojo
+
+    # стартуем mojo с базой scorm_test
+}
 
 
 

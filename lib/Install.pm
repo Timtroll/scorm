@@ -3,6 +3,7 @@ package Install;
 use utf8;
 use warnings;
 use strict;
+
 use DBI qw(:sql_types);
 use DDP;
 use Digest::SHA qw( sha256_hex );
@@ -12,17 +13,20 @@ use vars qw( @ISA @EXPORT @EXPORT_OK );
 use File::Slurp::Unicode qw(slurp write_file);
 use Data::Dumper;
 
+binmode(STDOUT);
+binmode(STDERR);
+
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
-    &logging &check_db &delete_db_test &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
-    &write_config &update_config &reset_scorm_test $path_log $path_sql $path_conf $self $config
+    &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
+    &write_config &reset_scorm_test $path_log $path_sql $path_conf $config
 );
 our @EXPORT_OK = qw(
-    &logging &check_db &delete_db_test &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user
-    &write_config &update_config &reset_scorm_test $path_log $path_sql $path_conf $self $config
+    &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user
+    &write_config &reset_scorm_test $path_log $path_sql $path_conf $config
 );
 
-our ( $path_log, $path_sql, $path_conf, $self, $config );
+our ( $path_log, $path_sql, $path_conf, $config );
 # путь к директории с логированием
 $path_log = './log/migration.log';
 
@@ -36,18 +40,17 @@ $path_conf = './freee.conf';
 # logging( "комментарий и текст ошибки" );
 sub logging {
     my ( $logdata ) = @_;
-    my $log;
-print "$path_log\n";
+
     if ( $logdata ) {
         warn "$logdata\n";
         if ( -e $path_log) {
-            open( $log, '>>', $path_log ) or warn "Can't open log file! $!";
+            open( FILE, '>>', $path_log ) or warn "Can't open log file! $!";
         }
         else {
-            open( $log, '>', $path_log ) or warn "Can't open log file! $!";
+            open( FILE, '>', $path_log ) or warn "Can't open log file! $!";
         }
-            print $log "$logdata\n";
-        close( $log );
+            print FILE "$logdata\n";
+        close( FILE );
     }
 }
 
@@ -67,10 +70,8 @@ sub check_db {
     return $res;
 }
 
-
-
 # запуск или остановка mojo
-# my true = mojo_do( $path_conf, 'do' );
+# my $true = mojo_do( 'start/stop' );
 sub mojo_do {
     my $do = shift;
 
@@ -84,13 +85,14 @@ sub mojo_do {
 }
 
 # удаление базы данных
-# my true = delete_db( $self );
-sub delete_db_test {
-    my $self = shift;
+# my $true = delete_db( $self, $db_name );
+sub delete_db {
+    my ($self, $db_name ) = @_;
 
-    my $res = `perl starting.sh stop`;
-    my $delete_db = 'DROP database scorm_test';
-    my $sth = $self->{dbh}->prepare( $delete_db );
+    # остановка mojo
+    my $res = `perl ./starting.sh stop`;
+
+    my $sth = $self->{dbh}->prepare( "DROP database ".$db_name );
     $res = $sth->execute();
     $sth->finish();
 
@@ -98,58 +100,42 @@ sub delete_db_test {
 
     return $res;
 }
-# my true = create_db( $self, $create_db );
+
+# my $true = create_db( $self, $db_name );
 # создание базы данных
 sub create_db {
-    my ( $self, $create_db ) = @_;
+    my ( $self, $db_name ) = @_;
 
-    my $filename = $path_sql . $create_db;
-    my $sql = slurp( $filename, encoding => 'utf8' );
-    my $sth = $self->{dbh}->prepare( $sql );
+
+    my $sth = $self->{dbh}->prepare( "CREATE DATABASE ".$db_name." WITH TEMPLATE='template1' ENCODING='UTF8' TABLESPACE='pg_default'"  );
     my $res = $sth->execute();
     $sth->finish();
 
     if ( DBI->errstr ) {
-        warn "execute doesn't work " . DBI->errstr . " in $filename script";
-        logging( "execute doesn't work " . DBI->errstr . " in $filename script\n" );
+        warn "execute doesn't work " . DBI->errstr;
+        logging( "execute doesn't work " . DBI->errstr );
         exit;
     }
-    warn 'Db created';
+    warn "Db '$db_name' created";
 }
 
-# заполнение параметров и создание конфига 
-# my true = connect_db( $self, $config, 'main' );
+# коннект к базе 
+# my $dbh = connect_db( $config );
 sub connect_db {
-    my ( $self, $config_update, $main ) = @_;
+    my ( $config ) = shift;
 
-    # обновление конфигурации
-    $$config{ 'test' } = $main eq 'pg_main_test' ? 1 : 0;
-    update_config( $config_update, $main );
-
-    my $db = $config->{'dbs'}->{'databases'}->{$main};
-
-    # редактирование параметра обработки ошибок
-    if (
-        $db &&
-        $db->{'options'} &&
-        $db->{'options'}->{'RaiseError'} 
-    ) {
-        $db->{'options'}->{'RaiseError'} = 1;
-    }
-    my @connect = (
-        $db->{'dsn'},
-        $db->{'username'},
-        $db->{'password'},
-        $db->{'options'}
-    );
-
-    $self->{dbh} = DBI->connect(
-        @connect
+    # подключение к базе postgres
+    my $dbh = DBI->connect(
+        $config->{'dsn'},
+        $config->{'username'},
+        $config->{'password'},
+        $config->{'options'}
     );
     if ( DBI->errstr ) {
-        logging( "connection to database doesn't work:" . DBI->errstr );
-        exit;
+        helpme( "connection to database doesn't work:" . DBI->errstr );
     }
+
+    return $dbh;
 }
 
 sub create_tables {
@@ -159,7 +145,7 @@ sub create_tables {
     my $filename = $path_sql . '/_create_extiention.sql';
     my $sql = slurp( $filename, encoding => 'utf8' );
     my $sth = $self->{dbh}->prepare( $sql );
-    my $res = $sth->execute();
+    $sth->execute();
     $sth->finish();
 
     if ( DBI->errstr ) {
@@ -191,7 +177,7 @@ sub create_tables {
 
         # выполение скриптов
         $sth = $self->{dbh}->prepare( $sql );
-        $res = $sth->execute();
+        $sth->execute();
         $sth->finish();
 
         if ( DBI->errstr ) {
@@ -250,48 +236,48 @@ sub load_defaults {
     );
 
     # добавляем учителя
-    add_user(
-    $self,
-    {
-        'email'     => 'teacher@teacher',
-        'login'     => 'teacher',
-        'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    add_user( $self,
+        {
+            'email'     => 'teacher@teacher',
+            'login'     => 'teacher',
+            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-        'user_id'   => 2,
-        'group_id'  => 2,
+            'user_id'   => 2,
+            'group_id'  => 2,
 
-        'title'     => 'teacher',
-        'User' => {
-            'place'         => "scorm",
-            'country'       => "RU",
-            'birthday'      => "19950803 00:00:00",
-            'patronymic'    => "teacher",
-            'name'          => "teacher",
-            'surname'       => "teacher"
+            'title'     => 'teacher',
+            'User' => {
+                'place'         => "scorm",
+                'country'       => "RU",
+                'birthday'      => "19950803 00:00:00",
+                'patronymic'    => "teacher",
+                'name'          => "teacher",
+                'surname'       => "teacher"
+            }
         }
-    });
+    );
 
     # добавляем студента
-    add_user(
-    $self,
-    {
-        'email'     => 'student@student',
-        'login'     => 'student',
-        'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    add_user( $self,
+        {
+            'email'     => 'student@student',
+            'login'     => 'student',
+            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-        'user_id'   => 3,
-        'group_id'  => 3,
+            'user_id'   => 3,
+            'group_id'  => 3,
 
-        'title'     => 'student',
-        'User' => {
-            'place'         => "scorm",
-            'country'       => "RU",
-            'birthday'      => "19950803 00:00:00",
-            'patronymic'    => "student",
-            'name'          => "student",
-            'surname'       => "student"
+            'title'     => 'student',
+            'User' => {
+                'place'         => "scorm",
+                'country'       => "RU",
+                'birthday'      => "19950803 00:00:00",
+                'patronymic'    => "student",
+                'name'          => "student",
+                'surname'       => "student"
+            }
         }
-    });
+    );
 }
 
 sub add_user {
@@ -338,6 +324,8 @@ sub add_user {
 
 # запись конфигурации в файл freee.conf
 sub write_config {
+    my $config = shift;
+
     # настройка dumper, чтобы не было лишнего 'var='
     $Data::Dumper::Terse = 1;
 
@@ -348,41 +336,8 @@ sub write_config {
     );
 }
 
-# заполнение параметров конфига
-sub update_config {
-    my ( $config_update ) = @_;
-
-    $$config{ 'url' }                                           = $$config_update{ 'url' }                   if $$config_update{ 'url' };
-    
-    push @{ $$config_update{ 'secrets' } }, generate_secret(40);
-    $$config{ 'secrets' }                                       = $$config_update{ 'secrets' };
-
-    $$config{ 'expires' }                                       = $$config_update{ 'expires' }               if $$config_update{ 'expires' };
-    $$config{ 'debug' }                                         = $$config_update{ 'debug' }                 if $$config_update{ 'debug' };
-    $$config{ 'export_settings_path' }                          = $$config_update{ 'export_settings_path' }  if $$config_update{ 'export_settings_path' };
-    $$config{ 'host' }                                          = $$config_update{ 'host' }                  if $$config_update{ 'host' };
-
-    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'dsn'};
-    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'username'};
-    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'password'};
-    $config->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'}  =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'} if $config_update->{'dbs'}->{'databases'}->{'pg_main_test'}->{'options'};
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'dsn'};
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'username'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'username'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'username'};
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'password'} =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'password'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'password'};
-    $config->{'dbs'}->{'databases'}->{'pg_main'}->{'options'}  =
-        $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'options'} if $config_update->{'dbs'}->{'databases'}->{'pg_main'}->{'options'};
-
-}
-
 # генерация строки из случайных букв и цифр
-# my $string = generate_secret( length );
+# my $string = generate_secret( 32 );
 # возвращается строка
 sub generate_secret {
     my $length = shift;
@@ -390,52 +345,53 @@ sub generate_secret {
     return unless $length =~ /^\d+$/;
 
     my @chars = ( "A".."Z", "a".."z", 0..9 );
-    my $string = join("", @chars[ map { rand @chars } ( 1 .. $length ) ]);
+    my $string = join("", @chars[ map { rand @chars } ( 0..$length ) ]);
 
+    return $string;
 };
 
-sub reset_scorm_test {
-    my ( $self, $config_update ) = @_;
+# sub reset_scorm_test {
+#     my ( $self, $config_update ) = @_;
 
-    # остановка mojo
-    mojo_do( 'stop' );
+#     # остановка mojo
+#     mojo_do( 'stop' );
 
-    # подключение к базе postgres
-    $self->{dbh} = DBI->connect(
-        'dbi:Pg:dbname=postgres;host=localhost;port=5432',
-        'troll',
-        'Yfenbkec_1',
-        { 
-            'pg_enable_utf8' => 1, 
-            'pg_auto_escape' => 1, 
-            'AutoCommit' => 1, 
-            'PrintError' => 1, 
-            'RaiseError' => 1, 
-            'pg_server_prepare' => 0 
-        }
-    );
-    if ( DBI->errstr ) {
-        logging( "connection to database doesn't work:" . DBI->errstr );
-        exit;    
-    }
+#     # подключение к базе postgres
+#     $self->{dbh} = DBI->connect(
+#         'dbi:Pg:dbname=postgres;host=localhost;port=5432',
+#         'troll',
+#         'Yfenbkec_1',
+#         { 
+#             'pg_enable_utf8' => 1, 
+#             'pg_auto_escape' => 1, 
+#             'AutoCommit' => 1, 
+#             'PrintError' => 1, 
+#             'RaiseError' => 1, 
+#             'pg_server_prepare' => 0 
+#         }
+#     );
+#     if ( DBI->errstr ) {
+#         logging( "connection to database doesn't work:" . DBI->errstr );
+#         exit;    
+#     }
 
-    if ( check_db( $self, 'scorm_test' ) ) {
-        # удаление базы
-        delete_db_test( $self );
-    }
+#     if ( check_db( $self, 'scorm_test' ) ) {
+#         # удаление базы
+#         delete_db( $self, 'scorm_test' );
+#     }
 
-    # заполнение параметров конфига для тестовой базы ---
-    create_db( $self, '/_create_test_db.sql' );
-    connect_db( $self, $config_update, 'pg_main_test' );
+#     # заполнение параметров конфига для тестовой базы ---
+#     create_db( $self, 'scorm_test' );
+#     connect_db( $self, $config_update, 'pg_main_test' );
 
-    # запуск скриптов, создающих таблицы
-    create_tables( $self );
+#     # запуск скриптов, создающих таблицы
+#     create_tables( $self );
 
-    # старт mojo
-    mojo_do( 'start' );
+#     # старт mojo
+#     mojo_do( 'start' );
 
-    # загрузка дефолтных значений
-    load_defaults( $self, $config_update );
-}
+#     # загрузка дефолтных значений
+#     load_defaults( $self, $config_update );
+# }
 
 1;
