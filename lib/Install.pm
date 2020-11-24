@@ -55,7 +55,7 @@ sub logging {
 }
 
 # проверка существования базы данных
-# my true = check_db( 'database' );
+# my $true = check_db( 'database' );
 sub check_db {
     my ( $self, $database ) = @_;
 
