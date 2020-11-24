@@ -19,11 +19,11 @@ binmode(STDERR);
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
     &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
-    &write_config &reset_scorm_test $path_log $path_sql $path_conf $config
+    &write_config &reset_scorm_test &generate_secret $path_log $path_sql $path_conf $config
 );
 our @EXPORT_OK = qw(
     &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user
-    &write_config &reset_scorm_test $path_log $path_sql $path_conf $config
+    &write_config &reset_scorm_test &generate_secret $path_log $path_sql $path_conf $config
 );
 
 our ( $path_log, $path_sql, $path_conf, $config );
@@ -90,10 +90,11 @@ sub delete_db {
     my ($self, $db_name ) = @_;
 
     # остановка mojo
-    my $res = `perl ./starting.sh stop`;
+    mojo_do( 'stop' );
+    # my $res = `perl starting.sh stop`;
 
     my $sth = $self->{dbh}->prepare( "DROP database ".$db_name );
-    $res = $sth->execute();
+    my $res = $sth->execute();
     $sth->finish();
 
     $res = 0 if $res == '0E0';
@@ -190,10 +191,9 @@ sub create_tables {
 
 # загрузка дефолтных значений
 sub load_defaults {
-    my ( $self, $config_update ) = @_;
+    my ( $self, $config_users, $host ) = @_;
 
     # загрузка дефолтных настроек
-    my $host = $config_update->{'host'};
     my $url = $host . '/settings/load_default';
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
@@ -202,6 +202,7 @@ sub load_defaults {
     my $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
+
     $sth->finish();
 
     # my $groups = $sth->fetchrow_hashref();
@@ -212,72 +213,76 @@ sub load_defaults {
     # }
 
     # добавляем админа
-    my $salt = $config_update->{'secrets'}->[0];
+    # my $salt = $config_update->{'secrets'}->[0];
 
-    add_user( $self,
-        {
-            'email'     => 'admin@admin',
-            'login'     => $config_update->{'login'},
-            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    my @users = ( 'admin', 'teacher', 'student' );
+    foreach my $user (@users) {
+        add_user( $self, $config_users->{'users'}->{$user} );
+    }
+    # add_user( $self,
+    #     {
+    #         'email'     => 'admin@admin',
+    #         'login'     => $config_update->{'login'},
+    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-            'user_id'   => 1,
-            'group_id'  => 1,
+    #         'user_id'   => 1,
+    #         'group_id'  => 1,
 
-            'title'     => 'admin',
-            'User' => {
-                'place'         => "scorm",
-                'country'       => "RU",
-                'birthday'      => "19950803 00:00:00",
-                'patronymic'    => "admin",
-                'name'          => "admin",
-                'surname'       => "admin"
-            }
-        }
-    );
+    #         'title'     => 'admin',
+    #         'User' => {
+    #             'place'         => "scorm",
+    #             'country'       => "RU",
+    #             'birthday'      => "19950803 00:00:00",
+    #             'patronymic'    => "admin",
+    #             'name'          => "admin",
+    #             'surname'       => "admin"
+    #         }
+    #     }
+    # );
 
-    # добавляем учителя
-    add_user( $self,
-        {
-            'email'     => 'teacher@teacher',
-            'login'     => 'teacher',
-            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    # # добавляем учителя
+    # add_user( $self,
+    #     {
+    #         'email'     => 'teacher@teacher',
+    #         'login'     => 'teacher',
+    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-            'user_id'   => 2,
-            'group_id'  => 2,
+    #         'user_id'   => 2,
+    #         'group_id'  => 2,
 
-            'title'     => 'teacher',
-            'User' => {
-                'place'         => "scorm",
-                'country'       => "RU",
-                'birthday'      => "19950803 00:00:00",
-                'patronymic'    => "teacher",
-                'name'          => "teacher",
-                'surname'       => "teacher"
-            }
-        }
-    );
+    #         'title'     => 'teacher',
+    #         'User' => {
+    #             'place'         => "scorm",
+    #             'country'       => "RU",
+    #             'birthday'      => "19950803 00:00:00",
+    #             'patronymic'    => "teacher",
+    #             'name'          => "teacher",
+    #             'surname'       => "teacher"
+    #         }
+    #     }
+    # );
 
-    # добавляем студента
-    add_user( $self,
-        {
-            'email'     => 'student@student',
-            'login'     => 'student',
-            'password'  => sha256_hex( $config_update->{'password'}, $salt ),
+    # # добавляем студента
+    # add_user( $self,
+    #     {
+    #         'email'     => 'student@student',
+    #         'login'     => 'student',
+    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
 
-            'user_id'   => 3,
-            'group_id'  => 3,
+    #         'user_id'   => 3,
+    #         'group_id'  => 3,
 
-            'title'     => 'student',
-            'User' => {
-                'place'         => "scorm",
-                'country'       => "RU",
-                'birthday'      => "19950803 00:00:00",
-                'patronymic'    => "student",
-                'name'          => "student",
-                'surname'       => "student"
-            }
-        }
-    );
+    #         'title'     => 'student',
+    #         'User' => {
+    #             'place'         => "scorm",
+    #             'country'       => "RU",
+    #             'birthday'      => "19950803 00:00:00",
+    #             'patronymic'    => "student",
+    #             'name'          => "student",
+    #             'surname'       => "student"
+    #         }
+    #     }
+    # );
 }
 
 sub add_user {

@@ -29,8 +29,8 @@ use Freee::Mock::Install;
 
 use DDP;
 
-# binmode(STDOUT);
-# binmode(STDERR);
+binmode(STDOUT);
+binmode(STDERR);
 
 my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, @bd_array );
 
@@ -56,14 +56,14 @@ $options{'rebuild'} = ( exists $options{'rebuild'} && $options{'rebuild'} ) ? 1 
 $mode = $options{'start'};
 $options{'start'} = ( exists $options{'start'} && $options{'start'} && grep( /^$mode$/, ( 'test', 'scorm' ) ) ) ? $options{'start'} : 'scorm';
 
-# командный автомат
-my $command = join('', map { $options{$_} if $_ ne 'path' } sort keys %options); 
+# # командный автомат
+# my $command = join('', map { $options{$_} if $_ ne 'path' } sort keys %options); 
 
-p $command;
+# p $command;
 
 # читаем дефолтный конфиг
 $config_update < io $options{'path'};
-$config_update = { eval $config_update }->{'config_update'};
+$config_update = { eval ( $config_update ) }->{'config_update'};
 helpme('need_config') if ( $@ );
 
 # генерируем secrets
@@ -72,36 +72,38 @@ push @{$config_update->{'secrets'}}, generate_secret( 40 );
 # Соединяеся с базой для создания/удаления баз
 $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
 
-# скрипт запущен как 
-my %command = (
-    # ./script/install.pl mode=all start=test rebuild=1 path=../temp_freee.conf
-    'all1test' => \&all_one_test(),
-    # ./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf
-    'scorn1test' => \&scorn_one_test,
-    # ./script/install.pl mode=scorm start=test rebuild=1 path=../temp_freee.conf
-    'scorm1test' => \&scorm_one_test,
+all_one_test();
 
-    # ./script/install.pl mode=all start=scorm rebuild=1 path=../temp_freee.conf
-    'all1scorm' => \&all_one_scorm,
-    # ./script/install.pl mode=test start=scorm rebuild=1 path=../temp_freee.conf
-    'test1scorm' => \&test_one_scorm,
-    # ./script/install.pl mode=scorm start=scorm rebuild=1 path=../temp_freee.conf
-    'scorm1scorm' => \&scorm_one_scorm,
+# # скрипт запущен как 
+# my %command = (
+#     # ./script/install.pl mode=all start=test rebuild=1 path=../temp_freee.conf
+#     'all1test' => \&all_one_test(),
+#     # ./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf
+#     'scorn1test' => \&scorn_one_test,
+#     # ./script/install.pl mode=scorm start=test rebuild=1 path=../temp_freee.conf
+#     'scorm1test' => \&scorm_one_test,
 
-    # ./script/install.pl mode=all start=test rebuild=0 path=../temp_freee.conf
-    'all0test' => \&all_test,
-    # ./script/install.pl mode=test start=test rebuild=0 path=../temp_freee.conf
-    'test0test' => \&test_test,
-    # ./script/install.pl mode=scorm start=test rebuild=0 path=../temp_freee.conf
-    'scorm0test' => \&scorm_test,
+#     # ./script/install.pl mode=all start=scorm rebuild=1 path=../temp_freee.conf
+#     'all1scorm' => \&all_one_scorm,
+#     # ./script/install.pl mode=test start=scorm rebuild=1 path=../temp_freee.conf
+#     'test1scorm' => \&test_one_scorm,
+#     # ./script/install.pl mode=scorm start=scorm rebuild=1 path=../temp_freee.conf
+#     'scorm1scorm' => \&scorm_one_scorm,
 
-    # ./script/install.pl mode=all start=scorm rebuild=0 path=../temp_freee.conf
-    'all0scorm' => \&all_scorm,
-    # ./script/install.pl mode=test start=scorm rebuild=0 path=../temp_freee.conf
-    'test0scorm' => \&test_scorm,
-    # ./script/install.pl mode=scorm start=scorm rebuild=0 path=../temp_freee.conf
-    'scorm0scorm' => \&scorm_scorm,
-);
+#     # ./script/install.pl mode=all start=test rebuild=0 path=../temp_freee.conf
+#     'all0test' => \&all_test,
+#     # ./script/install.pl mode=test start=test rebuild=0 path=../temp_freee.conf
+#     'test0test' => \&test_test,
+#     # ./script/install.pl mode=scorm start=test rebuild=0 path=../temp_freee.conf
+#     'scorm0test' => \&scorm_test,
+
+#     # ./script/install.pl mode=all start=scorm rebuild=0 path=../temp_freee.conf
+#     'all0scorm' => \&all_scorm,
+#     # ./script/install.pl mode=test start=scorm rebuild=0 path=../temp_freee.conf
+#     'test0scorm' => \&test_scorm,
+#     # ./script/install.pl mode=scorm start=scorm rebuild=0 path=../temp_freee.conf
+#     'scorm0scorm' => \&scorm_scorm,
+# );
 
 warn 'All setting required';
 
@@ -144,15 +146,25 @@ print "\n";
 
     # перезаписываем конфиг mojo предварительной удалив лишнее и сгенерировав secrets
     delete $config_update->{'databases'}->{'pg_postgres'};
+
+    my %config_users = %$config_update{'users'};
+    my $host = $config_update->{'host'};
+
     delete $config_update->{'users'};
     write_config( $config_update );
 
-die;
-    # стартуем mojo с базой scorm_test
-    mojo_do( 'stop' );
+    if ( $options{'rebuild'} ) {
+        foreach my $db_name (@bases) {
+            my $connect = ( $db_name =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
+            $self->{dbh} = connect_db( $connect );
 
-    # загрузка дефолтных значений
-    load_defaults( $self, $config_update );
+            # стартуем mojo с базой scorm_test
+            mojo_do( 'start' );
+
+            # загрузка дефолтных значений
+            load_defaults( $self, \%config_users, $host );
+        }
+    }
 }
 
 # ./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf

@@ -18,7 +18,7 @@ BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
 use Mojo::JSON qw( decode_json );
-use Test qw( reset_scorm_test );
+use Install;
 
 use Test::More;
 use Test::Mojo;
@@ -35,7 +35,12 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-reset_scorm_test();
+if ( check_db( $self, 'scorm_test' ) ) {
+    # удаляем старую базу scorm
+    delete_db( $self, 'scorm_test' );
+    # создаем базу
+    create_db( $self, 'scorm_test' );
+}
 
 # получение токена для аутентификации
 $t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
