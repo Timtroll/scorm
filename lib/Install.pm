@@ -205,84 +205,10 @@ sub load_defaults {
 
     $sth->finish();
 
-    # my $groups = $sth->fetchrow_hashref();
-    # unless ( (ref($groups) eq 'HASH') && $$groups{id} ) {
-    #     push @!, 'Could not get Groups';
-    #     $self->{dbh}->rollback;
-    #     return;
-    # }
-
-    # добавляем админа
-    # my $salt = $config_update->{'secrets'}->[0];
-
     my @users = ( 'admin', 'teacher', 'student' );
     foreach my $user (@users) {
         add_user( $self, $config_users->{'users'}->{$user} );
     }
-    # add_user( $self,
-    #     {
-    #         'email'     => 'admin@admin',
-    #         'login'     => $config_update->{'login'},
-    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
-
-    #         'user_id'   => 1,
-    #         'group_id'  => 1,
-
-    #         'title'     => 'admin',
-    #         'User' => {
-    #             'place'         => "scorm",
-    #             'country'       => "RU",
-    #             'birthday'      => "19950803 00:00:00",
-    #             'patronymic'    => "admin",
-    #             'name'          => "admin",
-    #             'surname'       => "admin"
-    #         }
-    #     }
-    # );
-
-    # # добавляем учителя
-    # add_user( $self,
-    #     {
-    #         'email'     => 'teacher@teacher',
-    #         'login'     => 'teacher',
-    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
-
-    #         'user_id'   => 2,
-    #         'group_id'  => 2,
-
-    #         'title'     => 'teacher',
-    #         'User' => {
-    #             'place'         => "scorm",
-    #             'country'       => "RU",
-    #             'birthday'      => "19950803 00:00:00",
-    #             'patronymic'    => "teacher",
-    #             'name'          => "teacher",
-    #             'surname'       => "teacher"
-    #         }
-    #     }
-    # );
-
-    # # добавляем студента
-    # add_user( $self,
-    #     {
-    #         'email'     => 'student@student',
-    #         'login'     => 'student',
-    #         'password'  => sha256_hex( $config_update->{'password'}, $salt ),
-
-    #         'user_id'   => 3,
-    #         'group_id'  => 3,
-
-    #         'title'     => 'student',
-    #         'User' => {
-    #             'place'         => "scorm",
-    #             'country'       => "RU",
-    #             'birthday'      => "19950803 00:00:00",
-    #             'patronymic'    => "student",
-    #             'name'          => "student",
-    #             'surname'       => "student"
-    #         }
-    #     }
-    # );
 }
 
 sub add_user {
@@ -339,6 +265,7 @@ sub write_config {
         $path_conf,
         Dumper( $config )
     );
+    mojo_do('restart');
 }
 
 # генерация строки из случайных букв и цифр
@@ -354,49 +281,5 @@ sub generate_secret {
 
     return $string;
 };
-
-# sub reset_scorm_test {
-#     my ( $self, $config_update ) = @_;
-
-#     # остановка mojo
-#     mojo_do( 'stop' );
-
-#     # подключение к базе postgres
-#     $self->{dbh} = DBI->connect(
-#         'dbi:Pg:dbname=postgres;host=localhost;port=5432',
-#         'troll',
-#         'Yfenbkec_1',
-#         { 
-#             'pg_enable_utf8' => 1, 
-#             'pg_auto_escape' => 1, 
-#             'AutoCommit' => 1, 
-#             'PrintError' => 1, 
-#             'RaiseError' => 1, 
-#             'pg_server_prepare' => 0 
-#         }
-#     );
-#     if ( DBI->errstr ) {
-#         logging( "connection to database doesn't work:" . DBI->errstr );
-#         exit;    
-#     }
-
-#     if ( check_db( $self, 'scorm_test' ) ) {
-#         # удаление базы
-#         delete_db( $self, 'scorm_test' );
-#     }
-
-#     # заполнение параметров конфига для тестовой базы ---
-#     create_db( $self, 'scorm_test' );
-#     connect_db( $self, $config_update, 'pg_main_test' );
-
-#     # запуск скриптов, создающих таблицы
-#     create_tables( $self );
-
-#     # старт mojo
-#     mojo_do( 'start' );
-
-#     # загрузка дефолтных значений
-#     load_defaults( $self, $config_update );
-# }
 
 1;
