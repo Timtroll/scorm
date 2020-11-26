@@ -7,6 +7,7 @@ use strict;
 use DBI qw(:sql_types);
 use DDP;
 use Digest::SHA qw( sha256_hex );
+use Freee::EAV;
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK );
@@ -19,11 +20,11 @@ binmode(STDERR);
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
     &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
-    &write_config &reset_scorm_test &generate_secret $path_log $path_sql $path_conf $config
+    &write_config &reset_scorm_test &generate_secret &reset_test_db $path_log $path_sql $path_conf $config
 );
 our @EXPORT_OK = qw(
     &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user
-    &write_config &reset_scorm_test &generate_secret $path_log $path_sql $path_conf $config
+    &write_config &reset_scorm_test &generate_secret &reset_test_db $path_log $path_sql $path_conf $config
 );
 
 our ( $path_log, $path_sql, $path_conf, $config );
@@ -91,7 +92,6 @@ sub delete_db {
 
     # остановка mojo
     mojo_do( 'stop' );
-    # my $res = `perl starting.sh stop`;
 
     my $sth = $self->{dbh}->prepare( "DROP database ".$db_name );
     my $res = $sth->execute();
@@ -191,7 +191,7 @@ sub create_tables {
 
 # загрузка дефолтных значений
 sub load_defaults {
-    my ( $self, $config_users, $host ) = @_;
+    my ( $self, $config_users, $host, $salt ) = @_;
 
     # загрузка дефолтных настроек
     my $url = $host . '/settings/load_default';
@@ -205,15 +205,22 @@ sub load_defaults {
 
     $sth->finish();
 
+    # получение соли из конфига
+    # my $salt = $config_users->{'secrets'}->[0];
+
     my @users = ( 'admin', 'teacher', 'student' );
     foreach my $user (@users) {
+        $config_users->{'users'}->{$user}->{'password'} = sha256_hex( $config_users->{'users'}->{$user}->{'password'}, $salt );
         add_user( $self, $config_users->{'users'}->{$user} );
     }
 }
 
 sub add_user {
     my ( $self, $data ) = @_;
-
+# my $sth =$self->{dbh}->prepare( 'SELECT current_database();' );
+# $sth->execute();
+# my $result = $sth->fetchrow_hashref();
+# warn Dumper( $result );
     Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
     my $user =    {
         'publish'   => \1,
@@ -225,7 +232,6 @@ sub add_user {
     my $eav = Freee::EAV->new( 'User', $user );
     my $eav_id = $eav->id(); 
 
-    # получение соли из конфига
     $user = {
         'publish'     => 't', 
         'email'       => $$data{'email'},
@@ -282,4 +288,7 @@ sub generate_secret {
     return $string;
 };
 
+sub reset_test_db {
+    my $res = `./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf`;
+}
 1;

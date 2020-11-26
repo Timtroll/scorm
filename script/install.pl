@@ -8,7 +8,7 @@
 # обязательные опции:
 # --path=../temp_freee.conf
 # --rebuild=1/0 - создание базы и конфигурации (1) или только конфигурации (0)
-# --mode=all   - создание баз данных. all   - все пересоздаются
+# --mode=scorm/test - создание баз данных.
 #                                     scorm - только база данных scorm
 #                                     test  - только база данных scorm_test
 # необязательные опции:
@@ -20,7 +20,7 @@ use warnings;
 
 use lib './lib';
 use IO::All;
-use Freee::EAV;
+# use Freee::EAV;
 use Digest::SHA qw( sha256_hex );
 use Install;
 use DBI qw(:sql_types);
@@ -28,11 +28,11 @@ use Data::Dumper;
 use Freee::Mock::Install;
 
 use DDP;
-
+$| = 1;
 binmode(STDOUT);
 binmode(STDERR);
 
-my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, @bd_array );
+my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, $base );
 
 # чтение параметров
 my %options;
@@ -64,6 +64,8 @@ helpme('need_config') if ( $@ );
 # генерируем secrets
 push @{$config_update->{'secrets'}}, generate_secret( 40 );
 
+mojo_do( 'stop' );
+
 # Соединяеся с базой для создания/удаления баз
 $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
 
@@ -81,29 +83,27 @@ sub all_one_test {
 
     # проверяем наличие баз scorm,scorm_test удаляем и создаем заново, если нужно
     # ( rebuild=1 ) -  персоздаем базу
-    my @bases = ('scorm', 'scorm_test');
+
     if ( $options{'rebuild'} ) {
-        @bases = ('scorm') if $options{'mode'} eq 'scorm';
-        @bases = ('scorm_test') if $options{'mode'} eq 'test';
+        $base = ('scorm') if $options{'mode'} eq 'scorm';
+        $base = ('scorm_test') if $options{'mode'} eq 'test';
 
-        foreach my $db_name (@bases) {
-            if ( check_db( $self, $db_name ) ) {
-                # удаляем старую базу scorm
-                delete_db( $self, $db_name );
-            }
-
-            # создаем базу
-            create_db( $self, $db_name );
-
-            # создаем таблицы
-            # коннект к нужной базе
-            my $connect = ( $db_name =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
-            $self->{dbh} = connect_db( $connect );
-            create_tables( $self );
-
-            # для удаления и создания таблицы - коннект под юзером postgres
-            $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
+        if ( check_db( $self, $base ) ) {
+            # удаляем старую базу scorm
+            delete_db( $self, $base );
         }
+
+        # создаем базу
+        create_db( $self, $base );
+
+        # создаем таблицы
+        # коннект к нужной базе
+        my $connect = ( $base =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
+        $self->{dbh} = connect_db( $connect );
+        create_tables( $self );
+
+        # для удаления и создания таблицы - коннект под юзером postgres
+        $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
     }
 
 
@@ -111,24 +111,20 @@ sub all_one_test {
     delete $config_update->{'databases'}->{'pg_postgres'};
 
     my %config_users = %$config_update{'users'};
-    my $host = $config_update->{'host'};
 
     delete $config_update->{'users'};
     write_config( $config_update );
 
     if ( $options{'rebuild'} ) {
-        foreach my $db_name (@bases) {
-            my $connect = ( $db_name =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
-            $self->{dbh} = connect_db( $connect );
+        my $connect = ( $base =~ /test/ ) ? $config_update->{'databases'}->{'pg_main_test'} : $config_update->{'databases'}->{'pg_main'};
+        $self->{dbh} = connect_db( $connect );
+        $config_update->{'test'} = $base eq 'scorm' ? 0 : 1;
 
-            $config_update->{'test'} = $db_name eq 'scorm' ? 0 : 1;
+        # стартуем mojo с базой scorm_test
+        write_config( $config_update );
 
-            # стартуем mojo с базой scorm_test
-            write_config( $config_update );
-
-            # загрузка дефолтных значений
-            load_defaults( $self, \%config_users, $host );
-        }
+        # загрузка дефолтных значений
+        load_defaults( $self, \%config_users, $config_update->{'host'}, $config_update->{'secrets'}->[0] );
     }
 }
 
