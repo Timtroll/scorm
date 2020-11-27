@@ -13,8 +13,12 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
 
 use Data::Dumper;
+
+# переинсталляция базы scorm_test
+reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
@@ -26,7 +30,7 @@ clear_db();
 my $host = $t->app->config->{'host'};
 
 # получение токена для аутентификации
-$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'yfenbkec' } );
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -38,33 +42,27 @@ my $token = $response->{'data'}->{'token'};
 
 
 # Ввод файлов
-my $data = {
-   'description' => 'description',
-    upload => { file => './t/Discipline/all_right.svg' }
-};
-diag "Insert media:";
-$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
+# my $data = {
+#    'description' => 'description',
+#     upload => { file => './t/Discipline/all_right.svg' }
+# };
+# diag "Insert media:";
+# $t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
+# unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+#     diag("Can't connect");
+#     exit; 
+# }
+# diag "";
+
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 # Добавление предмета
-$data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
+my $data = {
 };
 my $result = {
-    'id'        => 1,
+    'id'        => $$answer{'id'} + 1,
     'status'    => 'ok'
 };
 
@@ -81,11 +79,11 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id' => 1
+            'id' => $$answer{'id'} + 1
         },
         'result' => {
             'status' => 'ok',
-            'id' => 1
+            'id' => $$answer{'id'} + 1
         },
         'comment' => 'All fields:' 
     },
@@ -102,7 +100,7 @@ my $test_data = {
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/discipline/delete _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -112,7 +110,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/discipline/delete _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 

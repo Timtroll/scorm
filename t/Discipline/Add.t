@@ -83,7 +83,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag"";
 };
 
-clear_db();
+# clear_db();
 
 done_testing();
 
