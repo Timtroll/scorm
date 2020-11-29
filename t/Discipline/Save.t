@@ -23,20 +23,23 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
 
 use Data::Dumper;
 
+# переинсталляция базы scorm_test
+reset_test_db();
+
 my $t = Test::Mojo->new('Freee');
 
-# Включаем режим работы с тестовой базой и чистим таблицу
+# Включаем режим работы с тестовой базой
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
 # получение токена для аутентификации
-$t->post_ok( $host.'/auth/login' => {token => $token} => form => { 'login' => 'admin', 'password' => 'admin' } );
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -46,6 +49,10 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
+# получение id последнего элемента
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 # Ввод файлов
 my $data = {
@@ -53,7 +60,7 @@ my $data = {
     upload => { file => './t/Discipline/all_right.svg' }
 };
 diag "Insert media:";
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
@@ -62,19 +69,9 @@ diag "";
 
 # Добавление предмета
 $data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
 };
 my $result = {
-    'id'        => 1,
+    'id'        => $$answer{'id'} + 1,
     'status'    => 'ok'
 };
 
@@ -91,7 +88,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -104,14 +101,14 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -124,14 +121,14 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'status'    => 'ok'
         },
         'comment' => 'status 0:' 
     },
     3 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет3',
             'label'       => 'Предмет 3',
             'description' => 'Краткое описание',
@@ -143,7 +140,7 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'status'    => 'ok'
         },
         'comment' => 'No status:' 
@@ -152,7 +149,7 @@ my $test_data = {
     # отрицательные тесты
     4 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
             'content'     => 'Полное описание',
@@ -163,14 +160,14 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
+            'message'   => "/discipline/save _check_fields: didn't has required data in 'name' = ''",
             'status'    => 'fail',
         },
         'comment' => 'No required field:' 
     },
     5 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -189,7 +186,7 @@ my $test_data = {
     },
     6 => {
         'data' => {
-            'id'          => 1,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -201,7 +198,7 @@ my $test_data = {
             'attachment'  => 'error'
         },
         'result' => {
-            'message'   => "_check_fields: 'attachment' didn't match regular expression",
+            'message'   => "/discipline/save _check_fields: empty field 'attachment', didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
@@ -217,17 +214,17 @@ my $test_data = {
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
             'parent'      => 0,
-            'attachment'  => 'error'
+            'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "_check_fields: 'attachment' didn't match regular expression",
+            'message'   => "/discipline/save _check_fields: empty field 'attachment', didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
     },
     8 => {
         'data' => {
-            'id'          => 404,
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',

@@ -23,14 +23,17 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
 
 use Data::Dumper;
+
+# переинсталляция базы scorm_test
+reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};

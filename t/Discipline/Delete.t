@@ -22,9 +22,8 @@ reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
-# Включаем режим работы с тестовой базой и чистим таблицу
+# Включаем режим работы с тестовой базой
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
@@ -40,20 +39,7 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод файлов
-# my $data = {
-#    'description' => 'description',
-#     upload => { file => './t/Discipline/all_right.svg' }
-# };
-# diag "Insert media:";
-# $t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-# unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-#     diag("Can't connect");
-#     exit; 
-# }
-# diag "";
-
+# получение id последнего элемента
 my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();

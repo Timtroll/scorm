@@ -15,8 +15,12 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
 
 use Data::Dumper;
+
+# переинсталляция базы scorm_test
+reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
@@ -38,35 +42,15 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод файлов
-my $data = {
-   'description' => 'description',
-    upload => { file => './t/Discipline/all_right.svg' }
-};
-diag "Insert media:";
-$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 # Добавление предмета
-$data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
+my $data = {
 };
 my $result = {
-    'id'        => 1,
+    'id'        => $$answer{'id'} + 1,
     'status'    => 'ok'
 };
 
@@ -83,13 +67,13 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'fieldname' => 'status',
             'value'     => 0
         },
         'result' => {
             'status'    => 'ok',
-            'id'        => 1
+            'id'        => $$answer{'id'} + 1
         },
         'comment' => 'All right:' 
     },
@@ -97,11 +81,11 @@ my $test_data = {
     # отрицательные тесты
     2 => {
         'data' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'fieldname' => 'status'
         },
         'result' => {
-            'message'   => "_check_fields: 'value' didn't match regular expression",
+            'message'   => "/discipline/toggle _check_fields: didn't has required data in 'value' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No value:'
@@ -112,18 +96,18 @@ my $test_data = {
             'value'    => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/discipline/toggle _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
     4 => {
         'data' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'} + 1,
             'value'     => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'fieldname' didn't match required in check array",
+            'message'   => "/discipline/toggle _check_fields: didn't has required data in 'fieldname' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No fieldname:' 
