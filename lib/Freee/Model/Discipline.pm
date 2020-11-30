@@ -19,7 +19,7 @@ sub _empty_discipline {
     $self->{'app'}->pg_dbh->begin_work;
 
     # получаем id перента для предметов
-    $discipline = Freee::EAV->new( 'Learning' );
+    $discipline = Freee::EAV->new( 'Discipline' );
     $parent = $discipline->root();
 
     if ( $parent ) {
@@ -28,7 +28,7 @@ sub _empty_discipline {
             'parent'    => $parent,
             'title'     => 'New discipline',
             'publish'   => \0,
-            'Learning' => {
+            'Discipline' => {
                 'label'        => '',
                 'description'  => '',
                 'content'      => '',
@@ -49,7 +49,7 @@ sub _empty_discipline {
                 'attachment'   => '[]'
             }
         };
-        $discipline = Freee::EAV->new( 'Learning', $eav );
+        $discipline = Freee::EAV->new( 'Discipline', $eav );
         $id = $discipline->id();
         unless ( scalar( $id ) ) {
             push @!, "Could not insert discipline into EAV";
@@ -232,14 +232,14 @@ sub _save_discipline {
     }
     else {
         # обновление полей в EAV
-        $discipline = Freee::EAV->new( 'Learning', { 'id' => $$data{'id'} } );
+        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $$data{'id'} } );
 
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {
             'publish' => $$data{'publish'},
             'title'   => $$data{'title'},
-            'Learning' => {
+            'Discipline' => {
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},

@@ -13,6 +13,12 @@ BEGIN
 
     PERFORM eav_createfield( 'Learning', 'is_lesson', 'Признак урока', 'boolean', NULL );
 
+    PERFORM eav_createfield( 'Discipline', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'seo', 'seo', 'string', NULL );
+
     PERFORM eav_createfield( 'SEO', 'keywords', 'Ключевые слова, фразы', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'description', 'Описание', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'seo_title', 'SEO заголовок', 'string', NULL );
@@ -42,6 +48,16 @@ INSERT INTO "public"."EAV_items" (
     parent,
     has_childs
 ) VALUES (TRUE, 0, 'Learning', NOW(), 'learning_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Discipline', NOW(), 'learning_root', 0, 0 );
 
 -----------
 INSERT INTO "public"."EAV_items" (

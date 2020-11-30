@@ -40,7 +40,7 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();
 

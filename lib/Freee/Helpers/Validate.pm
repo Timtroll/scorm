@@ -105,6 +105,14 @@ sub register {
 
                 # проверка размера файла
                 $data{'size'} = length( $data{'content'} );
+# use File::Slurp::Unicode qw(slurp write_file);
+# my $path_dumper = './temp_dumper.conf';
+# write_file(
+#         $path_dumper,
+#         Dumper( $settings->{'upload_max_size'} )
+#     );
+# warn Dumper( $max_size );
+# warn Dumper( length( $data{'content'} ));
 
                 if ( $data{'size'} > $max_size ) {
                     push @!, "$url_for _check_fields: file is too large";

@@ -42,7 +42,7 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();
 
