@@ -114,7 +114,8 @@ sub register {
 # warn Dumper( $max_size );
 # warn Dumper( length( $data{'content'} ));
 
-                if ( $data{'size'} > $max_size ) {
+                # if ( $data{'size'} > $max_size ) {
+                if ( $data{'size'} > $settings->{'upload_max_size'} ) {
                     push @!, "$url_for _check_fields: file is too large";
                     last;
                 }
@@ -378,6 +379,7 @@ sub register {
             '/discipline/add'  => {},
             '/discipline/save' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],

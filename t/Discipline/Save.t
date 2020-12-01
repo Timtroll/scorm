@@ -50,7 +50,6 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-# my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
 my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();
@@ -66,8 +65,6 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit;
 }
-$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-warn Dumper( $response );
 diag "";
 
 # Добавление предмета
@@ -242,7 +239,7 @@ my $test_data = {
             'message'   => "parent with id '404' doesn't exist in discipline",
             'status'    => 'fail',
         },
-        'comment' => "Validation error:"
+        'comment' => "Parent doesn't exist:"
     },
 
 };

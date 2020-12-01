@@ -13,8 +13,12 @@ use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
 
 use Data::Dumper;
+
+# переинсталляция базы scorm_test
+reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
@@ -36,6 +40,10 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
+# получение id последнего элемента
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 # Ввод файлов
 my $data = {
@@ -50,10 +58,45 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 diag "";
 
-# Добавление предметов
+# Добавление предмета
+$data = {
+};
+my $result = {
+    'id'        => $$answer{'id'} + 1,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
+
+# Добавление предмета
+$data = {
+};
+$result = {
+    'id'        => $$answer{'id'} + 2,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
+
+# Сохранение предметов
 my $test_data = {
     1 => {
         'data' => {
+            'id'          => $$answer{'id'} + 1,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -73,6 +116,7 @@ my $test_data = {
     },
     2 => {
         'data' => {
+            'id'          => $$answer{'id'} + 2,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -95,7 +139,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
+    $t->post_ok( $host.'/discipline/save' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -105,7 +149,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag"";
 };
 
-my $result = {
+$result = {
     "data" => {
         "label" =>  "Предметы",
         "add"   => 1,              # разрешает добавлять предметы
@@ -149,7 +193,7 @@ my $result = {
     "status" => "ok"
 };
 
-$t->post_ok( $host.'/discipline/' );
+$t->post_ok( $host.'/discipline/' => {token => $token} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;

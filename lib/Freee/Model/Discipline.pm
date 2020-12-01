@@ -237,6 +237,7 @@ sub _save_discipline {
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {
+            'parent'  => $$data{'parent'},
             'publish' => $$data{'publish'},
             'title'   => $$data{'title'},
             'Discipline' => {

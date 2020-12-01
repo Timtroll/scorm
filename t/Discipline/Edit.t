@@ -39,6 +39,10 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
+# получение id последнего элемента
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 # Ввод файлов
 my $data = {
@@ -55,19 +59,9 @@ diag "";
 
 # Добавление предмета
 $data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
 };
 my $result = {
-    'id'        => 1,
+    'id'        => $$answer{'id'} + 1,
     'status'    => 'ok'
 };
 
@@ -80,15 +74,43 @@ $t->content_type_is('application/json;charset=UTF-8');
 $t->json_is( $result );
 diag"";
 
+# Сохранение предмета
+$data = {
+    'id'          => $$answer{'id'} + 1,
+    'name'        => 'Предмет1',
+    'label'       => 'Предмет 1',
+    'description' => 'Краткое описание',
+    'content'     => 'Полное описание',
+    'keywords'    => 'ключевые слова',
+    'url'         => 'https://test.com',
+    'seo'         => 'дополнительное поле для seo',
+    'parent'      => 0,
+    'status'      => 1,
+    'attachment'  => '[1]'
+};
+$result = {
+    'id'        => $$answer{'id'} + 1,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/save' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
+
 my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id' => 1
+            'id' => $$answer{'id'} + 1
         },
         'result' => {
             "data" => {
-                "id" => 1,
+                "id" => $$answer{'id'} + 1,
                 "parent" => 0,
                 "folder" => 1,
                 "tabs" => [
@@ -124,14 +146,14 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "discipline with id '404' doesn't exist",
+            'message'   => "discipline with id '404' doesn't exist\nCould not get discipline",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/discipline/edit _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -141,7 +163,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/discipline/edit _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
