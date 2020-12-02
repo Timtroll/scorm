@@ -194,7 +194,7 @@ sub _get_discipline {
                "route"       => '/discipline',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "publish"      => $$result{'publish'}
+               "publish"     => $$result{'publish'}
             }
         } 
         else {
@@ -237,10 +237,10 @@ sub _save_discipline {
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {
-            'parent'  => $$data{'parent'},
             'publish' => $$data{'publish'},
             'title'   => $$data{'title'},
             'Discipline' => {
+                'parent'       => $$data{'parent'},
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -264,7 +264,6 @@ sub _save_discipline {
             }
         });
     }
-
     return $result;
 }
 

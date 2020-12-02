@@ -152,12 +152,14 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 $result = {
     "data" => {
         "label" =>  "Предметы",
-        "add"   => 1,              # разрешает добавлять предметы
+        "current" =>  {
+            "route" =>  "/discipline",      
+            "add"   =>  "/discipline/add",    # разрешает добавлять предмет
+            "edit"  =>  "/discipline/edit",   # разрешает редактировать предмет
+            "delete"=>  "/discipline/delete"  # разрешает удалять предмет
+        },
         "child" =>  {
-            "add"    => 1,         # разрешает добавлять детей
-            "edit"   => 1,         # разрешает редактировать детей
-            "remove" => 1,         # разрешает удалять детей
-            "route"  => "/theme",  # роут для получения детей
+            "add"    =>  "/theme/add" ,         # разрешает добавлять детей
         },
         "list" => [
             {

@@ -53,7 +53,7 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items" WHERE "type" = \'User\'' );
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."users"' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();
 
@@ -61,7 +61,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'parent'    => $$answer{'id'}
+            'parent'    => 0
         },
         'result' => {
             'id'        => $$answer{'id'} + 1,
@@ -76,7 +76,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/add_user' => {token => $token} => form => $data );
+    $t->post_ok( $host.'/user/add' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;

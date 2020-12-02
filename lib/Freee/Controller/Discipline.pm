@@ -33,7 +33,7 @@ sub index {
                     "delete" => '/discipline/delete'    # разрешает удалять предмет
                 },
                 "child" =>  {
-                    "add"    => '/discipline/add'       # разрешает добавлять предмет
+                    "add"    => '/theme/add'       # разрешает добавлять предмет
                 },
                 "list" => $list ? $list : []
             };
@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'publish'      => $$result{'publish'} }
+                            { 'status'      => $$result{'publish'} }
                         ]
                     },
                     {
