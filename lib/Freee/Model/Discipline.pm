@@ -248,6 +248,7 @@ sub _save_discipline {
                 'keywords'     => $$data{'keywords'},
                 'import_source'=> '',
                 'url'          => $$data{'url'},
+                'attachment'   => $$data{'attachment'},
                 'date_updated' => $$data{'time_update'},
                 'seo'          => $$data{'seo'}
             },

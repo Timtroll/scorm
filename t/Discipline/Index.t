@@ -24,7 +24,6 @@ my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
@@ -44,6 +43,9 @@ my $token = $response->{'data'}->{'token'};
 my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
 $sth->execute();
 my $answer = $sth->fetchrow_hashref();
+
+# инициализация EAV
+my $discipline = Freee::EAV->new( 'Discipline' );
 
 # Ввод файлов
 my $data = {
@@ -104,7 +106,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => $discipline->root(),
             'status'      => 1,
             'attachment'  => '[1]'
         },
@@ -124,7 +126,7 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => $discipline->root(),
             'status'      => 0,
             'attachment'  => '[1]'
         },
@@ -203,28 +205,9 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->content_type_is('application/json;charset=UTF-8');
 $t->json_is( $result );
 diag"";
-
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+warn Dumper( $response );
 done_testing();
-
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
 
 
 

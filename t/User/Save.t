@@ -51,117 +51,27 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод групп
-my $data = {
-    1 => {
-        'data' => {
-            'name'      => 'name1',
-            'label'     => 'label1',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '1',
-            'status'    => 'ok'
-        }
-    },
-    2 => {
-        'data' => {
-            'name'      => 'name2',
-            'label'     => 'label2',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '2',
-            'status'    => 'ok' 
-        }
-    },
-    3 => {
-        'data' => {
-            'name'      => 'name3',
-            'label'     => 'label3',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '3',
-            'status'    => 'ok' 
-        }
-    }
-};
-diag "Create groups:";
-foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$data{$test}{'result'} );
-}
-diag "";
-
 # Ввод пользователей для изменения
 diag "Add users:";
 my $test_data = {
-    1 => {
-        'data' => {
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'avatar'       => 1,
-            'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
-        }
-    },
-    2 => {
-        'data' => {
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => -3.5,
-            'birthday'     => 807393600,
-            'password'     => 'password1',
-            'avatar'       => 1,
-            'email'        => '2@email.ru',
-            'phone'        => '+7(921)1111112',
-            'status'       => 1,
-            'groups'       => "[1,2,3]"
-        },
-        'result' => {
-            'id'        => 2,
-            'status'    => 'ok'
-        }
-    }
 };
-
-
-foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
-    $t->post_ok( $host.'/user/add_user' => {token => $token} => form => $$test_data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$test_data{$test}{'result'} );
-    diag "";
+$t->post_ok( $host.'/user/add' => {token => $token} => form => $test_data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag "Can't connect";
+    exit;
 }
+
+# получение id последнего элемента
+my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."users"' );
+$sth->execute();
+my $answer = $sth->fetchrow_hashref();
 
 $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество_right',
@@ -178,14 +88,15 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'},
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество_right',
@@ -201,14 +112,15 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'},
             'status'    => 'ok'
         },
         'comment' => 'No email:' 
     },
     3 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество_right',
@@ -224,14 +136,15 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'},
             'status'    => 'ok'
         },
         'comment' => 'No phone:' 
     },
     4 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество_right',
@@ -248,14 +161,15 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'},
             'status'    => 'ok'
         },
         'comment' => 'status 0:' 
     },
     5 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -270,7 +184,7 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $$answer{'id'},
             'status'    => 'ok'
         },
         'comment' => 'No password and no newpassword:' 
@@ -279,7 +193,8 @@ $test_data = {
     # отрицательные тесты
     6 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
             'place'        => 'place',
@@ -302,7 +217,8 @@ $test_data = {
     },
     7 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -326,7 +242,8 @@ $test_data = {
     },
     8 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -351,6 +268,7 @@ $test_data = {
     9 => {
         'data' => {
             'id'           => 404,
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -374,7 +292,8 @@ $test_data = {
     },
     10 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -398,7 +317,8 @@ $test_data = {
     },
     11 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -421,7 +341,8 @@ $test_data = {
     },
     12 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -444,7 +365,8 @@ $test_data = {
     },
     13 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -467,6 +389,7 @@ $test_data = {
     14 => {
         'data' => {
             'id'           => 'qwerty',
+            'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -490,7 +413,8 @@ $test_data = {
     },
     15 => {
         'data' => {
-            'id'           => 1,
+            'id'           => $$answer{'id'},
+            'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',

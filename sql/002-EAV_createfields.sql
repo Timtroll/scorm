@@ -18,6 +18,8 @@ BEGIN
     PERFORM eav_createfield( 'Discipline', 'content', 'Содержание', 'string', NULL );
     PERFORM eav_createfield( 'Discipline', 'keywords', 'Ключевые слова', 'string', NULL );
     PERFORM eav_createfield( 'Discipline', 'seo', 'seo', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'attachment', 'Вложенные файлы', 'string', NULL );
 
     PERFORM eav_createfield( 'SEO', 'keywords', 'Ключевые слова, фразы', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'description', 'Описание', 'string', NULL );
@@ -57,7 +59,7 @@ INSERT INTO "public"."EAV_items" (
     title,
     parent,
     has_childs
-) VALUES (TRUE, 0, 'Discipline', NOW(), 'learning_root', 0, 0 );
+) VALUES (TRUE, 0, 'Discipline', NOW(), 'discipline_root', 0, 0 );
 
 -----------
 INSERT INTO "public"."EAV_items" (
