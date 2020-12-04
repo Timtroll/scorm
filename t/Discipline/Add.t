@@ -19,6 +19,7 @@ BEGIN {
 }
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV clear_db );
 
 use Test::More;
 use Test::Mojo;
@@ -51,9 +52,8 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
-$sth->execute();
-my $result = $sth->fetchrow_hashref();
+# получение id последнего элемента
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
 
 my $test_data = {
     # положительные тесты
@@ -61,7 +61,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $$result{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
@@ -88,21 +88,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+clear_db( $t->app->config->{test}, $t->app->pg_dbh );

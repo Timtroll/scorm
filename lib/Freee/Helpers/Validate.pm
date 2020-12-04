@@ -53,17 +53,22 @@ sub register {
         my $self = shift;
 
         return 0, '_check_fields: No route' unless $self->url_for;
+warn"+++";
 
         my $url_for = $self->url_for;
         my %data = ();
-
+warn"1";
+warn Dumper( $vfields );
         foreach my $field ( keys %{$$vfields{$url_for}} ) {
 
             # пропускаем роуты, которых нет в хэше валидации
             next unless keys %{ $$vfields{$url_for} };
 
             my $param = $self->param($field);
-
+if ( $field eq '/user/save') {
+    warn Dumper( $$vfields{$url_for});
+    warn $param;
+}
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
             # проверка длины
@@ -105,14 +110,6 @@ sub register {
 
                 # проверка размера файла
                 $data{'size'} = length( $data{'content'} );
-# use File::Slurp::Unicode qw(slurp write_file);
-# my $path_dumper = './temp_dumper.conf';
-# write_file(
-#         $path_dumper,
-#         Dumper( $settings->{'upload_max_size'} )
-#     );
-# warn Dumper( $max_size );
-# warn Dumper( length( $data{'content'} ));
 
                 # if ( $data{'size'} > $max_size ) {
                 if ( $data{'size'} > $settings->{'upload_max_size'} ) {

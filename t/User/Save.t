@@ -26,6 +26,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_user clear_db );
 
 use Data::Dumper;
 
@@ -62,15 +63,13 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 }
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."users"' );
-$sth->execute();
-my $answer = $sth->fetchrow_hashref();
+my $answer = get_last_id_user( $t->app->pg_dbh );
 
 $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -88,14 +87,14 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => $$answer{'id'},
+            'id'        => $answer,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -112,14 +111,14 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => $$answer{'id'},
+            'id'        => $answer,
             'status'    => 'ok'
         },
         'comment' => 'No email:' 
     },
     3 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -136,14 +135,14 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => $$answer{'id'},
+            'id'        => $answer,
             'status'    => 'ok'
         },
         'comment' => 'No phone:' 
     },
     4 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -161,14 +160,14 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => $$answer{'id'},
+            'id'        => $answer,
             'status'    => 'ok'
         },
         'comment' => 'status 0:' 
     },
     5 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -184,7 +183,7 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'id'        => $$answer{'id'},
+            'id'        => $answer,
             'status'    => 'ok'
         },
         'comment' => 'No password and no newpassword:' 
@@ -193,7 +192,7 @@ $test_data = {
     # отрицательные тесты
     6 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -217,7 +216,7 @@ $test_data = {
     },
     7 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -242,7 +241,7 @@ $test_data = {
     },
     8 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -292,7 +291,7 @@ $test_data = {
     },
     10 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
@@ -317,7 +316,7 @@ $test_data = {
     },
     11 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
@@ -341,7 +340,7 @@ $test_data = {
     },
     12 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
@@ -365,7 +364,7 @@ $test_data = {
     },
     13 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
@@ -413,7 +412,7 @@ $test_data = {
     },
     15 => {
         'data' => {
-            'id'           => $$answer{'id'},
+            'id'           => $answer,
             'login'        => 'login',
             'surname'      => 'фамилия',
             'name'         => 'имя',
@@ -454,26 +453,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
 done_testing();
 
 # очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+# clear_db( $t->app->config->{test}, $t->app->pg_dbh );

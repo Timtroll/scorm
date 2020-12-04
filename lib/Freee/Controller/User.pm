@@ -289,7 +289,7 @@ sub save {
                 'import_source' => $$data{'avatar'}     // ''
             }
         };
-
+warn Dumper('save controller');
         $result = $self->model('User')->_save_user( $data );
     }
 

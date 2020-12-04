@@ -414,6 +414,7 @@ sub _save_user {
             'id'      => $$data{'eav_id'},
             'parent'  => 0
         });
+warn Dumper('save model');
 
         $result = $usr->_MultiStore( {                 
             'User' => {

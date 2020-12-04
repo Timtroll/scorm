@@ -27,6 +27,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_user clear_db );
 
 use Data::Dumper;
 
@@ -53,9 +54,7 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."users"' );
-$sth->execute();
-my $answer = $sth->fetchrow_hashref();
+my $answer = get_last_id_user( $t->app->pg_dbh );
 
 my $test_data = {
     # положительные тесты
@@ -64,7 +63,7 @@ my $test_data = {
             'parent'    => 0
         },
         'result' => {
-            'id'        => $$answer{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
@@ -89,26 +88,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+clear_db( $t->app->config->{test}, $t->app->pg_dbh );

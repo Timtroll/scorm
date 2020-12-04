@@ -24,6 +24,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV clear_db );
 
 use Data::Dumper;
 
@@ -50,9 +51,10 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
-$sth->execute();
-my $answer = $sth->fetchrow_hashref();
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
+
+# инициализация EAV
+my $discipline = Freee::EAV->new( 'Discipline' );
 
 # Ввод файлов
 my $data = {
@@ -71,7 +73,7 @@ diag "";
 $data = {
 };
 my $result = {
-    'id'        => $$answer{'id'} + 1,
+    'id'        => $answer + 1,
     'status'    => 'ok'
 };
 
@@ -88,7 +90,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -96,19 +98,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => $discipline->root(),
             'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => $$answer{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -116,19 +118,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => $discipline->root(),
             'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => $$answer{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'status 0:' 
     },
     3 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет3',
             'label'       => 'Предмет 3',
             'description' => 'Краткое описание',
@@ -136,11 +138,11 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
+            'parent'      => $discipline->root(),
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => $$answer{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'No status:' 
@@ -149,7 +151,7 @@ my $test_data = {
     # отрицательные тесты
     4 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
             'content'     => 'Полное описание',
@@ -167,7 +169,7 @@ my $test_data = {
     },
     5 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -186,7 +188,7 @@ my $test_data = {
     },
     6 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -224,7 +226,7 @@ my $test_data = {
     },
     8 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -262,24 +264,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+clear_db( $t->app->config->{test}, $t->app->pg_dbh );
 
 
 

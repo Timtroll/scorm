@@ -1,4 +1,4 @@
-package Install;
+package Test;
 
 use utf8;
 use warnings;
@@ -13,10 +13,10 @@ use Data::Dumper;
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
-    &get_last_id_EAV &clear_db
+    &get_last_id_EAV &get_last_id_user &clear_db
 );
 our @EXPORT_OK = qw(
-    &get_last_id_EAV &clear_db
+    &get_last_id_EAV &get_last_id_user &clear_db
 );
 
 # получение id последнего элемента EAV_items
@@ -31,21 +31,38 @@ sub get_last_id_EAV {
     return $$answer{'id'};
 }
 
-# очистка тестовой таблицы
-sub clear_db {
+# получение id последнего пользователя
+# my $answer = get_last_id_user( $connect );
+sub get_last_id_user {
     my $connect = shift;
 
-    $connect->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-    $connect->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
+    my $sth = $connect->prepare( 'SELECT max("id") AS "id" FROM "public"."users"' );
+    $sth->execute();
+    my $answer = $sth->fetchrow_hashref();
 
-    $connect->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
+    return $$answer{'id'};
+}
 
-    $connect->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
+# очистка тестовой таблицы
+sub clear_db {
+    my ( $test, $connect ) = @_;
 
-    $connect->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-    $connect->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
+    if ( $test ) {
+        $connect->do('ALTER SEQUENCE "public".media_id_seq RESTART');
+        $connect->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
 
-    $connect->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+        $connect->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
+
+        $connect->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
+
+        $connect->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
+        $connect->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
+
+        $connect->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+    }
+    else {
+        warn("Turn on 'test' option in config")
+    }
 }
 
 1;

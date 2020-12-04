@@ -126,26 +126,42 @@ sub _list_discipline {
         ]
     });
 
-    my @disciplines = ();
-    map {
-        my $item = {
-            'id'          => $_->{'id'},
-            'folder'      => $_->{'has_childs'},
-            'label'       => $_->{'title'},
-            'description' => $_->{'description'},
-            'content'     => $_->{'content'},
-            'keywords'    => $_->{'keywords'},
-            'url'         => $_->{'url'},
-            'seo'         => $_->{'seo'},
-            'route'       => $_->{'route'},
-            'parent'      => $_->{'parent'},
-            'status'      => $_->{'publish'},
-            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-        };
-        push @disciplines, $item;
-    } ( @$list );
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            # взять весь объект из EAV
+            $discipline = Freee::EAV->new( 'Discipline', { 'id' => $_->{'id'} } );
 
-    return \@disciplines;
+            $result = $discipline->_getAll();
+            if ( $result ) {
+                $_->{'id'}          = $$result{'id'},
+                $_->{'label'}       = $$result{'label'},
+                $_->{'description'} = $$result{'description'},
+                $_->{'content'}     = $$result{'content'},
+                $_->{'keywords'}    = $$result{'keywords'},
+                $_->{'url'}         = $$result{'url'},
+                $_->{'seo'}         = $$result{'seo'},
+                $_->{'route'}       = '/discipline',
+                $_->{'attachment'}  = $$result{'attachment'},
+                $_->{'status'}      = $$result{'publish'},
+                $_->{'folder'}      = $_->{'has_childs'},
+                delete $_->{'title'},
+                delete $_->{'distance'},
+                delete $_->{'has_childs'},
+                delete $_->{'import_source'},
+                delete $_->{'publish'},
+                delete $_->{'import_id'},
+                delete $_->{'date_created'},
+                delete $_->{'date_updated'},
+                delete $_->{'type'}
+            } 
+            else {
+                push @!, 'can\'t get list';
+                return;
+            }
+        }
+    }
+
+    return $list;
 }
 
 #  получить данные для редактирования предмета
@@ -237,9 +253,9 @@ sub _save_discipline {
         return unless $discipline;
 
         $result = $discipline->_MultiStore( {
-            'publish' => $$data{'publish'},
             'title'   => $$data{'title'},
             'Discipline' => {
+                'publish'      => $$data{'publish'},
                 'parent'       => $$data{'parent'},
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},

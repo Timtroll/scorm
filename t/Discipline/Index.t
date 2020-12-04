@@ -14,6 +14,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV clear_db );
 
 use Data::Dumper;
 
@@ -40,9 +41,7 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
-$sth->execute();
-my $answer = $sth->fetchrow_hashref();
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
 
 # инициализация EAV
 my $discipline = Freee::EAV->new( 'Discipline' );
@@ -64,7 +63,7 @@ diag "";
 $data = {
 };
 my $result = {
-    'id'        => $$answer{'id'} + 1,
+    'id'        => $answer + 1,
     'status'    => 'ok'
 };
 
@@ -81,7 +80,7 @@ diag"";
 $data = {
 };
 $result = {
-    'id'        => $$answer{'id'} + 2,
+    'id'        => $answer + 2,
     'status'    => 'ok'
 };
 
@@ -98,7 +97,7 @@ diag"";
 my $test_data = {
     1 => {
         'data' => {
-            'id'          => $$answer{'id'} + 1,
+            'id'          => $answer + 1,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -111,14 +110,14 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'          => $$answer{'id'} + 2,
+            'id'          => $answer + 2,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -131,7 +130,7 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
+            'id'        => $answer + 2,
             'status'    => 'ok'
         }
     }
@@ -166,29 +165,29 @@ $result = {
         "list" => [
             {
                 "folder"      => 0,
-                "id"          => 1,
+                "id"          => $answer + 1,
                 "label"       => "Предмет 1",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline/",  # роут для работы с элементами
-                "parent"      => 0,
+                "route"       => "/discipline",  # роут для работы с элементами
+                "parent"      => 3,
                 "status"      => 1,
                 "attachment"  => '[1]'
             },
             {
                 "folder"      => 0,
-                "id"          => 2,
+                "id"          => $answer + 2,
                 "label"       => "Предмет 2",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline/",
-                "parent"      => 0,
+                "route"       => "/discipline",
+                "parent"      => 3,
                 "status"      => 0,
                 "attachment"  => '[1]'
             }
@@ -206,12 +205,6 @@ $t->content_type_is('application/json;charset=UTF-8');
 $t->json_is( $result );
 diag"";
 $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-warn Dumper( $response );
 done_testing();
 
-
-
-
-
-
-
+clear_db( $t->app->config->{test}, $t->app->pg_dbh );
