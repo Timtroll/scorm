@@ -11,7 +11,7 @@ requires 'Data::Compare';
 requires 'Encode';
 requires 'Email::MIME';
 requires 'FindBin';
-requires 'File::Slurp::Unicode';
+requires 'File::Slurp';
 requires 'HTML::Strip';
 requires 'IO::All';
 requires 'IO::Socket::SSL';

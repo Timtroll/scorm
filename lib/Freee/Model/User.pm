@@ -4,7 +4,7 @@ use Mojo::Base 'Freee::Model::Base';
 
 use POSIX qw(strftime);
 use DBI qw(:sql_types);
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( decode_json );
 
 # DBI->trace(1);
 
@@ -455,7 +455,7 @@ warn Dumper('save model');
 
     unless ( @! ) {
         # добавление в user_groups
-        $groups = from_json( $$data{'groups'} );
+        $groups = decode_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id ) RETURNING user_id';
 
         foreach my $group_id ( @$groups ) {

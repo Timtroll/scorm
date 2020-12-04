@@ -6,7 +6,7 @@ use warnings;
 
 use Encode;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw( from_json to_json );
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -24,7 +24,7 @@ sub send_mail {
 
     if ( $self->param( 'files' ) ) {
         # проверка существования загружаемых фото
-        $files = from_json( $self->param( 'files' ) );
+        $files = decode_json( $self->param( 'files' ) );
         foreach ( @$files ) {
             unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
                 push @!, "file with id '$_' doesn't exist";

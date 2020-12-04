@@ -6,7 +6,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
-use File::Slurp::Unicode qw( read_file );
+use File::Slurp qw( read_file );
 use Mojo::JSON qw( decode_json );
 use Data::Compare;
 use Data::Dumper;

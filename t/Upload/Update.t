@@ -7,7 +7,7 @@ use Test::More;
 use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw( decode_json );
-use File::Slurp::Unicode qw( read_file );
+use File::Slurp qw( read_file );
 use Data::Compare;
 use Data::Dumper;
 use lib "$FindBin::Bin/../../lib";

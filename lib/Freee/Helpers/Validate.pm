@@ -6,16 +6,20 @@ use warnings;
 use utf8;
 
 use base 'Mojolicious::Plugin';
-use Mojo::JSON qw(decode_json);
+use Mojo::JSON qw( decode_json );
 
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-use File::Slurp::Unicode 'read_file';
+use File::Slurp;
 
 use Data::Dumper;
 use Freee::Model::Utils;
 use common;
+use DDP;
+
+# binmode STDOUT, ":utf8";
+# binmode STDIN, ":utf8";
 
 sub register {
     my ($self, $app) = @_;
@@ -53,22 +57,17 @@ sub register {
         my $self = shift;
 
         return 0, '_check_fields: No route' unless $self->url_for;
-warn"+++";
 
         my $url_for = $self->url_for;
         my %data = ();
-warn"1";
-warn Dumper( $vfields );
-        foreach my $field ( keys %{$$vfields{$url_for}} ) {
+
+        foreach my $field ( sort keys %{$$vfields{$url_for}} ) {
 
             # пропускаем роуты, которых нет в хэше валидации
             next unless keys %{ $$vfields{$url_for} };
 
             my $param = $self->param($field);
-if ( $field eq '/user/save') {
-    warn Dumper( $$vfields{$url_for});
-    warn $param;
-}
+
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
             # проверка длины
@@ -157,7 +156,7 @@ if ( $field eq '/user/save') {
             }
             # проверка по регэкспу
             else {
-                if ( !defined $param || !$regexp || !( $param =~ /$regexp/ ) ) {
+                if ( ! defined $param || ! $regexp || ! $param =~ /$regexp/ ) {
                     push @!, "$url_for _check_fields: empty field '$field', didn't match regular expression";
                     last;
                 }
@@ -256,7 +255,7 @@ if ( $field eq '/user/save') {
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
                 'phone'         => [ '', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'country'       => [ 'required', qr/^\w+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^\d+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
@@ -660,7 +659,7 @@ if ( $field eq '/user/save') {
                 "value"         => [ '', qr/^[01]$/os, 1 ]
             }
         };
-
+ 
         return $vfields;
     });
 
@@ -669,6 +668,7 @@ if ( $field eq '/user/save') {
         my ($self) = @_;
 
         my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'} );
+
         $countries = decode_json $countries;
 
         return $countries;
@@ -679,6 +679,7 @@ if ( $field eq '/user/save') {
         my ($self) = @_;
 
         my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'} );
+
         $timezones = decode_json $timezones;
 
         return $timezones;

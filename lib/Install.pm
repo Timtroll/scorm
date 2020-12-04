@@ -11,7 +11,7 @@ use Freee::EAV;
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK );
-use File::Slurp::Unicode qw(slurp write_file);
+use File::Slurp qw(slurp write_file);
 use Data::Dumper;
 
 binmode(STDOUT);

@@ -6,7 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
 use common;
 use Data::Dumper;
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( decode_json );
 
 # получить список курсов
 # $self->index( $data );
@@ -152,7 +152,7 @@ sub save {
 
     if ( ! @! && $$data{'attachment'}) {
         # проверка существования вложенных файлов
-        $attachment = from_json( $$data{'attachment'} );
+        $attachment = decode_json( $$data{'attachment'} );
         foreach ( @$attachment ) {
             unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
                 push @!, "file with id '$_' doesn't exist";

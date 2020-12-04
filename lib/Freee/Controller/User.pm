@@ -5,7 +5,7 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
 use Data::Dumper;
-use Mojo::JSON qw( from_json to_json );
+use Mojo::JSON qw( decode_json encode_json );
 use Digest::SHA qw( sha256_hex );
 use DBI qw(:sql_types);
 use common;
@@ -148,7 +148,7 @@ sub edit {
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$user_data{'groups'} ? from_json( $$user_data{'groups'} ) : [] }
+                       { "groups" => $$user_data{'groups'} ? decode_json( $$user_data{'groups'} ) : [] }
                     ]
                 }
             ]
@@ -215,6 +215,7 @@ sub save {
 
     # проверка данных
     $data = $self->_check_fields();
+p $data;
 
     unless ( @! ) {
         if ( $$data{'password'} && !$$data{'newpassword'} ) {
@@ -243,7 +244,7 @@ sub save {
 
             unless ( @! ) {
                 # проверка существования групп пользователя
-                $groups = from_json( $$data{'groups'} );
+                $groups = decode_json( $$data{'groups'} );
                 foreach ( @$groups ) {
                     unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
                         push @!, "group with id '$_' doesn't exist";
@@ -363,8 +364,9 @@ sub registration {
             $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
         }
 
+# ?????????? почему [5] 
         $data = {
-            'groups' => to_json( [ 5 ] ),
+            'groups' => encode_json( [ 5 ] ),
             'data_user' => {
                 'publish'       => 'false',
                 'login'         => $$data{'login'},

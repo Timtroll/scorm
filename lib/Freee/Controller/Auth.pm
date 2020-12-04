@@ -101,17 +101,11 @@ sub check_token {
 
 warn '=check_token=';
 
-warn "route = ".$self->url_for."\n";
-warn $self->req->headers->header('token');
-use DDP;
-p $tokens;
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
-warn 'redirect_to 1';
         # return;
         $self->redirect_to('/error/');
     }
-warn '===========';
 
 # warn ( $tokens );
 # warn ( $self->req->headers->header('token') );

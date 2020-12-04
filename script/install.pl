@@ -27,8 +27,8 @@ use DBI qw(:sql_types);
 use Data::Dumper;
 use Freee::Mock::Install;
 
-use DDP;
 $| = 1;
+
 binmode(STDOUT);
 binmode(STDERR);
 

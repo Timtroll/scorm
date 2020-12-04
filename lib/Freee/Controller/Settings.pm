@@ -4,7 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw( to_json decode_json );
+use Mojo::JSON qw( encode_json decode_json );
 use Encode;
 
 use Freee::Mock::Settings;
@@ -12,7 +12,7 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
-use File::Slurp::Unicode qw( write_file read_file );
+use File::Slurp qw( write_file read_file );
 
 use Data::Dumper;
 use common;
@@ -282,8 +282,8 @@ sub load_default {
                     "label"         => $$children{'label'},
                     "mask"          => $$children{'mask'} // '',
                     "type"          => $$children{'type'} // '',
-                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? to_json( $$children{'value'} ) : $$children{'value'},
-                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? to_json( $$children{'selected'} ) : '[]',
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? encode_json( $$children{'value'} ) : $$children{'value'},
+                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? encode_json( $$children{'selected'} ) : '[]',
                     "required"      => $$children{'required'} // 0,
                     "readonly"      => 0,
                     "folder"        => 0,
@@ -602,7 +602,7 @@ sub export {
     # кодирование данных в json
     unless ( @! ) {
         # перевод настреок в json
-        $json = to_json( $result );
+        $json = encode_json( $result );
         push @!, "Can't encode into json" unless $json;
     }
 
