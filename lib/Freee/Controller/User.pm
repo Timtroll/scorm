@@ -4,13 +4,13 @@ use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
-use Data::Dumper;
+
 use Mojo::JSON qw( decode_json encode_json );
 use Digest::SHA qw( sha256_hex );
 use DBI qw(:sql_types);
+use Data::Dumper;
 use common;
 
-use Data::Dumper;
 
 # список юзеров по группам (обязательно id группы)
 # $self->index($data)

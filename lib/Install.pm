@@ -7,10 +7,10 @@ use strict;
 use DBI qw(:sql_types);
 use Digest::SHA qw( sha256_hex );
 use Freee::EAV;
+use Encode;
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK );
-# use File::Slurp qw( read_file write_file );
 use common;
 
 use Data::Dumper;
@@ -144,7 +144,8 @@ sub create_tables {
 
     # создание расширения
     my $filename = $path_sql . '/_create_extiention.sql';
-    my $sql = read_file( $filename, { binmode => ':utf8' } );
+    my $sql = read_file( $filename );
+    $sql = decode('utf-8', $sql);
 
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
@@ -171,7 +172,9 @@ sub create_tables {
         $filename = $path_sql . '/' . $_;
 
         # чтение содержимого файлов
-        $sql = read_file( $filename, { binmode => ':utf8' } );
+        $sql = read_file( $filename );
+        $sql = decode('utf-8', $sql);
+
         unless ( $sql ) { 
             logging( "can't read file $filename" ); 
             exit; 

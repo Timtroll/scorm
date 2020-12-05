@@ -28,9 +28,6 @@ use common;
 
 $| = 1;
 
-# binmode(STDOUT);
-# binmode(STDERR);
-
 my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, $base );
 
 # чтение параметров
@@ -56,7 +53,7 @@ $mode = $options{'start'};
 $options{'start'} = ( exists $options{'start'} && $options{'start'} && grep( /^$mode$/, ( 'test', 'scorm' ) ) ) ? $options{'start'} : 'scorm';
 
 # читаем дефолтный конфиг
-$config_update = read_file( $options{'path'} );
+$config_update = read_file( $options{'path'}, undef );
 $config_update = { eval( $config_update ) }->{'config_update'};
 helpme('need_config') if ( $@ );
 

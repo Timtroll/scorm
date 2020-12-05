@@ -107,11 +107,6 @@ warn '=check_token=';
         $self->redirect_to('/error/');
     }
 
-# warn ( $tokens );
-# warn ( $self->req->headers->header('token') );
-# warn ( exists( $$tokens{ $self->req->headers->header('token') } ) );
-# warn ( $$tokens{ $self->req->headers->header('token') } );
-
     # проверка токена
     if (
         $tokens &&
@@ -144,10 +139,11 @@ warn "check permissions\n";
 warn "checked";
         return 1;
     }
-warn 'redirect_to 2';
-# return 1;
-    # return;
+
+warn "redirect to error";
     $self->redirect_to('/error/');
+
+    return 0;
 }
 
 1;

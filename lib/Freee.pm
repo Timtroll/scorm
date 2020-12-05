@@ -33,6 +33,7 @@ sub startup {
     $host = $config->{'host'};
 
     $self->plugin('Freee::Helpers::Utils');
+    $self->plugin('Freee::Helpers::Validate');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgForum');
@@ -102,6 +103,8 @@ warn "+++++++++++";
     $r->post('/reset/')                   ->to('reset#index');         # отправка сообщения о смене
     $r->get('/reset/confirmation')       ->to('reset#confirmation');  # подтверждение смены пароля
     $r->post('/reset/reset')              ->to('reset#reset');         # смена пароля
+
+    $r->any('/error/')->to('index#error');
 
     # загрузка файлов
     $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла

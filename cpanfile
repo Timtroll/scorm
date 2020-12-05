@@ -13,7 +13,6 @@ requires 'Email::MIME';
 requires 'FindBin';
 requires 'File::Slurp';
 requires 'HTML::Strip';
-requires 'IO::All';
 requires 'IO::Socket::SSL';
 requires 'JSON';
 requires 'Mojolicious::Plugin::Config';

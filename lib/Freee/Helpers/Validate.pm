@@ -6,12 +6,10 @@ use warnings;
 use utf8;
 
 use base 'Mojolicious::Plugin';
-use Mojo::JSON qw( decode_json );
 
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-# use File::Slurp qw( read_file );
 
 use Data::Dumper;
 use Freee::Model::Utils;
@@ -95,9 +93,11 @@ sub register {
                     }
                 }
             }
-            elsif ( $required eq '' && $param eq '' ) {
+            elsif ( ! $required && ! $param  ) {
+                $data{$field} = '';
                 next;
             }
+
             # проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
@@ -661,28 +661,6 @@ sub register {
         };
  
         return $vfields;
-    });
-
-    # страны по ISO 3166-1 (2 буквы)
-    $app->helper( '_countries' => sub {
-        my ($self) = @_;
-
-        my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'}, { binmode => ':utf8' } );
-
-        $countries = decode_json $countries;
-
-        return $countries;
-    });
-
-    # cписок часовых поясов по странам
-    $app->helper( '_time_zones' => sub {
-        my ($self) = @_;
-
-        my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'}, { binmode => ':utf8' } );
-
-        $timezones = decode_json $timezones;
-
-        return $timezones;
     });
 }
 

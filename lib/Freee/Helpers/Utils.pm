@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use base 'Mojolicious::Plugin';
+use Mojo::JSON qw/decode_json/;
 
 use common;
 use Data::Dumper;
@@ -166,5 +167,35 @@ sub register {
         return;
     });
 
+    # страны по ISO 3166-1 (2 буквы)
+    $app->helper( '_countries' => sub {
+        my ($self) = @_;
+
+        my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'}, { binmode => ':utf8' } );
+
+        $countries = eval { decode_json $countries };
+        if ( $@ ) {
+            print "decode_json failed, invalid json. error:$@\n";
+        }
+
+        return $countries;
+    });
+
+    # cписок часовых поясов по странам
+    $app->helper( '_time_zones' => sub {
+        my ($self) = @_;
+
+        my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'}, { binmode => ':utf8' } );
+
+        $timezones = eval { decode_json $timezones };
+        if ( $@ ) {
+            print "decode_json failed, invalid json. error:$@\n";
+        }
+
+
+        return $timezones;
+    });
+
 }
+
 1;
