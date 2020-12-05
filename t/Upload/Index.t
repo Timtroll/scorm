@@ -157,7 +157,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
         # проверка содержимого файла описания
         $desc_path = $settings->{'upload_local_path'} . $1 . '.' . $settings->{'desc_extension'};
-        $description = read_file( $desc_path );
+        $description = read_file( $desc_path, { binmode => ':utf8' } );
         $description = decode_json $description;
 
         ok( 

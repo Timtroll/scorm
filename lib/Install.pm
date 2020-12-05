@@ -11,11 +11,8 @@ use Freee::EAV;
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK );
-use File::Slurp qw(slurp write_file);
+use File::Slurp qw( read_file write_file );
 use Data::Dumper;
-
-binmode(STDOUT);
-binmode(STDERR);
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
@@ -144,7 +141,8 @@ sub create_tables {
 
     # создание расширения
     my $filename = $path_sql . '/_create_extiention.sql';
-    my $sql = slurp( $filename, encoding => 'utf8' );
+    my $sql = read_file( $filename, { binmode => ':utf8' } );
+
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
     $sth->finish();
@@ -170,7 +168,7 @@ sub create_tables {
         $filename = $path_sql . '/' . $_;
 
         # чтение содержимого файлов
-        $sql = slurp( $filename, encoding => 'utf8' );
+        $sql = read_file( $filename, { binmode => ':utf8' } );
         unless ( $sql ) { 
             logging( "can't read file $filename" ); 
             exit; 
@@ -269,6 +267,7 @@ sub write_config {
     # запись конфигурации в файл
     my $result = write_file(
         $path_conf,
+        { binmode => ':utf8' },
         Dumper( $config )
     );
     mojo_do('restart');

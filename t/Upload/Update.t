@@ -154,7 +154,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
     # проверка содержимого файла описания
     if ( $$result{'status'} eq 'ok' ) {
-        $description = read_file( $desc_path );
+        $description = read_file( $desc_path, { binmode => ':utf8' } );
         $description = decode_json $description;
         ok( 
             $$description{'description'} eq $$data{'description'} &&

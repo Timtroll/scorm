@@ -11,7 +11,7 @@ use Mojo::JSON qw( decode_json );
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-use File::Slurp;
+use File::Slurp qw( read_file );
 
 use Data::Dumper;
 use Freee::Model::Utils;
@@ -667,7 +667,7 @@ sub register {
     $app->helper( '_countries' => sub {
         my ($self) = @_;
 
-        my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'} );
+        my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'}, { binmode => ':utf8' } );
 
         $countries = decode_json $countries;
 
@@ -678,7 +678,7 @@ sub register {
     $app->helper( '_time_zones' => sub {
         my ($self) = @_;
 
-        my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'} );
+        my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'}, { binmode => ':utf8' } );
 
         $timezones = decode_json $timezones;
 

@@ -622,7 +622,7 @@ sub export {
         # запись файла
         $result = write_file(
             $filepath . $filename,
-            {err_mode => 'silent'},
+            { binmode => ':utf8' },
             $json
         );
         push @!, "Can't store \'$filepath . $filename\'" unless $result;
@@ -678,7 +678,7 @@ sub import {
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
         # чтение файла
-        $json = read_file( $filepath, {err_mode => 'silent'} );
+        $json = read_file( $filepath, { binmode => ':utf8' } );
         push @!, "can't read '$filepath'" unless $json;
     }
 

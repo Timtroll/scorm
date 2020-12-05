@@ -66,8 +66,17 @@ push @{$config_update->{'secrets'}}, generate_secret( 40 );
 
 mojo_do( 'stop' );
 
+# останавливаем все соединения с базой
+# psql -U postgres -c 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE "datname" = \'scorm\' ORDER BY "backend_start" ASC LIMIT ( SELECT COUNT(*) FROM pg_stat_activity WHERE "datname" = \'scorm\' )::integer';
+
 # Соединяеся с базой для создания/удаления баз
 $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
+
+# останавливаем все соединения с базой
+my $sql = 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE "datname" = \'scorm\' ORDER BY "backend_start" ASC LIMIT ( SELECT COUNT(*) FROM pg_stat_activity WHERE "datname" = \'scorm\' )::integer';
+my $sth = $self->{dbh}->prepare( $sql );
+$sth->execute();
+$sth->finish();
 
 all_one_test();
 

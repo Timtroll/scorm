@@ -41,6 +41,7 @@ sub index {
         # запись файла
         $result = write_file(
             $settings->{'upload_local_path'} . $$data{'filename'} . '.' . $$data{'extension'},
+            { binmode => ':utf8' },
             $$data{'content'}
         );
         push @!, "Can not store '$$data{'filename'}' file" unless $result;
@@ -62,7 +63,11 @@ sub index {
     unless ( @! ) {
         $local_path = $settings->{'upload_local_path'};
         $extension = $settings->{'desc_extension'};
-        $write_result = write_file( $local_path . $$data{'filename'} . '.' . $extension, $json );
+        $write_result = write_file(
+            $local_path . $$data{'filename'} . '.' . $extension,
+            { binmode => ':utf8' },
+            $json
+        );
         push @!, "Can not write desc of $$data{'title'}" unless $write_result;
     }
 
@@ -203,7 +208,11 @@ sub update {
     $url_path = $settings->{'upload_url_path'};
     $desc_extension = $settings->{'desc_extension'};
     unless ( @! ) {
-        $rewrite_result = write_file( $local_path . $$data{'filename'} . '.' . $desc_extension, $json );
+        $rewrite_result = write_file(
+            $local_path . $$data{'filename'} . '.' . $desc_extension,
+            { binmode => ':utf8' },
+            $json
+        );
         push @!, "Can not update description of $$data{'title'}" unless $rewrite_result;
     }
 
