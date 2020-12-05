@@ -7,7 +7,7 @@ binmode(STDOUT,':utf8');
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::JSON qw( decode_json );
 use Mojo::File;
-use File::Slurp qw( read_file );
+# use File::Slurp qw( read_file );
 
 # use Mojo::EventEmitter;
 # use Mojo::RabbitMQ::Client;

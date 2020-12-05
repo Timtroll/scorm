@@ -5,14 +5,16 @@ use warnings;
 use strict;
 
 use DBI qw(:sql_types);
-use DDP;
 use Digest::SHA qw( sha256_hex );
 use Freee::EAV;
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK );
-use File::Slurp qw( read_file write_file );
+# use File::Slurp qw( read_file write_file );
+use common;
+
 use Data::Dumper;
+use DDP;
 
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
@@ -196,15 +198,13 @@ sub load_defaults {
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
 
+# ??????? зачем?
     # получаем id группы unaproved
     my $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
     my $sth = $self->{dbh}->prepare( $sql );
     $sth->execute();
 
     $sth->finish();
-
-    # получение соли из конфига
-    # my $salt = $config_users->{'secrets'}->[0];
 
     my @users = ( 'admin', 'teacher', 'student' );
     foreach my $user (@users) {

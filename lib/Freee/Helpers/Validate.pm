@@ -11,7 +11,7 @@ use Mojo::JSON qw( decode_json );
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-use File::Slurp qw( read_file );
+# use File::Slurp qw( read_file );
 
 use Data::Dumper;
 use Freee::Model::Utils;

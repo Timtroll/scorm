@@ -19,13 +19,12 @@ use strict;
 use warnings;
 
 use lib './lib';
-use IO::All;
-# use Freee::EAV;
 use Digest::SHA qw( sha256_hex );
 use Install;
 use DBI qw(:sql_types);
 use Data::Dumper;
 use Freee::Mock::Install;
+use common;
 
 $| = 1;
 
@@ -57,7 +56,7 @@ $mode = $options{'start'};
 $options{'start'} = ( exists $options{'start'} && $options{'start'} && grep( /^$mode$/, ( 'test', 'scorm' ) ) ) ? $options{'start'} : 'scorm';
 
 # читаем дефолтный конфиг
-$config_update < io $options{'path'};
+$config_update = read_file( $options{'path'} );
 $config_update = { eval ( $config_update ) }->{'config_update'};
 helpme('need_config') if ( $@ );
 

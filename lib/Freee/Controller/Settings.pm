@@ -12,7 +12,7 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
-use File::Slurp qw( write_file read_file );
+# use File::Slurp qw( write_file read_file );
 
 use Data::Dumper;
 use common;
@@ -282,9 +282,9 @@ sub load_default {
                     "label"         => $$children{'label'},
                     "mask"          => $$children{'mask'} // '',
                     "type"          => $$children{'type'} // '',
-                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? encode_json( $$children{'value'} ) : $$children{'value'},
-                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? encode_json( $$children{'selected'} ) : '[]',
-                    "required"      => $$children{'required'} // 0,
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? encode_json( utf8::encode( $$children{'value'} ) ) : $$children{'value'},
+                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? encode_json( utf8::encode( $$children{'selected'} ) ) : '[]',
+                    "required"      => $$children{'required'} // 0, 
                     "readonly"      => 0,
                     "folder"        => 0,
                     "publish"       => 1,

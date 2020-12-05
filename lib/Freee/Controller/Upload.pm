@@ -3,7 +3,7 @@ package Freee::Controller::Upload;
 use utf8;
 use Encode;
 use Mojo::Base 'Mojolicious::Controller';
-use File::Slurp qw( write_file );
+# use File::Slurp qw( write_file );
 use Mojo::JSON qw( encode_json );
 use Data::Dumper;
 use common;
