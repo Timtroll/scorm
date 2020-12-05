@@ -66,18 +66,20 @@ push @{$config_update->{'secrets'}}, generate_secret( 40 );
 
 mojo_do( 'stop' );
 
-# останавливаем все соединения с базой
-# psql -U postgres -c 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE "datname" = \'scorm\' ORDER BY "backend_start" ASC LIMIT ( SELECT COUNT(*) FROM pg_stat_activity WHERE "datname" = \'scorm\' )::integer';
-
-# Соединяеся с базой для создания/удаления баз
+# Соединяеся с базой
 $self->{dbh} = connect_db( $config_update->{'databases'}->{'pg_postgres'} );
 
 # останавливаем все соединения с базой
-my $sql = 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE "datname" = \'scorm\' ORDER BY "backend_start" ASC LIMIT ( SELECT COUNT(*) FROM pg_stat_activity WHERE "datname" = \'scorm\' )::integer';
+my $name = ( $options{'mode'} eq 'test' ) ? 'scorm_test' : 'scorm';
+# $name = 'scorm_test' if $options{'mode'} eq 'test';
+# $name = 'scorm' if $options{'mode'} eq 'scorm';
+
+my $sql = 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE "datname" = \''.$name.'\' ORDER BY "backend_start" ASC LIMIT ( SELECT COUNT(*) FROM pg_stat_activity WHERE "datname" = \''.$name.'\' )::integer';
 my $sth = $self->{dbh}->prepare( $sql );
 $sth->execute();
 $sth->finish();
 
+# создание/удаление баз
 all_one_test();
 
 warn 'All setting required';
