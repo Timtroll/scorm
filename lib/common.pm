@@ -7,8 +7,9 @@ use strict;
 use Mojo::Home;
 use IO::All;
 
-binmode(STDOUT);
-binmode(STDERR);
+binmode(STDIN, ":utf8");
+binmode(STDOUT, ":utf8");
+binmode(STDERR, ":utf8");
 
 use Exporter();
 use vars qw( @ISA @EXPORT @EXPORT_OK $config $settings $codes $clear $tokens $log $routs $vfields $permissions $websockets $beans $dbh $FieldsAsArray $Fields $DataTables $FeildsById );
@@ -58,7 +59,14 @@ sub rel_file { $home->rel_file(shift); }
 sub read_file {
     my ( $path ) = shift;
 
-    my $data < io $path;
+    # my $data < io $path;
+    my $data;
+    open ( FILE, '<', $path ) or push @!, "Can't open file $path";
+        binmode(FILE, ":encoding(UTF-8)");
+        while ( <FILE> ) {
+            $data .= $_;
+        }
+    close ( FILE );
 
     return $data;
 }
@@ -68,6 +76,7 @@ sub write_file {
 
     # my $data < io $path;
     open ( FILE, '>', $path ) or push @!, "Can't open file $path";
+        binmode(FILE, ":encoding(UTF-8)");
         print FILE $data;
     close ( FILE );
 

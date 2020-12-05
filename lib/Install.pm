@@ -16,6 +16,7 @@ use common;
 use Data::Dumper;
 use DDP;
 
+
 our @ISA = qw( Exporter );
 our @EXPORT = qw(
     &logging &check_db &delete_db &mojo_do &create_db &connect_db &create_tables &load_defaults &add_user 
@@ -215,10 +216,7 @@ sub load_defaults {
 
 sub add_user {
     my ( $self, $data ) = @_;
-# my $sth =$self->{dbh}->prepare( 'SELECT current_database();' );
-# $sth->execute();
-# my $result = $sth->fetchrow_hashref();
-# warn Dumper( $result );
+
     Freee::EAV->new( 'User', { dbh => $self->{dbh} } );
     my $user =    {
         'publish'   => \1,
@@ -290,4 +288,5 @@ sub generate_secret {
 sub reset_test_db {
     my $res = `./script/install.pl mode=test start=test rebuild=1 path=../temp_freee.conf`;
 }
+
 1;

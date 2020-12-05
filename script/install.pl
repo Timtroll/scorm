@@ -1,4 +1,4 @@
-#!/usr/bin/perl -CS
+#!/usr/bin/perl -w
 
 # должен вызываться только из корневой директории для не существующей базы данных
 # миграция: чтение и запуск sql файлов из scorm/sql
@@ -28,8 +28,8 @@ use common;
 
 $| = 1;
 
-binmode(STDOUT);
-binmode(STDERR);
+# binmode(STDOUT);
+# binmode(STDERR);
 
 my ( $self, $path_sql, $path_conf, $path_log, $check_scorm, $config_update, $base );
 
@@ -57,7 +57,7 @@ $options{'start'} = ( exists $options{'start'} && $options{'start'} && grep( /^$
 
 # читаем дефолтный конфиг
 $config_update = read_file( $options{'path'} );
-$config_update = { eval ( $config_update ) }->{'config_update'};
+$config_update = { eval( $config_update ) }->{'config_update'};
 helpme('need_config') if ( $@ );
 
 # генерируем secrets
