@@ -119,7 +119,7 @@ sub edit {
                             }
                         },
                         {"place"      => $$user_data{'place'} },
-                        {"status"     => $$user_data{'publish'} ? 1 : 0 },
+                        {"status"     => $$user_data{'status'} ? 1 : 0 },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
@@ -212,9 +212,11 @@ sub save {
     my $self = shift;
 
     my ( $data, $salt, $resp, $groups, $result );
-
+warn '=save==';
     # проверка данных
     $data = $self->_check_fields();
+warn '-_check_fields-';
+use DDP;
 p $data;
 
     unless ( @! ) {

@@ -173,7 +173,7 @@ sub _get_user {
 #     'id'            1,
 #     'login'         "admin",
 #     'phone'         undef,
-#     'publish'       1,
+#     'status'        1,
 #     'time_access'   "2020-09-11 02:33:27.102561+03",
 #     'time_create'   "2020-09-11 02:33:27.102561+03",
 #     'time_update'   "2020-09-11 02:33:27.102561+03",
@@ -257,7 +257,7 @@ sub _empty_user {
             'country'      => 'RU',
             'birthday'     => strftime( "%F %T", localtime() ),
             'import_source'=> '',
-            'publish'      => \0
+            'status'       => \0
         }
     };
     $user = Freee::EAV->new( 'User', $eav );
@@ -265,7 +265,7 @@ sub _empty_user {
 
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
-        'publish'   => 0,
+        'status'   => 0,
         'email'     => '',
         'phone'     => '',
         'password'  => '',
@@ -284,7 +284,7 @@ sub _empty_user {
         $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$data ).' )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         foreach ( keys %$data ) {
-            my $type = /publish/ ? SQL_BOOLEAN : undef();
+            my $type = /status/ ? SQL_BOOLEAN : undef();
             $sth->bind_param( ':'.$_, $$data{$_}, $type );
         }
         $sth->execute();
@@ -335,10 +335,10 @@ sub _empty_user {
 #     'birthday'          => '1972-01-06 00:00:00',# дата рождения
 #     'login'             => 'username@ya.ru',     # email пользователя
 #     'email'             => 'login',              # login пользователя
-#     'emailconfirmed'    => 1,                    # email подтвержден
+#     'emailconfirmed'    => 1/0,                  # email подтвержден
 #     'phone'             => 79312445646,          # номер телефона
-#     'phoneconfirmed'    => 1,                    # телефон подтвержден
-#     'publish'            => 1,                    # активный / не активный пользователь
+#     'phoneconfirmed'    => 1/0,                  # телефон подтвержден
+#     'status'            => 1/0,                  # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],            # список ID групп
 #     'password'          => 'khasdf',             # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -384,8 +384,9 @@ sub _save_user {
         $sql = 'UPDATE "public"."users" SET ' .
             join( ', ', map { 
                 my $val;
-                if ( /publish/ ) {
-                    $val = $$data{'data_user'}{$_};
+                if ( /status/ ) {
+                    # $val = $$data{'data_user'}{$_};
+                    $val = $$data{'data_user'}{$_} ? 't' : '';
                 }
                 else {
                     $val = $self->{'app'}->pg_dbh->quote( $$data{'data_user'}{$_} );
@@ -499,7 +500,7 @@ sub _toggle_user {
         # смена значений publish (EAV меняется триггером)
         $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':publish', $$data{'value'} );
+        $sth->bind_param( ':publish', $$data{'value'} ? 't' : '' );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
         $sth->finish();

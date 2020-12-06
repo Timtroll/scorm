@@ -60,7 +60,8 @@ sub register {
         my %data = ();
 
         foreach my $field ( sort keys %{$$vfields{$url_for}} ) {
-
+warn '+++';
+warn $field;
             # пропускаем роуты, которых нет в хэше валидации
             next unless keys %{ $$vfields{$url_for} };
 
@@ -97,7 +98,6 @@ sub register {
                 $data{$field} = '';
                 next;
             }
-
             # проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
@@ -184,7 +184,8 @@ sub register {
             # cохраняем переданные данные
             $data{$field} = $param;
         }
-
+use DDP;
+p %data;
         return \%data;
     });
 
