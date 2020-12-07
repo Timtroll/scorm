@@ -78,7 +78,7 @@ warn $field;
             # поля которые не могут быть undef
             my %exclude_fields = (
                 'parent' => 1,
-                'publish' => 1,
+                'status' => 1,
                 'timezone' => 1,
             );
 
@@ -452,7 +452,7 @@ p %data;
             },
             '/theme/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -475,14 +475,14 @@ p %data;
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/lesson/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/lesson/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -585,14 +585,14 @@ p %data;
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_theme'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
@@ -605,18 +605,18 @@ p %data;
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ]
@@ -630,13 +630,13 @@ p %data;
             '/forum/save_add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/delete'  => {
                 "parent_id"     => [ '', qr/^\d+$/os, 9 ],

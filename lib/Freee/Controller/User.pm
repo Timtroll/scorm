@@ -16,7 +16,7 @@ use common;
 # $self->index($data)
 # $data = { 
 #   id - Id группы
-#   publish - показывать группы только с этим статусом
+#   status - показывать группы только с этим статусом
 #   page - вывести список начиная с этой страницы ( по умолчанию 1 )
 # }
 sub index {
@@ -203,7 +203,7 @@ sub add {
 #     'emailconfirmed'    => 1,                   # email подтвержден
 #     'phone'             => 79312445646,         # номер телефона
 #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-#     'publish'            => 1,                   # активный / не активный пользователь
+#     'status'            => 1,                   # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],           # список ID групп
 #     'password'          => 'khasdf',            # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -275,14 +275,14 @@ p $data;
             'id'     => $$data{'id'},
             'groups' => $$data{'groups'},
             'data_user' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'status'       => $$data{'status'},
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'publish'       => $$data{'publish'} ? 'true' : 'false',
+                'status'       => $$data{'status'},
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
@@ -370,14 +370,14 @@ sub registration {
         $data = {
             'groups' => encode_json( [ 5 ] ),
             'data_user' => {
-                'publish'       => 'false',
+                'status'       => 0,
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'publish'       => 'false',
+                'status'       => 0,
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
@@ -429,8 +429,8 @@ sub toggle {
         }
         unless ( @! ) {
             $$data{'table'}     = 'users';
-            $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'publish'} ? 'true' : 'false';
+            $$data{'fieldname'} = 'status';
+            $$data{'value'}     = $$data{'status'};
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }

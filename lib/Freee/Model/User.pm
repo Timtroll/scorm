@@ -39,7 +39,7 @@ my %masks_fields = (
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
 #   group_id => <id>, - Id группы
-#   publish  => 1,    - показывать пользователей только с этим статусом
+#   status   => 1,    - показывать пользователей только с этим статусом
 #   limit    => 10,   - количество записей
 #   offset   => 0,    - смещение от начала списка
 #   mode     => 'full'- список с базовыми данными, если указать 'full' (опция необязательна по)
@@ -57,10 +57,10 @@ sub _get_list {
         $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        unless ( defined $$data{'publish'} ) {
+        unless ( defined $$data{'status'} ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
-        elsif ( $$data{'publish'} ) {
+        elsif ( $$data{'status'} ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
         else {
@@ -113,7 +113,7 @@ sub _get_list {
 #     'phone'         => '+7(999) 222-2222',              # берется из users
 #     'password'      => 'password',                      # берется из users
 #     'timezone'      => '10',                            # берется из users
-#     'publish'       => true,                            # берется из users
+#     'status'       => 1,                               # берется из users
 #     'groups'        => [1]                              # берется из users
 # }
 sub _get_user {

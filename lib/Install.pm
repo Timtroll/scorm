@@ -210,7 +210,11 @@ sub load_defaults {
 
     $sth->finish();
 
-    my @users = ( 'admin', 'teacher', 'student' );
+    foreach ( 'admin', 'teacher', 'student', 'manager' ) {
+        add_group();
+    }
+
+    my @users = ( 'admin', 'teacher', 'student', 'manager' );
     foreach my $user (@users) {
         $config_users->{'users'}->{$user}->{'password'} = sha256_hex( $config_users->{'users'}->{$user}->{'password'}, $salt );
         add_user( $self, $config_users->{'users'}->{$user} );
