@@ -119,7 +119,8 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-clear_db( $t->app->config->{test}, $t->app->pg_dbh );
+# переинсталляция базы scorm_test
+reset_test_db();
 
 
 

@@ -44,25 +44,27 @@ sub get_last_id_user {
 }
 
 # очистка тестовой таблицы
-sub clear_db {
-    my ( $test, $connect ) = @_;
+# sub clear_db {
+#     my ( $test, $connect ) = @_;
 
-    if ( $test ) {
-        $connect->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $connect->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
+#     if ( $test ) {
+#         $connect->do('ALTER SEQUENCE "public".media_id_seq RESTART');
+#         $connect->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
 
-        $connect->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
+#         $connect->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
 
-        $connect->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
+#         $connect->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
 
-        $connect->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $connect->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
+#         $connect->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
+#         $connect->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
 
-        $connect->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+#         $connect->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
+
+#         $connect->do('TRUNCATE TABLE "public"."users" RESTART IDENTITY CASCADE');
+#     }
+#     else {
+#         warn("Turn on 'test' option in config")
+#     }
+# }
 
 1;

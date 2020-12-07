@@ -212,12 +212,9 @@ sub save {
     my $self = shift;
 
     my ( $data, $salt, $resp, $groups, $result );
-warn '=save==';
+
     # проверка данных
     $data = $self->_check_fields();
-warn '-_check_fields-';
-use DDP;
-p $data;
 
     unless ( @! ) {
         if ( $$data{'password'} && !$$data{'newpassword'} ) {
@@ -275,14 +272,14 @@ p $data;
             'id'     => $$data{'id'},
             'groups' => $$data{'groups'},
             'data_user' => {
-                'status'       => $$data{'status'},
+                'status'        => $$data{'status'},
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'status'       => $$data{'status'},
+                'status'        => $$data{'status'},
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
@@ -292,7 +289,7 @@ p $data;
                 'import_source' => $$data{'avatar'}     // ''
             }
         };
-warn Dumper('save controller');
+
         $result = $self->model('User')->_save_user( $data );
     }
 
@@ -429,7 +426,7 @@ sub toggle {
         }
         unless ( @! ) {
             $$data{'table'}     = 'users';
-            $$data{'fieldname'} = 'status';
+            $$data{'fieldname'} = 'publish';
             $$data{'value'}     = $$data{'status'};
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;

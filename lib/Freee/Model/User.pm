@@ -257,7 +257,7 @@ sub _empty_user {
             'country'      => 'RU',
             'birthday'     => strftime( "%F %T", localtime() ),
             'import_source'=> '',
-            'status'       => \0
+            'publish'      => \0
         }
     };
     $user = Freee::EAV->new( 'User', $eav );
@@ -265,7 +265,7 @@ sub _empty_user {
 
     my $timezone = strftime( "%z", localtime() ) / 100;
     $data = {
-        'status'   => 0,
+        'publish'   => 0,
         'email'     => '',
         'phone'     => '',
         'password'  => '',
@@ -284,7 +284,7 @@ sub _empty_user {
         $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$data ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$data ).' )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         foreach ( keys %$data ) {
-            my $type = /status/ ? SQL_BOOLEAN : undef();
+            my $type = /publish/ ? SQL_BOOLEAN : undef();
             $sth->bind_param( ':'.$_, $$data{$_}, $type );
         }
         $sth->execute();
@@ -352,6 +352,12 @@ sub _save_user {
         push @!, 'no data for save';
     }
 
+    # преобразование status в publish
+    $$data{'data_user'}{'publish'} = $$data{'data_user'}{'status'};
+    delete $$data{'data_user'}{'status'};
+    $$data{'data_eav'}{'publish'} = $$data{'data_eav'}{'status'};
+    delete $$data{'data_eav'}{'status'};
+
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
 
@@ -378,21 +384,22 @@ sub _save_user {
         $sth->finish();
         $$data{'eav_id'} = $$row{'eav_id'}
     }
-
+warn Dumper( $data );
     unless ( @! ) {
         # обновление полей в users
         $sql = 'UPDATE "public"."users" SET ' .
             join( ', ', map { 
                 my $val;
-                if ( /status/ ) {
+                if ( /publish/ ) {
                     # $val = $$data{'data_user'}{$_};
-                    $val = $$data{'data_user'}{$_} ? 't' : '';
+                    $val = $$data{'data_user'}{$_} ? "'t'" : "'f'";
                 }
                 else {
                     $val = $self->{'app'}->pg_dbh->quote( $$data{'data_user'}{$_} );
                 }
                 "\"$_\" = " . $val
             } keys %{ $$data{'data_user'} } ) . ' WHERE "id" = :id';
+warn Dumper( $sql );
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();

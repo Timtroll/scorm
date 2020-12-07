@@ -202,23 +202,34 @@ sub load_defaults {
     # --spider - не загружать файл с ответом
     `wget --wait=3 --tries=3 --retry-connrefused --spider $url`;
 
-# ??????? зачем?
-    # получаем id группы unaproved
-    my $sql = 'SELECT * FROM "public"."groups" WHERE "name" = \'admin\'';
-    my $sth = $self->{dbh}->prepare( $sql );
-    $sth->execute();
-
-    $sth->finish();
-
-    foreach ( 'admin', 'teacher', 'student', 'manager' ) {
-        add_group();
+    foreach ( 'admin', 'rector', 'manager', 'teacher', 'student', 'unaproved') {
+        add_group( $self, $_ );
     }
 
-    my @users = ( 'admin', 'teacher', 'student', 'manager' );
-    foreach my $user (@users) {
+    foreach my $user ( 'admin', 'rector', 'manager', 'teacher', 'student' ) {
         $config_users->{'users'}->{$user}->{'password'} = sha256_hex( $config_users->{'users'}->{$user}->{'password'}, $salt );
         add_user( $self, $config_users->{'users'}->{$user} );
     }
+}
+
+sub add_group {
+    my ( $self, $group ) = @_;
+
+    my %label = (
+        'admin'     => 'Администратор',
+        'rector'    => 'Ректор',
+        'manager'   => 'Менеджер',
+        'teacher'   => 'Преподаватель',
+        'student'   => 'Студент',
+        'unaproved' => 'Нераспределенные'
+    );
+
+    my $sql = 'INSERT INTO "public"."groups" ( label, name, publish ) VALUES ( :label, :name, 1 )';
+    my $sth = $self->{'dbh'}->prepare( $sql );
+    $sth->bind_param( ':label', $label{ $group } );
+    $sth->bind_param( ':name', $group );
+    my $result = $sth->execute();
+    $sth->finish();
 }
 
 sub add_user {
@@ -253,11 +264,18 @@ sub add_user {
     my $result = $sth->execute();
     $sth->finish();
 
+    $sql = 'SELECT "id" FROM "public"."groups" WHERE "name" = :group';
+    $sth = $self->{'dbh'}->prepare( $sql );
+    $sth->bind_param( ':group', $$data{'group'} );
+    $result = $sth->execute();
+    my $answer = $sth->fetchrow_hashref();
+    $sth->finish();
+
     # ввод в user_groups
     $sql = 'INSERT INTO "public"."user_groups" ( user_id, group_id ) VALUES ( :user_id, :group_id )';
     $sth = $self->{'dbh'}->prepare( $sql );
     $sth->bind_param( ':user_id', $$data{'user_id'} );
-    $sth->bind_param( ':group_id', $$data{'group_id'} );
+    $sth->bind_param( ':group_id', $$answer{'id'} );
     $result = $sth->execute();
     $sth->finish();
 }

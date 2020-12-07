@@ -207,4 +207,5 @@ diag"";
 $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 done_testing();
 
-clear_db( $t->app->config->{test}, $t->app->pg_dbh );
+# переинсталляция базы scorm_test
+reset_test_db();

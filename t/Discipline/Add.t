@@ -83,9 +83,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag"";
 };
 
-# clear_db();
-
 done_testing();
 
-# очистка тестовой таблицы
-clear_db( $t->app->config->{test}, $t->app->pg_dbh );
+# переинсталляция базы scorm_test
+reset_test_db();

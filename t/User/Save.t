@@ -333,7 +333,7 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => 'No newpassword',
+            'message'   => 'Empty password',
             'status'    => 'fail',
         },
         'comment' => 'No newpassword:' 
@@ -357,7 +357,7 @@ $test_data = {
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => 'No password',
+            'message'   => 'Empty password',
             'status'    => 'fail',
         },
         'comment' => 'No password:' 
@@ -452,5 +452,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
 
 done_testing();
 
-# очистка тестовой таблицы
-# clear_db( $t->app->config->{test}, $t->app->pg_dbh );
+# # переинсталляция базы scorm_test
+# reset_test_db();

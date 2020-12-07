@@ -27,7 +27,6 @@ my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
@@ -155,8 +154,8 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-# очистка тестовой таблицы
-clear_db( $t->app->config->{test}, $t->app->pg_dbh );
+# переинсталляция базы scorm_test
+reset_test_db();
 
 
 
