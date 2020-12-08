@@ -156,7 +156,7 @@ warn $field;
             }
             # проверка по регэкспу
             else {
-                if ( ! defined $param || ! $regexp || ! $param =~ /$regexp/ ) {
+                if ( ! defined $param || ! $regexp || ! ( $param =~ /$regexp/ ) ) {
                     push @!, "$url_for _check_fields: empty field '$field', didn't match regular expression";
                     last;
                 }

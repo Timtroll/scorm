@@ -14,6 +14,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_user );
 
 use Data::Dumper;
 
@@ -39,72 +40,51 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод групп
+# Ввод пользователя
+diag "Add user:";
 my $data = {
-    1 => {
-        'data' => {
-            'name'      => 'name1',
-            'label'     => 'label1',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '1',
-            'status'    => 'ok'
-        }
-    },
-    2 => {
-        'data' => {
-            'name'      => 'name2',
-            'label'     => 'label2',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '2',
-            'status'    => 'ok' 
-        }
-    },
-    3 => {
-        'data' => {
-            'name'      => 'name3',
-            'label'     => 'label3',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '3',
-            'status'    => 'ok' 
-        }
-    }
 };
-diag "Create groups:";
-foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$data{$test}{'result'} );
+$t->post_ok( $host.'/user/add' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag "Can't connect";
+    exit;
+}
+
+# получение id последнего элемента
+my $answer = get_last_id_user( $t->app->pg_dbh );
+
+# Ввод файла с аватаром
+$data = {
+   'description' => 'description',
+    upload => { file => './t/User/all_right.svg' }
+};
+diag "Insert media:";
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
 }
 diag "";
 
-# Ввод пользователя
-diag "Add user:";
+# Сохранение пользователя
+diag "Save user:";
 $data = {
-    'surname'      => 'фамилия_right',
-    'name'         => 'имя_right',
+    'id'           => $answer,
+    'login'        => 'login',
+    'surname'      => 'фамилия',
+    'name'         => 'имя',
     'patronymic',  => 'отчество_right',
     'place'        => 'place',
     'country'      => 'RU',
     'timezone'     => 3,
-    'birthday'     => 807303600,
-    'password'     => 'password1',
+    'birthday'     => 807393600,
     'avatar'       => 1,
-    'email'        => 'emailright@email.ru',
+    'email'        => 'emailright\@email.ru',
     'phone'        => '+7(921)2222222',
     'status'       => 1,
     'groups'       => "[1,2,3]"
 };
-$t->post_ok( $host.'/user/add_user' => {token => $token} => form => $data );
+$t->post_ok( $host.'/user/save' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -114,17 +94,17 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id' => 1
+            'id' => $answer
         },
         'result' => {
             "data" => {
-                "id"   => 1,
+                "id"   => $answer,
                 "tabs" => [
                     {
                         "fields" => [
-                            {"name" => "имя_right"},
+                            {"name" => "имя"},
                             {"patronymic" => "отчество_right"},
-                            {"surname" => "фамилия_right"},
+                            {"surname" => "фамилия"},
                             {"birthday" => 807303600},
                             {"avatar" => 1},
                             {"country" =>
@@ -416,14 +396,14 @@ my $test_data = {
             'id'        => 404
         },
         'result' => {
-            'message'   => "can't get object from users",
+            'message'   => 'can\'t get user',
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/user/edit _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -433,7 +413,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/user/edit _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
@@ -457,27 +437,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+# переинсталляция базы scorm_test
+# reset_test_db();

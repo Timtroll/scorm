@@ -27,7 +27,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
-use Test qw( get_last_id_user clear_db );
+use Test qw( get_last_id_user );
 
 use Data::Dumper;
 

@@ -26,7 +26,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
-use Test qw( get_last_id_user clear_db );
+use Test qw( get_last_id_user );
 
 use Data::Dumper;
 
@@ -65,6 +65,29 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 # получение id последнего элемента
 my $answer = get_last_id_user( $t->app->pg_dbh );
 
+# Ввод ещё одного пользователя
+diag "Add users:";
+$test_data = {
+};
+$t->post_ok( $host.'/user/add' => {token => $token} => form => $test_data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag "Can't connect";
+    exit;
+}
+
+# Ввод файла с аватаром
+my $data = {
+   'description' => 'description',
+    upload => { file => './t/User/all_right.svg' }
+};
+diag "Insert media:";
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+diag "";
+
 $test_data = {
     # положительные тесты
     1 => {
@@ -82,7 +105,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -106,7 +129,7 @@ $test_data = {
             'password'     => 'password1',
             'newpassword'  => 'password2',
             'avatar'       => 1,
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -155,7 +178,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -178,7 +201,7 @@ $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => '6@email.ru',
-            'phone'        => '+7(921)1111116',
+            'phone'        => '8(921)1111116',
             'status'       => 0,
             'groups'       => "[1,2,3]"
         },
@@ -204,20 +227,20 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111119',
+            'phone'        => '8(921)1111119',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'surname'",
+            'message'   => "/user/save _check_fields: didn't has required data in 'surname' = ''",
             'status'    => 'fail',
         },
         'comment' => 'No required field surname:' 
     },
     7 => {
         'data' => {
-            'id'           => $answer,
-            'login'        => 'login',
+            'id'           => $answer+1,
+            'login'        => 'login2',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -228,21 +251,21 @@ $test_data = {
             'password'     => 'password1',
             'newpassword'  => 'password2',
             'avatar'       => 1,
-            'email'        => '2@email.ru',
-            'phone'        => '+7(921)1111111',
+            'email'        => '6@email.ru',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "email '2\@email.ru' already used",
+            'message'   => "email '6\@email.ru' already used",
             'status'    => 'fail',
         },
         'comment' => "Email already used:"
     },
     8 => {
         'data' => {
-            'id'           => $answer,
-            'login'        => 'login',
+            'id'           => $answer+1,
+            'login'        => 'login2',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -254,12 +277,12 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111112',
+            'phone'        => '8(921)1111116',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "phone '+7(921)1111112' already used",
+            'message'   => "phone '8(921)1111116' already used",
             'status'    => 'fail',
         },
         'comment' => "Telephone already used:"
@@ -267,7 +290,7 @@ $test_data = {
     9 => {
         'data' => {
             'id'           => 404,
-            'login'        => 'login',
+            'login'        => 'login2',
             'surname'      => 'фамилия',
             'name'         => 'имя',
             'patronymic',  => 'отчество',
@@ -279,7 +302,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '3@email.ru',
-            'phone'        => '+7(921)1111113',
+            'phone'        => '8(921)1111113',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -304,7 +327,7 @@ $test_data = {
             'newpassword'  => 'password1',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -328,12 +351,12 @@ $test_data = {
             'password'     => 'password1',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => 'Empty password',
+            'message'   => 'Empty newpassword',
             'status'    => 'fail',
         },
         'comment' => 'No newpassword:' 
@@ -352,7 +375,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -400,12 +423,12 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '+7(921)1111111',
+            'phone'        => '8(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/user/save _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => 'Wrong id validation:'
@@ -423,7 +446,7 @@ $test_data = {
             'birthday'     => 807393600,
             'avatar'       => 1,
             'email'        => 'emailright3@email.ru',
-            'phone'        => '+7(921)1111114',
+            'phone'        => '8(921)1111114',
             'status'       => 1,
             'groups'       => "[1,2,404,405]"
         },
@@ -432,7 +455,30 @@ $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Group doesn't exist:"
-    }
+    },
+    16 => {
+        'data' => {
+            'id'           => $answer,
+            'login'        => 'login',
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'avatar'       => 404,
+            'email'        => 'emailright3@email.ru',
+            'phone'        => '8(921)1111114',
+            'status'       => 1,
+            'groups'       => "[1,2]"
+        },
+        'result' => {
+            'message'   => "avatar with id '404' doesn't exist",
+            'status'    => 'fail',
+        },
+        'comment' => "Avatar doesn't exist:"
+    },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
@@ -453,4 +499,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
 done_testing();
 
 # # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

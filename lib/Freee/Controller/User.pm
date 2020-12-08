@@ -223,8 +223,14 @@ sub save {
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
             push @!, 'Empty password';
         }
-        elsif ( $$data{'password'} && $$data{'password'} ne $$data{'newpassword'} ) {
-            push @!, 'Password and newpassword are not the same';
+        elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
+            push @!, 'Password and newpassword are the same';
+        }
+
+        unless ( @! ) {
+            if ( ! $$data{'email'} && ! $$data{'phone'} ) {
+                push @!, 'No email and no phone';
+            }
         }
 
         unless ( @! ) {
@@ -239,6 +245,10 @@ sub save {
             # проверяем, используется ли телефон другим пользователем
             elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
                 push @!, "phone '$$data{ phone }' already used"; 
+            }
+            # проверяем, существует ли файл аватара
+            elsif ( $$data{'avatar'} && ! $self->model('Utils')->_exists_in_table('media', 'id', $$data{'avatar'} ) ) {
+                push @!, "avatar with id \'$$data{'avatar'}\' doesn't exist"; 
             }
 
             unless ( @! ) {
@@ -425,9 +435,6 @@ sub toggle {
             push @!, "user with '$$data{'id'}' doesn't exist";
         }
         unless ( @! ) {
-            $$data{'table'}     = 'users';
-            $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'status'};
             $toggle = $self->model('User')->_toggle_user( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }

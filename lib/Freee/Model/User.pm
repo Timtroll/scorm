@@ -384,7 +384,7 @@ sub _save_user {
         $sth->finish();
         $$data{'eav_id'} = $$row{'eav_id'}
     }
-warn Dumper( $data );
+
     unless ( @! ) {
         # обновление полей в users
         $sql = 'UPDATE "public"."users" SET ' .
@@ -399,7 +399,7 @@ warn Dumper( $data );
                 }
                 "\"$_\" = " . $val
             } keys %{ $$data{'data_user'} } ) . ' WHERE "id" = :id';
-warn Dumper( $sql );
+
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
@@ -422,7 +422,6 @@ warn Dumper( $sql );
             'id'      => $$data{'eav_id'},
             'parent'  => 0
         });
-warn Dumper('save model');
 
         $result = $usr->_MultiStore( {                 
             'User' => {
@@ -507,7 +506,7 @@ sub _toggle_user {
         # смена значений publish (EAV меняется триггером)
         $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':publish', $$data{'value'} ? 't' : '' );
+        $sth->bind_param( ':publish', $$data{'value'} ? 't' : 'f' );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
         $sth->finish();
