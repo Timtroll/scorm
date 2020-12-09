@@ -431,11 +431,18 @@ sub toggle {
 
     # проверка существования элемента для изменения
     unless ( @! ) {
+        $$data{'table'} = 'users';
+
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
         unless ( $self->model('Utils')->_exists_in_table( 'users', 'id', $$data{'id'} ) ) {
             push @!, "user with '$$data{'id'}' doesn't exist";
         }
         unless ( @! ) {
-            $toggle = $self->model('User')->_toggle_user( $data );
+            $toggle = $self->model('Utils')->_toggle( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
     }

@@ -129,7 +129,7 @@ $test_data = {
             'password'     => 'password1',
             'newpassword'  => 'password2',
             'avatar'       => 1,
-            'phone'        => '8(921)1111111',
+            'phone'        => '+7(921)1111111',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },
@@ -178,7 +178,7 @@ $test_data = {
             'newpassword'  => 'password2',
             'avatar'       => 1,
             'email'        => '1@email.ru',
-            'phone'        => '8(921)1111111',
+            'phone'        => '8(921)-111-11-11',
             'status'       => 1,
             'groups'       => "[1,2,3]"
         },

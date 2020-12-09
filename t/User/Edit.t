@@ -80,7 +80,7 @@ $data = {
     'birthday'     => 807393600,
     'avatar'       => 1,
     'email'        => 'emailright\@email.ru',
-    'phone'        => '+7(921)2222222',
+    'phone'        => '8(921)2222222',
     'status'       => 1,
     'groups'       => "[1,2,3]"
 };

@@ -486,36 +486,6 @@ sub _save_user {
     return $result;
 }
 
-# изменение поля на 1/0
-# my $true = $self->toggle( $data );
-# $data = {
-#     'id'    - id записи 
-#     'field' - имя поля в таблице
-#     'val'   - 1/0
-# }
-sub _toggle_user {
-    my ( $self, $data ) = @_;
-
-    my ( $sth, $usr, $result, $sql );
-
-    unless ( $$data{'id'} && defined $$data{'value'} ) {
-        push @!, 'no data for toggle';
-    }
-
-    unless ( @! ) {
-        # смена значений publish (EAV меняется триггером)
-        $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
-        $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':publish', $$data{'value'} ? 't' : 'f' );
-        $sth->bind_param( ':id', $$data{'id'} );
-        $result = $sth->execute();
-        $sth->finish();
-        push @!, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
-    }
-
-    return $result;
-}
-
 # удаление пользователя
 # $result = $self->model('User')->_delete_user( $data );
 # $data = {
