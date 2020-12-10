@@ -111,7 +111,7 @@ sub edit {
                         {"patronymic" => $$user_data{'patronymic'} },
                         {"surname"    => $$user_data{'surname'} },
                         {"birthday"   => $$user_data{'birthday'} },
-                        {"avatar"     => $$user_data{'import_source'} },
+                        # {"avatar"     => $$user_data{'attachment'} },
                         {"country"    =>  
                             {
                                 "selected" => $countries, 
@@ -119,7 +119,7 @@ sub edit {
                             }
                         },
                         {"place"      => $$user_data{'place'} },
-                        {"status"     => $$user_data{'status'} ? 1 : 0 },
+                        {"status"     => $$user_data{'publish'} },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
@@ -133,9 +133,9 @@ sub edit {
                     'label' => 'Контакты',
                     'fields' => [
                        {"email"          => $$user_data{'email'} },
-                       {"emailconfirmed" => 0 },
+                       {"emailconfirmed" => 1 },
                        {"phone"          => $$user_data{'phone'} },
-                       {"phoneconfirmed" => 0 }
+                       {"phoneconfirmed" => 1 }
                     ]
                 },
                 {
@@ -148,7 +148,7 @@ sub edit {
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$user_data{'groups'} ? decode_json( $$user_data{'groups'} ) : [] }
+                       { "groups" => $$user_data{'groups'} }
                     ]
                 }
             ]
@@ -296,7 +296,7 @@ sub save {
                 'patronymic'    => $$data{'patronymic'} // '',
                 'place'         => $$data{'place'}      // '',
                 'country'       => $$data{'country'}    // 'RU',
-                'import_source' => $$data{'avatar'}     // ''
+                'attachment'    => $$data{'avatar'}     // ''
             }
         };
 

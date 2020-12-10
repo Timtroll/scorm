@@ -77,9 +77,8 @@ $data = {
     'place'        => 'place',
     'country'      => 'RU',
     'timezone'     => 3,
-    'birthday'     => 807393600,
-    'avatar'       => 1,
-    'email'        => 'emailright\@email.ru',
+    'birthday'     => 807303600,
+    'email'        => '1@email.ru',
     'phone'        => '8(921)2222222',
     'status'       => 1,
     'groups'       => "[1,2,3]"
@@ -102,11 +101,11 @@ my $test_data = {
                 "tabs" => [
                     {
                         "fields" => [
+                            {"login" => "login"},
                             {"name" => "имя"},
                             {"patronymic" => "отчество_right"},
                             {"surname" => "фамилия"},
                             {"birthday" => 807303600},
-                            {"avatar" => 1},
                             {"country" =>
                                 {
                                     "selected" => [
@@ -364,9 +363,9 @@ my $test_data = {
                     },
                     {
                         "fields" => [
-                           {"email" => "emailright\@email.ru"},
+                           {"email" => "1\@email.ru"},
                            {"emailconfirmed" => 1},
-                           {"phone" => '+7(921)2222222'},
+                           {"phone" => '8(921)2222222'},
                            {"phoneconfirmed" => 1}
                        ],
                         "label" => "Контакты"
@@ -380,7 +379,7 @@ my $test_data = {
                     },
                     {
                         "fields" => [
-                           {"groups" => "[1,2,3]" }
+                           {"groups" => "[ 1, 2, 3 ]" }
                        ],
                         "label" => "Группы"
                     }
@@ -438,4 +437,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();
