@@ -77,14 +77,6 @@ my $test_data = {
             'id'        => $answer+4,
             'status'    => 'ok'
         }
-    },
-    5 => {
-        'data' => {
-        },
-        'result' => {
-            'id'        => $answer+5,
-            'status'    => 'ok'
-        }
     }
 };
 
@@ -182,27 +174,6 @@ $test_data = {
         },
         'result' => {
             'id'        => $answer+4,
-            'status'    => 'ok'
-        }
-    },
-    5 => {
-        'data' => {
-            'id'           => $answer+5,
-            'surname'      => 'фамилия_right',
-            'name'         => 'имя_right',
-            'patronymic',  => 'отчество_right',
-            'place'        => 'place',
-            'country'      => 'RU',
-            'timezone'     => 3,
-            'birthday'     => 807393600,
-            'login'        => 'login5',
-            'email'        => '5@email.ru',
-            'phone'        => '7(921)1111115',
-            'status'       => 1,
-            'groups'       => "[3,2,4]"
-        },
-        'result' => {
-            'id'        => $answer+5,
             'status'    => 'ok'
         }
     }
@@ -442,31 +413,11 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->content_type_is('application/json;charset=UTF-8');
     $t->json_is( $result );
     diag"";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+warn Dumper( $response );
 };
 
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+# переинсталляция базы scorm_test
+# reset_test_db();

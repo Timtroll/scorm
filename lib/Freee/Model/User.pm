@@ -57,14 +57,15 @@ sub _get_list {
         $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        unless ( defined $$data{'status'} ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
-        }
-        elsif ( $$data{'status'} ) {
+        if ( $$data{'status'} ) {
+            # $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
-        else {
+        elsif ( $$data{'status'} eq 0 ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id"';
+        }
+        else {
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
         $sql .= ' LIMIT :limit' if $$data{'limit'};
         $sql .= ' OFFSET :offset' if $$data{'offset'};
@@ -72,6 +73,7 @@ sub _get_list {
         $sth->bind_param( ':group_id', $$data{'group_id'} );
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
         $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
+warn Dumper( $sql );
         $sth->execute();
         $list = $sth->fetchall_arrayref({});
         $sth->finish();
