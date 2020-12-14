@@ -193,50 +193,91 @@ $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'group_id' => 1
+            'group_id' => 1,
+            'status'   => 2
         },
         'result' => {
             "list" => {
                 "body" => [
                     {
+                        "id" =>  1,
+                        "timezone" => 3,
+                        "email" =>  "admin\@admin",
+                        "phone" =>  '',
+                        "status" =>  1,
+                        "eav_id" =>  5,
+                        "login" => "admin",
+                        'place' => 'scorm',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "admin",
+                        'surname' => "admin",
+                        'patronymic' => "admin"
+                    },
+                    {
                         "id" =>  $answer+1,
                         "timezone" => 3,
-                        "password" =>  '',
                         "email" =>  "1\@email.ru",
                         "phone" =>  "7(921)1111111",
                         "status" =>  1,
-                        "eav_id" =>  1,
-                        "groups" => "[1]"
+                        "eav_id" =>  10,
+                        "login" => "login1",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+2,
                         "timezone" => 3,
-                        "password" =>  '',
                         "email" =>  "2\@email.ru",
                         "phone" =>  "7(921)1111112",
                         "status" =>  1,
-                        "eav_id" =>  2,
-                        "groups" => "[1,2]"
+                        "eav_id" =>  11,
+                        "login" => "login2",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+3,
                         "timezone" => 3,
-                        "password" => '',
                         "email" =>  "3\@email.ru",
                         "phone" =>  "7(921)1111113",
                         "status" =>  1,
-                        "eav_id" =>  3,
-                        "groups" => "[2,1,3]"
+                        "eav_id" =>  12,
+                        "login" => "login3",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+4,
                         "timezone" => 3,
-                        "password" =>  '',
                         "email" =>  "4\@email.ru",
                         "phone" =>  "7(921)1111114",
                         "status" =>  1,
-                        "eav_id" =>  4,
-                        "groups" => "[3,2,1]"
+                        "eav_id" =>  13,
+                        "login" => "login4",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     }
                 ],
                 "settings" => {
@@ -245,7 +286,7 @@ $test_data = {
                     "page" => {
                         "current_page" => 1,
                         "per_page" => 100,
-                        "total" => 4
+                        "total" => 5
                     },
                     "removable" => 1,
                     "sort" => {
@@ -267,44 +308,84 @@ $test_data = {
             "list" => {
                 "body" => [
                     {
+                        "id" =>  1,
+                        "timezone" => 3,
+                        "email" =>  "admin\@admin",
+                        "phone" =>  '',
+                        "status" =>  1,
+                        "eav_id" =>  5,
+                        "login" => "admin",
+                        'place' => 'scorm',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "admin",
+                        'surname' => "admin",
+                        'patronymic' => "admin"
+                    },
+                    {
                         "id" =>  $answer+1,
-                        "timezone" =>  3,
-                        "password" =>  '',
+                        "timezone" => 3,
                         "email" =>  "1\@email.ru",
                         "phone" =>  "7(921)1111111",
                         "status" =>  1,
-                        "eav_id" =>  1,
-                        "groups" => "[1]"
+                        "eav_id" =>  10,
+                        "login" => "login1",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+2,
-                        "timezone" =>  3,
-                        "password" =>  '',
+                        "timezone" => 3,
                         "email" =>  "2\@email.ru",
                         "phone" =>  "7(921)1111112",
                         "status" =>  1,
-                        "eav_id" =>  2,
-                        "groups" => "[1,2]"
+                        "eav_id" =>  11,
+                        "login" => "login2",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+3,
-                        "timezone" =>  3,
-                        "password" =>  '',
+                        "timezone" => 3,
                         "email" =>  "3\@email.ru",
                         "phone" =>  "7(921)1111113",
                         "status" =>  1,
-                        "eav_id" =>  3,
-                        "groups" => "[2,1,3]"
+                        "eav_id" =>  12,
+                        "login" => "login3",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     },
                     {
                         "id" =>  $answer+4,
-                        "timezone" =>  3,
-                        "password" =>  '',
+                        "timezone" => 3,
                         "email" =>  "4\@email.ru",
                         "phone" =>  "7(921)1111114",
                         "status" =>  1,
-                        "eav_id" =>  4,
-                        "groups" => "[3,2,1]"
+                        "eav_id" =>  13,
+                        "login" => "login4",
+                        'place' => 'place',
+                        'birthday' => '1995-08-03 00:00:00',
+                        'import_source' => '',
+                        'country' => 'RU',
+                        'name' => "имя_right",
+                        'surname' => "фамилия_right",
+                        'patronymic' => "отчество_right"
                     }
                 ],
                 "settings" => {
@@ -313,7 +394,7 @@ $test_data = {
                     "page" => {
                         "current_page" => 1,
                         "per_page" => 100,
-                        "total" => 4
+                        "total" => 5
                     },
                     "removable" => 1,
                     "sort" => {
@@ -413,11 +494,9 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $t->content_type_is('application/json;charset=UTF-8');
     $t->json_is( $result );
     diag"";
-$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-warn Dumper( $response );
 };
 
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

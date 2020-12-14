@@ -57,15 +57,14 @@ sub _get_list {
         $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        if ( $$data{'status'} ) {
-            # $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
+        if ( $$data{'status'} == 2 ) {
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
+        }
+        elsif ( $$data{'status'} == 1 ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
-        elsif ( $$data{'status'} eq 0 ) {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id"';
-        }
         else {
-            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
+            $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = false ORDER BY "id"';
         }
         $sql .= ' LIMIT :limit' if $$data{'limit'};
         $sql .= ' OFFSET :offset' if $$data{'offset'};
@@ -73,24 +72,22 @@ sub _get_list {
         $sth->bind_param( ':group_id', $$data{'group_id'} );
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
         $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
-warn Dumper( $sql );
+
         $sth->execute();
         $list = $sth->fetchall_arrayref({});
         $sth->finish();
 
         if ( ref($list) eq 'ARRAY' ) {
-            if ( $$data{'mode'} ) {
-                foreach ( @$list ) {
-                    $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
-                    $_->{'name'}          = $usr->name()          ? $usr->name() : '';
-                    $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
-                    $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
-                    $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
-                    $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
-                    $_->{'country'}       = $usr->country()       ? $usr->country() : '';
-                    $_->{'place'}         = $usr->place()         ? $usr->place() : '';
-                    $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
-                }
+            foreach ( @$list ) {
+                $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
+                $_->{'name'}          = $usr->name()          ? $usr->name() : '';
+                $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
+                $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
+                $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
+                $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
+                $_->{'country'}       = $usr->country()       ? $usr->country() : '';
+                $_->{'place'}         = $usr->place()         ? $usr->place() : '';
+                $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
             }
         }
     }

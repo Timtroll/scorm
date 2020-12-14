@@ -239,7 +239,7 @@ p %data;
             # роуты user/*
             '/user'  => {
                 "group_id"      => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ],
+                "status"        => [ '', qr/^[012]$/os, 1 ],
                 "page"          => [ '', qr/^\d+$/os, 9 ]
             },
             '/user/add'   => {},
