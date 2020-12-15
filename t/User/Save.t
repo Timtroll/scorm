@@ -478,7 +478,7 @@ $test_data = {
             'status'    => 'fail',
         },
         'comment' => "Avatar doesn't exist:"
-    },
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
@@ -498,5 +498,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
 
 done_testing();
 
-# # переинсталляция базы scorm_test
+# переинсталляция базы scorm_test
 reset_test_db();

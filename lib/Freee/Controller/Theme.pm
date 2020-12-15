@@ -210,7 +210,22 @@ sub toggle {
         $result = $self->model('Theme')->_toggle_theme( $data );
         push @!, "can't update EAV" unless $result;
     }
+    # unless ( @! ) {
+    #     $$data{'table'} = 'EAV_items';
 
+    #     # смена status на publish
+    #     $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+    #     $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
+    #     unless ( $self->model('Utils')->_exists_in_table( 'EAV_items', 'id', $$data{'id'} ) ) {
+    #         push @!, "Theme with '$$data{'id'}' doesn't exist";
+    #     }
+    #     unless ( @! ) {
+    #         $toggle = $self->model('Utils')->_toggle( $data );
+    #         push @!, "Could not toggle Theme '$$data{'id'}'" unless $toggle;
+    #     }
+    # }
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;

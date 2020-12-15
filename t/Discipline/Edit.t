@@ -165,7 +165,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "discipline with id '-404' doesn't exist\nCould not get discipline",
+            'message'   => "/discipline/edit _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 

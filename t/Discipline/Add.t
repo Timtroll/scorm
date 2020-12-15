@@ -19,7 +19,7 @@ BEGIN {
 }
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
-use Test qw( get_last_id_EAV clear_db );
+use Test qw( get_last_id_EAV );
 
 use Test::More;
 use Test::Mojo;

@@ -14,6 +14,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV );
 
 use Data::Dumper;
 
@@ -40,55 +41,14 @@ my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'conten
 my $token = $response->{'data'}->{'token'};
 
 
-# Ввод файлов
+# получение id последнего элемента
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
+
+# Добавление предмета
 my $data = {
-   'description' => 'description',
-    upload => { file => './t/Theme/all_right.svg' }
-};
-diag "Insert media:";
-$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
-
-# Ввод предмета родителя
-$data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
-};
-diag "Insert media:";
-$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
-
-# Добавление темы
-$data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 1,
-    'status'      => 1,
-    'attachment'  => '[1]'
 };
 my $result = {
-    'id'        => 2,
+    'id'        => $answer + 1,
     'status'    => 'ok'
 };
 
@@ -126,7 +86,7 @@ my $test_data = {
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
+            'message'   => "/theme/delete _check_fields: didn't has required data in 'id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -136,7 +96,7 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
+            'message'   => "/theme/delete _check_fields: empty field 'id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id validation:' 
@@ -160,29 +120,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
-
-
-
-
-
-
-
+# переинсталляция базы scorm_test
+reset_test_db();

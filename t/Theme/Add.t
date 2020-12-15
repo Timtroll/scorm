@@ -23,6 +23,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV );
 
 use Data::Dumper;
 
@@ -48,35 +49,8 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-
-# Ввод файлов
-my $data = {
-   'description' => 'description',
-    upload => { file => './t/Theme/all_right.svg' }
-};
-diag "Insert media:";
-$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
-
-# Ввод предмета родителя
-$data = {
-};
-diag "Insert discipline:";
-$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-diag "";
-
 # получение id последнего элемента
-my $sth = $t->app->pg_dbh->prepare( 'SELECT max("id") AS "id" FROM "public"."EAV_items"' );
-$sth->execute();
-my $answer = $sth->fetchrow_hashref();
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
 
 my $test_data = {
     # положительные тесты
@@ -84,7 +58,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $$answer{'id'} + 1,
+            'id'        => $answer + 1,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
@@ -108,22 +82,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+# переинсталляция базы scorm_test
+reset_test_db();

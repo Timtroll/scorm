@@ -16,7 +16,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
-use Test qw( get_last_id_EAV clear_db );
+use Test qw( get_last_id_EAV );
 
 use Data::Dumper;
 
@@ -155,7 +155,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # переинсталляция базы scorm_test
-reset_test_db();
+# reset_test_db();
 
 
 

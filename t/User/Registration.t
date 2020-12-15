@@ -12,6 +12,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_user );
 
 use Data::Dumper;
 
@@ -26,85 +27,130 @@ $t->app->config->{test} = 1 unless $t->app->config->{test};
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
-# получение токена для аутентификации
-$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect \n");
-    last;
-}
-$t->content_type_is('application/json;charset=UTF-8');
-diag "";
-my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-my $token = $response->{'data'}->{'token'};
-
-
-# Ввод группы
-my $data = {
-    1 => {
-        'data' => {
-            'name'      => 'name1',
-            'label'     => 'label1',
-            'status'    => 1
-        },
-        'result' => {
-            'id'        => '1',
-            'status'    => 'ok'
-        }
-    }
-};
-diag "Create groups:";
-foreach my $test (sort {$a <=> $b} keys %{$data}) {
-    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$data{$test}{'data'} );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
-    }
-    $t->json_is( $$data{$test}{'result'} );
-}
-diag "";
+# получение id последнего элемента
+my $answer = get_last_id_user( $t->app->pg_dbh );
 
 my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
+            'login'        => 'login',
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество_right',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '1@email.ru',
+            'phone'        => '8(921)1111111',
         },
         'result' => {
-            'status' => 'ok',
-            'id'        => 1
+            'id'        => $answer+1,
+            'status'    => 'ok'
         },
-        'comment' => 'No parent:' 
+        'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'parent' => 1
+            'login'        => 'login2',
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество_right',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '2@email.ru',
         },
         'result' => {
-            'status'    => 'ok',
-            'id'        => 2
+            'id'        => $answer+2,
+            'status'    => 'ok'
         },
-        'comment' => 'All right:' 
+        'comment' => 'No phone:' 
     },
 
     # отрицательные тесты
     3 => {
         'data' => {
-            'parent'        => 404
+            'login'        => 'login',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '1@email.ru',
+            'phone'        => '8(921)1111119'
         },
         'result' => {
-            'message'   => "parent with id '404' doesn't exist in user",
-            'status'    => 'fail'
+            'message'   => "/user/registration _check_fields: didn't has required data in 'surname' = ''",
+            'status'    => 'fail',
         },
-        'comment' => 'Wrong id:' 
+        'comment' => 'No required field surname:' 
     },
     4 => {
         'data' => {
-            'parent'        => - 404
+            'login'        => 'login2',
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '1@email.ru',
+            'phone'        => '8(921)1111111'
         },
         'result' => {
-            'message'   => "_check_fields: 'parent' didn't match regular expression",
-            'status'    => 'fail'
+            'message'   => "email '1\@email.ru' already used",
+            'status'    => 'fail',
         },
-        'comment' => 'Wrong id validation:' 
+        'comment' => "Email already used:"
+    },
+    5 => {
+        'data' => {
+            'login'        => 'login2',
+            'surname'      => 'фамилия',
+            'name'         => 'имя',
+            'patronymic',  => 'отчество',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '9@email.ru',
+            'phone'        => '8(921)1111111'
+        },
+        'result' => {
+            'message'   => "phone '8(921)1111111' already used",
+            'status'    => 'fail',
+        },
+        'comment' => "Telephone already used:"
+    },
+    6 => {
+        'data' => {
+            'login'        => 'login',
+            'surname'      => 'фамилия_right',
+            'name'         => 'имя_right',
+            'patronymic',  => 'отчество_right',
+            'place'        => 'place',
+            'country'      => 'RU',
+            'timezone'     => -3.5,
+            'birthday'     => 807393600,
+            'password'     => 'password1',
+            'email'        => '7@email.ru',
+            'phone'        => 'qwerty'
+        },
+        'result' => {
+            'message'   => "/user/registration _check_fields: empty field 'phone', didn't match regular expression",
+            'status'    => 'fail',
+        },
+        'comment' => 'Wrong phone validation:'
     }
 };
 
@@ -113,7 +159,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/user/add' => {token => $token} => form => $data );
+    $t->post_ok( $host.'/user/registration' => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -125,27 +171,5 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".groups_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".groups RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".users_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".users RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."user_groups" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
+# переинсталляция базы scorm_test
+reset_test_db();

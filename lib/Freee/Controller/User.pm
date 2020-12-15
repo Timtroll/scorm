@@ -336,8 +336,8 @@ sub registration {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        unless ( $$data{'phone'} || $$data{'email'} ) {
-            push @!, 'No email or no phone';
+        unless ( $$data{'email'} ) {
+            push @!, 'No email';
         }
         elsif ( !$$data{'password'} ) {
             push @!, 'No password';
