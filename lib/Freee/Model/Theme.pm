@@ -226,8 +226,11 @@ sub _save_theme {
 
         return unless $theme;
 
-        $result = $theme->_MultiStore( {                 
+        $result = $theme->_MultiStore( {
+            'title'   => $$data{'title'},
             'Theme' => {
+                'publish'      => $$data{'publish'},
+                'parent'       => $$data{'parent'},
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
@@ -236,11 +239,18 @@ sub _save_theme {
                 'import_source'=> '',
                 'url'          => $$data{'url'},
                 'date_updated' => $$data{'time_update'},
-                'seo'          => $$data{'seo'},
-# ???
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'publish'}
+                'seo'          => $$data{'seo'}
+            },
+            'Default' => {
+                'title'        => $$data{'name'},
+                'label'        => $$data{'label'},
+                'description'  => $$data{'description'},
+                'content'      => $$data{'content'},
+                'keywords'     => $$data{'keywords'},
+                'import_source'=> '',
+                'url'          => $$data{'url'},
+                'date_updated' => $$data{'time_update'},
+                'seo'          => $$data{'seo'}
             }
         });
     }

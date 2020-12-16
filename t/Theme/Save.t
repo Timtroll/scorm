@@ -24,6 +24,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV );
 
 use Data::Dumper;
 
@@ -49,56 +50,44 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
+# получение id последнего элемента
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
 
 # Ввод файлов
 my $data = {
    'description' => 'description',
-    upload => { file => './t/Theme/all_right.svg' }
+    upload => { file => './t/Discipline/all_right.svg' }
 };
 diag "Insert media:";
 $t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
-    exit; 
+    exit;
 }
 diag "";
 
-# Ввод предмета родителя
+# Добавление предмета
 $data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 0,
-    'status'      => 1,
-    'attachment'  => '[1]'
 };
-diag "Insert media:";
+my $result = {
+    'id'        => $answer + 1,
+    'status'    => 'ok'
+};
+
 $t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
+    diag("Can't connect \n");
+    last;
 }
-diag "";
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
 
 # Добавление темы
 $data = {
-    'name'        => 'Предмет1',
-    'label'       => 'Предмет 1',
-    'description' => 'Краткое описание',
-    'content'     => 'Полное описание',
-    'keywords'    => 'ключевые слова',
-    'url'         => 'https://test.com',
-    'seo'         => 'дополнительное поле для seo',
-    'parent'      => 1,
-    'status'      => 1,
-    'attachment'  => '[1]'
 };
-my $result = {
-    'id'        => 2,
+$result = {
+    'id'        => $answer + 2,
     'status'    => 'ok'
 };
 
@@ -115,7 +104,7 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'          => 2,
+            'id'          => $answer + 2,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -123,19 +112,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
+            'parent'      => $answer + 1,
             'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
+            'id'        => $answer + 2,
             'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
-            'id'          => 2,
+            'id'          => $answer + 2,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -143,19 +132,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
+            'parent'      => $answer + 1,
             'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
+            'id'        => $answer + 2,
             'status'    => 'ok'
         },
         'comment' => 'status 0:' 
     },
     3 => {
         'data' => {
-            'id'          => 2,
+            'id'          => $answer + 2,
             'name'        => 'Предмет3',
             'label'       => 'Предмет 3',
             'description' => 'Краткое описание',
@@ -163,11 +152,11 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
+            'parent'      => $answer + 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
+            'id'        => $answer + 2,
             'status'    => 'ok'
         },
         'comment' => 'No status:' 
@@ -176,25 +165,25 @@ my $test_data = {
     # отрицательные тесты
     4 => {
         'data' => {
-            'id'          => 2,
+            'id'          => $answer + 2,
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
             'content'     => 'Полное описание',
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
+            'parent'      => $answer + 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
+            'message'   => "/theme/save _check_fields: didn't has required data in 'name' = ''",
             'status'    => 'fail',
         },
         'comment' => 'No required field:' 
     },
     5 => {
         'data' => {
-            'id'          => 2,
+            'id'          => $answer + 2,
             'name'        => 'Предмет',
             'label'       => 'Предмет',
             'description' => 'Краткое описание',
@@ -202,54 +191,35 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
-            'attachment'  => '[1,404]'
-        },
-        'result' => {
-            'message'   => "file with id '404' doesn't exist",
-            'status'    => 'fail',
-        },
-        'comment' => "Attachment doesn't exist:"
-    },
-    6 => {
-        'data' => {
-            'id'          => 2,
-            'name'        => 'Предмет',
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
+            'parent'      => $answer + 1,
             'attachment'  => 'error'
         },
         'result' => {
-            'message'   => "_check_fields: 'attachment' didn't match regular expression",
+            'message'   => "/theme/save _check_fields: empty field 'attachment', didn't match regular expression",
+            'status'    => 'fail',
+        },
+        'comment' => "Validation error:"
+    },
+    6 => {
+        'data' => {
+            'id'          => $answer + 2,
+            'name'        => 'Предмет',
+            'label'       => 'Предмет',
+            'description' => 'Краткое описание',
+            'content'     => 'Полное описание',
+            'keywords'    => 'ключевые слова',
+            'url'         => 'https://test.com',
+            'seo'         => 'дополнительное поле для seo',
+            'parent'      => $answer + 1,
+            'attachment'  => 'error'
+        },
+        'result' => {
+            'message'   => "/theme/save _check_fields: empty field 'attachment', didn't match regular expression",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
     },
     7 => {
-        'data' => {
-            'id'          => 2,
-            'name'        => 'Предмет',
-            'label'       => 'Предмет',
-            'description' => 'Краткое описание',
-            'content'     => 'Полное описание',
-            'keywords'    => 'ключевые слова',
-            'url'         => 'https://test.com',
-            'seo'         => 'дополнительное поле для seo',
-            'parent'      => 1,
-            'attachment'  => 'error'
-        },
-        'result' => {
-            'message'   => "_check_fields: 'attachment' didn't match regular expression",
-            'status'    => 'fail',
-        },
-        'comment' => "Validation error:"
-    },
-    8 => {
         'data' => {
             'id'          => 404,
             'name'        => 'Предмет',
@@ -259,11 +229,11 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 404,
+            'parent'      => $answer + 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "parent with id '404' doesn't exist",
+            'message'   => "can't update EAV",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"
@@ -289,28 +259,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
-
-
-
-
-
-
-
+reset_test_db();

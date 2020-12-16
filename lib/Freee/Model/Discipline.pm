@@ -210,7 +210,7 @@ sub _get_discipline {
                "route"       => '/discipline',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
-               "publish"     => $$result{'publish'}
+               "status"      => $$result{'publish'}
             }
         } 
         else {

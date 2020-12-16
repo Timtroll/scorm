@@ -25,7 +25,7 @@ sub index {
         $result = {};
         unless ( @! ) {
             $result = {
-                "label" =>  "Темы",
+                "label" =>  "темы",
                 "current" =>  {
                     "route"  => '/theme',
                     "add"    => '/theme/add',      # разрешает добавлять тему
@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'publish'      => $$result{'publish'} }
+                            { 'status'      => $$result{'status'} }
                         ]
                     },
                     {
@@ -150,7 +150,7 @@ sub save {
     # проверка данных
     $data = $self->_check_fields();
 
-    unless ( @! ) {
+    if ( ! @! && $$data{'attachment'} ) {
         # проверка существования вложенных файлов
         $attachment = decode_json( $$data{'attachment'} );
         foreach ( @$attachment ) {
