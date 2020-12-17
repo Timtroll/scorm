@@ -169,7 +169,7 @@ $result = {
             "route"  => "/theme",        # роут для получения детей
             "add"    => "/theme/add",    # разрешает добавлять детей
             "edit"   => "/theme/edit",   # разрешает редактировать детей
-            "remove" => "/theme/delete", # разрешает удалять детей
+            "delete" => "/theme/delete", # разрешает удалять детей
         },
         "child" =>  {
             "add"    =>    "/theme/add",  # разрешает добавлять дочерние темы
@@ -184,10 +184,10 @@ $result = {
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/theme/",  # роут для работы с элементами
+                "route"       => "/theme",
                 "parent"      => $answer + 1,
                 "status"      => 1,
-                "attachment"  => '[1]'
+                "attachment"  => '[]'
             },
             {
                 "folder"      => 0,
@@ -198,10 +198,10 @@ $result = {
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/theme/",
+                "route"       => "/theme",
                 "parent"      => $answer + 1,
                 "status"      => 0,
-                "attachment"  => '[1]'
+                "attachment"  => '[]'
             }
         ]
     },
@@ -220,4 +220,4 @@ diag"";
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

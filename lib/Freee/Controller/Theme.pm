@@ -218,12 +218,12 @@ sub toggle {
 
     #     $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
 
-    #     unless ( $self->model('Utils')->_exists_in_table( 'EAV_items', 'id', $$data{'id'} ) ) {
+    #     unless ( $self->model('Utils')->_exists_in_table( "\"EAV_items\"", 'id', $$data{'id'} ) ) {
     #         push @!, "Theme with '$$data{'id'}' doesn't exist";
     #     }
     #     unless ( @! ) {
-    #         $toggle = $self->model('Utils')->_toggle( $data );
-    #         push @!, "Could not toggle Theme '$$data{'id'}'" unless $toggle;
+    #         $result = $self->model('Utils')->_toggle( $data );
+    #         push @!, "Could not toggle Theme '$$data{'id'}'" unless $result;
     #     }
     # }
     $resp->{'message'} = join("\n", @!) if @!;

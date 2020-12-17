@@ -116,26 +116,43 @@ sub _list_theme {
         ]
     });
 
-    my @themes = ();
-    map {
-        my $item = {
-            'id'          => $_->{'id'},
-            'folder'      => $_->{'has_childs'},
-            'label'       => $_->{'title'},
-            'description' => $_->{'description'},
-            'content'     => $_->{'content'},
-            'keywords'    => $_->{'keywords'},
-            'url'         => $_->{'url'},
-            'seo'         => $_->{'seo'},
-            'route'       => $_->{'route'},
-            'parent'      => $_->{'parent'},
-            'status'      => $_->{'publish'},
-            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-        };
-        push @themes, $item;
-    } ( @$list );
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            # взять весь объект из EAV
+            $theme = Freee::EAV->new( 'Theme', { 'id' => $_->{'id'} } );
 
-    return \@themes;
+            $result = $theme->_getAll();
+            if ( $result ) {
+                $_->{'id'}          = $$result{'id'},
+                $_->{'label'}       = $$result{'label'},
+                $_->{'description'} = $$result{'description'},
+                $_->{'content'}     = $$result{'content'},
+                $_->{'keywords'}    = $$result{'keywords'},
+                $_->{'url'}         = $$result{'url'},
+                $_->{'seo'}         = $$result{'seo'},
+                $_->{'route'}       = '/theme',
+                $_->{'attachment'}  = $$result{'attachment'},
+                $_->{'status'}      = $$result{'publish'},
+                $_->{'folder'}      = $_->{'has_childs'},
+                $_->{'parent'}      = $$result{'parent'},
+                delete $_->{'title'},
+                delete $_->{'distance'},
+                delete $_->{'has_childs'},
+                delete $_->{'import_source'},
+                delete $_->{'publish'},
+                delete $_->{'import_id'},
+                delete $_->{'date_created'},
+                delete $_->{'date_updated'},
+                delete $_->{'type'}
+            } 
+            else {
+                push @!, 'can\'t get list';
+                return;
+            }
+        }
+    }
+
+    return $list;
 }
 
 #  получить данные для редактирования темы
