@@ -28,7 +28,7 @@ sub _exists_in_table {
     return unless $row->{'count'};
 
     # проверяем поле name на дубликат
-    $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
+    $sql = 'SELECT id FROM "public"."'.$table.'" WHERE "'.$name.'"=\''.$val."'";
     # исключаем из поиска id
     $sql .='AND "id" <> '.$exclude_id if $exclude_id;
 

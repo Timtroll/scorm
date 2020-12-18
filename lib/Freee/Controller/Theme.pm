@@ -206,26 +206,21 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем тему в EAV
-        $result = $self->model('Theme')->_toggle_theme( $data );
-        push @!, "can't update EAV" unless $result;
+        $$data{'table'} = 'EAV_items';
+
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
+        unless ( $self->model('Utils')->_exists_in_table( $$data{'table'}, 'id', $$data{'id'} ) ) {
+            push @!, "Theme with '$$data{'id'}' doesn't exist";
+        }
+        unless ( @! ) {
+            $result = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle Theme '$$data{'id'}'" unless $result;
+        }
     }
-    # unless ( @! ) {
-    #     $$data{'table'} = 'EAV_items';
-
-    #     # смена status на publish
-    #     $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
-
-    #     $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
-
-    #     unless ( $self->model('Utils')->_exists_in_table( "\"EAV_items\"", 'id', $$data{'id'} ) ) {
-    #         push @!, "Theme with '$$data{'id'}' doesn't exist";
-    #     }
-    #     unless ( @! ) {
-    #         $result = $self->model('Utils')->_toggle( $data );
-    #         push @!, "Could not toggle Theme '$$data{'id'}'" unless $result;
-    #     }
-    # }
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;

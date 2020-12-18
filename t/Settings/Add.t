@@ -432,6 +432,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 };
 
 done_testing();
+clear_db();
 
 # очистка тестовой таблицы
 sub clear_db {

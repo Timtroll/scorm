@@ -135,4 +135,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

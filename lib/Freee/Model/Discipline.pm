@@ -284,32 +284,6 @@ sub _save_discipline {
     return $result;
 }
 
-# изменить статус предмета (вкл/выкл)
-# $result = $self->model('Discipline')->_toggle_discipline( $data );
-# $data = {
-#    'id'    => <id>, - id записи 
-#    'publish'=> 1     - новый статус 1/0
-# }
-sub _toggle_discipline {
-    my ( $self, $data ) = @_;
-
-    my ( $discipline, $result );
-
-    unless ( $$data{'id'} || $$data{'publish'} ) {
-        return;
-    }
-    else {
-        # обновление поля в EAV
-        $discipline = Freee::EAV->new( 'Discipline', { 'id' => $$data{'id'} } );
-
-        return unless $discipline;
-
-        $result = $discipline->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
-    }
-
-    return $result;
-}
-
 # проверка существования предмета
 # my $true = $self->model('Discipline')->_exists_in_discipline( <id> );
 # 'id'    - id предмета

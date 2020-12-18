@@ -328,7 +328,7 @@ p %data;
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],

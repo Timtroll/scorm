@@ -275,32 +275,6 @@ sub _save_theme {
     return $result;
 }
 
-# изменить статус темы (вкл/выкл)
-# $result = $self->model('Theme')->_toggle_theme( $data );
-# $data = {
-#    'id'    => <id>, - id записи 
-#    'publish'=> 1     - новый статус 1/0
-# }
-sub _toggle_theme {
-    my ( $self, $data ) = @_;
-
-    my ( $theme, $result );
-
-    unless ( $$data{'id'} || $$data{'publish'} ) {
-        return;
-    }
-    else {
-        # обновление поля в EAV
-        $theme = Freee::EAV->new( 'Theme', { 'id' => $$data{'id'} } );
-
-        return unless $theme;
-
-        $result = $theme->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
-    }
-
-    return $result;
-}
-
 # проверка существования темы
 # my $true = $self->model('Theme')->_exists_in_theme( <id> );
 # 'id'    - id темы

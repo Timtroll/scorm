@@ -207,9 +207,20 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем предмет в EAV
-        $result = $self->model('Discipline')->_toggle_discipline( $data );
-        push @!, "can't update EAV" unless $result;
+        $$data{'table'} = 'EAV_items';
+
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
+        unless ( $self->model('Utils')->_exists_in_table( $$data{'table'}, 'id', $$data{'id'} ) ) {
+            push @!, "Discipline with '$$data{'id'}' doesn't exist";
+        }
+        unless ( @! ) {
+            $result = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle Discipline '$$data{'id'}'" unless $result;
+        }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
