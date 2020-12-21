@@ -348,14 +348,6 @@ sub add {
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
             unless ( $$data{'required'} )            { $$data{'required'}    = 0 };
             unless ( $$data{'readonly'} )            { $$data{'readonly'}    = 0 };
-warn Dumper( $data );
-            # смена поля status на publish
-            # if ( defined $$data{'status'} ) {
-            #     $$data{'publish'} = $$data{'status'};
-            # }
-            # else {
-            #     $$data{'publish'} = 1;
-            # };
 
             $$data{'publish'} = $$data{'status'} ? 1 : 0;
             delete $$data{'status'};
@@ -466,11 +458,10 @@ sub save {
         unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
         unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
         unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
-        unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
-        unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+        unless ( $$data{'required'} )            { $$data{'required'}    = 0 };
+        unless ( $$data{'readonly'} )            { $$data{'readonly'}    = 0 };
 
-        # смена поля status на publish
-        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
+        $$data{'publish'} = $$data{'status'} ? 1 : 0;
         delete $$data{'status'};
 
         # проверяем поле name на дубликат

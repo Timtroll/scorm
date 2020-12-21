@@ -57,13 +57,14 @@ my $test_data = {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'parent'    => 0
+            'parent'    => 0,
+            'status'    => 0
         },
         'result' => {
             'id'        => 2,
             'status'    => 'ok'
         },
-        'comment' => 'Default status:' 
+        'comment' => 'status zero:' 
     },
     3 => {
         'data' => {

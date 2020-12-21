@@ -88,6 +88,7 @@ my $test_data = {
         },
         'comment' => 'status 1:' 
     },
+    # отрицательные тесты
     3 => {
         'data' => {
             'id'          => 1,
@@ -96,13 +97,11 @@ my $test_data = {
             'parent'      => 0
         },
         'result' => {
-            'id'        => 1,
-            'status'    => 'ok'
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No status:' 
     },
-
-    # отрицательные тесты
     4 => {
         'data' => {
             'id'          => 1,
@@ -205,7 +204,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "Id '2' is not a folder",
+            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'parent' = ''",
             'status'    => 'fail'
         },
         'comment' => 'Parent does not exist:'

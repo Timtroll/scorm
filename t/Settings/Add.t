@@ -245,26 +245,25 @@ my $test_data = {
         },
         'comment' => 'No readonly:' 
     },
-    10 => {
-    'data' => {
-        'parent'      => 1,
-        'name'        => 'name10',
-        'label'       => 'label10',
-        'placeholder' => 'placeholder',
-        'type'        => get_type(),
-        'mask'        => 'mask',
-        'value'       => 'value',
-        'selected'    => '[]',
-        'readonly'    => 0
-    },
-    'result' => {
-        'id'        => 11,
-        'status'    => 'ok',
-    },
-    'comment' => 'No status:' 
-},
-
     # отрицательные тесты
+    10 => {
+        'data' => {
+            'parent'      => 1,
+            'name'        => 'name10',
+            'label'       => 'label10',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0
+        },
+        'result' => {
+            'message'   => "/settings/add _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail',
+        },
+        'comment' => 'No status:' 
+    },
     11 => {
         'data' => {
             'name'        => 'name',
@@ -278,7 +277,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "setting have wrong parent 0",
+            'message'   => "/settings/add _check_fields: didn't has required data in 'parent' = ''",
             'status'    => 'fail',
         },
         'comment' => 'No parent:' 

@@ -14,7 +14,7 @@ use Test::Mojo;
 use Freee::Mock::TypeFields;
 use Mojo::JSON qw( decode_json );
 use Install qw( reset_test_db );
-use Test qw( get_last_id_user );
+use Test qw( get_last_id_user get_last_id_EAV );
 
 use Data::Dumper;
 
@@ -40,8 +40,11 @@ diag "";
 my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 my $token = $response->{'data'}->{'token'};
 
-# получение id последнего элемента
-my $answer = get_last_id_user( $t->app->pg_dbh );
+# получение id последнего элемента юзера
+my $user = get_last_id_user( $t->app->pg_dbh );
+
+# получение id последнего элемента EAV
+my $EAV = get_last_id_EAV( $t->app->pg_dbh );
 
 # Ввод пользователей
 diag "Add users:";
@@ -50,7 +53,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $answer+1,
+            'id'        => $user+1,
             'status'    => 'ok'
         }
     },
@@ -58,7 +61,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $answer+2,
+            'id'        => $user+2,
             'status'    => 'ok'
         }
     },
@@ -66,7 +69,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $answer+3,
+            'id'        => $user+3,
             'status'    => 'ok'
         }
     },
@@ -74,7 +77,7 @@ my $test_data = {
         'data' => {
         },
         'result' => {
-            'id'        => $answer+4,
+            'id'        => $user+4,
             'status'    => 'ok'
         }
     }
@@ -95,7 +98,7 @@ diag "Save users:";
 $test_data = {
     1 => {
         'data' => {
-            'id'           => $answer+1,
+            'id'           => $user+1,
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -110,13 +113,13 @@ $test_data = {
             'groups'       => "[1]"
         },
         'result' => {
-            'id'        => $answer+1,
+            'id'        => $user+1,
             'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
-            'id'           => $answer+2,
+            'id'           => $user+2,
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -131,13 +134,13 @@ $test_data = {
             'groups'       => "[1,2]"
         },
         'result' => {
-            'id'        => $answer+2,
+            'id'        => $user+2,
             'status'    => 'ok'
         }
     },
     3 => {
         'data' => {
-            'id'           => $answer+3,
+            'id'           => $user+3,
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -152,13 +155,13 @@ $test_data = {
             'groups'       => "[2,1,3]"
         },
         'result' => {
-            'id'        => $answer+3,
+            'id'        => $user+3,
             'status'    => 'ok'
         }
     },
     4 => {
         'data' => {
-            'id'           => $answer+4,
+            'id'           => $user+4,
             'surname'      => 'фамилия_right',
             'name'         => 'имя_right',
             'patronymic',  => 'отчество_right',
@@ -173,7 +176,7 @@ $test_data = {
             'groups'       => "[3,2,1]"
         },
         'result' => {
-            'id'        => $answer+4,
+            'id'        => $user+4,
             'status'    => 'ok'
         }
     }
@@ -205,7 +208,7 @@ $test_data = {
                         "email" =>  "admin\@admin",
                         "phone" =>  '',
                         "status" =>  1,
-                        "eav_id" =>  5,
+                        "eav_id" =>  6,
                         "login" => "admin",
                         'place' => 'scorm',
                         'birthday' => '1995-08-03 00:00:00',
@@ -216,12 +219,12 @@ $test_data = {
                         'patronymic' => "admin"
                     },
                     {
-                        "id" =>  $answer+1,
+                        "id" =>  $user+1,
                         "timezone" => 3,
                         "email" =>  "1\@email.ru",
                         "phone" =>  "7(921)1111111",
                         "status" =>  1,
-                        "eav_id" =>  10,
+                        "eav_id" =>  $EAV+1,
                         "login" => "login1",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -232,12 +235,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+2,
+                        "id" =>  $user+2,
                         "timezone" => 3,
                         "email" =>  "2\@email.ru",
                         "phone" =>  "7(921)1111112",
                         "status" =>  1,
-                        "eav_id" =>  11,
+                        "eav_id" =>  $EAV+2,
                         "login" => "login2",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -248,12 +251,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+3,
+                        "id" =>  $user+3,
                         "timezone" => 3,
                         "email" =>  "3\@email.ru",
                         "phone" =>  "7(921)1111113",
                         "status" =>  1,
-                        "eav_id" =>  12,
+                        "eav_id" =>  $EAV+3,
                         "login" => "login3",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -264,12 +267,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+4,
+                        "id" =>  $user+4,
                         "timezone" => 3,
                         "email" =>  "4\@email.ru",
                         "phone" =>  "7(921)1111114",
                         "status" =>  1,
-                        "eav_id" =>  13,
+                        "eav_id" =>  $EAV+4,
                         "login" => "login4",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -313,7 +316,7 @@ $test_data = {
                         "email" =>  "admin\@admin",
                         "phone" =>  '',
                         "status" =>  1,
-                        "eav_id" =>  5,
+                        "eav_id" =>  6,
                         "login" => "admin",
                         'place' => 'scorm',
                         'birthday' => '1995-08-03 00:00:00',
@@ -324,12 +327,12 @@ $test_data = {
                         'patronymic' => "admin"
                     },
                     {
-                        "id" =>  $answer+1,
+                        "id" =>  $user+1,
                         "timezone" => 3,
                         "email" =>  "1\@email.ru",
                         "phone" =>  "7(921)1111111",
                         "status" =>  1,
-                        "eav_id" =>  10,
+                        "eav_id" =>  $EAV+1,
                         "login" => "login1",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -340,12 +343,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+2,
+                        "id" =>  $user+2,
                         "timezone" => 3,
                         "email" =>  "2\@email.ru",
                         "phone" =>  "7(921)1111112",
                         "status" =>  1,
-                        "eav_id" =>  11,
+                        "eav_id" =>  $EAV+2,
                         "login" => "login2",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -356,12 +359,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+3,
+                        "id" =>  $user+3,
                         "timezone" => 3,
                         "email" =>  "3\@email.ru",
                         "phone" =>  "7(921)1111113",
                         "status" =>  1,
-                        "eav_id" =>  12,
+                        "eav_id" =>  $EAV+3,
                         "login" => "login3",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',
@@ -372,12 +375,12 @@ $test_data = {
                         'patronymic' => "отчество_right"
                     },
                     {
-                        "id" =>  $answer+4,
+                        "id" =>  $user+4,
                         "timezone" => 3,
                         "email" =>  "4\@email.ru",
                         "phone" =>  "7(921)1111114",
                         "status" =>  1,
-                        "eav_id" =>  13,
+                        "eav_id" =>  $EAV+4,
                         "login" => "login4",
                         'place' => 'place',
                         'birthday' => '1995-08-03 00:00:00',

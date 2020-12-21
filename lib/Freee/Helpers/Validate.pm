@@ -75,23 +75,23 @@ sub register {
             }
 
             # поля которые не могут быть undef
-            my %exclude_fields = (
-                'parent' => 1,
-                'status' => 1,
-                'timezone' => 1,
-            );
+            # my %exclude_fields = (
+            #     'parent' => 1,
+            #     'status' => 1,
+            #     'timezone' => 1,
+            # );
 
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
-                if ( exists( $exclude_fields{$field} ) ) {
-                    $param = 0 unless $param;
-                }
-                else {
+                # if ( exists( $exclude_fields{$field} ) ) {
+                #     $param = 0 unless $param;
+                # }
+                # else {
                     if ( !defined $param || $param eq '' ) {
                         push @!, "$url_for _check_fields: didn't has required data in '$field' = ''";
                         last;
                     }
-                }
+                # }
             }
             elsif ( ! $required && ! $param  ) {
                 $data{$field} = '';
@@ -293,7 +293,7 @@ p %data;
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -303,7 +303,7 @@ p %data;
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -342,7 +342,7 @@ p %data;
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -445,7 +445,7 @@ p %data;
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/theme/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

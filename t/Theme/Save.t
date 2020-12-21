@@ -142,6 +142,7 @@ my $test_data = {
         },
         'comment' => 'status 0:' 
     },
+    # отрицательные тесты
     3 => {
         'data' => {
             'id'          => $answer + 2,
@@ -156,13 +157,11 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => $answer + 2,
-            'status'    => 'ok'
+            'message'   => "/theme/save _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail',
         },
         'comment' => 'No status:' 
     },
-
-    # отрицательные тесты
     4 => {
         'data' => {
             'id'          => $answer + 2,
@@ -233,7 +232,7 @@ my $test_data = {
             'attachment'  => '[1]'
         },
         'result' => {
-            'message'   => "can't update EAV",
+            'message'   => "/theme/save _check_fields: didn't has required data in 'status' = ''",
             'status'    => 'fail',
         },
         'comment' => "Validation error:"

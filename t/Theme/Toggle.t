@@ -118,7 +118,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "can't update EAV",
+            'message'   => "Theme with '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -130,7 +130,7 @@ my $test_data = {
             'value'     => 1
         },
         'result' => {
-            'message'   => "can't update EAV",
+            'message'   => "Theme with '0' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => '0 id:' 
@@ -155,4 +155,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

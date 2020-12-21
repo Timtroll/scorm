@@ -78,7 +78,7 @@ my $test_data = {
     },
     3 => {
         'result' => {
-            'message'   => "Routes for Group id '0' is not exists",
+            'message'   => "/routes _check_fields: didn't has required data in 'parent' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 

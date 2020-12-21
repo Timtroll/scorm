@@ -275,6 +275,7 @@ $test_data = {
         },
         'comment' => 'No readonly:' 
     },
+    # отрицательные тесты
     9 => {
         'data' => {
             'id'          => 2,
@@ -289,13 +290,11 @@ $test_data = {
             'readonly'    => 0
         },
         'result' => {
-            'id'        => 2,
-            'status'    => 'ok',
+            'message'   => "/settings/save _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail',
         },
         'comment' => 'No status:' 
     },
-
-    # отрицательные тесты
     10 => {
         'data' => {
             'id'          => 2,
@@ -310,7 +309,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "setting have wrong parent 0",
+            'message'   => "/settings/save _check_fields: didn't has required data in 'parent' = ''",
             'status'    => 'fail',
         },
         'comment' => 'No parent:' 

@@ -48,7 +48,7 @@ my $test_data = {
             'id'        => '1',
             'status'    => 'ok'
         },
-        'comment' => 'All fields:' 
+        'comment' => 'All fields:'
     },
     2 => {
         'data' => {
@@ -60,7 +60,7 @@ my $test_data = {
             'id'        => '2',
             'status'    => 'ok',
         },
-        'comment' => 'status zero:' 
+        'comment' => 'status zero:'
     },
 
     # отрицательные тесты
@@ -73,7 +73,7 @@ my $test_data = {
             'message'   => "/groups/add _check_fields: didn't has required data in 'label' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No label:' 
+        'comment' => 'No label:'
     },
     4 => {
         'data' => {
@@ -84,7 +84,7 @@ my $test_data = {
             'message'   => "/groups/add _check_fields: didn't has required data in 'name' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No name:' 
+        'comment' => 'No name:'
     },
     5 => {
         'data' => {
@@ -95,7 +95,7 @@ my $test_data = {
             'message'   => "/groups/add _check_fields: didn't has required data in 'status' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No status:' 
+        'comment' => 'No status:'
     },
     6 => {
         'data' => {
@@ -107,7 +107,7 @@ my $test_data = {
             'message'   => "/groups/add _check_fields: empty field 'name', didn't match regular expression",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong input format:' 
+        'comment' => 'Wrong input format:'
     },
     7 => {
         'data' => {
@@ -119,7 +119,7 @@ my $test_data = {
             'message'    => "name 'name1' already exists",
             'status'     => 'fail'
         },
-        'comment' => 'Same name:' 
+        'comment' => 'Same name:'
     },
     8 => {
         'data' => {
@@ -131,7 +131,7 @@ my $test_data = {
             'message'    => "label 'label1' already exists",
             'status'     => 'fail'
         },
-        'comment' => 'Same label:' 
+        'comment' => 'Same label:'
     }
 };
 

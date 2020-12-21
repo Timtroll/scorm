@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'status'      => $$result{'publish'} }
+                            { 'status'      => $$result{'status'} }
                         ]
                     },
                     {
