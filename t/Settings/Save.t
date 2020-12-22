@@ -309,7 +309,7 @@ $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "/settings/save _check_fields: didn't has required data in 'parent' = ''",
+            'message'   => "setting have wrong parent 0",
             'status'    => 'fail',
         },
         'comment' => 'No parent:' 

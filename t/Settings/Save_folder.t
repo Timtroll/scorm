@@ -204,7 +204,7 @@ my $test_data = {
             'status'      => 0
         },
         'result' => {
-            'message'   => "/settings/save_folder _check_fields: didn't has required data in 'parent' = ''",
+            'message'   => "Id '2' is not a folder",
             'status'    => 'fail'
         },
         'comment' => 'Parent does not exist:'

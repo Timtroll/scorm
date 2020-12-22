@@ -75,23 +75,23 @@ sub register {
             }
 
             # поля которые не могут быть undef
-            # my %exclude_fields = (
-            #     'parent' => 1,
-            #     'status' => 1,
-            #     'timezone' => 1,
-            # );
+            my %exclude_fields = (
+                'parent' => 1,
+                # 'status' => 1,
+                'timezone' => 1,
+            );
 
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
-                # if ( exists( $exclude_fields{$field} ) ) {
-                #     $param = 0 unless $param;
-                # }
-                # else {
+                if ( exists( $exclude_fields{$field} ) ) {
+                    $param = 0 unless $param;
+                }
+                else {
                     if ( !defined $param || $param eq '' ) {
                         push @!, "$url_for _check_fields: didn't has required data in '$field' = ''";
                         last;
                     }
-                # }
+                }
             }
             elsif ( ! $required && ! $param  ) {
                 $data{$field} = '';
