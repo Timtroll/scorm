@@ -244,7 +244,20 @@ warn "+++++++++++";
     $auth->post('/routes/')             ->to('routes#index');       # список роутов конкретной группы
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
-    $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
+    $auth->post('/routes/toggle')       ->to('routes#toggle');      # изменить статус поля роута (вкл/выкл)
+
+    # управление потоками пользователей
+    $auth->post('/stream/')             ->to('stream#index');       # список потоков
+    $auth->post('/stream/edit')         ->to('stream#edit');        # получить данный для редактирования потока
+    $auth->post('/stream/save')         ->to('stream#save');        # сохранить поток
+    $auth->post('/stream/add')          ->to('stream#add');         # добавить поток
+    $auth->post('/stream/toggle')       ->to('stream#toggle');      # изменить статус потока (вкл/выкл)
+    $auth->post('/stream/delete')       ->to('stream#delete');      # удалить поток
+    $auth->post('/stream/users')        ->to('stream#users');       # список студентов потока
+    $auth->post('/stream/user_add')     ->to('stream#user_add');    # добавить пользователя в поток
+    $auth->post('/stream/user_delete')  ->to('stream#user_delete'); # удалить пользователя из потока
+    $auth->post('/stream/master_add')   ->to('stream#master_add');  # добавить руководителя в поток
+    $auth->post('/stream/master_delete')->to('stream#master_delete');# удалить руководителя из потока
 
 # возможно еще что-то ?????????
 

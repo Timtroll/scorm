@@ -92,7 +92,7 @@ my $test_data = {
             'status'    => 'fail'
         },
         'comment' => 'Wrong input format:' 
-    },
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

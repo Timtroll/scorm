@@ -524,7 +524,6 @@ p %data;
             },
 
 ################
-
             # роуты groups/*
             '/groups'  => {
                 "page"          => [ '', qr/^[\w]+$/os, 256 ],
@@ -552,6 +551,7 @@ p %data;
                 "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
+
 ################
             # роуты routes/*
             '/routes'  => {
@@ -572,6 +572,56 @@ p %data;
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
                 "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'], 6],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
+            # роуты stream/*
+            '/stream'  => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+            },
+            '/stream/add'  => {
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "age"           => [ 'required', qr/^\d+$/os, 2 ],
+                'date'          => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "master_id"     => [ '', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/edit'  => {
+                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "age"           => [ 'required', qr/^\d+$/os, 2 ],
+                'date'          => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "master_id"     => [ '', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/users'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+            },
+            '/stream/user_add'    => {
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "user_id"      => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/user_delete'  => {
+                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/master_add'  => {
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "master_id"    => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/master_delete'  => {
+                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
             },
 ################
             # роуты forum/*
