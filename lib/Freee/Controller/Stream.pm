@@ -79,46 +79,84 @@ sub edit {
     $self->render( 'json' => $resp );
 }
 
+# обновление потока
+# my $id = $self->save();
+# "id"        => 1             - id обновляемого элемента ( >0 )
+# "name",     => 'name'        - обязательно (системное название, латиница)
+# 'age'       => 1,            - год обучения, обязательное поле
+# 'date'      => '01-09-2020', - дата начала обучения, обязательное поле
+# 'master_id' => 11,           - id руководителя
+# "status"    => 0 или 1       - активен ли поток
 sub save {
-    my ($self);
-    $self = shift;
+    my ( $self ) = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'Library',
-            'route'         => 'save',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ( $id, $parent, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    # проверка существования обновляемой строки
+    unless ( @! ) {
+        unless ( $self->model('Utils')->_exists_in_table('streams', 'id', $$data{'id'}) ) {
+            push @!, "Stream with id '$$data{'id'}' does not exist";
         }
-    );
+        if ( $self->model('Utils')->_exists_in_table('streams', 'name', $$data{'name'}, $$data{'id'} ) ) {
+            push @!, "Stream with name '$$data{'name'}' already exists";
+        }
+    }
+
+    unless ( @! ) {
+        # смена поля status на publish
+        $$data{'publish'} = $$data{'status'};
+        delete $$data{'status'};
+
+        # обновление данных группы
+        $id = $self->model('Stream')->_update_stream( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
 }
 
-sub activate {
-    my ($self);
-    $self = shift;
+# изменение поля на 1/0
+# my $true = $self->toggle();
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
+sub toggle {
+    my $self = shift;
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'Library',
-            'route'         => 'activate',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
+    my ( $toggle, $resp, $data );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    # Поток существует?
+    unless ( @! ) {
+        unless ( $self->model('Utils')->_exists_in_table( 'streams', 'id', $$data{'id'} ) ) {
+            push @!, "Id '$$data{'id'}' doesn't exist";
         }
-    );
-}
+    }
 
-sub hide {
-    my ($self);
-    $self = shift;
+    unless ( @! ) {
+        $$data{'fieldname'} = 'publish';
+        $$data{'table'} = 'streams';
+        $toggle = $self->model('Utils')->_toggle( $data );
+        push @!, "Could not toggle Stream '$$data{'id'}'" unless $toggle;
+    }
 
-    $self->render(
-        'json'    => {
-            'controller'    => 'Library',
-            'route'         => 'hide',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash
-        }
-    );
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
 }
 
 # удалениe потока

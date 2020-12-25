@@ -102,7 +102,7 @@ sub _get_stream {
     }
     else {
         # получить запись о группе из таблицы groups
-        $sql = 'SELECT id, name, age, date, master_id, publish AS status FROM "public"."groups" WHERE "id" = :id';
+        $sql = 'SELECT id, name, age, date, master_id, publish AS status FROM "public"."streams" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
@@ -179,15 +179,17 @@ sub _insert_stream {
     return $id;
 }
 
-# изменение группы пользователей
-# my $id = $self->_update_group({
-#     "id"          => '1',             - id элемента
-#     "label"       => 'название',      - название для отображения
-#     "name",       => 'name',          - системное название, латиница
-#     "publish"      => 0,               - по умолчанию 1
+# изменение потока
+# my $id = $self->_update_stream({
+# "id"        => 1             - id обновляемого элемента ( >0 )
+# "name",     => 'name'        - обязательно (системное название, латиница)
+# 'age'       => 1,            - год обучения, обязательное поле
+# 'date'      => '01-09-2020', - дата начала обучения, обязательное поле
+# 'master_id' => 11,           - id руководителя
+# "status"    => 0 или 1       - активен ли поток              - по умолчанию 1
 # });
 # возвращается true/false
-sub _update_group {
+sub _update_stream {
     my ( $self, $data ) = @_;
 
     my ( $id, $sql, $sth, $result );
@@ -198,13 +200,13 @@ sub _update_group {
     }
 
     unless ( @! ) {
-        $sql = 'UPDATE "public"."groups" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
+        $sql = 'UPDATE "public"."streams" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
         $result = $sth->fetchrow_array();
         $sth->finish();
 
-        push @!, "Error by update $$data{'label'}" if ! defined $result;
+        push @!, "Error by update $$data{'name'}" if ! defined $result;
     }
 
     return $result;

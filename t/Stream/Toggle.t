@@ -1,5 +1,9 @@
-# загрузка данных о потоке
-#    "id" => 1;
+# изменение поля на 1/0
+# my $true = $self->toggle(
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
+#  );
 
 use FindBin;
 BEGIN {
@@ -59,39 +63,6 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->json_is( $$test_data{'result'} );
 diag "";
 
-# Сохранение пользователя
-diag "Save user:";
-$test_data = {
-    'data' => {
-        'id'           => $user+1,
-        'surname'      => 'surname',
-        'name'         => 'name',
-        'patronymic',  => 'patronymic',
-        'place'        => 'place',
-        'country'      => 'RU',
-        'timezone'     => 3,
-        'birthday'     => 807393600,
-        'login'        => 'login1',
-        'email'        => '1@email.ru',
-        'phone'        => '7(921)1111111',
-        'status'       => 1,
-        'groups'       => "[1]"
-    },
-    'result' => {
-        'id'        => $user+1,
-        'status'    => 'ok'
-    }
-};
-
-
-$t->post_ok( $host.'/user/save' => {token => $token} => form => $$test_data{'data'} );
-unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-    diag("Can't connect");
-    exit; 
-}
-$t->json_is( $$test_data{'result'} );
-diag "";
-
 # Ввод потока
 diag "Add stream:";
 my $test_data = {
@@ -120,60 +91,89 @@ my $test_data = {
     # положительные тесты
     1 => {
         'data' => {
-            'id'    => 1
+            'id'        => 1,
+            'fieldname' => 'status',
+            'value'     => 0
         },
         'result' => {
-            'data'      => {
-                'id'        => 1,
-                'name'      => 'name',
-                'age'       => 1,
-                'date'      => '2020-09-01 00:00:00+03',
-                'master_id' => $user + 1,
-                'status'    => 1
-            },
-            'status'    => 'ok'
+            'status'    => 'ok',
+            'id'        => 1
         },
-        'comment' => 'All right:'
+        'comment' => 'All right:' 
     },
 
     # отрицательные тесты
     2 => {
         'data' => {
-            'id'        => 404
+            'id'        => 1,
+            'fieldname' => 'status'
         },
         'result' => {
-            'message'   => "Could not get Stream '404'",
+            'message'   => "/stream/toggle _check_fields: didn't has required data in 'value' = ''",
+            'status'    => 'fail'
+        },
+        'comment' => 'No value:'
+    },
+    3 => {
+        'data' => {
+            'fieldname' => 'status',
+            'value'    => 1,
+        },
+        'result' => {
+            'message'   => "/stream/toggle _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
+        },
+        'comment' => 'No id:' 
+    },
+    4 => {
+        'data' => {
+            'id'        => 1,
+            'value'     => 1,
+        },
+        'result' => {
+            'message'   => "/stream/toggle _check_fields: didn't has required data in 'fieldname' = ''",
+            'status'    => 'fail'
+        },
+        'comment' => 'No fieldname:' 
+    },
+    5 => {
+        'data' => {
+            'id'        => 404,
+            'fieldname' => 'status',
+            'value'     => 1
+        },
+        'result' => {
+            'message'   => "Id '404' doesn't exist",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
-    3 => {
-        'result' => {
-            'message'   => "/stream/edit _check_fields: didn't has required data in 'id' = ''",
-            'status'    => 'fail'
-        },
-        'comment' => 'No data:' 
-    },
-    4 => {
+    6 => {
         'data' => {
-            'id'        => - 404
+            'id'        => 0,
+            'fieldname' => 'status',
+            'value'     => 1
         },
         'result' => {
-            'message'   => "/stream/edit _check_fields: empty field 'id', didn't match regular expression",
+            'message'   => "Id '0' doesn't exist",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong input format:' 
-    }
+        'comment' => '0 id:' 
+    },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/stream/edit' => {token => $token} => form => $data )
-        ->status_is(200)
-        ->content_type_is('application/json;charset=UTF-8')
-        ->json_is( $result );
+
+    $t->post_ok( $host.'/stream/toggle' => {token => $token}  => form => $data );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect \n");
+        last;
+    }
+    $t->content_type_is('application/json;charset=UTF-8');
+    $t->json_is( $result );
     diag "";
 };
 
