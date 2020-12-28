@@ -115,32 +115,6 @@ sub _get_stream {
     return $result;
 }
 
-# получить id группы по названию
-# my $id = $self->get_group_id( 'name' );
-#   'get_group_id' - имя группы в таблице
-sub _get_group_id {
-    my ( $self, $name ) = @_;
-
-    my ( $sql, $sth, $result );
-
-    unless ( $name ) {
-        push @!, 'No group name';
-    }
-    else {
-        # получить имя группы
-        $sql = 'SELECT * FROM "public"."groups" WHERE "name" = :name';
-
-        $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':name', $name );
-        $sth->execute();
-        $result = $sth->fetchrow_hashref();
-        $sth->finish();
-        push @!, "Could not get Group name '$name'" unless $result;
-    }
-
-    return $result;
-}
-
 # добавление потока
 # my $id = $self->insert_stream({
 #     "name",        => 'name',            - системное название, латиница, обязательное поле
@@ -237,4 +211,33 @@ sub _delete_stream {
     return $result;
 }
 
+sub _insert_user {
+    my ( $self, $data ) = @_;
+
+    my ( $id, $sql, $sth );
+
+    # проверка входных данных
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @!, "no data for insert";
+    }
+
+    unless ( @! ) {
+        $sql = 'INSERT INTO "public"."universal links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id", "time_create" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id, :time_create )';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':a_link_id', $$data{'user_id'} );
+        $sth->bind_param( ':a_link_type', 'User' );
+        $sth->bind_param( ':b_link_id', $$data{'stream_id'} );
+        $sth->bind_param( ':b_link_type', 'Stream' );
+        $sth->bind_param( ':owner_id', ( $$data{'status'} ? 1 : 0 ) );
+        $sth->bind_param( ':time_create', ( $$data{'status'} ? 1 : 0 ) );
+        $sth->execute();
+        $sth->finish();
+
+        $id = $sth->last_insert_id( undef, 'public', 'streams', undef, { sequence => 'streams_id_seq' } );
+        $sth->finish();
+        push @!, "Can not insert $$data{'name'} into streams" unless $id;
+    }
+
+    return $id;
+}
 1;

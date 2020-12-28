@@ -26,10 +26,8 @@ sub add {
 
     my ( $id, $data, $resp );
 
-    unless ( @! ) {
-        # проверка данных
-        $data = $self->_check_fields();
-    }
+    # проверка данных
+    $data = $self->_check_fields();
 
     unless ( @! ) {
         # проверяем, используется ли имя другим потоком
@@ -176,6 +174,44 @@ sub delete {
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+sub user_add {
+    my $self = shift;
+
+    my ( $id, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # проверяем, существует ли поток
+        unless ( $self->model('Utils')->_exists_in_table('streams', 'id', $$data{'stream_id'} ) ) {
+            push @!, "Stream '$$data{'stream_id'}' does not exist"; 
+        }
+
+        # проверяем, существует ли пользователь
+        unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'user_id'} ) ) {
+            push @!, "User '$$data{'user_id'}' does not exist"; 
+        }
+
+        # проверяем, входит ли пользователь в поток
+        if ( $self->model('Utils')->_exists_in_table('universal_links', 'a_link_id', $$data{'user_id'} ) ) {
+            push @!, "User '$$data{'user_id'}' already in stream"; 
+        }
+    }
+
+    unless ( @! ) {
+        $id = $self->model('Stream')->_insert_user( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
 
     @! = ();
 

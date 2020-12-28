@@ -1,3 +1,9 @@
+# добавление пользователя в поток
+# my $id = $self->insert_stream({
+#     "stream_id",        => 1,           - ID потока,
+#     "user_id"           => 1,           - ID пользователя
+# });
+
 use FindBin;
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -89,79 +95,115 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->json_is( $$test_data{'result'} );
 diag "";
 
-# Ввод потоков
+# Ввод потока
 diag "Add stream:";
 my $test_data = {
+    'data' => {
+        'name'      => 'name',
+        'age'       => 1,
+        'date'      => '01-09-2020',
+        'master_id' => $user+2,
+        'status'    => 1
+    },
+    'result' => {
+        'id'        => 1,
+        'status'    => 'ok'
+    }
+};
+
+$t->post_ok( $host.'/stream/add' => {token => $token} => form => $$test_data{'data'} );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+$t->json_is( $$test_data{'result'} );
+diag "";
+
+my $test_data = {
+    # положительные тесты
     1 => {
         'data' => {
-            'name'      => 'test1',
-            'age'       => 1,
-            'date'      => '01-09-2020',
-            'master_id' => $user + 1,
-            'status'    => 1
+            'stream_id'        => 1,
+            'user_id'          => $user + 1,
         },
         'result' => {
             'id'        => 1,
             'status'    => 'ok'
-        }
+        },
+        'comment' => 'All right:' 
     },
+
+    # отрицательные тесты
     2 => {
         'data' => {
-            'name'      => 'test2',
-            'age'       => 1,
-            'date'      => '01-09-2020',
-            'master_id' => $user + 1,
-            'status'    => 0
+            'stream_id'        => 404,
+            'user_id'          => $user + 1,
         },
         'result' => {
-            'id'        => 2,
-            'status'    => 'ok'
-        }
-    }
+            'message'   => "Stream '404' does not exist",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong id:' 
+    },
+    3 => {
+        'data' => {
+            'stream_id'        => 1,
+            'user_id'          => 404,
+        },
+        'result' => {
+            'message'   => "User '404' does not exist",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong id:' 
+    },
+    4 => {
+        'data' => {
+            'user_id'          => $user + 1,
+        },
+        'result' => {
+            'message'   => "/stream/delete _check_fields: didn't has required data in 'stream_id' = ''",
+            'status'    => 'fail'
+        },
+        'comment' => 'No data:' 
+    },
+    5 => {
+        'data' => {
+            'stream_id'      => 1,
+            'user_id'        => - 404,
+        },
+        'result' => {
+            'message'   => "/stream/delete _check_fields: empty field 'id', didn't match regular expression",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong type of id:' 
+    },
+    6 => {
+        'data' => {
+            'stream_id'      => 1,
+            'user_id'        => $user + 1,
+        },
+        'result' => {
+            'message'   => "User /'$user + 1/' already in stream",
+            'status'    => 'fail'
+        },
+        'comment' => 'Wrong type of id:' 
+    },
 };
 
-diag "Add streams:";
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    $t->post_ok( $host.'/stream/add' => {token => $token} => form => $$test_data{$test}{'data'} );
+    diag ( $$test_data{$test}{'comment'} );
+    my $data = $$test_data{$test}{'data'};
+    my $result = $$test_data{$test}{'result'};
+
+    $t->post_ok( $host.'/stream/user_add' => {token => $token}  => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect");
-        exit; 
+        diag("Can't connect \n");
+        last;
     }
-    $t->json_is( $$test_data{$test}{'result'} );
+    $t->content_type_is('application/json;charset=UTF-8');
+    $t->json_is( $result );
     diag "";
-}
-
-my $result =
-    {
-        "list" => [
-            {
-                "member_count" => 1,
-                "component" => "Stream",
-                "id" => 1,
-                "name" => "1А",
-                "age" =>  1, # год обучения
-                "date" => "01.09.2020",
-                "master_id" => 4
-            },
-            {
-                "member_count" => 0,
-                "component" => "Stream",
-                "id" => 2,
-                "name" => "1А",
-                "age" => 1, 
-                "date" => "01.09.2020",
-                "master_id" => 4
-            }
-        ],
-        "status" => "ok"
-    };
-
-diag "All streams:";
-$t->post_ok( $host.'/stream/' => {token => $token} )
-    ->status_is(200)
-    ->content_type_is('application/json;charset=UTF-8')
-    ->json_is( $result );
-diag "";
+};
 
 done_testing();
 
