@@ -214,7 +214,7 @@ sub _delete_stream {
 sub _insert_user {
     my ( $self, $data ) = @_;
 
-    my ( $id, $sql, $sth );
+    my ( $id, $sql, $sth, $result );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -222,22 +222,35 @@ sub _insert_user {
     }
 
     unless ( @! ) {
-        $sql = 'INSERT INTO "public"."universal links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id", "time_create" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id, :time_create )';
+        $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':a_link_id', $$data{'user_id'} );
-        $sth->bind_param( ':a_link_type', 'User' );
+        $sth->bind_param( ':a_link_type', 2 );
         $sth->bind_param( ':b_link_id', $$data{'stream_id'} );
-        $sth->bind_param( ':b_link_type', 'Stream' );
-        $sth->bind_param( ':owner_id', ( $$data{'status'} ? 1 : 0 ) );
-        $sth->bind_param( ':time_create', ( $$data{'status'} ? 1 : 0 ) );
-        $sth->execute();
+        $sth->bind_param( ':b_link_type', 4 );
+        $sth->bind_param( ':owner_id', 1 );
+        $result = $sth->execute();
         $sth->finish();
 
-        $id = $sth->last_insert_id( undef, 'public', 'streams', undef, { sequence => 'streams_id_seq' } );
-        $sth->finish();
-        push @!, "Can not insert $$data{'name'} into streams" unless $id;
+        push @!, "Can not insert user into stream" unless $result;
     }
 
-    return $id;
+    return $result;
+}
+
+sub _check_user_stream {
+    my ( $self, $data ) = @_;
+
+    my ( $row, $sql, $sth );
+
+    # проверка существования записи
+    $sql = 'SELECT a_link_id FROM "public"."universal_links" WHERE "a_link_id"=\''.$$data{'user_id'}.'\' AND "a_link_type"=2 AND "b_link_id"=\''.$$data{'stream_id'}.'\' AND "b_link_type"=4';
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    $row = $sth->fetchrow_hashref();
+    $sth->finish();
+
+    return $row->{'a_link_id'} ? 1 : 0;
 }
 1;

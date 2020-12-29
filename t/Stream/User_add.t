@@ -102,7 +102,6 @@ my $test_data = {
         'name'      => 'name',
         'age'       => 1,
         'date'      => '01-09-2020',
-        'master_id' => $user+2,
         'status'    => 1
     },
     'result' => {
@@ -127,7 +126,8 @@ my $test_data = {
             'user_id'          => $user + 1,
         },
         'result' => {
-            'id'        => 1,
+            'stream_id' => 1,
+            'user_id'   => $user + 1,
             'status'    => 'ok'
         },
         'comment' => 'All right:' 
@@ -161,7 +161,7 @@ my $test_data = {
             'user_id'          => $user + 1,
         },
         'result' => {
-            'message'   => "/stream/delete _check_fields: didn't has required data in 'stream_id' = ''",
+            'message'   => "/stream/user_add _check_fields: didn't has required data in 'stream_id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -172,7 +172,7 @@ my $test_data = {
             'user_id'        => - 404,
         },
         'result' => {
-            'message'   => "/stream/delete _check_fields: empty field 'id', didn't match regular expression",
+            'message'   => "/stream/user_add _check_fields: empty field 'user_id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
@@ -183,7 +183,7 @@ my $test_data = {
             'user_id'        => $user + 1,
         },
         'result' => {
-            'message'   => "User /'$user + 1/' already in stream",
+            'message'   => "User '" . ( $user + 1 ) . "' already in stream",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
@@ -208,4 +208,4 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 done_testing();
 
 # переинсталляция базы scorm_test
-reset_test_db();
+# reset_test_db();
