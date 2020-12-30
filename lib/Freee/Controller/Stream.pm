@@ -3,7 +3,7 @@ package Freee::Controller::Stream;
 use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
-
+use common;
 use Data::Dumper;
 
 sub index {
@@ -44,6 +44,8 @@ sub add {
     }
 
     unless ( @! ) {
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'} if $$data{'master_id'};
+
         $id = $self->model('Stream')->_insert_stream( $data );
     }
 
@@ -187,7 +189,7 @@ sub user_add {
 
     # проверка данных
     $data = $self->_check_fields();
-# warn Dumper( $self );
+
     unless ( @! ) {
         # проверяем, существует ли поток
         unless ( $self->model('Utils')->_exists_in_table('streams', 'id', $$data{'stream_id'} ) ) {
@@ -206,6 +208,8 @@ sub user_add {
     }
 
     unless ( @! ) {
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
+
         $result = $self->model('Stream')->_insert_user( $data );
     }
 
@@ -213,6 +217,34 @@ sub user_add {
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'stream_id'} = $$data{'stream_id'} unless @!;
     $resp->{'user_id'} = $$data{'user_id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+sub index {
+    my $self = shift;
+
+    my ( $data, $resp, $result );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # получаем список пользователей группы
+        $result = $self->model('Stream')->_get_list( $data );
+    }
+
+    unless ( @! ) {
+        foreach ( @$result ) {
+            $_->{'member_count'} = $self->model('Stream')->_member_count( $_->{'id'} );
+        }
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'list'} = $result unless @!;
 
     @! = ();
 

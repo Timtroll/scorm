@@ -127,7 +127,7 @@ sub _get_stream {
 sub _insert_stream {
     my ( $self, $data ) = @_;
 
-    my ( $id, $sql, $sth );
+    my ( $id, $sql, $sth, $result );
 
     # проверка входных данных
     unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
@@ -135,6 +135,9 @@ sub _insert_stream {
     }
 
     unless ( @! ) {
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
         $sql = 'INSERT INTO "public"."streams" ( "name", "age", "date", "master_id", "publish" ) VALUES ( :name, :age, :date, :master_id, :publish )';
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':name', $$data{'name'} );
@@ -147,7 +150,31 @@ sub _insert_stream {
 
         $id = $sth->last_insert_id( undef, 'public', 'streams', undef, { sequence => 'streams_id_seq' } );
         $sth->finish();
-        push @!, "Can not insert $$data{'name'} into streams" unless $id;
+        unless ( $id ) {
+            push @!, "Can not insert $$data{'name'} into streams";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        if ( $$data{'master_id'} ) {
+            $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+            $sth->bind_param( ':a_link_id', $$data{'master_id'} );
+            $sth->bind_param( ':a_link_type', 3 );
+            $sth->bind_param( ':b_link_id', $id );
+            $sth->bind_param( ':b_link_type', 4 );
+            $sth->bind_param( ':owner_id', $$data{'owner_id'} );
+            $result = $sth->execute();
+            $sth->finish();
+            unless ( $result ) {
+                push @!, "Can not insert master into universal_links";
+                $self->{'app'}->pg_dbh->rollback;
+                return;
+            }
+        }
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
     }
 
     return $id;
@@ -197,7 +224,11 @@ sub _delete_stream {
     push @!, 'no id' unless $$data{'id'};
 
     unless( @! ) {
-        # удаление записи из таблицы groups
+
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
+        # удаление записи из таблицы streams
         $sql = 'DELETE FROM "public"."streams" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
@@ -205,7 +236,28 @@ sub _delete_stream {
         $result = $sth->execute();
         $sth->finish();
 
-        push @!, "Could not delete Stream '$$data{'id'}'" if $result eq '0E0';
+        if ( $result eq '0E0' ) {
+            push @!, "Could not delete Stream '$$data{'id'}'";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        # удаление записи из таблицы universal_links
+        $sql = 'DELETE FROM "public"."universal_links" WHERE "b_link_id" = :id';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $result = $sth->execute();
+        $sth->finish();
+
+        if ( $result eq '0E0' ) {
+            push @!, "Could not delete universal_link '$$data{'id'}'";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
     }
 
     return $result;
@@ -228,7 +280,7 @@ sub _insert_user {
         $sth->bind_param( ':a_link_type', 2 );
         $sth->bind_param( ':b_link_id', $$data{'stream_id'} );
         $sth->bind_param( ':b_link_type', 4 );
-        $sth->bind_param( ':owner_id', 1 );
+        $sth->bind_param( ':owner_id', $$data{'owner_id'} );
         $result = $sth->execute();
         $sth->finish();
 
@@ -253,4 +305,52 @@ sub _check_user_stream {
 
     return $row->{'a_link_id'} ? 1 : 0;
 }
+
+sub _get_list {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $fields, $sth, $usr, @list );
+    my $list = {};
+
+    # выбираемые поля
+    $fields = ' id, name, age, date, master_id ';
+
+    # взять объекты из таблицы users
+    if ( $$data{'order'} eq 'DESC' ) {
+        $sql = 'SELECT' .  $fields . 'FROM "public"."streams" ORDER BY id DESC';
+    }
+    else {
+        $sql = 'SELECT' .  $fields . 'FROM "public"."streams" ORDER BY id ASC';
+    }
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    $list = $sth->fetchall_arrayref({});
+    $sth->finish();
+
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            $_->{'component'} = "Stream";
+        }
+    }
+
+    return $list;
+}
+
+sub _member_count {
+    my ( $self, $id ) = @_;
+    my ( $sql, $sth, $result );
+
+    return unless $id;
+
+    $sql = 'SELECT COUNT(*) FROM "public"."universal_links" WHERE "b_link_id" = :id AND "b_link_type" = 4';
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $id );
+    $sth->execute();
+    $result = $sth->fetchrow_hashref();
+    $sth->finish();
+
+    return $$result{'count'};
+}
+
 1;

@@ -90,7 +90,7 @@ $t->json_is( $$test_data{'result'} );
 diag "";
 
 # Ввод потоков
-diag "Add stream:";
+diag "Add streams:";
 my $test_data = {
     1 => {
         'data' => {
@@ -131,6 +131,28 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag "";
 }
 
+# Ввод пользователя в поток
+diag "Add user into stream:";
+my $test_data = {
+    'data' => {
+        'stream_id'        => 1,
+        'user_id'          => $user + 1,
+    },
+    'result' => {
+        'stream_id' => 1,
+        'user_id'   => $user+1,
+        'status'    => 'ok'
+    }
+};
+
+$t->post_ok( $host.'/stream/user_add' => {token => $token} => form => $$test_data{'data'} );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect");
+    exit; 
+}
+$t->json_is( $$test_data{'result'} );
+diag "";
+
 my $result =
     {
         "list" => [
@@ -138,19 +160,19 @@ my $result =
                 "member_count" => 1,
                 "component" => "Stream",
                 "id" => 1,
-                "name" => "1А",
+                "name" => "test1",
                 "age" =>  1, # год обучения
-                "date" => "01.09.2020",
-                "master_id" => 4
+                "date" => "2020-09-01 00:00:00+03",
+                "master_id" => $user+1
             },
             {
                 "member_count" => 0,
                 "component" => "Stream",
                 "id" => 2,
-                "name" => "1А",
+                "name" => "test2",
                 "age" => 1, 
-                "date" => "01.09.2020",
-                "master_id" => 4
+                "date" => "2020-09-01 00:00:00+03",
+                "master_id" => $user+1
             }
         ],
         "status" => "ok"
