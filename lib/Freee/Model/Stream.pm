@@ -191,7 +191,7 @@ sub _insert_stream {
 # });
 # возвращается true/false
 sub _update_stream {
-    my ( $self, $data ) = @_;
+    my ( $self, $data, $owner_id ) = @_;
 
     my ( $id, $sql, $sth, $result );
 
@@ -201,6 +201,10 @@ sub _update_stream {
     }
 
     unless ( @! ) {
+
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
         $sql = 'UPDATE "public"."streams" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } keys %$data ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->execute();
@@ -208,6 +212,40 @@ sub _update_stream {
         $sth->finish();
 
         push @!, "Error by update $$data{'name'}" if ! defined $result;
+
+        # удаление записи из таблицы universal_links
+        $sql = 'DELETE FROM "public"."universal_links" WHERE "b_link_id" = :id';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $result = $sth->execute();
+        $sth->finish();
+
+        if ( $result eq '0E0' ) {
+            push @!, "Could not delete universal_link '$$data{'id'}'";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        if ( $$data{'master_id'} ) {
+            $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
+            $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+            $sth->bind_param( ':a_link_id', $$data{'master_id'} );
+            $sth->bind_param( ':a_link_type', 3 );
+            $sth->bind_param( ':b_link_id', $$data{'id'} );
+            $sth->bind_param( ':b_link_type', 4 );
+            $sth->bind_param( ':owner_id', $owner_id );
+            $result = $sth->execute();
+            $sth->finish();
+            unless ( $result ) {
+                push @!, "Can not insert master into universal_links";
+                $self->{'app'}->pg_dbh->rollback;
+                return;
+            }
+        }
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
     }
 
     return $result;

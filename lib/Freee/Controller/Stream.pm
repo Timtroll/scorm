@@ -90,7 +90,7 @@ sub edit {
 sub save {
     my ( $self ) = shift;
 
-    my ( $id, $parent, $data, $resp );
+    my ( $id, $parent, $data, $resp, $owner_id );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -110,8 +110,10 @@ sub save {
         $$data{'publish'} = $$data{'status'};
         delete $$data{'status'};
 
+        $owner_id = $tokens->{ $self->req->headers->header('token') }->{'id'};
+
         # обновление данных группы
-        $id = $self->model('Stream')->_update_stream( $data );
+        $id = $self->model('Stream')->_update_stream( $data, $owner_id );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -211,6 +213,47 @@ sub user_add {
         $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
 
         $result = $self->model('Stream')->_insert_user( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'stream_id'} = $$data{'stream_id'} unless @!;
+    $resp->{'user_id'} = $$data{'user_id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+sub master_add {
+    my $self = shift;
+
+    my ( $result, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # проверяем, существует ли поток
+        unless ( $self->model('Utils')->_exists_in_table('streams', 'id', $$data{'stream_id'} ) ) {
+            push @!, "Stream '$$data{'stream_id'}' does not exist"; 
+        }
+
+        # проверяем, существует ли пользователь
+        unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'master_id'} ) ) {
+            push @!, "User '$$data{'user_id'}' does not exist"; 
+        }
+
+        # проверяем, входит ли пользователь в поток
+        # if ( $self->model('Stream')->_check_user_stream( $data ) ) {
+        #     push @!, "User '$$data{'user_id'}' already in stream";
+        # }
+    }
+
+    unless ( @! ) {
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
+
+        # $result = $self->model('Stream')->_insert_user( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
