@@ -328,6 +328,51 @@ sub _insert_user {
     return $result;
 }
 
+sub _add_master {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $result );
+
+    # проверка входных данных
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @!, "no data for insert";
+    }
+
+    unless ( @! ) {
+
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
+        $sql = 'UPDATE "public"."streams" SET "master_id" = "' . $$data{'master_id'} .'" WHERE \"id\"="' . $$data{'user_id'} . "returning id";
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->execute();
+        $result = $sth->fetchrow_array();
+        $sth->finish();
+
+        push @!, "Error by update $$data{'user_id'}" if ! defined $result;
+
+        $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':a_link_id', $$data{'master_id'} );
+        $sth->bind_param( ':a_link_type', 3 );
+        $sth->bind_param( ':b_link_id', $$data{'user_id'} );
+        $sth->bind_param( ':b_link_type', 4 );
+        $sth->bind_param( ':owner_id', $$data{'owner_id'} );
+        $result = $sth->execute();
+        $sth->finish();
+        unless ( $result ) {
+            push @!, "Can not insert master into universal_links";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
+    }
+
+    return $result;
+}
+
 sub _check_user_stream {
     my ( $self, $data ) = @_;
 

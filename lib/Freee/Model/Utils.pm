@@ -40,6 +40,28 @@ sub _exists_in_table {
     return $row->{'id'} ? 1 : 0;
 }
 
+sub _is_teacher {
+    my( $self, $id );
+
+    my ( $sth, $sql, $result );
+
+    return unless $id;
+
+    # взять пользователей teacher, rector
+    $sql = q(SELECT u.user_id, g.name
+        FROM "user_groups" AS u  
+        INNER JOIN "groups" AS g ON u."group_id" = g."id"
+        WHERE g."name" = 'teacher' or g."name" = 'rector'
+    );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':user_id', $id );
+    $sth->execute();
+    $result = $sth->fetchrow_hashref();
+    $sth->finish();
+warn Dumper( $result );
+    return exists( $$result{$id} ) ? 1 : 0;
+}
+
 # включение/отключение (1/0) определенного поля в указанной таблице по id
 # my $true = $self->model('Utils')->_toggle_route( <table>, <id>, <field>, <val> );
 # <id>    - id записи 

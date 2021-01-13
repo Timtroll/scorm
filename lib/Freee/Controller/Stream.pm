@@ -244,16 +244,16 @@ sub master_add {
             push @!, "User '$$data{'user_id'}' does not exist"; 
         }
 
-        # проверяем, входит ли пользователь в поток
-        # if ( $self->model('Stream')->_check_user_stream( $data ) ) {
-        #     push @!, "User '$$data{'user_id'}' already in stream";
-        # }
+        # проверяем, является ли пользователь учителем
+        unless ( $self->model('Utils')->_is_teacher( $$data{'master_id'} ) ) {
+            push @!, "User '$$data{'master_id'}' is not a teacher";
+        }
     }
 
     unless ( @! ) {
         $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
 
-        # $result = $self->model('Stream')->_insert_user( $data );
+        $result = $self->model('Stream')->_add_master( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
