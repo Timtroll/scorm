@@ -189,6 +189,7 @@ sub _exists_in_users {
             INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
             WHERE u."login"  = :login AND u."password"  = :password
             GROUP BY u."id");
+
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':login', $login );
         $sth->bind_param( ':password', $pass);

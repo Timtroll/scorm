@@ -8,7 +8,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub error {
     my $self = shift;
-
+print "error\n";
     $self->render( 'json' => { 'status' => 'fail', 'message' => $self->param('message') }, status => 666 );
 }
 

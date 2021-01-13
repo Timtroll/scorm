@@ -255,10 +255,10 @@ sub add_user {
         'eav_id'      => $eav_id
     };
 
-    my $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$user ).') VALUES ( '.join( ',', map { ':'.$_ } keys %$user ).' )';
+    my $sql = 'INSERT INTO "public"."users" ('.join( ',', map { "\"$_\""} keys %$user ).') VALUES ('.join( ',', map { ' :'.$_ } keys %$user ).' )';
     my $sth = $self->{'dbh'}->prepare( $sql );
     foreach ( keys %$user ) {
-        my $type = /publish/ ? SQL_BOOLEAN : undef();
+        my $type = /^publish$/ ? SQL_BOOLEAN : undef();
         $sth->bind_param( ':'.$_, $$user{$_}, $type );
     }
     my $result = $sth->execute();

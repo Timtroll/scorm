@@ -66,34 +66,29 @@ sub startup {
 warn "+++++++++++";
     # Router
     $r = $self->routes;
-    $r->any('/api/doc')                 ->to('index#doc');
 
-    $r->any('/api/test')                ->to('websocket#test');
-    $r->post('/api/deploy')             ->to('deploy#index');           # deploy после push
-    $r->websocket('/api/channel')       ->to('websocket#index');
+    $r->any('/api/doc')                   ->to('index#doc');
+
+    $r->any('/api/test')                  ->to('websocket#test');
+    $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
+    $r->websocket('/api/channel')         ->to('websocket#index');
 
     # webrtc роуты
-    $r->get('/wschannel/index')         ->to('wschannel#index');
-    $r->websocket('/wschannel/:type')   ->to('wschannel#type');
+    $r->get('/wschannel/index')           ->to('wschannel#index');
+    $r->websocket('/wschannel/:type')     ->to('wschannel#type');
 
-    $r->post('/user/registration')      ->to('user#registration');         # регистрация пользователя
+    $r->post('/user/registration')        ->to('user#registration');         # регистрация пользователя
 
 # ??? требуется переписать так,чтобы можно было использовать безопасно
-    $r->get('/settings/load_default')   ->to('settings#load_default');  # загрузка дефолтных настроек
+    $r->get('/settings/load_default')     ->to('settings#load_default');  # загрузка дефолтных настроек
 
     # Вход-выход в/из системы
 # ????? нафиг
-    $r->post('/auth/login')              ->to('auth#login');
-    $r->any('/auth/logout')              ->to('auth#logout');
+    $r->post('/auth/login')               ->to('auth#login');
+    $r->any('/auth/logout')               ->to('auth#logout');
 
-    $r->any('/mail/')                    ->to('mail#index');
-    $r->any('/mail/send')                ->to('mail#snd');
-
-    $auth = $r->under()->to('auth#check_token');
-
-    # работа с EAV объектами (служебное)
-    $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
-    $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
+    $r->any('/mail/')                     ->to('mail#index');
+    $r->any('/mail/send')                 ->to('mail#snd');
 
     # отправка сообщения
     $r->get('/mail/')                     ->to('mail#index');          # вызов страницы
@@ -101,10 +96,18 @@ warn "+++++++++++";
 
     # смена пароля
     $r->post('/reset/')                   ->to('reset#index');         # отправка сообщения о смене
-    $r->get('/reset/confirmation')       ->to('reset#confirmation');  # подтверждение смены пароля
+    $r->get('/reset/confirmation')        ->to('reset#confirmation');  # подтверждение смены пароля
     $r->post('/reset/reset')              ->to('reset#reset');         # смена пароля
 
-    $r->any('/error/')->to('index#error');
+    $r->any('/error/')                    ->to('index#error');
+
+    $auth = $r->under()->to('auth#check_token');
+
+    $auth->any('/auth/config')               ->to('auth#config');
+
+    # работа с EAV объектами (служебное)
+    $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
+    $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
 
     # загрузка файлов
     $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла

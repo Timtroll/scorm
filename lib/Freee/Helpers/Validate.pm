@@ -77,9 +77,13 @@ sub register {
             # поля которые не могут быть undef
             my %exclude_fields = (
                 'parent' => 1,
-                # 'status' => 1,
-                'timezone' => 1,
+                'timezone' => 1
             );
+
+            # Меняем значение поля status на undef -> 0
+            if ( $field eq 'status' ) {
+                $param = 0 unless $param;
+            }
 
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
@@ -194,6 +198,10 @@ p %data;
     $app->helper( '_param_fields' => sub {
 
         $vfields = {
+            '/auth/config'     => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+
             # валидация роутов
 ################
             '/manage_eav'      => {},

@@ -33,6 +33,7 @@ sub index {
         # проверка существования роута указанной группы
         unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
+
                 # список роутов указанной группы
                 $list = $self->model('Routes')->_routes_list( $$data{'parent'} );
                 if ( %$list ) {

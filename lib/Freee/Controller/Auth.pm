@@ -146,4 +146,23 @@ warn "redirect to error";
     return 0;
 }
 
+sub config {
+    my $self = shift;
+
+    my ( $data, $profile );
+    $data = $self->_check_fields();
+
+    $self->redirect_to( '/error/' ) unless $$data{'id'};
+
+    $profile = $self->model('User')->_get_user( $data );
+
+    $self->render( 'json' => {
+        "profile"     => $profile,
+        "wssWebRTC"   => $self->app->config->{"wssWebRTC" },
+        "wssEvent"    => $self->app->config->{"wssEvent" },
+        "stunServer"  => $self->app->config->{"stunServer" },
+        "turnServer"  => $self->app->config->{"turnServer" }
+    } );
+}
+
 1;
