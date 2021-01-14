@@ -138,6 +138,7 @@ sub _get_user {
     }
 
     unless ( @! ) {
+        $result->{'groups'} = decode_json( $result->{'groups'} );
         # взять весь объект из EAV
         $eav_id = $result->{'eav_id'};
         $usr = Freee::EAV->new( 'User', { 'id' => $eav_id } );
@@ -462,7 +463,7 @@ sub _save_user {
 
     unless ( @! ) {
         # добавление в user_groups
-        $groups = decode_json( $$data{'groups'} );
+        # $groups = decode_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id ) RETURNING user_id';
 
         foreach my $group_id ( @$groups ) {

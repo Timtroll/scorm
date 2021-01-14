@@ -123,11 +123,11 @@ my $test_data = {
     1 => {
         'data' => {
             'stream_id'        => 1,
-            'master_id'          => $user + 1,
+            'master_id'        => $user + 1,
         },
         'result' => {
             'stream_id' => 1,
-            'master_id'   => $user + 1,
+            'master_id' => $user + 1,
             'status'    => 'ok'
         },
         'comment' => 'All right:' 
@@ -137,7 +137,7 @@ my $test_data = {
     2 => {
         'data' => {
             'stream_id'        => 404,
-            'master_id'          => $user + 1,
+            'master_id'        => $user + 1,
         },
         'result' => {
             'message'   => "Stream '404' does not exist",
@@ -151,7 +151,7 @@ my $test_data = {
             'master_id'          => 404,
         },
         'result' => {
-            'message'   => "User '404' does not exist",
+            'message'   => "User '404' does not exist\nUser '404' is not a teacher",
             'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
@@ -161,7 +161,7 @@ my $test_data = {
             'master_id'          => $user + 1,
         },
         'result' => {
-            'message'   => "/stream/user_add _check_fields: didn't has required data in 'stream_id' = ''",
+            'message'   => "/stream/master_add _check_fields: didn't has required data in 'stream_id' = ''",
             'status'    => 'fail'
         },
         'comment' => 'No data:' 
@@ -172,7 +172,7 @@ my $test_data = {
             'master_id'        => - 404,
         },
         'result' => {
-            'message'   => "/stream/user_add _check_fields: empty field 'master_id', didn't match regular expression",
+            'message'   => "/stream/master_add _check_fields: empty field 'master_id', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 
@@ -180,10 +180,10 @@ my $test_data = {
     6 => {
         'data' => {
             'stream_id'      => 1,
-            'master_id'      => $user + 1,
+            'master_id'      => 1,
         },
         'result' => {
-            'message'   => "Stream 1 already has a master",
+            'message'   => "User '1' is not a teacher",
             'status'    => 'fail'
         },
         'comment' => 'Wrong type of id:' 

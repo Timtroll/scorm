@@ -241,7 +241,7 @@ sub master_add {
 
         # проверяем, существует ли пользователь
         unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'master_id'} ) ) {
-            push @!, "User '$$data{'user_id'}' does not exist"; 
+            push @!, "User '$$data{'master_id'}' does not exist"; 
         }
 
         # проверяем, является ли пользователь учителем
@@ -259,7 +259,7 @@ sub master_add {
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'stream_id'} = $$data{'stream_id'} unless @!;
-    $resp->{'user_id'} = $$data{'user_id'} unless @!;
+    $resp->{'master_id'} = $$data{'master_id'} unless @!;
 
     @! = ();
 

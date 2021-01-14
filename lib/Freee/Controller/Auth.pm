@@ -158,10 +158,7 @@ sub config {
 
     $self->render( 'json' => {
         "profile"     => $profile,
-        "wssWebRTC"   => $self->app->config->{"wssWebRTC" },
-        "wssEvent"    => $self->app->config->{"wssEvent" },
-        "stunServer"  => $self->app->config->{"stunServer" },
-        "turnServer"  => $self->app->config->{"turnServer" }
+        %{$self->app->config->{"WebRTC"}}
     } );
 }
 
