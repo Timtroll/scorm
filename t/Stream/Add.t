@@ -81,7 +81,7 @@ $test_data = {
         'email'        => '1@email.ru',
         'phone'        => '7(921)1111111',
         'status'       => 1,
-        'groups'       => "[1]"
+        'groups'       => "[4]"
     },
     'result' => {
         'id'        => $user+1,
@@ -219,11 +219,25 @@ my $test_data = {
             'status'    => 0
         },
         'result' => {
-            'message'    => "user with id '404' doesn/'t exist",
+            'message'    => "user with id '404' doesn/'t exist\nUser '404' is not a teacher",
             'status'     => 'fail'
         },
         'comment' => 'User does not exist:'
-    }
+    },
+    10 => {
+        'data' => {
+            'name'      => 'name',
+            'age'       => 1,
+            'date'      => '01-09-2020',
+            'master_id' => 1,
+            'status'    => 0
+        },
+        'result' => {
+            'message'    => "User '1' is not a teacher",
+            'status'     => 'fail'
+        },
+        'comment' => 'User is not a teacher:'
+    },
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {

@@ -40,6 +40,10 @@ sub add {
             unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'master_id'} ) ) {
                 push @!, "user with id '$$data{'master_id'}' doesn/'t exist"; 
             }
+            # проверяем, является ли пользователь учителем
+            unless ( $self->model('Utils')->_is_teacher( $$data{'master_id'} ) ) {
+                push @!, "User '$$data{'master_id'}' is not a teacher";
+            }
         }
     }
 
@@ -102,6 +106,13 @@ sub save {
         }
         if ( $self->model('Utils')->_exists_in_table('streams', 'name', $$data{'name'}, $$data{'id'} ) ) {
             push @!, "Stream with name '$$data{'name'}' already exists";
+        }
+
+        if ( $$data{'master_id'} ) {
+            # проверяем, является ли пользователь учителем
+            unless ( $self->model('Utils')->_is_teacher( $$data{'master_id'} ) ) {
+                push @!, "User '$$data{'master_id'}' is not a teacher";
+            }
         }
     }
 
@@ -213,6 +224,45 @@ sub user_add {
         $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
 
         $result = $self->model('Stream')->_insert_user( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'stream_id'} = $$data{'stream_id'} unless @!;
+    $resp->{'user_id'} = $$data{'user_id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+sub user_delete {
+    my $self = shift;
+
+    my ( $result, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # проверяем, существует ли поток
+        unless ( $self->model('Utils')->_exists_in_table('streams', 'id', $$data{'stream_id'} ) ) {
+            push @!, "Stream '$$data{'stream_id'}' does not exist"; 
+        }
+
+        # проверяем, существует ли пользователь
+        unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'user_id'} ) ) {
+            push @!, "User '$$data{'user_id'}' does not exist"; 
+        }
+
+        # проверяем, входит ли пользователь в поток
+        unless ( $self->model('Stream')->_check_user_stream( $data ) ) {
+            push @!, "User '$$data{'user_id'}' not in stream"; 
+        }
+    }
+
+    unless ( @! ) {
+        $result = $self->model('Stream')->_delete_user( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;

@@ -80,7 +80,7 @@ $test_data = {
         'email'        => '1@email.ru',
         'phone'        => '7(921)1111111',
         'status'       => 1,
-        'groups'       => "[1]"
+        'groups'       => "[4]"
     },
     'result' => {
         'id'        => $user+1,
@@ -227,7 +227,7 @@ $test_data = {
             'message'   => "/stream/save _check_fields: didn't has required data in 'status' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No value:' 
+        'comment' => 'No status:' 
     },
     7 => {
         'data' => {

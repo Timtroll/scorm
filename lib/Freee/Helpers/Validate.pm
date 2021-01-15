@@ -80,10 +80,10 @@ sub register {
                 'timezone' => 1
             );
 
-            # Меняем значение поля status на undef -> 0
-            if ( $field eq 'status' ) {
-                $param = 0 unless $param;
-            }
+            # # Меняем значение поля status на undef -> 0
+            # if ( $field eq 'status' ) {
+            #     $param = 0 unless $param;
+            # }
 
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
@@ -622,7 +622,8 @@ p %data;
                  "user_id"      => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/stream/user_delete'  => {
-                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "user_id"      => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/stream/master_add'  => {
                  "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],

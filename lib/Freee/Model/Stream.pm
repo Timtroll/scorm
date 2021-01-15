@@ -328,6 +328,31 @@ sub _insert_user {
     return $result;
 }
 
+sub _delete_user {
+    my ( $self, $data ) = @_;
+
+    my ( $id, $sql, $sth, $result );
+
+    # проверка входных данных
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @!, "no data for delete";
+    }
+
+    unless ( @! ) {
+        # удаление записи из таблицы universal_links
+        $sql = 'DELETE FROM "public"."universal_links" WHERE "a_link_id" = :a_link_id AND "b_link_id" = :b_link_id';
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':a_link_id', $$data{'user_id'} );
+        $sth->bind_param( ':b_link_id', $$data{'stream_id'} );
+        $result = $sth->execute();
+        $sth->finish();
+
+        push @!, "Can not delete user from stream" unless $result;
+    }
+
+    return $result;
+}
+
 sub _add_master {
     my ( $self, $data ) = @_;
 
