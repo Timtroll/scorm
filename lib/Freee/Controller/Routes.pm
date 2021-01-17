@@ -168,7 +168,7 @@ sub toggle {
 
     unless ( @! ) {
         $$data{'table'} = 'routes';
-        $$data{'fieldname'} = 'publish';
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
 
         # проверка существования элемента для изменения
         unless ($self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'})) {
