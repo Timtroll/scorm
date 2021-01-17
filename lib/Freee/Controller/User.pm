@@ -8,9 +8,10 @@ use Freee::EAV;
 use Mojo::JSON qw( decode_json encode_json );
 use Digest::SHA qw( sha256_hex );
 use DBI qw(:sql_types);
-use Data::Dumper;
+
 use common;
 
+use Data::Dumper;
 
 # список юзеров по группам (обязательно id группы)
 # $self->index($data)
@@ -22,7 +23,7 @@ use common;
 sub index {
     my $self = shift;
 
-    my ( $data, $list, $resp, $result );
+    my ( $data, $list, $resp, $users );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -33,7 +34,7 @@ sub index {
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
 
         # получаем список пользователей группы
-        $result = $self->model('User')->_get_list( $data );
+        $users = $self->model('User')->_get_list( $data );
 
         unless ( @! ) {
             $list = {
@@ -52,8 +53,8 @@ sub index {
                 }
             };
 
-            $list->{'body'} = $result;
-            $list->{'settings'}->{'page'}->{'total'} = scalar(@$result);
+            $list->{'body'} = $users;
+            $list->{'settings'}->{'page'}->{'total'} = scalar(@$users);
         }
     }
 

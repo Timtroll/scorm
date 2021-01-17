@@ -39,7 +39,7 @@ my %masks_fields = (
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
 #   group_id => <id>, - Id группы
-#   status   => 1,    - показывать пользователей только с этим статусом
+#   status   => 1,    - показывать пользователей только с этим статусом ('' - показывает всех)
 #   limit    => 10,   - количество записей
 #   offset   => 0,    - смещение от начала списка
 #   mode     => 'full'- список с базовыми данными, если указать 'full' (опция необязательна по)
@@ -57,10 +57,10 @@ sub _get_list {
         $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        if ( $$data{'status'} == 2 ) {
+        if ( !$$data{'status'} && $$data{'status'} eq '' ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
-        elsif ( $$data{'status'} == 1 ) {
+        elsif ( $$data{'status'} && $$data{'status'} == 1 ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
         else {
@@ -68,6 +68,7 @@ sub _get_list {
         }
         $sql .= ' LIMIT :limit' if $$data{'limit'};
         $sql .= ' OFFSET :offset' if $$data{'offset'};
+
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':group_id', $$data{'group_id'} );
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
