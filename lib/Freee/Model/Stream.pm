@@ -449,6 +449,39 @@ sub _get_list {
     return $list;
 }
 
+sub _get_masters {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $usr, $result );
+    my $list = {};
+
+    # взять пользователей teacher, rector
+    $sql = q(SELECT u.user_id, g.name
+        FROM "user_groups" AS u  
+        INNER JOIN "groups" AS g ON u."group_id" = g."id"
+        WHERE g."name" = 'teacher' or g."name" = 'rector'
+    );
+
+    # порядок взятия
+    if ( $$data{'order'} eq 'DESC' ) {
+        $sql = $sql . 'ORDER BY user_id DESC';
+    }
+    else {
+        $sql = $sql . 'ORDER BY user_id ASC';
+    }
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    $list = $sth->fetchall_hashref( 'user_id' );
+    $sth->finish();
+
+    foreach ( keys %$list ) {
+        $$result{$_} = $$list{$_}{'name'};
+    }
+
+    return $result;
+}
+
 sub _member_count {
     my ( $self, $id ) = @_;
     my ( $sql, $sth, $result );

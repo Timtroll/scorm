@@ -260,7 +260,7 @@ warn "+++++++++++";
     $auth->post('/stream/user_add')     ->to('stream#user_add');    # добавить пользователя в поток
     $auth->post('/stream/user_delete')  ->to('stream#user_delete'); # удалить пользователя из потока
     $auth->post('/stream/master_add')   ->to('stream#master_add');  # добавить руководителя в поток
-    $auth->post('/stream/master_delete')->to('stream#master_delete');# удалить руководителя из потока
+    $auth->post('/stream/get_masters')  ->to('stream#get_masters');# удалить руководителя из потока
 
 # возможно еще что-то ?????????
 

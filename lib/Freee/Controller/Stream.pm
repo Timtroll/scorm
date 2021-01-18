@@ -344,4 +344,25 @@ sub index {
     $self->render( 'json' => $resp );
 }
 
+sub get_masters {
+    my $self = shift;
+
+    my ( $data, $list, $resp, $mentors );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # получаем список пользователей группы
+        $mentors = $self->model('Stream')->_get_masters( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'list'} = $mentors unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
 1;

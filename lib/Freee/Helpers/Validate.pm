@@ -629,8 +629,8 @@ p %data;
                  "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
                  "master_id"    => [ 'required', qr/^\d+$/os, 9 ]
             },
-            '/stream/master_delete'  => {
-                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
+            '/stream/get_masters'  => {
+                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
 ################
             # роуты forum/*
