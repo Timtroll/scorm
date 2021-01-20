@@ -495,8 +495,14 @@ p %data;
             },
 
 ################
-            # роуты расписания уроков и уроков
+            # роуты событий 
             '/events'         => {},
+            '/events/add'     => {
+                "initial_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "time_start"     => [ 'required', qr/^\d+$/os, 12 ],
+                "comment"        => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+                },
             '/events/lesson_users'  => {
                 "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
             },

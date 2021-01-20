@@ -173,6 +173,7 @@ warn "+++++++++++";
 
     # уроки
     $auth->post('/events/')             ->to('events#index');           # Расписание уроков
+    $auth->post('/events/add')          ->to('events#add');          # Добавить событие
     $auth->post('/events/lesson_users') ->to('events#lesson_users');    # Список участников урока (учитель - обязателен)
 
     # обучение
