@@ -11,7 +11,7 @@ CREATE TABLE "public"."events" (
     "time_start" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
     "comment" varchar(255) COLLATE "default" NOT NULL,
     "publish" int2 DEFAULT 1 NOT NULL,
-    CONSTRAINT "events_pkey" PRIMARY KEY ("id", "eav_id")
+    CONSTRAINT "events_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."events" OWNER TO "troll";

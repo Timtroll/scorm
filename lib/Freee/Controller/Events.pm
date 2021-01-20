@@ -89,4 +89,35 @@ sub lesson_users {
     $self->render( 'json' => $resp );
 }
 
+sub add {
+    my $self = shift;
+
+    my ( $id, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        # проверяем, существует ли руководитель
+        unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'initial_id'} ) ) {
+            push @!, "user with id '$$data{'initial_id'}' doesn/'t exist"; 
+        }
+        # проверяем, является ли пользователь учителем
+        unless ( $self->model('Utils')->_is_teacher( $$data{'initial_id'} ) ) {
+            push @!, "User '$$data{'initial_id'}' is not a teacher";
+        }
+    }
+
+    unless ( @! ) {
+        $id = $self->model('Events')->_insert_event( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
 1;

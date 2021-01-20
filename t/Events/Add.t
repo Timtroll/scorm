@@ -172,7 +172,7 @@ my $test_data = {
             'status'     => 0
         },
         'result' => {
-            'message'   => "/events/add _check_fields: empty field 'date', didn't match regular expression",
+            'message'   => "/events/add _check_fields: empty field 'time_start', didn't match regular expression",
             'status'    => 'fail'
         },
         'comment' => 'Wrong input format:'
