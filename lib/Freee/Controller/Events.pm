@@ -109,6 +109,8 @@ sub add {
     }
 
     unless ( @! ) {
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'} if $$data{'master_id'};
+
         $id = $self->model('Events')->_insert_event( $data );
     }
 
@@ -120,4 +122,28 @@ sub add {
 
     $self->render( 'json' => $resp );
 }
+
+# удалениe события
+# "id" => 1 - id удаляемого элемента ( >0 )
+sub delete {
+    my $self = shift;
+
+    my ( $id, $resp, $data );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        $id = $self->model('Events')->_delete_event( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
 1;

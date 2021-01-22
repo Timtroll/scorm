@@ -499,10 +499,14 @@ p %data;
             '/events'         => {},
             '/events/add'     => {
                 "initial_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "student_ids"    => [ 'required', qr/^\[(\d+|\,)*\]$/os, 255 ],
                 "time_start"     => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
                 "comment"        => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "status"         => [ 'required', qr/^[01]$/os, 1 ]
-                },
+            },
+            '/events/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
             '/events/lesson_users'  => {
                 "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
             },

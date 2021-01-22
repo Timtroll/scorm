@@ -44,7 +44,10 @@ CREATE INDEX "otb" ON "public"."universal_links" USING btree ("b_link_type", "ow
 
 /* Insert start data */
 
-INSERT INTO "public"."universal_links_types" (alias, title) VALUES('Avatar', 'Аватар');
-INSERT INTO "public"."universal_links_types" (alias, title) VALUES('User', 'Пользователь');
-INSERT INTO "public"."universal_links_types" (alias, title) VALUES('Master', 'Руководитель');
-INSERT INTO "public"."universal_links_types" (alias, title) VALUES('Stream', 'Поток');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('avatar', 'Аватар');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('student', 'Студент');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('teacher', 'Перподаватель');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('stream', 'Поток');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('rector', 'Ректор');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('manager', 'Менеджер');
+INSERT INTO "public"."universal_links_types" (alias, title) VALUES('event', 'Событие');

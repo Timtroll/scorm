@@ -105,7 +105,8 @@ my $test_data = {
             'comment'    => 'event1',
             'time_start' => '01-09-2020',
             'initial_id' => $user + 1,
-            'status'     => 1
+            'status'     => 1,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'id'        => '1',
@@ -118,7 +119,8 @@ my $test_data = {
             'comment'    => 'event2',
             'time_start' => '01-09-2020',
             'initial_id' => $user + 1,
-            'status'     => 0
+            'status'     => 0,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'id'        => '2',
@@ -132,7 +134,8 @@ my $test_data = {
         'data' => {
             'time_start' => '01-09-2020',
             'initial_id' => $user + 1,
-            'status'     => 1
+            'status'     => 1,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'   => "/events/add _check_fields: didn't has required data in 'comment' = ''",
@@ -144,7 +147,8 @@ my $test_data = {
         'data' => {
             'comment'    => 'event2',
             'initial_id' => $user + 1,
-            'status'     => 0
+            'status'     => 0,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'   => "/events/add _check_fields: didn't has required data in 'time_start' = ''",
@@ -156,7 +160,8 @@ my $test_data = {
         'data' => {
             'comment'    => 'event2',
             'time_start' => '01-09-2020',
-            'initial_id' => $user + 1
+            'initial_id' => $user + 1,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'   => "/events/add _check_fields: didn't has required data in 'status' = ''",
@@ -169,7 +174,8 @@ my $test_data = {
             'comment'    => 'event2',
             'time_start' => 'error',
             'initial_id' => $user + 1,
-            'status'     => 0
+            'status'     => 0,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'   => "/events/add _check_fields: empty field 'time_start', didn't match regular expression",
@@ -182,7 +188,8 @@ my $test_data = {
             'comment'    => 'event1',
             'time_start' => '01-09-2020',
             'initial_id' => 404,
-            'status'     => 1
+            'status'     => 1,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'    => "user with id '404' doesn/'t exist\nUser '404' is not a teacher",
@@ -195,7 +202,8 @@ my $test_data = {
             'comment'    => 'event1',
             'time_start' => '01-09-2020',
             'initial_id' => 1,
-            'status'     => 1
+            'status'     => 1,
+            'student_ids'=> "[5]"
         },
         'result' => {
             'message'    => "User '1' is not a teacher",
