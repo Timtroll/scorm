@@ -175,6 +175,7 @@ warn "+++++++++++";
     $auth->post('/events/')             ->to('events#index');           # Расписание уроков
     $auth->post('/events/add')          ->to('events#add');             # Добавить событие
     $auth->post('/events/delete')       ->to('events#delete');          # Удалить событие
+    $auth->post('/events/toggle')       ->to('events#toggle');          # Изменить статус события
     $auth->post('/events/lesson_users') ->to('events#lesson_users');    # Список участников урока (учитель - обязателен)
 
     # обучение

@@ -146,4 +146,40 @@ sub delete {
     $self->render( 'json' => $resp );
 }
 
+# изменение поля на 1/0
+# my $true = $self->toggle();
+#   'id'    => <id> - id записи
+#   'field' => имя поля в таблице
+#   'val'   => 1/0
+sub toggle {
+    my $self = shift;
+
+    my ( $toggle, $resp, $data );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    # Событие существует?
+    unless ( @! ) {
+        unless ( $self->model('Utils')->_exists_in_table( 'events', 'id', $$data{'id'} ) ) {
+            push @!, "Id '$$data{'id'}' doesn't exist";
+        }
+    }
+
+    unless ( @! ) {
+        $$data{'fieldname'} = 'publish';
+        $$data{'table'} = 'events';
+        $toggle = $self->model('Utils')->_toggle( $data );
+        push @!, "Could not toggle Event '$$data{'id'}'" unless $toggle;
+    }
+
+    $resp->{'message'} = join( "\n", @! ) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
 1;

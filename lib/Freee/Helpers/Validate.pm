@@ -507,6 +507,11 @@ p %data;
             '/events/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
+            '/events/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
             '/events/lesson_users'  => {
                 "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
             },
