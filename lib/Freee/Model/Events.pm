@@ -129,4 +129,57 @@ sub _delete_event {
     return $result;
 }
 
+# читаем одно событие
+# my $row = $self->_get_event( 99 );
+# возвращается строка в виде объекта
+sub _get_event {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $result, $students, @students );
+
+    unless ( $$data{'id'} ) {
+        push @!, 'No group id';
+    }
+    else {
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
+        # получить запись о событии из таблицы events
+        $sql = 'SELECT id, initial_id, time_start, comment, publish AS status FROM "public"."events" WHERE "id" = :id';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $sth->execute();
+        $result = $sth->fetchrow_hashref();
+        $sth->finish();
+        unless ( $result ) {
+            push @!, "Could not get Event '$$data{'id'}'";
+            $self->{'app'}->pg_dbh->rollback;
+            return;
+        }
+
+        unless( @! ) {
+            $sql = 'SELECT b_link_id FROM "public"."universal_links" WHERE "a_link_id" = :id AND "a_link_type" = 7';
+            $sth = $self->{app}->pg_dbh->prepare( $sql );
+            $sth->bind_param( ':id', $$data{'id'} );
+            $sth->execute();
+            $students = $sth->fetchall_hashref( 'b_link_id' );
+            $sth->finish();
+        }
+
+        if ( $students ) {
+            foreach (sort {$a <=> $b} keys %$students) {
+                push @students, $_;
+            }
+        }
+
+        $$result{'student_ids'} = \@students;
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
+    }
+
+    return $result;
+}
+
 1;

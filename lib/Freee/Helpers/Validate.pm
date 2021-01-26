@@ -512,6 +512,9 @@ p %data;
                 "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
+            '/events/edit'    => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
             '/events/lesson_users'  => {
                 "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
             },

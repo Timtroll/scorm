@@ -109,7 +109,7 @@ sub add {
     }
 
     unless ( @! ) {
-        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'} if $$data{'master_id'};
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'} if $$data{'student_ids'};
 
         $id = $self->model('Events')->_insert_event( $data );
     }
@@ -176,6 +176,27 @@ sub toggle {
     $resp->{'message'} = join( "\n", @! ) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+sub edit {
+    my $self = shift;
+
+    my ( $result, $data, $resp );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        $result = $self->model('Events')->_get_event( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'data'} = $result unless @!;
 
     @! = ();
 
