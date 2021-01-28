@@ -52,7 +52,6 @@ sub _insert_event {
         unless ( @! ) {
             # добавление в universal_links
             $students = decode_json( $$data{'student_ids'} );
-            $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
 
             foreach my $student_id ( @$students ) {
                 $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
@@ -174,6 +173,75 @@ sub _get_event {
         }
 
         $$result{'student_ids'} = \@students;
+
+        # закрытие транзакции
+        $self->{'app'}->pg_dbh->commit;
+    }
+
+    return $result;
+}
+
+sub _update_event {
+    my ( $self, $data ) = @_;
+
+    my ( $id, $sql, $sth, $result, @fields, $students );
+
+    # проверка входных данных
+    unless ( ( ref($data) eq 'HASH' ) && scalar( keys %$data ) ) {
+        push @!, "no data for update";
+    }
+
+    unless ( @! ) {
+
+        # открываем транзакцию
+        $self->{'app'}->pg_dbh->begin_work;
+
+        @fields = qw( id initial_id time_start comment publish );
+        $sql = 'UPDATE "public"."events" SET '.join( ', ', map { "\"$_\"=".$self->{'app'}->pg_dbh->quote( $$data{$_} ) } @fields ) . " WHERE \"id\"=" . $$data{'id'} . "returning id";
+        $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+        $sth->execute();
+        $result = $sth->fetchrow_array();
+        $sth->finish();
+
+        push @!, "Error by update $$data{'id'}" if ! defined $result;
+
+        unless ( @! ) {
+            # удаление записи из таблицы universal_links
+            $sql = 'DELETE FROM "public"."universal_links" WHERE "a_link_id" = :id';
+
+            $sth = $self->{app}->pg_dbh->prepare( $sql );
+            $sth->bind_param( ':id', $$data{'id'} );
+            $result = $sth->execute();
+            $sth->finish();
+
+            if ( $result eq '0E0' ) {
+                push @!, "Could not delete universal_link '$$data{'id'}'";
+                $self->{'app'}->pg_dbh->rollback;
+                return;
+            }
+        }
+
+        unless ( @! ) {
+            # добавление в universal_links
+            $students = decode_json( $$data{'student_ids'} );
+
+            foreach my $student_id ( @$students ) {
+                $sql = 'INSERT INTO "public"."universal_links" ( "a_link_id", "a_link_type", "b_link_id", "b_link_type", "owner_id" ) VALUES ( :a_link_id, :a_link_type, :b_link_id, :b_link_type, :owner_id )';
+                $sth = $self->{'app'}->pg_dbh->prepare( $sql );
+                $sth->bind_param( ':a_link_id', $$data{'id'} );
+                $sth->bind_param( ':a_link_type', 7 );
+                $sth->bind_param( ':b_link_id', $student_id );
+                $sth->bind_param( ':b_link_type', 2 );
+                $sth->bind_param( ':owner_id', $$data{'owner_id'} );
+                $result = $sth->execute();
+                $sth->finish();
+                unless ( $result ) {
+                    push @!, "Can not insert student into universal_links";
+                    $self->{'app'}->pg_dbh->rollback;
+                    return;
+                }
+            }
+        }
 
         # закрытие транзакции
         $self->{'app'}->pg_dbh->commit;

@@ -1,10 +1,9 @@
-# добавление потока
-# my $id = $self->insert_stream({
+# обновление данных о событии
+#     "id"        => 1             - id обновляемого элемента ( >0 )
 #     'age'          => 1,                 - год обучения, обязательное поле
 #     'date'         => '01-09-2020',      - дата начала обучения, обязательное поле
 #     'master_id'    => 11,                - id руководителя
 #     "status"       => 0 или 1,           - активен ли поток, обязательное поле
-# });
 
 use FindBin;
 BEGIN {
@@ -97,8 +96,9 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->json_is( $$test_data{'result'} );
 diag "";
 
+# Ввод потоков
+diag "Add event:";
 my $test_data = {
-    # положительные тесты
     1 => {
         'data' => {
             'comment'    => 'event1',
@@ -108,10 +108,9 @@ my $test_data = {
             'student_ids'=> "[5]"
         },
         'result' => {
-            'id'        => '1',
+            'id'        => 1,
             'status'    => 'ok'
-        },
-        'comment' => 'All fields:'
+        }
     },
     2 => {
         'data' => {
@@ -122,112 +121,142 @@ my $test_data = {
             'student_ids'=> "[5]"
         },
         'result' => {
-            'id'        => '2',
-            'status'    => 'ok',
+            'id'        => 2,
+            'status'    => 'ok'
+        }
+    }
+};
+
+diag "Add events:";
+foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
+    $t->post_ok( $host.'/events/add' => {token => $token} => form => $$test_data{$test}{'data'} );
+    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+        diag("Can't connect");
+        exit; 
+    }
+    $t->json_is( $$test_data{$test}{'result'} );
+    diag "";
+}
+
+$test_data = {
+    # положительные тесты
+    1 => {
+        'data' => {
+            'id'         => 1,
+            'comment'    => 'event3',
+            'time_start' => '01-09-2020',
+            'initial_id' => $user + 1,
+            'status'     => 1,
+            'student_ids'=> "[1]"
         },
-        'comment' => 'status zero:'
+        'result' => {
+            'status'    => 'ok',
+            'id'        => 1,
+        },
+        'comment' => 'All fields:' 
     },
 
     # отрицательные тесты
-    3 => {
+    2 => {
         'data' => {
+            'id'         => 404,
+            'comment'    => 'event1',
             'time_start' => '01-09-2020',
             'initial_id' => $user + 1,
             'status'     => 1,
             'student_ids'=> "[5]"
         },
         'result' => {
-            'message'   => "/events/add _check_fields: didn't has required data in 'comment' = ''",
+            'message'   => 'Error by update 404',
             'status'    => 'fail'
         },
-        'comment' => 'No comment:'
+        'comment' => 'Wrong id:' 
+    },
+    3 => {
+        'data' => {
+            'comment'    => 'event1',
+            'time_start' => '01-09-2020',
+            'initial_id' => $user + 1,
+            'status'     => 1,
+            'student_ids'=> "[5]"
+        },
+        'result' => {
+            'message'   => "/events/save _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
+        },
+        'comment' => 'No id:' 
     },
     4 => {
         'data' => {
-            'comment'    => 'event2',
+            'id'         => 1,
+            'comment'    => 'event1',
             'initial_id' => $user + 1,
-            'status'     => 0,
+            'status'     => 1,
             'student_ids'=> "[5]"
         },
         'result' => {
-            'message'   => "/events/add _check_fields: didn't has required data in 'time_start' = ''",
+            'message'   => "/events/save _check_fields: didn't has required data in 'time_start' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No time_start:'
+        'comment' => 'No name:' 
     },
     5 => {
         'data' => {
-            'comment'    => 'event2',
+            'id'         => 1,
+            'comment'    => 'event1',
             'time_start' => '01-09-2020',
-            'initial_id' => $user + 1,
+            'status'     => 1,
             'student_ids'=> "[5]"
         },
         'result' => {
-            'message'   => "/events/add _check_fields: didn't has required data in 'status' = ''",
+            'message'   => "/events/save _check_fields: didn't has required data in 'initial_id' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'No status:'
+        'comment' => 'No label:' 
     },
     6 => {
         'data' => {
-            'comment'    => 'event2',
-            'time_start' => 'error',
+            'id'         => 1,
+            'comment'    => 'event1',
+            'time_start' => '01-09-2020',
             'initial_id' => $user + 1,
-            'status'     => 0,
             'student_ids'=> "[5]"
         },
         'result' => {
-            'message'   => "/events/add _check_fields: empty field 'time_start', didn't match regular expression",
+            'message'   => "/events/save _check_fields: didn't has required data in 'status' = ''",
             'status'    => 'fail'
         },
-        'comment' => 'Wrong input format:'
+        'comment' => 'No status:' 
     },
     7 => {
         'data' => {
+            'id'         => 1,
             'comment'    => 'event1',
             'time_start' => '01-09-2020',
-            'initial_id' => 404,
-            'status'     => 1,
+            'initial_id' => $user + 1,
+            'status'     => 'e',
             'student_ids'=> "[5]"
         },
         'result' => {
-            'message'    => "user with id '404' doesn/'t exist\nUser '404' is not a teacher",
-            'status'     => 'fail'
+            'message'   => "/events/save _check_fields: empty field 'status', didn't match regular expression",
+            'status'    => 'fail'
         },
-        'comment' => 'User does not exist:'
-    },
-    9 => {
-        'data' => {
-            'comment'    => 'event1',
-            'time_start' => '01-09-2020',
-            'initial_id' => 1,
-            'status'     => 1,
-            'student_ids'=> "[5]"
-        },
-        'result' => {
-            'message'    => "User '1' is not a teacher",
-            'status'     => 'fail'
-        },
-        'comment' => 'User is not a teacher:'
-    },
+        'comment' => 'Wrong field type:' 
+    }
 };
 
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-
-    $t->post_ok( $host.'/events/add' => {token => $token}  => form => $data );
-    unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
-        diag("Can't connect \n");
-        last;
-    }
-    $t->content_type_is('application/json;charset=UTF-8');
-    $t->json_is( $result );
+    diag ( $$test_data{$test}{'comment'} );
+    $t->post_ok($host.'/events/save' => {token => $token} => form => $data )
+        ->status_is(200)
+        ->content_type_is('application/json;charset=UTF-8')
+        ->json_is( $result );
     diag "";
 };
 
 done_testing();
 
 # переинсталляция базы scorm_test
-reset_test_db();
+# reset_test_db();

@@ -123,6 +123,46 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
+sub save {
+    my ( $self ) = shift;
+
+    my ( $id, $parent, $data, $resp, $owner_id );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    # проверка существования обновляемой строки
+    unless ( @! ) {
+        # проверяем, существует ли руководитель
+        unless ( $self->model('Utils')->_exists_in_table('users', 'id', $$data{'initial_id'} ) ) {
+            push @!, "user with id '$$data{'initial_id'}' doesn/'t exist"; 
+        }
+        # проверяем, является ли пользователь учителем
+        unless ( $self->model('Utils')->_is_teacher( $$data{'initial_id'} ) ) {
+            push @!, "User '$$data{'initial_id'}' is not a teacher";
+        }
+    }
+
+    unless ( @! ) {
+        # смена поля status на publish
+        $$data{'publish'} = $$data{'status'};
+        delete $$data{'status'};
+
+        $$data{'owner_id'} = $tokens->{ $self->req->headers->header('token') }->{'id'};
+
+        # обновление данных группы
+        $id = $self->model('Events')->_update_event( $data, $owner_id );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'id'} = $id unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
 # удалениe события
 # "id" => 1 - id удаляемого элемента ( >0 )
 sub delete {
