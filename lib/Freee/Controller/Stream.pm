@@ -6,21 +6,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use common;
 use Data::Dumper;
 
-sub index {
-    my ($self);
-    $self = shift;
-
-    $self->render(
-        'json'    => {
-            'controller'    => 'Library',
-            'route'         => 'index',
-            'status'        => 'ok',
-            'params'        => $self->req->params->to_hash,
-            'test'          => 'test'
-        }
-    );
-}
-
 sub add {
     my $self = shift;
 

@@ -250,4 +250,34 @@ sub _update_event {
     return $result;
 }
 
+sub _get_list {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $fields, $sth );
+    my $list = {};
+
+    # выбираемые поля
+    $fields = ' id, initial_id, time_start, comment, publish AS status ';
+
+    # взять объекты из таблицы users
+    if ( $$data{'order'} eq 'DESC' ) {
+        $sql = 'SELECT' .  $fields . 'FROM "public"."events" ORDER BY id DESC';
+    }
+    else {
+        $sql = 'SELECT' .  $fields . 'FROM "public"."events" ORDER BY id ASC';
+    }
+
+    $sql .= ' LIMIT :limit' if $$data{'limit'};
+    $sql .= ' OFFSET :offset' if $$data{'offset'};
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
+    $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
+    $sth->execute();
+    $list = $sth->fetchall_arrayref({});
+    $sth->finish();
+
+    return $list;
+}
+
 1;

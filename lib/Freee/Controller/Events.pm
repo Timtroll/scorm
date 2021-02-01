@@ -11,19 +11,45 @@ use Data::Dumper;
 sub index {
     my $self = shift;
 
-    my ( $data, $resp, $result );
+    my ( $data, $list, $resp, $events );
 
     # проверка данных
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # $result = $self->model('Lesson')->_delete_lesson( $$data{'id'} );
-        # push @!, 'can\'t delete EAV object' unless $result;
+        $$data{'page'} = 1 unless $$data{'page'};
+        $$data{'limit'} = 1000 unless $$data{'limit'};
+        $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
+        $$data{'order'} = 'ASC' unless $$data{'order'};
+
+        # получаем список пользователей группы
+        $events = $self->model('Events')->_get_list( $data );
+
+        unless ( @! ) {
+            $list = {
+                'settings' => {
+                    'editable' => 1,
+                    'massEdit' => 0,
+                    'page' => {
+                        'current_page' => $$data{'page'},
+                        'per_page'     => $$data{'limit'}
+                    },
+                    'removable' => 1,
+                    'sort' => {
+                        'name' => 'id',
+                        'order' => $$data{'order'}
+                    }
+                }
+            };
+
+            $list->{'body'} = $events;
+            $list->{'settings'}->{'page'}->{'total'} = scalar(@$events);
+        }
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
-    $resp->{'id'} = $$data{'id'} unless @!;
+    $resp->{'list'} = $list unless @!;
 
     @! = ();
 

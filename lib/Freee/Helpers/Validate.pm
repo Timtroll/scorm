@@ -496,7 +496,11 @@ p %data;
 
 ################
             # роуты событий 
-            '/events'         => {},
+            '/events'         => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
+                },
             '/events/add'     => {
                 "initial_id"     => [ 'required', qr/^\d+$/os, 9 ],
                 "student_ids"    => [ 'required', qr/^\[(\d+|\,)*\]$/os, 255 ],
