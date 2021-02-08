@@ -528,7 +528,10 @@ p %data;
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/events/lesson_users'  => {
-                "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
             },
 
 ################

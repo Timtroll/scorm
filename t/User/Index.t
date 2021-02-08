@@ -9,6 +9,8 @@ BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
 
+use utf8;
+
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;

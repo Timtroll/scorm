@@ -2,7 +2,7 @@
 
 DOMAIN="*:4444"
 DIR=`pwd`
-
+pwd >> /home/simon/Documents/Git/Scorm/scorm/log/pwd.log
 APPNAME="freee"
 SCRIPT="script/freee"
 PIDFILE="/tmp/$APPNAME.pid"
