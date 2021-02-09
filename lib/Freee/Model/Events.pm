@@ -280,4 +280,30 @@ sub _get_list {
     return $list;
 }
 
+sub _get_list_by_event{
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth );
+    my $list = {};
+
+    $sql = q(SELECT *
+        FROM "universal_links" AS l  
+        INNER JOIN "users" AS u ON l."b_link_id" = u."id"
+        WHERE l."a_link_id" = :id
+    );
+
+    $sql .= ' LIMIT :limit' if $$data{'limit'};
+    $sql .= ' OFFSET :offset' if $$data{'offset'};
+
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $$data{'id'} );
+    $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
+    $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
+
+    $sth->execute();
+    $list = $sth->fetchall_arrayref({});
+    $sth->finish();
+
+    return $list;
+}
 1;

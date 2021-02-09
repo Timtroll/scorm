@@ -70,53 +70,29 @@ sub lesson_users {
     $data = $self->_check_fields();
 
     unless ( @! ) {
+        $meta = $self->model('Events')->_get_event( $data );
+    }
+
+    unless ( @! ) {
         $$data{'page'} = 1 unless $$data{'page'};
         $$data{'limit'} = $settings->{'per_page'} unless $$data{'limit'};
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
         $$data{'order'} = 'ASC' unless $$data{'order'};
 
-        unless ( @! ) {
-            # получаем список учителей
-            $group_id = $self->model('Groups')->_get_group_id( 'teacher' );
-            $teacher = $self->model('User')->_get_list({
-                group_id => $$group_id{'id'},
-                limit    => 1,
-                offset   => 0,
-                publish  => 1,      #?????????? почему-то при добавлении учителя publush- false
-                mode     => 'full'
-            });
-            $teacher = shift @$teacher;
-
-            # получаем список учеников
-            $group_id = $self->model('Groups')->_get_group_id( 'student' );
-            $students = $self->model('User')->_get_list({
-                group_id => $$group_id{'id'},
-                limit    => $$data{'limit'},
-                offset   => $$data{'offset'},
-                publish  => 1,
-                mode     => 'full'
-            });
-        }
+        $students = $self->model('Events')->_get_list_by_event( $data );
     }
 
     unless ( @! ) {
-        # $list = [ @$teachers, @$students ];
+        $$data{'id'} = $$meta{'initial_id'};
 
-        # $meta = {
-        #     "desciption"    => "описание урока",
-        #     "discipline"    => "История",
-        #     "theme"         => "Азия и Африка в XVIII в.",
-        #     "lesson"        => "Итоговый урок по теме «Азия и Африка в XVIII в.»",
-        #     "lessonNumber"  => 28,
-        #     "grade"         => 8
-        # };
+        $teacher = $self->model('User')->_get_user( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'students'} = $students unless @!;
     $resp->{'teacher'} = $teacher unless @!;
-    # $resp->{'meta'} = $meta unless @!;
+    $resp->{'meta'} = $meta unless @!;
     $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
