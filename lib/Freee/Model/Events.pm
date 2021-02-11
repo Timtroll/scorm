@@ -260,11 +260,13 @@ sub _get_list {
     $fields = ' id, initial_id, time_start, comment, publish AS status ';
 
     # взять объекты из таблицы users
+    $sql = 'SELECT' .  $fields . 'FROM "public"."events" ORDER BY id';
+
     if ( $$data{'order'} eq 'DESC' ) {
-        $sql = 'SELECT' .  $fields . 'FROM "public"."events" ORDER BY id DESC';
+        $sql .= ' DESC';
     }
     else {
-        $sql = 'SELECT' .  $fields . 'FROM "public"."events" ORDER BY id ASC';
+        $sql .= ' ASC';
     }
 
     $sql .= ' LIMIT :limit' if $$data{'limit'};
@@ -280,16 +282,19 @@ sub _get_list {
     return $list;
 }
 
-sub _get_list_by_event{
+sub _get_students_by_event {
     my ( $self, $data ) = @_;
 
-    my ( $sql, $sth );
+    my ( $sql, $sth, $fields, $usr );
     my $list = {};
 
-    $sql = q(SELECT *
-        FROM "universal_links" AS l  
+    # выбираемые поля
+    $fields = ' id, email, phone, timezone, eav_id, publish AS status ';
+
+    $sql = ('SELECT' .  $fields .
+        'FROM "universal_links" AS l  
         INNER JOIN "users" AS u ON l."b_link_id" = u."id"
-        WHERE l."a_link_id" = :id
+        WHERE l."a_link_id" = :id'
     );
 
     $sql .= ' LIMIT :limit' if $$data{'limit'};
@@ -304,6 +309,63 @@ sub _get_list_by_event{
     $list = $sth->fetchall_arrayref({});
     $sth->finish();
 
+    push @!, "can't get user" unless $list;
+
+    unless ( @! ) {
+        foreach my $result ( @$list ) {
+            $usr = Freee::EAV->new( 'User', { 'id' => $result->{'eav_id'} } );
+            if ( $usr ) {
+                $result->{'name'}          = $usr->name()       ? $usr->name() : '';
+                $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
+                $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
+                $result->{'place'}         = $usr->place()      ? $usr->place() : '';
+                delete $result->{'eav_id'};
+            }
+        }
+    }
+
     return $list;
 }
+
+sub _get_teacher_by_event {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $fields, $usr );
+    my $list = {};
+
+    # выбираемые поля
+    $fields = ' u.id, email, phone, timezone, eav_id, u.publish AS status ';
+
+    $sql = ('SELECT' .  $fields .
+        'FROM "events" AS e
+        INNER JOIN "users" AS u ON e."initial_id" = u."id"
+        WHERE e."id" = :id'
+    );
+warn Dumper( $data );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->bind_param( ':id', $$data{'id'} );
+
+    $sth->execute();
+    $list = $sth->fetchall_arrayref({});
+    $sth->finish();
+warn Dumper( $list );
+
+    push @!, "can't get user" unless $list;
+
+    unless ( @! ) {
+        foreach my $result ( @$list ) {
+            $usr = Freee::EAV->new( 'User', { 'id' => $result->{'eav_id'} } );
+            if ( $usr ) {
+                $result->{'name'}          = $usr->name()       ? $usr->name() : '';
+                $result->{'patronymic'}    = $usr->patronymic() ? $usr->patronymic() : '';
+                $result->{'surname'}       = $usr->surname()    ? $usr->surname() : '';
+                $result->{'place'}         = $usr->place()      ? $usr->place() : '';
+                delete $result->{'eav_id'};
+            }
+        }
+    }
+warn Dumper( $list );
+    return $list;
+}
+
 1;

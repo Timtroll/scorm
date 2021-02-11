@@ -225,14 +225,10 @@ my $result =
             'name'         => 'имяright',
             'patronymic',  => 'отчествоright',
             'place'        => 'place',
-            'country'      => 'RU',
             'timezone'     => 3,
-            'birthday'     => 807393600,
-            'login'        => 'login1',
             'email'        => '1@email.ru',
             'phone'        => '7(921)1111111',
-            'status'       => 1,
-            'groups'       => "[4]"
+            'status'       => 1
         },
         "students" => 
         [
@@ -242,14 +238,10 @@ my $result =
                 'name'         => 'имяright',
                 'patronymic',  => 'отчествоright',
                 'place'        => 'place',
-                'country'      => 'RU',
                 'timezone'     => 3,
-                'birthday'     => 807393600,
-                'login'        => 'login2',
                 'email'        => '2@email.ru',
                 'phone'        => '7(921)1111112',
-                'status'       => 1,
-                'groups'       => "[1,2]"
+                'status'       => 1
             },
             {
                 'id'           => $user+3,
@@ -257,16 +249,24 @@ my $result =
                 'name'         => 'имяright',
                 'patronymic',  => 'отчествоright',
                 'place'        => 'place',
-                'country'      => 'RU',
                 'timezone'     => 3,
-                'birthday'     => 807393600,
-                'login'        => 'login3',
                 'email'        => '3@email.ru',
                 'phone'        => '7(921)1111113',
-                'status'       => 1,
-                'groups'       => "[2,1,3]" 
+                'status'       => 1
             }
         ],
+        "meta" =>
+        {
+            "comment" => "event",
+            "id" => 1,
+            "initial_id"=> 6,
+            "status" => 1,
+            "student_ids"=> [
+                "7",
+                "8"
+            ],
+            "time_start" => "2020-09-01 00:00:00+03"
+        },
         "status"=> "ok"
     };
 

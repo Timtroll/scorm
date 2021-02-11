@@ -22,8 +22,9 @@ sub index {
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
         $$data{'order'} = 'ASC' unless $$data{'order'};
 
-        # получаем список пользователей группы
+        # получаем список событий
         $events = $self->model('Events')->_get_list( $data );
+        push @!, "Can not get event list" unless $events;
 
         unless ( @! ) {
             $list = {
@@ -71,6 +72,7 @@ sub lesson_users {
 
     unless ( @! ) {
         $meta = $self->model('Events')->_get_event( $data );
+        push @!, "Can not get teacher" unless $$meta{'initial_id'};
     }
 
     unless ( @! ) {
@@ -79,13 +81,11 @@ sub lesson_users {
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
         $$data{'order'} = 'ASC' unless $$data{'order'};
 
-        $students = $self->model('Events')->_get_list_by_event( $data );
+        $students = $self->model('Events')->_get_students_by_event( $data );
     }
 
     unless ( @! ) {
-        $$data{'id'} = $$meta{'initial_id'};
-
-        $teacher = $self->model('User')->_get_user( $data );
+        $teacher = $self->model('Events')->_get_teacher_by_event( $data );
     }
 
     $resp->{'message'} = join("\n", @!) if @!;
@@ -93,7 +93,6 @@ sub lesson_users {
     $resp->{'students'} = $students unless @!;
     $resp->{'teacher'} = $teacher unless @!;
     $resp->{'meta'} = $meta unless @!;
-    $resp->{'id'} = $$data{'id'} unless @!;
 
     @! = ();
 
