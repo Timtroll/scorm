@@ -29,6 +29,13 @@ BEGIN
     PERFORM eav_createfield( 'Theme', 'url', 'url страницы', 'string', NULL );
     PERFORM eav_createfield( 'Theme', 'attachment', 'Вложенные файлы', 'string', NULL );
 
+    PERFORM eav_createfield( 'Task', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'attachment', 'Вложенные файлы', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'description', 'Описание', 'string', NULL );
+
     PERFORM eav_createfield( 'SEO', 'keywords', 'Ключевые слова, фразы', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'description', 'Описание', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'seo_title', 'SEO заголовок', 'string', NULL );
@@ -79,6 +86,15 @@ INSERT INTO "public"."EAV_items" (
     has_childs
 ) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 0, 0 );
 
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
 -----------
 INSERT INTO "public"."EAV_items" (
     publish,

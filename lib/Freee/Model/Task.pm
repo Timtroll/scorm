@@ -34,8 +34,6 @@ sub _empty_task {
                 'content'      => '',
                 'keywords'     => '',
                 'import_source'=> '',
-                'url'          => '',
-                'seo'          => '',
                 'attachment'   => '[]'
             }
         };
@@ -116,26 +114,58 @@ sub _list_task {
         ]
     });
 
-    my @tasks = ();
-    map {
-        my $item = {
-            'id'          => $_->{'id'},
-            'folder'      => $_->{'has_childs'},
-            'label'       => $_->{'title'},
-            'description' => $_->{'description'},
-            'content'     => $_->{'content'},
-            'keywords'    => $_->{'keywords'},
-            'url'         => $_->{'url'},
-            'seo'         => $_->{'seo'},
-            'route'       => $_->{'route'},
-            'parent'      => $_->{'parent'},
-            'status'      => $_->{'publish'},
-            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-        };
-        push @tasks, $item;
-    } ( @$list );
+#     my @tasks = ();
+#     map {
+#         my $item = {
+#             'id'          => $_->{'id'},
+#             'folder'      => $_->{'has_childs'},
+#             'label'       => $_->{'title'},
+#             'description' => $_->{'description'},
+#             'content'     => $_->{'content'},
+#             'keywords'    => $_->{'keywords'},
+#             'route'       => $_->{'route'},
+#             'parent'      => $_->{'parent'},
+#             'status'      => $_->{'publish'},
+#             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
+#         };
+#         push @tasks, $item;
+#     } ( @$list );
+# warn Dumper( @tasks );
+#     return \@tasks;
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            # взять весь объект из EAV
+            $task = Freee::EAV->new( 'Task', { 'id' => $_->{'id'} } );
 
-    return \@tasks;
+            $result = $task->_getAll();
+            if ( $result ) {
+                $_->{'id'}          = $$result{'id'},
+                $_->{'label'}       = $$result{'label'},
+                $_->{'description'} = $$result{'description'},
+                $_->{'content'}     = $$result{'content'},
+                $_->{'keywords'}    = $$result{'keywords'},
+                $_->{'attachment'}  = $$result{'attachment'},
+                $_->{'status'}      = $$result{'publish'},
+                $_->{'folder'}      = $_->{'has_childs'},
+                $_->{'parent'}      = $$result{'parent'},
+                delete $_->{'title'},
+                delete $_->{'distance'},
+                delete $_->{'has_childs'},
+                delete $_->{'import_source'},
+                delete $_->{'publish'},
+                delete $_->{'import_id'},
+                delete $_->{'date_created'},
+                delete $_->{'date_updated'},
+                delete $_->{'type'}
+            } 
+            else {
+                push @!, 'can\'t get list';
+                return;
+            }
+        }
+    }
+
+    return $list;
 }
 
 #  получить данные для редактирования урока
@@ -147,8 +177,6 @@ sub _list_task {
 #     "description" => "Краткое описание",
 #     "content"     => "Полное описание",
 #     "keywords"    => "ключевые слова",
-#     "url"         => "как должен выглядеть url",
-#     "seo"         => "дополнительное поле для seo",
 #     "route"       => "/task/",
 #     "parent"      => $self->param('parent'),
 #     "attachment"  => [345,577,643]
@@ -179,8 +207,6 @@ sub _get_task {
                "description" => $$result{'description'},
                "content"     => $$result{'content'},
                "keywords"    => $$result{'keywords'},
-               "url"         => $$result{'url'},
-               "seo"         => $$result{'seo'},
                "route"       => '/task',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
@@ -226,49 +252,29 @@ sub _save_task {
 
         return unless $task;
 
-        $result = $task->_MultiStore( {                 
-            'Task' => {
+        $result = $task->_MultiStore( {
+            'title'   => $$data{'title'},
+            'Theme' => {
+                'publish'      => $$data{'publish'},
+                'parent'       => $$data{'parent'},
                 'title'        => $$data{'name'},
                 'label'        => $$data{'label'},
                 'description'  => $$data{'description'},
                 'content'      => $$data{'content'},
                 'keywords'     => $$data{'keywords'},
                 'import_source'=> '',
-                'url'          => $$data{'url'},
-                'date_updated' => $$data{'time_update'},
-                'seo'          => $$data{'seo'},
-# ???
-                'title'        => $$data{'title'},
-                'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'publish'}
+                'date_updated' => $$data{'time_update'}
+            },
+            'Default' => {
+                'title'        => $$data{'name'},
+                'label'        => $$data{'label'},
+                'description'  => $$data{'description'},
+                'content'      => $$data{'content'},
+                'keywords'     => $$data{'keywords'},
+                'import_source'=> '',
+                'date_updated' => $$data{'time_update'}
             }
         });
-    }
-
-    return $result;
-}
-
-# изменить статус урока (вкл/выкл)
-# $result = $self->model('Task')->_toggle_task( $data );
-# $data = {
-#    'id'    => <id>, - id записи 
-#    'publish'=> 1     - новый статус 1/0
-# }
-sub _toggle_task {
-    my ( $self, $data ) = @_;
-
-    my ( $task, $result );
-
-    unless ( $$data{'id'} || $$data{'publish'} ) {
-        return;
-    }
-    else {
-        # обновление поля в EAV
-        $task = Freee::EAV->new( 'Task', { 'id' => $$data{'id'} } );
-
-        return unless $task;
-
-        $result = $task->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
     }
 
     return $result;

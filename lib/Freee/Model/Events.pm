@@ -341,14 +341,13 @@ sub _get_teacher_by_event {
         INNER JOIN "users" AS u ON e."initial_id" = u."id"
         WHERE e."id" = :id'
     );
-warn Dumper( $data );
+
     $sth = $self->{app}->pg_dbh->prepare( $sql );
     $sth->bind_param( ':id', $$data{'id'} );
 
     $sth->execute();
     $list = $sth->fetchall_arrayref({});
     $sth->finish();
-warn Dumper( $list );
 
     push @!, "can't get user" unless $list;
 

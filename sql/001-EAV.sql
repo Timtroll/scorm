@@ -27,6 +27,7 @@ CREATE TYPE "public"."EAV_object_type" AS ENUM (
     'Learning',
     'Discipline',
     'Theme',
+    'Task',
     'SEO',
     'Default'
 );
