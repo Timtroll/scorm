@@ -82,7 +82,7 @@ sub edit {
                             { 'url'         => $$result{'url'} },
                             { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'publish'      => $$result{'publish'} }
+                            { 'status'      => $$result{'publish'} }
                         ]
                     },
                     {
@@ -152,12 +152,14 @@ sub save {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # проверка существования вложенных файлов
-        $attachment = decode_json( $$data{'attachment'} );
-        foreach ( @$attachment ) {
-            unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
-                push @!, "file with id '$_' doesn't exist";
-                last;
+        if ( $$data{'attachment'} ) {
+            # проверка существования вложенных файлов
+            $attachment = decode_json( $$data{'attachment'} );
+            foreach ( @$attachment ) {
+                unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
+                    push @!, "file with id '$_' doesn't exist";
+                    last;
+                }
             }
         }
     }
@@ -204,11 +206,21 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # добавляем урок в EAV
-        $result = $self->model('Lesson')->_toggle_lesson( $data );
-        push @!, "can't update EAV" unless $result;
-    }
+        $$data{'table'} = 'EAV_items';
 
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
+        unless ( $self->model('Utils')->_exists_in_table( $$data{'table'}, 'id', $$data{'id'} ) ) {
+            push @!, "Lesson with '$$data{'id'}' doesn't exist";
+        }
+        unless ( @! ) {
+            $result = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle Lesson '$$data{'id'}'" unless $result;
+        }
+    }
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;

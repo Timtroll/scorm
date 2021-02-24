@@ -475,6 +475,7 @@ p %data;
             '/lesson/add'   => {},
             '/lesson/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -483,7 +484,7 @@ p %data;
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/lesson/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

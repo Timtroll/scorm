@@ -114,24 +114,6 @@ sub _list_task {
         ]
     });
 
-#     my @tasks = ();
-#     map {
-#         my $item = {
-#             'id'          => $_->{'id'},
-#             'folder'      => $_->{'has_childs'},
-#             'label'       => $_->{'title'},
-#             'description' => $_->{'description'},
-#             'content'     => $_->{'content'},
-#             'keywords'    => $_->{'keywords'},
-#             'route'       => $_->{'route'},
-#             'parent'      => $_->{'parent'},
-#             'status'      => $_->{'publish'},
-#             'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-#         };
-#         push @tasks, $item;
-#     } ( @$list );
-# warn Dumper( @tasks );
-#     return \@tasks;
     if ( ref($list) eq 'ARRAY' ) {
         foreach ( @$list ) {
             # взять весь объект из EAV
