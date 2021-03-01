@@ -183,8 +183,6 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data} ) {
     }
     $t->json_is( $$test_data{$test}{'result'} );
     diag "";
-    $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
-    warn Dumper( $response );
 }
 
 # Ввод потоков
@@ -196,7 +194,6 @@ my $test_data = {
             "initial_id"=> $user+1,
             "status"=> 1,
             "time_start"=> "01-09-2020",
-            # "student_ids" => "[". $user+2 . "," . $user+3 ."]"
             "student_ids" => "[7,8]"
         },
         'result' => {
@@ -280,4 +277,4 @@ diag "";
 done_testing();
 
 # переинсталляция базы scorm_test
-# reset_test_db();
+reset_test_db();

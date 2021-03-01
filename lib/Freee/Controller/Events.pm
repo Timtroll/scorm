@@ -99,6 +99,14 @@ sub lesson_users {
     $self->render( 'json' => $resp );
 }
 
+# добавление события
+# my $id = $self->insert_event({
+#     "comment",     => 'comment',         - комментарий
+#     'time_start'   => '01-09-2020',      - дата начала события
+#     'initial_id'   => 11,                - id руководителя
+#     "status"       => 0 или 1,           - активен ли поток, обязательное поле
+# });
+# возвращается id записи  
 sub add {
     my $self = shift;
 
@@ -133,6 +141,8 @@ sub add {
     $self->render( 'json' => $resp );
 }
 
+# сохранить эвент
+# $self->save( $data );
 sub save {
     my ( $self ) = shift;
 
@@ -232,6 +242,11 @@ sub toggle {
     $self->render( 'json' => $resp );
 }
 
+# получить данные для редактирования эвента
+# $self->edit( $data );
+# $data = {
+#   id => <id> - id предмета
+# }
 sub edit {
     my $self = shift;
 
@@ -247,6 +262,60 @@ sub edit {
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'data'} = $result unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+# получение всех эвентов с таким учителем
+# my $list = $self->_list_teacher_lessons();
+#   'id'    => <id> - id учителя
+sub teacher_lessons {
+    my $self = shift;
+
+    my ( $data, $resp, $events );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        unless ( $self->model('Utils')->_is_teacher( $$data{'id'} ) ) {
+            push @!, "user with id '$$data{'id'}' is not a teacher"; 
+        }
+    }
+
+    unless ( @! ) {
+        $events = $self->model('Events')->_list_teacher_lessons( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'events'} = $events unless @!;
+
+    @! = ();
+
+    $self->render( 'json' => $resp );
+}
+
+# получение всех эвентов с таким учеником
+# my $list = $self->_list_student_teacher();
+#   'id'    => <id> - id ученика
+sub student_lessons {
+    my $self = shift;
+
+    my ( $data, $resp, $events );
+
+    # проверка данных
+    $data = $self->_check_fields();
+
+    unless ( @! ) {
+        $events = $self->model('Events')->_list_student_teacher( $data );
+    }
+
+    $resp->{'message'} = join("\n", @!) if @!;
+    $resp->{'status'} = @! ? 'fail' : 'ok';
+    $resp->{'events'} = $events unless @!;
 
     @! = ();
 

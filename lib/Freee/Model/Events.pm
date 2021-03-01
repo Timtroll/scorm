@@ -181,6 +181,8 @@ sub _get_event {
     return $result;
 }
 
+# сохранить эвент
+# $self->save( $data );
 sub _update_event {
     my ( $self, $data ) = @_;
 
@@ -250,6 +252,8 @@ sub _update_event {
     return $result;
 }
 
+# Расписание уроков
+# $self->index();
 sub _get_list {
     my ( $self, $data ) = @_;
 
@@ -282,6 +286,11 @@ sub _get_list {
     return $list;
 }
 
+# Урок - список участников + учитель
+# $self->event_users( $data );
+# $data = {
+#   'id' => <id>    - id урока
+#}
 sub _get_students_by_event {
     my ( $self, $data ) = @_;
 
@@ -327,6 +336,11 @@ sub _get_students_by_event {
     return $list;
 }
 
+# Урок - список участников + учитель
+# $self->event_users( $data );
+# $data = {
+#   'id' => <id>    - id урока
+#}
 sub _get_teacher_by_event {
     my ( $self, $data ) = @_;
 
@@ -363,8 +377,84 @@ sub _get_teacher_by_event {
             }
         }
     }
-warn Dumper( $list );
+
     return $list;
+}
+
+# вывод списка всех эвентов с таким учителем
+# my $list = $self->_list_teacher_lessons();
+#   'id'    => <id> - id учителя
+sub _list_teacher_lessons {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $result, @events );
+
+    unless ( $$data{'id'} ) {
+        push @!, 'No teacher id';
+    }
+    else {
+        # получить записи о событиях из таблицы events
+        $sql = 'SELECT id, initial_id, time_start, comment, publish AS status FROM "public"."events" WHERE "initial_id" = :id';
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $sth->execute();
+        $result = $sth->fetchall_hashref( 'id' );
+        $sth->finish();
+
+        unless ( $result ) {
+            push @!, "Could not get list '$$data{'id'}'";
+            return;
+        }
+        else {
+            foreach (sort {$a <=> $b} keys %$result) {
+                push @events, $$result{$_};
+            }
+        }
+    }
+
+    return \@events;
+}
+
+# вывод списка всех эвентов с таким учеником
+# my $list = $self->_list_student_teacher();
+#   'id'    => <id> - id ученика
+sub _list_student_teacher {
+    my ( $self, $data ) = @_;
+
+    my ( $sql, $sth, $fields, $result, @events );
+
+    unless ( $$data{'id'} ) {
+        push @!, 'No student id';
+    }
+    else {
+        # выбираемые поля
+        $fields = ' e.id, initial_id, time_start, comment, e.publish AS status ';
+
+        # получить записи о событиях из таблицы events
+        $sql = ('SELECT' .  $fields .
+            'FROM "universal_links" AS u
+            INNER JOIN "events" AS e ON u."a_link_id" = e."id"
+            WHERE u."b_link_id" = :id'
+        );
+
+        $sth = $self->{app}->pg_dbh->prepare( $sql );
+        $sth->bind_param( ':id', $$data{'id'} );
+        $sth->execute();
+        $result = $sth->fetchall_hashref( 'id' );
+        $sth->finish();
+        unless ( $result ) {
+            push @!, "Could not get list '$$data{'id'}'";
+            return;
+        }
+        else {
+            foreach (sort {$a <=> $b} keys %$result) {
+                push @events, $$result{$_};
+            }
+        }
+    }
+
+    return \@events;
 }
 
 1;

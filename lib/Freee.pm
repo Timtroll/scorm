@@ -179,6 +179,8 @@ warn "+++++++++++";
     $auth->post('/events/toggle')       ->to('events#toggle');          # Изменить статус события
     $auth->post('/events/edit')         ->to('events#edit');            # Редактировать событие
     $auth->post('/events/lesson_users') ->to('events#lesson_users');    # Список участников урока (учитель - обязателен)
+    $auth->post('/events/teacher_lessons')->to('events#teacher_lessons'); # Список уроков по учителю
+    $auth->post('/events/student_lessons')->to('events#student_lessons'); # Список уроков по ученику
 
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');

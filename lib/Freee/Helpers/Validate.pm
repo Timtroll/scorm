@@ -534,6 +534,13 @@ p %data;
                 "limit"         => [ '', qr/^\d+$/os, 9 ],
                 "page"          => [ '', qr/^\d+$/os, 9 ]
             },
+            '/events/teacher_lessons'  => {
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+            },
+            '/events/student_lessons'  => {
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+            },
+
 
 ################
             # роуты task/*
