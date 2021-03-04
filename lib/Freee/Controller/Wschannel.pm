@@ -63,7 +63,7 @@ sub type {
                 # my $txt = Mojo::File::slurp("/tmp/sdp.answerer");
                 # my $path = Mojo::File->new("/tmp/sdp.answerer");
                 # my $txt = $path->slurp;
-                my $txt = read_file( "/tmp/sdp.answerer", { binmode => ':utf8' } )
+                my $txt = read_file( "/tmp/sdp.answerer", { binmode => ':utf8' } );
 
                 my $ref = decode_json($txt);
                 $self->send({json => $ref});
@@ -78,7 +78,7 @@ sub type {
                 # my $txt = Mojo::File::slurp($f);
                 # my $path = Mojo::File->new($f);
                 # my $txt = $path->slurp;
-                my $txt = read_file( $f, { binmode => ':utf8' } )
+                my $txt = read_file( $f, { binmode => ':utf8' } );
 
                 my $ref = decode_json($txt);
                 $self->send({json => $ref});
@@ -90,7 +90,7 @@ sub type {
                 # my $txt = Mojo::File::slurp("/tmp/sdp.offerer");
                 # my $path = Mojo::File->new("/tmp/sdp.offerer");
                 # my $txt = $path->slurp;
-                my $txt = read_file( "/tmp/sdp.offerer", { binmode => ':utf8' } )
+                my $txt = read_file( "/tmp/sdp.offerer", { binmode => ':utf8' } );
 
                 my $ref = decode_json($txt);
                 $self->app->log->debug("Sending sdp: to answerer from offerer");
@@ -104,7 +104,7 @@ sub type {
                     # my $txt = Mojo::File::slurp($f);
                     # my $path = Mojo::File->new($f);
                     # my $txt = $path->slurp;
-                    my $txt = read_file( $f, { binmode => ':utf8' } )
+                    my $txt = read_file( $f, { binmode => ':utf8' } );
 
                     my $ref = decode_json($txt);
                     $self->send({json => $ref});

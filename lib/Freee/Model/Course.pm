@@ -116,26 +116,40 @@ sub _list_course {
         ]
     });
 
-    my @courses = ();
-    map {
-        my $item = {
-            'id'          => $_->{'id'},
-            'folder'      => $_->{'has_childs'},
-            'label'       => $_->{'title'},
-            'description' => $_->{'description'},
-            'content'     => $_->{'content'},
-            'keywords'    => $_->{'keywords'},
-            'url'         => $_->{'url'},
-            'seo'         => $_->{'seo'},
-            'route'       => $_->{'route'},
-            'parent'      => $_->{'parent'},
-            'status'      => $_->{'publish'},
-            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-        };
-        push @courses, $item;
-    } ( @$list );
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            # взять весь объект из EAV
+            $course = Freee::EAV->new( 'Course', { 'id' => $_->{'id'} } );
 
-    return \@courses;
+            $result = $course->_getAll();
+            if ( $result ) {
+                $_->{'id'}          = $$result{'id'},
+                $_->{'label'}       = $$result{'label'},
+                $_->{'description'} = $$result{'description'},
+                $_->{'content'}     = $$result{'content'},
+                $_->{'keywords'}    = $$result{'keywords'},
+                $_->{'attachment'}  = $$result{'attachment'},
+                $_->{'status'}      = $$result{'publish'},
+                $_->{'folder'}      = $_->{'has_childs'},
+                $_->{'parent'}      = $$result{'parent'},
+                delete $_->{'title'},
+                delete $_->{'distance'},
+                delete $_->{'has_childs'},
+                delete $_->{'import_source'},
+                delete $_->{'publish'},
+                delete $_->{'import_id'},
+                delete $_->{'date_created'},
+                delete $_->{'date_updated'},
+                delete $_->{'type'}
+            } 
+            else {
+                push @!, 'can\'t get list';
+                return;
+            }
+        }
+    }
+
+    return $list;
 }
 
 #  получить данные для редактирования курса
@@ -179,8 +193,6 @@ sub _get_course {
                "description" => $$result{'description'},
                "content"     => $$result{'content'},
                "keywords"    => $$result{'keywords'},
-               "url"         => $$result{'url'},
-               "seo"         => $$result{'seo'},
                "route"       => '/course',
                "parent"      => $$result{'parent'},
                "attachment"  => $$result{'attachment'},
@@ -192,7 +204,7 @@ sub _get_course {
             return;
         }
     }
-
+warn Dumper( $list );
     return $list;
 }
 
@@ -226,61 +238,29 @@ sub _save_course {
 
         return unless $course;
 
-        $course->title( $$data{'title'} );
-        $course->label( $$data{'label'} );
-        $course->description( $$data{'description'} );
-        $course->content( $$data{'content'} );
-        $course->keywords( $$data{'keywords'} );
-        $course->url( $$data{'url'} );
-        $course->seo( $$data{'seo'} );
-        $course->url( $$data{'url'} );
-
-        $course->parent( $$data{'parent'} );
-        $course->publish( $$data{'url'} );
-
-#         $result = $course->_MultiStore( {                 
-#             'Course' => {
-#                 'title'        => $$data{'name'},
-#                 'label'        => $$data{'label'},
-#                 'description'  => $$data{'description'},
-#                 'content'      => $$data{'content'},
-#                 'keywords'     => $$data{'keywords'},
-#                 'import_source'=> '',
-#                 'url'          => $$data{'url'},
-#                 'date_updated' => $$data{'time_update'},
-#                 'seo'          => $$data{'seo'},
-# # ???
-#                 'title'        => $$data{'title'},
-#                 'parent'       => $$data{'parent'}, 
-#                 'publish'      => $$data{'publish'}
-#             }
-#         });
-    }
-
-    return $result;
-}
-
-# изменить статус курса (вкл/выкл)
-# $result = $self->model('Course')->_toggle_course( $data );
-# $data = {
-#    'id'    => <id>, - id записи 
-#    'publish'=> 1     - новый статус 1/0
-# }
-sub _toggle_course {
-    my ( $self, $data ) = @_;
-
-    my ( $course, $result );
-
-    unless ( $$data{'id'} || $$data{'publish'} ) {
-        return;
-    }
-    else {
-        # обновление поля в EAV
-        $course = Freee::EAV->new( 'Course', { 'id' => $$data{'id'} } );
-
-        return unless $course;
-
-        $result = $course->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
+        $result = $course->_MultiStore( {
+            'title'   => $$data{'title'},
+            'Theme' => {
+                'publish'      => $$data{'publish'},
+                'parent'       => $$data{'parent'},
+                'title'        => $$data{'name'},
+                'label'        => $$data{'label'},
+                'description'  => $$data{'description'},
+                'content'      => $$data{'content'},
+                'keywords'     => $$data{'keywords'},
+                'import_source'=> '',
+                'date_updated' => $$data{'time_update'}
+            },
+            'Default' => {
+                'title'        => $$data{'name'},
+                'label'        => $$data{'label'},
+                'description'  => $$data{'description'},
+                'content'      => $$data{'content'},
+                'keywords'     => $$data{'keywords'},
+                'import_source'=> '',
+                'date_updated' => $$data{'time_update'}
+            }
+        });
     }
 
     return $result;

@@ -15,7 +15,7 @@ sub index {
             'controller'    => 'Item',
             'route'         => 'index',
             'params'        => $self->req->params->to_hash,
-            'test'          => $test
+            'test'          => 'test'
         }
     );
 }

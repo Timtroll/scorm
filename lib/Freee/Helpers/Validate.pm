@@ -414,15 +414,14 @@ p %data;
             '/course/add'   => {},
             '/course/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
                 "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/course/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]

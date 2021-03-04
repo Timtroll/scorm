@@ -28,7 +28,7 @@ sub index {
 sub list_themes {
     my $self = shift;
 
-    my ( $group_id, $list_themes, $resp, @mess);
+    my ( $group_id, $list_themes, $list, $resp, @mess);
 
     $group_id = $self->param( 'group_id' );
 
@@ -447,7 +447,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess, $current_value);
+    my ($toggle, $resp, $data, $error, @mess, $current_value, $data_time, $id);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
