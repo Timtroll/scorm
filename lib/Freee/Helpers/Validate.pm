@@ -540,6 +540,45 @@ p %data;
                 "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
             },
 
+################
+            # роуты событий 
+            '/schedule'         => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
+                },
+            '/schedule/add'     => {
+                "teacher_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "course_id"      => [ 'required', qr/^\d+$/os, 9 ],
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+                "duration"       => [ 'required', qr/^\d+$/os, 9 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/save'     => {
+                "id"             => [ 'required', qr/^\d+$/os, 9 ],
+                "teacher_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "course_id"      => [ 'required', qr/^\d+$/os, 9 ],
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+                "duration"       => [ 'required', qr/^\d+$/os, 9 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/schedule/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/edit'    => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/schedule/on_week'  => {
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+            },
+            '/schedule/on_month'  => {
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+            },
 
 ################
             # роуты task/*

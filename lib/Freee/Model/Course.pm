@@ -204,7 +204,7 @@ sub _get_course {
             return;
         }
     }
-warn Dumper( $list );
+
     return $list;
 }
 

@@ -269,6 +269,16 @@ warn "+++++++++++";
     $auth->post('/stream/master_add')   ->to('stream#master_add');  # добавить руководителя в поток
     $auth->post('/stream/get_masters')  ->to('stream#get_masters');# удалить руководителя из потока
 
+    # управление расписанием занятий
+    $auth->post('/schedule/')             ->to('schedule#index');       # полный список расписаний
+    $auth->post('/schedule/edit')         ->to('schedule#edit');        # получить данный для редактирования расписания
+    $auth->post('/schedule/save')         ->to('schedule#save');        # сохранить расписание
+    $auth->post('/schedule/add')          ->to('schedule#add');         # добавить расписание
+    $auth->post('/schedule/toggle')       ->to('schedule#toggle');      # изменить статус расписания (вкл/выкл)
+    $auth->post('/schedule/delete')       ->to('schedule#delete');      # удалить расписание
+    $auth->post('/schedule/on_week')      ->to('schedule#on_week');     # расписание на неделю
+    $auth->post('/schedule/on_month')     ->to('schedule#on_month');    # расписание на месяц
+
 # возможно еще что-то ?????????
 
     # учет успеваемости
