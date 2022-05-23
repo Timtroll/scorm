@@ -56,9 +56,9 @@ const router = new Router({
       },
       children:       [
         {
-          path:          '/dashBoard',
+          path:          '/dashboard',
           name:          'DashBoard',
-          component:     () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard/DashBoard'),
+          component:     () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard'),
           showInSideBar: true,
           meta:          {
             authRequired: true,
@@ -93,23 +93,23 @@ const router = new Router({
             }
           ]
         },
-        //{
-        //  path:      '/pages',
-        //  name:      'Pages',
-        //  component: () => import(/* webpackChunkName: "dashboard" */ './layouts/dashboard/DashBoard'),
-        //
-        //  showInSideBar: true,
-        //  meta:          {
-        //    root:         true,
-        //    authRequired: true,
-        //    icon:         'img/icons/sidebar_pages.svg',
-        //    breadcrumb:   'Контент'
-        //  }
-        //},
+        {
+          path:      '/pages',
+          name:      'Pages',
+          component: () => import(/* webpackChunkName: "DashBoard" */ './layouts/dashboard'),
+        
+          showInSideBar: true,
+          meta:          {
+            root:         true,
+            authRequired: true,
+            icon:         'img/icons/sidebar_pages.svg',
+            breadcrumb:   'Контент'
+          }
+        },
         {
           path:          '/courses',
           name:          'Courses',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/courses'),
+          component:     () => import(/* webpackChunkName: "Courses" */ './layouts/courses'),
           showInSideBar: true,
           meta:          {
             root:         true,
@@ -121,7 +121,7 @@ const router = new Router({
         {
           path:          '/lesson',
           name:          'Lesson',
-          component:     () => import(/* webpackChunkName: "dashboard" */ './layouts/lesson/Lesson'),
+          component:     () => import(/* webpackChunkName: "Lessons" */ './layouts/lesson/Lesson'),
           showInSideBar: true,
           meta:          {
             root:         true,
@@ -156,7 +156,6 @@ const router = new Router({
         }
       ]
     },
-
     {
       path:                   '/config',
       name:                   'config',

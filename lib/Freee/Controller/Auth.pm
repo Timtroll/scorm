@@ -42,6 +42,7 @@ warn '=login=';
 
         # шифрование пароля
         $$data{'password'} = sha256_hex( $$data{'password'}, $salt );
+warn $$data{'password'};
 
         # проверяем наличие пользователя
         $user = $self->model('User')->_exists_in_users( $$data{'login'}, $$data{'password'} );
@@ -155,5 +156,16 @@ warn 'redirect_to 2';
     # return;
     $self->redirect_to('/error/');
 }
+
+# ping /ping
+# проверка работы бэкэнда
+# Возвращает pong - если данное приложение запущено
+sub ping {
+    my ($self, %data);
+    $self = shift;
+
+    $self->render( text => 'pong' );
+}
+
 
 1;

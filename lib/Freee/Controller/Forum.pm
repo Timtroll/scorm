@@ -28,7 +28,7 @@ sub index {
 sub list_themes {
     my $self = shift;
 
-    my ( $group_id, $list_themes, $resp, @mess);
+    my ( $group_id, $list_themes, $list, $resp, @mess );
 
     $group_id = $self->param( 'group_id' );
 
@@ -447,7 +447,7 @@ sub delete {
 sub toggle {
     my $self = shift;
 
-    my ($toggle, $resp, $data, $error, @mess, $current_value);
+    my ($toggle, $resp, $data, $data_time, $error, @mess, $current_value);
     push @mess, "Validation list not contain rules for this route: ".$self->url_for unless keys %{$$vfields{$self->url_for}};
 
     unless (@mess) {
@@ -499,7 +499,7 @@ sub toggle {
             'forum_groups'   => $self->_update_group( $data_time )
         );
         if ( defined $$data{'table'} ) {
-            $id = $hash{ $$data{'table'} };
+            my $id = $hash{ $$data{'table'} };
             push @mess, "Could not update" unless $id;
         }
     }

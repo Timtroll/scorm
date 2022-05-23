@@ -42,7 +42,7 @@ sub type {
                     'connection' => $ws->tx,
                     'user' => $msg->{'user'}
                 };
-                send_ws_connection($msg->{'user'}, "\{\"user\":\"$msg->{'user'}\",\"data\":\"Connected\"\}");
+                send_ws_connection($msg->{'user'}, '{"user":"' . $msg->{'user'} . '","data":"Connected"}');
             }
         },
     );
@@ -68,7 +68,7 @@ sub type {
                 $self->send({json => $ref});
                 unlink("/tmp/sdp.answerer");
                 # Mojo::File::spurt(scalar localtime(time), "/tmp/sdp.offerer.sent");
-                my $path = Mojo::File->new("/tmp/sdp.offerer.sent");
+                $path = Mojo::File->new("/tmp/sdp.offerer.sent");
                 $path->spurt(scalar localtime(time));
             }
 

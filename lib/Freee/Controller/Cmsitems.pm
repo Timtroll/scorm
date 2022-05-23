@@ -16,7 +16,7 @@ sub index {
             'route'         => 'index',
             'status'        => 'ok',
             'params'        => $self->req->params->to_hash,
-            'test'          => $test
+            'test'          => 'test'
         }
     );
 }

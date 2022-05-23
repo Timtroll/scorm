@@ -85,6 +85,9 @@ warn "+++++++++++";
     $r->post('/auth/login')              ->to('auth#login');
     $r->any('/auth/logout')              ->to('auth#logout');
 
+    # проверка работы бэкэнда
+    $r->post('/ping')                    ->to('auth#ping');
+
     $r->any('/mail/')                    ->to('mail#index');
     $r->any('/mail/send')                ->to('mail#snd');
 
