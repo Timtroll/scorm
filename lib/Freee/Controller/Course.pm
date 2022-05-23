@@ -6,7 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
 use common;
 use Data::Dumper;
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( decode_json );
 
 # получить список курсов
 # $self->index( $data );
@@ -79,10 +79,8 @@ sub edit {
                             { 'label'       => $$result{'label'} },
                             { 'description' => $$result{'description'} },
                             { 'keywords'    => $$result{'keywords'} },
-                            { 'url'         => $$result{'url'} },
-                            { 'seo'         => $$result{'seo'} },
                             { 'route'       => $$result{'route'} },
-                            { 'status'      => $$result{'publish'} }
+                            { 'status'      => $$result{'status'} }
                         ]
                     },
                     {
@@ -150,13 +148,15 @@ sub save {
     # проверка данных
     $data = $self->_check_fields();
 
-    if ( ! @! && $$data{'attachment'}) {
-        # проверка существования вложенных файлов
-        $attachment = from_json( $$data{'attachment'} );
-        foreach ( @$attachment ) {
-            unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
-                push @!, "file with id '$_' doesn't exist";
-                last;
+    unless ( @! ) {
+        if ( $$data{'attachment'} ) {
+            # проверка существования вложенных файлов
+            $attachment = decode_json( $$data{'attachment'} );
+            foreach ( @$attachment ) {
+                unless( $self->model('Utils')->_exists_in_table('media', 'id', $_ ) ) {
+                    push @!, "file with id '$_' doesn't exist";
+                    last;
+                }
             }
         }
     }
@@ -206,11 +206,21 @@ sub toggle {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        # включаем/выключаем курс в EAV
-        $result = $self->model('Course')->_toggle_course( { id => $$data{'id'}, 'publish' => $$data{'value'} } );
-        push @!, "can't update EAV" unless $result;
-    }
+        $$data{'table'} = 'EAV_items';
 
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
+        unless ( $self->model('Utils')->_exists_in_table( $$data{'table'}, 'id', $$data{'id'} ) ) {
+            push @!, "Course with '$$data{'id'}' doesn't exist";
+        }
+        unless ( @! ) {
+            $result = $self->model('Utils')->_toggle( $data );
+            push @!, "Could not toggle Course '$$data{'id'}'" unless $result;
+        }
+    }
     $resp->{'message'} = join("\n", @!) if @!;
     $resp->{'status'} = @! ? 'fail' : 'ok';
     $resp->{'id'} = $$data{'id'} unless @!;

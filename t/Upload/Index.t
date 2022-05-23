@@ -6,14 +6,17 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
+# use File::Slurp qw( read_file );
 use Mojo::JSON qw( decode_json );
 use Data::Compare;
 use Data::Dumper;
+use lib "$FindBin::Bin/../../lib";
+use common;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $url, $size, $description );
+my ( $t, $host, $picture_path, $test_data, $extension, $regular, $file_path, $desc_path, $cmd, $data, $result, $response, $token, $url, $size, $description );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
@@ -22,6 +25,17 @@ clear_db();
 
 # установка адреса
 $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
 
 # путь к директории с файлами
 $picture_path = './t/Upload/files/';
@@ -39,7 +53,7 @@ $test_data = {
         'result' => {
                         'id'        => 1,
                         'mime'      => 'image/svg+xml',
-                        'publish'    => 'ok'
+                        'status'    => 'ok'
                     },
         'comment' => 'all right:' 
     },
@@ -51,7 +65,7 @@ $test_data = {
         'result' => {
                         'id'        => 2,
                         'mime'      => 'image/svg+xml',
-                        'publish'    => 'ok'
+                        'status'    => 'ok'
                     },
         'comment' => 'empty description:' 
     },
@@ -62,8 +76,8 @@ $test_data = {
                     'description' => 'description'
                    },
         'result' => {
-                    'message'   => "_check_fields: didn't has required data in 'upload'",
-                    'publish'    => 'fail'
+                    'message'   => "/upload _check_fields: didn\'t has required file data in \'upload\'",
+                    'status'    => 'fail'
         },
         'comment' => 'empty file:' 
     },
@@ -73,8 +87,8 @@ $test_data = {
                         upload => { file => $picture_path . 'large_file.jpg' }
                     },
         'result' => {
-                        'message'   => '_check_fields: file is too large',
-                        'publish'    => 'fail'
+                        'message'   => '/upload _check_fields: file is too large',
+                        'status'    => 'fail'
         },
         'comment' => 'file is too large:' 
     },
@@ -84,8 +98,8 @@ $test_data = {
                         upload => { file => $picture_path . 'no_extension' }
                     },
         'result' => {
-                        'message'   => "_check_fields: can't read extension",
-                        'publish'    => 'fail'
+                        'message'   => "/upload _check_fields: can\'t read extension",
+                        'status'    => 'fail'
         },
         'comment' => 'no extension:' 
     },
@@ -95,8 +109,8 @@ $test_data = {
                         upload => { file => $picture_path . 'wrong_extension.wrong_extension' }
                     },
         'result' => {
-                        'message'   => '_check_fields: extension wrong_extension is not valid',
-                        'publish'    => 'fail'
+                        'message'   => '/upload _check_fields: extension wrong_extension is not valid',
+                        'status'    => 'fail'
         },
         'comment' => 'wrong extension:' 
     }
@@ -109,7 +123,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка подключения
-    $t->post_ok( $host.'/upload/' => form => $data );
+    $t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -124,27 +138,28 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     ok( Compare( $result, $response ), "Response is correct" );
 
     # дополнительные проверки работы положительных запросов
-    if ( $$result{'publish'} eq 'ok' ) {
+    if ( $$result{'status'} eq 'ok' ) {
 
         # составление списка возможных расширений
         $extension = '(';
-        foreach ( keys %{$t->app->{'settings'}->{'valid_extensions'}} ) {
+        foreach ( keys %{$settings->{'valid_extensions'}} ) {
             $extension = $extension . $_ . '|';
         }
         $extension =~ s/\|$/)/;
 
         # регулярное выражение для проверки url
-        $regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . ').(' . $extension . ')$';
+        $regular = '^' . $settings->{'site_url'} . $settings->{'upload_url_path'} . '([\w]{48}' . ').(' . $extension . ')$';
         ok( $url =~ /$regular/, "Url is correct" );
 
         # проверка размера загруженного файла
-        $file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $2;
+        $file_path = $settings->{'upload_local_path'} . $1 . '.' . $2;
         ok( -s $file_path == $size, "Download was successful");
 
         # проверка содержимого файла описания
-        $desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $t->app->{'settings'}->{'desc_extension'};
-        $description = read_file( $desc_path );
+        $desc_path = $settings->{'upload_local_path'} . $1 . '.' . $settings->{'desc_extension'};
+        $description = read_file( $desc_path, { binmode => ':utf8' } );
         $description = decode_json $description;
+
         ok( 
             $$description{'description'} eq $$data{'description'} &&
             $$description{'mime'} eq $$result{'mime'} &&

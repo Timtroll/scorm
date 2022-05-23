@@ -6,16 +6,18 @@ use warnings;
 use utf8;
 
 use base 'Mojolicious::Plugin';
-use Mojo::JSON qw(decode_json);
 
 use DBD::Pg;
 use DBI;
 use HTML::Strip;
-use File::Slurp::Unicode 'read_file';
 
 use Data::Dumper;
 use Freee::Model::Utils;
 use common;
+use DDP;
+
+# binmode STDOUT, ":utf8";
+# binmode STDIN, ":utf8";
 
 sub register {
     my ($self, $app) = @_;
@@ -57,12 +59,13 @@ sub register {
         my $url_for = $self->url_for;
         my %data = ();
 
-        foreach my $field ( keys %{$$vfields{$url_for}} ) {
+        foreach my $field ( sort keys %{$$vfields{$url_for}} ) {
 
             # пропускаем роуты, которых нет в хэше валидации
             next unless keys %{ $$vfields{$url_for} };
 
             my $param = $self->param($field);
+
             my ( $required, $regexp, $max_size ) = @{ $$vfields{$url_for}{$field} };
 
             # проверка длины
@@ -74,9 +77,13 @@ sub register {
             # поля которые не могут быть undef
             my %exclude_fields = (
                 'parent' => 1,
-                'publish' => 1,
-                'timezone' => 1,
+                'timezone' => 1
             );
+
+            # # Меняем значение поля status на undef -> 0
+            # if ( $field eq 'status' ) {
+            #     $param = 0 unless $param;
+            # }
 
             # проверка обязательных полей и исключения
             if ( $required eq 'required' ) {
@@ -90,6 +97,10 @@ sub register {
                     }
                 }
             }
+            elsif ( ! $required && ! $param  ) {
+                $data{$field} = '';
+                next;
+            }
             # проверка для загружаемых файлов
             elsif ( ( $required eq 'file_required' ) && $param ) {
                 # проверка наличия содержимого файла
@@ -102,7 +113,8 @@ sub register {
                 # проверка размера файла
                 $data{'size'} = length( $data{'content'} );
 
-                if ( $data{'size'} > $max_size ) {
+                # if ( $data{'size'} > $max_size ) {
+                if ( $data{'size'} > $settings->{'upload_max_size'} ) {
                     push @!, "$url_for _check_fields: file is too large";
                     last;
                 }
@@ -130,9 +142,6 @@ sub register {
                 push @!, "$url_for _check_fields: didn't has required file data in '$field'";
                 last;
             }
-            elsif ( ! exists $exclude_fields{$field} ) {
-                next;
-            }
 
             # проверка для роута toggle по списку значений
             if ( ( $url_for =~ /toggle/ && $field eq 'fieldname' ) && ( ref($regexp) eq 'ARRAY' ) ) {
@@ -150,7 +159,7 @@ sub register {
             }
             # проверка по регэкспу
             else {
-                if ( !defined $param || !$regexp || !( $param =~ /$regexp/ ) ) {
+                if ( ! defined $param || ! $regexp || ! ( $param =~ /$regexp/ ) ) {
                     push @!, "$url_for _check_fields: empty field '$field', didn't match regular expression";
                     last;
                 }
@@ -178,7 +187,8 @@ sub register {
             # cохраняем переданные данные
             $data{$field} = $param;
         }
-
+use DDP;
+p %data;
         return \%data;
     });
 
@@ -188,6 +198,10 @@ sub register {
     $app->helper( '_param_fields' => sub {
 
         $vfields = {
+            '/auth/config'     => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+
             # валидация роутов
 ################
             '/manage_eav'      => {},
@@ -233,7 +247,7 @@ sub register {
             # роуты user/*
             '/user'  => {
                 "group_id"      => [ 'required', qr/^\d+$/os, 9 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ],
+                "status"        => [ '', qr/^[012]$/os, 1 ],
                 "page"          => [ '', qr/^\d+$/os, 9 ]
             },
             '/user/add'   => {},
@@ -247,9 +261,9 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ '', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
+                'phone'         => [ '', qr/^(8|7)(\s|\-)?(\(\d{3}\))(\s|\-)?[\d]{3}(\s|\-)?[\d]{2}(\s|\-)?[\d]{2}$/os, 18 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
-                'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
+                'country'       => [ 'required', qr/^\w+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
                 'birthday'      => [ '', qr/^\d+$/os, 12 ],
                 'status'        => [ 'required', qr/^[01]$/os, 1 ],
@@ -264,7 +278,7 @@ sub register {
                 'name'          => [ 'required', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 24 ],
                 'patronymic'    => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 32 ],
                 'place'         => [ '', qr/^[АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя\w\-]+$/os, 64 ],
-                'phone'         => [ '', qr/^(8|\+7)(\(\d{3}\))[\d\-]{7,10}$/os, 16 ],
+                'phone'         => [ '', qr/^(8|7)(\s|\-)?(\(\d{3}\))(\s|\-)?[\d]{3}(\s|\-)?[\d]{2}(\s|\-)?[\d]{2}$/os, 18 ],
                 'email'         => [ '', qr/^[\w\@\.]+$/os, 24 ],
                 'country'       => [ 'required', qr/^[\w{2}]+$/os, 2 ],
                 'timezone'      => [ 'required', qr/^\-?\d{1,2}(\.\d{1,2})?$/os, 5 ],
@@ -287,7 +301,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/get_folder'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -297,7 +311,7 @@ sub register {
                 "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/.*/os, 256 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/get_leafs'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -322,7 +336,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
@@ -336,7 +350,7 @@ sub register {
                 "selected"      => [ '', qr/.*/os, 10000 ],
                 "required"      => [ '', qr/^[01]$/os, 1 ],
                 "readonly"      => [ '', qr/^[01]$/os, 1 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/settings/edit'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -369,6 +383,7 @@ sub register {
             '/discipline/add'  => {},
             '/discipline/save' => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -399,15 +414,14 @@ sub register {
             '/course/add'   => {},
             '/course/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
                 "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/course/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -429,6 +443,7 @@ sub register {
             '/theme/add'   => {},
             '/theme/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -437,14 +452,14 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/theme/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/theme/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
@@ -459,6 +474,7 @@ sub register {
             '/lesson/add'   => {},
             '/lesson/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
@@ -467,22 +483,101 @@ sub register {
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
                 "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
                 "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/lesson/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
             },
             '/lesson/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['publish'], 6 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
 
 ################
-            # роуты расписания уроков и уроков
-            '/events'         => {},
+            # роуты событий 
+            '/events'         => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
+                },
+            '/events/add'     => {
+                "initial_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "student_ids"    => [ 'required', qr/^\[(\d+|\,)*\]$/os, 255 ],
+                "time_start"     => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "comment"        => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/events/save'     => {
+                "id"             => [ 'required', qr/^\d+$/os, 9 ],
+                "initial_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "student_ids"    => [ 'required', qr/^\[(\d+|\,)*\]$/os, 255 ],
+                "time_start"     => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "comment"        => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/events/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/events/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/events/edit'    => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
             '/events/lesson_users'  => {
-                "id"            => [ 'required', qr/^[\w-]+$/os, 36 ]
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
+            },
+            '/events/teacher_lessons'  => {
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+            },
+            '/events/student_lessons'  => {
+                "id"            => [ 'required', qr/^[\w-]+$/os, 9 ],
+            },
+
+################
+            # роуты событий 
+            '/schedule'         => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+                "limit"         => [ '', qr/^\d+$/os, 9 ],
+                "page"          => [ '', qr/^\d+$/os, 9 ]
+                },
+            '/schedule/add'     => {
+                "teacher_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "course_id"      => [ 'required', qr/^\d+$/os, 9 ],
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+                "duration"       => [ 'required', qr/^\d+$/os, 9 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/save'     => {
+                "id"             => [ 'required', qr/^\d+$/os, 9 ],
+                "teacher_id"     => [ 'required', qr/^\d+$/os, 9 ],
+                "course_id"      => [ 'required', qr/^\d+$/os, 9 ],
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+                "duration"       => [ 'required', qr/^\d+$/os, 9 ],
+                "status"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/schedule/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/schedule/edit'    => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/schedule/on_week'  => {
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
+            },
+            '/schedule/on_month'  => {
+                "time_start"     => [ 'required', qr/^[\d]{4}\-[\d]{2}\-[\d]{2}\ [\d]{2}\:[\d]{2}\:[\d]{2}/os, 24 ],
             },
 
 ################
@@ -496,15 +591,14 @@ sub register {
             '/task/add'   => {},
             '/task/save'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "parent"        => [ 'required', qr/^\d+$/os, 9 ],
                 "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
                 "label"         => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "description"   => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 256 ],
                 "content"       => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
                 "attachment"    => [ '', qr/^\[(\d+\,)*\d+\]$/os, 255 ],
                 "keywords"      => [ 'required', qr/^[\w\ \-\~\,]+$/os, 2048 ],
-                "url"           => [ 'required', qr/^https?\:\/\/.*?(\/[^\s]*)?$/os, 256 ],
-                "seo"           => [ 'required', qr/^[\w\ \-\~\!№\$\@\^\&\%\*\(\)\[\]\{\}=\;\:\|\\\|\/\?\>\<\,\.\/\"\']+$/os, 2048 ],
-                "status"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/task/delete'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ]
@@ -516,7 +610,6 @@ sub register {
             },
 
 ################
-
             # роуты groups/*
             '/groups'  => {
                 "page"          => [ '', qr/^[\w]+$/os, 256 ],
@@ -544,6 +637,7 @@ sub register {
                 "fieldname"     => [ 'required', ['status'], 6 ],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
             },
+
 ################
             # роуты routes/*
             '/routes'  => {
@@ -558,12 +652,63 @@ sub register {
                 "add"           => [ 'required', qr/^[01]$/os, 1 ],
                 "edit"          => [ 'required', qr/^[01]$/os, 1 ],
                 "delete"        => [ 'required', qr/^[01]$/os, 1 ],
-                "publish"        => [ 'required', qr/^[01]$/os, 1 ]
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
             },
             '/routes/toggle'  => {
                 "id"            => [ 'required', qr/^\d+$/os, 9 ],
-                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'publish'], 6],
+                "fieldname"     => [ 'required', ['list', 'add', 'edit', 'delete', 'status'], 6],
                 "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+
+################
+            # роуты stream/*
+            '/stream'  => {
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+            },
+            '/stream/add'  => {
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "age"           => [ 'required', qr/^\d+$/os, 2 ],
+                'date'          => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "master_id"     => [ '', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/edit'  => {
+                 "id"           => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/save'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "name"          => [ 'required', qr/^[\w]+$/os, 256 ],
+                "age"           => [ 'required', qr/^\d+$/os, 2 ],
+                'date'          => [ 'required', qr/^[\d]{2}\-[\d]{2}\-[\d]{4}$/os, 10 ],
+                "master_id"     => [ '', qr/^\d+$/os, 9 ],
+                "status"        => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/delete'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/toggle'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "fieldname"     => [ 'required', ['status'], 6 ],
+                "value"         => [ 'required', qr/^[01]$/os, 1 ]
+            },
+            '/stream/users'  => {
+                "id"            => [ 'required', qr/^\d+$/os, 9 ],
+                "order"         => [ '', ['ASC', 'DESC'], 4 ],
+            },
+            '/stream/user_add'    => {
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "user_id"      => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/user_delete'  => {
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "user_id"      => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/master_add'  => {
+                 "stream_id"    => [ 'required', qr/^\d+$/os, 9 ],
+                 "master_id"    => [ 'required', qr/^\d+$/os, 9 ]
+            },
+            '/stream/get_masters'  => {
+                 "order"         => [ '', ['ASC', 'DESC'], 4 ]
             },
 ################
             # роуты forum/*
@@ -577,14 +722,14 @@ sub register {
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_theme' => {
                 "group_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
                 "url"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_theme'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
@@ -597,18 +742,18 @@ sub register {
             '/forum/add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_add_group'  => {
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "name"          => [ '', qr/^.*$/os, 256 ],
                 "title"         => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/edit_group'  => {
                 "id"            => [ '', qr/^\d+$/os, 9 ]
@@ -622,13 +767,13 @@ sub register {
             '/forum/save_add'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/save_edit'  => {
                 "theme_id"      => [ '', qr/^\d+$/os, 9 ],
                 "id"            => [ '', qr/^\d+$/os, 9 ],
                 "msg"           => [ '', qr/^.*$/os, 256 ],
-                "publish"        => [ '', qr/^[01]$/os, 1 ]
+                "status"        => [ '', qr/^[01]$/os, 1 ]
             },
             '/forum/delete'  => {
                 "parent_id"     => [ '', qr/^\d+$/os, 9 ],
@@ -652,28 +797,8 @@ sub register {
                 "value"         => [ '', qr/^[01]$/os, 1 ]
             }
         };
-
+ 
         return $vfields;
-    });
-
-    # страны по ISO 3166-1 (2 буквы)
-    $app->helper( '_countries' => sub {
-        my ($self) = @_;
-
-        my $countries = read_file( $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'countries'} );
-        $countries = decode_json $countries;
-
-        return $countries;
-    });
-
-    # cписок часовых поясов по странам
-    $app->helper( '_time_zones' => sub {
-        my ($self) = @_;
-
-        my $timezones = read_file(  $ENV{PWD} . '/' . $self->{'app'}->{'config'}->{'timezones'} );
-        $timezones = decode_json $timezones;
-
-        return $timezones;
     });
 }
 

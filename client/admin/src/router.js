@@ -28,16 +28,34 @@ const router = new Router({
         {
           path:          '/sign-up',
           name:          'SignUp',
-          component:     () => import(/* webpackChunkName: "login" */ './components/auth/SignUp'),
+          component:     () => import(/* webpackChunkName: "SignUp" */ './components/auth/SignUp'),
           showInSideBar: false,
           meta:          {
             authRequired: false
           }
         },
         {
-          path:          '/recover',
+          path:          '/recover-password',
           name:          'RecoverPassword',
-          component:     () => import(/* webpackChunkName: "login" */ './components/auth/RecoverPassword'),
+          component:     () => import(/* webpackChunkName: "RecoverPassword" */ './components/auth/RecoverPassword'),
+          showInSideBar: true,
+          meta:          {
+            authRequired: false
+          }
+        },
+        {
+          path:          '/confirm-code',
+          name:          'ConfirmCode',
+          component:     () => import(/* webpackChunkName: "ConfirmCode" */ './components/auth/ConfirmCode'),
+          showInSideBar: true,
+          meta:          {
+            authRequired: false
+          }
+        },
+        {
+          path:          '/new-password',
+          name:          'NewPassword',
+          component:     () => import(/* webpackChunkName: "NewPassword" */ './components/auth/NewPassword'),
           showInSideBar: true,
           meta:          {
             authRequired: false

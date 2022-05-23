@@ -12,17 +12,39 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
+use Install qw( reset_test_db );
+use Test qw( get_last_id_EAV );
 
 use Data::Dumper;
+
+# переинсталляция базы scorm_test
+reset_test_db();
 
 my $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
 $t->app->config->{test} = 1 unless $t->app->config->{test};
-clear_db();
 
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+# получение id последнего элемента
+my $answer = get_last_id_EAV( $t->app->pg_dbh );
+
+# инициализация EAV
+my $discipline = Freee::EAV->new( 'Discipline' );
 
 # Ввод файлов
 my $data = {
@@ -30,17 +52,52 @@ my $data = {
     upload => { file => './t/Discipline/all_right.svg' }
 };
 diag "Insert media:";
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     exit; 
 }
 diag "";
 
-# Добавление предметов
+# Добавление предмета
+$data = {
+};
+my $result = {
+    'id'        => $answer + 1,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
+
+# Добавление предмета
+$data = {
+};
+$result = {
+    'id'        => $answer + 2,
+    'status'    => 'ok'
+};
+
+$t->post_ok( $host.'/discipline/add' => {token => $token} => form => $data );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+$t->json_is( $result );
+diag"";
+
+# Сохранение предметов
 my $test_data = {
     1 => {
         'data' => {
+            'id'          => $answer + 1,
             'name'        => 'Предмет1',
             'label'       => 'Предмет 1',
             'description' => 'Краткое описание',
@@ -48,18 +105,19 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'publish'      => 1,
+            'parent'      => $discipline->root(),
+            'status'      => 1,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 1,
-            'publish'    => 'ok'
+            'id'        => $answer + 1,
+            'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
     2 => {
         'data' => {
+            'id'          => $answer + 2,
             'name'        => 'Предмет2',
             'label'       => 'Предмет 2',
             'description' => 'Краткое описание',
@@ -67,13 +125,13 @@ my $test_data = {
             'keywords'    => 'ключевые слова',
             'url'         => 'https://test.com',
             'seo'         => 'дополнительное поле для seo',
-            'parent'      => 0,
-            'publish'      => 0,
+            'parent'      => $discipline->root(),
+            'status'      => 0,
             'attachment'  => '[1]'
         },
         'result' => {
-            'id'        => 2,
-            'publish'    => 'ok'
+            'id'        => $answer + 2,
+            'status'    => 'ok'
         }
     }
 };
@@ -82,7 +140,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/discipline/add' => form => $data );
+    $t->post_ok( $host.'/discipline/save' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -92,51 +150,53 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag"";
 };
 
-my $result = {
+$result = {
     "data" => {
         "label" =>  "Предметы",
-        "add"   => 1,              # разрешает добавлять предметы
+        "current" =>  {
+            "route" =>  "/discipline",      
+            "add"   =>  "/discipline/add",    # разрешает добавлять предмет
+            "edit"  =>  "/discipline/edit",   # разрешает редактировать предмет
+            "delete"=>  "/discipline/delete"  # разрешает удалять предмет
+        },
         "child" =>  {
-            "add"    => 1,         # разрешает добавлять детей
-            "edit"   => 1,         # разрешает редактировать детей
-            "remove" => 1,         # разрешает удалять детей
-            "route"  => "/theme",  # роут для получения детей
+            "add"    =>  "/theme/add" ,         # разрешает добавлять детей
         },
         "list" => [
             {
                 "folder"      => 0,
-                "id"          => 1,
+                "id"          => $answer + 1,
                 "label"       => "Предмет 1",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline/",  # роут для работы с элементами
-                "parent"      => 0,
-                "publish"      => 1,
+                "route"       => "/discipline",  # роут для работы с элементами
+                "parent"      => 3,
+                "status"      => 1,
                 "attachment"  => '[1]'
             },
             {
                 "folder"      => 0,
-                "id"          => 2,
+                "id"          => $answer + 2,
                 "label"       => "Предмет 2",
                 "description" => "Краткое описание",
                 "content"     => "Полное описание",
                 "keywords"    => "ключевые слова",
                 "url"         => "https://test.com",
                 "seo"         => "дополнительное поле для seo",
-                "route"       => "/discipline/",
-                "parent"      => 0,
-                "publish"      => 0,
+                "route"       => "/discipline",
+                "parent"      => 3,
+                "status"      => 0,
                 "attachment"  => '[1]'
             }
         ]
     },
-    "publish" => "ok"
+    "status" => "ok"
 };
 
-$t->post_ok( $host.'/discipline/' );
+$t->post_ok( $host.'/discipline/' => {token => $token} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -144,32 +204,8 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->content_type_is('application/json;charset=UTF-8');
 $t->json_is( $result );
 diag"";
-
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
 done_testing();
 
-# очистка тестовой таблицы
-sub clear_db {
-    if ( $t->app->config->{test} ) {
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".media_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public".media RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_string" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_data_datetime" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('ALTER SEQUENCE "public".eav_items_id_seq RESTART');
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_items" RESTART IDENTITY CASCADE');
-
-        $t->app->pg_dbh->do('TRUNCATE TABLE "public"."EAV_links" RESTART IDENTITY CASCADE');
-    }
-    else {
-        warn("Turn on 'test' option in config")
-    }
-}
-
-
-
-
-
-
-
+# переинсталляция базы scorm_test
+reset_test_db();

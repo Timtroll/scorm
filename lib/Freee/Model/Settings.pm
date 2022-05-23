@@ -1,7 +1,7 @@
 package Freee::Model::Settings;
 
 use Mojo::Base 'Freee::Model::Base';
-use Mojo::JSON qw( to_json from_json decode_json);
+use Mojo::JSON qw( decode_json encode_json );
 use Encode qw( _utf8_off );
 
 use Data::Dumper;
@@ -194,10 +194,10 @@ sub _insert_setting {
 
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
-        $$data{'value'} = to_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        $$data{'value'} = encode_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
     }
     if (defined $$data{'selected'} ) {
-        $$data{'selected'} = to_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        $$data{'selected'} = encode_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
     $sql ='INSERT INTO "public"."settings" ('.
@@ -253,10 +253,10 @@ sub _save_setting {
 
     # сериализуем поля vaue и selected
     if (defined $$data{'value'} ) {
-        $$data{'value'} = to_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
+        $$data{'value'} = encode_json($$data{'value'}) if (ref($$data{'value'}) eq 'ARRAY');
     }
     if (defined $$data{'selected'} ) {
-        $$data{'selected'} = to_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
+        $$data{'selected'} = encode_json($$data{'selected'}) if (ref($$data{'selected'}) eq 'ARRAY');
     }
 
     $fields = join( ', ', map {
@@ -322,9 +322,9 @@ sub _get_setting {
                     { "label"       => $$row{'label'} ? $$row{'label'} : '' },
                     { "name"        => $$row{'name'} ? $$row{'name'} : '' },
                     { "placeholder" => $$row{'placeholder'} ? $$row{'placeholder'} : '' },
-                    { "selected"    => $$row{'selected'} ? from_json($$row{'selected'}) : [] },
+                    { "selected"    => $$row{'selected'} ? decode_json($$row{'selected'}) : [] },
                     { "type"        => $$row{'type'} ? $$row{'type'} : '' },
-                    { "value"       => $$row{'value'} =~ /^\[/ ? from_json($$row{'value'}) : $$row{'value'} }
+                    { "value"       => $$row{'value'} =~ /^\[/ ? decode_json($$row{'value'}) : $$row{'value'} }
                 ]
             },
             {

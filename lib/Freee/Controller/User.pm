@@ -4,10 +4,11 @@ use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Freee::EAV;
-use Data::Dumper;
-use Mojo::JSON qw( from_json to_json );
+
+use Mojo::JSON qw( decode_json encode_json );
 use Digest::SHA qw( sha256_hex );
 use DBI qw(:sql_types);
+
 use common;
 
 use Data::Dumper;
@@ -16,13 +17,13 @@ use Data::Dumper;
 # $self->index($data)
 # $data = { 
 #   id - Id группы
-#   publish - показывать группы только с этим статусом
+#   status - показывать группы только с этим статусом
 #   page - вывести список начиная с этой страницы ( по умолчанию 1 )
 # }
 sub index {
     my $self = shift;
 
-    my ( $data, $list, $resp, $result );
+    my ( $data, $list, $resp, $users );
 
     # проверка данных
     $data = $self->_check_fields();
@@ -33,7 +34,7 @@ sub index {
         $$data{'offset'} = ( $$data{'page'} - 1 ) * $$data{'limit'};
 
         # получаем список пользователей группы
-        $result = $self->model('User')->_get_list( $data );
+        $users = $self->model('User')->_get_list( $data );
 
         unless ( @! ) {
             $list = {
@@ -52,8 +53,8 @@ sub index {
                 }
             };
 
-            $list->{'body'} = $result;
-            $list->{'settings'}->{'page'}->{'total'} = scalar(@$result);
+            $list->{'body'} = $users;
+            $list->{'settings'}->{'page'}->{'total'} = scalar(@$users);
         }
     }
 
@@ -111,7 +112,7 @@ sub edit {
                         {"patronymic" => $$user_data{'patronymic'} },
                         {"surname"    => $$user_data{'surname'} },
                         {"birthday"   => $$user_data{'birthday'} },
-                        {"avatar"     => $$user_data{'import_source'} },
+                        # {"avatar"     => $$user_data{'attachment'} },
                         {"country"    =>  
                             {
                                 "selected" => $countries, 
@@ -119,7 +120,7 @@ sub edit {
                             }
                         },
                         {"place"      => $$user_data{'place'} },
-                        {"status"     => $$user_data{'publish'} ? 1 : 0 },
+                        {"status"     => $$user_data{'publish'} },
                         {"timezone"    =>  
                             {
                                 "selected" => $timezones, 
@@ -133,9 +134,9 @@ sub edit {
                     'label' => 'Контакты',
                     'fields' => [
                        {"email"          => $$user_data{'email'} },
-                       {"emailconfirmed" => 0 },
+                       {"emailconfirmed" => 1 },
                        {"phone"          => $$user_data{'phone'} },
-                       {"phoneconfirmed" => 0 }
+                       {"phoneconfirmed" => 1 }
                     ]
                 },
                 {
@@ -148,7 +149,7 @@ sub edit {
                 {
                     "label" => "Группы",
                     "fields" => [
-                       { "groups" => $$user_data{'groups'} ? from_json( $$user_data{'groups'} ) : [] }
+                       { "groups" => $$user_data{'groups'} }
                     ]
                 }
             ]
@@ -203,7 +204,7 @@ sub add {
 #     'emailconfirmed'    => 1,                   # email подтвержден
 #     'phone'             => 79312445646,         # номер телефона
 #     'phoneconfirmed'    => 1,                   # телефон подтвержден
-#     'publish'            => 1,                   # активный / не активный пользователь
+#     'status'            => 1,                   # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],           # список ID групп
 #     'password'          => 'khasdf',            # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -223,8 +224,14 @@ sub save {
         elsif ( !$$data{'password'} && $$data{'newpassword'} ) {
             push @!, 'Empty password';
         }
-        elsif ( $$data{'password'} && $$data{'password'} ne $$data{'newpassword'} ) {
-            push @!, 'Password and newpassword are not the same';
+        elsif ( $$data{'password'} && $$data{'password'} eq $$data{'newpassword'} ) {
+            push @!, 'Password and newpassword are the same';
+        }
+
+        unless ( @! ) {
+            if ( ! $$data{'email'} && ! $$data{'phone'} ) {
+                push @!, 'No email and no phone';
+            }
         }
 
         unless ( @! ) {
@@ -240,10 +247,14 @@ sub save {
             elsif ( $$data{'phone'} && $self->model('Utils')->_exists_in_table('users', 'phone', $$data{'phone'}, $$data{'id'} ) ) {
                 push @!, "phone '$$data{ phone }' already used"; 
             }
+            # проверяем, существует ли файл аватара
+            elsif ( $$data{'avatar'} && ! $self->model('Utils')->_exists_in_table('media', 'id', $$data{'avatar'} ) ) {
+                push @!, "avatar with id \'$$data{'avatar'}\' doesn't exist"; 
+            }
 
             unless ( @! ) {
                 # проверка существования групп пользователя
-                $groups = from_json( $$data{'groups'} );
+                $groups = decode_json( $$data{'groups'} );
                 foreach ( @$groups ) {
                     unless( $self->model('Utils')->_exists_in_table('groups', 'id', $_ ) ) {
                         push @!, "group with id '$_' doesn't exist";
@@ -272,21 +283,21 @@ sub save {
             'id'     => $$data{'id'},
             'groups' => $$data{'groups'},
             'data_user' => {
-                'publish'       => $$data{'status'} ? 'true' : 'false',
+                'status'        => $$data{'status'},
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'publish'       => $$data{'publish'} ? 'true' : 'false',
+                'status'        => $$data{'status'},
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
                 'patronymic'    => $$data{'patronymic'} // '',
                 'place'         => $$data{'place'}      // '',
                 'country'       => $$data{'country'}    // 'RU',
-                'import_source' => $$data{'avatar'}     // ''
+                'attachment'    => $$data{'avatar'}     // ''
             }
         };
 
@@ -326,8 +337,8 @@ sub registration {
     $data = $self->_check_fields();
 
     unless ( @! ) {
-        unless ( $$data{'phone'} || $$data{'email'} ) {
-            push @!, 'No email or no phone';
+        unless ( $$data{'email'} ) {
+            push @!, 'No email';
         }
         elsif ( !$$data{'password'} ) {
             push @!, 'No password';
@@ -363,17 +374,18 @@ sub registration {
             $$data{'birthday'} = $self->model('Utils')->_sec2date( $$data{'birthday'} );
         }
 
+# ?????????? почему [5] 
         $data = {
-            'groups' => to_json( [ 5 ] ),
+            'groups' => encode_json( [ 5 ] ),
             'data_user' => {
-                'publish'       => 'false',
+                'status'       => 0,
                 'login'         => $$data{'login'},
                 'email'         => $$data{'email'},
                 'phone'         => $$data{'phone'},
                 'password'      => $$data{'password'}
             },
             'data_eav' => {
-                'publish'       => 'false',
+                'status'       => 0,
                 'birthday'      => $$data{'birthday'},
                 'surname'       => $$data{'surname'}    // '',
                 'name'          => $$data{'name'}       // '',
@@ -420,14 +432,18 @@ sub toggle {
 
     # проверка существования элемента для изменения
     unless ( @! ) {
+        $$data{'table'} = 'users';
+
+        # смена status на publish
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
+
+        $$data{'value'} = $$data{'value'} ? "'t'" : "'f'";
+
         unless ( $self->model('Utils')->_exists_in_table( 'users', 'id', $$data{'id'} ) ) {
             push @!, "user with '$$data{'id'}' doesn't exist";
         }
         unless ( @! ) {
-            $$data{'table'}     = 'users';
-            $$data{'fieldname'} = 'publish';
-            $$data{'value'}     = $$data{'publish'} ? 'true' : 'false';
-            $toggle = $self->model('User')->_toggle_user( $data );
+            $toggle = $self->model('Utils')->_toggle( $data );
             push @!, "Could not toggle User '$$data{'id'}'" unless $toggle;
         }
     }

@@ -1,8 +1,6 @@
 package Freee::Model::Utils;
 
 use Mojo::Base 'Freee::Model::Base';
-use Mojo::JSON;
-use Encode qw( _utf8_off );
 use Time::Local;
 
 use Data::Dumper;
@@ -30,7 +28,7 @@ sub _exists_in_table {
     return unless $row->{'count'};
 
     # проверяем поле name на дубликат
-    $sql = "SELECT id FROM \"public\".".$table." WHERE \"".$name."\"='".$val."'";
+    $sql = 'SELECT id FROM "public"."'.$table.'" WHERE "'.$name.'"=\''.$val."'";
     # исключаем из поиска id
     $sql .='AND "id" <> '.$exclude_id if $exclude_id;
 
@@ -40,6 +38,26 @@ sub _exists_in_table {
     $sth->finish();
 
     return $row->{'id'} ? 1 : 0;
+}
+
+sub _is_teacher {
+    my( $self, $id ) = @_;
+
+    my ( $sth, $sql, $result );
+
+    return unless $id;
+
+    # взять пользователей teacher, rector
+    $sql = q(SELECT u.user_id
+        FROM "user_groups" AS u  
+        INNER JOIN "groups" AS g ON u."group_id" = g."id"
+        WHERE g."name" = 'teacher' or g."name" = 'rector'
+    );
+    $sth = $self->{app}->pg_dbh->prepare( $sql );
+    $sth->execute();
+    $result = $sth->fetchall_hashref( 'user_id' );
+    $sth->finish();
+    return exists( $$result{$id} ) ? 1 : 0;
 }
 
 # включение/отключение (1/0) определенного поля в указанной таблице по id

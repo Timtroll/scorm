@@ -2,13 +2,6 @@
   <!--login / recover form-->
 
   <div class="uk-container ">
-    <!--        <div class="uk-margin uk-hidden@m uk-text-center pos-login-logo">-->
-    <!--          <img src="/img/logo__bw.svg"-->
-    <!--               class=""-->
-    <!--               width="60"-->
-    <!--               :alt="$t('app.title')"-->
-    <!--               uk-svg>-->
-    <!--        </div>-->
 
     <!--recover-->
     <form class="pos-login">
@@ -56,7 +49,8 @@
     </form>
 
     <!--confirm code-->
-    <form class="pos-login">
+    <form class="pos-login"
+          v-if="showConfirmCode">
 
       <div class="uk-margin-small uk-text-center uk-text-large"
            v-text="$t('confirm.title')"></div>
@@ -74,7 +68,7 @@
                  v-model="confirmCode"
                  v-focus
                  @keyup="keyMove">
-        </div> 
+        </div>
       </div>
 
       <!--submit-->
@@ -125,10 +119,11 @@ export default {
 
   data () {
     return {
-      direction:   false,
-      motion:      false,
-      confirmCode: null,
-      user:        {
+      direction:       false,
+      motion:          false,
+      confirmCode:     null,
+      showConfirmCode: false,
+      user:            {
         email: ''
       },
 
@@ -157,11 +152,9 @@ export default {
     // авторизация
     recover () {
       if (this.validateUser) {
-        let login    = this.user.login
-        let password = this.user.password
-        this.$store.dispatch('login', {login, password})
+        this.$store.dispatch('recover', this.user.email)
             .then(() => this.$router.replace({
-              name: 'Main'
+              name: 'ConfirmCode'
             }))
             .catch((err) => {})
       }

@@ -8,11 +8,13 @@ use FindBin;
 use Mojo::JSON qw( decode_json );
 use Data::Compare;
 use Data::Dumper;
+use lib "$FindBin::Bin/../../lib";
+use common;
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
 }
-my ( $t, $host, $picture_path, $size, $data, $test_data, $result, $response, $url, $regular, $desc_path, $file_path, $cmd );
+my ( $t, $host, $picture_path, $size, $data, $test_data, $result, $response, $token, $url, $regular, $desc_path, $file_path, $cmd );
 $t = Test::Mojo->new('Freee');
 
 # Включаем режим работы с тестовой базой и чистим таблицу
@@ -21,6 +23,17 @@ clear_db();
 
 # Устанавливаем адрес
 $host = $t->app->config->{'host'};
+
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+$response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+$token = $response->{'data'}->{'token'};
 
 # Путь к директории с файлами
 $picture_path = './t/Upload/files/';
@@ -36,7 +49,7 @@ $data = {
 };
 
 # проверка работы запросов
-$t->post_ok( $host.'/upload/' => form => $data );
+$t->post_ok( $host.'/upload/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -48,13 +61,13 @@ $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'}
 
 # проверка url, получение имени файла и расширения
 $url = $$response{'url'};
-$regular = '^' . $t->app->{'settings'}->{'site_url'} . $t->app->{'settings'}->{'upload_url_path'} . '([\w]{48}' . ').(' . '[\w]+' . ')$';
+$regular = '^' . $settings->{'site_url'} . $settings->{'upload_url_path'} . '([\w]{48}' . ').(' . '[\w]+' . ')$';
 ok( $url =~ /$regular/, "Url is correct" );
 
 # путь до загруженого файла
-$file_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $2;
+$file_path = $settings->{'upload_local_path'} . $1 . '.' . $2;
 # путь до описания загруженного файла
-$desc_path = $t->app->{'settings'}->{'upload_local_path'} . $1 . '.' . $t->app->{'settings'}->{'desc_extension'};
+$desc_path = $settings->{'upload_local_path'} . $1 . '.' . $settings->{'desc_extension'};
 
 diag "";
 
@@ -75,7 +88,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment'         => 'Search for id' 
     },
@@ -94,7 +107,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment'         => 'Search for filename:' 
     },
@@ -113,7 +126,7 @@ $test_data = {
                   "url"         =>  $url
                 }
             ],
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => "Search for description:" 
     },
@@ -124,7 +137,7 @@ $test_data = {
         },
         'result' => {
             'message'   => "can not get data from database",
-            'publish'    => 'warn'
+            'status'    => 'fail'
         },
         'comment' => "Id doesn't exist:" 
     },
@@ -132,8 +145,8 @@ $test_data = {
         'data' => {
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'search'",
-            'publish'    => 'warn'
+            'message'   => "/upload/search _check_fields: didn\'t has required data in \'search\' = \'\'",
+            'status'    => 'fail'
         },
         'comment' => 'No search:' 
     },
@@ -146,12 +159,13 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     $result = $$test_data{$test}{'result'};
 
     # проверка подключения
-    $t->post_ok($host.'/upload/search/' => form => $data )
+    $t->post_ok($host.'/upload/search/' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8');
 
     # проверка данных ответа
     $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+
     ok( Compare( $result, $response ), "Response is correct" );
 
     diag "";

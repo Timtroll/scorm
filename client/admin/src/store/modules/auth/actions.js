@@ -36,12 +36,11 @@ const actions = {
   },
 
   // recover password
-  async recover ({commit, dispatch}, email) {
-
+  async recover ({commit}, email) {
     try {
-      const response = await Api.recover({email: email})
+      const response = await Api.recover(email)
       if (response.data.status === 'ok') {
-        await dispatch('getGroups')
+        notify(response.message, 'success')
       }
       else {
         notify(response.data.message, 'danger')
@@ -53,7 +52,44 @@ const actions = {
       console.error(err)
       commit('auth_error')
     }
+  },
 
+  // recover password
+  async confirm ({commit}, code) {
+    try {
+      const response = await Api.confirm(code)
+      if (response.data.status === 'ok') {
+        notify(response.message, 'success')
+      }
+      else {
+        notify(response.data.message, 'danger')
+        console.warn(response.data.message)
+      }
+    }
+    catch (err) {
+      notify(err, 'danger')
+      console.error(err)
+      commit('auth_error')
+    }
+  },
+
+  // recover password
+  async newPassword ({commit}, password) {
+    try {
+      const response = await Api.newPassword(password)
+      if (response.data.status === 'ok') {
+        notify(response.message, 'success')
+      }
+      else {
+        notify(response.data.message, 'danger')
+        console.warn(response.data.message)
+      }
+    }
+    catch (err) {
+      notify(err, 'danger')
+      console.error(err)
+      commit('auth_error')
+    }
   },
 
   // signUpPhone

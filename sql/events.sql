@@ -6,11 +6,12 @@ CREATE SEQUENCE IF NOT EXISTS "public".events_id_seq
     CACHE 1;
 
 CREATE TABLE "public"."events" (
-    "id" int8 DEFAULT nextval('events_id_seq'::regclass) NOT NULL,
-    "eav_id" int4 DEFAULT 0 NOT NULL,
+    "id" int4 DEFAULT nextval('events_id_seq'::regclass) NOT NULL,
+    "initial_id" int4 DEFAULT 0 NOT NULL,
     "time_start" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
-    "time_end" timestamptz(6) DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "events_pkey" PRIMARY KEY ("id", "eav_id")
+    "comment" varchar(255) COLLATE "default" NOT NULL,
+    "publish" int2 DEFAULT 1 NOT NULL,
+    CONSTRAINT "events_pkey" PRIMARY KEY ("id")
 )
 WITH (OIDS=FALSE);
 ALTER TABLE "public"."events" OWNER TO "troll";

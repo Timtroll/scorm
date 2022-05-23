@@ -21,6 +21,7 @@ BEGIN {
 use Test::More;
 use Test::Mojo;
 use Freee::Mock::TypeFields;
+use Mojo::JSON qw( decode_json );
 
 use Data::Dumper;
 
@@ -33,6 +34,18 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # добавляем тестовый раздел настроек
 diag "Add new folder:";
 my $folder = {
@@ -40,15 +53,15 @@ my $folder = {
         'name'      => 'test',
         'label'     => 'first test',
         'parent'    => 0,
-        'publish'    => 1
+        'status'    => 1
     },
     'result' => {
         'id'        => '1',
-        'publish'    => 'ok'
+        'status'    => 'ok'
     },
     'comment' => 'New folder' 
 };
-$t->post_ok( $host.'/settings/add_folder' => form => $folder->{'data'} );
+$t->post_ok( $host.'/settings/add_folder' => {token => $token} => form => $folder->{'data'} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect \n");
     last;
@@ -71,11 +84,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 2,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All fields:' 
     },
@@ -90,11 +103,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 3,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No placeholder:' 
     },
@@ -109,11 +122,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 4,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No type:' 
     },
@@ -128,11 +141,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 5,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No mask:' 
     },
@@ -147,11 +160,11 @@ my $test_data = {
             'selected'    => '[]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 6,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No value:' 
     },
@@ -166,11 +179,11 @@ my $test_data = {
             'value'       => 'value',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 7,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No selected:' 
     },
@@ -186,11 +199,11 @@ my $test_data = {
             'selected'    => '[[1,2]]',
             'required'    => 0,
             'readonly'    => 0,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 8,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'Selected is array of arrrays:' 
     },
@@ -205,11 +218,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 1,
-            'publish'      => 1
+            'status'      => 1
         },
         'result' => {
             'id'        => 9,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No required:' 
     },
@@ -224,34 +237,33 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'required'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'id'        => 10,
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'No readonly:' 
     },
-    10 => {
-    'data' => {
-        'parent'      => 1,
-        'name'        => 'name10',
-        'label'       => 'label10',
-        'placeholder' => 'placeholder',
-        'type'        => get_type(),
-        'mask'        => 'mask',
-        'value'       => 'value',
-        'selected'    => '[]',
-        'readonly'    => 0
-    },
-    'result' => {
-        'id'        => 11,
-        'publish'    => 'ok',
-    },
-    'comment' => 'No publish:' 
-},
-
     # отрицательные тесты
+    10 => {
+        'data' => {
+            'parent'      => 1,
+            'name'        => 'name10',
+            'label'       => 'label10',
+            'placeholder' => 'placeholder',
+            'type'        => get_type(),
+            'mask'        => 'mask',
+            'value'       => 'value',
+            'selected'    => '[]',
+            'readonly'    => 0
+        },
+        'result' => {
+            'message'   => "/settings/add _check_fields: didn't has required data in 'status' = ''",
+            'status'    => 'fail',
+        },
+        'comment' => 'No status:' 
+    },
     11 => {
         'data' => {
             'name'        => 'name',
@@ -262,11 +274,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'parent'",
-            'publish'    => 'fail',
+            'message'   => "setting have wrong parent 0",
+            'status'    => 'fail',
         },
         'comment' => 'No parent:' 
     },
@@ -280,11 +292,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'name'",
-            'publish'    => 'fail',
+            'message'   => "/settings/add _check_fields: didn't has required data in 'name' = ''",
+            'status'    => 'fail',
         },
         'comment' => 'No name:' 
     },
@@ -298,11 +310,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'label'",
-            'publish'    => 'fail',
+            'message'   => "/settings/add _check_fields: didn't has required data in 'label' = ''",
+            'status'    => 'fail',
         },
         'comment' => 'No label:' 
     },
@@ -317,11 +329,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "Setting named 'name3' is exists",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'Same name:'
     },
@@ -331,16 +343,16 @@ my $test_data = {
             'name'        => 'name',
             'label'       => 'label',
             'placeholder' => 'placeholder',
-            'type'        => '???????????????',
+            'type'        => get_type(),
             'mask'        => 'mask',
             'value'       => 'value',
             'selected'    => '[]',
-            'readonly'    => 0,
-            'publish'      => 0
+            'readonly'    => '[]',
+            'status'      => 0
         },
         'result' => {
-            'message'   => "_check_fields: 'type' didn't match regular expression",
-            'publish'    => 'fail',
+            'message'   => "/settings/add _check_fields: 'readonly' has wrong size",
+            'status'    => 'fail',
         },
         'comment' => 'Wrong field type:'
     },
@@ -355,11 +367,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 2",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Parent isn't folder:"
     },
@@ -374,11 +386,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 0",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => 'Parent is root:'
     },
@@ -393,11 +405,11 @@ my $test_data = {
             'value'       => 'value',
             'selected'    => '[]',
             'readonly'    => 0,
-            'publish'      => 0
+            'status'      => 0
         },
         'result' => {
             'message'   => "setting have wrong parent 404",
-            'publish'    => 'fail',
+            'status'    => 'fail',
         },
         'comment' => "Parent doesn't exist:"
     }
@@ -408,7 +420,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
 
-    $t->post_ok( $host.'/settings/add' => form => $data );
+    $t->post_ok( $host.'/settings/add' => {token => $token} => form => $data );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect \n");
         last;
@@ -419,6 +431,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
 };
 
 done_testing();
+clear_db();
 
 # очистка тестовой таблицы
 sub clear_db {

@@ -98,11 +98,11 @@ export default {
         },
 
         editPanel: {
-          get:            'users/leafEdit',
-          save:           'users/leafSave',
-          addProto:       'users/leafAdd',
+          get:      'users/leafEdit',
+          save:     'users/leafSave',
+          addProto: 'users/leafAdd',
           //addFolderProto: 'users/folderProto',
-          add:            'users/leafSave'
+          add:      'users/leafSave'
         }
       }
 

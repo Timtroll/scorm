@@ -33,6 +33,7 @@ sub index {
         # проверка существования роута указанной группы
         unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('groups', 'id', $$data{'parent'}) ) {
+
                 # список роутов указанной группы
                 $list = $self->model('Routes')->_routes_list( $$data{'parent'} );
                 if ( %$list ) {
@@ -127,6 +128,11 @@ sub save {
         # проверка существования обновляемой строки
         unless ( @! ) {
             if ( $self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'}) ) {
+
+                # смена поля status на publish
+                $$data{'publish'} = $$data{'status'};
+                delete $$data{'status'};
+
                 # обновление данных группы
                 $id = $self->model('Routes')->_update_route( $data );
                 push @!, "Could not update Route named '$$data{'name'}'" unless $id;
@@ -162,6 +168,7 @@ sub toggle {
 
     unless ( @! ) {
         $$data{'table'} = 'routes';
+        $$data{'fieldname'} = 'publish' if $$data{'fieldname'} eq 'status';
 
         # проверка существования элемента для изменения
         unless ($self->model('Utils')->_exists_in_table('routes', 'id', $$data{'id'})) {

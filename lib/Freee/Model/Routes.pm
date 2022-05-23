@@ -51,10 +51,10 @@ sub _get_route {
     }
     else {
         # взять запись о роуте из таблицы routes
-        $sql = 'SELECT * FROM "public"."routes" WHERE "id" = ?';
+        $sql = 'SELECT id, parent, label, name, list, add, edit, delete, publish AS status FROM "public"."routes" WHERE "id" = :id';
 
         $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( 1, $id );
+        $sth->bind_param( ':id', $id );
         $sth->execute();
         $row = $sth->fetchrow_hashref();
         $sth->finish();

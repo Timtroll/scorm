@@ -10,8 +10,48 @@ BEGIN
     PERFORM eav_createfield( 'User', 'patronymic', 'Отчество', 'string', NULL );
     PERFORM eav_createfield( 'User', 'name', 'Имя', 'string', NULL );
     PERFORM eav_createfield( 'User', 'surname', 'Фамилия', 'string', NULL );
+    PERFORM eav_createfield( 'User', 'methodist', 'Методист', 'string', NULL );
 
     PERFORM eav_createfield( 'Learning', 'is_lesson', 'Признак урока', 'boolean', NULL );
+
+    PERFORM eav_createfield( 'Discipline', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'seo', 'seo', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Discipline', 'attachment', 'Вложенные файлы', 'string', NULL );
+
+    PERFORM eav_createfield( 'Theme', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'seo', 'seo', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Theme', 'attachment', 'Вложенные файлы', 'string', NULL );
+
+    PERFORM eav_createfield( 'Task', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'attachment', 'Вложенные файлы', 'string', NULL );
+    PERFORM eav_createfield( 'Task', 'description', 'Описание', 'string', NULL );
+
+    PERFORM eav_createfield( 'Course', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Course', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Course', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Course', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Course', 'attachment', 'Вложенные файлы', 'string', NULL );
+    PERFORM eav_createfield( 'Course', 'description', 'Описание', 'string', NULL );
+
+    PERFORM eav_createfield( 'Lesson', 'name', 'Название', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'label', 'Описание', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'content', 'Содержание', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'keywords', 'Ключевые слова', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'seo', 'seo', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'url', 'url страницы', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'attachment', 'Вложенные файлы', 'string', NULL );
+    PERFORM eav_createfield( 'Lesson', 'description', 'Описание', 'string', NULL );
 
     PERFORM eav_createfield( 'SEO', 'keywords', 'Ключевые слова, фразы', 'string', NULL );
     PERFORM eav_createfield( 'SEO', 'description', 'Описание', 'string', NULL );
@@ -42,6 +82,56 @@ INSERT INTO "public"."EAV_items" (
     parent,
     has_childs
 ) VALUES (TRUE, 0, 'Learning', NOW(), 'learning_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Discipline', NOW(), 'discipline_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Theme', NOW(), 'theme_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Task', NOW(), 'task_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Course', NOW(), 'task_root', 0, 0 );
+
+INSERT INTO "public"."EAV_items" (
+    publish,
+    import_id,
+    type,
+    date_created,
+    title,
+    parent,
+    has_childs
+) VALUES (TRUE, 0, 'Lesson', NOW(), 'lesson_root', 0, 0 );
 
 -----------
 INSERT INTO "public"."EAV_items" (

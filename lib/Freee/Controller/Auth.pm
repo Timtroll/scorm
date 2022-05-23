@@ -102,22 +102,11 @@ sub check_token {
 
 warn '=check_token=';
 
-warn "route = ".$self->url_for."\n";
-warn $self->req->headers->header('token');
-use DDP;
-p $tokens;
     # если ли такой роут
     unless (exists $$vfields{$self->url_for}) {
-warn 'redirect_to 1';
         # return;
         $self->redirect_to('/error/');
     }
-warn '===========';
-
-# warn ( $tokens );
-# warn ( $self->req->headers->header('token') );
-# warn ( exists( $$tokens{ $self->req->headers->header('token') } ) );
-# warn ( $$tokens{ $self->req->headers->header('token') } );
 
     # проверка токена
     if (
@@ -151,10 +140,27 @@ warn "check permissions\n";
 warn "checked";
         return 1;
     }
-warn 'redirect_to 2';
-# return 1;
-    # return;
+
+warn "redirect to error";
     $self->redirect_to('/error/');
+
+    return 0;
+}
+
+sub config {
+    my $self = shift;
+
+    my ( $data, $profile );
+    $data = $self->_check_fields();
+
+    $self->redirect_to( '/error/' ) unless $$data{'id'};
+
+    $profile = $self->model('User')->_get_user( $data );
+
+    $self->render( 'json' => {
+        "profile"     => $profile,
+        %{$self->app->config->{"WebRTC"}}
+    } );
 }
 
 # ping /ping

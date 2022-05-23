@@ -25,34 +25,46 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод данных для вывода
 my $test_data = {
     1 => {
         'data' => {
             'name'      => 'name1',
             'label'     => 'label1',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '1',
-            'publish'    => 'ok'
+            'status'    => 'ok'
         }
     },
     2 => {
         'data' => {
             'name'      => 'name2',
             'label'     => 'label2',
-            'publish'    => 1
+            'status'    => 1
         },
         'result' => {
             'id'        => '2',
-            'publish'    => 'ok' 
+            'status'    => 'ok' 
         }
     }
 };
 diag "Create groups:";
 foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
-    $t->post_ok( $host.'/groups/add' => form => $$test_data{$test}{'data'} );
+    $t->post_ok( $host.'/groups/add' => {token => $token} => form => $$test_data{$test}{'data'} );
     unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
         diag("Can't connect");
         exit; 
@@ -83,18 +95,18 @@ my $result = {
             'keywords'  => 'label2'
         }
     ],
-    'publish' => 'ok'
+    'status' => 'ok'
 };
 
 diag "All groups:";
-$t->post_ok( $host.'/groups/' )
+$t->post_ok( $host.'/groups/' => {token => $token} )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8')
     ->json_is( $result );
 diag "";
 
 diag "Create routes:";
-my $answer = $t->post_ok( $host.'/routes/' => form => {'parent' => 1} )
+my $answer = $t->post_ok( $host.'/routes/' => {token => $token} => form => {'parent' => 1} )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
 

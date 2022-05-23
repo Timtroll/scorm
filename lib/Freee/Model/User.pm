@@ -4,7 +4,7 @@ use Mojo::Base 'Freee::Model::Base';
 
 use POSIX qw(strftime);
 use DBI qw(:sql_types);
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( decode_json );
 
 # DBI->trace(1);
 
@@ -39,7 +39,7 @@ my %masks_fields = (
 # $result = $self->model('User')->_get_list( $data );
 # $data = {
 #   group_id => <id>, - Id группы
-#   publish  => 1,    - показывать пользователей только с этим статусом
+#   status   => 1,    - показывать пользователей только с этим статусом ('' - показывает всех)
 #   limit    => 10,   - количество записей
 #   offset   => 0,    - смещение от начала списка
 #   mode     => 'full'- список с базовыми данными, если указать 'full' (опция необязательна по)
@@ -57,10 +57,10 @@ sub _get_list {
         $fields = ' id, login, publish AS status, email, phone, eav_id, timezone ';
 
         # взять объекты из таблицы users
-        unless ( defined $$data{'publish'} ) {
+        if ( !$$data{'status'} && $$data{'status'} eq '' ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id ORDER BY "id"';
         }
-        elsif ( $$data{'publish'} ) {
+        elsif ( $$data{'status'} && $$data{'status'} == 1 ) {
             $sql = 'SELECT grp.'. $fields . 'FROM "public"."user_groups" AS usr INNER JOIN "public"."users" AS grp ON grp."id" = usr."user_id" WHERE usr."group_id" = :group_id AND grp."publish" = true ORDER BY "id"';
         }
         else {
@@ -68,27 +68,27 @@ sub _get_list {
         }
         $sql .= ' LIMIT :limit' if $$data{'limit'};
         $sql .= ' OFFSET :offset' if $$data{'offset'};
+
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':group_id', $$data{'group_id'} );
         $sth->bind_param( ':limit', $$data{'limit'} ) if $$data{'limit'};
         $sth->bind_param( ':offset', $$data{'offset'} ) if $$data{'offset'};
+
         $sth->execute();
         $list = $sth->fetchall_arrayref({});
         $sth->finish();
 
         if ( ref($list) eq 'ARRAY' ) {
-            if ( $$data{'mode'} ) {
-                foreach ( @$list ) {
-                    $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
-                    $_->{'name'}          = $usr->name()          ? $usr->name() : '';
-                    $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
-                    $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
-                    $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
-                    $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
-                    $_->{'country'}       = $usr->country()       ? $usr->country() : '';
-                    $_->{'place'}         = $usr->place()         ? $usr->place() : '';
-                    $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
-                }
+            foreach ( @$list ) {
+                $usr = Freee::EAV->new( 'User', { 'id' => $_->{'eav_id'} } );
+                $_->{'name'}          = $usr->name()          ? $usr->name() : '';
+                $_->{'patronymic'}    = $usr->patronymic()    ? $usr->patronymic() : '';
+                $_->{'surname'}       = $usr->surname()       ? $usr->surname() : '';
+                $_->{'birthday'}      = $usr->birthday()      ? $usr->birthday() : '';
+                $_->{'import_source'} = $usr->import_source() ? $usr->import_source() : '';
+                $_->{'country'}       = $usr->country()       ? $usr->country() : '';
+                $_->{'place'}         = $usr->place()         ? $usr->place() : '';
+                $_->{'phone'}         = $_->{'phone'}         ? $_->{'phone'} : '';
             }
         }
     }
@@ -113,7 +113,7 @@ sub _get_list {
 #     'phone'         => '+7(999) 222-2222',              # берется из users
 #     'password'      => 'password',                      # берется из users
 #     'timezone'      => '10',                            # берется из users
-#     'publish'       => true,                            # берется из users
+#     'status'       => 1,                               # берется из users
 #     'groups'        => [1]                              # берется из users
 # }
 sub _get_user {
@@ -139,6 +139,7 @@ sub _get_user {
     }
 
     unless ( @! ) {
+        $result->{'groups'} = decode_json( $result->{'groups'} );
         # взять весь объект из EAV
         $eav_id = $result->{'eav_id'};
         $usr = Freee::EAV->new( 'User', { 'id' => $eav_id } );
@@ -173,7 +174,7 @@ sub _get_user {
 #     'id'            1,
 #     'login'         "admin",
 #     'phone'         undef,
-#     'publish'       1,
+#     'status'        1,
 #     'time_access'   "2020-09-11 02:33:27.102561+03",
 #     'time_create'   "2020-09-11 02:33:27.102561+03",
 #     'time_update'   "2020-09-11 02:33:27.102561+03",
@@ -190,6 +191,7 @@ sub _exists_in_users {
             INNER JOIN "user_groups" AS g ON g."user_id" = u."id" 
             WHERE u."login"  = :login AND u."password"  = :password
             GROUP BY u."id");
+
         $sth = $self->{app}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':login', $login );
         $sth->bind_param( ':password', $pass);
@@ -335,10 +337,10 @@ sub _empty_user {
 #     'birthday'          => '1972-01-06 00:00:00',# дата рождения
 #     'login'             => 'username@ya.ru',     # email пользователя
 #     'email'             => 'login',              # login пользователя
-#     'emailconfirmed'    => 1,                    # email подтвержден
+#     'emailconfirmed'    => 1/0,                  # email подтвержден
 #     'phone'             => 79312445646,          # номер телефона
-#     'phoneconfirmed'    => 1,                    # телефон подтвержден
-#     'publish'            => 1,                    # активный / не активный пользователь
+#     'phoneconfirmed'    => 1/0,                  # телефон подтвержден
+#     'status'            => 1/0,                  # активный / не активный пользователь
 #     'groups'            => [1, 2, 3],            # список ID групп
 #     'password'          => 'khasdf',             # хеш пароля
 #     'avatar'            => 'https://thispersondoesnotexist.com/image'
@@ -351,6 +353,12 @@ sub _save_user {
     unless ( $$data{'id'} ) {
         push @!, 'no data for save';
     }
+
+    # преобразование status в publish
+    $$data{'data_user'}{'publish'} = $$data{'data_user'}{'status'};
+    delete $$data{'data_user'}{'status'};
+    $$data{'data_eav'}{'publish'} = $$data{'data_eav'}{'status'};
+    delete $$data{'data_eav'}{'status'};
 
     # открываем транзакцию
     $self->{'app'}->pg_dbh->begin_work;
@@ -385,13 +393,15 @@ sub _save_user {
             join( ', ', map { 
                 my $val;
                 if ( /publish/ ) {
-                    $val = $$data{'data_user'}{$_};
+                    # $val = $$data{'data_user'}{$_};
+                    $val = $$data{'data_user'}{$_} ? "'t'" : "'f'";
                 }
                 else {
                     $val = $self->{'app'}->pg_dbh->quote( $$data{'data_user'}{$_} );
                 }
                 "\"$_\" = " . $val
             } keys %{ $$data{'data_user'} } ) . ' WHERE "id" = :id';
+
         $sth = $self->{'app'}->pg_dbh->prepare( $sql );
         $sth->bind_param( ':id', $$data{'id'} );
         $result = $sth->execute();
@@ -454,7 +464,7 @@ sub _save_user {
 
     unless ( @! ) {
         # добавление в user_groups
-        $groups = from_json( $$data{'groups'} );
+        $groups = decode_json( $$data{'groups'} );
         $sql = 'INSERT INTO "public"."user_groups" ( "user_id", "group_id" ) VALUES ( :user_id, :group_id ) RETURNING user_id';
 
         foreach my $group_id ( @$groups ) {
@@ -474,36 +484,6 @@ sub _save_user {
 
     # закрытие транзакции
     $self->{'app'}->pg_dbh->commit;
-
-    return $result;
-}
-
-# изменение поля на 1/0
-# my $true = $self->toggle( $data );
-# $data = {
-#     'id'    - id записи 
-#     'field' - имя поля в таблице
-#     'val'   - 1/0
-# }
-sub _toggle_user {
-    my ( $self, $data ) = @_;
-
-    my ( $sth, $usr, $result, $sql );
-
-    unless ( $$data{'id'} && defined $$data{'value'} ) {
-        push @!, 'no data for toggle';
-    }
-
-    unless ( @! ) {
-        # смена значений publish (EAV меняется триггером)
-        $sql = 'UPDATE "public"."users" SET "publish" = :publish WHERE "id" = :id';
-        $sth = $self->{app}->pg_dbh->prepare( $sql );
-        $sth->bind_param( ':publish', $$data{'value'} );
-        $sth->bind_param( ':id', $$data{'id'} );
-        $result = $sth->execute();
-        $sth->finish();
-        push @!, "user with '$$data{'id'}' doesn't exist" if $result eq '0E0';
-    }
 
     return $result;
 }

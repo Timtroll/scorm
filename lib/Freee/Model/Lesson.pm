@@ -116,26 +116,42 @@ sub _list_lesson {
         ]
     });
 
-    my @lessons = ();
-    map {
-        my $item = {
-            'id'          => $_->{'id'},
-            'folder'      => $_->{'has_childs'},
-            'label'       => $_->{'title'},
-            'description' => $_->{'description'},
-            'content'     => $_->{'content'},
-            'keywords'    => $_->{'keywords'},
-            'url'         => $_->{'url'},
-            'seo'         => $_->{'seo'},
-            'route'       => $_->{'route'},
-            'parent'      => $_->{'parent'},
-            'publish'      => $_->{'publish'},
-            'attachment'  => $_->{'attachment'} ? $_->{'attachment'} : []
-        };
-        push @lessons, $item;
-    } ( @$list );
+    if ( ref($list) eq 'ARRAY' ) {
+        foreach ( @$list ) {
+            # взять весь объект из EAV
+            $lesson = Freee::EAV->new( 'Lesson', { 'id' => $_->{'id'} } );
 
-    return \@lessons;
+            $result = $lesson->_getAll();
+            if ( $result ) {
+                $_->{'id'}          = $$result{'id'},
+                $_->{'label'}       = $$result{'label'},
+                $_->{'description'} = $$result{'description'},
+                $_->{'content'}     = $$result{'content'},
+                $_->{'keywords'}    = $$result{'keywords'},
+                $_->{'attachment'}  = $$result{'attachment'},
+                $_->{'status'}      = $$result{'publish'},
+                $_->{'seo'}         = $$result{'seo'},
+                $_->{'url'}         = $$result{'url'},
+                $_->{'folder'}      = $_->{'has_childs'},
+                $_->{'parent'}      = $$result{'parent'},
+                delete $_->{'title'},
+                delete $_->{'distance'},
+                delete $_->{'has_childs'},
+                delete $_->{'import_source'},
+                delete $_->{'publish'},
+                delete $_->{'import_id'},
+                delete $_->{'date_created'},
+                delete $_->{'date_updated'},
+                delete $_->{'type'}
+            } 
+            else {
+                push @!, 'can\'t get list';
+                return;
+            }
+        }
+    }
+
+    return $list;
 }
 
 #  получить данные для редактирования урока
@@ -240,35 +256,9 @@ sub _save_lesson {
 # ???
                 'title'        => $$data{'title'},
                 'parent'       => $$data{'parent'}, 
-                'publish'      => $$data{'publish'}
+                'publish'      => $$data{'status'}
             }
         });
-    }
-
-    return $result;
-}
-
-# изменить статус урока (вкл/выкл)
-# $result = $self->model('Lesson')->_toggle_lesson( $data );
-# $data = {
-#    'id'    => <id>, - id записи 
-#    'publish'=> 1     - новый статус 1/0
-# }
-sub _toggle_lesson {
-    my ( $self, $data ) = @_;
-
-    my ( $lesson, $result );
-
-    unless ( $$data{'id'} || $$data{'publish'} ) {
-        return;
-    }
-    else {
-        # обновление поля в EAV
-        $lesson = Freee::EAV->new( 'Lesson', { 'id' => $$data{'id'} } );
-
-        return unless $lesson;
-
-        $result = $lesson->_store( 'publish', $$data{'publish'} ? 'true' : 'false' );
     }
 
     return $result;

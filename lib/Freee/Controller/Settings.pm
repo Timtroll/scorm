@@ -4,7 +4,7 @@ use utf8;
 use Encode;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw( to_json );
+use Mojo::JSON qw( encode_json decode_json );
 use Encode;
 
 use Freee::Mock::Settings;
@@ -12,7 +12,7 @@ use Freee::Mock::Extensions;
 
 use Freee::Model::Settings;
 use Freee::Model::Utils;
-use File::Slurp::Unicode qw( write_file );
+# use File::Slurp qw( write_file read_file );
 
 use Data::Dumper;
 use common;
@@ -60,7 +60,7 @@ sub get_folder {
 # получить дерево без листьев
 sub get_tree {
     my $self = shift;
-warn '+++++++++';
+
     # передаем 1, чтобы получить дерево без листьев
     my $list = $self->model('Settings')->_get_tree( 1 );
 
@@ -282,9 +282,9 @@ sub load_default {
                     "label"         => $$children{'label'},
                     "mask"          => $$children{'mask'} // '',
                     "type"          => $$children{'type'} // '',
-                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? to_json( $$children{'value'} ) : $$children{'value'},
-                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? to_json( $$children{'selected'} ) : '[]',
-                    "required"      => $$children{'required'} // 0,
+                    "value"         => ref( $$children{'value'} ) eq 'ARRAY' ? encode_json( utf8::encode( $$children{'value'} ) ) : $$children{'value'},
+                    "selected"      => ref( $$children{'selected'} ) eq 'ARRAY' ? encode_json( utf8::encode( $$children{'selected'} ) ) : '[]',
+                    "required"      => $$children{'required'} // 0, 
                     "readonly"      => 0,
                     "folder"        => 0,
                     "publish"       => 1,
@@ -346,16 +346,10 @@ sub add {
             unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
             unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
             unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
-            unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
-            unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+            unless ( $$data{'required'} )            { $$data{'required'}    = 0 };
+            unless ( $$data{'readonly'} )            { $$data{'readonly'}    = 0 };
 
-            # смена поля status на publish
-            if ( defined $$data{'status'} ) {
-                $$data{'publish'} = $$data{'status'};
-            }
-            else {
-                $$data{'publish'} = 1;
-            };
+            $$data{'publish'} = $$data{'status'} ? 1 : 0;
             delete $$data{'status'};
 
             # проверяем поле name на дубликат
@@ -464,11 +458,10 @@ sub save {
         unless ( defined $$data{'mask'} )        { $$data{'mask'}        = '' };
         unless ( defined $$data{'value'} )       { $$data{'value'}       = '' };
         unless ( defined $$data{'selected'} )    { $$data{'selected'}    = '' };
-        unless ( defined $$data{'required'} )    { $$data{'required'}    = 0 };
-        unless ( defined $$data{'readonly'} )    { $$data{'readonly'}    = 0 };
+        unless ( $$data{'required'} )            { $$data{'required'}    = 0 };
+        unless ( $$data{'readonly'} )            { $$data{'readonly'}    = 0 };
 
-        # смена поля status на publish
-        $$data{'publish'} = defined $$data{'status'} ? $$data{'status'} : 1;
+        $$data{'publish'} = $$data{'status'} ? 1 : 0;
         delete $$data{'status'};
 
         # проверяем поле name на дубликат
@@ -602,7 +595,7 @@ sub export {
     # кодирование данных в json
     unless ( @! ) {
         # перевод настреок в json
-        $json = to_json( $result );
+        $json = encode_json( $result );
         push @!, "Can't encode into json" unless $json;
     }
 
@@ -622,7 +615,7 @@ sub export {
         # запись файла
         $result = write_file(
             $filepath . $filename,
-            {err_mode => 'silent'},
+            { binmode => ':utf8' },
             $json
         );
         push @!, "Can't store \'$filepath . $filename\'" unless $result;
@@ -678,7 +671,7 @@ sub import {
         # путь к файлу
         $filepath = $self->{'app'}->{'config'}->{'export_settings_path'} . '/' . $filename;
         # чтение файла
-        $json = read_file( $filepath, {err_mode => 'silent'} );
+        $json = read_file( $filepath, { binmode => ':utf8' } );
         push @!, "can't read '$filepath'" unless $json;
     }
 

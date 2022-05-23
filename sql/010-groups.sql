@@ -21,12 +21,12 @@ ALTER TABLE "public"."groups" ADD CONSTRAINT name UNIQUE (name);
 -- ----------------------------
 -- Records of groups
 -- ----------------------------
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Администратор', 'admin', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Ректоры', 'rectors', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Преподаватель', 'teacher', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Студенты', 'students', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Менеджеры', 'managers', '1' );
-INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Нераспределенные', 'unaproved', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Администратор', 'admin', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Ректоры', 'rectors', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Преподаватель', 'teacher', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Студенты', 'students', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Менеджеры', 'managers', '1' );
+-- INSERT INTO "public"."groups" ( "label", "name", "publish" ) VALUES ( 'Нераспределенные', 'unaproved', '1' );
 
 CREATE UNIQUE INDEX "groups_name_idx" ON "public"."groups" USING btree ("name");
 

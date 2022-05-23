@@ -6,6 +6,7 @@ use Test::Mojo;
 use FindBin;
 use Mojo::JSON qw(decode_json encode_json);
 use Data::Dumper;
+use Mojo::JSON qw( decode_json );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -20,21 +21,33 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод данных для вывода
 diag "Add group:";
 my $group = {
     'data' => {
         'name'      => 'test',
         'label'     => 'first test',
-        'publish'    => 1
+        'status'    => 1
     },
     'result' => {
         'id'        => '1',
-        'publish'    => 'ok'
+        'status'    => 'ok'
     },
     'comment' => 'New group' 
 };
-$t->post_ok( $host.'/groups/add' => form => $group->{'data'} );
+$t->post_ok( $host.'/groups/add' => {token => $token} => form => $group->{'data'} );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -52,7 +65,7 @@ diag "Add routes" ;
 $data = {
     'parent' =>  1
 };
-$t->post_ok( $host.'/groups/' => form => $data );
+$t->post_ok( $host.'/groups/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -65,7 +78,7 @@ diag "Check Routes" ;
 $data = {
     'parent' =>  1
 };
-my $answer = $t->post_ok( $host.'/routes/' => form => $data );
+my $answer = $t->post_ok( $host.'/routes/' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag "Can't connect";
     exit;
@@ -95,9 +108,9 @@ my $test_data = {
                 'add'       => 0,
                 'edit'      => 0,
                 'delete'    => 0,
-                'publish'    => 1
+                'status'    => 1
             },
-            'publish'    => 'ok'
+            'status'    => 'ok'
         },
         'comment' => 'All right:'
     },
@@ -109,14 +122,14 @@ my $test_data = {
         },
         'result' => {
             'message'   => "Could not get Route '404'",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     3 => {
         'result' => {
-            'message'   => "_check_fields: didn't has required data in 'id'",
-            'publish'    => 'fail'
+            'message'   => "/routes/edit _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No data:' 
     },
@@ -125,8 +138,8 @@ my $test_data = {
             'id'        => - 404
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/routes/edit _check_fields: empty field 'id', didn't match regular expression",
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
@@ -136,7 +149,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/routes/edit' => form => $data )
+    $t->post_ok($host.'/routes/edit' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

@@ -29,10 +29,10 @@ sub register {
         unless ($dbh) {
 warn "db connect\n";
             $dbh = DBI->connect(
-                $config->{'dbs'}->{'databases'}->{$database}->{'dsn'},
-                $config->{'dbs'}->{'databases'}->{$database}->{'username'},
-                $config->{'dbs'}->{'databases'}->{$database}->{'password'},
-                $config->{'dbs'}->{'databases'}->{$database}->{'options'}
+                $config->{'databases'}->{$database}->{'dsn'},
+                $config->{'databases'}->{$database}->{'username'},
+                $config->{'databases'}->{$database}->{'password'},
+                $config->{'databases'}->{$database}->{'options'}
             );
         }
         $self->{errstr} = sub {

@@ -8,6 +8,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
 use FindBin;
+use Mojo::JSON qw( decode_json );
 
 BEGIN {
     unshift @INC, "$FindBin::Bin/../../lib";
@@ -22,14 +23,26 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' =>  form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Импорт доступных групп
 diag "Add group:";
 my $data = {
     'name'      => 'test',
     'label'     => 'test',
-    'publish'    => 1
+    'status'    => 1
 };
-$t->post_ok( $host.'/groups/add' => form => $data );
+$t->post_ok( $host.'/groups/add' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -42,11 +55,11 @@ my $test_data = {
     1 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 1
         },
         'result' => {
-            'publish'    => 'ok',
+            'status'    => 'ok',
             'id'        => 1
         },
         'comment' => 'All right:' 
@@ -56,22 +69,22 @@ my $test_data = {
     2 => {
         'data' => {
             'id'        => 1,
-            'fieldname' => 'publish'
+            'fieldname' => 'status'
         },
         'result' => {
-            'message'   => "_check_fields: 'value' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/groups/toggle _check_fields: didn't has required data in 'value' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No value:'
     },
     3 => {
         'data' => {
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'    => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'id' didn't match regular expression",
-            'publish'    => 'fail'
+            'message'   => "/groups/toggle _check_fields: didn't has required data in 'id' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No id:' 
     },
@@ -81,32 +94,32 @@ my $test_data = {
             'value'     => 1,
         },
         'result' => {
-            'message'   => "_check_fields: 'fieldname' didn't match required in check array",
-            'publish'    => 'fail'
+            'message'   => "/groups/toggle _check_fields: didn't has required data in 'fieldname' = ''",
+            'status'    => 'fail'
         },
         'comment' => 'No fieldname:' 
     },
     5 => {
         'data' => {
             'id'        => 404,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 1
         },
         'result' => {
             'message'   => "Id '404' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => 'Wrong id:' 
     },
     6 => {
         'data' => {
             'id'        => 0,
-            'fieldname' => 'publish',
+            'fieldname' => 'status',
             'value'     => 1
         },
         'result' => {
             'message'   => "Id '0' doesn't exist",
-            'publish'    => 'fail'
+            'status'    => 'fail'
         },
         'comment' => '0 id:' 
     },
@@ -116,7 +129,7 @@ foreach my $test (sort {$a <=> $b} keys %{$test_data}) {
     diag ( $$test_data{$test}{'comment'} );
     my $data = $$test_data{$test}{'data'};
     my $result = $$test_data{$test}{'result'};
-    $t->post_ok($host.'/groups/toggle' => form => $data )
+    $t->post_ok($host.'/groups/toggle' => {token => $token} => form => $data )
         ->status_is(200)
         ->content_type_is('application/json;charset=UTF-8')
         ->json_is( $result );

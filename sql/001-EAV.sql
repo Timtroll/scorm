@@ -25,6 +25,11 @@ CREATE TYPE "public"."EAV_field_type" AS ENUM (
 CREATE TYPE "public"."EAV_object_type" AS ENUM (
     'User',
     'Learning',
+    'Discipline',
+    'Theme',
+    'Task',
+    'Course',
+    'Lesson',
     'SEO',
     'Default'
 );

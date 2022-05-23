@@ -33,6 +33,7 @@ sub startup {
     $host = $config->{'host'};
 
     $self->plugin('Freee::Helpers::Utils');
+    $self->plugin('Freee::Helpers::Validate');
     $self->plugin('Freee::Helpers::PgGraph');
     $self->plugin('Freee::Helpers::Beanstalk');
     $self->plugin('Freee::Helpers::PgForum');
@@ -65,20 +66,21 @@ sub startup {
 warn "+++++++++++";
     # Router
     $r = $self->routes;
-    $r->any('/api/doc')                 ->to('index#doc');
 
-    $r->any('/api/test')                ->to('websocket#test');
-    $r->post('/api/deploy')             ->to('deploy#index');           # deploy после push
-    $r->websocket('/api/channel')       ->to('websocket#index');
+    $r->any('/api/doc')                   ->to('index#doc');
+
+    $r->any('/api/test')                  ->to('websocket#test');
+    $r->post('/api/deploy')               ->to('deploy#index');           # deploy после push
+    $r->websocket('/api/channel')         ->to('websocket#index');
 
     # webrtc роуты
-    $r->get('/wschannel/index')         ->to('wschannel#index');
-    $r->websocket('/wschannel/:type')   ->to('wschannel#type');
+    $r->get('/wschannel/index')           ->to('wschannel#index');
+    $r->websocket('/wschannel/:type')     ->to('wschannel#type');
 
-    $r->post('/user/registration')      ->to('user#registration');         # регистрация пользователя
+    $r->post('/user/registration')        ->to('user#registration');         # регистрация пользователя
 
 # ??? требуется переписать так,чтобы можно было использовать безопасно
-    $r->get('/settings/load_default')   ->to('settings#load_default');  # загрузка дефолтных настроек
+    $r->get('/settings/load_default')     ->to('settings#load_default');  # загрузка дефолтных настроек
 
     # Вход-выход в/из системы
 # ????? нафиг
@@ -93,9 +95,8 @@ warn "+++++++++++";
 
     $auth = $r->under()->to('auth#check_token');
 
-    # работа с EAV объектами (служебное)
-    $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
-    $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
+    $r->any('/mail/')                     ->to('mail#index');
+    $r->any('/mail/send')                 ->to('mail#snd');
 
     # отправка сообщения
     $r->get('/mail/')                     ->to('mail#index');          # вызов страницы
@@ -103,8 +104,18 @@ warn "+++++++++++";
 
     # смена пароля
     $r->post('/reset/')                   ->to('reset#index');         # отправка сообщения о смене
-    $r->get('/reset/confirmation')       ->to('reset#confirmation');  # подтверждение смены пароля
+    $r->get('/reset/confirmation')        ->to('reset#confirmation');  # подтверждение смены пароля
     $r->post('/reset/reset')              ->to('reset#reset');         # смена пароля
+
+    $r->any('/error/')                    ->to('index#error');
+
+    $auth = $r->under()->to('auth#check_token');
+
+    $auth->any('/auth/config')               ->to('auth#config');
+
+    # работа с EAV объектами (служебное)
+    $auth->get('/manage_eav/')            ->to('manage#index');         # граф EAV
+    $auth->get('/manage_eav/root')        ->to('manage#root');          # json графа EAV
 
     # загрузка файлов
     $auth->post('/upload/')               ->to('upload#index');         # сохранение загружаемого файла
@@ -170,7 +181,14 @@ warn "+++++++++++";
 
     # уроки
     $auth->post('/events/')             ->to('events#index');           # Расписание уроков
+    $auth->post('/events/add')          ->to('events#add');             # Добавить событие
+    $auth->post('/events/save')         ->to('events#save');             # Сохранить событие
+    $auth->post('/events/delete')       ->to('events#delete');          # Удалить событие
+    $auth->post('/events/toggle')       ->to('events#toggle');          # Изменить статус события
+    $auth->post('/events/edit')         ->to('events#edit');            # Редактировать событие
     $auth->post('/events/lesson_users') ->to('events#lesson_users');    # Список участников урока (учитель - обязателен)
+    $auth->post('/events/teacher_lessons')->to('events#teacher_lessons'); # Список уроков по учителю
+    $auth->post('/events/student_lessons')->to('events#student_lessons'); # Список уроков по ученику
 
     # обучение
     $auth->post('/lesson/video')        ->to('lesson#video');
@@ -244,7 +262,30 @@ warn "+++++++++++";
     $auth->post('/routes/')             ->to('routes#index');       # список роутов конкретной группы
     $auth->post('/routes/edit')         ->to('routes#edit');        # данные указанного роута
     $auth->post('/routes/save')         ->to('routes#save');        # обновление данных по роуту
-    $auth->post('/routes/toggle')       ->to('routes#toggle');      # Изменить статус поля роута (вкл/выкл)
+    $auth->post('/routes/toggle')       ->to('routes#toggle');      # изменить статус поля роута (вкл/выкл)
+
+    # управление потоками пользователей
+    $auth->post('/stream/')             ->to('stream#index');       # список потоков
+    $auth->post('/stream/edit')         ->to('stream#edit');        # получить данный для редактирования потока
+    $auth->post('/stream/save')         ->to('stream#save');        # сохранить поток
+    $auth->post('/stream/add')          ->to('stream#add');         # добавить поток
+    $auth->post('/stream/toggle')       ->to('stream#toggle');      # изменить статус потока (вкл/выкл)
+    $auth->post('/stream/delete')       ->to('stream#delete');      # удалить поток
+    $auth->post('/stream/users')        ->to('stream#users');       # список студентов потока
+    $auth->post('/stream/user_add')     ->to('stream#user_add');    # добавить пользователя в поток
+    $auth->post('/stream/user_delete')  ->to('stream#user_delete'); # удалить пользователя из потока
+    $auth->post('/stream/master_add')   ->to('stream#master_add');  # добавить руководителя в поток
+    $auth->post('/stream/get_masters')  ->to('stream#get_masters');# удалить руководителя из потока
+
+    # управление расписанием занятий
+    $auth->post('/schedule/')             ->to('schedule#index');       # полный список расписаний
+    $auth->post('/schedule/edit')         ->to('schedule#edit');        # получить данный для редактирования расписания
+    $auth->post('/schedule/save')         ->to('schedule#save');        # сохранить расписание
+    $auth->post('/schedule/add')          ->to('schedule#add');         # добавить расписание
+    $auth->post('/schedule/toggle')       ->to('schedule#toggle');      # изменить статус расписания (вкл/выкл)
+    $auth->post('/schedule/delete')       ->to('schedule#delete');      # удалить расписание
+    $auth->post('/schedule/on_week')      ->to('schedule#on_week');     # расписание на неделю
+    $auth->post('/schedule/on_month')     ->to('schedule#on_month');    # расписание на месяц
 
 # возможно еще что-то ?????????
 

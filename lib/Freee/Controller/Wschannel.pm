@@ -5,9 +5,9 @@ binmode(STDIN,':utf8');
 binmode(STDOUT,':utf8');
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::JSON qw( from_json );
+use Mojo::JSON qw( decode_json );
 use Mojo::File;
-use File::Slurp::Unicode qw( slurp );
+# use File::Slurp qw( read_file );
 
 # use Mojo::EventEmitter;
 # use Mojo::RabbitMQ::Client;
@@ -61,10 +61,11 @@ sub type {
             if (-f "/tmp/sdp.answerer") {
                 $self->app->log->debug("Sending sdp: to offerer from answerer");
                 # my $txt = Mojo::File::slurp("/tmp/sdp.answerer");
-                my $path = Mojo::File->new("/tmp/sdp.answerer");
-                my $txt = $path->slurp;
+                # my $path = Mojo::File->new("/tmp/sdp.answerer");
+                # my $txt = $path->slurp;
+                my $txt = read_file( "/tmp/sdp.answerer", { binmode => ':utf8' } );
 
-                my $ref = from_json($txt);
+                my $ref = decode_json($txt);
                 $self->send({json => $ref});
                 unlink("/tmp/sdp.answerer");
                 # Mojo::File::spurt(scalar localtime(time), "/tmp/sdp.offerer.sent");
@@ -75,10 +76,11 @@ sub type {
             foreach my $f (glob("/tmp/candidate.answerer.*")) {
                 $self->app->log->debug("Sending $f: to offerer from answerer");
                 # my $txt = Mojo::File::slurp($f);
-                my $path = Mojo::File->new($f);
-                my $txt = $path->slurp;
+                # my $path = Mojo::File->new($f);
+                # my $txt = $path->slurp;
+                my $txt = read_file( $f, { binmode => ':utf8' } );
 
-                my $ref = from_json($txt);
+                my $ref = decode_json($txt);
                 $self->send({json => $ref});
                 unlink($f);
             }
@@ -86,10 +88,11 @@ sub type {
         else {
             if (-f "/tmp/sdp.offerer") {
                 # my $txt = Mojo::File::slurp("/tmp/sdp.offerer");
-                my $path = Mojo::File->new("/tmp/sdp.offerer");
-                my $txt = $path->slurp;
+                # my $path = Mojo::File->new("/tmp/sdp.offerer");
+                # my $txt = $path->slurp;
+                my $txt = read_file( "/tmp/sdp.offerer", { binmode => ':utf8' } );
 
-                my $ref = from_json($txt);
+                my $ref = decode_json($txt);
                 $self->app->log->debug("Sending sdp: to answerer from offerer");
                 $self->send({json => $ref});
                 unlink("/tmp/sdp.offerer");
@@ -99,10 +102,11 @@ sub type {
                 foreach my $f (glob("/tmp/candidate.offerer.*")) {
                     $self->app->log->debug("Sending $f: to answerer from offerer");
                     # my $txt = Mojo::File::slurp($f);
-                    my $path = Mojo::File->new($f);
-                    my $txt = $path->slurp;
+                    # my $path = Mojo::File->new($f);
+                    # my $txt = $path->slurp;
+                    my $txt = read_file( $f, { binmode => ':utf8' } );
 
-                    my $ref = from_json($txt);
+                    my $ref = decode_json($txt);
                     $self->send({json => $ref});
                     unlink($f);
                 }
@@ -115,7 +119,7 @@ sub type {
         my ($self, $msg) = @_;
 
         $self->app->log->debug("msg: $msg: type: $type");
-        my $ret = from_json($msg);
+        my $ret = decode_json($msg);
 
         if ($$ret{sender} && "offerer" eq $$ret{sender} && $$ret{sdp}) {
             # Mojo::File::spurt($msg, "/tmp/sdp.offerer");

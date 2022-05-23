@@ -20,15 +20,27 @@ clear_db();
 # Устанавливаем адрес
 my $host = $t->app->config->{'host'};
 
+# получение токена для аутентификации
+$t->post_ok( $host.'/auth/login' => form => { 'login' => 'admin', 'password' => 'admin' } );
+unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
+    diag("Can't connect \n");
+    last;
+}
+$t->content_type_is('application/json;charset=UTF-8');
+diag "";
+my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+my $token = $response->{'data'}->{'token'};
+
+
 # Ввод фолдера
 diag "Add folder parent:";
 my $data = {
     'name'      => 'testName',
     'label'     => 'testLabel',
     'parent'    => 0,
-    'publish'    => 1
+    'status'    => 1
 };
-$t->post_ok( $host.'/settings/add_folder' => form => $data );
+$t->post_ok( $host.'/settings/add_folder' => {token => $token} => form => $data );
 unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
     diag("Can't connect");
     last;
@@ -36,7 +48,7 @@ unless ( $t->status_is(200)->{tx}->{res}->{code} == 200  ) {
 $t->content_type_is('application/json;charset=UTF-8');
 
 my $result = {
-    'publish' => 'ok',
+    'status' => 'ok',
     'list' => [
         {
             'label'     => 'testLabel',
@@ -51,12 +63,12 @@ my $result = {
 };
 
 diag "Get tree:";
-$t->post_ok($host.'/settings/get_tree' => form => $data )
+$t->post_ok($host.'/settings/get_tree' => {token => $token} => form => $data )
     ->status_is(200)
     ->content_type_is('application/json;charset=UTF-8');
 
     # проверка данных ответа
-    my $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
+    $response = decode_json $t->{'tx'}->{'res'}->{'content'}->{'asset'}->{'content'};
     my $keywords = $response->{'list'}->[0]->{'keywords'};
     delete $response->{'list'}->[0]->{'keywords'};
     ok( Compare( $result, $response ), "Response is correct" );

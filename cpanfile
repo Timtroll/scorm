@@ -1,3 +1,6 @@
+# Установка всех нужных модулей:
+# cpanm --installdeps .
+
 requires 'Beanstalk::Client';
 requires 'Carp';
 requires 'DDP';
@@ -8,7 +11,7 @@ requires 'Data::Compare';
 requires 'Encode';
 requires 'Email::MIME';
 requires 'FindBin';
-requires 'File::Slurp::Unicode';
+requires 'File::Slurp';
 requires 'HTML::Strip';
 requires 'IO::Socket::SSL';
 requires 'JSON';
